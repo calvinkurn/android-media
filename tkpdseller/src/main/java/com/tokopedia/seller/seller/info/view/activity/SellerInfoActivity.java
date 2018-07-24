@@ -12,6 +12,7 @@ import com.tokopedia.seller.seller.info.view.fragment.SellerInfoFragment;
  */
 
 public class SellerInfoActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
+
     @Override
     protected Fragment getNewFragment() {
         return SellerInfoFragment.newInstance();

@@ -374,7 +374,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <!-- Strings related shop info -->
     <string name="title_favorite">Favorit</string>
     <string name="title_product">Produk</string>
-    <string name="title_menu_all">SEMUA</string>
+    <string name="title_menu_all">Semua</string>
     <string name="title_comment">Komentar</string>
     <string name="title_prod_quality">Kualitas</string>
     <string name="title_prod_accuracy">Ketepatan</string>
@@ -674,16 +674,16 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
 
     <!-- Strings related to inbox -->
-    <string name="title_my_product_seller">ULASAN PEMBELI</string>
-    <string name="title_my_product">PRODUK SAYA</string>
+    <string name="title_my_product_seller">Ulasan Pembeli</string>
+    <string name="title_my_product">Produk Saya</string>
     <string name="title_inbox_message">Pesan</string>
     <string name="title_inbox_chat">Chat</string>
-    <string name="title_inbox_chat_all">CHAT</string>
-    <string name="title_inbox_message_all">INBOX</string>
-    <string name="title_inbox_sent">TERKIRIM</string>
-    <string name="title_inbox_archive">ARSIP</string>
-    <string name="title_inbox_trash">SAMPAH</string>
-    <string name="title_following">MENGIKUTI</string>
+    <string name="title_inbox_chat_all">Chat</string>
+    <string name="title_inbox_message_all">Inbox</string>
+    <string name="title_inbox_sent">Terkirim</string>
+    <string name="title_inbox_archive">Arsip</string>
+    <string name="title_inbox_trash">Sampah</string>
+    <string name="title_following">Mengikuti</string>
     <string name="message_undo_to_archive">Sukses memindahkan ke Arsip</string>
     <string name="message_undo_to_inbox">Sukses memindahkan ke Kotak Masuk</string>
     <string name="message_undo_to_trash">Sukses memindahkan ke Sampah</string>
