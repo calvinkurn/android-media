@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.fragment;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.di.DaggerExploreComponent;
@@ -159,6 +161,12 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager));
         imageAdapter.setListener(this);
         exploreImageRv.setAdapter(imageAdapter);
+
+        progressBar.getIndeterminateDrawable()
+                .setColorFilter(
+                        MethodChecker.getColor(getContext(), R.color.colorPrimary),
+                        PorterDuff.Mode.SRC_IN
+                );
     }
 
     private void loadImageData(List<KolPostViewModel> kolPostViewModelList) {
