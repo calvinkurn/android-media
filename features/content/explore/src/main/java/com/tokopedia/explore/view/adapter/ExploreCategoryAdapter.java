@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
@@ -40,10 +42,19 @@ public class ExploreCategoryAdapter extends RecyclerView.Adapter<ExploreCategory
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Context context = holder.tag.getContext();
         holder.tag.setText(list.get(position).getName());
         holder.tag.setOnClickListener(v -> {
             listener.onCategoryClicked(position, list.get(position).getId());
         });
+
+        if (list.get(position).isActive()) {
+            holder.tag.setBackground(
+                    MethodChecker.getDrawable(context, R.drawable.explore_tag_selected));
+        } else {
+            holder.tag.setBackground(
+                    MethodChecker.getDrawable(context, R.drawable.explore_tag_neutral));
+        }
     }
 
     @Override

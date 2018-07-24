@@ -109,7 +109,10 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     @Override
     public void onSuccessGetExploreData(ExploreViewModel exploreViewModel) {
         loadImageData(exploreViewModel.getExploreImageViewModelList());
-        loadTagData(exploreViewModel.getTagViewModelList());
+
+        if (categoryAdapter.getList().isEmpty()) {
+            loadTagData(exploreViewModel.getTagViewModelList());
+        }
     }
 
     @Override
