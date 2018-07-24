@@ -31,7 +31,15 @@
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 
 /features/digital/flight_no_op/         @tokopedia/minion-mark
-/features/payment/payment/              @tokopedia/minion-bob
+
+/features/payment/payment/                      @tokopedia/minion-bob
+/features/transaction/checkout                  @tokopedia/minion_bob
+/features/transaction/transactionanalytics      @tokopedia/minion_bob
+/features/transaction/transactiondata           @tokopedia/minion_bob
+/features/logistic/district_recommendation      @tokopedia/minion_bob
+/features/logistic/logisticdata                 @tokopedia/minion_bob
+/features/logistic/logisticuploadawb            @tokopedia/minion_bob
+/features/logistic/tracking                     @tokopedia/minion_bob
 
 /features/user/groupchat/               @tokopedia/minion-kevin
 /features/user/profile/                 @tokopedia/minion-kevin
