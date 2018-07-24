@@ -16,7 +16,7 @@
     <string name="payment_label_no">Tidak</string>
     <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah %1$s</string>
-    <string name="payment_label_hint_click_bca_user_id">klikbca User ID</string>
+    <string name="payment_label_hint_click_bca_user_id">KlikBCA User ID</string>
     <string name="payment_label_use">Terapkan</string>
     <string name="payment_title_activity_change_clik_bca">Ubah KlikBCA User ID</string>
     <string name="payment_label_dest_bank">Bank Tujuan</string>
@@ -51,6 +51,7 @@
     <string name="payment_label_finish">Selesai</string>
     <string name="payment_label_succes_upload_proof">Bukti fisik pembayaran berhasil diunggah</string>
     <string name="payment_label_save_image">Simpan Gambar</string>
+    <string name="payment_label_error_empty_user_id">User ID Klik BCA harus diisi</string>
 
     <string-array name="payment_list_bank_name">
         <item>BCA</item>

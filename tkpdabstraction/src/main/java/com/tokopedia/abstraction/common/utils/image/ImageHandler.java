@@ -358,6 +358,17 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageCircleFromRes(Context context, final ImageView imageView,
+                                        final int resId) {
+            Glide.with(context)
+                    .load(resId)
+                    .asBitmap()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(getCircleImageViewTarget(imageView));
+    }
+
     public static void loadImageCircle2(Context context, final ImageView imageView,
                                         final String url, int resIdEmpty) {
         if (url != null && !url.isEmpty()) {

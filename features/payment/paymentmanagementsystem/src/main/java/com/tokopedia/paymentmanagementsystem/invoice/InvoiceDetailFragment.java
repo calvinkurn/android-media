@@ -33,7 +33,6 @@ public class InvoiceDetailFragment extends BaseWebViewFragment {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
         return url;
     }
 

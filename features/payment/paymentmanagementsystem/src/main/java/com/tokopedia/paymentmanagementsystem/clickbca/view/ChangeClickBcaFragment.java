@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,6 +96,10 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
         buttonUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TextUtils.isEmpty(inputClickBcaUserId.getText())){
+                    NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.payment_label_error_empty_user_id));
+                    return;
+                }
                 changeClickBcaPresenter.changeClickBcaUserId(getResources(), transactionId, merchantCode, inputClickBcaUserId.getText().toString());
             }
         });

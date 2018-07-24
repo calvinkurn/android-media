@@ -57,7 +57,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     private PaymentListModel paymentListModel;
     private View containerHelpUploadProof;
     private View containerImageUpload;
-    private View buttonActionCloseImage;
+    private ImageView buttonActionCloseImage;
     private ImageView imageViewProof;
     private Button buttonSave;
     private Button buttonChooseAnotherImage;
@@ -140,12 +140,12 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
             containerImageUpload.setVisibility(View.VISIBLE);
             containerHelpUploadProof.setVisibility(View.GONE);
             if(isUploaded) {
-                buttonActionCloseImage.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.background_circle_white_check));
+                ImageHandler.loadImageCircleFromRes(buttonActionCloseImage.getContext(), buttonActionCloseImage, R.drawable.ic_check_green_payment);
                 buttonSave.setText(R.string.payment_label_finish);
                 buttonChooseAnotherImage.setVisibility(View.VISIBLE);
                 titleUploadImage.setText(R.string.payment_label_succes_upload_proof);
             }else{
-                buttonActionCloseImage.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.background_circle_white_close));
+                ImageHandler.loadImageCircleFromRes(buttonActionCloseImage.getContext(), buttonActionCloseImage, R.drawable.ic_close_default);
                 buttonSave.setText(R.string.payment_label_save_image);
                 buttonChooseAnotherImage.setVisibility(View.GONE);
                 titleUploadImage.setText(R.string.payment_label_confirmation_upload_image);

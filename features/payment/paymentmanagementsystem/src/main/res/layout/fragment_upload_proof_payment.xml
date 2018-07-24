@@ -186,12 +186,13 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
 
-            <View
+            <ImageView
                 android:id="@+id/iv_action_image"
+                android:background="@color/white"
+                android:padding="@dimen/dp_10"
                 android:layout_width="@dimen/dp_32"
                 android:layout_height="@dimen/dp_32"
-                android:layout_gravity="end|top"
-                android:background="@drawable/background_circle_white_close" />
+                android:layout_gravity="end|top"/>
         </FrameLayout>
     </RelativeLayout>
 
