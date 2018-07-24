@@ -288,15 +288,6 @@
         <item name="android:itemTextAppearance">@style/TextAppearance</item>
     </style>
 
-    <style name="AppBarTheme.White" parent="ThemeOverlay.AppCompat.Dark">
-        <item name="actionModeBackground">@color/white</item>
-        <item name="android:actionModeBackground">@color/white</item>
-        <item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
-        <item name="android:actionMenuTextColor">@color/abc_primary_text_material_light</item>
-        <item name="android:textColorSecondary">@color/abc_primary_text_material_light</item>
-        <item name="android:itemTextAppearance">@style/TextAppearance</item>
-    </style>
-
     <style name="TextAppearance">
         <item name="android:textColor">@android:color/black</item>
     </style>
@@ -304,6 +295,11 @@
     <style name="ToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/grey_700</item>
     </style>
 
     <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">

@@ -87,7 +87,9 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_inbox_reputation;
+        if (GlobalConfig.isSellerApp())
+            return R.layout.activity_inbox_reputation;
+        return R.layout.layout_tablayout_secondary;
     }
 
     @Override
@@ -95,7 +97,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
         super.initView();
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+        indicator = (TabLayout) findViewById(R.id.tabs);
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
