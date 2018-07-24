@@ -20,8 +20,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     private final List<Integer> allowedViewTypes = Arrays.asList(
             R.layout.search_result_product_item_big_grid,
             R.layout.search_result_product_item_grid,
-            R.layout.search_result_product_item_list,
-            com.tokopedia.topads.sdk.R.layout.layout_ads);
+            R.layout.search_result_product_item_list);
 
     public ProductItemDecoration(int spacing, int color) {
         this.spacing = spacing;
