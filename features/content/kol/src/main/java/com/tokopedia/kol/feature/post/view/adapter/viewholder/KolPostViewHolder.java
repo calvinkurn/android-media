@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
@@ -40,6 +41,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
+    private final Context context;
     private BaseKolView baseKolView;
     private FrameLayout containerView;
     private ImageView reviewImage;
@@ -59,6 +61,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         this.viewListener = viewListener;
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
+        context = itemView.getContext();
         topShadow = itemView.findViewById(R.id.top_shadow);
         containerView = itemView.findViewById(R.id.container_view);
 
@@ -81,11 +84,11 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         if (type == Type.EXPLORE) {
             containerView.setBackground(
-                    MethodChecker.getDrawable(containerView.getContext(), R.drawable.shadow_bottom)
+                    MethodChecker.getDrawable(context, R.drawable.shadow_bottom)
             );
         } else {
             containerView.setBackground(
-                    MethodChecker.getDrawable(containerView.getContext(), R.drawable.shadow_top_bottom)
+                    MethodChecker.getDrawable(context, R.drawable.shadow_top_bottom)
             );
         }
 
@@ -103,7 +106,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         );
 
         ImageHandler.loadImageWithTarget(
-                reviewImage.getContext(),
+                context,
                 element.getKolImage(),
                 new SimpleTarget<Bitmap>() {
                     @Override
@@ -130,9 +133,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         baseKolView.onViewRecycled();
 
         reviewImage.setImageDrawable(
-                MethodChecker.getDrawable(
-                        reviewImage.getContext(),
-                        R.drawable.ic_loading_image)
+                MethodChecker.getDrawable(context, R.drawable.ic_loading_image)
         );
     }
 
