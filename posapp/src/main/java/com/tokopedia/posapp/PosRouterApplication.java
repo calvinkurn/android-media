@@ -553,6 +553,16 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public String getStringRemoteConfig(String key) {
+        return null;
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+
+    }
+
+    @Override
     public void sendAddWishlistEmitter(String productId, String userId) {
 
     }

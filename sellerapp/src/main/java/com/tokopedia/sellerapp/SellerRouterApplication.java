@@ -1374,13 +1374,18 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isSupportApplink(String appLink) {
-        return false;
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key);
     }
 
     @Override
-    public Intent getOrderListIntent(Context context) {
-        return null;
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
+    }
+
+    @Override
+    public boolean isSupportApplink(String appLink) {
+        return false;
     }
 
     @Override

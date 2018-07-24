@@ -88,7 +88,7 @@
                     android:id="@+id/cwa_return_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card_with_action_main_no_top_border"
+                    android:background="@drawable/bg_card_with_action_main"
                     android:visibility="gone"
                     app:cmw_action="Detail"
                     tools:visibility="gone" />
