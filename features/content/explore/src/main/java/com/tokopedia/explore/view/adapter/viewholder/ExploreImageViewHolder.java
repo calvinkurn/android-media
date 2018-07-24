@@ -31,5 +31,8 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
     @Override
     public void bind(ExploreImageViewModel element) {
         ImageHandler.LoadImage(image, element.getImageUrl());
+        image.setOnClickListener(v -> {
+            listener.goToKolPostDetail(element.getKolPostViewModel());
+        });
     }
 }

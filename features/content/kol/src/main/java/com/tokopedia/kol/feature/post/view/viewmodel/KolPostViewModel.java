@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.post.view.viewmodel;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -9,7 +10,8 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory>, Parcelable {
+public class KolPostViewModel extends BaseKolViewModel
+        implements Visitable<KolPostTypeFactory>, Parcelable {
     public final static int DEFAULT_ID = -1;
 
     private String kolImage;
@@ -88,5 +90,42 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
         return typeFactory.type(this);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.kolImage);
+        dest.writeInt(this.tagsId);
+        dest.writeString(this.contentName);
+        dest.writeString(this.tagsType);
+        dest.writeString(this.tagsCaption);
+        dest.writeString(this.tagsLink);
+    }
+
+    protected KolPostViewModel(Parcel in) {
+        super(in);
+        this.kolImage = in.readString();
+        this.tagsId = in.readInt();
+        this.contentName = in.readString();
+        this.tagsType = in.readString();
+        this.tagsCaption = in.readString();
+        this.tagsLink = in.readString();
+    }
+
+    public static final Creator<KolPostViewModel> CREATOR = new Creator<KolPostViewModel>() {
+        @Override
+        public KolPostViewModel createFromParcel(Parcel source) {
+            return new KolPostViewModel(source);
+        }
+
+        @Override
+        public KolPostViewModel[] newArray(int size) {
+            return new KolPostViewModel[size];
+        }
+    };
 }
 

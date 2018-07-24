@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,8 +19,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.di.DaggerExploreComponent;
-import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
+import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactoryImpl;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
@@ -27,6 +28,8 @@ import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.kol.feature.post.view.activity.KolPostDetailActivity;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,6 +182,12 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         if (isLoading()) {
             imageAdapter.dismissLoading();
         }
+    }
+
+    @Override
+    public void goToKolPostDetail(KolPostViewModel kolPostViewModel) {
+        Intent intent = KolPostDetailActivity.getInstance(getContext(), kolPostViewModel);
+        startActivity(intent);
     }
 
     private void initView() {

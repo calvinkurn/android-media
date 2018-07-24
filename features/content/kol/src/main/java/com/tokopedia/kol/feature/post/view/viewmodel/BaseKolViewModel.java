@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author by milhamj on 14/05/18.
  */
 
-public class BaseKolViewModel implements Parcelable{
+public class BaseKolViewModel implements Parcelable {
     private final int userId;
     private final String cardType;
     private String title;
@@ -245,7 +245,7 @@ public class BaseKolViewModel implements Parcelable{
         this.isShowLike = in.readByte() != 0;
     }
 
-    public static final Creator<BaseKolViewModel> CREATOR = new Creator<BaseKolViewModel>() {
+    public static final Parcelable.Creator<BaseKolViewModel> CREATOR = new Parcelable.Creator<BaseKolViewModel>() {
         @Override
         public BaseKolViewModel createFromParcel(Parcel source) {
             return new BaseKolViewModel(source);

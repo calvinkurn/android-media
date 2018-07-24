@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
  * @author by milhamj on 20/07/18.
@@ -30,6 +31,8 @@ public interface ContentExploreContract {
         void showLoading();
 
         void dismissLoading();
+
+        void goToKolPostDetail(KolPostViewModel kolPostViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
