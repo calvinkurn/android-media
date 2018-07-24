@@ -15,4 +15,11 @@
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
+
+    <style name="LabelLayout.InnerExpandable">
+        <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
+        <item name="android:paddingRight">@dimen/product_inner_expandable_padding</item>
+        <item name="android:paddingTop">@dimen/product_inner_expandable_padding</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
 </resources>

@@ -4,7 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.product.common.util.ItemType;
 
 import java.util.List;
 

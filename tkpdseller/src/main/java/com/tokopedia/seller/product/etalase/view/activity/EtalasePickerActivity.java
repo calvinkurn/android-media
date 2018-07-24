@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.etalase.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.etalase.view.fragment.EtalasePickerFragment;

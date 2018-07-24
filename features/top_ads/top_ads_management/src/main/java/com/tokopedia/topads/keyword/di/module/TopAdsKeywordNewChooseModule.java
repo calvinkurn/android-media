@@ -2,7 +2,7 @@ package com.tokopedia.topads.keyword.di.module;
 
 
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.keyword.data.repository.TopAdsOldKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsOldKeywordListPresenterImpl;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;

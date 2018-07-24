@@ -17,7 +17,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.product.common.util.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -27,7 +27,7 @@ import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
 
 import javax.inject.Inject;
 

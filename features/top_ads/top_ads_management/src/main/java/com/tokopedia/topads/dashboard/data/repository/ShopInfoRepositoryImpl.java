@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.edit.data.mapper.ShopInfoDataToDomainMapper;
-import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.common.data.mapper.ShopInfoDataToDomainMapper;
+import com.tokopedia.product.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.data.source.ShopInfoDataSource;
 
 import rx.Observable;

@@ -15,7 +15,7 @@ import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.request.SearchProductRequest;
 import com.tokopedia.topads.dashboard.data.model.request.ShopRequest;
 import com.tokopedia.topads.dashboard.data.model.request.StatisticRequest;
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.product.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 
 import java.util.HashMap;

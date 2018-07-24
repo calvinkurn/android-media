@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.seller.common.exception.TomeException;
+import com.tokopedia.product.common.util.TomeException;
 
 import java.util.List;
 

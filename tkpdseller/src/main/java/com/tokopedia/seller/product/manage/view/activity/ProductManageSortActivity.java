@@ -9,7 +9,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragment;

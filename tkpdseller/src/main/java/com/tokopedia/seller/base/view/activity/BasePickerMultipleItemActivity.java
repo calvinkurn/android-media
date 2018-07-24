@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.ItemPickerType;
+import com.tokopedia.product.common.util.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;

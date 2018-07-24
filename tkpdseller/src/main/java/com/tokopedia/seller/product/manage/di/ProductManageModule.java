@@ -8,9 +8,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
@@ -36,9 +34,8 @@ import com.tokopedia.seller.product.picker.data.repository.GetProductListSelling
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.product.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;

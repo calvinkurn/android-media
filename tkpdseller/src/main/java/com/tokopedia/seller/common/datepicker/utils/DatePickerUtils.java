@@ -2,18 +2,16 @@ package com.tokopedia.seller.common.datepicker.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
+import com.tokopedia.product.common.model.DatePickerViewModel;
 
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;

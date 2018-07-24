@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.draft.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.product.common.domain.interactor.UpdateUploadingDraftProductUseCase;
 
 import rx.Subscriber;
 

@@ -6,14 +6,14 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.product.common.util.ItemType;
 import com.tokopedia.seller.base.view.listener.DatePickerList;
-import com.tokopedia.seller.base.view.listener.DatePickerView;
+import com.tokopedia.product.common.view.presenter.DatePickerView;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
+import com.tokopedia.product.common.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
+import com.tokopedia.product.common.model.DatePickerViewModel;
 import com.tokopedia.design.label.DateLabelView;
 
 import javax.inject.Inject;

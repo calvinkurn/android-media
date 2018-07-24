@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.deeplink.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.tkpd.deeplink.data.factory.ShopInfoSourceFactory;
 import com.tokopedia.tkpd.deeplink.data.mapper.GetShopInfoMapper;
 

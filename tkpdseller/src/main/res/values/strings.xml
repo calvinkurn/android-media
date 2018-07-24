@@ -13,8 +13,6 @@
     <string name="label_subscribe">Berlangganan</string>
 
     <string name="price_format_text">%1$s %2$s</string>
-    <string name="rupiah_format">Rp %s</string>
-    <string name="usd_format">US$ %s</string>
 
     <string name="title_date_setting">Atur Tanggal</string>
     <string name="next">Selanjutnya</string>
@@ -139,7 +137,6 @@
     <string name="product_instagram_draft_error_save_resolution">Gambar instagram memiliki resolusi di bawah 300 pixel.</string>
     <string name="product_draft_instagram_save_success">%1$d Produk Instagram Anda berhasil ditambahkan di draft.</string>
     <string name="delete_this_variant">Hapus Variant untuk <![CDATA[<b>%1$s</b>]]>?</string>
-    <string name="label_variant_save">Simpan</string>
 
     <string name="product_list_picker_max_has_been_reached">Jumlah produk yang ditambahkan sudah mencapai maksimum</string>
     <string name="title_activity_product_list_picker">Pilih Produk Unggulan</string>
@@ -186,7 +183,6 @@
     <string name="edit_from_instagram_text_description">Ubah gambar dari Instagram</string>
     <string name="edit_from_gallery_text_description">Ubah gambar dari Galeri</string>
     <string name="edit_from_camera_text_description">Ubah gambar dari Kamera</string>
-    <string name="change_image">Ubah gambar</string>
     <string name="hint_city_or_district">Tulis kota / kecamatan tujuan pengiriman</string>
     <string name="hint_post_code">Tulis 5 digit kode pos</string>
     <string name="hint_choose_city">Pilih kota/kecamatan</string>
@@ -237,11 +233,7 @@
     <string name="product_variant_option_cannot_empty">Minimum 1 opsi varian harus dipilih</string>
     <string name="product_description_tips_title"><![CDATA[<b>Tips:</b> Penulisan Deskripsi Produk yang menarik lihat di sini.]]></string>
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
-    <string name="change">Ubah</string>
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
-    <string name="product_price_locked">Harga Produk Terkunci</string>
-    <string name="product_price_locked_desc">Atur harga di masing-masing varian atau ubah semua harga varian dengan mengisi harga di bawah.</string>
-    <string name="product_price_locked_manage_desc">Pengaturan harga dengan varian hanya bisa dilakukan melalui Ubah Produk.</string>
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>

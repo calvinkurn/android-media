@@ -7,7 +7,7 @@ import android.content.Intent;
 import com.tokopedia.gm.R;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
+import com.tokopedia.product.common.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.gm.statistic.constant.GMStatConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDatePickerActivity;

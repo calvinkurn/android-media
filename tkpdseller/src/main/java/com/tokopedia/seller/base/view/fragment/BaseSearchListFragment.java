@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.product.common.util.ItemType;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
