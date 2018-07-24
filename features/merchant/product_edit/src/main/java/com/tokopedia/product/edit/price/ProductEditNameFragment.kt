@@ -1,10 +1,10 @@
 package com.tokopedia.product.edit.price
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.price.model.ProductName
@@ -29,8 +29,24 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
         ProductEditNameViewHolder(view, this).setName(productName.name!!)
     }
 
-    override fun onNameChanged(name: ProductName) {
+    override fun onNameChanged(productName: ProductName) {
+        this.productName = productName
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_next, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_next) {
+            val intent = Intent()
+            intent.putExtra(EXTRA_NAME, productName)
+            activity!!.setResult(Activity.RESULT_OK, intent)
+            activity!!.finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {

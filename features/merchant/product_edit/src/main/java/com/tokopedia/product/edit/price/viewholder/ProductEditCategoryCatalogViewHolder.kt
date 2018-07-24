@@ -4,10 +4,14 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.tokopedia.product.edit.price.ProductCategoryRecommendationAdapter
+import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import kotlinx.android.synthetic.main.partial_product_edit_category.view.*
 
 class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listener, context: Context?): ProductCategoryRecommendationAdapter.Listener{
+
+    private val categoryRecommendationList = ArrayList<ProductCategory>()
+    private val productCategoryRecommendationAdapter: ProductCategoryRecommendationAdapter
 
     interface Listener {
         fun onCategoryRecommendationChoosen(productCategory: ProductCategory)
@@ -18,7 +22,6 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
     init {
         view.labelCatalog.setOnClickListener { listener.onLabelCatalogClicked() }
 
-        val categoryRecommendationList = ArrayList<ProductCategory>()
         categoryRecommendationList.add(ProductCategory().apply {
             categoryId = 1
             categoryName = "test"
@@ -31,7 +34,7 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
             categoryId = 3
             categoryName = "dsa"
         })
-        val productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(categoryRecommendationList, this)
+        productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(categoryRecommendationList, this)
         view.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         view.recyclerView.adapter = productCategoryRecommendationAdapter
         view.recyclerView.setHasFixedSize(true)
@@ -42,16 +45,12 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
         listener.onCategoryRecommendationChoosen(productCategory)
     }
 
-    fun setCategoryChosen(value: String){
-        view.labelCategory.setContent(value)
+    fun setCategoryChosen(productCategory: ProductCategory){
+        view.labelCategory.setContent(productCategory.categoryName)
+        productCategoryRecommendationAdapter.setSelectedCategory(productCategory)
     }
 
-    fun setCatalogChosen(value: String){
-        view.labelCatalog.setContent(value)
-    }
-
-    companion object {
-        const val REQUEST_CODE_GET_CATEGORY = 1
-        const val REQUEST_CODE_GET_CATALOG = 2
+    fun setCatalogChosen(productCatalog: ProductCatalog){
+        view.labelCatalog.setContent(productCatalog.catalogName)
     }
 }

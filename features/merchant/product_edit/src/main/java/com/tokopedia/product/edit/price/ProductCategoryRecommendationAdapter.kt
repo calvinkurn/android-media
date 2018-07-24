@@ -47,6 +47,15 @@ class ProductCategoryRecommendationAdapter(private var categoryRecommendationLis
         return categoryRecommendationList[selectedPosition]
     }
 
+    fun setSelectedCategory(productCategory: ProductCategory){
+        for (i in 0 until categoryRecommendationList.size){
+            if(categoryRecommendationList[i].categoryName == productCategory.categoryName){
+                selectedPosition = i
+                notifyDataSetChanged()
+            }
+        }
+    }
+
     inner class ProductCategoryRecommendationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             setView()

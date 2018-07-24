@@ -25,8 +25,6 @@ import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
-import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder.Companion.REQUEST_CODE_GET_CATALOG
-import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder.Companion.REQUEST_CODE_GET_CATEGORY
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.BaseProductEditActivity
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
@@ -65,7 +63,7 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
         this.productCategory = productCategory
-        productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory.categoryName!!)
+        productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
     }
 
     override fun onLabelCategoryClicked() {
@@ -96,19 +94,19 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
-                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
-                    productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog.catalogName!!)
+                    productCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
+                    productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
-                    productCategory = data.getParcelableExtra(EXTRA_CATEGORY)
-                    productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory.categoryName!!)
+                    productCategory = data!!.getParcelableExtra(EXTRA_CATEGORY)
+                    productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
                 }
                 REQUEST_CODE_GET_IMAGES -> {
-                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    val imageUrlOrPathList = data!!.getStringArrayListExtra(PICKER_RESULT_PATHS)
 
                     val intent = Intent(activity, BaseProductEditActivity::class.java)
                     intent.putExtra(EXTRA_NAME, productName)
@@ -124,6 +122,8 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
     }
 
     companion object {
+        const val REQUEST_CODE_GET_CATEGORY = 1
+        const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
         fun createInstance(): Fragment {
             return BaseProductAddFragment()
