@@ -190,6 +190,7 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
@@ -1388,11 +1389,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isSupportApplink(String appLink) {
         return false;
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return null;
     }
 
     @Override
