@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +20,24 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TickerMetadata;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.util.SimpleSpanBuilder;
 
 import java.util.List;
 
 public class TickerPagerAdapter extends PagerAdapter {
     private List<TickerContainer> mItems;
     private LayoutInflater mInflater;
+    private Context mContext;
 
     public TickerPagerAdapter(Context context, List<TickerContainer> items) {
+        this.mContext = context;
         this.mItems = items;
-        mInflater = LayoutInflater.from(context);
+        this.mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -53,27 +58,33 @@ public class TickerPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, final int position) {
         TextView item = (TextView) mInflater.inflate(R.layout.tp_layout_ticker_item, view, false);
+        item.setMovementMethod(LinkMovementMethod.getInstance());
         item.setText(generateText(view.getContext(), mItems.get(position)));
         view.addView(item);
 
         return item;
     }
 
-    private CharSequence generateText(@NonNull Context context, @NonNull TickerContainer container) {
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+    private SpannableStringBuilder generateText(@NonNull Context context, @NonNull TickerContainer container) {
+        SimpleSpanBuilder ssb = new SimpleSpanBuilder();
 
         if (container.getMetadata() == null || container.getMetadata().isEmpty()) {
-            return builder.subSequence(0, builder.length());
+            return ssb.build();
         }
 
         for (TickerMetadata each : container.getMetadata()) {
-            if (URLUtil.isValidUrl(each.getLink().get("applink"))) {
+            if (URLUtil.isValidUrl(each.getLink().get("applink"))
+                    || URLUtil.isValidUrl(each.getLink().get("url"))) {
                 String linkContent = each.getText().get("content");
-                SpannableString spannableString = new SpannableString(linkContent);
-                spannableString.setSpan(new ClickableSpan() {
+                ssb.append(linkContent, new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
-                        RouteManager.route(context, each.getLink().get("applink"));
+                        String uri = each.getLink().get("applink").isEmpty() ? each.getLink().get("url") : each.getLink().get("content");
+                        if (uri.startsWith("tokopedia")) {
+                            RouteManager.route(context, uri);
+                        } else {
+                            ((TokopointRouter) mContext.getApplicationContext()).openTokoPoint(mContext, uri);
+                        }
                     }
 
                     @Override
@@ -82,13 +93,12 @@ public class TickerPagerAdapter extends PagerAdapter {
                         ds.setUnderlineText(false);
                         ds.setColor(context.getResources().getColor(R.color.tkpd_main_green));
                     }
-                }, builder.length(), builder.length() + linkContent.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                builder.append(spannableString);
+                });
             } else {
-                builder.append(each.getText().get("content"));
+                ssb.appendWithSpace(each.getText().get("content"));
             }
         }
 
-        return builder.subSequence(0, builder.length());
+        return ssb.build();
     }
 }
