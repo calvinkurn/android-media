@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.similarsearch.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,13 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.discovery.similarsearch.model.Badges;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
@@ -29,7 +26,6 @@ import com.tokopedia.tkpdpdp.customview.RatingView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAdapter.SimilarProdcutItem> {
     private final WishListClickListener wishListClickListener;
@@ -58,12 +54,6 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
 
     public void setProductsItems(List<ProductsItem> productsItems) {
         this.productsItems = productsItems;
-        if(productsItems != null) {
-            for(ProductsItem productsItem: productsItems) {
-                if(productsItem.getId() != 0)
-                    SimilarSearchTracking.eventUserSeeSimilarProduct(String.valueOf(productsItem.getId()),productsItem);
-            }
-        }
         notifyDataSetChanged();
     }
 
@@ -129,7 +119,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
                     intent.putExtras(bundle);
                     itemView.getContext().startActivity(intent);
-                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product "+productsItem.getId(),productsItem);
+                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product "+productsItem.getId(),productsItem.getOriginProductID());
                 }
             });
 

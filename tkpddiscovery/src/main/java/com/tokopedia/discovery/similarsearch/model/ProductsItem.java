@@ -1,7 +1,11 @@
 package com.tokopedia.discovery.similarsearch.model;
 
 import javax.annotation.Generated;
+
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.SerializedName;
+import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 
 import java.util.List;
 
@@ -55,6 +59,9 @@ public class ProductsItem{
 
 	@SerializedName("badges")
 	private List<Badges> badges;
+
+
+	private String originProductID;
 
 	private boolean wishListed;
 	private boolean isWishlistButtonEnabled = true;
@@ -203,6 +210,14 @@ public class ProductsItem{
 		this.badges = badges;
 	}
 
+	public String getOriginProductID() {
+		return originProductID;
+	}
+
+	public void setOriginProductID(String originProductID) {
+		this.originProductID = originProductID;
+	}
+
 	@Override
  	public String toString(){
 		return 
@@ -224,7 +239,22 @@ public class ProductsItem{
 			",discount_expired_time = '" + discountExpiredTime + '\'' + 
 			"}";
 		}
-
+	public Object getProductAsObjectDataLayer(String position) {
+		String price = "";
+		if(!getPrice().trim().isEmpty()) {
+			price = Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice()));
+		}
+			return DataLayer.mapOf(
+				"name", getName(),
+				"id", getId(),
+				"price",price,
+				"brand", "none / other",
+				"category", categoryName,
+				"variant", "none / other",
+				"list", "/similarproduct",
+				"position", position
+		);
+	}
 	@Override
 	public boolean equals(Object obj) {
 		ProductsItem productsItem = (ProductsItem) obj;
