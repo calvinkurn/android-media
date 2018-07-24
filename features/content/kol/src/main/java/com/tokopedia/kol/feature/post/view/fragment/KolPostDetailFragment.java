@@ -19,8 +19,8 @@ import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
@@ -82,7 +82,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     + AbstractionRouter.class.getSimpleName());
         }
 
-        KolPostTypeFactory typeFactory = new KolPostTypeFactoryImpl(this);
+        KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
+        typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
         adapter = new KolPostAdapter(typeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -142,7 +143,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void populateData() {
         if (getArguments() != null &&
                 getArguments().get(KolPostDetailActivity.PARAM_KOLPOST) != null) {
-            kolPostViewModel = (KolPostViewModel) getArguments().get(KolPostDetailActivity.PARAM_KOLPOST);
+
+            kolPostViewModel = (KolPostViewModel)
+                    getArguments().get(KolPostDetailActivity.PARAM_KOLPOST);
             List<Visitable> itemList = new ArrayList<>();
             itemList.add(kolPostViewModel);
             adapter.addList(itemList);

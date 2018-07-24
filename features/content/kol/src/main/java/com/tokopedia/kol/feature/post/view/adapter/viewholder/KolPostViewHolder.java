@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
     private BaseKolView baseKolView;
+    private FrameLayout containerView;
     private ImageView reviewImage;
     private TextView tooltip;
     private View tooltipClickArea;
@@ -47,7 +49,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private Type type;
 
     public enum Type {
-        PROFILE, FEED
+        PROFILE, FEED, EXPLORE
     }
 
     public KolPostViewHolder(View itemView,
@@ -58,6 +60,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         topShadow = itemView.findViewById(R.id.top_shadow);
+        containerView = itemView.findViewById(R.id.container_view);
 
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content);
@@ -74,6 +77,16 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             topShadow.setVisibility(View.VISIBLE);
         } else {
             topShadow.setVisibility(View.GONE);
+        }
+
+        if (type == Type.EXPLORE) {
+            containerView.setBackground(
+                    MethodChecker.getDrawable(containerView.getContext(), R.drawable.shadow_bottom)
+            );
+        } else {
+            containerView.setBackground(
+                    MethodChecker.getDrawable(containerView.getContext(), R.drawable.shadow_top_bottom)
+            );
         }
 
         reviewImage.getViewTreeObserver().addOnGlobalLayoutListener(
