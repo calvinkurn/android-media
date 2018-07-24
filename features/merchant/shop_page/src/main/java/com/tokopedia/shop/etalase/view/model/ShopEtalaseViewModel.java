@@ -22,6 +22,11 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
 
     private boolean isSelected;
 
+    public ShopEtalaseViewModel(String id, String name) {
+        setEtalaseId(id);
+        setEtalaseName(name);
+    }
+
     public ShopEtalaseViewModel(EtalaseModel etalaseModel) {
         setEtalaseBadge(etalaseModel.getEtalaseBadge());
         setEtalaseId(etalaseModel.getEtalaseId());

@@ -17,4 +17,6 @@ public class ShopUrl extends ShopCommonUrl {
 
     public static final String SHOP_PRODUCT_OS_DISCOUNT = "/os/v1/campaign/product/info";
 
+    public static final String SHOP_HELP_CENTER = "https://www.tokopedia.com/bantuan/status-toko-tidak-aktif/";
+
 }

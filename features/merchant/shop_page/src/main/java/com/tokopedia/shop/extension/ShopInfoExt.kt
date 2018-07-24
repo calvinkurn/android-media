@@ -4,9 +4,11 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoShipment
 import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import java.text.DecimalFormat
 
 const val THOUSAND = 1000
 const val MILLION = 1000000
+val df = DecimalFormat("###.##")
 
 fun ShopInfoShipment.transformToVisitable(): ShopInfoLogisticViewModel {
     return ShopInfoLogisticViewModel().also {
@@ -27,10 +29,10 @@ fun ShopNote.transformToVisitable():ShopNoteViewModel {
     }
 }
 
-fun Long.formatToSimpleNumber():String {
+fun Double.formatToSimpleNumber():String {
     return when(this) {
-        in THOUSAND..MILLION-1 -> "${this/THOUSAND}rb"
-        in MILLION..Long.MAX_VALUE -> "${this/ MILLION}jt"
-        else -> this.toString()
-    }
+        in THOUSAND until MILLION-1 -> "${df.format(this/THOUSAND)}rb"
+        in MILLION..Long.MAX_VALUE -> "${df.format(this/ MILLION)}jt"
+        else -> df.format(this)
+    }.replace(".",",")
 }

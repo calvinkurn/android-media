@@ -1,9 +1,8 @@
 package com.tokopedia.shop.product.view.model.newmodel;
 
-import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductAdapterTypeFactory;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
-import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 
 /**
  * Created by zulfikarrahman on 1/16/18.
@@ -12,32 +11,36 @@ import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 public class ShopProductPromoViewModel implements BaseShopProductViewModel {
 
     private String url;
-    private boolean login;
+    private boolean isLogin;
     private String userId;
+    private String accessToken;
     private ShopProductUserVisibleHintListener shopProductUserVisibleHintListener;
+
+    public ShopProductPromoViewModel() {
+
+    }
+
+    public ShopProductPromoViewModel(String url, String userId, String accessToken, boolean isLogin) {
+        this.url = url;
+        this.userId = userId;
+        this.accessToken = accessToken;
+        this.isLogin = isLogin;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public boolean isLogin() {
-        return login;
-    }
-
-    public void setLogin(boolean login) {
-        this.login = login;
+        return isLogin;
     }
 
     public String getUserId() {
         return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public ShopProductUserVisibleHintListener getShopProductUserVisibleHintListener() {

@@ -220,7 +220,10 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
@@ -229,6 +232,7 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
@@ -468,7 +472,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getIntentCreateShop(Context context) {
-        return TkpdSeller.getIntentCreateEditShop(context, true, false);
+        return ShopOpenRouter.getIntentCreateEditShop(context, true, false);
     }
 
     @Override
@@ -2294,5 +2298,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
         startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+    }
+
+    @Override
+    public void goToManageShipping(Context context) {
+        startActivity(new Intent(context, EditShippingActivity.class));
+    }
+
+    @Override
+    public void goToEditShop(Context context) {
+        Intent intent = new Intent(context, ShopEditorActivity.class);
+        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+        UnifyTracking.eventManageShopInfo();
+
+        startActivity(intent);
     }
 }

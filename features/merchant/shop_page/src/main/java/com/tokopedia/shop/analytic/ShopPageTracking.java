@@ -173,6 +173,13 @@ public class ShopPageTracking {
                 shopId, myShop, shopType);
     }
 
+    public void eventClickDiscussion(String shopId, boolean myShop, int shopType) {
+        eventShopPageOfficialStore(
+                ShopPageTrackingConstant.CLICK_AND_MOVE_OTHER_SCREEN,
+                ShopPageTrackingConstant.CLICK_DISCUSSION,
+                shopId, myShop, shopType);
+    }
+
     public void eventBackPressedShopInfo(String shopId, boolean myShop, int shopType) {
         eventShopPageOfficialStore(
                 ShopPageTrackingConstant.TOP_SECTION_SHOP_INFORMATION_CLICK,

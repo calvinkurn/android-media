@@ -83,6 +83,8 @@ public class ShopPageTrackingConstant {
     public static final String IMPRESSION_OF_TOP_PRODUCT_LIST = "impression of top products list";
     public static final String TOP_CONTENT_CLICK = " - top content - click";
     public static final String CLICK_TOP_CONTENT = "click top content";
+    public static final String CLICK_DISCUSSION = "Lihat diskusi toko";
+    public static final String CLICK_AND_MOVE_OTHER_SCREEN = "Click & move to other Screen";
 
     //key
     public static final String EVENT = "event";
@@ -129,6 +131,5 @@ public class ShopPageTrackingConstant {
     public static final String TOP_CONTENT_IMPRESSION = " - top content - impression";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String PRODUCT_VIEW = "productView";
-    public static final int DEFAULT_PER_PAGE = 10;
     public static final String SHOP_PAGE_TYPE = "/shoppage";
 }

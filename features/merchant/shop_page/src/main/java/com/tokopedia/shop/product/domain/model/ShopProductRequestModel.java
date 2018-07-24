@@ -114,6 +114,10 @@ public class ShopProductRequestModel {
         return hashMap;
     }
 
+    public boolean useTome(){
+        return isShopClosed() || !isUseAce();
+    }
+
     public boolean isUseAce() {
         return useAce;
     }

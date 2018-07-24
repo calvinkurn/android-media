@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.newadapter;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -13,12 +14,14 @@ import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.EmptyWrapVi
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.HideViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductEtalaseListViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductNewViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.model.newmodel.HideViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseListViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
@@ -31,15 +34,23 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
     private final boolean isHorizontalLayout;
 
+    private OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener;
+    public interface OnShopProductAdapterTypeFactoryListener{
+        boolean needToShowEtalase();
+    }
+
     public ShopProductAdapterTypeFactory(ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                          ShopProductClickedNewListener shopProductClickedListener,
                                          EmptyWrapViewHolder.Callback emptyProductOnClickListener,
-                                         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener,
+                                         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener
+                                                 onShopProductEtalaseListViewHolderListener,
+                                         @Nullable OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener,
                                          boolean isHorizontalLayout) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
+        this.onShopProductAdapterTypeFactoryListener = onShopProductAdapterTypeFactoryListener;
         this.isHorizontalLayout = isHorizontalLayout;
     }
 
@@ -78,7 +89,11 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(ShopProductEtalaseListViewModel etalaseLabelViewModel) {
-        if (etalaseLabelViewModel.getEtalaseModelList().size() == 0) {
+        boolean needShowEtalase = true;
+        if (onShopProductAdapterTypeFactoryListener!= null) {
+            needShowEtalase = onShopProductAdapterTypeFactoryListener.needToShowEtalase();
+        }
+        if (!needShowEtalase || etalaseLabelViewModel.getEtalaseModelList().size() == 0) {
             return HideViewHolder.LAYOUT;
         } else {
             return ShopProductEtalaseListViewHolder.LAYOUT;
@@ -89,6 +104,18 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         return HideViewHolder.LAYOUT;
     }
 
+    public int type (ShopProductEtalaseTitleViewModel shopProductEtalaseTitleViewModel) {
+        boolean needShowEtalase = true;
+        if (onShopProductAdapterTypeFactoryListener!= null) {
+            needShowEtalase = onShopProductAdapterTypeFactoryListener.needToShowEtalase();
+        }
+        if (!needShowEtalase || TextUtils.isEmpty(shopProductEtalaseTitleViewModel.getEtalaseName())) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return ShopProductEtalaseTitleViewHolder.LAYOUT;
+        }
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
@@ -97,6 +124,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new EmptyWrapViewHolder(parent, emptyProductOnClickListener);
         } else if (type == ErrorNetworkWrapViewHolder.LAYOUT){
             return new ErrorNetworkWrapViewHolder(parent);
+        } else if (type == ShopProductEtalaseTitleViewHolder.LAYOUT) {
+            return new ShopProductEtalaseTitleViewHolder(parent);
         } else if (type == ShopProductEtalaseListViewHolder.LAYOUT) {
             return new ShopProductEtalaseListViewHolder(parent, onShopProductEtalaseListViewHolderListener);
         } else if (type == ShopProductPromoViewHolder.LAYOUT) {

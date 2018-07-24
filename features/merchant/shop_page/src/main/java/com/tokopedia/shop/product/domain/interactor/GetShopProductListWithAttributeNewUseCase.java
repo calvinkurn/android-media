@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.domain.interactor;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
@@ -54,7 +55,7 @@ public class GetShopProductListWithAttributeNewUseCase extends BaseGetShopProduc
     private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(
             final ShopProductRequestModel shopProductRequestModel, final PagingList<ShopProduct> shopProductPagingList) {
         List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromShopProduct(
-                shopProductPagingList.getList(), shopProductRequestModel.getPage(), ShopPageTrackingConstant.DEFAULT_PER_PAGE);
+                shopProductPagingList.getList(), shopProductRequestModel.getPage(), ShopPageConstant.DEFAULT_PER_PAGE);
         return super.getShopProductViewModelList(isShopOwner(shopProductRequestModel.getShopId()),
                 shopProductRequestModel.isOfficialStore(), shopProductViewModelList)
                 .flatMap(new Func1<List<ShopProductViewModel>, Observable<PagingList<ShopProductViewModel>>>() {

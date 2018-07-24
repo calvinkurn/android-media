@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 
@@ -46,6 +47,16 @@ public class EtalaseChipAdapter extends RecyclerView.Adapter<EtalaseChipAdapter.
         }
     }
 
+    public int getSelectedPosition(){
+        for (int i = 0, sizei = etalaseViewModelList.size(); i<sizei; i++) {
+            ShopEtalaseViewModel shopEtalaseViewModel = etalaseViewModelList.get(i);
+            if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     class ShopProductEtalaseChipViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView textView;
@@ -81,7 +92,7 @@ public class EtalaseChipAdapter extends RecyclerView.Adapter<EtalaseChipAdapter.
     @Override
     public void onBindViewHolder(ShopProductEtalaseChipViewHolder holder, int position) {
         ShopEtalaseViewModel shopEtalaseViewModel = etalaseViewModelList.get(position);
-        holder.textView.setText(shopEtalaseViewModel.getEtalaseName());
+        holder.textView.setText(MethodChecker.fromHtml(shopEtalaseViewModel.getEtalaseName()));
         if (TextUtils.isEmpty(selectedEtalaseId)) {
             if (position == 0) {
                 holder.textView.setSelected(true);

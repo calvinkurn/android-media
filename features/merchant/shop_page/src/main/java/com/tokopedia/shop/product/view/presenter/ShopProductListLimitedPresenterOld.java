@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
@@ -114,7 +115,7 @@ public class ShopProductListLimitedPresenterOld extends BaseDaggerPresenter<Shop
                                     }
                                 }
 
-                                if(GlobalConfig.isSellerApp() && shopProductBaseViewModelList.getList().size() >= ShopPageTrackingConstant.DEFAULT_PER_PAGE){
+                                if(GlobalConfig.isSellerApp() && shopProductBaseViewModelList.getList().size() >= ShopPageConstant.DEFAULT_PER_PAGE){
                                     shopProductBaseViewModelList.getList().add(new ShopProductMoreViewModel());
                                 }
                             }

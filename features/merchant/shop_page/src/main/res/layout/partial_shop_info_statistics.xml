@@ -67,7 +67,7 @@
         android:paddingRight="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
         app:lv_content="@string/see_label"
-        app:lv_title="@string/app_name"
+        app:lv_title="@string/shop_info_title_tab_discussion"
         app:lv_title_text_size="@dimen/sp_14"
         app:lv_content_text_size="@dimen/sp_14"
         app:lv_content_color="@color/tkpd_main_green"/>

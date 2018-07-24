@@ -21,10 +21,6 @@ public interface ShopProductListView extends BaseListViewListener<BaseShopProduc
 
     void onSuccessAddToWishList(String productId, Boolean value);
 
-    void hideLoadingDialog();
-
-    void showLoadingDialog();
-
     void renderShopProductPromo(ShopProductPromoViewModel shopProductPromoViewModel);
 
     void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);

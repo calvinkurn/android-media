@@ -3,7 +3,9 @@ package com.tokopedia.shop.page.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
+import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase
@@ -27,12 +29,13 @@ import rx.Subscriber
 class ShopPagePresenterNew @Inject
 constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-            private val getReputationSpeedUseCase: GetReputationSpeedUseCase,
             private val toggleFavouriteShopAndDeleteCacheUseCase: ToggleFavouriteShopAndDeleteCacheUseCase,
             private val deleteShopProductUseCase: DeleteShopProductUseCase,
+            private val deleteFeatureProductListCacheUseCase: DeleteFeatureProductListCacheUseCase,
             private val deleteShopInfoUseCase: DeleteShopInfoUseCase,
             private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
+            private val deleteReputationSpeedDailyUseCase: DeleteReputationSpeedDailyCacheUseCase,
             private val userSession: UserSession) : BaseDaggerPresenter<ShopPageView>() {
 
     fun isMyShop(shopId: String) = (userSession.shopId == shopId)
@@ -66,22 +69,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         })
     }
 
-    fun getShopReputationSpeed(shopId: String) {
-        getReputationSpeedUseCase.execute(GetReputationSpeedUseCase.createRequestParam(shopId), object : Subscriber<ReputationSpeed>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                view?.onErrorGetReputation(e)
-            }
-
-            override fun onNext(reputationSpeed: ReputationSpeed) {
-                view.onSuccessGetReputation(reputationSpeed)
-            }
-        })
-    }
-
     fun toggleFavouriteShop(shopId: String) {
         if (!userSession.isLoggedIn) {
             view?.onErrorToggleFavourite(UserNotLoginException())
@@ -106,17 +93,20 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         deleteShopProductUseCase.executeSync()
         deleteShopEtalaseUseCase.executeSync()
         deleteShopNoteUseCase.executeSync()
+        deleteFeatureProductListCacheUseCase.executeSync()
+        deleteReputationSpeedDailyUseCase.executeSync()
     }
 
     override fun detachView() {
         super.detachView()
         getShopInfoUseCase.unsubscribe()
         getShopInfoByDomainUseCase.unsubscribe()
-        getReputationSpeedUseCase.unsubscribe()
         toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe()
         deleteShopInfoUseCase.unsubscribe()
         deleteShopProductUseCase.unsubscribe()
         deleteShopEtalaseUseCase.unsubscribe()
         deleteShopNoteUseCase.unsubscribe()
+        deleteFeatureProductListCacheUseCase.unsubscribe()
+        deleteReputationSpeedDailyUseCase.unsubscribe()
     }
 }

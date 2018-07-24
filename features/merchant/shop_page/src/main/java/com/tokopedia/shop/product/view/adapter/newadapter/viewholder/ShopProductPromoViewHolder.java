@@ -81,7 +81,9 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
         }
         if (shopProductPromoViewModel.isLogin()) {
             clearCache(shopPagePromoWebView);
-            shopPagePromoWebView.loadAuthUrl(shopProductPromoViewModel.getUrl(), shopProductPromoViewModel.getUserId());
+            shopPagePromoWebView.loadAuthUrl(shopProductPromoViewModel.getUrl(),
+                    shopProductPromoViewModel.getUserId(),
+                    shopProductPromoViewModel.getAccessToken());
         } else {
             clearCache(shopPagePromoWebView);
             shopPagePromoWebView.loadUrl(shopProductPromoViewModel.getUrl());

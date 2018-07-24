@@ -4,31 +4,57 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductListNewFragment;
+
+import java.util.ArrayList;
+
+import static com.tokopedia.shop.common.constant.ShopParamConstant.EXTRA_SELECTED_ETALASE_CHIP;
 
 /**
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListActivity extends BaseSimpleActivity implements HasComponent<ShopComponent> {
+public class ShopProductListActivity extends BaseSimpleActivity
+        implements HasComponent<ShopComponent>,
+        ShopProductListNewFragment.OnShopProductListFragmentListener{
 
-    private String shopId;
-    private String keyword;
+    public static final String SAVED_KEYWORD = "svd_keyword";
+
     private ShopComponent component;
+    private String shopId;
+
+    // this field only used first time for new fragment
+    private String keyword;
     private String etalaseId;
     private String sort;
     private String attribution;
+
+    private SearchInputView searchInputView;
+    private ArrayList<ShopEtalaseViewModel> selectedEtalaseChipList;
+
+    public static Intent createIntent(Context context, String shopId, String keyword,
+                                      String etalaseId, String attribution, String sortId, ArrayList<ShopEtalaseViewModel> selectedEtalaseViewModel ) {
+        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution, sortId);
+        intent.putParcelableArrayListExtra(EXTRA_SELECTED_ETALASE_CHIP, selectedEtalaseViewModel);
+        return intent;
+    }
 
     public static Intent createIntent(Context context, String shopId, String keyword,
                                       String etalaseId, String attribution, String sortId) {
@@ -79,16 +105,51 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
-        keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
+
+        if (savedInstanceState == null) {
+            keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
+        } else {
+            keyword = savedInstanceState.getString(SAVED_KEYWORD);
+        }
+        if (getIntent().hasExtra(EXTRA_SELECTED_ETALASE_CHIP)) {
+            selectedEtalaseChipList = getIntent().getParcelableArrayListExtra(EXTRA_SELECTED_ETALASE_CHIP);
+        } else {
+            selectedEtalaseChipList = new ArrayList<>();
+        }
+
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        searchInputView = findViewById(R.id.searchInputView);
+        searchInputView.getSearchTextView().setText(keyword);
+
+        searchInputView.setListener(new SearchInputView.Listener() {
+            @Override
+            public void onSearchSubmitted(String text) {
+                ShopProductListNewFragment fragment = (ShopProductListNewFragment) getFragment();
+                if (fragment!= null) {
+                    fragment.updateDataByChangingKeyword(text);
+                }
+                KeyboardHandler.hideSoftKeyboard(ShopProductListActivity.this);
+            }
+
+            @Override
+            public void onSearchTextChanged(String text) {
+                if (TextUtils.isEmpty(text)) {
+                    onSearchSubmitted(text);
+                }
+            }
+        });
+
+        findViewById(R.id.mainLayout).requestFocus();
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution);
+        return ShopProductListNewFragment.createInstance(shopId, keyword, etalaseId, sort, attribution,
+                selectedEtalaseChipList);
     }
 
     @Override
@@ -100,7 +161,25 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     }
 
     @Override
+    public void updateUIByShopName(String shopName) {
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
+                MethodChecker.fromHtml(shopName)));
+    }
+
+    @Override
     protected int getLayoutRes() {
         return R.layout.activity_shop_product_list;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //TODO back to dashboard/home?
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVED_KEYWORD, searchInputView.getSearchText());
     }
 }

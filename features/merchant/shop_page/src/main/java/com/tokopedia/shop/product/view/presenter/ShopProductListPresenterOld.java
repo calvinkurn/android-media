@@ -7,12 +7,10 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
-import com.tokopedia.shop.common.constant.ShopStatusDef;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
-import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
@@ -20,7 +18,7 @@ import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
-import com.tokopedia.shop.product.view.listener.ShopProductListView;
+import com.tokopedia.shop.product.view.listener.ShopProductListViewOld;
 import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
@@ -37,7 +35,7 @@ import rx.Subscriber;
  * Created by nathan on 2/6/18.
  */
 @Deprecated
-public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProductListView> {
+public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProductListViewOld> {
 
     private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
@@ -104,7 +102,7 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
                 !shopInfo.getInfo().isOpen(),
                 shopInfo.getInfo().isShopOfficial(),
                 true,
-                ShopPageTrackingConstant.DEFAULT_PER_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
                 keyword, etalaseId, wholesale, page, orderBy);
         getShopProductWithEtalase(shopProductRequestModel);
     }

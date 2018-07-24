@@ -14,10 +14,11 @@ class ShopInfoLogisticViewHolder(val view: View):
         @JvmStatic val LAYOUT = R.layout.item_shop_info_logistic
     }
     override fun bind(element: ShopInfoLogisticViewModel) {
-        itemView.run {
-            packageName.text = element.shipmentName
-            packageService.text = element.shipmentPackage
-            ImageHandler.loadImageRounded2(context, packageIcon, element.shipmentImage)
+        itemView.logisticLabelView.run {
+            title = element.shipmentName
+            setSubTitle(element.shipmentPackage)
+            imageView.adjustViewBounds = true
+            ImageHandler.loadImageRounded2(context, imageView, element.shipmentImage)
         }
     }
 }

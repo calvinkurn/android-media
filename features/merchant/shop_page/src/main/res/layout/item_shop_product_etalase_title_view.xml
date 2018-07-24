@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout android:id="@+id/container"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_gravity="center_vertical"
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:layout_marginRight="@dimen/dp_40"
-        android:layout_width="match_parent" />
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/iv_etalase_more"
-        android:layout_gravity="end|center_vertical"
-        android:layout_height="@dimen/dp_24"
+        style="@style/TextView.TitleBig.Bold"
         android:layout_margin="@dimen/dp_8"
-        android:layout_width="@dimen/dp_24"
-        android:src="@drawable/ic_see_list" />
+        tools:text="Semua Etalase"/>
 
-</FrameLayout>
+</LinearLayout>

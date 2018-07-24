@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
@@ -33,8 +34,14 @@ public class ShopCacheApiWhiteList {
         // Shop statistic speed
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ReputationCommonUrl.BASE_URL, ReputationCommonUrl.STATISTIC_SPEED_URL, ONE_HOUR, true));
 
+        // Shop statistic speed_v2
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ReputationCommonUrl.BASE_URL, ReputationCommonUrl.STATISTIC_SPEED_URL_V2, ONE_HOUR, true));
+
         // Shop note
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopCommonUrl.BASE_URL, ShopUrl.SHOP_NOTE_PATH, ONE_HOUR));
+
+        // Featured Product
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(GMCommonUrl.BASE_URL, GMCommonUrl.FEATURED_PRODUCT_URL, ONE_HOUR, true));
 
         // Shop Product list
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_ACE_URL, ShopUrl.SHOP_PRODUCT_PATH, ONE_HOUR));
