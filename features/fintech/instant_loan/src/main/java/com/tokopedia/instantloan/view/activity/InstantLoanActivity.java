@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -283,6 +284,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
                 mBtnNextBanner.show();
                 mBtnPreviousBanner.show();
             }
+            sendBannerImpressionEvent(position);
         }
 
         @Override
@@ -291,13 +293,27 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         }
     };
 
+    private void sendBannerImpressionEvent(int position) {
+        BannerPagerAdapter bannerPagerAdapter = (BannerPagerAdapter) mBannerPager.getAdapter();
+
+        if (bannerPagerAdapter != null &&
+                bannerPagerAdapter.getBannerEntityList() != null &&
+                bannerPagerAdapter.getBannerEntityList().get(position) != null) {
+            String eventLabel = bannerPagerAdapter.getBannerEntityList().get(position).getLink()
+                    + " - " + String.valueOf(position);
+            UnifyTracking.eventLoanBannerImpression(eventLabel);
+        }
+    }
+
     private CharSequence getPageTitle(int position) {
         return getResources().getStringArray(R.array.values_title)[position];
     }
 
     @Override
-    public void onBannerClick(View view) {
+    public void onBannerClick(View view, int position) {
         String url = (String) view.getTag();
+        String eventLabel = url + " - " + String.valueOf(position);
+        UnifyTracking.eventLoanBannerClick(eventLabel);
         if (!TextUtils.isEmpty(url)) {
             openWebView(url);
         }

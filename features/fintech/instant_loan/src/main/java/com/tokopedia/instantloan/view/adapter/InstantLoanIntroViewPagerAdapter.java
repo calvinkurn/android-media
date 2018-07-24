@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
@@ -57,6 +59,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
                 @Override
                 public void onClick(View view) {
+                    sendLoanPopupClickEvent(AppEventTracking.EventLabel.PL_POPUP_LEARN_MORE);
                     mActivity.openWebView(WEB_LINK_LEARN_MORE);
                 }
             };
@@ -89,6 +92,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
                 @Override
                 public void onClick(View view) {
+                    sendLoanPopupClickEvent(AppEventTracking.EventLabel.PL_POPUP_TNC);
                     mActivity.openWebView(WEB_LINK_TNC);
                 }
             };
@@ -98,13 +102,20 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
             textTnC.setText(spannableString);
             textTnC.setMovementMethod(LinkMovementMethod.getInstance());
-            view.findViewById(R.id.button_connect_device).setOnClickListener(v -> mPresenter.startDataCollection());
+            view.findViewById(R.id.button_connect_device).setOnClickListener(v -> {
+                sendLoanPopupClickEvent(AppEventTracking.EventLabel.PL_POPUP_CONNECT_DEVICE);
+                mPresenter.startDataCollection();
+            });
 
         }
         view.setTag(position);
         container.addView(view);
 
         return view;
+    }
+
+    private void sendLoanPopupClickEvent(String label) {
+        UnifyTracking.eventLoanPopupClick(label);
     }
 
     @Override

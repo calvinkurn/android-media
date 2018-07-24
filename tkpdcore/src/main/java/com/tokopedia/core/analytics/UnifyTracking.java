@@ -25,9 +25,9 @@ import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
- *         modified by Alvarisi
- *         this class contains tracking for Unify (Click, Discovery & View Product, Authentication,
- *         Login/Register)
+ * modified by Alvarisi
+ * this class contains tracking for Unify (Click, Discovery & View Product, Authentication,
+ * Login/Register)
  */
 
 public class UnifyTracking extends TrackingUtils {
@@ -61,7 +61,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-     /* VARIANT */
+    /* VARIANT */
 
 
     public static void eventClickVariant(String eventLabel) {
@@ -265,7 +265,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-     /* CATEGORY IMPROVEMENT*/
+    /* CATEGORY IMPROVEMENT*/
 
     public static void eventHomeTopPicksTitle(String label) {
         sendGTMEvent(new EventTracking(
@@ -1106,13 +1106,13 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventPDPOrientationChanged(String productId) {
-       sendGTMEvent(new EventTracking(
-                       AppEventTracking.Event.VIEW_PDP,
-                       AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
-                       AppEventTracking.Action.LANDSCAPE_VIEW,
-                       String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
-                       ).getEvent());
-        }
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.VIEW_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.LANDSCAPE_VIEW,
+                String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
+        ).getEvent());
+    }
 
     public static void eventPDPCart() {
         sendGTMEvent(new EventTracking(
@@ -3232,6 +3232,53 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.DIGITAL_EVENT,
                 action,
                 label
+        ).setUserId().getEvent());
+    }
+
+    public static void eventLoanBannerImpression(String eventLabel){
+        sendGTMEvent(new EventTracking(
+                        AppEventTracking.Event.EVENT_CLICK_FINTECH_MICROSITE,
+                        AppEventTracking.Category.FINTECH_HOMEPAGE,
+                        AppEventTracking.Action.PL_BANNER_IMPRESSION,
+                        eventLabel
+                ).setUserId().getEvent()
+        );
+    }
+
+    public static void eventLoanBannerClick(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                        AppEventTracking.Event.EVENT_CLICK_FINTECH_MICROSITE,
+                        AppEventTracking.Category.FINTECH_HOMEPAGE,
+                        AppEventTracking.Action.PL_BANNER_CLICK,
+                        eventLabel
+                ).setUserId().getEvent()
+        );
+    }
+
+    public static void eventCariPinjamanClick(String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_FINTECH_MICROSITE,
+                AppEventTracking.Category.FINTECH_HOMEPAGE,
+                AppEventTracking.Action.PL_CARI_PINJAMAN_CLICK,
+                eventLabel
+        ).setUserId().getEvent());
+    }
+
+    public static void eventLoanPopupClick(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_FINTECH_MICROSITE,
+                AppEventTracking.Category.FINTECH_HOMEPAGE,
+                AppEventTracking.Action.PL_POP_UP_CLICK,
+                eventLabel
+        ).setUserId().getEvent());
+    }
+
+    public static void eventIntroSliderScrollEvent(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_FINTECH_MICROSITE,
+                AppEventTracking.Category.FINTECH_HOMEPAGE,
+                AppEventTracking.Action.PL_POP_UP_CLICK,
+                eventLabel
         ).setUserId().getEvent());
     }
 }

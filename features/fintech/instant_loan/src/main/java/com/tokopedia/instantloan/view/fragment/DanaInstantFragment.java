@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
@@ -46,6 +48,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     public static final int LOGIN_REQUEST_CODE = 1005;
     private static final String TAB_POSITION = "tab_position";
+    private final String SCREEN_NAME = "dana instan";
 
     private ProgressBar mProgressBar;
     private Dialog mDialogIntro;
@@ -54,6 +57,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     InstantLoanPresenter presenter;
 
     private int mCurrentTab;
+    private int mCurrentPagePosition = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -218,6 +222,18 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
                     pageIndicator.setVisibility(View.VISIBLE);
                     btnNext.show();
                 }
+
+                boolean right = mCurrentPagePosition < position;
+
+                if (mCurrentPagePosition == 0 && right) {
+                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
+                } else if (mCurrentPagePosition == 0) {
+                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_PREVIOUS);
+                } else if (mCurrentPagePosition == 1 && right) {
+                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
+                }
+
+                mCurrentPagePosition = position;
             }
 
             @Override
@@ -228,6 +244,15 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         btnNext.setOnClickListener(v -> {
             if (pager.getCurrentItem() != layouts.length) {
+
+                int position = pager.getCurrentItem();
+
+                if (position == 0) {
+                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
+                } else if (position == 1) {
+                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
+                }
+
                 pager.setCurrentItem(pager.getCurrentItem() + 1, true);
             }
         });
@@ -248,6 +273,10 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         mDialogIntro.getWindow().setAttributes(lp);
     }
 
+    private void sendIntroSliderScrollEvent(String label) {
+        UnifyTracking.eventIntroSliderScrollEvent(label);
+    }
+
     @Override
     public void showToastMessage(String message, int duration) {
         Toast.makeText(getContext(), message, duration).show();
@@ -263,6 +292,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void searchLoanOnline() {
         if (presenter.isUserLoggedIn()) {
+            sendCariPinjamanClickEvent();
             presenter.getLoanProfileStatus();
         } else {
             navigateToLoginPage();
@@ -314,7 +344,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     public String getScreenNameId() {
-        return "";
+        return SCREEN_NAME;
     }
 
     @Override
@@ -339,6 +369,11 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    private void sendCariPinjamanClickEvent() {
+        String eventLabel = getScreenName();
+        UnifyTracking.eventCariPinjamanClick(eventLabel);
     }
 
     public static DanaInstantFragment createInstance(int position) {

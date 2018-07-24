@@ -182,6 +182,7 @@ public interface AppEventTracking {
 
         String EVENT_DIGITAL_EVENT = "digitalGeneralEvent";
         String PRODUCT_CLICK = "productClick";
+        String EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
 
     interface Category {
@@ -317,6 +318,7 @@ public interface AppEventTracking {
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";
         String SEARCH_TAB = "search tab";
+        String FINTECH_HOMEPAGE = "fin - android homepage";
     }
 
     interface Action {
@@ -523,6 +525,11 @@ public interface AppEventTracking {
         String CLICK_CATALOG = "click - catalog";
         String CLICK_TAB = "click - tab";
         String CLICK_PRODUCT = "click-product";
+
+        String PL_BANNER_IMPRESSION = "pl - banner impressions - {partner name}";
+        String PL_BANNER_CLICK = "pl - banner impressions click - {partner name}";
+        String PL_CARI_PINJAMAN_CLICK = "pl - cari pinjaman click";
+        String PL_POP_UP_CLICK = "pl - dana instan popup click";
     }
 
     interface ImageEditor {
@@ -881,6 +888,13 @@ public interface AppEventTracking {
         String TAKE_TO_SHOP = "Take to Shop";
         String DIGITAL = "Digital";
         String REFERRAL = "Referral";
+        String PL_POPUP_LEARN_MORE = "pelajari selengkapnya";
+        String PL_POPUP_TNC = "third - syarat dan ketentuan";
+        String PL_POPUP_CONNECT_DEVICE = "third - hubungkan perangkat";
+        String PL_INTRO_SLIDER_FIRST_NEXT = "first - next";
+        String PL_INTRO_SLIDER_FIRST_PREVIOUS = "first - previous";
+        String PL_INTRO_SLIDER_SECOND_NEXT = "second - next";
+        String PL_INTRO_SLIDER_SECOND_PREVIOUS = "second - previous";
     }
 
     interface SOCIAL_MEDIA {
