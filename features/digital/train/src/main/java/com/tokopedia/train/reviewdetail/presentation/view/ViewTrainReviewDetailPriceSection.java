@@ -33,6 +33,9 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
     private TextView textReturnTripPrice;
     private LinearLayout viewTotalPriceReturnTrip;
 
+    private LinearLayout viewDiscountedPrice;
+    private TextView textDiscountedPrice;
+
     public ViewTrainReviewDetailPriceSection(Context context) {
         super(context);
         init();
@@ -69,6 +72,9 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
         textReturnTripPassengerCount = rootview.findViewById(R.id.text_return_trip_passenger_count);
         textReturnTripPrice = rootview.findViewById(R.id.text_return_trip_price);
         viewTotalPriceReturnTrip = rootview.findViewById(R.id.view_total_price_return_trip);
+
+        viewDiscountedPrice = rootview.findViewById(R.id.view_discounted_price);
+        textDiscountedPrice = rootview.findViewById(R.id.text_discounted_price);
 
         final boolean [] isPriceDetailOpened = {false};
 
@@ -115,11 +121,10 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
     }
 
     public void showNewPriceAfterDiscount(long voucherDiscountAmount) {
-//        this.holderVoucherDiscount.setVisibility(VISIBLE);
-//        this.voucherDiscount = voucherDiscount;
-//        tvDiscount.setText(getStringIdrFormat((double) this.voucherDiscount));
-//        long totalPrice = pricePlain - voucherDiscount;
-//        tvSubTotalPrice.setText(getStringIdrFormat((double) totalPrice));
+        viewDiscountedPrice.setVisibility(VISIBLE);
+        String discountAmountInRp = CurrencyFormatUtil.getThousandSeparatorString(voucherDiscountAmount,
+                false, 0).getFormattedString();
+        textDiscountedPrice.setText(discountAmountInRp);
     }
 
 }
