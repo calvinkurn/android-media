@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
@@ -69,6 +68,9 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -183,6 +185,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.oms.OmsModuleRouter;
+import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -362,7 +366,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopChatRouter,
         TokopointRouter,
         OtpModuleRouter,
-        UnifiedOrderRouter {
+        UnifiedOrderRouter,
+        DealsModuleRouter,
+        OmsModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -374,6 +380,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private DaggerContentConsumerComponent.Builder daggerContentBuilder;
     private EventComponent eventComponent;
+    private DealsComponent dealsComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
@@ -443,6 +450,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
                 .eventModule(new EventModule(this))
+                .build();
+        dealsComponent = DaggerDealsComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
                 .build();
     }
 
@@ -2156,6 +2166,37 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
+        return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
+                .verifyPromo(requestParams);
+    }
+
+    @Override
+    public void shareDeal(Context context, String uri, String name, String imageUrl) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType("")
+                .setName(name)
+                .setUri(uri)
+                .setImgUri(imageUrl)
+                .build();
+        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
+                context.startActivity(Intent.createChooser(share, "Share link!"));
+            }
+        });
+    }
+
+    @Override
+    public String getUserPhoneNumber(){
+        return SessionHandler.getPhoneNumber();
+    }
+
+    @Override
     public boolean isSupportApplink(String appLink) {
         DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLink);
@@ -2316,7 +2357,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
+                && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
     }
 }

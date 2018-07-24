@@ -271,10 +271,12 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         for (int i = 0; i < dataList.size(); i++) {
-            if (dataList.get(i).getCartItemData().getOriginData().getWholesalePrice() != null &&
-                    dataList.get(i).getCartItemData().getOriginData().getWholesalePrice().size() > 0 &&
-                    dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
-                dataList.get(i).getCartItemData().getOriginData().setParentId(String.valueOf(i + 1));
+            if (dataList.get(i).getCartItemData() != null && dataList.get(i).getCartItemData().getOriginData() != null) {
+                if (dataList.get(i).getCartItemData().getOriginData().getWholesalePrice() != null &&
+                        dataList.get(i).getCartItemData().getOriginData().getWholesalePrice().size() > 0 &&
+                        dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
+                    dataList.get(i).getCartItemData().getOriginData().setParentId(String.valueOf(i + 1));
+                }
             }
         }
         double subtotalPrice = 0;
@@ -282,17 +284,20 @@ public class CartListPresenter implements ICartListPresenter {
         Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
         List<String> parentIds = new ArrayList<>();
         for (CartItemHolderData data : dataList) {
-            String parentId = data.getCartItemData().getOriginData().getParentId();
-            String productId = data.getCartItemData().getOriginData().getProductId();
-            int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
-            if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
-                for (CartItemHolderData dataForQty : dataList) {
-                    if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
-                            parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId())) {
-                        itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+            if (data.getCartItemData() != null && data.getCartItemData().getOriginData() != null) {
+                String parentId = data.getCartItemData().getOriginData().getParentId();
+                String productId = data.getCartItemData().getOriginData().getProductId();
+                int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
+                if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
+                    for (CartItemHolderData dataForQty : dataList) {
+                        if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
+                                parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId()) &&
+                                dataForQty.getCartItemData().getOriginData().getPricePlan() ==
+                                        data.getCartItemData().getOriginData().getPricePlan()) {
+                            itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+                        }
                     }
                 }
-            }
 
             totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
             List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
