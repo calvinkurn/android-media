@@ -1,5 +1,8 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +13,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
+import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
@@ -47,8 +52,10 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment {
         List<SettingItemViewModel> settingItems = new ArrayList<>();
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_ACCOUNT_ID,
                 getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
-                getString(R.string.title_shop_setting), getString(R.string.subtitle_shop_setting)));
+        if (userSession.hasShop()) {
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
+                    getString(R.string.title_shop_setting), getString(R.string.subtitle_shop_setting)));
+        }
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), getString(R.string.subtitle_tkpd_pay_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
@@ -89,7 +96,30 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment {
             case SettingConstant.SETTING_NOTIFICATION_ID:
                 startActivity(NotificationSettingActivity.createIntent(getActivity()));
                 break;
+            case SettingConstant.SETTING_TNC_ID:
+                gotoWebviewActivity(SettingConstant.Url.PATH_TERM_CONDITION, getString(R.string.title_tnc_setting));
+                break;
+            case SettingConstant.SETTING_PRIVACY_ID:
+                gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting));
+                break;
+            case SettingConstant.SETTING_HELP_CENTER_ID:
+                if (getActivity().getApplication() instanceof TkpdInboxRouter){
+                    startActivity(((TkpdInboxRouter) getActivity().getApplication()).getHelpUsIntent(getActivity()));
+                }
+                break;
             default: break;
         }
+    }
+
+    private void gotoWebviewActivity(String path, String title) {
+        Intent intent;
+        String url = String.format("%s%s", SettingConstant.Url.BASE_MOBILE, path);
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent = SettingWebViewActivity.createIntent(getActivity(), url,title);
+        } else {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+        }
+        startActivity(intent);
     }
 }

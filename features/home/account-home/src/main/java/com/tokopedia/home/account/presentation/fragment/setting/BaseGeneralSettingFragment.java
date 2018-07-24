@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
@@ -19,6 +22,13 @@ public abstract class BaseGeneralSettingFragment extends TkpdBaseV4Fragment
         implements GeneralSettingAdapter.OnSettingItemClicked {
 
     protected RecyclerView recyclerView;
+    protected UserSession userSession;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        userSession = ((AbstractionRouter)context.getApplicationContext()).getSession();
+    }
 
     @Nullable
     @Override

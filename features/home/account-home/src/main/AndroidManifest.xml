@@ -20,5 +20,9 @@
         <activity android:name=".presentation.activity.NotificationSettingActivity"
             android:label="@string/screentitle_notification_setting"
             android:theme="@style/Theme.White.Preference"/>
+
+        <activity android:name=".presentation.activity.SettingWebViewActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.White.Preference"/>
     </application>
 </manifest>

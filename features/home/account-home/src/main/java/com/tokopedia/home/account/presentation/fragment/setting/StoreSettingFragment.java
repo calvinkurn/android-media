@@ -2,6 +2,8 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
@@ -42,6 +44,23 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
 
     @Override
     public void onItemClicked(int settingId) {
-
+        switch (settingId){
+            case SettingConstant.SETTING_SHOP_ETALASE_ID:
+            case SettingConstant.SETTING_SHOP_LOCATION_ID:
+            case SettingConstant.SETTING_SHOP_SHIPMENT_ID:
+            case SettingConstant.SETTING_SHOP_NOTE_ID:
+            case SettingConstant.SETTING_SHOP_INFO_ID:
+                if (getActivity().getApplication() instanceof TkpdCoreRouter){
+                    UnifyTracking.eventManageShopInfo();
+                    startActivity(((TkpdCoreRouter) getActivity().getApplication()).getIntentManageShop(getActivity()));
+                }
+                break;
+            case SettingConstant.SETTING_SHOP_PRODUCT_ID:
+                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) getActivity().getApplication()).goToManageProduct(getActivity());
+                }
+                break;
+            default:break;
+        }
     }
 }
