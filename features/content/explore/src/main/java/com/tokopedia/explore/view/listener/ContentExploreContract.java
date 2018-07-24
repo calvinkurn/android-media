@@ -23,6 +23,8 @@ public interface ContentExploreContract {
 
         void updateCategoryId(int categoryId);
 
+        void clearData();
+
         void onCategoryClicked(int position, int categoryId);
 
         void showLoading();
@@ -31,7 +33,7 @@ public interface ContentExploreContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getExploreData();
+        void getExploreData(boolean clearData);
 
         void updateCursor(String cursor);
 

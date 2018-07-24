@@ -97,7 +97,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         GraphqlClient.init(getContext());
         initView();
         presenter.attachView(this);
-        presenter.getExploreData();
+        presenter.getExploreData(true);
     }
 
     @Override
@@ -133,20 +133,38 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     }
 
     @Override
+    public void clearData() {
+        imageAdapter.clearData();
+    }
+
+    @Override
     public void onCategoryClicked(int position, int categoryId) {
-        for (ExploreCategoryViewModel categoryViewModel : categoryAdapter.getList()) {
+        boolean isSameCategory = false;
+
+        for (int i = 0; i < categoryAdapter.getList().size(); i++) {
+            ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
             if (categoryViewModel.isActive()) {
                 categoryViewModel.setActive(false);
-                categoryAdapter.notifyItemChanged(categoryAdapter.getList().indexOf(categoryViewModel));
+                categoryAdapter.notifyItemChanged(i);
+
+                if (i == position) {
+                    isSameCategory = true;
+                }
                 break;
             }
         }
-        categoryAdapter.getList().get(position).setActive(true);
-        categoryAdapter.notifyItemChanged(position);
-        updateCategoryId(categoryId);
+
+        if (isSameCategory) {
+            updateCategoryId(0);
+        } else {
+            updateCategoryId(categoryId);
+            categoryAdapter.getList().get(position).setActive(true);
+            categoryAdapter.notifyItemChanged(position);
+        }
+
         updateCursor("");
         imageAdapter.clearData();
-        presenter.getExploreData();
+        presenter.getExploreData(true);
     }
 
     @Override
@@ -217,7 +235,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
                     if (lastVisibleItemPosition + visibleThreshold > imageAdapter.getItemCount()
                             && canLoadMore
                             && !isLoading()) {
-                        presenter.getExploreData();
+                        presenter.getExploreData(false);
                     }
                 }
             };

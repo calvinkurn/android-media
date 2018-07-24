@@ -31,12 +31,12 @@ public class ContentExplorePresenter
     }
 
     @Override
-    public void getExploreData() {
+    public void getExploreData(boolean clearData) {
         //TODO milhamj do search?
         getView().showLoading();
         getExploreDataUseCase.execute(
                 GetExploreDataUseCase.getVariables(categoryId, cursor, ""),
-                new GetExploreDataSubscriber(getView())
+                new GetExploreDataSubscriber(getView(), clearData)
         );
     }
 

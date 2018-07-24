@@ -27,9 +27,11 @@ import rx.Subscriber;
 public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
     private final ContentExploreContract.View view;
+    private final boolean clearData;
 
-    public GetExploreDataSubscriber(ContentExploreContract.View view) {
+    public GetExploreDataSubscriber(ContentExploreContract.View view, boolean clearData) {
         this.view = view;
+        this.clearData = clearData;
     }
 
     @Override
@@ -49,6 +51,10 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse graphqlResponse) {
         GetExploreData exploreData = graphqlResponse.getData(GetExploreData.class);
         GetDiscoveryKolData discoveryKolData = exploreData.getGetDiscoveryKolData();
+
+        if (clearData) {
+            view.clearData();
+        }
 
         view.updateCursor(discoveryKolData.getLastCursor());
         List<ExploreImageViewModel> kolPostViewModelList
