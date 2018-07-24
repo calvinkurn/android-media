@@ -42,7 +42,10 @@ public class CustomSwitchPreference extends SwitchPreference{
         Switch aSwitch = findSwitch(holder.itemView.findViewById(android.R.id.widget_frame));
         if (aSwitch != null){
             aSwitch.setTrackDrawable(AppCompatResources.getDrawable(holder.itemView.getContext(),
-                    R.drawable.ic_switch_track));
+                    R.drawable.bg_switch_track_selector));
+
+            aSwitch.setThumbDrawable(AppCompatResources.getDrawable(holder.itemView.getContext(),
+                    R.drawable.bg_switch_thumb_selector));
             aSwitch.setSwitchMinWidth((int) holder.itemView.getResources().getDimension(R.dimen.dp_50));
         }
     }
