@@ -1,16 +1,15 @@
 package com.tokopedia.settingbank.choosebank.domain.usecase
 
 import com.raizlabs.android.dbflow.config.FlowManager
+import com.tokopedia.core.database.DbFlowDatabase
+import com.tokopedia.core.database.model.Bank
 import com.tokopedia.settingbank.choosebank.data.BankListApi
-import com.tokopedia.settingbank.choosebank.data.db.Bank
-import com.tokopedia.settingbank.choosebank.data.db.BankDatabase
 import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListWSMapper
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 7/2/18.
@@ -27,7 +26,7 @@ class GetBankListWSUseCase(val api: BankListApi,
 
     private fun saveToDB(bankListViewModel: BankListViewModel, requestParams: RequestParams): BankListViewModel {
 
-        val database = FlowManager.getDatabase(BankDatabase.NAME).writableDatabase
+        val database = FlowManager.getDatabase(DbFlowDatabase.NAME).writableDatabase
         database.beginTransaction()
         try {
             val bankList = mapToDBModel(bankListViewModel.list!!)
