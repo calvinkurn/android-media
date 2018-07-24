@@ -5,16 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.edit.R
-import kotlinx.android.synthetic.main.item_product_category_recommendation.view.*
+import kotlinx.android.synthetic.main.item_product_edit_catalog.view.*
 
-class ProductCategoryRecommendationAdapter(private var categoryRecommendationList: ArrayList<String>,
-                                           var listener: Listener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class ProductCatalogAdapter(private var categoryRecommendationList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var selectedPosition = -1
-
-    interface Listener {
-        fun onCategoryRecommendationChoosen(value: String)
-    }
 
     init {
         setHasStableIds(true)
@@ -22,13 +17,16 @@ class ProductCategoryRecommendationAdapter(private var categoryRecommendationLis
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val itemLayoutView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_product_category_recommendation, parent, false)
+                .inflate(R.layout.item_product_edit_catalog, parent, false)
         return ProductCategoryRecommendationViewHolder(itemLayoutView)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.titleTextView.text = categoryRecommendationList[position]
-        holder.itemView.radioButtonStatus.isChecked = selectedPosition == position
+        holder.itemView.textViewName.text = categoryRecommendationList[position]
+        if(selectedPosition == position)
+            holder.itemView.imageViewCheck.visibility = View.VISIBLE
+        else
+            holder.itemView.imageViewCheck.visibility = View.GONE
     }
 
     override fun getItemCount() = categoryRecommendationList.size
@@ -54,7 +52,6 @@ class ProductCategoryRecommendationAdapter(private var categoryRecommendationLis
             itemView.setOnClickListener({
                 selectedPosition = adapterPosition
                 notifyDataSetChanged()
-                listener.onCategoryRecommendationChoosen(getSelectedCategory())
             })
         }
     }

@@ -1,11 +1,9 @@
 package com.tokopedia.product.edit.price
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
@@ -18,13 +16,18 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.price.ProductEditCatalogPickerFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
+import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder.Companion.REQUEST_CODE_GET_CATALOG
+import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder.Companion.REQUEST_CODE_GET_CATEGORY
+import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.BaseProductEditActivity
+import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
 import kotlinx.android.synthetic.main.fragment_product_add_new.*
 
-class BaseProductAddFragment : Fragment() {
+class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
 
-    private lateinit var nameTextWatcher: TextWatcher
-
+    private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -36,37 +39,28 @@ class BaseProductAddFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ProductEditNameViewHolder(view, this)
+        productEditCategoryCatalogViewHolder = ProductEditCategoryCatalogViewHolder(view, this, context)
+    }
 
-        val categoryRecommendationList = ArrayList<String>()
-        categoryRecommendationList.add("a")
-        categoryRecommendationList.add("b")
-        categoryRecommendationList.add("c")
-        val productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(categoryRecommendationList)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = productCategoryRecommendationAdapter
-        recyclerView.setHasFixedSize(true)
-        recyclerView.isNestedScrollingEnabled = false
-
-        nameTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    textInputLayoutName.error = null
-                    llCategory.visibility = View.VISIBLE
-                } else {
-                    textInputLayoutName.error = "Error Nama"
-                    llCategory.visibility = View.GONE
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
+    override fun onNameChanged(name: String) {
+        if (name.isNotEmpty()) {
+            categoryCatalogViewHolder.visibility = View.VISIBLE
+        } else {
+            categoryCatalogViewHolder.visibility = View.GONE
         }
-        editTextName.addTextChangedListener(nameTextWatcher)
+    }
+
+    override fun onCategoryRecommendationChoosen(value: String) {
+        productEditCategoryCatalogViewHolder.setCategoryChosen(value)
+    }
+
+    override fun onLabelCategoryClicked() {
+
+    }
+
+    override fun onLabelCatalogClicked() {
+        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java), REQUEST_CODE_GET_CATALOG)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -83,19 +77,32 @@ class BaseProductAddFragment : Fragment() {
                             intArrayOf(ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE),
                             false, null), null)
             val intent = ImagePickerActivity.getIntent(context, builder)
-            startActivityForResult(intent, 1)
+            startActivityForResult(intent, REQUEST_CODE_GET_IMAGES)
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_GET_CATALOG -> {
+                    productEditCategoryCatalogViewHolder.setCatalogChosen(data!!.getStringExtra(EXTRA_CATALOG))
+                }
+                REQUEST_CODE_GET_CATEGORY -> {
+                    productEditCategoryCatalogViewHolder.setCategoryChosen("CATEGORY")
+                }
+                REQUEST_CODE_GET_IMAGES -> {
+                    startActivity(Intent(activity, BaseProductEditActivity::class.java))
+                    activity?.finish()
+                }
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data)
-        startActivity(Intent(activity, BaseProductEditActivity::class.java))
-        activity?.finish()
     }
 
     companion object {
+        const val REQUEST_CODE_GET_IMAGES = 100
         fun createInstance(): Fragment {
             return BaseProductAddFragment()
         }

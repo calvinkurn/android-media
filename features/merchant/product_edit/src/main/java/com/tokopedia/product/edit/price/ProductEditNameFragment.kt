@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 
-class ProductEditNameFragment : Fragment() {
+class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +18,15 @@ class ProductEditNameFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_product_edit_name, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        ProductEditNameViewHolder(view, this)
+    }
+
+    override fun onNameChanged(name: String) {
+
     }
 
     companion object {

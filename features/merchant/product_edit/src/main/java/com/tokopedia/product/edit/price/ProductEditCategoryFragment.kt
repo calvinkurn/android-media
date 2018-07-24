@@ -2,14 +2,13 @@ package com.tokopedia.product.edit.price
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.edit.R
-import kotlinx.android.synthetic.main.fragment_product_add_new.*
+import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
 
-class ProductEditCategoryFragment : Fragment() {
+class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHolder.Listener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,15 +21,19 @@ class ProductEditCategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val categoryRecommendationList = ArrayList<String>()
-        categoryRecommendationList.add("a")
-        categoryRecommendationList.add("b")
-        categoryRecommendationList.add("c")
-        val productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(categoryRecommendationList)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = productCategoryRecommendationAdapter
-        recyclerView.setHasFixedSize(true)
-        recyclerView.isNestedScrollingEnabled = false
+        ProductEditCategoryCatalogViewHolder(view, this, context)
+    }
+
+    override fun onLabelCategoryClicked() {
+
+    }
+
+    override fun onLabelCatalogClicked() {
+
+    }
+
+    override fun onCategoryRecommendationChoosen(value: String) {
+
     }
 
     companion object {

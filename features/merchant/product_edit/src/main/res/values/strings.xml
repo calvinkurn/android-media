@@ -55,6 +55,10 @@
     <string name="product_label_day">Hari</string>
     <string name="product_label_week">Minggu</string>
     <string name="product_label_what_do_you_sell">Apa yang Anda jual?</string>
+    <string name="product_label_choose_product_category_catalog">Pilih produk yang sesuai dengan yang Anda jual</string>
+    <string name="product_label_choose_category_catalog_information">Sesuaikan produk Anda dengan katalog yang tersedia untuk mempercepat pengisian informasi produk</string>
+    <string name="product_label_choose_category_catalog_not_match">Tidak menemukan produk yang sesuas?</string>
+    <string name="product_label_choose_category_catalog_without_catalog">Tambah produk tanpa katalog</string>
     <string name="product_label_choose_product_category">Pilih Kategori Produk</string>
     <string name="product_label_category_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_not_find_category">Tidak sesuai kategori diatas?</string>
