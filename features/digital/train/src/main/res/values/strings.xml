@@ -34,6 +34,8 @@
     <string name="train_select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="train_select_passenger_submit_button">Simpan</string>
     <string name="train_select_passenger_toolbar_title">Pilih Penumpang</string>
+    <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
+
 
     <!-- search -->
     <string name="train_search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>

@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
@@ -156,6 +158,8 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.home.beranda.helper.StartSnapHelper;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
@@ -1513,6 +1517,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getLoginIntent() {
         Intent intent = LoginActivity.getCallingIntent(this);
         return intent;
+    }
+
+    @Override
+    public SnapHelper getSnapHelper() {
+        return new StartSnapHelper();
+    }
+
+    @Override
+    public RecyclerView.ItemDecoration getSpacingItemDecorationHome(int spacing, int displayMode) {
+        return new SpacingItemDecoration(spacing, displayMode);
     }
 
     @Override
