@@ -1480,4 +1480,29 @@ public abstract class SellerRouterApplication extends MainApplication
 //        return remoteConfig.getBoolean("is_enabled_new_setting_bank");
         return true;
     }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return null;
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
 }
