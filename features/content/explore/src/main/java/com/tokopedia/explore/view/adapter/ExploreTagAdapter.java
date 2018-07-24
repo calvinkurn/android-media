@@ -23,7 +23,7 @@ import javax.inject.Inject;
 public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.ViewHolder> {
 
     private List<ExploreCategoryViewModel> list;
-    private ContentExploreContract listener;
+    private ContentExploreContract.View listener;
 
     @Inject
     public ExploreTagAdapter() {
@@ -53,7 +53,7 @@ public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.Vi
         notifyDataSetChanged();
     }
 
-    public void setListener(ContentExploreContract listener) {
+    public void setListener(ContentExploreContract.View listener) {
         this.listener = listener;
     }
 

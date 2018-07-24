@@ -22,6 +22,10 @@ public interface ContentExploreContract {
         void updateCursor(String cursor);
 
         void updateCategoryId(int categoryId);
+
+        void showLoading();
+
+        void dismissLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

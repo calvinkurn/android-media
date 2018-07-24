@@ -24,7 +24,7 @@ import javax.inject.Inject;
 public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapter.ViewHolder> {
 
     private List<KolPostViewModel> list;
-    private ContentExploreContract listener;
+    private ContentExploreContract.View listener;
 
     @Inject
     public ExploreImageAdapter() {
@@ -49,12 +49,13 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapte
         return list.size();
     }
 
-    public void setList(List<KolPostViewModel> list) {
-        this.list = list;
-        notifyDataSetChanged();
+    public void addList(List<KolPostViewModel> list) {
+        int position = getItemCount();
+        this.list.addAll(list);
+        notifyItemRangeInserted(position, list.size());
     }
 
-    public void setListener(ContentExploreContract listener) {
+    public void setListener(ContentExploreContract.View listener) {
         this.listener = listener;
     }
 

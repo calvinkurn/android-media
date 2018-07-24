@@ -41,6 +41,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        view.dismissLoading();
     }
 
     @Override
@@ -56,6 +57,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         view.onSuccessGetExploreData(
                 new ExploreViewModel(kolPostViewModelList, categoryViewModelList)
         );
+        view.dismissLoading();
     }
 
     private List<KolPostViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {

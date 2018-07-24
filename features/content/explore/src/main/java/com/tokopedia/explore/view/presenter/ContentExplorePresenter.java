@@ -33,6 +33,7 @@ public class ContentExplorePresenter
     @Override
     public void getExploreData() {
         //TODO milhamj do search?
+        getView().showLoading();
         getExploreDataUseCase.execute(
                 GetExploreDataUseCase.getVariables(categoryId, cursor, ""),
                 new GetExploreDataSubscriber(getView())
