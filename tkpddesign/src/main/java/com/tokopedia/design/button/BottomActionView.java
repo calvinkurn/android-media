@@ -38,7 +38,7 @@ public class BottomActionView extends BaseCustomView {
     private boolean isBav1Display, isBav2Display;
     private ImageView icon2ImageView;
     private ImageView icon1ImageView;
-    private boolean isShow;
+    private boolean isShow = true;
     private ObjectAnimator hideAnimator;
     private ObjectAnimator showAnimator;
 

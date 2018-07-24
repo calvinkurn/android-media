@@ -204,15 +204,14 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_shop_product_list_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_shop_product_list_new, container, false);
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bottomActionView = view.findViewById(R.id.bottom_action_view);
-        bottomActionView.hide(false);
-
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -383,10 +382,12 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
         updateScrollListenerState(hasNextPage);
 
         if (shopProductNewAdapter.getShopProductViewModelList().size() == 0) {
+            bottomActionView.setVisibility(View.GONE);
             bottomActionView.hide();
             shopProductNewAdapter.addElement(getEmptyDataViewModel());
         } else {
             if (isLoadingInitialData) {
+                bottomActionView.setVisibility(View.VISIBLE);
                 bottomActionView.show();
             }
             isLoadingInitialData = false;

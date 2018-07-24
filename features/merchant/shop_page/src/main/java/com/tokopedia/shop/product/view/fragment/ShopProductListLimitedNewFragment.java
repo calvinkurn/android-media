@@ -136,7 +136,9 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_shop_product_limited_list_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_shop_product_limited_list_new, container, false);
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
+        return view;
     }
 
     @Override
@@ -158,8 +160,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
-        bottomActionView = view.findViewById(R.id.bottom_action_view);
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -258,6 +258,8 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     // load product list first time
     private void reloadProductData() {
         isLoadingInitialData = true;
+        bottomActionView.hide(false);
+        shopProductNewAdapter.clearAllNonDataElement();
         shopProductNewAdapter.clearProductList();
         showLoading();
         loadData(getDefaultInitialPage());
@@ -284,6 +286,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         }
         String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
         officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
+        officialWebViewUrl = TextApiUtils.isTextEmpty(officialWebViewUrl) ? "" : officialWebViewUrl;
         return officialWebViewUrl;
     }
 
@@ -387,11 +390,11 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 .inject(this);
     }
 
-    private boolean isCurrentlyShowAllEtalase(){
+    private boolean isCurrentlyShowAllEtalase() {
         if (TextUtils.isEmpty(selectedEtalaseId)) {
             return true;
         }
-        List <ShopEtalaseViewModel> etalaseViewModelList = shopProductNewAdapter.getShopProductEtalaseListViewModel().getEtalaseModelList();
+        List<ShopEtalaseViewModel> etalaseViewModelList = shopProductNewAdapter.getShopProductEtalaseListViewModel().getEtalaseModelList();
         return etalaseViewModelList.size() > 0 && etalaseViewModelList.get(0).getEtalaseId().equalsIgnoreCase(selectedEtalaseId);
     }
 
@@ -512,9 +515,11 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 setNeedToShowEtalase(false);
                 shopProductNewAdapter.clearAllNonDataElement();
             }
+            bottomActionView.setVisibility(View.GONE);
             bottomActionView.hide();
         } else {
             setNeedToShowEtalase(true);
+            bottomActionView.setVisibility(View.VISIBLE);
             bottomActionView.show();
             isLoadingInitialData = false;
         }
