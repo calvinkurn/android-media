@@ -139,14 +139,14 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     @Override
     public void onAvatarClickListener(BaseKolViewModel element) {
-        if (type == Type.FEED) {
+        if (type != Type.PROFILE) {
             goToProfile(element);
         }
     }
 
     @Override
     public void onNameClickListener(BaseKolViewModel element) {
-        if (type == Type.FEED) {
+        if (type != Type.PROFILE) {
             goToProfile(element);
         }
     }
