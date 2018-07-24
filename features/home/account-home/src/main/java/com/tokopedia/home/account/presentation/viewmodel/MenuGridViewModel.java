@@ -12,7 +12,7 @@ public class MenuGridViewModel implements Visitable<AccountTypeFactory> {
     private String title;
     private String linkText;
     private String applinkUrl;
-    private List<MenuItemViewModel> items;
+    private List<MenuGridItemViewModel> items;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -43,11 +43,11 @@ public class MenuGridViewModel implements Visitable<AccountTypeFactory> {
         this.applinkUrl = applinkUrl;
     }
 
-    public List<MenuItemViewModel> getItems() {
+    public List<MenuGridItemViewModel> getItems() {
         return items;
     }
 
-    public void setItems(List<MenuItemViewModel> items) {
+    public void setItems(List<MenuGridItemViewModel> items) {
         this.items = items;
     }
 }

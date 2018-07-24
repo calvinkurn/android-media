@@ -21,7 +21,9 @@ import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
-import com.tokopedia.home.account.presentation.viewmodel.MenuItemViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 
 import java.util.ArrayList;
@@ -95,12 +97,17 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     }
 
     @Override
-    public void onMenuGridItemClicked(MenuItemViewModel item) {
+    public void onMenuGridItemClicked(MenuGridItemViewModel item) {
 
     }
 
     @Override
-    public void onMenuGridLinkClicked(String applink) {
+    public void onMenuGridLinkClicked(MenuGridViewModel item) {
+
+    }
+
+    @Override
+    public void onInfoCardClicked(InfoCardViewModel item) {
 
     }
 

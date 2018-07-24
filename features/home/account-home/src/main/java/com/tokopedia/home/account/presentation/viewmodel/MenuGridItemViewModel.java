@@ -5,23 +5,26 @@ import android.support.annotation.DrawableRes;
 /**
  * @author okasurya on 7/19/18.
  */
-public class MenuItemViewModel {
+public class MenuGridItemViewModel {
     @DrawableRes
     private int resourceId;
     private String imageUrl;
     private String description;
     private String applink;
+    private int count;
 
-    public MenuItemViewModel(int resourceId, String description, String applink) {
+    public MenuGridItemViewModel(int resourceId, String description, String applink, int count) {
         this.resourceId = resourceId;
         this.description = description;
         this.applink = applink;
+        this.count = count;
     }
 
-    public MenuItemViewModel(String imageUrl, String description, String applink) {
+    public MenuGridItemViewModel(String imageUrl, String description, String applink, int count) {
         this.imageUrl = imageUrl;
         this.description = description;
         this.applink = applink;
+        this.count = count;
     }
 
     public int getResourceId() {
@@ -54,5 +57,13 @@ public class MenuItemViewModel {
 
     public void setApplink(String applink) {
         this.applink = applink;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }
