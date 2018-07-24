@@ -90,9 +90,8 @@
     <string name="shop_product_empty_product_title_etalase">Tidak ada \"%1$s\" di etalase ini</string>
     <string name="shop_product_empty_product_title_owner_etalase">Ubah kata pencarian Anda atau pilih etalase lain</string>
 
-    <string name="shop_product_empty_product_title_no_etalase">Tidak hasil pencarian untuk \"%1$s\"</string>
+    <string name="shop_product_empty_product_title_no_etalase">Tidak ada hasil pencarian untuk \"%1$s\"</string>
     <string name="shop_product_empty_product_title_owner_no_etalase">Ubah kata pencarian Anda</string>
-
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>

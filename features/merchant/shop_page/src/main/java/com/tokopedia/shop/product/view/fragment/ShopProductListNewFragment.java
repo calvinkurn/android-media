@@ -312,6 +312,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
 
     // load product list first time
     public void loadInitialData() {
+        bottomActionView.hide(false);
         isLoadingInitialData = true;
         shopProductNewAdapter.clearProductList();
         shopProductNewAdapter.clearAllNonDataElement();
