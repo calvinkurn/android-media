@@ -103,14 +103,14 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     " %s.",
                     getString(R.string.you_will_add_account),
                     bank_name_et.text.toString(),
-                    account_number_edit_text.text.toString(),
+                    account_number_et.text.toString(),
                     getString(R.string.under_name),
                     account_name_et.text.toString())
         } else String.format("%s %s %s %s" +
                 " %s.",
                 getString(R.string.you_will_change_account_into),
                 bank_name_et.text.toString(),
-                account_number_edit_text.text.toString(),
+                account_number_et.text.toString(),
                 getString(R.string.under_name),
                 account_name_et.text.toString())
 
@@ -173,7 +173,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             bankFormModel = activity!!.intent.getParcelableExtra(AddEditBankActivity.Companion
                     .PARAM_DATA)
             account_name_et.setText(bankFormModel.accountName)
-            account_number_edit_text.setText(bankFormModel.accountNumber)
+            account_number_et.setText(bankFormModel.accountNumber)
             bank_name_et.setText(bankFormModel.bankName)
             checkIsValidForm()
         }
@@ -182,7 +182,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     private fun setupBankFormModel() {
         bankFormModel.accountName = account_name_et.text.toString()
-        bankFormModel.accountNumber = account_number_edit_text.text.toString()
+        bankFormModel.accountNumber = account_number_et.text.toString()
         bankFormModel.bankName = bank_name_et.text.toString()
     }
 
@@ -193,7 +193,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     private fun setViewListener() {
         account_name_et.addTextChangedListener(accountNameWatcher(wrapper_account_name))
-        account_number_edit_text.addTextChangedListener(accountNumberWatcher(wrapper_account_number))
+        account_number_et.addTextChangedListener(accountNumberWatcher(wrapper_account_number))
     }
 
     private fun accountNameWatcher(wrapper: TkpdHintTextInputLayout): TextWatcher? {
@@ -248,7 +248,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     private fun checkIsValidForm() {
         val accountName = account_name_et.text.toString().trim()
-        val accountNumber = account_number_edit_text.text.toString().trim()
+        val accountNumber = account_number_et.text.toString().trim()
         val bankName = bank_name_et.text.toString().trim()
 
         if (presenter.isValidForm(accountName, accountNumber, bankName)) {

@@ -98,12 +98,7 @@ class AddEditBankPresenter(private val userSession: UserSession,
 
     override fun addBank(bankFormModel: BankFormModel) {
         view.showLoading()
-        addBankUseCase.execute(AddBankUseCase.getParam(
-                bankFormModel.accountName,
-                bankFormModel.accountNumber,
-                bankFormModel.bankName,
-                bankFormModel.bankId
-        ), object : Subscriber<Boolean>() {
+        addBankUseCase.execute(object : Subscriber<Boolean>() {
             override fun onCompleted() {
 
             }
@@ -128,13 +123,7 @@ class AddEditBankPresenter(private val userSession: UserSession,
     override fun editBank(bankFormModel: BankFormModel) {
         view.showLoading()
         view.resetError()
-        editBankUseCase.execute(EditBankUseCase.getParam(
-                bankFormModel.accountId,
-                bankFormModel.accountName,
-                bankFormModel.accountNumber,
-                bankFormModel.bankName,
-                bankFormModel.bankId
-        ), object : Subscriber<Boolean>() {
+        editBankUseCase.execute(object : Subscriber<Boolean>() {
             override fun onCompleted() {
 
             }
