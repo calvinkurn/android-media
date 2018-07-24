@@ -79,7 +79,7 @@ public class TickerPagerAdapter extends PagerAdapter {
                 ssb.append(linkContent, new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
-                        String uri = each.getLink().get("applink").isEmpty() ? each.getLink().get("url") : each.getLink().get("content");
+                        String uri = each.getLink().get("applink").isEmpty() ? each.getLink().get("url") : each.getLink().get("applink");
                         if (uri.startsWith("tokopedia")) {
                             RouteManager.route(context, uri);
                         } else {
