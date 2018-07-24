@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -182,17 +183,15 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-
         mainContent = view.findViewById(R.id.main_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         cardView = view.findViewById(R.id.cv_checkout);
+        setCardViewElevation();
         progBar = view.findViewById(R.id.prog_bar);
         clRedeemInstuctns = view.findViewById(R.id.cl_redeem_instructions);
         Drawable img = getResources().getDrawable(R.drawable.ic_see_location);
         tvViewMap.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-
-
         collapsingToolbarLayout.setTitle(" ");
         seeMoreButtonDesc.setOnClickListener(this);
         seeMoreButtonTC.setOnClickListener(this);
@@ -207,6 +206,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         recyclerViewDeals.setLayoutManager(mLayoutManager);
         recyclerViewDeals.setAdapter(new DealsCategoryAdapter(new ArrayList<ProductItem>(), this, IS_SHORT_LAYOUT));
         recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
+    }
+
+    private void setCardViewElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cardView.setCardElevation(getResources().getDimension(R.dimen.dp_8));
+        } else {
+            cardView.setCardElevation(getResources().getDimension(R.dimen.dp_0));
+        }
     }
 
 
