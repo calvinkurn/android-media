@@ -25,7 +25,7 @@ public class GetExploreDataUseCase {
     private static final String PARAM_CURSOR = "cursor";
     private static final String PARAM_SEARCH = "search";
     private static final String PARAM_LIMIT = "limit";
-    private static final int LIMIT = 9;
+    private static final int LIMIT = 12;
 
     private final Context context;
     private final GraphqlUseCase graphqlUseCase;
