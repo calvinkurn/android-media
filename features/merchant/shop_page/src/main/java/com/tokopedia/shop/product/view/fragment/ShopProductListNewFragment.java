@@ -51,15 +51,13 @@ import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.newpresenter.ShopProductListPresenterNew;
+import com.tokopedia.shop.product.view.widget.StickySingleHeaderView;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
-import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
 
 /**
  * Created by nathan on 2/15/18.
@@ -109,6 +107,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
 
     private OnShopProductListFragmentListener onShopProductListFragmentListener;
     private boolean needReloadData;
+    private StickySingleHeaderView stickySingleHeaderView;
 
     public interface OnShopProductListFragmentListener {
         void updateUIByShopName(String shopName);
@@ -206,6 +205,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_product_list_new, container, false);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
+        stickySingleHeaderView = view.findViewById(R.id.stickySingleHeaderView);
         return view;
     }
 
@@ -242,16 +242,6 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int firstCompletelyVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition();
-                int lastCompleteVisiblePosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
-                if (firstCompletelyVisiblePosition > -1) {
-                    if (firstCompletelyVisiblePosition > ShopPageConstant.DEFAULT_ETALASE_POSITION) {
-                        // make the etalase label always visible
-                    } else {
-                        // make the etalase label always gone
-                    }
-                }
-
                 if (dy < 0) { // going up
                     if (shopProductNewAdapter.getShopProductViewModelList().size() > 0) {
                         bottomActionView.show();
@@ -296,6 +286,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
             selectedEtalaseId = null;
             selectedEtalaseName = null;
             shopProductNewAdapter.setShopEtalase(null);
+            stickySingleHeaderView.disable();
             loadInitialData();
         }
     }
@@ -311,6 +302,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
 
     // load product list first time
     public void loadInitialData() {
+        bottomActionView.setVisibility(View.GONE);
         bottomActionView.hide(false);
         isLoadingInitialData = true;
         shopProductNewAdapter.clearProductList();

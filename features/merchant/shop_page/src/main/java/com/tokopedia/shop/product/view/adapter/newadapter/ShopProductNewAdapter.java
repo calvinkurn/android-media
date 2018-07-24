@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.newadapter;
 
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseTitleVie
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
+import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener;
+import com.tokopedia.shop.product.view.widget.StickySingleHeaderView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,8 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PROMO_
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
 public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
-        implements DataEndlessScrollListener.OnDataEndlessScrollListener {
+        implements DataEndlessScrollListener.OnDataEndlessScrollListener,
+        StickySingleHeaderView.OnStickySingleHeaderAdapter{
 
     private ShopProductPromoViewModel shopProductPromoViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
@@ -38,10 +42,13 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
 
     //    private View promoView;
 //    private String promoUrl;
-    private View etalaseView;
+
+    private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
+    private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
 
     public ShopProductNewAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
+        this.shopProductAdapterTypeFactory = baseListAdapterTypeFactory;
         shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
@@ -159,25 +166,6 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         addProductList(shopProductViewModelArrayList);
     }
 
-    // this is to maintain promo view in recyclerview.
-    @Override
-    protected View onCreateViewItem(ViewGroup parent, int viewType) {
-//        if (viewType == ShopProductPromoViewHolder.LAYOUT) {
-//            if (promoView == null || !promoUrl.equals(shopProductPromoViewModel.getUrl())) {
-//                promoView = super.onCreateViewItem(parent, viewType);
-//                promoUrl = shopProductPromoViewModel.getUrl();
-//                return promoView;
-//            } else {
-//                return promoView;
-//            }
-//        } else
-        if (viewType == ShopProductEtalaseListViewHolder.LAYOUT) {
-            etalaseView = super.onCreateViewItem(parent, viewType);
-            return etalaseView;
-        }
-        return super.onCreateViewItem(parent, viewType);
-    }
-
     @Override
     public void clearAllElements() {
         clearDataExceptProduct();
@@ -237,6 +225,36 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
     @Override
     public int getEndlessDataSize() {
         return shopProductViewModelList.size();
+    }
+
+    @Override
+    public int getStickyHeaderPosition() {
+        return ShopPageConstant.DEFAULT_ETALASE_POSITION;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder createStickyViewHolder(ViewGroup parent) {
+        int stickyViewType = getItemViewType(getStickyHeaderPosition());
+        View view = onCreateViewItem(parent, stickyViewType);
+        return shopProductAdapterTypeFactory.createViewHolder(view, stickyViewType);
+    }
+
+    @Override
+    public void bindSticky(RecyclerView.ViewHolder viewHolder) {
+        if (viewHolder instanceof ShopProductEtalaseListViewHolder) {
+            ((ShopProductEtalaseListViewHolder)viewHolder).bind(shopProductEtalaseListViewModel);
+        }
+    }
+
+    @Override
+    public void setListener(OnStickySingleHeaderListener onStickySingleHeaderViewListener) {
+        this.onStickySingleHeaderViewListener = onStickySingleHeaderViewListener;
+    }
+
+    public void refreshSticky(){
+        if (onStickySingleHeaderViewListener!= null) {
+            onStickySingleHeaderViewListener.refreshSticky();
+        }
     }
 
 }

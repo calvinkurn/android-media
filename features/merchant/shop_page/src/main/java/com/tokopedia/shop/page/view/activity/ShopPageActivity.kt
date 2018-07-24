@@ -45,12 +45,14 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 
 class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
-        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
+        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener,
+        ShopProductListLimitedNewFragment.OnShopProductListLimitedNewFragmentListener{
 
     var shopId: String? = null
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
+    var isTabHidden: Boolean = false
 
     @Inject lateinit var presenter: ShopPagePresenterNew
     @Inject lateinit var shopPageTracking: ShopPageTracking
@@ -161,16 +163,28 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun onProductListDetailStartShow() {
-        //hide tabs
-        val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
-        params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+
     }
 
     private fun onProductListDetailFullyHide() {
+
+    }
+
+    override fun hideTab() {
+        if (!isTabHidden) {
+            val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
+            params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+            isTabHidden = true
+        }
+    }
+
+    override fun showTab() {
         //show tabs
-        val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
-        params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+        if (isTabHidden) {
+            val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
+            params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+            isTabHidden = false
+        }
     }
 
     private fun getShopInfo() {
