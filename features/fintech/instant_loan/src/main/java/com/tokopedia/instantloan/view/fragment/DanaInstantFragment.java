@@ -139,7 +139,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
             if (!TextUtils.isEmpty(data.getRedirectUrl())) {
 
-                Toast.makeText(getContext(), data.getRedirectUrl(), Toast.LENGTH_SHORT).show();
                 com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
                 openWebView(data.getRedirectUrl());
 

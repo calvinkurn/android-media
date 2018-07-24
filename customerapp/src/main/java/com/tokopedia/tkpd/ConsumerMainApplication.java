@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.facebook.soloader.SoLoader;
@@ -36,21 +37,28 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.gamification.GamificationUrl;
+import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
+import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -211,7 +219,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PaymentFingerprintConstant.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
+        OmsUrl.OMS_DOMAIN = ConsumerAppBaseUrl.OMS_DOMAIN;
+        DealsUrl.DEALS_DOMAIN = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_GQL;
+        GMCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
+        CatalogConstant.URL_HADES = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
+        SessionUrl.CHANGE_PHONE_DOMAIN = ConsumerAppBaseUrl.CHANGE_PHONE_DOMAIN;
+        GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
 
@@ -307,7 +323,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-
         if (deepLinkUri != null) {
 
             if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
@@ -366,5 +381,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public Intent getInstantLoanActivityIntent(Context context) {
         return null;
+    }
+
+    @Override
+    public Fragment getFlightOrderListFragment() {
+        return FlightOrderListFragment.createInstance();
     }
 }

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -194,6 +193,10 @@ public interface TkpdCoreRouter {
     String getDesktopLinkGroupChat();
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token);
+
+    String getStringRemoteConfig(String key);
+
+    void setStringRemoteConfigLocal(String key, String value);
 
     Intent getSettingBankIntent(Context context);
 }

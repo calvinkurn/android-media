@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+project.ext {
+    artifactId = 'youtubeutil'
+    groupId = 'com.tokopedia.youtubeutil'
+    versionName = "${tkpdYoutubeUtilVersion}"
+    artifactName ="applink-release"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+}
+
+apply from: '../../publish_local.gradle'
