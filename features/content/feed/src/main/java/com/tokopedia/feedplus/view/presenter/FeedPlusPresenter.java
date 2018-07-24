@@ -12,6 +12,7 @@ import com.tokopedia.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.feedplus.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolGqlSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationGqlSubscriber;
@@ -47,6 +48,7 @@ public class FeedPlusPresenter
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
+    private final GetWhitelistUseCase getWhitelistUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -60,7 +62,8 @@ public class FeedPlusPresenter
                       CheckNewFeedUseCase checkNewFeedUseCase,
                       LikeKolPostUseCase likeKolPostUseCase,
                       FollowKolPostGqlUseCase followKolPostGqlUseCase,
-                      SendVoteUseCase sendVoteUseCase) {
+                      SendVoteUseCase sendVoteUseCase,
+                      GetWhitelistUseCase whitelistUseCase) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
         this.getFeedsUseCase = getFeedsUseCase;
@@ -70,6 +73,7 @@ public class FeedPlusPresenter
         this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
+        this.getWhitelistUseCase = whitelistUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
     }
 
@@ -90,6 +94,7 @@ public class FeedPlusPresenter
         likeKolPostUseCase.unsubscribe();
         followKolPostGqlUseCase.unsubscribe();
         sendVoteUseCase.unsubscribe();
+        getWhitelistUseCase.unsubscribe();
     }
 
 
@@ -218,7 +223,7 @@ public class FeedPlusPresenter
     public void likeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
                 new LikeKolPostSubscriber
-                (rowNumber, getView(), kolListener));
+                        (rowNumber, getView(), kolListener));
 
     }
 
@@ -257,4 +262,5 @@ public class FeedPlusPresenter
     public String getUserId() {
         return userSession.getUserId();
     }
+
 }

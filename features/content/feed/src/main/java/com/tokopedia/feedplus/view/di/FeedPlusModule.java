@@ -21,7 +21,6 @@ import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
-import com.tokopedia.feedplus.data.factory.WishlistFactory;
 import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
@@ -33,9 +32,12 @@ import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.data.repository.FeedRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
+import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -89,7 +91,7 @@ public class FeedPlusModule {
     @Provides
     @FeedMojitoQualifier
     OkHttpClient provideMojitoOkHttpClient(@ApplicationScope HttpLoggingInterceptor
-                                             httpLoggingInterceptor,
+                                                   httpLoggingInterceptor,
                                            @FeedPlusQualifier OkHttpRetryPolicy retryPolicy,
                                            @FeedPlusChuckQualifier Interceptor chuckInterceptor,
                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
@@ -139,7 +141,7 @@ public class FeedPlusModule {
     @FeedPlusScope
     @Provides
     FeedApi provideFeedApi(Retrofit.Builder retrofitBuilder,
-                                  OkHttpClient okHttpClient) {
+                           OkHttpClient okHttpClient) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
                 .client(okHttpClient)
                 .build()
@@ -247,8 +249,21 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
+    AddWishListUseCase providesTkpTkpdAddWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
+
+    @FeedPlusScope
+    @Provides
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
+    }
+
+    /*@FeedPlusScope
+    @Provides
     WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
         return new WishlistRepositoryImpl(wishlistFactory);
     }
+    }*/
 
 }

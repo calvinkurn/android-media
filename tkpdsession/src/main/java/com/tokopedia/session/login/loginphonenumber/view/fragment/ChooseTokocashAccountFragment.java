@@ -233,10 +233,13 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         ForbiddenActivity.startActivity(getActivity());
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         message.setText(getPromptText());
+        presenter.checkAutoLogin(viewModel.getKey(), adapter.getItemCount(), adapter.getList());
+
     }
 
     private Spanned getPromptText() {

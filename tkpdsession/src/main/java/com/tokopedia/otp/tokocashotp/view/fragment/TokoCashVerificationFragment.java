@@ -190,6 +190,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
             public void afterTextChanged(Editable s) {
                 if (inputOtp.getText().length() == MAX_INPUT_OTP) {
                     enableVerifyButton();
+                    verifyButton.performClick();
                 } else {
                     disableVerifyButton();
                 }
