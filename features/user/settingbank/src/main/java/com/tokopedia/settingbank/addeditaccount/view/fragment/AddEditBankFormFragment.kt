@@ -33,6 +33,8 @@ import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 class AddEditBankFormFragment : AddEditBankContract.View,
         BaseDaggerFragment() {
 
+    private val PARAM_FORM_DATA: String? = "saved_bank_data"
+
     private val REQUEST_CHOOSE_BANK_FIRST_TIME: Int = 101
     private val REQUEST_CHOOSE_BANK: Int = 102
     private val REQUEST_OTP: Int = 103
@@ -64,7 +66,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        setMode()
+        setMode(savedInstanceState)
 
         submit_button.setOnClickListener({
             showConfirmationDialog()
@@ -164,18 +166,34 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         startActivityForResult(intentChooseBank, REQUEST_CHOOSE_BANK_FIRST_TIME)
     }
 
-    private fun setMode() {
-        if (activity!!.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) ==
-                BankFormModel.Companion.STATUS_ADD) {
-            goToAddBankFirstTime()
-        } else {
-            (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
-            bankFormModel = activity!!.intent.getParcelableExtra(AddEditBankActivity.Companion
-                    .PARAM_DATA)
-            account_name_et.setText(bankFormModel.accountName)
-            account_number_et.setText(bankFormModel.accountNumber)
-            bank_name_et.setText(bankFormModel.bankName)
-            checkIsValidForm()
+    private fun setMode(savedInstanceState: Bundle?) {
+
+        when {
+            savedInstanceState != null -> {
+                bankFormModel = savedInstanceState.getParcelable(PARAM_FORM_DATA)
+                account_name_et.setText(bankFormModel.accountName)
+                account_number_et.setText(bankFormModel.accountNumber)
+                bank_name_et.setText(bankFormModel.bankName)
+                checkIsValidForm()
+
+                if (activity!!.intent.getStringExtra(AddEditBankActivity
+                                .Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_EDIT)
+                    (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
+
+            }
+            activity!!.intent.getStringExtra(AddEditBankActivity
+                    .Companion.PARAM_ACTION) ==
+                    BankFormModel.Companion.STATUS_ADD -> goToAddBankFirstTime()
+            activity!!.intent.getStringExtra(AddEditBankActivity
+                    .Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_EDIT -> {
+                (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
+                bankFormModel = activity!!.intent.getParcelableExtra(AddEditBankActivity.Companion
+                        .PARAM_DATA)
+                account_name_et.setText(bankFormModel.accountName)
+                account_number_et.setText(bankFormModel.accountNumber)
+                bank_name_et.setText(bankFormModel.bankName)
+                checkIsValidForm()
+            }
         }
     }
 
@@ -404,4 +422,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(PARAM_FORM_DATA, bankFormModel)
+    }
 }
