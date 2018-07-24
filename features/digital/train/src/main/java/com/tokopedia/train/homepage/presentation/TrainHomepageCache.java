@@ -2,6 +2,7 @@ package com.tokopedia.train.homepage.presentation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
@@ -88,19 +89,33 @@ public class TrainHomepageCache {
     }
 
     public TrainHomepageViewModel buildTrainHomepageViewModelFromCache() {
+        String originStationCode = sharedPrefs.getString(ORIGIN_STATION_CODE, "");
         String originCityName = sharedPrefs.getString(ORIGIN_CITY_NAME, DEFAULT_ORIGIN_CITY_NAME);
-        String originStationCode = sharedPrefs.getString(ORIGIN_STATION_CODE, DEFAULT_ORIGIN_STATION_CODE);
         String originIslandName = sharedPrefs.getString(ORIGIN_ISLAND_NAME, DEFAULT_ORIGIN_ISLAND_NAME);
-        TrainStationAndCityViewModel originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                originCityName, originStationCode, originIslandName
-        );
+        TrainStationAndCityViewModel originTrainStationAndCityViewModel;
+        if (!TextUtils.isEmpty(originStationCode)) {
+            originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
+                    originStationCode, originCityName, originIslandName
+            );
+        } else {
+            originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
+                    null, originCityName, originIslandName
+            );
+        }
 
+        String destinationStationCode = sharedPrefs.getString(DESTINATION_STATION_CODE, "");
         String destinationCityName = sharedPrefs.getString(DESTINATION_CITY_NAME, DEFAULT_DESTINATION_CITY_NAME);
-        String destinationStationCode = sharedPrefs.getString(DESTINATION_STATION_CODE, DEFAULT_DESTINATION_STATION_CODE);
         String destinationIslandName = sharedPrefs.getString(DESTINATION_ISLAND_NAME, DEFAULT_DESTINATION_ISLAND_NAME);
-        TrainStationAndCityViewModel destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                destinationCityName, destinationStationCode, destinationIslandName
-        );
+        TrainStationAndCityViewModel destinationTrainStationAndCityViewModel;
+        if (!TextUtils.isEmpty(destinationStationCode)) {
+            destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
+                    destinationStationCode, destinationCityName, destinationIslandName
+            );
+        } else {
+            destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
+                    null, destinationCityName, destinationIslandName
+            );
+        }
 
         Date departureDateCal = TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 1); // departure date = today + 1
         String departureDate = sharedPrefs.getString(DEPARTURE_DATE,

@@ -800,7 +800,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherAttributeDigital.setIsCoupon(0);
                     voucherDigital.setAttributeVoucher(voucherAttributeDigital);
 
-
                     voucherDigitalState = voucherDigital;
 
                     voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);

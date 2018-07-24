@@ -198,7 +198,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-//        onCloseBottomMenusListener = (OnCloseBottomMenusListener) activity;
         setHasOptionsMenu(true);
     }
 

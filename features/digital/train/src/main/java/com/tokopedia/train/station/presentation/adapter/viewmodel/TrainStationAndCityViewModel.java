@@ -4,22 +4,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class TrainStationAndCityViewModel implements Parcelable {
-    private String cityName;
     private String stationCode;
+    private String cityName;
     private String islandName;
 
     public TrainStationAndCityViewModel() {
     }
 
     protected TrainStationAndCityViewModel(Parcel in) {
-        cityName = in.readString();
         stationCode = in.readString();
+        cityName = in.readString();
         islandName = in.readString();
     }
 
-    public TrainStationAndCityViewModel(String cityName, String stationCode, String islandName) {
-        this.cityName = cityName;
+    public TrainStationAndCityViewModel(String stationCode, String cityName, String islandName) {
         this.stationCode = stationCode;
+        this.cityName = cityName;
         this.islandName = islandName;
     }
 
@@ -35,28 +35,16 @@ public class TrainStationAndCityViewModel implements Parcelable {
         }
     };
 
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
     public String getStationCode() {
         return stationCode;
     }
 
-    public void setStationCode(String stationCode) {
-        this.stationCode = stationCode;
+    public String getCityName() {
+        return cityName;
     }
 
     public String getIslandName() {
         return islandName;
-    }
-
-    public void setIslandName(String islandName) {
-        this.islandName = islandName;
     }
 
     @Override
@@ -66,8 +54,8 @@ public class TrainStationAndCityViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(cityName);
         parcel.writeString(stationCode);
+        parcel.writeString(cityName);
         parcel.writeString(islandName);
     }
 }
