@@ -4,26 +4,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.common.util.StockTypeDef;
+import com.tokopedia.product.common.model.edit.ProductPictureViewModel;
+import com.tokopedia.product.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.common.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by nathan on 8/2/17.

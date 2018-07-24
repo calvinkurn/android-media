@@ -18,9 +18,7 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-
-import org.parceler.Parcels;
+//import com.tokopedia.product.edit.view.activity.ProductAddActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,11 +143,11 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
                 // if activity has no caller, continue to build product soc med
                 if (getCallingActivity() == null) {
                     //[START] move to productSocMedActivity
-                    Intent intent = new Intent(InstopedActivity.this, ProductAddActivity.class);
-                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, fromSparseArray(selectedModel)
-                    );
-                    InstopedActivity.this.startActivity(intent);
-                    InstopedActivity.this.finish();
+//                    Intent intent = new Intent(InstopedActivity.this, ProductAddActivity.class);
+//                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, fromSparseArray(selectedModel)
+//                    );
+//                    InstopedActivity.this.startActivity(intent);
+//                    InstopedActivity.this.finish();
                     //[END] move to productSocMedActivity
                 }
                 else { // activity has caller, just finish it and return the bundle to the caller

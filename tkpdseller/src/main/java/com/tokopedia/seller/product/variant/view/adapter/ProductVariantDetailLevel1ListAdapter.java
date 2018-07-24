@@ -11,8 +11,8 @@ import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

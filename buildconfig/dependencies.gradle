@@ -259,7 +259,8 @@ ext {
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
-            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            productCommon         : "com.tokopedia.product:product-common:${tkpdProductVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -297,6 +298,7 @@ ext {
             shopCommon            : ":features:merchant:shop_common",
             shopPage              : ":features:merchant:shop_page",
             productEdit           : ":features:merchant:product_edit",
+            productCommon         : ":features:merchant:product_common",
             topAdsManagement      : ":features:top_ads:top_ads_management",
             topAdsManagementCommon    : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",

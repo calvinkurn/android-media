@@ -5,8 +5,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
+import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.common.model.edit.VariantPictureViewModel;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDashboardNewViewHolder;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +19,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
-import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
+import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.edit.utils.ProductPriceRangeUtils;
+import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.common.util.CurrencyUsdTextWatcher;
 
-import java.text.NumberFormat;
 import java.util.Locale;
 
 /**

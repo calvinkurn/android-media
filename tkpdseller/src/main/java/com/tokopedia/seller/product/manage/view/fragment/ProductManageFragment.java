@@ -55,14 +55,12 @@ import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.common.util.ViewUtils;
+//import com.tokopedia.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.manage.constant.CashbackOption;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
@@ -205,7 +203,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
             @Override
             public void onEmptyButtonClicked() {
-                startActivity(ProductAddActivity.getCallingIntent(getActivity()));
+//                startActivity(ProductAddActivity.getCallingIntent(getActivity()));
             }
         });
         return emptyDataBinder;
@@ -326,7 +324,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         intent != null) {
                     ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
                     if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        ProductAddActivity.start(getActivity(), imageUrlOrPathList);
+//                        ProductAddActivity.start(getActivity(), imageUrlOrPathList);
                     }
                 }
                 break;
@@ -839,12 +837,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void goToDuplicateProduct(String productId) {
-        Intent intent = ProductDuplicateActivity.createInstance(getActivity(), productId);
-        startActivity(intent);
+//        Intent intent = ProductDuplicateActivity.createInstance(getActivity(), productId);
+//        startActivity(intent);
     }
 
     private void goToEditProduct(String productId) {
-        Intent intent = ProductEditActivity.createInstance(getActivity(), productId);
-        startActivity(intent);
+//        Intent intent = ProductEditActivity.createInstance(getActivity(), productId);
+//        startActivity(intent);
     }
 }
