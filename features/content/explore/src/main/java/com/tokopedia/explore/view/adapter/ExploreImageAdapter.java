@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 
@@ -24,10 +25,12 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     private List<Visitable> list;
     private ExploreImageTypeFactory typeFactory;
+    private LoadingMoreModel loadingMoreModel;
 
     @Inject
     public ExploreImageAdapter() {
         this.list = new ArrayList<>();
+        this.loadingMoreModel = new LoadingMoreModel();
     }
 
     @NonNull
@@ -54,13 +57,41 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
         return list.get(position).type(typeFactory);
     }
 
-    public List<Visitable> getList() {
-        return list;
+    private void add(Visitable visitable) {
+        int position = getItemCount();
+        this.list.add(visitable);
+        notifyItemInserted(position);
+    }
+
+    private void remove(Visitable visitable) {
+        int position = this.list.indexOf(visitable);
+        this.list.remove(visitable);
+        notifyItemRemoved(position);
+    }
+
+    public void showLoading() {
+        add(loadingMoreModel);
+    }
+
+    public void dismissLoading() {
+        remove(loadingMoreModel);
+    }
+
+    public boolean isLoading() {
+        return this.list.contains(loadingMoreModel);
+    }
+
+    public void setTypeFactory(ExploreImageTypeFactory typeFactory) {
+        this.typeFactory = typeFactory;
     }
 
     public void addList(List<Visitable> list) {
         int position = getItemCount();
         this.list.addAll(list);
         notifyItemRangeInserted(position, list.size());
+    }
+
+    public List<Visitable> getList() {
+        return list;
     }
 }

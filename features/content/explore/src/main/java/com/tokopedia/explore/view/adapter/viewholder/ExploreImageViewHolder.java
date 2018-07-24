@@ -8,13 +8,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 
 /**
  * @author by milhamj on 24/07/18.
  */
 
-public class ExploreImageViewHolder extends AbstractViewHolder<KolPostViewModel> {
+public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_explore_image;
@@ -25,10 +25,11 @@ public class ExploreImageViewHolder extends AbstractViewHolder<KolPostViewModel>
     public ExploreImageViewHolder(View itemView, ContentExploreContract.View listener) {
         super(itemView);
         this.listener = listener;
+        image = itemView.findViewById(R.id.image);
     }
 
     @Override
-    public void bind(KolPostViewModel element) {
-        ImageHandler.LoadImage(image, element.getKolImage());
+    public void bind(ExploreImageViewModel element) {
+        ImageHandler.LoadImage(image, element.getImageUrl());
     }
 }

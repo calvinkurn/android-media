@@ -1,6 +1,5 @@
 package com.tokopedia.explore.view.fragment;
 
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,24 +10,23 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.di.DaggerExploreComponent;
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.ExploreTagAdapter;
+import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
+import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactoryImpl;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +47,6 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     private SearchInputView searchInspiration;
     private RecyclerView exploreTagRv;
     private RecyclerView exploreImageRv;
-    private ProgressBar progressBar;
 
     @Inject
     ContentExploreContract.Presenter presenter;
@@ -134,19 +131,18 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
 
     @Override
     public void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        imageAdapter.showLoading();
     }
 
     @Override
     public void dismissLoading() {
-        progressBar.setVisibility(View.GONE);
+        imageAdapter.dismissLoading();
     }
 
     private void initView() {
         searchInspiration = view.findViewById(R.id.search_inspiration);
         exploreTagRv = view.findViewById(R.id.explore_tag_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
-        progressBar = view.findViewById(R.id.progress_bar);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL,
@@ -155,8 +151,6 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         tagAdapter.setListener(this);
         exploreTagRv.setAdapter(tagAdapter);
 
-        //TODO milhamj
-//        ViewCompat.setNestedScrollingEnabled(exploreImageRv, false);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
                 IMAGE_SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
@@ -164,9 +158,9 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (imageAdapter.getList().get(position) instanceof KolPostViewModel) {
+                if (imageAdapter.getList().get(position) instanceof ExploreImageViewModel) {
                     return IMAGE_SPAN_SINGLE;
-                } else if (imageAdapter.getList().get(position) instanceof LoadingMoreModel){
+                } else if (imageAdapter.getList().get(position) instanceof LoadingMoreModel) {
                     return IMAGE_SPAN_COUNT;
                 }
                 return 0;
@@ -174,13 +168,9 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         });
         exploreImageRv.setLayoutManager(gridLayoutManager);
         exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager));
+        ExploreImageTypeFactory typeFactory = new ExploreImageTypeFactoryImpl(this);
+        imageAdapter.setTypeFactory(typeFactory);
         exploreImageRv.setAdapter(imageAdapter);
-
-        progressBar.getIndeterminateDrawable()
-                .setColorFilter(
-                        MethodChecker.getColor(getContext(), R.color.colorPrimary),
-                        PorterDuff.Mode.SRC_IN
-                );
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
@@ -192,7 +182,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     }
 
     private boolean isLoading() {
-        return progressBar.getVisibility() == View.VISIBLE;
+        return imageAdapter.isLoading();
     }
 
     private RecyclerView.OnScrollListener onScrollListener(GridLayoutManager layoutManager) {
