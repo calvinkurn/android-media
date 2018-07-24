@@ -1,10 +1,13 @@
 package com.tokopedia.kol.feature.post.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author by milhamj on 14/05/18.
  */
 
-public class BaseKolViewModel {
+public class BaseKolViewModel implements Parcelable{
     private final int userId;
     private final String cardType;
     private String title;
@@ -191,4 +194,66 @@ public class BaseKolViewModel {
     public void setShowLike(boolean showLike) {
         isShowLike = showLike;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.userId);
+        dest.writeString(this.cardType);
+        dest.writeString(this.title);
+        dest.writeString(this.name);
+        dest.writeString(this.avatar);
+        dest.writeString(this.label);
+        dest.writeString(this.kolProfileUrl);
+        dest.writeByte(this.followed ? (byte) 1 : (byte) 0);
+        dest.writeString(this.review);
+        dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.totalLike);
+        dest.writeInt(this.totalComment);
+        dest.writeInt(this.page);
+        dest.writeByte(this.temporarilyFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.kolId);
+        dest.writeByte(this.reviewExpanded ? (byte) 1 : (byte) 0);
+        dest.writeString(this.time);
+        dest.writeByte(this.isShowComment ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isShowLike ? (byte) 1 : (byte) 0);
+    }
+
+    protected BaseKolViewModel(Parcel in) {
+        this.userId = in.readInt();
+        this.cardType = in.readString();
+        this.title = in.readString();
+        this.name = in.readString();
+        this.avatar = in.readString();
+        this.label = in.readString();
+        this.kolProfileUrl = in.readString();
+        this.followed = in.readByte() != 0;
+        this.review = in.readString();
+        this.liked = in.readByte() != 0;
+        this.totalLike = in.readInt();
+        this.totalComment = in.readInt();
+        this.page = in.readInt();
+        this.temporarilyFollowed = in.readByte() != 0;
+        this.kolId = in.readInt();
+        this.reviewExpanded = in.readByte() != 0;
+        this.time = in.readString();
+        this.isShowComment = in.readByte() != 0;
+        this.isShowLike = in.readByte() != 0;
+    }
+
+    public static final Creator<BaseKolViewModel> CREATOR = new Creator<BaseKolViewModel>() {
+        @Override
+        public BaseKolViewModel createFromParcel(Parcel source) {
+            return new BaseKolViewModel(source);
+        }
+
+        @Override
+        public BaseKolViewModel[] newArray(int size) {
+            return new BaseKolViewModel[size];
+        }
+    };
 }
