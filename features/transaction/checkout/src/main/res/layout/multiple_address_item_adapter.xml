@@ -91,13 +91,6 @@
             android:textStyle="normal"
             android:visibility="gone" />
 
-        <!--<android.support.design.widget.TextInputLayout-->
-        <!--android:id="@+id/text_input_layout_shipper_name"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="@dimen/dp_8"-->
-        <!--android:hint="@string/label_note_for_seller">-->
-
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/et_notes_for_seller"
             android:layout_width="match_parent"
@@ -117,8 +110,6 @@
             android:textStyle="normal"
             app:backgroundTint="@color/tkpd_main_green"
             tools:ignore="TextFields" />
-
-        <!--</android.support.design.widget.TextInputLayout>-->
 
         <TextView
             android:id="@+id/tv_error_form_remark_validation"

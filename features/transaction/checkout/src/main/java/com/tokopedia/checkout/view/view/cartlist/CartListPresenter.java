@@ -445,56 +445,6 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    @Override
-    public void processResetCart() {
-        view.showProgressLoading();
-        TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
-        paramResetCart.put(PARAM_LANG, "id");
-        paramResetCart.put(PARAM_STEP, "4");
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(ResetCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_RESET_CART,
-                view.getGeneratedAuthParamNetwork(paramResetCart));
-
-        compositeSubscription.add(
-                resetCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberResetCart())
-        );
-    }
-
-    @NonNull
-    private Subscriber<ResetCartData> getSubscriberResetCart() {
-        return new Subscriber<ResetCartData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.hideProgressLoading();
-                handleErrorGetShipmentForm(e);
-            }
-
-            @Override
-            public void onNext(ResetCartData data) {
-                view.hideProgressLoading();
-//                if (data.isSuccess()) {
-//                    view.renderToShipmentFormSuccess(data.getCartShipmentAddressFormData());
-//                } else {
-//                    String messageError = !data.getCartShipmentAddressFormData().getErrorMessage().isEmpty()
-//                            ? data.getCartShipmentAddressFormData().getErrorMessage()
-//                            : data.getResetCartData().getMessage();
-//                    view.renderErrorToShipmentForm(messageError);
-//                }
-            }
-        };
-    }
-
     @NonNull
     private Subscriber<CartListData> getSubscriberInitialCartListData() {
         return new Subscriber<CartListData>() {
@@ -520,66 +470,6 @@ public class CartListPresenter implements ICartListPresenter {
                 }
             }
         };
-    }
-
-    private void handleErrorCheckoutToMultipleAddress(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            /* Ini kalau ga ada internet */
-            view.renderErrorNoConnectionToShipmentMultipleAddress(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            /* Ini kalau timeout */
-            view.renderErrorTimeoutConnectionToShipmentMultipleAddress(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
-            view.renderErrorToShipmentMultipleAddress(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-            view.renderErrorToShipmentMultipleAddress(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-            code http errornya bisa diambil
-            e.getErrorCode */
-            view.renderErrorHttpToShipmentMultipleAddress(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorToShipmentMultipleAddress(e.getMessage());
-        } else {
-            /* Ini diluar dari segalanya hahahaha */
-            view.renderErrorHttpToShipmentMultipleAddress(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
-    }
-
-    private void handleErrorGetShipmentForm(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            /* Ini kalau ga ada internet */
-            view.renderErrorNoConnectionToShipmentForm(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            /* Ini kalau timeout */
-            view.renderErrorTimeoutConnectionToShipmentForm(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
-            view.renderErrorToShipmentForm(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-            view.renderErrorToShipmentForm(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
-            view.renderErrorHttpToShipmentForm(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorToShipmentForm(e.getMessage());
-        } else {
-            /* Ini diluar dari segalanya hahahaha */
-            view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
     }
 
     private void handleErrorinitCartList(Throwable e) {

@@ -144,12 +144,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
-//        if (shipmentCartItemModelList != null) {
-//            this.shipmentCartItemModelList.clear();
-//            this.shipmentCartItemModelList.addAll(recipientCartItemList);
-//        } else {
         this.shipmentCartItemModelList = recipientCartItemList;
-//        }
     }
 
     @Override

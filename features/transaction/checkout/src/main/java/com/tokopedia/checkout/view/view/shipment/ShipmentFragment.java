@@ -794,17 +794,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
                 break;
-//            case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
-//                Intent intent = new Intent();
-//                intent.putExtra(ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-//                        shipmentAdapter.getAddressShipmentData());
-//                Token token = new Token();
-//                token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
-//                token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
-//                intent.putExtra(ShipmentActivity.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
-//                getActivity().setResult(ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
-//                getActivity().finish();
-//                break;
 
             default:
                 break;

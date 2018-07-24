@@ -130,7 +130,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             cartItemHolderData.setEditableRemark(false);
             cartItemHolderDataList.add(cartItemHolderData);
         }
-//        updateShipmentSellerCashback();
         notifyDataSetChanged();
     }
 
@@ -162,7 +161,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().increaseQuantity();
         }
-//        updateShipmentSellerCashback();
         notifyItemChanged(position);
         checkForShipmentForm();
     }
@@ -172,7 +170,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().resetQuantity();
         }
-//        updateShipmentSellerCashback();
         notifyItemChanged(position);
         checkForShipmentForm();
     }
@@ -182,7 +179,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().decreaseQuantity();
         }
-//        updateShipmentSellerCashback();
         notifyItemChanged(position);
         checkForShipmentForm();
     }
@@ -310,50 +306,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyItemChanged(index);
         }
     }
-
-/*
-    private void updateShipmentSellerCashback() {
-        double cashback = 0;
-        if (cartItemHolderDataList != null && cartItemHolderDataList.size() > 0) {
-            for (Object object : cartItemHolderDataList) {
-                if (object instanceof CartItemHolderData) {
-                    CartItemData cartItemData = ((CartItemHolderData) object).getCartItemData();
-                    if (cartItemData.getOriginData().isCashBack()) {
-                        String cashbackPercentageString = cartItemData.getOriginData().getProductCashBack().replace("%", "");
-                        double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                        double productPrice;
-                        String productPriceStringFormatted;
-                        if (!TextUtils.isEmpty(cartItemData.getOriginData().getWholesalePriceFormatted())) {
-                            productPriceStringFormatted = cartItemData.getOriginData().getWholesalePriceFormatted();
-                        } else {
-                            productPriceStringFormatted = cartItemData.getOriginData().getPriceFormatted();
-                        }
-                        String productPriceString = productPriceStringFormatted.replace("Rp", "").replace(".", "").replace(" ", "");
-                        productPrice = Integer.parseInt(productPriceString);
-
-                        double itemCashback = cashbackPercentage / 100.0f * productPrice * cartItemData.getUpdatedData().getQuantity();
-                        cashback = cashback + itemCashback;
-                    }
-                }
-            }
-
-            if (cashback > 0) {
-                if (shipmentSellerCashbackModel == null || cartItemHolderDataList.indexOf(shipmentSellerCashbackModel) == -1) {
-                    shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
-                    cartItemHolderDataList.add(shipmentSellerCashbackModel);
-                }
-                shipmentSellerCashbackModel.setVisible(true);
-                shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, true));
-            }
-
-            int index = cartItemHolderDataList.indexOf(shipmentSellerCashbackModel);
-            if (index != -1) {
-                notifyItemChanged(index);
-            }
-
-        }
-    }
-*/
 
     public interface ActionListener extends CartAdapterActionListener {
 

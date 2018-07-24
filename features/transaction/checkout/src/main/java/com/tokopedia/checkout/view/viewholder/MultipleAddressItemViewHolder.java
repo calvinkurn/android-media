@@ -59,15 +59,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private View borderLine;
     private TextView phoneNumber;
     private TextView tvChangeRecipientAddress;
-//    private TextView tvLabelNoteForSeller;
-//    private TextView tvBtnShowNotesForSeller;
     private EditText etNotesForSeller;
     private ImageView btnQtyMin;
     private ImageView btnQtyPlus;
     private EditText etQty;
     private TextView tvErrorQtyValidation;
     private TextView tvErrorNoteValidation;
-//    private View vNotesSeparator;
 
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
@@ -88,15 +85,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         address = itemView.findViewById(R.id.tv_recipient_address);
         borderLine = itemView.findViewById(R.id.border_line);
         tvChangeRecipientAddress = itemView.findViewById(R.id.tv_change_recipient_address);
-//        tvLabelNoteForSeller = itemView.findViewById(R.id.tv_label_note_for_seller);
-//        tvBtnShowNotesForSeller = itemView.findViewById(R.id.tv_btn_show_notes_for_seller);
         etNotesForSeller = itemView.findViewById(R.id.et_notes_for_seller);
         btnQtyMin = itemView.findViewById(R.id.btn_qty_min);
         btnQtyPlus = itemView.findViewById(R.id.btn_qty_plus);
         etQty = itemView.findViewById(R.id.et_qty);
         tvErrorQtyValidation = itemView.findViewById(R.id.tv_error_qty_validation);
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
-//        vNotesSeparator = itemView.findViewById(R.id.v_notes_separator);
         phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
 
@@ -337,34 +331,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderNotes(MultipleAddressItemData itemData) {
-//        tvBtnShowNotesForSeller.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                etNotesForSeller.setVisibility(View.VISIBLE);
-//                tvBtnShowNotesForSeller.setVisibility(View.GONE);
-//                vNotesSeparator.setVisibility(View.GONE);
-//                itemData.setStateNotesOpen(true);
-//            }
-//        });
-
         if (StringUtils.isBlank(itemData.getProductNotes())) {
-//            etNotesForSeller.setVisibility(View.GONE);
-//            tvBtnShowNotesForSeller.setVisibility(View.VISIBLE);
             etNotesForSeller.setText("");
-//            vNotesSeparator.setVisibility(View.VISIBLE);
         } else {
-//            etNotesForSeller.setVisibility(View.VISIBLE);
-//            tvBtnShowNotesForSeller.setVisibility(View.GONE);
             etNotesForSeller.setText(itemData.getProductNotes());
             etNotesForSeller.setSelection(etNotesForSeller.length());
-//            vNotesSeparator.setVisibility(View.GONE);
-//            itemData.setStateNotesOpen(true);
         }
-
-//        if (itemData.isStateNotesOpen()) {
-//            etNotesForSeller.setVisibility(View.VISIBLE);
-//            tvBtnShowNotesForSeller.setVisibility(View.GONE);
-//        }
 
         if (noteTextwatcherListener != null) {
             etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
