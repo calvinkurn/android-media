@@ -169,12 +169,16 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
 
     @Override
     public void showLoading() {
-        imageAdapter.showLoading();
+        if (!isLoading()) {
+            imageAdapter.showLoading();
+        }
     }
 
     @Override
     public void dismissLoading() {
-        imageAdapter.dismissLoading();
+        if (isLoading()) {
+            imageAdapter.dismissLoading();
+        }
     }
 
     private void initView() {
