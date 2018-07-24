@@ -146,7 +146,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         rvCartRemoveProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvCartRemoveProduct.setAdapter(removeCartItemAdapter);
         rvCartRemoveProduct.addItemDecoration(
-                new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_16), false, 0));
+                new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
 
         removeCartItemAdapter.addCartProductHeaderViewModel(removeCartItemPresenter.getCartProductHeaderViewModel());
         removeCartItemAdapter.addCartProductItemViewModel(removeCartItemPresenter.getCartProductItemViewModelList());

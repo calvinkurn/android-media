@@ -22,10 +22,11 @@
             style="@style/TextSmallMediumBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:lineSpacingExtra="5sp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:lineSpacingExtra="@dimen/sp_5"
             android:text="@string/label_seller" />
 
         <TextView
@@ -33,20 +34,25 @@
             style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
             android:layout_toEndOf="@id/tv_text_sent_by"
             android:layout_toRightOf="@id/tv_text_sent_by"
             android:lineSpacingExtra="5sp"
             tools:text="Adidas" />
-    </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:background="#e0e0e0" />
+        <ImageView
+            android:id="@+id/img_shop_badge"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_toRightOf="@+id/tv_shop_name"
+            tools:src="@drawable/ic_badge_official" />
+
+    </RelativeLayout>
 
     <include layout="@layout/item_cart_product" />
 
@@ -54,39 +60,6 @@
         android:id="@+id/rv_cart_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/address_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_small"
-        tools:visibility="gone">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#e0e0e0" />
-
-        <include
-            layout="@layout/item_recipient_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8" />
-
-    </LinearLayout>
-
-    <com.tokopedia.design.pickuppoint.PickupPointLayout
-        android:id="@+id/pickup_point_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
         android:visibility="gone" />
 
     <View
@@ -112,7 +85,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="@dimen/dp_16"
             android:textColor="@color/medium_green"
             app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_24dp"
             tools:text="+3 Produk Lainnya" />
@@ -124,6 +97,38 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/grey_300" />
+
+    <LinearLayout
+        android:id="@+id/address_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:visibility="visible">
+
+        <include
+            layout="@layout/item_recipient_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8" />
+
+        <View
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/separator_color" />
+
+    </LinearLayout>
+
+    <com.tokopedia.design.pickuppoint.PickupPointLayout
+        android:id="@+id/pickup_point_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_shipment_option_view_layout"
@@ -145,8 +150,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
             android:text="@string/label_courier" />
 
         <TextView
@@ -154,14 +159,14 @@
             style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:background="@drawable/green_button_rounded_unify"
             android:foreground="?selectableItemBackground"
-            android:paddingBottom="9dp"
-            android:paddingLeft="27dp"
-            android:paddingRight="27dp"
-            android:paddingTop="9dp"
+            android:paddingBottom="@dimen/dp_9"
+            android:paddingLeft="@dimen/dp_27"
+            android:paddingRight="@dimen/dp_27"
+            android:paddingTop="@dimen/dp_9"
             android:text="@string/label_button_choose_courier"
             android:textColor="@color/white" />
 
@@ -200,7 +205,7 @@
                         style="@style/TextMidNormalBlack70"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4sp"
+                        android:lineSpacingExtra="@dimen/sp_4"
                         tools:text="Next Day" />
 
                     <TextView
@@ -224,7 +229,7 @@
                         style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4sp"
+                        android:lineSpacingExtra="@dimen/sp_4"
                         tools:text="JNE Reg (Reguler)" />
 
                     <TextView
@@ -327,7 +332,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dropshipper" />
+                android:text="@string/label_dropshipper_new" />
 
             <ImageView
                 android:id="@+id/img_dropshipper_info"
@@ -397,7 +402,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e0e0e0" />
+        android:background="@color/separator_color" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -424,13 +429,13 @@
 
             <ImageView
                 android:id="@+id/iv_detail_option_chevron"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_keyboard_arrow_down_24dp"
                 tools:ignore="ContentDescription" />
 
@@ -452,9 +457,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="84dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginBottom="@dimen/dp_84"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:gravity="end"
                 android:textColor="@color/medium_green"
                 android:visibility="gone"
