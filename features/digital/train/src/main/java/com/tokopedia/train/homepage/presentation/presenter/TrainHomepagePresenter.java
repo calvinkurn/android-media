@@ -42,4 +42,8 @@ public interface TrainHomepagePresenter extends CustomerPresenter<TrainHomepageV
 
     void onLoginRecieved();
 
+    void getTrainPromoList();
+
+    void onDestroy();
+
 }

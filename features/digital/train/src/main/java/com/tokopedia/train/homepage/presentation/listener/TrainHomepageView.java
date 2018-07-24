@@ -5,9 +5,11 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
+import com.tokopedia.train.homepage.presentation.model.TrainPromoViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Rizky on 21/02/18.
@@ -43,10 +45,16 @@ public interface TrainHomepageView extends CustomerView {
 
     void showDestinationStationEmptyError(@StringRes int resId);
 
-    void getShowOriginAndDestinationShouldNotSameError(@StringRes int resId);
+    void showOriginAndDestinationShouldNotSameError(@StringRes int resId);
+
+    void showOriginAndDestinationIslandShouldBeTheSame(@StringRes int resId);
 
     void navigateToLoginPage();
 
     void closePage();
+
+    void renderPromoList(List<TrainPromoViewModel> trainPromoViewModelList);
+
+    void hidePromoList();
 
 }
