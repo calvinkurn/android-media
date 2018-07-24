@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.view.multipleaddressform;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -375,13 +376,37 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null) {
+            presenter.processGetCartList();
+        } else {
+            swipeToRefresh.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CartListData.class.getSimpleName(), presenter.getCartListData());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            presenter.setCartListData(savedInstanceState.getParcelable(CartListData.class.getSimpleName()));
+            renderCartData(presenter.getCartListData());
+        }
+    }
+
+    @Override
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         rvOrderAddressList = view.findViewById(R.id.order_address_list);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvOrderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        presenter.processGetCartList();
     }
 
     private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition) {
