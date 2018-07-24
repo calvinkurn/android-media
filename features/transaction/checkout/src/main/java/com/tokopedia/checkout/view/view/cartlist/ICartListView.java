@@ -1,13 +1,13 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import android.app.Activity;
+
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.base.IBaseView;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 
 import java.util.List;
 
@@ -27,7 +27,6 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionInitialGetCartListData(String message);
 
-
     void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList);
 
     void renderErrorActionDeleteCartData(String message);
@@ -38,10 +37,11 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionActionDeleteCartData(String message);
 
-
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData);
+    void renderToShipmentFormSuccess();
+
+    void renderToAddressChoice();
 
     void renderErrorToShipmentForm(String message);
 
@@ -51,9 +51,6 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionToShipmentForm(String message);
 
-
-    void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);
-
     void renderErrorToShipmentMultipleAddress(String message);
 
     void renderErrorHttpToShipmentMultipleAddress(String message);
@@ -62,8 +59,7 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message);
 
-
-    void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData);
+    void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
     void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
@@ -96,4 +92,6 @@ public interface ICartListView extends IBaseView {
     void renderCancelAutoApplyCouponSuccess();
 
     void renderCancelAutoApplyCouponError();
+
+    Activity getActivity();
 }

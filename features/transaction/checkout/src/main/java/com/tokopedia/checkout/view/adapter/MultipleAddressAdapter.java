@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,37 +9,36 @@ import android.view.ViewGroup;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.viewholder.MultipleAddressViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements MultipleAddressItemAdapter.MultipleAddressItemAdapterListener {
 
-
-    private static final int MULTIPLE_ADDRESS_HEADER_LAYOUT =
-            R.layout.multiple_address_step_1_header;
     private static final int MULTIPLE_ADDRESS_ADAPTER_LAYOUT =
             R.layout.multiple_address_adapter;
     private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT =
             R.layout.multiple_address_footer;
 
     private ArrayList<MultipleAddressAdapterData> addressData;
-
     private MultipleAddressAdapterListener listener;
-
     private List<Object> adapterObjectList;
+    private CompositeSubscription compositeSubscription;
 
     public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData,
                                   MultipleAddressAdapterListener listener) {
         this.addressData = new ArrayList<>(addressData);
         this.listener = listener;
+        compositeSubscription = new CompositeSubscription();
         adapterObjectList = new ArrayList<>();
         adapterObjectList.addAll(addressData);
         adapterObjectList.add(addressData);
@@ -54,14 +54,11 @@ public class MultipleAddressAdapter
             return super.getItemViewType(position);
     }
 
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(viewType, parent, false);
-        if (viewType == MULTIPLE_ADDRESS_HEADER_LAYOUT)
-            return new MultipleAddressHeaderViewHolder(itemView);
-        else if (viewType == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
+        if (viewType == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
             return new MultipleAddressFooterViewHolder(itemView);
         else return new MultipleAddressViewHolder(parent.getContext(), itemView);
     }
@@ -73,7 +70,7 @@ public class MultipleAddressAdapter
             MultipleAddressViewHolder itemViewHolder = (MultipleAddressViewHolder) holder;
             MultipleAddressAdapterData data = (MultipleAddressAdapterData)
                     adapterObjectList.get(position);
-            itemViewHolder.bindAdapterView(addressData, data, this, listener, isFirstItem(data));
+            itemViewHolder.bindAdapterView(addressData, data, this, listener, compositeSubscription, isFirstItem(data));
         } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
@@ -90,16 +87,27 @@ public class MultipleAddressAdapter
     }
 
     @Override
-    public void onEditItemChoosen(MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
-        listener.onItemChoosen(this.addressData, productData, addressData);
+    public void onEditItemChoosen(int parentItemPosotion, MultipleAddressAdapterData productData,
+                                  MultipleAddressItemData addressData) {
+        listener.onItemChoosen(parentItemPosotion, this.addressData, productData, addressData);
     }
 
-    class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onDeleteItem(MultipleAddressItemAdapter adapter, int position,
+                             List<MultipleAddressItemData> multipleAddressItemDataList) {
+        listener.onDeleteItem(position, multipleAddressItemDataList);
+        adapter.notifyDataSetChanged();
+    }
 
-        MultipleAddressHeaderViewHolder(View itemView) {
-            super(itemView);
+    @Override
+    public void onChangeAddress(MultipleAddressItemAdapter adapter,
+                                RecipientAddressModel recipientAddressModel,
+                                int childPosition, int parentPosition) {
+        listener.onChangeAddress(adapter, addressData, recipientAddressModel, childPosition, parentPosition);
+    }
 
-        }
+    public void unsubscribeSubscription() {
+        compositeSubscription.unsubscribe();
     }
 
     class MultipleAddressFooterViewHolder extends RecyclerView.ViewHolder {
@@ -110,8 +118,6 @@ public class MultipleAddressAdapter
             super(itemView);
 
             goToCourierPageButton = itemView.findViewById(R.id.go_to_courier_page_button);
-
-
         }
     }
 
@@ -130,17 +136,19 @@ public class MultipleAddressAdapter
 
         void onGoToChooseCourier(List<MultipleAddressAdapterData> data);
 
-        void onItemChoosen(ArrayList<MultipleAddressAdapterData> dataList,
+        void onItemChoosen(int itemPosition,
+                           ArrayList<MultipleAddressAdapterData> dataList,
                            MultipleAddressAdapterData productData,
                            MultipleAddressItemData addressData);
 
-        void onAddNewShipmentAddress(int addressPositionToAdd,
-                                     ArrayList<MultipleAddressAdapterData> dataList,
-                                     MultipleAddressAdapterData data,
-                                     MultipleAddressItemData addressData);
-    }
+        void onAddNewShipmentAddress(ArrayList<MultipleAddressAdapterData> dataList, int parentPosition);
 
-    public List<MultipleAddressAdapterData> getAddressData() {
-        return addressData;
+        void onDeleteItem(int position, List<MultipleAddressItemData> multipleAddressItemDataList);
+
+        void onChangeAddress(MultipleAddressItemAdapter adapter,
+                             ArrayList<MultipleAddressAdapterData> dataList,
+                             RecipientAddressModel recipientAddressModel,
+                             int childPosition,
+                             int parentPosition);
     }
 }

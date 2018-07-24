@@ -124,7 +124,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     public void onResume() {
         super.onResume();
         Log.d(TAG, FragmentHotListV2.class.getSimpleName() + " screen Rotation " + (isLandscape() ? "LANDSCAPE" : "PORTRAIT"));
-        if (getUserVisibleHint() && hotList != null) {
+        if (hotList != null) {
             if(hotList.isAfterRotate()) {
                 hotList.initDataAfterRotate();
             }else {

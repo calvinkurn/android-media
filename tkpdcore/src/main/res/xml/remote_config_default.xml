@@ -139,6 +139,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>app_enable_similar_search</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_show_simple_app_rating</key>
         <value>true</value>
     </entry>
@@ -210,5 +214,9 @@
         <value>
             tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue
         </value>
+    </entry>
+    <entry>
+        <key>mainapp_digital_smartcard</key>
+        <value>false</value>
     </entry>
 </defaultsMap>

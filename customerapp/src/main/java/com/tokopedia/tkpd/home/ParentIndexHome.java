@@ -83,6 +83,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
@@ -97,7 +98,6 @@ import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -413,8 +413,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onSuccessGetUserAttr(UserData data) {
                 if (data != null)
-                    TrackingUtils.setMoEUserAttributesOld(data);
-                TrackingUtils.setMoEUserAttributes(data);
+                    TrackingUtils.setMoEUserAttributes(data);
             }
         };
 
@@ -632,13 +631,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this)) {
-            if (isUserFirstTimeLogin) {
-                initStateFragment = INIT_STATE_FRAGMENT_HOME;
-                adapter = new PagerAdapter(getSupportFragmentManager());
-                setupViewPager();
-                adapter.notifyDataSetChanged();
-            }
+        if (SessionHandler.isV4Login(this) ) {
+            if ( isUserFirstTimeLogin) {
+
+            adapter.notifyDataSetChanged();}
             updateCartNotification();
         }
 
@@ -850,6 +846,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                     Intent applinkIntent = new Intent(this, ParentIndexHome.class);
                     applinkIntent.setData(Uri.parse(applink));
+                    if (getIntent() != null && getIntent().getExtras() != null)
+                        applinkIntent.putExtras(getIntent().getExtras());
                     deepLinkDelegate.dispatchFrom(this, applinkIntent);
                 } catch (ActivityNotFoundException ex) {
                     ex.printStackTrace();

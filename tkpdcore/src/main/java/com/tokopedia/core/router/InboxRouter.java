@@ -15,9 +15,9 @@ import com.tokopedia.core.util.RouterUtils;
  */
 
 /**
- * @author nisie
  * @deprecated do not use this class
  * please use TkpdInboxRouter instead
+ * @author nisie
  */
 @Deprecated
 public class InboxRouter {

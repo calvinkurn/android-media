@@ -20,6 +20,7 @@
             style="@style/TextSmallMediumBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:lineSpacingExtra="5sp"
             android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
@@ -31,13 +32,21 @@
             style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_toEndOf="@id/tv_label_shop_name"
-            android:layout_toRightOf="@id/tv_label_shop_name"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_toRightOf="@+id/tv_label_shop_name"
             android:lineSpacingExtra="5sp"
             tools:ignore="RelativeOverlap"
-            tools:text="Loaa Store" />
+            tools:text="Loaa Store  df" />
+
+        <ImageView
+            android:id="@+id/img_shop_badge"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_shop_name"
+            tools:src="@drawable/ic_badge_official" />
 
         <ImageView
             android:id="@+id/btn_delete_cart"
@@ -50,6 +59,7 @@
             android:paddingRight="@dimen/dp_16"
             app:srcCompat="@drawable/ic_delete_cart"
             tools:ignore="ContentDescription" />
+
     </RelativeLayout>
 
     <View
@@ -233,7 +243,10 @@
                 android:imeActionLabel="Selesai"
                 android:imeOptions="actionDone"
                 android:maxLines="3"
+                android:overScrollMode="always"
                 android:paddingBottom="@dimen/dp_16"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
                 android:textColor="@color/black_70"
                 android:textColorHighlight="@color/tkpd_main_green"
                 android:textSize="@dimen/sp_12"

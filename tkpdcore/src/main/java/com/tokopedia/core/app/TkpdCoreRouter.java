@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -28,6 +27,7 @@ import rx.Observable;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
+    String EXTRAS = "extras";
 
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
 
@@ -192,6 +192,10 @@ public interface TkpdCoreRouter {
 
     String getDesktopLinkGroupChat();
 
-    Intent getDistrictRecommendationIntent(Activity activity, Token token);
+    Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
+
+    String getStringRemoteConfig(String key);
+
+    void setStringRemoteConfigLocal(String key, String value);
 
 }

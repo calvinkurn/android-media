@@ -20,12 +20,17 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.AddShipmentAddressComponent;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerAddShipmentAddressComponent;
 import com.tokopedia.checkout.view.di.module.AddShipmentAddressModule;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -59,14 +64,20 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     IAddShipmentAddressPresenter presenter;
 
     @Inject
-    CheckoutAnalyticsCartPage analytic;
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+
+    @Inject
+    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     private int formMode;
+    private int itemPosition;
+    private boolean hasSelectRecipientAddress;
     ArrayList<MultipleAddressAdapterData> dataList;
     MultipleAddressAdapterData multipleAddressAdapterData;
     MultipleAddressItemData multipleAddressItemData;
 
     public static Fragment newInstance(
+            int itemPosition,
             ArrayList<MultipleAddressAdapterData> dataList,
             MultipleAddressAdapterData data,
             MultipleAddressItemData addressData,
@@ -78,6 +89,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         bundle.putParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS, data);
         bundle.putParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS, addressData);
         bundle.putInt(AddShipmentAddressActivity.MODE_EXTRA, mode);
+        bundle.putInt(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -86,7 +98,8 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     protected void initInjector() {
         AddShipmentAddressComponent component = DaggerAddShipmentAddressComponent
                 .builder()
-                .addShipmentAddressModule(new AddShipmentAddressModule(getActivity()))
+                .cartComponent(getComponent(CartComponent.class))
+                .addShipmentAddressModule(new AddShipmentAddressModule())
                 .build();
         component.inject(this);
     }
@@ -127,6 +140,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         dataList = arguments.getParcelableArrayList(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
         multipleAddressAdapterData = arguments.getParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS);
         multipleAddressItemData = arguments.getParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS);
+        itemPosition = arguments.getInt(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA);
     }
 
     @Override
@@ -181,6 +195,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                             data.getParcelableExtra(
                                     CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA
                             );
+                    hasSelectRecipientAddress = true;
                     presenter.setEditableModel(addressModel);
                     showAddressLayout();
                     updateAddressView(presenter.getEditableModel());
@@ -198,9 +213,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         addressReceiverName.setText(editableAddress.getRecipientName());
         address.setText(String.format(
                 "%s, %s, %s, %s",
-                editableAddress.getAddressStreet(),
-                editableAddress.getAddressCityName(),
-                editableAddress.getAddressProvinceName(),
+                editableAddress.getStreet(),
+                editableAddress.getCityName(),
+                editableAddress.getProvinceName(),
                 editableAddress.getRecipientPhoneNumber()
         ));
     }
@@ -216,7 +231,15 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             if (charSequence.toString().isEmpty() || Integer.parseInt(charSequence.toString()) < 1) {
                 quantityField.setText("1");
             } else {
-                if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
+                if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
+                    NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+                    String numberAsString = numberFormat.format(data.getMaxQuantity());
+                    String maxValue = numberAsString.replace(",", ".");
+                    saveChangesButton.setVisibility(View.GONE);
+                    quantityErrorLayout.setVisibility(View.VISIBLE);
+                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
+                            .replace("{{value}}", maxValue));
+                } else if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
                     saveChangesButton.setVisibility(View.GONE);
                     quantityErrorLayout.setVisibility(View.VISIBLE);
                     quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
@@ -226,11 +249,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                     quantityErrorLayout.setVisibility(View.VISIBLE);
                     quantityErrorTextView.setText(data.getErrorProductMinQuantity()
                             .replace("{{value}}", String.valueOf(data.getMinQuantity())));
-                } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
-                    saveChangesButton.setVisibility(View.GONE);
-                    quantityErrorLayout.setVisibility(View.VISIBLE);
-                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
-                            .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
                 } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
                     saveChangesButton.setVisibility(View.GONE);
                     quantityErrorLayout.setVisibility(View.VISIBLE);
@@ -256,10 +274,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     }
 
     private void openAddressSelectionPage() {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
-        startActivityForResult(
-                intent, CartAddressChoiceActivity.REQUEST_CODE);
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     private void setProductView(View view, MultipleAddressAdapterData productData, TextView senderName) {
@@ -267,7 +284,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         ImageView productImage = view.findViewById(R.id.product_image);
         ImageHandler.LoadImage(productImage, productData.getProductImageUrl());
         TextView productName = view.findViewById(R.id.product_name);
+        TextView productPrice = view.findViewById(R.id.product_price);
         productName.setText(productData.getProductName());
+        productPrice.setText(productData.getProductPrice());
     }
 
     private void setProductQuantityView(View view, MultipleAddressItemData itemData) {
@@ -278,7 +297,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             if (itemData.getMinQuantity() != 0) {
                 quantityField.setText(String.valueOf(itemData.getMinQuantity()));
             } else {
-                quantityField.setText("1");
+                quantityField.setText(itemData.getMinQuantity() != 0 ? String.valueOf(itemData.getMinQuantity()) : "1");
             }
         } else {
             quantityField.setText(itemData.getProductQty());
@@ -291,7 +310,24 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         ));
         decreaseButton.setOnClickListener(onDecreaseButtonClickedListener(quantityField));
         increaseButton.setOnClickListener(onIncreaseButtonClickedListener(quantityField));
-        if (itemData.getProductQty().equals("1")) {
+        if (formMode == EDIT_MODE) {
+            if (itemData.getProductQty().equals("1") || Integer.parseInt(itemData.getProductQty()) <= itemData.getMinQuantity()) {
+                decreaseButton.setEnabled(false);
+                decreaseButton.setClickable(false);
+            } else {
+                decreaseButton.setEnabled(true);
+                decreaseButton.setClickable(true);
+            }
+
+            if (Integer.parseInt(itemData.getProductQty()) >= MAX_QTY_DEFAULT ||
+                    Integer.parseInt(itemData.getProductQty()) >= itemData.getMaxQuantity()) {
+                increaseButton.setEnabled(false);
+                increaseButton.setClickable(false);
+            } else {
+                increaseButton.setEnabled(true);
+                increaseButton.setClickable(true);
+            }
+        } else if (formMode == ADD_MODE) {
             decreaseButton.setEnabled(false);
             decreaseButton.setClickable(false);
         }
@@ -303,14 +339,18 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         notesLayout = view.findViewById(R.id.notes_layout);
         notesEditText = view.findViewById(R.id.notes_edit_text);
         notesEditText.addTextChangedListener(notesTextWatcher(itemData));
-        if (itemData.getProductNotes().isEmpty()) {
+        if (TextUtils.isEmpty(itemData.getProductNotes()) || formMode == ADD_MODE) {
+            notesLayout.setVisibility(View.GONE);
             emptyNotesLayout.setVisibility(View.VISIBLE);
             insertNotesButton.setOnClickListener(
                     onInsertNotesButtonClickedListener(emptyNotesLayout, notesLayout)
             );
         } else {
+            emptyNotesLayout.setVisibility(View.GONE);
             notesLayout.setVisibility(View.VISIBLE);
-            notesEditText.setText(itemData.getProductNotes());
+            if (formMode == EDIT_MODE) {
+                notesEditText.setText(itemData.getProductNotes());
+            }
         }
     }
 
@@ -325,17 +365,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         addressTitle = view.findViewById(R.id.address_title);
         addressReceiverName = view.findViewById(R.id.address_receiver_name);
         address = view.findViewById(R.id.address);
-        addressTitle.setText(itemData.getAddressTitle());
-        addressReceiverName.setText(itemData.getAddressReceiverName());
-        address.setText(
-                String.format(
-                        "%s, %s, %s, %s",
-                        itemData.getAddressStreet(),
-                        itemData.getAddressCityName(),
-                        itemData.getAddressProvinceName(),
-                        itemData.getRecipientPhoneNumber()
-                )
-        );
         addressLayout.setOnClickListener(onAddressLayoutClickedListener());
         chooseAddressButton = view.findViewById(R.id.choose_address_button);
         chooseAddressButton.setOnClickListener(onChooseAddressClickedListener());
@@ -350,6 +379,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         );
         intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, newItemData);
         intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -362,6 +392,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         );
         intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, editedItemData);
         intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -418,7 +449,15 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             notesErrorWarningTextView.setVisibility(View.GONE);
             if (quantityErrorLayout.getVisibility() != View.VISIBLE &&
                     addAddressErrorTextView.getVisibility() != View.VISIBLE) {
-                saveChangesButton.setVisibility(View.VISIBLE);
+                if (formMode == ADD_MODE) {
+                    if (hasSelectRecipientAddress) {
+                        saveChangesButton.setVisibility(View.VISIBLE);
+                    } else {
+                        saveChangesButton.setVisibility(View.GONE);
+                    }
+                } else {
+                    saveChangesButton.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -429,7 +468,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             public void onClick(View view) {
                 if (addressLayout.getVisibility() == View.VISIBLE) {
                     addAddressErrorTextView.setVisibility(View.GONE);
-                    analytic.eventViewMultipleAddressKlikSimpan();
+                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickSimpanFromUbahFromKirimKeBeberapaAlamat();
                     if (formMode == ADD_MODE) {
                         addNewAddressItem();
                     } else {
@@ -447,7 +486,10 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             @Override
             public void onClick(View view) {
                 ((EditText) view).selectAll();
-                analytic.eventMultipleAddressKlikAngka();
+                String qtyString = ((EditText) view).getText().toString();
+                checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickInputQuantityFromUbahFromKirimKeBeberapaAlamat(
+                        !TextUtils.isEmpty(qtyString) ? qtyString : ""
+                );
             }
         };
     }
@@ -469,7 +511,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (TextUtils.isEmpty(editable)) {
-                    quantityField.setText("1");
+                    quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                 } else {
                     int zeroCount = 0;
                     for (int i = 0; i < editable.length(); i++) {
@@ -478,13 +520,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                         }
                     }
                     if (zeroCount == editable.length()) {
-                        quantityField.setText("1");
+                        quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                     } else if (editable.charAt(0) == '0') {
                         quantityField.setText(editable.toString().substring(zeroCount, editable.length()));
-                        quantityField.setSelection(quantityField.length());
                     }
                     setQuantityButtonAvailability(editable, decreaseButton, increaseButton);
                     setEditButtonVisibility(editable, data);
+                    quantityField.setSelection(quantityField.length());
                 }
             }
         };
@@ -497,7 +539,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                 try {
                     int quantity = Integer.parseInt(quantityField.getText().toString());
                     quantityField.setText(String.valueOf(quantity - 1));
-                    analytic.eventMultipleAddressKlikTombolMinus();
+                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -512,7 +554,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                 try {
                     int quantity = Integer.parseInt(quantityField.getText().toString());
                     quantityField.setText(String.valueOf(quantity + 1));
-                    analytic.eventMultipleAddressKlikTombolPlus();
+                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickPlusFromUbahFromKirimKeBeberapaAlamat();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -564,13 +606,23 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             public void onClick(View view) {
                 emptyNotesLayout.setVisibility(View.GONE);
                 notesLayout.setVisibility(View.VISIBLE);
-                analytic.eventViewMultipleAddressKlikTulisCatatan();
+                checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickTulisCatatanFromUbahFromKirimKeBeberapaAlamat();
             }
         };
     }
 
     public void onCloseButtonPressed() {
-        analytic.eventMultipleAddressKlikTombolX();
+        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickXFromUbahFromKirimKeBeberapaAlamat();
     }
 
+    @Override
+    protected String getScreenName() {
+        return ConstantTransactionAnalytics.ScreenName.EDIT_MULTIPLE_ADDRESS_PAGE;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
+    }
 }

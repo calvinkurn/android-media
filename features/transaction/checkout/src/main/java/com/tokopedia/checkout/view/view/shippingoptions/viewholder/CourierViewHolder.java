@@ -21,6 +21,8 @@ import java.util.List;
 
 public class CourierViewHolder extends RecyclerView.ViewHolder {
 
+    public static final int ITEM_VIEW_COURIER = R.layout.holder_item_courier;
+
     private TextView tvCourierName;
     private TextView tvPrice;
     private TextView tvDeliveryTimeRange;
@@ -40,9 +42,16 @@ public class CourierViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(CourierAdapter courierAdapter, CourierItemData courierItemData) {
         tvCourierName.setText(courierItemData.getName());
-        tvPrice.setText(tvPrice.getContext().getResources().getString(
-                R.string.label_shipment_type_format, CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        courierItemData.getDeliveryPrice(), true)));
+        if (courierItemData.getShipperPrice() != 0) {
+            tvPrice.setText(tvPrice.getContext().getResources().getString(
+                    R.string.label_shipment_type_format, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            courierItemData.getShipperPrice(), true)));
+        } else if (!TextUtils.isEmpty(courierItemData.getShipperFormattedPrice())) {
+            tvPrice.setText(tvPrice.getContext().getResources().getString(
+                    R.string.label_shipment_type_format, courierItemData.getShipperFormattedPrice()));
+        } else {
+            tvPrice.setVisibility(View.GONE);
+        }
 
         if (courierItemData.getDeliverySchedule() != null) {
             tvDeliverySchedule.setText(courierItemData.getDeliverySchedule());

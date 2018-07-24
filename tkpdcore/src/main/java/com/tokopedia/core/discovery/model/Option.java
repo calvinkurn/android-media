@@ -22,7 +22,8 @@ public class Option implements Parcelable {
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
-    public static final String UID_SEPARATOR_SYMBOL = "#";
+    public static final String UID_FIRST_SEPARATOR_SYMBOL = "*";
+    public static final String UID_SECOND_SEPARATOR_SYMBOL = "?";
     public static final String METRIC_INTERNATIONAL = "International";
 
     public static final String RATING_ABOVE_FOUR_NAME = "4 Keatas";
@@ -223,7 +224,7 @@ public class Option implements Parcelable {
     }
 
     public String getUniqueId() {
-        return key + UID_SEPARATOR_SYMBOL + value;
+        return key + UID_FIRST_SEPARATOR_SYMBOL + value + UID_SECOND_SEPARATOR_SYMBOL + name;
     }
 
     public Option() {}

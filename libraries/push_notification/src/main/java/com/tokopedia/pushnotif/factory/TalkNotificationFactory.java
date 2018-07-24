@@ -28,8 +28,9 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
         builder.setLargeIcon(getBitmap(applinkNotificationModel.getThumbnail()));
         builder.setStyle(new NotificationCompat.BigTextStyle()
                 .bigText(applinkNotificationModel.getFullName() + " : " + applinkNotificationModel.getSummary()));
-        if (ApplinkNotificationHelper.allowGroup())
+        if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
+        }
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
         builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
         builder.setAutoCancel(true);
