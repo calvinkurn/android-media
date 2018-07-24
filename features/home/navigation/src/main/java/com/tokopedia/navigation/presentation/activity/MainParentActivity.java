@@ -94,7 +94,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int i = item.getItemId();
-
         if (i == R.id.menu_home) {
             viewPager.setCurrentItem(HOME_MENU, false);
         } else if (i == R.id.menu_feed) {
@@ -109,7 +108,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             if (isUserLogin())
                 viewPager.setCurrentItem(ACCOUNT_MENU, false);
         }
-
         return true;
     }
 
@@ -141,7 +139,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private List<Fragment> createFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
-        if (getApplication() instanceof GlobalNavRouter) {
+        if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment());
             fragmentList.add(InboxFragment.newInstance());

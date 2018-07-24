@@ -7,27 +7,45 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
  * @author okasurya on 7/17/18.
  */
 public class TokopediaPayViewModel implements Visitable<AccountTypeFactory> {
-    private String tokoCash;
-    private String balance;
+    private String labelLeft;
+    private String amountLeft;
+    private String labelRight;
+    private String amountRight;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 
-    public String getTokoCash() {
-        return tokoCash;
+    public String getLabelLeft() {
+        return labelLeft;
     }
 
-    public void setTokoCash(String tokoCash) {
-        this.tokoCash = tokoCash;
+    public void setLabelLeft(String labelLeft) {
+        this.labelLeft = labelLeft;
     }
 
-    public String getBalance() {
-        return balance;
+    public String getAmountLeft() {
+        return amountLeft;
     }
 
-    public void setBalance(String balance) {
-        this.balance = balance;
+    public void setAmountLeft(String amountLeft) {
+        this.amountLeft = amountLeft;
+    }
+
+    public String getLabelRight() {
+        return labelRight;
+    }
+
+    public void setLabelRight(String labelRight) {
+        this.labelRight = labelRight;
+    }
+
+    public String getAmountRight() {
+        return amountRight;
+    }
+
+    public void setAmountRight(String amountRight) {
+        this.amountRight = amountRight;
     }
 }

@@ -27,7 +27,7 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
     public void bind(BuyerCardViewModel element) {
         buyerCardView.setAvatarImageUrl(element.getImageUrl());
         buyerCardView.setName(element.getName());
-        buyerCardView.setProgress(element.getProgress());
+        buyerCardView.setProfileCompletion(element.getProgress());
         buyerCardView.setTokopoint(element.getTokopoint());
         buyerCardView.setVoucher(element.getVoucher());
     }

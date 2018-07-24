@@ -10,7 +10,7 @@
         style="@style/TextView.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Transaksi Belanja"
+        tools:text="Transaksi Belanja"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,7 +19,7 @@
         style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lihat Riwayat"
+        tools:text="Lihat Riwayat"
         app:layout_constraintBottom_toBottomOf="@+id/text_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_title" />
