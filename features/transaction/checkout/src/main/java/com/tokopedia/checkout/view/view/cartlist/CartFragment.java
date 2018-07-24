@@ -902,6 +902,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void updateCashback(double cashback) {
+        cartListAdapter.updateShipmentSellerCashback(cashback);
+    }
+
+    @Override
     public void renderPromoVoucher() {
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
         cartItemPromoHolderData.setPromoNotActive();

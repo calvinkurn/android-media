@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
@@ -129,7 +130,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             cartItemHolderData.setEditableRemark(false);
             cartItemHolderDataList.add(cartItemHolderData);
         }
-        updateShipmentSellerCashback();
+//        updateShipmentSellerCashback();
         notifyDataSetChanged();
     }
 
@@ -161,7 +162,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().increaseQuantity();
         }
-        updateShipmentSellerCashback();
+//        updateShipmentSellerCashback();
         notifyItemChanged(position);
         checkForShipmentForm();
     }
@@ -171,7 +172,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().resetQuantity();
         }
-        updateShipmentSellerCashback();
+//        updateShipmentSellerCashback();
         notifyItemChanged(position);
         checkForShipmentForm();
     }
@@ -181,7 +182,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().decreaseQuantity();
         }
-        updateShipmentSellerCashback();
+//        updateShipmentSellerCashback();
         notifyItemChanged(position);
         checkForShipmentForm();
     }
@@ -294,6 +295,23 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void updateShipmentSellerCashback(double cashback) {
+        if (cashback > 0) {
+            if (shipmentSellerCashbackModel == null || cartItemHolderDataList.indexOf(shipmentSellerCashbackModel) == -1) {
+                shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
+                cartItemHolderDataList.add(shipmentSellerCashbackModel);
+            }
+            shipmentSellerCashbackModel.setVisible(true);
+            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, true));
+        }
+
+        int index = cartItemHolderDataList.indexOf(shipmentSellerCashbackModel);
+        if (index != -1) {
+            notifyItemChanged(index);
+        }
+    }
+
+/*
     private void updateShipmentSellerCashback() {
         double cashback = 0;
         if (cartItemHolderDataList != null && cartItemHolderDataList.size() > 0) {
@@ -313,7 +331,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         String productPriceString = productPriceStringFormatted.replace("Rp", "").replace(".", "").replace(" ", "");
                         productPrice = Integer.parseInt(productPriceString);
 
-                        cashback += cashbackPercentage / 100.0f * productPrice * cartItemData.getUpdatedData().getQuantity();
+                        double itemCashback = cashbackPercentage / 100.0f * productPrice * cartItemData.getUpdatedData().getQuantity();
+                        cashback = cashback + itemCashback;
                     }
                 }
             }
@@ -334,6 +353,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }
     }
+*/
 
     public interface ActionListener extends CartAdapterActionListener {
 
