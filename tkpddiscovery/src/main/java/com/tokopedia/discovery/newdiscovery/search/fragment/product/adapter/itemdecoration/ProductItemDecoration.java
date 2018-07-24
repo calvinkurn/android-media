@@ -32,24 +32,33 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
                                View view,
                                RecyclerView parent,
                                RecyclerView.State state) {
-        final int absolutePos = parent.getChildAdapterPosition(view);
-        if (!isProductItem(parent, absolutePos)) {
-            return;
-        }
-        int firstProductItemPos = absolutePos;
-        while(isProductItem(parent,firstProductItemPos - 1)) firstProductItemPos--;
-        int relativePos = absolutePos - firstProductItemPos;
+//        final int absolutePos = parent.getChildAdapterPosition(view);
+//        if (!isProductItem(parent, absolutePos)) {
+//            return;
+//        }
+//        int firstProductItemPos = absolutePos;
+//        while(isProductItem(parent,firstProductItemPos - 1)) firstProductItemPos--;
+//        int relativePos = absolutePos - firstProductItemPos;
 
         final int totalSpanCount = getTotalSpanCount(parent);
 
-        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
-        outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-        if (parent.getLayoutManager() instanceof GridLayoutManager) {
-            outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-        } else {
-            outRect.right = 0;
+        int position = parent.getChildAdapterPosition(view); // item position
+        int column = position % totalSpanCount; // item column
+
+        outRect.left = column * spacing / totalSpanCount; // column * ((1f / spanCount) * spacing)
+        outRect.right = spacing - (column + 1) * spacing / totalSpanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+        if (position >= totalSpanCount) {
+            outRect.top = spacing; // item top
         }
-        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+
+//        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+//        outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+//        if (parent.getLayoutManager() instanceof GridLayoutManager) {
+//            outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+//        } else {
+//            outRect.right = 0;
+//        }
+//        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
