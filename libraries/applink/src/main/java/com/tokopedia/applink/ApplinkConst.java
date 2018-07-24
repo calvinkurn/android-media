@@ -108,7 +108,7 @@ public interface ApplinkConst {
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
-    String ORDER_TRACKING = "tokopedia://order/tracking";
+    String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
 
     interface SellerApp {
