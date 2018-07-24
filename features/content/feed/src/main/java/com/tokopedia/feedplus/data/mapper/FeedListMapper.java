@@ -316,7 +316,6 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             ContentFeedKol content = kolpost.getContent().get(0);
 
             TagsFeedKol tags = content.getTags().get(0);
-
             return new KolPostDomain(
                     kolpost.getId() == null ? 0 : kolpost.getId(),
                     content.getImageurl() == null ? "" : content.getImageurl(),
@@ -352,7 +351,6 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             ContentFeedKol content = kolpost.getContent().get(0);
 
             TagsFeedKol tags = content.getTags().get(0);
-
             return new KolPostDomain(
                     kolpost.getId() == null ? 0 : kolpost.getId(),
                     content.getImageurl() == null ? "" : content.getImageurl(),
