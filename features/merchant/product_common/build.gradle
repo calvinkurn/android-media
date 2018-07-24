@@ -9,6 +9,16 @@ project.ext {
     artifactName ="product_common-release"
 }
 
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'ProductCommon']
+            }
+        }
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
