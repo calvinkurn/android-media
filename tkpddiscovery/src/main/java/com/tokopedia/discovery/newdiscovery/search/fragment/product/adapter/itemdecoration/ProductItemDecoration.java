@@ -20,7 +20,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     private final List<Integer> allowedViewTypes = Arrays.asList(
             R.layout.search_result_product_item_big_grid,
             R.layout.search_result_product_item_grid,
-            R.layout.search_result_product_item_list);
+            R.layout.search_result_product_item_list,
+            com.tokopedia.topads.sdk.R.layout.layout_ads);
 
     public ProductItemDecoration(int spacing, int color) {
         this.spacing = spacing;
@@ -42,14 +43,14 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
         final int totalSpanCount = getTotalSpanCount(parent);
 
-        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? 0 : spacing / 2;
+        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
         outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
         if (parent.getLayoutManager() instanceof GridLayoutManager) {
             outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
         } else {
             outRect.right = 0;
         }
-        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? 0 : spacing / 2;
+        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
