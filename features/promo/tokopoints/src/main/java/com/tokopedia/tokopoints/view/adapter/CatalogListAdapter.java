@@ -131,15 +131,9 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         if (item.isDisabled()) {
             ImageUtil.dimImage(holder.imgBanner);
             holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.black_54));
-            holder.timeValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.black_54));
-            holder.imgTime.setColorFilter(ContextCompat.getColor(holder.pointValue.getContext(), R.color.black_54));
-            holder.imgTime.setColorFilter(ContextCompat.getColor(holder.pointValue.getContext(), R.color.black_54));
         } else {
             ImageUtil.unDimImage(holder.imgBanner);
             holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.orange_red));
-            holder.timeValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.orange_red));
-            holder.imgTime.setColorFilter(ContextCompat.getColor(holder.pointValue.getContext(), R.color.orange_red));
-            holder.imgTime.setColorFilter(ContextCompat.getColor(holder.pointValue.getContext(), R.color.orange_red));
         }
 
         if (item.isDisabledButton()) {
