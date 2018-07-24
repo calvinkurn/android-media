@@ -118,6 +118,18 @@ public class AddAddressActivity extends BasePresenterActivity {
         return intent;
     }
 
+    public static Intent createInstanceFromCartCheckout(Activity activity, Token token) {
+        Intent intent = new Intent(activity, AddAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
+        bundle.putString(EXTRA_PLATFORM_PAGE, PLATFORM_MARKETPLACE_CART);
+        bundle.putBoolean(IS_EDIT, false);
+        bundle.putParcelable(KERO_TOKEN, token);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+
     @Override
     protected boolean isLightToolbarThemes() {
         return true;

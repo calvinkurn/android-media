@@ -41,7 +41,6 @@ import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -49,7 +48,7 @@ import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,7 +122,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     List<District> mDistricts;
 
     TkpdProgressDialog mProgressDialog;
-    private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     public static AddAddressFragment createInstance(Bundle extras) {
@@ -591,7 +589,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     protected void initialVar() {
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsCourierSelection = new CheckoutAnalyticsCourierSelection(analyticTracker);
             checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
         }
         if (isEdit() && address != null) {

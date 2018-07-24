@@ -24,8 +24,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_toEndOf="@id/tv_total_item"
-            android:layout_toRightOf="@id/tv_total_item"
             android:gravity="end"
             tools:ignore="RelativeOverlap"
             tools:text="Rp1.400.000" />
