@@ -19,6 +19,9 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.constant.TkpdAppLink;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -101,7 +104,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         } else if (i == R.id.menu_cart) {
             viewPager.setCurrentItem(CART_MENU, false);
         } else if (i == R.id.menu_account) {
-            viewPager.setCurrentItem(ACCOUNT_MENU, false);
+            if(userSession.isLoggedIn()) {
+                viewPager.setCurrentItem(ACCOUNT_MENU, false);
+            } else {
+                RouteManager.route(this, ApplinkConst.LOGIN);
+            }
         }
         return true;
     }
