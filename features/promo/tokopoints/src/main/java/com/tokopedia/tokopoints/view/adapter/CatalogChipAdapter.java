@@ -48,7 +48,7 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
         this.mPresenter = presenter;
         this.mItems = items;
         for (int i = 0; i < mItems.size(); i++) {
-            mItems.get(i).setTimeWithCurrentMs(mItems.get(i).getTimeRemainingSeconds() + System.currentTimeMillis());
+            mItems.get(i).setTimeWithCurrentMs(mItems.get(i).getTimeRemainingSeconds() * 1000 * 60 + System.currentTimeMillis());
         }
         /*This section is exclusively for handling flash-sale timer*/
         mViewHolders = new ArrayList<>();

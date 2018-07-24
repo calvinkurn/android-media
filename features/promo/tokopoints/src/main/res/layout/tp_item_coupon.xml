@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/tp_margin_small"
             android:layout_marginStart="@dimen/tp_margin_small"
-            android:textColor="@color/medium_green"
+            android:textColor="@color/black_54"
             android:textSize="@dimen/tp_text_size_small"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/img_time"

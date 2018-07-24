@@ -41,8 +41,8 @@ public class TickerPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(View container, int position, Object object) {
-        ((ViewPager) container).removeView((View) object);
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
     }
 
     @Override

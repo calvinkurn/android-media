@@ -240,6 +240,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         if (getView() != null && tickers.size() > 0) {
             ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
             pager.setAdapter(new TickerPagerAdapter(getContext(), tickers));
+            pager.setSaveFromParentEnabled(false);
             //adding bottom dots(Page Indicator)
             final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
             pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
