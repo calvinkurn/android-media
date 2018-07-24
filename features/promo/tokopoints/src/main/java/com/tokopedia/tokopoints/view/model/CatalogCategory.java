@@ -30,6 +30,7 @@ public class CatalogCategory implements Parcelable {
     @Expose
     @SerializedName("timeRemainingSeconds")
     private long timeRemainingSeconds;
+
     private long timeWithCurrentMs;
 
     @Expose

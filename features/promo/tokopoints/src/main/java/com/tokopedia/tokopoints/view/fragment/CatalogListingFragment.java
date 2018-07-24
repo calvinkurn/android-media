@@ -166,14 +166,18 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTabSortType.setupWithViewPager(mPagerSortType);
 
         //setup category type
-        mChipAdapter = new CatalogChipAdapter(mPresenter, filters.getCategories());
-        mRecyclerViewChips.setLayoutManager(new LinearLayoutManager(getActivityContext(), LinearLayoutManager.HORIZONTAL, false));
+        if (filters.getCategories() != null && !filters.getCategories().isEmpty()) {
+            mChipAdapter = new CatalogChipAdapter(mPresenter, filters.getCategories());
+            mRecyclerViewChips.setLayoutManager(new LinearLayoutManager(getActivityContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        if (mRecyclerViewChips.getItemDecorationCount() == 0) {
-            mRecyclerViewChips.addItemDecoration(new PaddingItemDecoration(getResources().getDimensionPixelSize(R.dimen.tp_margin_medium)));
+            if (mRecyclerViewChips.getItemDecorationCount() == 0) {
+                mRecyclerViewChips.addItemDecoration(new PaddingItemDecoration(getResources().getDimensionPixelSize(R.dimen.tp_margin_medium)));
+            }
+
+            mRecyclerViewChips.setAdapter(mChipAdapter);
+        } else {
+            mRecyclerViewChips.setVisibility(View.GONE);
         }
-
-        mRecyclerViewChips.setAdapter(mChipAdapter);
 
         mSelectedCategory = lookupForSelectedCategory(filters.getCategories());
 
