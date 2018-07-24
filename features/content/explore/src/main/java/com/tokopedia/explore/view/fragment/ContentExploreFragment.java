@@ -130,6 +130,23 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     }
 
     @Override
+    public void onCategoryClicked(int position, int categoryId) {
+        for (ExploreCategoryViewModel categoryViewModel : tagAdapter.getList()) {
+            if (categoryViewModel.isActive()) {
+                categoryViewModel.setActive(false);
+                tagAdapter.notifyItemChanged(tagAdapter.getList().indexOf(categoryViewModel));
+                break;
+            }
+        }
+        tagAdapter.getList().get(position).setActive(true);
+        tagAdapter.notifyItemChanged(position);
+        updateCategoryId(categoryId);
+        updateCursor("");
+        imageAdapter.clearData();
+        presenter.getExploreData();
+    }
+
+    @Override
     public void showLoading() {
         imageAdapter.showLoading();
     }

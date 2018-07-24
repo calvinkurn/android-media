@@ -41,11 +41,18 @@ public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tag.setText(list.get(position).getName());
+        holder.tag.setOnClickListener(v -> {
+            listener.onCategoryClicked(position, list.get(position).getId());
+        });
     }
 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public List<ExploreCategoryViewModel> getList() {
+        return list;
     }
 
     public void setList(List<ExploreCategoryViewModel> list) {

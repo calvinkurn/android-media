@@ -81,6 +81,11 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
         return this.list.contains(loadingMoreModel);
     }
 
+    public void clearData() {
+        this.list.clear();
+        notifyDataSetChanged();
+    }
+
     public void setTypeFactory(ExploreImageTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
     }

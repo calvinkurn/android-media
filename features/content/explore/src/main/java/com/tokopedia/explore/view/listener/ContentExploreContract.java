@@ -23,6 +23,8 @@ public interface ContentExploreContract {
 
         void updateCategoryId(int categoryId);
 
+        void onCategoryClicked(int position, int categoryId);
+
         void showLoading();
 
         void dismissLoading();
