@@ -33,10 +33,12 @@ project.ext {
 }
 
 dependencies {
+
+    implementation project(rootProject.ext.features.vote)
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
-
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.multiDex

@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.drawer;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -14,12 +13,15 @@ import android.widget.TextView;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -52,11 +54,13 @@ import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
-import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
+import com.tokopedia.tokopoints.ApplinkConstant;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 
 import java.util.ArrayList;
 
@@ -87,6 +91,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     private GlobalCacheManager globalCacheManager;
 
     private RemoteConfig remoteConfig;
+    private boolean mShowTokopointNative;
 
     public DrawerBuyerHelper(Activity activity,
                              SessionHandler sessionHandler,
@@ -129,6 +134,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     private void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        mShowTokopointNative = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
     private void createDataGuest(ArrayList<DrawerItem> data) {
@@ -145,7 +151,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                     android.R.drawable.stat_sys_warning,
                     TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
-
     }
 
     private void createDataLogin(ArrayList<DrawerItem> data) {
@@ -204,23 +209,28 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private DrawerItem getGoldMerchantMenu() {
-        DrawerItem menu;
         boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
-        if (isGoldMerchant) {
-            menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
-                    R.drawable.ic_goldmerchant_drawer,
-                    TkpdState.DrawerPosition.GOLD_MERCHANT,
-                    drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                    0);
-            ((DrawerGroup) menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
-                    TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
-        } else {
-            menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
-                    R.drawable.ic_goldmerchant_drawer,
-                    TkpdState.DrawerPosition.GOLD_MERCHANT,
-                    false));
-        }
-        return menu;
+
+        DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
+                R.drawable.ic_goldmerchant_drawer,
+                TkpdState.DrawerPosition.GOLD_MERCHANT,
+                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+                0);
+
+        String gmString = isGoldMerchant ?
+                context.getString(R.string.mainapp_extend_gold_merchant) :
+                context.getString(R.string.mainapp_upgrade_gold_merchant);
+
+        gmMenu.add(new DrawerItem(gmString,
+                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
+                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+                0));
+        gmMenu.add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+                TkpdState.DrawerPosition.FEATURED_PRODUCT,
+                true
+        ));
+
+        return gmMenu;
     }
 
     private DrawerItem getProductMenu() {
@@ -321,6 +331,18 @@ public class DrawerBuyerHelper extends DrawerHelper
         buyerMenu.add(new DrawerItem(
                         context.getString(R.string.drawer_title_travel_train_transaction_list),
                         TkpdState.DrawerPosition.PEOPLE_TRAIN_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_events_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_deals_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST,
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
@@ -529,20 +551,30 @@ public class DrawerBuyerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
                     if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
-                        intent = TransactionPurchaseRouter.createIntentOrderListSummary(context);
+                        intent = RouteManager.getIntent(context, ApplinkConst.DIGITAL_ORDER);
                     else{
                         intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
                         sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     }
                     context.startActivity(intent);
-
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
-
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST:
+                    intent = RouteManager.getIntent(context, ApplinkConst.EVENTS_ORDER);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST:
+                    intent = RouteManager.getIntent(context, ApplinkConst.DEALS_ORDER);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
-                    intent = FlightOrderListActivity.getCallingIntent(context);
+                    intent = RouteManager.getIntent(context, ApplinkConst.FLIGHT_ORDER);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
@@ -604,10 +636,8 @@ public class DrawerBuyerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                case TkpdState.DrawerPosition.GOLD_MERCHANT:
                     Intent launchIntent = context.getPackageManager()
                             .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-
                     if (launchIntent != null) {
                         context.startActivity(launchIntent);
                         UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER + AppEventTracking.EventLabel.OPEN_APP);
@@ -615,6 +645,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                         ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
                         UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_GM + AppEventTracking.Category.SWITCHER);
                     }
+                    break;
+                case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
+                    UnifyTracking.eventClickGoldMerchantViaDrawer();
+                    context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     goToTopadsPage(context);
@@ -739,10 +773,15 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onTokoPointActionClicked(String mainPageUrl, String title) {
-        if (TextUtils.isEmpty(title))
-            context.startActivity(TokoPointWebviewActivity.getIntent(context, mainPageUrl));
-        else
-            context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
+        if (mShowTokopointNative) {
+            RouterUtils.getDefaultRouter().actionAppLink(context, ApplinkConstant.HOMEPAGE);
+        } else {
+            if (TextUtils.isEmpty(title))
+                context.startActivity(TokoPointWebviewActivity.getIntent(context, mainPageUrl));
+            else
+                context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
+        }
+
 
         AnalyticsEventTrackingHelper.hamburgerTokopointsClick(TokoPointWebviewActivity.class.getName());
     }
@@ -764,11 +803,11 @@ public class DrawerBuyerHelper extends DrawerHelper
             if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
                 data.add(new DrawerItem(remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, context.getString(R.string.drawer_title_referral_appshare)),
                         R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
-                        true, true));
+                        true, false));
             } else {
                 data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
                         R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
-                        true, true));
+                        true, false));
             }
         }
     }

@@ -302,5 +302,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemAfterErrorChecked();
 
+        void onCartItemQuantityInputFormClicked(String qty);
+
+        void onCartItemLabelInputRemarkClicked();
     }
 }

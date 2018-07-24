@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedSearchViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductMoreViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductTitleFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
@@ -21,6 +21,7 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewM
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductMoreViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
@@ -35,17 +36,20 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     private final EmptyViewHolder.Callback emptyProductOnClickListener;
     private final ShopPagePromoWebView.Listener promoWebViewListener;
     private final ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
+    private final View.OnClickListener onClickViewMoreListener;
 
     public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 ShopProductClickedListener shopProductClickedListener,
                                                 EmptyViewHolder.Callback emptyProductOnClickListener,
                                                 ShopPagePromoWebView.Listener promoWebViewListener,
-                                                ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener) {
+                                                ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener,
+                                                View.OnClickListener onClickViewMoreListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
         this.promoWebViewListener = promoWebViewListener;
         this.shopProductFeaturedListener = shopProductFeaturedListener;
+        this.onClickViewMoreListener = onClickViewMoreListener;
     }
 
     @Override
@@ -82,6 +86,10 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
         return ShopProductViewHolder.LAYOUT;
     }
 
+    public int type(ShopProductMoreViewModel shopProductMoreViewModel) {
+        return ShopProductMoreViewHolder.LAYOUT;
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
@@ -98,6 +106,8 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
             return new ShopProductTitleFeaturedViewHolder(parent);
         } else if(type == ShopProductViewHolder.LAYOUT){
             return new ShopProductViewHolder(parent, shopProductClickedListener);
+        } else if(type == ShopProductMoreViewHolder.LAYOUT){
+            return new ShopProductMoreViewHolder(parent, onClickViewMoreListener);
         } else {
             return super.createViewHolder(parent, type);
         }
