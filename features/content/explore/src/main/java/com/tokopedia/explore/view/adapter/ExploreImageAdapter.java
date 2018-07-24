@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapter.ViewHolder> {
 
-    private List<ExploreImageViewModel> list;
+    private List<KolPostViewModel> list;
     private ContentExploreContract listener;
 
     @Inject
@@ -41,7 +41,7 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.image, list.get(position).getImageUrl());
+        ImageHandler.LoadImage(holder.image, list.get(position).getKolImage());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapte
         return list.size();
     }
 
-    public void setList(List<ExploreImageViewModel> list) {
+    public void setList(List<KolPostViewModel> list) {
         this.list = list;
         notifyDataSetChanged();
     }

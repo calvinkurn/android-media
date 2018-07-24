@@ -23,11 +23,11 @@ import com.tokopedia.explore.di.DaggerExploreComponent;
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.ExploreTagAdapter;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
-import com.tokopedia.explore.view.viewmodel.ExploreTagViewModel;
+import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
+import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,8 +103,9 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     }
 
     @Override
-    public void onSuccessGetExploreData() {
-
+    public void onSuccessGetExploreData(ExploreViewModel exploreViewModel) {
+        loadImageData(exploreViewModel.getKolPostViewModelList());
+        loadTagData(exploreViewModel.getTagViewModelList());
     }
 
     @Override
@@ -148,11 +149,11 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         exploreImageRv.addOnScrollListener(scrollListener);
     }
 
-    private void loadImageData(List<ExploreImageViewModel> imageViewModelList) {
-        imageAdapter.setList(imageViewModelList);
+    private void loadImageData(List<KolPostViewModel> kolPostViewModelList) {
+        imageAdapter.setList(kolPostViewModelList);
     }
 
-    private void loadTagData(List<ExploreTagViewModel> tagViewModelList) {
+    private void loadTagData(List<ExploreCategoryViewModel> tagViewModelList) {
         tagAdapter.setList(tagViewModelList);
     }
 

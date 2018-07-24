@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.explore.view.viewmodel.ExploreTagViewModel;
+import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.ViewHolder> {
 
-    private List<ExploreTagViewModel> list;
+    private List<ExploreCategoryViewModel> list;
     private ContentExploreContract listener;
 
     @Inject
@@ -40,7 +40,7 @@ public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tag.setText(list.get(position).getTag());
+        holder.tag.setText(list.get(position).getName());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.Vi
         return list.size();
     }
 
-    public void setList(List<ExploreTagViewModel> list) {
+    public void setList(List<ExploreCategoryViewModel> list) {
         this.list = list;
         notifyDataSetChanged();
     }
