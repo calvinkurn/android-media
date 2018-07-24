@@ -72,7 +72,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           userInfo
           userUrl
           userId
-          headerTitle
+          header    Title
           content {
             __typename
             imageurl
@@ -105,6 +105,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           userPhoto
           userInfo
           userUrl
+          headerTitle
           userId
           content {
             __typename
