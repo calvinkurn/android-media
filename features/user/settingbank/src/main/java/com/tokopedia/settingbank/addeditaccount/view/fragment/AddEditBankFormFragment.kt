@@ -106,7 +106,13 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     account_number_edit_text.text.toString(),
                     getString(R.string.under_name),
                     account_name_et.text.toString())
-        } else ""
+        } else String.format("%s %s %s %s" +
+                " %s.",
+                getString(R.string.you_will_change_account_into),
+                bank_name_et.text.toString(),
+                account_number_edit_text.text.toString(),
+                getString(R.string.under_name),
+                account_name_et.text.toString())
 
     }
 

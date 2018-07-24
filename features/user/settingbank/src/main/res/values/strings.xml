@@ -12,6 +12,7 @@
     <string name="under_name">atas nama</string>
     <string name="become_default">menjadi rekening utama</string>
     <string name="yes_delete">Ya, Hapus</string>
+    <string name="yes_correct">Ya, Benar</string>
     <string name="delete_bank_account_prompt_title">Hapus Rekening Bank?</string>
     <string name="you_will_delete">Anda akan menghapus rekening Bank</string>
     <string name="empty_bank_title">Oops, rekening bank masih kosong</string>
@@ -37,5 +38,6 @@ mempermudah proses penarikan dana</string>
     <string name="success_edit_bank_account">Rekening bank berhasil diubah</string>
     <string name="success_delete_bank_account">Rekening bank telah dihapus</string>
     <string name="success_set_main_bank_account">Rekening utama berhasil diubah</string>
+    <string name="you_will_change_account_into">Anda akan mengubah rekening menjadi rekening</string>
 
 </resources>
