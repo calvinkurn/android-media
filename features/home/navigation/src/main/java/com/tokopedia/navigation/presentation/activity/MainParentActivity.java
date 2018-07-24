@@ -117,7 +117,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
         }
-
         isUserFirstTimeLogin = !userSession.isLoggedIn();
     }
 

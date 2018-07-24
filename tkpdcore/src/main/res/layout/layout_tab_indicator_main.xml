@@ -9,7 +9,7 @@
     app:tabGravity="fill"
     app:tabIndicatorColor="@color/white"
     app:tabIndicatorHeight="4dp"
-    app:tabMode="fixed"
+    app:tabMode="scrollable"
     app:tabType="main"
     app:tabSelectedTextColor="@color/white"
     app:tabTextAppearance="@style/Tabs.Main"/>

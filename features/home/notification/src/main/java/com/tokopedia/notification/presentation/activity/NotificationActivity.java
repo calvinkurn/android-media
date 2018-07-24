@@ -9,13 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ExpandableListView;
 
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.notification.R;
 import com.tokopedia.notification.domain.Notification;
 import com.tokopedia.notification.presentation.adapter.NotificationAdapter;
-import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +45,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
     }
 

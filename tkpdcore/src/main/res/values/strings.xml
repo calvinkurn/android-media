@@ -911,10 +911,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_manage">Pengaturan</string>
 
     <!-- Strings related to shop transaction -->
-    <string name="title_transaction_list">TRANSAKSI</string>
+    <string name="title_transaction_list">Transaksi</string>
     <string name="msg_confirm_order">Apakah anda ingin memproses pesanan ini?</string>
-    <string name="title_shipping_confirmation">PENGIRIMAN</string>
-    <string name="title_tab_new_order">ORDER BARU</string>
+    <string name="title_shipping_confirmation">Pengiriman</string>
+    <string name="title_tab_new_order">Order Baru</string>
     <string name="title_additional_cost">Biaya Tambahan</string>
     <string name="title_grand_total">Grand Total</string>
     <string name="title_buyer">Pembeli</string>
@@ -928,7 +928,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_save_button">Simpan</string>
     <string name="title_confirm_button">Konfirmasi</string>
     <string name="title_transaction_value">Jumlah transaksi</string>
-    <string name="title_shipping_status">STATUS</string>
+    <string name="title_shipping_status">Status</string>
     <string name="title_edit_ref">Ubah Nomor Resi</string>
     <string name="title_track">Track</string>
     <string name="title_status">Status</string>
@@ -1179,7 +1179,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="hint_fill_ref">Isi nomor resi</string>
     <string name="title_extra_cost">Biaya Tambahan</string>
     <string name="title_dashboard_purchase">PEMBELIAN</string>
-    <string name="title_dashboard_sell">PENJUALAN</string>
+    <string name="title_dashboard_sell">Penjualan</string>
     <string name="title_detail">Detil</string>
     <string name="title_item">Barang</string>
     <string name="payment_confirm_desc">Segera lakukan pembayaran</string>
