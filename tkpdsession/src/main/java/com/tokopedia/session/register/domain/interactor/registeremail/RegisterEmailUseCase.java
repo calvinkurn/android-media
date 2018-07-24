@@ -1,11 +1,9 @@
 package com.tokopedia.session.register.domain.interactor.registeremail;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.register.data.model.RegisterEmailModel;
 import com.tokopedia.session.register.data.repository.RegisterEmailRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -24,10 +22,7 @@ public class RegisterEmailUseCase extends UseCase<RegisterEmailModel> {
 
     private final RegisterEmailRepository registerEmailRepository;
 
-    public RegisterEmailUseCase(ThreadExecutor threadExecutor,
-                                PostExecutionThread postExecutionThread,
-                                RegisterEmailRepository registerEmailRepository) {
-        super(threadExecutor, postExecutionThread);
+    public RegisterEmailUseCase(RegisterEmailRepository registerEmailRepository) {
         this.registerEmailRepository = registerEmailRepository;
     }
 

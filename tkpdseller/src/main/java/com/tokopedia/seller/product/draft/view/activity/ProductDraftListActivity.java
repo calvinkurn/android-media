@@ -33,9 +33,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-/**
- * Created by User on 6/19/2017.
- */
 
 public class ProductDraftListActivity extends DrawerPresenterActivity
         implements HasComponent<ProductComponent>, ProductDraftSaveBulkView,
