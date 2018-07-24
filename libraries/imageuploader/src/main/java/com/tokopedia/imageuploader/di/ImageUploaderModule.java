@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.imageuploader.data.GenerateHostRepositoryImpl;
+import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.imageuploader.data.StringResponseConverter;
 import com.tokopedia.imageuploader.data.UploadImageDataSource;
 import com.tokopedia.imageuploader.data.UploadImageRepositoryImpl;
@@ -48,7 +49,6 @@ public class ImageUploaderModule {
     private static final int NET_WRITE_TIMEOUT = 100;
     private static final int NET_CONNECT_TIMEOUT = 100;
     private static final int NET_RETRY = 1;
-    public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
 
 
     @ImageUploaderQualifier
@@ -155,7 +155,7 @@ public class ImageUploaderModule {
     @Provides
     public Retrofit provideWsV4RetrofitWithErrorHandler(@ImageUploaderQualifier OkHttpClient okHttpClient,
                                                         @ImageUploaderQualifier Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(LIVE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(ImageUploaderUrl.BASE_URL).client(okHttpClient).build();
     }
 
     @Provides

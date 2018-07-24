@@ -15,9 +15,13 @@ import com.tokopedia.core.app.MainApplication;
 
 import org.json.JSONObject;
 
+import rx.Observable;
 import rx.Single;
 import rx.SingleSubscriber;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.observers.Subscribers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -232,9 +236,36 @@ public class MoEngageContainer implements IMoengageContainer {
         });
     }
 
-    private boolean checkNull(Object o) {
-        if (o instanceof String)
-            return !TextUtils.isEmpty((String) o);
+    @Override
+    public void setPushPreference(boolean status) {
+        Observable.just(status)
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .map(pushStatus -> {
+                MoEHelper.getInstance(context).setUserAttribute("push_preference", pushStatus);
+                return true;
+            })
+            .subscribe(new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    // no-op
+                }
+            });
+    }
+
+    private boolean checkNull(Object o){
+        if( o instanceof String)
+            return !TextUtils.isEmpty((String)o);
         else if (o instanceof Boolean)
             return o != null;
         else

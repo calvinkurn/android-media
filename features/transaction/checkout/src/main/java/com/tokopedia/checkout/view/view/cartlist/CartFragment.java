@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,6 +60,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -348,7 +350,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position) {
-        dPresenter.processCheckPromoCodeFromSuggestedPromo(data.getPromoCode());
+        dPresenter.processCheckPromoCodeFromSuggestedPromo(data.getPromoCode(), false);
     }
 
     @Override
@@ -449,16 +451,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartDataEnableToCheckout() {
-        btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
-        btnToShipment.setTextColor(getResources().getColor(R.color.white));
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+        if (isAdded()) {
+            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
+            btnToShipment.setTextColor(getResources().getColor(R.color.white));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+        }
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
-        btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
-        btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
-        btnToShipment.setOnClickListener(null);
+        if (isAdded()) {
+            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
+            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
+            btnToShipment.setOnClickListener(null);
+        }
     }
 
     @Override
@@ -998,6 +1004,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     public void onRefresh(View view) {
         cartListAdapter.resetData();
         dPresenter.processInitialGetCartData();
+        String promo = BranchSdkUtils.getAutoApplyCouponIfAvailable(getActivity());
+        if (!TextUtils.isEmpty(promo)) {
+            dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
+        }
     }
 
 

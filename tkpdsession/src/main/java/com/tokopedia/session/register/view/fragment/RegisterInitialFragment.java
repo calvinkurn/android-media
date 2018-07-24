@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
@@ -171,6 +172,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        if(savedInstanceState != null && savedInstanceState.containsKey(PHONE_NUMBER)) {
+            phoneNumber = savedInstanceState.getString(PHONE_NUMBER);
+        }
     }
 
     @Nullable
@@ -821,5 +825,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(PHONE_NUMBER,phoneNumber);
+        super.onSaveInstanceState(outState);
     }
 }

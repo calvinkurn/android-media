@@ -56,7 +56,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private AHBottomNavigation bottomNavigation;
     protected DiscoverySearchView searchView;
     protected ProgressBar loadingView;
-    private CollapsingToolbarLayout toolbarLayout;
 
     public MenuItem searchItem;
     private boolean isLastRequestForceSearch;
@@ -94,7 +93,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         searchView = (DiscoverySearchView) findViewById(R.id.search);
         loadingView = findViewById(R.id.progressBar);
-        toolbarLayout = findViewById(R.id.toolbar_layout);
     }
 
     protected void prepareView() {
@@ -143,13 +141,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void setToolbarTitle(String query) {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(query);
-            if (toolbarLayout != null && query != null)
-                toolbarLayout.setTitle(query);
         }
-    }
-
-    public CharSequence getToolbarTitle(){
-        return toolbarLayout.getTitle();
     }
 
     private void initSearchView() {

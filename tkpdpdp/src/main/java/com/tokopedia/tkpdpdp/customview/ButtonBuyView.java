@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
@@ -11,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -30,8 +33,9 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     private TextView tvpPromoHour;
     private LinearLayout containerButtonBuy;
     private ProgressBar variantProgressBar;
-    private View containerNewButtonBuy;
+    public View containerNewButtonBuy;
     public View btnCart;
+    public View btnChat;
     public View btnNewBuy;
     private ProgressBar progressBarVariant;
     private TextView tvNewBuy;
@@ -74,6 +78,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         variantProgressBar = findViewById(R.id.variant_progress_bar);
         containerNewButtonBuy = findViewById(R.id.container_new_checkout_flow);
         btnCart = findViewById(R.id.action_button_cart);
+        btnChat = findViewById(R.id.action_button_chat);
         btnNewBuy = findViewById(R.id.container_new_button_buy);
         progressBarVariant = findViewById(R.id.new_variant_progress_bar);
         tvNewBuy = findViewById(R.id.tv_new_buy);
@@ -158,6 +163,22 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                                 String.valueOf(data.getInfo().getProductId())
                         );
                         listener.openLoginPage();
+                    }
+                }
+            });
+            btnChat.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                                .getAskSellerIntent(v.getContext(),
+                                        String.valueOf(data.getShopInfo().getShopId()),
+                                        data.getShopInfo().getShopName(),
+                                        data.getInfo().getProductName(),
+                                        data.getInfo().getProductUrl(),
+                                        TkpdInboxRouter.PRODUCT,
+                                        data.getShopInfo().getShopAvatar());
+                        listener.onProductShopMessageClicked(intent);
                     }
                 }
             });

@@ -12,6 +12,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.os.Build;
@@ -224,6 +225,18 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(placeholder)
                 .error(R.drawable.error_drawable)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
+    public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(colorDrawable)
+                .error(colorDrawable)
+                .crossFade()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);

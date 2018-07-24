@@ -64,12 +64,16 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
+    tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
+    tkpdVoteVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
     tkpdTokopointVersion = '2.22'
+    tkpdDealsVersion = '2.22'
+    tkpdOmsVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -260,8 +264,12 @@ ext {
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
-            paymentManagementSystem: "com.tokopedia.payment_management_system:payment_management_system:${tkpdPaymentManagementSystem}",
+            vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
+            digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
+            paymentManagementSystem: "com.tokopedia.payment_management_system:payment_management_system:${tkpdPaymentManagementSystem}"
     ]
 
     tkpdLibDependencies = [
@@ -303,7 +311,7 @@ ext {
             topAdsManagementCommon    : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash              : ":features:fintech:tokocash",
-            flight                : ":tkpdflight",
+            flight                : ":features:digital:flight",
             flightNoOp            : ":features:digital:flight_no_op",
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
@@ -325,6 +333,7 @@ ext {
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
+            digitalDeals          : ":features:digital:digital_deals",
             paymentManagementSystem     : ":features:payment:paymentmanagementsystem"
     ]
 
@@ -350,6 +359,8 @@ ext {
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
-            commonNetwork     : ":libraries:common_network"
+            commonNetwork     : ":libraries:common_network",
+            omsApi            : ":libraries:oms",
+            youtubeutil       : ":libraries:youtubeutil"
     ]
 }

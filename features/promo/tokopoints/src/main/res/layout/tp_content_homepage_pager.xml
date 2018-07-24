@@ -13,7 +13,7 @@
         app:tabIndicatorColor="@color/tkpd_main_green"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/tkpd_main_green"
-        app:tabTextAppearance="@style/Tabs.Main"
+        app:tabTextAppearance="@style/TokoPointsTabs"
         app:tabTextColor="@color/black_38">
 
         <android.support.design.widget.TabItem

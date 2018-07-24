@@ -17,16 +17,15 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
-import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
-
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.view.activity.InstagramLoginActivity;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapter;
 import com.tokopedia.imagepicker.picker.instagram.view.adapter.ImageInstagramAdapterTypeFactory;
@@ -209,6 +208,12 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
             getAdapter().setErrorNetworkModel(new ErrorNetworkModel());
         }
         super.showGetListError(throwable);
+    }
+
+    @Override
+    protected void loadInitialData() {
+        nextMediaId = "";
+        super.loadInitialData();
     }
 
     @Override

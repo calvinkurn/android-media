@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,14 +15,16 @@ import java.util.List;
 public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int spacing;
+    private final int color;
 
     private final List<Integer> allowedViewTypes = Arrays.asList(
             R.layout.search_result_product_item_big_grid,
             R.layout.search_result_product_item_grid,
             R.layout.search_result_product_item_list);
 
-    public ProductItemDecoration(int spacing) {
+    public ProductItemDecoration(int spacing, int color) {
         this.spacing = spacing;
+        this.color = color;
     }
 
     @Override
@@ -38,14 +42,14 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
         final int totalSpanCount = getTotalSpanCount(parent);
 
-        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? 0 : spacing / 2;
         outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
         if (parent.getLayoutManager() instanceof GridLayoutManager) {
             outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
         } else {
             outRect.right = 0;
         }
-        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? 0 : spacing / 2;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
@@ -78,5 +82,24 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         }
         final int viewType = adapter.getItemViewType(viewPosition);
         return allowedViewTypes.contains(viewType);
+    }
+
+    @Override
+    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+        Paint paint = new Paint();
+        paint.setColor(color);
+
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = parent.getChildAt(i);
+            int absolutePos = parent.getChildAdapterPosition(child);
+            if (!isProductItem(parent, absolutePos) || child == null) {
+                continue;
+            }
+            canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
+            canvas.drawRect(child.getLeft() - spacing, child.getBottom(), child.getRight() + spacing, child.getBottom() + spacing, paint);
+            canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
+            canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + spacing, child.getBottom(), paint);
+        }
     }
 }
