@@ -43,9 +43,6 @@ public class InboxFragment extends ParentFragment {
 
     @Override
     public void initView(View view) {
-        if (toolbar != null)
-            toolbar.setTitle(getString(R.string.inbox));
-
         adapter = new InboxAdapter();
 
         SwipeRefreshLayout swipe = view.findViewById(R.id.swipe);
@@ -107,7 +104,10 @@ public class InboxFragment extends ParentFragment {
     }
 
     @Override
-    public void loadData() { }
+    public void loadData() {
+        if (toolbar != null)
+            toolbar.setTitle(getString(R.string.inbox));
+    }
 
     @Override
     protected String getScreenName() {

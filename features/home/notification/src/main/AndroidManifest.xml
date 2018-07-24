@@ -2,6 +2,9 @@
     package="com.tokopedia.notification">
 
     <application>
-        <activity android:name=".presentation.activity.NotificationActivity" />
+        <activity
+            android:name=".presentation.activity.NotificationActivity"
+            android:label="@string/notifications"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

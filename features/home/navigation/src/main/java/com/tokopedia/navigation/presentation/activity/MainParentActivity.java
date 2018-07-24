@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -92,18 +94,29 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int i = item.getItemId();
+
         if (i == R.id.menu_home) {
             viewPager.setCurrentItem(HOME_MENU, false);
         } else if (i == R.id.menu_feed) {
             viewPager.setCurrentItem(FEED_MENU, false);
         } else if (i == R.id.menu_inbox) {
-            viewPager.setCurrentItem(INBOX_MENU, false);
+            if (isUserLogin())
+                viewPager.setCurrentItem(INBOX_MENU, false);
         } else if (i == R.id.menu_cart) {
-            viewPager.setCurrentItem(CART_MENU, false);
+            if (isUserLogin())
+                viewPager.setCurrentItem(CART_MENU, false);
         } else if (i == R.id.menu_account) {
-            viewPager.setCurrentItem(ACCOUNT_MENU, false);
+            if (isUserLogin())
+                viewPager.setCurrentItem(ACCOUNT_MENU, false);
         }
+
         return true;
+    }
+
+    private boolean isUserLogin() {
+        if (!userSession.isLoggedIn())
+            RouteManager.route(this, ApplinkConst.LOGIN);
+        return userSession.isLoggedIn();
     }
 
     @Override
@@ -128,7 +141,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private List<Fragment> createFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
-        if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+        if (getApplication() instanceof GlobalNavRouter) {
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment());
             fragmentList.add(InboxFragment.newInstance());

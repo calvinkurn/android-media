@@ -757,9 +757,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private boolean isLoadedOnce = false;
+
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
-                && getActivity()!= null && presenter != null) {
+                && getActivity()!= null && presenter != null
+                && !isLoadedOnce) {
 
             presenter.fetchFirstPage();
             if (trace != null)
@@ -767,6 +770,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             presenter.checkNewFeed(firstCursor);
             ScreenTracking.screen(getScreenName());
+
+            isLoadedOnce = !isLoadedOnce;
         }
     }
 
