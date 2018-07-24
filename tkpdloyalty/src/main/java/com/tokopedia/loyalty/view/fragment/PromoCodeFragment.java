@@ -57,6 +57,9 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     private static final String CART_ID = "CART_ID";
 
+    private static final String TRAIN_RESERVATION_ID = "TRAIN_RESERVATION_ID";
+    private static final String TRAIN_RESERVATION_CODE = "TRAIN_RESERVATION_CODE";
+
     private static final String CHECKOUT = "checkoutdata";
 
     @Override
@@ -130,6 +133,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                     voucherCodeFieldHolder)
             );
         } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING)) {
+            submitVoucherButton.setOnClickListener(onSubmitTrainVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
@@ -155,6 +164,24 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                             getActivity(),
                             voucherCodeField.getText().toString(),
                             getArguments().getString(CART_ID)
+                    );
+            }
+        };
+    }
+
+    private View.OnClickListener onSubmitTrainVoucher(final EditText voucherCodeField, final TextInputLayout textHolder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
+                if (voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else
+                    dPresenter.processCheckTrainPromoCode(
+                            getActivity(),
+                            voucherCodeField.getText().toString(),
+                            getArguments().getString(TRAIN_RESERVATION_ID),
+                            getArguments().getString(TRAIN_RESERVATION_CODE)
                     );
             }
         };
@@ -293,9 +320,9 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         return fragment;
     }
 
-
     public static Fragment newInstance(String platform,String platformPage, String categoryKey,
-                                       String cartId, String additionalDataString) {
+                                       String cartId, String additionalDataString,
+                                       String trainReservationId, String trainReservartionCode) {
         PromoCodeFragment fragment = new PromoCodeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
@@ -303,6 +330,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         bundle.putString(CATEGORY_KEY, categoryKey);
         bundle.putString(CART_ID, cartId);
         bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
+        bundle.putString(TRAIN_RESERVATION_ID, trainReservationId);
+        bundle.putString(TRAIN_RESERVATION_CODE, trainReservartionCode);
         fragment.setArguments(bundle);
         return fragment;
     }

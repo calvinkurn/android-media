@@ -22,4 +22,8 @@ public interface IPromoCodePresenter {
     void processCheckEventPromoCode(String voucherId,JsonObject requestBody, boolean flag);
 
     void processCheckFlightPromoCode(Activity activity, String voucherCode, String cartId);
+
+    void processCheckTrainPromoCode(Activity activity, String voucherCode, String trainReservationId,
+                                    String trainReservationCode);
+
 }

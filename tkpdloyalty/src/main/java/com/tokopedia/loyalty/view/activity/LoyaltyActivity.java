@@ -85,6 +85,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     private int productId;
     private String cartIdString;
     private String additionalDataString;
+    private String trainReservationId;
+    private String trainReservationCode;
 
     public boolean isCouponActive() {
         return isCouponActive;
@@ -120,6 +122,14 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     public String getAdditionalDataString() {
         return additionalDataString;
+    }
+
+    public String getTrainReservationId() {
+        return trainReservationId;
+    }
+
+    public String getTrainReservationCode() {
+        return trainReservationCode;
     }
 
     private OnTabSelectedForTrackingCheckoutMarketPlace onTabSelectedForTrackingCheckoutMarketPlace;
@@ -161,6 +171,13 @@ public class LoyaltyActivity extends BasePresenterActivity
         this.additionalDataString = extras.getString(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA, ""
         );
+        this.trainReservationId = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID, ""
+        );
+        this.trainReservationCode = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE, ""
+        );
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.di;
 
 import com.tokopedia.train.common.di.TrainComponent;
 import com.tokopedia.train.reviewdetail.presentation.fragment.TrainReviewDetailFragment;

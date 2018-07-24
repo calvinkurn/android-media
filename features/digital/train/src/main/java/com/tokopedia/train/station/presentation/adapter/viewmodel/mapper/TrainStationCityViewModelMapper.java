@@ -18,6 +18,7 @@ public class TrainStationCityViewModelMapper {
         if (trainStation != null) {
             viewModel = new TrainStationCityViewModel();
             viewModel.setCityName(trainStation.getCityName());
+            viewModel.setIslandName(trainStation.getIslandName());
         }
         return viewModel;
     }

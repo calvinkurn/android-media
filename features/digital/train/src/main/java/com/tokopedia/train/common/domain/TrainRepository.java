@@ -1,6 +1,7 @@
 package com.tokopedia.train.common.domain;
 
 
+import com.tokopedia.train.reviewdetail.data.TrainPromoEntity;
 import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
@@ -42,5 +43,7 @@ public interface TrainRepository {
     Observable<List<TrainSeatMapEntity>> getSeat(HashMap<String, Object> parameters);
 
     Observable<List<TrainStation>> getAllStations();
+
+    Observable<TrainPromoEntity> checkVoucher(HashMap<String, Object> parameters);
 
 }

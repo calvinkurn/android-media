@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.presentation;
 
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;

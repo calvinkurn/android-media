@@ -275,7 +275,10 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.train.common.TrainRouter;
+import com.tokopedia.train.common.di.DaggerTrainComponent;
+import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -769,6 +772,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         bundle.putString(AccountsService.AUTH_KEY, authKey);
 
         AccountsService accountsService = new AccountsService(bundle);
+
 
         ProfileSourceFactory profileSourceFactory =
                 new ProfileSourceFactory(
@@ -2241,6 +2245,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return voucherViewModel;
                     }
                 });
+    }
+
+    @Override
+    public Observable<VoucherViewModel> checkTrainVoucher(String voucherCode, String trainReservationId,
+                                                          String trainReservationCode) {
+        TrainRepository trainRepository = DaggerTrainComponent.builder().baseAppComponent(
+                this.getBaseAppComponent()).build().trainRepository();
+        TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
+        return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
+                trainReservationId, trainReservationCode, voucherCode
+        )).map(trainCheckVoucherModel -> new VoucherViewModel());
     }
 
     @Override

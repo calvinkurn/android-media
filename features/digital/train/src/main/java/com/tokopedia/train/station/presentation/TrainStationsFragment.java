@@ -150,6 +150,7 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     public void onCityClicked(TrainStationCityViewModel element) {
         TrainStationAndCityViewModel trainStationAndCityViewModel = new TrainStationAndCityViewModel();
         trainStationAndCityViewModel.setCityName(element.getCityName());
+        trainStationAndCityViewModel.setIslandName(element.getCityName());
         if (interactionListener != null)
             interactionListener.onStationClicked(trainStationAndCityViewModel);
     }

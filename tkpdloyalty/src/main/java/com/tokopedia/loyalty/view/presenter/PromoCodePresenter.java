@@ -17,6 +17,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartL
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
+import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
@@ -34,17 +35,21 @@ import rx.Subscriber;
  */
 
 public class PromoCodePresenter implements IPromoCodePresenter {
+
     private final IPromoCodeView view;
     private final IPromoCodeInteractor promoCodeInteractor;
     private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
+    private TrainCheckVoucherUseCase trainCheckVoucherUseCase;
 
     @Inject
     public PromoCodePresenter(IPromoCodeView view,
                               IPromoCodeInteractor interactor,
-                              FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
+                              FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+                              TrainCheckVoucherUseCase trainCheckVoucherUseCase) {
         this.view = view;
         this.promoCodeInteractor = interactor;
         this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
+        this.trainCheckVoucherUseCase = trainCheckVoucherUseCase;
     }
 
     @Override
@@ -219,8 +224,44 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         );
     }
 
+    @Override
+    public void processCheckTrainPromoCode(Activity activity, String voucherCode, String trainReservationId, String trainReservationCode) {
+        view.showProgressLoading();
+        trainCheckVoucherUseCase.execute(
+                trainCheckVoucherUseCase.createVoucherRequest(trainReservationId, trainReservationCode, voucherCode),
+                checkTrainVoucherSubscriber()
+        );
+    }
+
     @NonNull
     private Subscriber<VoucherViewModel> checkFlightVoucherSubscriber() {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    view.onPromoCodeError(e.getMessage());
+                } else if (e instanceof MessageErrorException) {
+                    view.onGetGeneralError(e.getMessage());
+                } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                view.hideProgressLoading();
+                view.checkDigitalVoucherSucessful(voucherViewModel);
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<VoucherViewModel> checkTrainVoucherSubscriber() {
         return new Subscriber<VoucherViewModel>() {
             @Override
             public void onCompleted() {

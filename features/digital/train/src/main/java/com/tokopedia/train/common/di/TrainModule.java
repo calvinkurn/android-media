@@ -15,6 +15,7 @@ import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
@@ -124,10 +125,11 @@ public class TrainModule {
     @Provides
     public TrainRepository provideTrainRepository(TrainSeatCloudDataStore trainSeatCloudDataStore,
                                                   TrainStationDataStoreFactory trainStationDataStoreFactory,
-                                                  TrainScheduleDataStoreFactory scheduleDataStoreFactory) {
-        return new TrainRepositoryImpl(trainSeatCloudDataStore, trainStationDataStoreFactory, scheduleDataStoreFactory);
+                                                  TrainScheduleDataStoreFactory scheduleDataStoreFactory,
+                                                  TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore) {
+        return new TrainRepositoryImpl(trainSeatCloudDataStore, trainStationDataStoreFactory,
+                scheduleDataStoreFactory, trainCheckVoucherCloudDataStore);
     }
-
 
     @TrainScope
     @Provides
@@ -145,6 +147,12 @@ public class TrainModule {
     @Provides
     public TrainScheduleCloudDataStore provideTrainScheduleCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
         return new TrainScheduleCloudDataStore(trainApi, context);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainCheckVoucherCloudDataStore provideTrainCheckVoucherCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
+        return new TrainCheckVoucherCloudDataStore(trainApi, context);
     }
 
     @TrainScope

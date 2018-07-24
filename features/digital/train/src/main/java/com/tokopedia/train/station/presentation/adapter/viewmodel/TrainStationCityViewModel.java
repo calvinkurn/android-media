@@ -9,6 +9,7 @@ import com.tokopedia.train.station.presentation.adapter.TrainStationTypeFactory;
 
 public class TrainStationCityViewModel implements Visitable<TrainStationTypeFactory> {
     private String cityName;
+    private String islandName;
 
     @Override
     public int type(TrainStationTypeFactory typeFactory) {
@@ -22,4 +23,13 @@ public class TrainStationCityViewModel implements Visitable<TrainStationTypeFact
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
+
+    public String getIslandName() {
+        return islandName;
+    }
+
+    public void setIslandName(String islandName) {
+        this.islandName = islandName;
+    }
+
 }

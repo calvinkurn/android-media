@@ -2,6 +2,10 @@ package com.tokopedia.train.common.data;
 
 
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
+import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherEntity;
+import com.tokopedia.train.reviewdetail.data.TrainPromoEntity;
+import com.tokopedia.train.reviewdetail.data.specification.TrainCheckVoucherSpecification;
 import com.tokopedia.train.scheduledetail.data.specification.TrainStationByStationCodeSpecification;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.train.search.data.specification.TrainAvailabilitySearchSpecification;
@@ -36,13 +40,16 @@ public class TrainRepositoryImpl implements TrainRepository {
     private TrainSeatCloudDataStore trainSeatCloudDataStore;
     private TrainStationDataStoreFactory trainStationDataStoreFactory;
     private TrainScheduleDataStoreFactory trainScheduleDataStoreFactory;
+    private TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore;
 
     public TrainRepositoryImpl(TrainSeatCloudDataStore trainSeatCloudDataStore,
                                TrainStationDataStoreFactory trainStationDataStoreFactory,
-                               TrainScheduleDataStoreFactory scheduleDataStoreFactory) {
+                               TrainScheduleDataStoreFactory scheduleDataStoreFactory,
+                               TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore) {
         this.trainSeatCloudDataStore = trainSeatCloudDataStore;
         this.trainStationDataStoreFactory = trainStationDataStoreFactory;
         this.trainScheduleDataStoreFactory = scheduleDataStoreFactory;
+        this.trainCheckVoucherCloudDataStore = trainCheckVoucherCloudDataStore;
     }
 
     @Override
@@ -100,4 +107,10 @@ public class TrainRepositoryImpl implements TrainRepository {
     public Observable<List<TrainSeatMapEntity>> getSeat(HashMap<String, Object> parameters) {
         return trainSeatCloudDataStore.getData(new TrainSeatSpecification(parameters));
     }
+
+    @Override
+    public Observable<TrainPromoEntity> checkVoucher(HashMap<String, Object> parameters) {
+        return trainCheckVoucherCloudDataStore.getData(new TrainCheckVoucherSpecification(parameters));
+    }
+
 }
