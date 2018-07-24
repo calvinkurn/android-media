@@ -1,5 +1,7 @@
 package com.tokopedia.kol.feature.post.view.viewmodel;
 
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 
@@ -7,7 +9,7 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
+public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory>, Parcelable {
     public final static int DEFAULT_ID = -1;
 
     private String kolImage;
@@ -85,5 +87,6 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     public int type(KolPostTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
+
 }
 
