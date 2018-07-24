@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -176,23 +177,25 @@
             android:id="@+id/container_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/text_confirmation"
-            android:padding="@dimen/dp_32">
+            android:layout_below="@id/text_confirmation">
 
             <ImageView
+                android:layout_margin="@dimen/dp_10"
+                android:src="@drawable/ic_coupon_image"
                 android:padding="@dimen/dp_16"
                 android:id="@+id/image_payment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/iv_action_image"
-                android:background="@color/white"
-                android:padding="@dimen/dp_10"
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
-                android:layout_gravity="end|top"/>
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_gravity="top|end"
+                android:background="@drawable/circle_white"
+                app:srcCompat="@drawable/ic_check_green_payment"
+                android:padding="@dimen/dp_5"/>
         </FrameLayout>
     </RelativeLayout>
 

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +35,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
@@ -140,12 +138,12 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
             containerImageUpload.setVisibility(View.VISIBLE);
             containerHelpUploadProof.setVisibility(View.GONE);
             if(isUploaded) {
-                ImageHandler.loadImageCircleFromRes(buttonActionCloseImage.getContext(), buttonActionCloseImage, R.drawable.ic_check_green_payment);
+                buttonActionCloseImage.setImageResource(R.drawable.ic_check_green_payment);
                 buttonSave.setText(R.string.payment_label_finish);
                 buttonChooseAnotherImage.setVisibility(View.VISIBLE);
                 titleUploadImage.setText(R.string.payment_label_succes_upload_proof);
             }else{
-                ImageHandler.loadImageCircleFromRes(buttonActionCloseImage.getContext(), buttonActionCloseImage, R.drawable.ic_close_default);
+                buttonActionCloseImage.setImageResource(R.drawable.ic_close_default);
                 buttonSave.setText(R.string.payment_label_save_image);
                 buttonChooseAnotherImage.setVisibility(View.GONE);
                 titleUploadImage.setText(R.string.payment_label_confirmation_upload_image);
