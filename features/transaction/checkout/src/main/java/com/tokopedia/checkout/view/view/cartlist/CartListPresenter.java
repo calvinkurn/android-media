@@ -60,6 +60,8 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class CartListPresenter implements ICartListPresenter {
+    private static final float PERCENTAGE = 100.0f;
+
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_CARTS = "carts";
@@ -117,9 +119,9 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(getSubscriberInitialCartListData())
         );
     }
@@ -141,9 +143,9 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(param));
         compositeSubscription.add(
                 deleteCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberDeleteCart(cartItemData, addWishList))
         );
     }
@@ -187,9 +189,9 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 deleteCartGetCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberDeleteAndRefreshCart())
         );
     }
@@ -216,54 +218,12 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberToShipmentSingleAddress())
         );
     }
-
-
-//    @SuppressWarnings("deprecation")
-//    @Override
-//    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
-//        view.showProgressLoading();
-//        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-//        param.put(PARAM_LANG, "id");
-//        param.put(PARAM_IS_RESET, "false");
-//        RequestParams requestParams = RequestParams.create();
-//        requestParams.putObject(
-//                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING, view.getGeneratedAuthParamNetwork(param)
-//        );
-//        compositeSubscription.add(
-//                getCartListUseCase.createObservable(requestParams)
-//                        .subscribeOn(Schedulers.newThread())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .unsubscribeOn(Schedulers.newThread())
-//                        .subscribe(new Subscriber<CartListData>() {
-//                            @Override
-//                            public void onCompleted() {
-//
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                view.hideProgressLoading();
-//                                e.printStackTrace();
-//                                handleErrorCheckoutToMultipleAddress(e);
-//                            }
-//
-//                            @Override
-//                            public void onNext(CartListData cartListData) {
-//                                view.hideProgressLoading();
-//                                if (!cartListData.isError())
-//                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
-//                                else
-//                                    view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
-//                            }
-//                        })
-//        );
-//    }
 
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
@@ -324,7 +284,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (data.getCartItemData().getOriginData().isCashBack()) {
                         String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                         double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                        itemCashback = cashbackPercentage / 100.0f * subTotalWholesalePrice;
+                        itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice;
                     }
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
                         subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
@@ -338,7 +298,7 @@ public class CartListPresenter implements ICartListPresenter {
                         if (data.getCartItemData().getOriginData().isCashBack()) {
                             String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                             double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                            double itemCashback = cashbackPercentage / 100.0f * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
                             cashback = cashback + itemCashback;
                         }
                         subtotalPrice = subtotalPrice + itemPrice;
@@ -351,7 +311,7 @@ public class CartListPresenter implements ICartListPresenter {
                             if (data.getCartItemData().getOriginData().isCashBack()) {
                                 String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                                 double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                                double itemCashback = cashbackPercentage / 100.0f * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
                                 cashback = cashback + itemCashback;
                             }
                             subtotalPrice = subtotalPrice + itemPrice;
@@ -412,9 +372,9 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
         );
     }
@@ -438,9 +398,9 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 resetCartGetCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberResetRefreshCart())
         );
     }
@@ -685,9 +645,9 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processCancelAutoApply() {
         compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {

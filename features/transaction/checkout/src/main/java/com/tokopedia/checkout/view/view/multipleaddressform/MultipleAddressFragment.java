@@ -182,25 +182,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
                 int childPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
                 int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
-                if (newAddress != null && dataList != null && childPosition != -1 && parentPosition != -1) {
-                    if (dataList.size() > 0) {
-                        for (int i = 0; i < dataList.size(); i++) {
-                            if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
-                                boolean findItem = false;
-                                for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
-                                    if (j == childPosition) {
-                                        dataList.get(i).getItemListData().get(j).setRecipientAddressModel(newAddress);
-                                        findItem = true;
-                                        break;
-                                    }
-                                }
-                                if (findItem) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                setNewShipmentRecipientAddress(dataList, newAddress, childPosition, parentPosition);
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
                 setRecyclerViewAdapter(dataList, parentPosition);
@@ -244,6 +226,30 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
                 setRecyclerViewAdapter(dataList, parentPosition);
+            }
+        }
+    }
+
+    private void setNewShipmentRecipientAddress(ArrayList<MultipleAddressAdapterData> dataList,
+                                                RecipientAddressModel newAddress,
+                                                int childPosition, int parentPosition) {
+        if (newAddress != null && dataList != null && childPosition != -1 && parentPosition != -1) {
+            if (dataList.size() > 0) {
+                for (int i = 0; i < dataList.size(); i++) {
+                    if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
+                        boolean findItem = false;
+                        for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
+                            if (j == childPosition) {
+                                dataList.get(i).getItemListData().get(j).setRecipientAddressModel(newAddress);
+                                findItem = true;
+                                break;
+                            }
+                        }
+                        if (findItem) {
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -323,7 +329,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                         .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
+                                // Do Nothing, was added just to dismiss toaster
                             }
                         })
                         .show();

@@ -385,7 +385,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderErrorFormItemValidation(CartItemHolderData data) {
-        String noteCounter = String.format("%d/%d karakter", data.getCartItemData().getUpdatedData().getRemark().length(),
+        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                data.getCartItemData().getUpdatedData().getRemark().length(),
                 data.getCartItemData().getUpdatedData().getMaxCharRemark());
         tvNoteCharCounter.setText(noteCounter);
         if (data.getCartItemData().getUpdatedData().getRemark().length() > 0) {

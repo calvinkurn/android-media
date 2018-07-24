@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_4"
         android:text="@string/label_change_address"
@@ -66,7 +66,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:id="@+id/tv_label_note_for_seller"
@@ -96,6 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_label_note_for_seller"
+            android:background="@android:color/transparent"
             android:fontFamily="sans-serif"
             android:hint="@string/label_note_for_seller"
             android:imeActionLabel="Selesai"
@@ -111,13 +114,21 @@
             app:backgroundTint="@color/tkpd_main_green"
             tools:ignore="TextFields" />
 
+        <View
+            android:id="@+id/v_notes_separator"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/et_notes_for_seller"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@color/grey_300" />
+
         <TextView
             android:id="@+id/tv_error_form_remark_validation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/et_notes_for_seller"
+            android:layout_below="@id/v_notes_separator"
             android:fontFamily="sans-serif"
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_4"
@@ -135,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/et_notes_for_seller"
+            android:layout_below="@id/v_notes_separator"
             android:fontFamily="sans-serif"
             android:maxLines="2"
             android:textColor="@color/text_cart_item_error_red"
@@ -160,14 +171,6 @@
             tools:text="60/140" />
 
     </RelativeLayout>
-
-    <View
-        android:id="@+id/v_notes_separator"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/grey_300"
-        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"

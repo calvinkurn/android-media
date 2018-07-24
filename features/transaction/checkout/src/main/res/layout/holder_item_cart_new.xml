@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:lineSpacingExtra="5sp"
+            android:lineSpacingExtra="@dimen/sp_5"
             android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
             android:text="@string/label_seller"
@@ -36,14 +36,14 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
             android:layout_toRightOf="@+id/tv_label_shop_name"
-            android:lineSpacingExtra="5sp"
+            android:lineSpacingExtra="@dimen/sp_5"
             tools:ignore="RelativeOverlap"
             tools:text="Loaa Store  df" />
 
         <ImageView
             android:id="@+id/img_shop_badge"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/tv_shop_name"
             tools:src="@drawable/ic_badge_official" />
@@ -51,7 +51,7 @@
         <ImageView
             android:id="@+id/btn_delete_cart"
             android:layout_width="wrap_content"
-            android:layout_height="16dp"
+            android:layout_height="@dimen/dp_16"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -65,7 +65,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e0e0e0" />
+        android:background="@color/separator_color" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,16 +82,16 @@
 
             <ImageView
                 android:id="@+id/iv_image_product"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_52"
+                android:layout_marginTop="@dimen/dp_4"
                 tools:ignore="ContentDescription"
                 tools:src="@drawable/empty_photo" />
 
             <ImageView
                 android:id="@+id/iv_image_wishlist"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
                 android:layout_alignEnd="@+id/iv_image_product"
                 android:layout_alignRight="@+id/iv_image_product"
                 android:layout_alignTop="@+id/iv_image_product"
@@ -99,7 +99,7 @@
                 android:layout_marginRight="-5dp"
                 android:layout_marginTop="-5dp"
                 android:background="@drawable/bg_circle_white"
-                android:padding="5dp"
+                android:padding="@dimen/dp_5"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_wishlist_unchecked" />
 
@@ -164,7 +164,7 @@
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_qty"
-                    android:layout_width="60dp"
+                    android:layout_width="@dimen/dp_60"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:inputType="number"
@@ -204,7 +204,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/grey_300" />
+            android:background="@color/separator_color" />
 
         <RelativeLayout
             android:layout_width="match_parent"

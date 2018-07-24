@@ -43,13 +43,6 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         adapterObjectList.add(addressData);
     }
 
-    public void updateData(ArrayList<MultipleAddressAdapterData> multipleAddressAdapterData) {
-        this.addressData.clear();
-        if (addressData != null) {
-            addressData.addAll(multipleAddressAdapterData);
-        }
-    }
-
     @Override
     public int getItemViewType(int position) {
         if (adapterObjectList.get(position) instanceof MultipleAddressAdapterData)
