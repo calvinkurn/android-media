@@ -48,6 +48,18 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
         if (mGetHomePageData != null) {
             mGetHomePageData.unsubscribe();
         }
+
+        if (mSaveCouponUseCase != null) {
+            mSaveCouponUseCase.unsubscribe();
+        }
+
+        if (mValidateCouponUseCase != null) {
+            mValidateCouponUseCase.unsubscribe();
+        }
+
+        if (mRedeemCouponUseCase != null) {
+            mRedeemCouponUseCase.unsubscribe();
+        }
     }
 
     @Override

@@ -356,7 +356,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                     mHandler.post(mRunnableUpdateCatalogStatus);
                 }
             }
-        }, 0, mRefreshTime);
+        }, 0, mRefreshTime > 0 ? mRefreshTime : CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
 
     private void fetchRemoteConfig() {
@@ -368,5 +368,22 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     public void onDestroyView() {
         super.onDestroyView();
         mPresenter.destroyView();
+
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mRunnableUpdateCatalogStatus);
+            mHandler = null;
+        }
+
+        mRunnableUpdateCatalogStatus = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
