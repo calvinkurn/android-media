@@ -36,6 +36,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
+import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES;
+
 /**
  * @author by yfsx on 23/07/18.
  */
@@ -43,7 +48,12 @@ import javax.inject.Inject;
 public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostListener.View.Like, KolPostListener.View.ViewHolder {
 
+    private static final String EXTRA_IS_FOLLOWING = "is_following";
+    private static final int IS_FOLLOWING_TRUE = 1;
+    private static final int IS_FOLLOWING_FALSE = 0;
     private static final int OPEN_KOL_COMMENT = 101;
+    private static final int OPEN_KOL_PROFILE = 13;
+    private static final int DEFAULT_VALUE = -1;
 
     private RecyclerView recyclerView;
     private KolPostAdapter adapter;
@@ -144,7 +154,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onGoToKolProfile(int rowNumber, String userId, int postId) {
         Intent intent = kolRouter.getTopProfileIntent(getContext(), userId);
-        startActivity(intent);
+        startActivityForResult(intent, OPEN_KOL_PROFILE);
     }
 
     @Override
@@ -200,6 +210,18 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     );
                 }
                 break;
+            case OPEN_KOL_PROFILE:
+                if (resultCode == Activity.RESULT_OK) {
+                    onSuccessFollowUnfollowFromProfile(
+                            data.getIntExtra(EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
+                    );
+
+                    updatePostState(
+                            data.getIntExtra(PARAM_IS_LIKED, DEFAULT_VALUE),
+                            data.getIntExtra(PARAM_TOTAL_LIKES, DEFAULT_VALUE),
+                            data.getIntExtra(PARAM_TOTAL_COMMENTS, DEFAULT_VALUE)
+                    );
+                }
             default:
                 break;
         }
@@ -226,6 +248,39 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             adapter.getList().get(rowNumber)).getTotalComment() +
                     totalNewComment);
             adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    private void onSuccessFollowUnfollowFromProfile(int isFollowing) {
+        if (!adapter.getList().isEmpty()
+                && adapter.getList().get(0) instanceof KolPostViewModel) {
+            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getList().get(0);
+
+            if (isFollowing != DEFAULT_VALUE) {
+                kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
+                kolViewModel.setTemporarilyFollowed(isFollowing == IS_FOLLOWING_TRUE);
+            }
+            adapter.notifyItemChanged(0);
+        }
+    }
+
+    private void updatePostState(int isLiked, int totalLike, int totalComment) {
+        if (!adapter.getList().isEmpty()
+                && adapter.getList().get(0) instanceof BaseKolViewModel) {
+            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getList().get(0);
+
+            if (isLiked != DEFAULT_VALUE) {
+                kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
+            }
+
+            if (totalLike != DEFAULT_VALUE) {
+                kolViewModel.setTotalLike(totalLike);
+            }
+
+            if (totalComment != DEFAULT_VALUE) {
+                kolViewModel.setTotalComment(totalComment);
+            }
+            adapter.notifyItemChanged(0);
         }
     }
 

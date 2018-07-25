@@ -86,7 +86,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
                 postKol.getUserInfo() == null ? "" : postKol.getUserInfo(),
                 postKol.getUserUrl() == null ? "" : postKol.getUserUrl(),
-                true,
+                postKol.isIsFollow(),
                 postKol.getDescription() == null ? "" : postKol.getDescription(),
                 postKol.isIsLiked(),
                 postKol.getLikeCount(),
