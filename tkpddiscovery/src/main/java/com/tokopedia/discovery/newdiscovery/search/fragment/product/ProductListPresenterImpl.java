@@ -173,7 +173,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
                     @Override
                     public void onStart() {
-                        getView().setTopAdsEndlessListener();
                         getView().incrementStart();
                     }
 
@@ -184,19 +183,18 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 = ProductViewModelHelper.convertToProductViewModel(gqlResponse);
                         if (isViewAttached()) {
                             if (productViewModel.getProductList().isEmpty()) {
-                                getView().unSetTopAdsEndlessListener();
+                                getView().removeLoading();
                                 getView().showBottomBarNavigation(false);
                             } else {
                                 List<Visitable> list = new ArrayList<Visitable>();
+                                getView().removeLoading();
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
+                                getView().addLoading();
                                 if (getView().isEvenPage()) {
                                     getView().addGuidedSearch();
                                 }
                                 getView().showBottomBarNavigation(true);
-                                if (getView().getStartFrom() >= productViewModel.getTotalData()) {
-                                    getView().unSetTopAdsEndlessListener();
-                                }
                             }
                             getView().storeTotalData(productViewModel.getTotalData());
                         }
@@ -212,6 +210,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
+                            getView().removeLoading();
                             getView().hideRefreshLayout();
                             getView().showNetworkError(searchParameter.getStartRow());
                             getView().showBottomBarNavigation(false);
@@ -300,7 +299,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
                     @Override
                     public void onStart() {
-                        getView().setTopAdsEndlessListener();
                         getView().showRefreshLayout();
                         getView().incrementStart();
                     }
@@ -315,6 +313,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
+                            getView().removeLoading();
                             getView().showNetworkError(0);
                             getView().hideRefreshLayout();
                             getView().showBottomBarNavigation(false);
@@ -329,6 +328,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                     = ProductViewModelHelper.convertToProductViewModelFirstPageGql(gqlResponse);
                             List<Visitable> list = new ArrayList<Visitable>();
                             if (productViewModel.getProductList().isEmpty()) {
+                                getView().removeLoading();
                                 getView().setEmptyProduct();
                                 getView().setTotalSearchResultCount("0");
                                 getView().showBottomBarNavigation(false);
@@ -337,12 +337,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
                                 list.add(headerViewModel);
                                 list.addAll(productViewModel.getProductList());
+                                getView().removeLoading();
                                 getView().setProductList(list);
+                                getView().addLoading();
                                 getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
                                 getView().showBottomBarNavigation(true);
-                                if (getView().getStartFrom() > productViewModel.getTotalData()) {
-                                    getView().unSetTopAdsEndlessListener();
-                                }
                             }
                             getView().storeTotalData(productViewModel.getTotalData());
                         }

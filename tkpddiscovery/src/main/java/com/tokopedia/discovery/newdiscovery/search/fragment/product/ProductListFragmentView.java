@@ -31,10 +31,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     int getStartFrom();
 
-    void setTopAdsEndlessListener();
-
-    void unSetTopAdsEndlessListener();
-
     void setHeaderTopAds(boolean hasHeader);
 
     void setProductList(List<Visitable> list);
@@ -63,4 +59,8 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void getQuickFilter();
 
     void renderQuickFilter(DynamicFilterModel dynamicFilterModel);
+
+    void addLoading();
+
+    void removeLoading();
 }

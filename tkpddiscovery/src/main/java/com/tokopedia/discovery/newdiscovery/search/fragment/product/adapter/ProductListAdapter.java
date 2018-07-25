@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -35,11 +36,13 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     private int totalData;
     private Context context;
     private GuidedSearchViewModel guidedSearch;
+    private LoadingModel loadingModel;
 
     public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
         this.context = context;
         this.typeFactory = typeFactory;
+        loadingModel = new LoadingModel();
     }
 
     @Override
@@ -204,5 +207,15 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
             ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setQuickFilterList(quickFilterOptions);
             notifyItemChanged(ADAPTER_POSITION_HEADER);
         }
+    }
+
+    public void addLoading() {
+        this.list.add(loadingModel);
+        notifyDataSetChanged();
+    }
+
+    public void removeLoading() {
+        this.list.remove(loadingModel);
+        notifyDataSetChanged();
     }
 }

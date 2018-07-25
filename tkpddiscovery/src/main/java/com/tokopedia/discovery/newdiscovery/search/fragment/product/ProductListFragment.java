@@ -19,6 +19,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
@@ -57,7 +58,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +71,7 @@ import javax.inject.Inject;
 
 public class ProductListFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductListFragmentView,
-        ItemClickListener, WishlistActionListener, TopAdsItemClickListener, TopAdsListener {
+        ItemClickListener, WishlistActionListener {
 
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -88,11 +88,13 @@ public class ProductListFragment extends SearchSectionFragment
     @Inject
     ProductListPresenter presenter;
 
+    private EndlessRecyclerviewListener linearLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerviewListener gridLayoutLoadMoreTriggerListener;
+
     private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
     private Config topAdsConfig;
     private ProductListAdapter adapter;
-    protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProductViewModel productViewModel;
     private ProductListTypeFactory productListTypeFactory;
     private SearchParameter searchParameter;
@@ -204,21 +206,9 @@ public class ProductListFragment extends SearchSectionFragment
     private void setupAdapter() {
         productListTypeFactory = new ProductListTypeFactoryImpl(this, topAdsConfig);
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
-        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
-        topAdsRecyclerAdapter.setConfig(topAdsConfig);
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
-        recyclerView.setAdapter(topAdsRecyclerAdapter);
-        topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
-        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
-            @Override
-            public void onLoad(int page, int totalCount) {
-                if (isAllowLoadMore()) {
-                    loadMoreProduct(adapter.getStartFrom());
-                } else {
-                    topAdsRecyclerAdapter.hideLoading();
-                }
-            }
-        });
+        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.setAdapter(adapter);
+        addLoading();
 
         setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
@@ -245,9 +235,29 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void setupListener() {
-        topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsListener(this);
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
+        gridLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getGridLayoutManager()) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (isAllowLoadMore()) {
+                    loadMoreProduct(adapter.getStartFrom());
+                } else {
+                    adapter.removeLoading();
+                }
+            }
+        };
+
+        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getLinearLayoutManager()) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (isAllowLoadMore()) {
+                    loadMoreProduct(adapter.getStartFrom());
+                } else {
+                    adapter.removeLoading();
+                }
+            }
+        };
+        recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
     }
 
     @Override
@@ -291,7 +301,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setHeaderTopAds(boolean hasHeader) {
-        topAdsRecyclerAdapter.setHasHeader(hasHeader);
+
     }
 
     @Override
@@ -310,17 +320,6 @@ public class ProductListFragment extends SearchSectionFragment
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
-    }
-
-    @Override
-    public void setTopAdsEndlessListener() {
-        topAdsRecyclerAdapter.setEndlessScrollListener();
-    }
-
-    @Override
-    public void unSetTopAdsEndlessListener() {
-        topAdsRecyclerAdapter.unsetEndlessScrollListener();
-        topAdsRecyclerAdapter.hideLoading();
     }
 
     private void loadMoreProduct(final int startRow) {
@@ -418,15 +417,36 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected void switchLayoutType() {
+        super.switchLayoutType();
+
+        if (!getUserVisibleHint()) {
+            return;
+        }
+        recyclerView.clearOnScrollListeners();
+
+        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
+
+        switch (getAdapter().getCurrentLayoutType()) {
+            case GRID_1: // List
+                recyclerView.addOnScrollListener(linearLayoutLoadMoreTriggerListener);
+                break;
+            case GRID_2: // Grid 2x2
+            case GRID_3: // Grid 1x1
+                recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
+                break;
+        }
+    }
+
+    @Override
     protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 if (adapter.isEmptyItem(position) ||
                         adapter.isHeaderBanner(position) ||
-                        adapter.isGuidedSearch(topAdsRecyclerAdapter.getOriginalPosition(position)) ||
-                        topAdsRecyclerAdapter.isLoading(position) ||
-                        topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
+                        adapter.isGuidedSearch(position) ||
+                        adapter.isLoading(position)) {
                     return spanCount;
                 } else {
                     return 1;
@@ -541,7 +561,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
-        presenter.handleWishlistButtonClicked(productItem, topAdsRecyclerAdapter.getOriginalPosition(adapterPosition));
+        presenter.handleWishlistButtonClicked(productItem, adapterPosition);
     }
 
     @Override
@@ -669,7 +689,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setEmptyProduct() {
-        topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.showEmpty(productViewModel.getQuery());
         SearchTracking.eventSearchNoResult(productViewModel.getQuery(), getScreenName(), getSelectedFilter());
     }
@@ -690,8 +709,6 @@ public class ProductListFragment extends SearchSectionFragment
         showRefreshLayout();
         adapter.clearData();
         initTopAdsParams();
-        topAdsRecyclerAdapter.setConfig(topAdsConfig);
-        topAdsRecyclerAdapter.reset();
         showBottomBarNavigation(false);
         SearchParameter searchParameter
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
@@ -733,52 +750,17 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onChangeList() {
-        topAdsRecyclerAdapter.setLayoutManager(getLinearLayoutManager());
+        recyclerView.setLayoutManager(getLinearLayoutManager());
     }
 
     @Override
     public void onChangeDoubleGrid() {
-        topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
+        recyclerView.setLayoutManager(getGridLayoutManager());
     }
 
     @Override
     public void onChangeSingleGrid() {
-        topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
-    }
-
-    @Override
-    public void onTopAdsLoaded() {
-
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsRecyclerAdapter.hideLoading();
-    }
-
-    @Override
-    public void onProductItemClicked(int position, Product product) {
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
-    }
-
-    @Override
-    public void onShopItemClicked(int position, Shop shop) {
-        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
-        startActivity(intent);
-    }
-
-    @Override
-    public void onAddFavorite(int position, Data data) {
-
+        recyclerView.setLayoutManager(getGridLayoutManager());
     }
 
     @Override
@@ -893,5 +875,15 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void addLoading() {
+        adapter.addLoading();
+    }
+
+    @Override
+    public void removeLoading() {
+        adapter.removeLoading();
     }
 }
