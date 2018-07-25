@@ -174,6 +174,8 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (!isTabHidden) {
             val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
             params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+            tabLayout.layoutParams = params
+            tabLayout.invalidate()
             isTabHidden = true
         }
     }
@@ -183,8 +185,14 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (isTabHidden) {
             val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
             params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+            tabLayout.layoutParams = params
+            tabLayout.invalidate()
             isTabHidden = false
         }
+    }
+
+    override fun getTabHeight(): Int {
+        return tabLayout.height
     }
 
     private fun getShopInfo() {

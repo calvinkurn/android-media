@@ -124,6 +124,8 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         void hideTab();
 
         void showTab();
+
+        int getTabHeight();
     }
 
     public static ShopProductListLimitedNewFragment createInstance(String shopAttribution) {
@@ -187,7 +189,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
+            int totalDy;
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -201,9 +203,14 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                     if (firstCompletelyVisiblePosition > (shopProductNewAdapter.getStickyHeaderPosition() - 1)) {
                         // if hit the etalase label, hide the Tab
                         onShopProductListLimitedNewFragmentListener.hideTab();
+                        totalDy = 0;
                     } else {
-                        // if etalase label is below, show the Tab
-                        onShopProductListLimitedNewFragmentListener.showTab();
+                        totalDy+= dy;
+                        Log.i("TestABCDE", String.valueOf(totalDy));
+                        if ((-1 * totalDy) > onShopProductListLimitedNewFragmentListener.getTabHeight()) {
+                            Log.i("TestABCDE", "show Tab");
+                            onShopProductListLimitedNewFragmentListener.showTab();
+                        }
                     }
                 }
                 if (lastCompleteVisiblePosition > -1) {
