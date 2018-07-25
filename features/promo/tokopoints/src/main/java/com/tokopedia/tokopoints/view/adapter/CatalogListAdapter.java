@@ -111,6 +111,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             StringBuilder upperText = new StringBuilder();
             for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
                 if (i == 1) {
+                    //exclusive case for handling font color of second index.
                     upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
                 } else {
                     upperText.append(item.getUpperTextDesc().get(i)).append(" ");

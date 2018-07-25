@@ -46,8 +46,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private ViewFlipper mContainer;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
-    private TextView mTextFailedAction;
-    private TextView mTextEmptyAction;
 
     @Inject
     public CatalogListItemPresenter mPresenter;
@@ -70,8 +68,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
         mContainer = rootView.findViewById(R.id.container);
-        mTextFailedAction = rootView.findViewById(R.id.text_failed_action);
-        mTextFailedAction = rootView.findViewById(R.id.text_empty_action);
         return rootView;
     }
 

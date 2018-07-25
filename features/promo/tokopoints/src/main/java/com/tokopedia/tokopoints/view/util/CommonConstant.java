@@ -37,6 +37,13 @@ public interface CommonConstant {
         String SLUG = "slug";
     }
 
+    interface TickerMapKeys {
+        String APP_LINK = "applink";
+        String TOKOPEDIA = "tokopedia";
+        String CONTENT = "content";
+        String URL = "url";
+    }
+
     class BaseUrl {
         static String WEB_DOMAIN_MOBILE = "https://m.tokopedia.com/";
     }

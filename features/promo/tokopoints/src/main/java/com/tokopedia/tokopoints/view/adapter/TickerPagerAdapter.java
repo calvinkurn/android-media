@@ -25,6 +25,7 @@ import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TickerMetadata;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.SimpleSpanBuilder;
 
 import java.util.List;
@@ -73,14 +74,15 @@ public class TickerPagerAdapter extends PagerAdapter {
         }
 
         for (TickerMetadata each : container.getMetadata()) {
-            if (URLUtil.isValidUrl(each.getLink().get("applink"))
-                    || URLUtil.isValidUrl(each.getLink().get("url"))) {
-                String linkContent = each.getText().get("content");
+            if (URLUtil.isValidUrl(each.getLink().get(CommonConstant.TickerMapKeys.APP_LINK))
+                    || URLUtil.isValidUrl(each.getLink().get(each.getLink().get(CommonConstant.TickerMapKeys.URL)))) {
+                String linkContent = each.getText().get(CommonConstant.TickerMapKeys.CONTENT);
                 ssb.append(linkContent, new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
-                        String uri = each.getLink().get("applink").isEmpty() ? each.getLink().get("url") : each.getLink().get("applink");
-                        if (uri.startsWith("tokopedia")) {
+                        String uri = each.getLink().get(CommonConstant.TickerMapKeys.APP_LINK).isEmpty() ? each.getLink().get(CommonConstant.TickerMapKeys.URL)
+                                : each.getLink().get(CommonConstant.TickerMapKeys.APP_LINK);
+                        if (uri.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
                             RouteManager.route(context, uri);
                         } else {
                             ((TokopointRouter) mContext.getApplicationContext()).openTokoPoint(mContext, uri);
@@ -95,7 +97,7 @@ public class TickerPagerAdapter extends PagerAdapter {
                     }
                 });
             } else {
-                ssb.appendWithSpace(each.getText().get("content"));
+                ssb.appendWithSpace(each.getText().get(CommonConstant.TickerMapKeys.CONTENT));
             }
         }
 
