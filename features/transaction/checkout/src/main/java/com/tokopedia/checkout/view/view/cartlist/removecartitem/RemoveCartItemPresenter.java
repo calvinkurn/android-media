@@ -11,8 +11,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductHeaderViewModel;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductItemViewModel;
-import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.usecase.RequestParams;
 

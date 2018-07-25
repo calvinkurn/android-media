@@ -101,7 +101,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     @Override
     public void onBackPressed() {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectiontClickBackArrow();
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
         showResetDialog();
     }
 
@@ -115,7 +115,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
             @Override
             public void onClick(View view) {
                 checkoutAnalyticsCourierSelection
-                        .eventClickCourierSelectionClickKembaliDanHapusPerubahanFromBackArrow();
+                        .eventClickAtcCourierSelectionClickKembaliDanHapusPerubahanFromBackArrow();
                 setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
                 finish();
             }
@@ -124,7 +124,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
             @Override
             public void onClick(View view) {
                 checkoutAnalyticsCourierSelection
-                        .eventClickCourierSelectionClickTetapDiHalamanIniFromBackArrow();
+                        .eventClickAtcCourierSelectionClickTetapDiHalamanIniFromBackArrow();
                 dialog.dismiss();
             }
         });

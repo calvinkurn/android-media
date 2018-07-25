@@ -101,8 +101,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickAddNewAddressFromChangeAddress();
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
+            checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickPlusIconFromTujuanPengiriman();
+            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
@@ -244,7 +245,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 getString(R.string.checkout_module_subtitle_error_empty_address),
                 getString(R.string.checkout_module_label_button_retry_error_empty_address),
                 R.drawable.ic_empty_state,
-                () -> startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
+                () -> startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(getActivity(), token),
                         ManageAddressConstant.REQUEST_CODE_PARAM_CREATE));
     }
 
@@ -317,11 +318,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         getFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .commit();
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChooseOtherAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickPilihAlamatLainnyaFromGantiAlamat();
     }
 
     private void onSendToMultipleAddress() {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToMultipleAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat();
         mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
@@ -338,20 +339,25 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         } else {
             getActivity().finish();
         }
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToThisAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickKirimKeAlamatIniFromGantiAlamat();
     }
 
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
+        sendAnalyticsOnAddressSelectionClicked();
+    }
+
+    private void sendAnalyticsOnAddressSelectionClicked() {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromTujuanPengiriman();
     }
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickEditFromChooseOtherAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
+        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
