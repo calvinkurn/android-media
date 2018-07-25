@@ -36,11 +36,13 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     public CatalogListItemPresenter(GraphqlUseCase getHomePageData,
                                     GraphqlUseCase saveCouponUseCase,
                                     GraphqlUseCase validateCouponUseCase,
+                                    GraphqlUseCase fetchCatalogStatusUseCase,
                                     GraphqlUseCase redeemCouponUseCase) {
         this.mGetHomePageData = getHomePageData;
         this.mSaveCouponUseCase = saveCouponUseCase;
         this.mValidateCouponUseCase = validateCouponUseCase;
         this.mRedeemCouponUseCase = redeemCouponUseCase;
+        this.mFetchCatalogStatusUseCase = fetchCatalogStatusUseCase;
     }
 
     @Override
@@ -59,6 +61,10 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
 
         if (mRedeemCouponUseCase != null) {
             mRedeemCouponUseCase.unsubscribe();
+        }
+
+        if (mFetchCatalogStatusUseCase != null) {
+            mFetchCatalogStatusUseCase.unsubscribe();
         }
     }
 
