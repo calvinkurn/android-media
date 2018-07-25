@@ -239,6 +239,7 @@
         <activity
             android:name=".DeveloperOptions"
             android:label="@string/title_activity_developer_options"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".TermPrivacy"

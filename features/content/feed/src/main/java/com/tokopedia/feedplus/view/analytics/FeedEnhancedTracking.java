@@ -171,6 +171,11 @@ public class FeedEnhancedTracking {
             return String.format("/%s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, BANNER);
         }
 
+        public static String createContentNameAnnouncement(String tagsType, String cardType) {
+            return String.format("/%s - %s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, cardType,
+                    tagsType);
+        }
+
         public static String createContentName(String tagsType, String cardType) {
             return CONTENT_FEED + " - "
                     + cardType + " - "
