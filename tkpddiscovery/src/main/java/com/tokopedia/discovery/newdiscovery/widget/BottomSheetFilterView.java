@@ -15,7 +15,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Search;
@@ -180,7 +180,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, isChecked);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
         if (isChecked) {
             savedCheckedState.put(option.getUniqueId(), true);
         } else {
@@ -198,7 +198,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void removeSavedTextInput(String key) {
-        SearchTracking.eventSearchResultFilterJourney(key, "", false, false);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), key, "", false, false);
         savedTextInput.remove(key);
         updateResetButtonVisibility();
     }
@@ -206,7 +206,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void saveTextInput(String key, String textInput) {
         savedTextInput.put(key, textInput);
-        SearchTracking.eventSearchResultFilterJourney(key, textInput, false, true);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
         updateResetButtonVisibility();
     }
 
@@ -293,7 +293,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void removeSelectedOption(Option option, String filterTitle) {
         if (KEY_CATEGORY.equals(option.getKey())) {
-            SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, false);
+            SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
             resetSelectedCategory();
             updateResetButtonVisibility();
             applyFilter();
@@ -596,6 +596,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     @Override
+    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
+        applyFilter();
+    }
+
+    @Override
     public boolean isSelectedCategory(Option option) {
         return !TextUtils.isEmpty(selectedCategoryId)
                 &&  selectedCategoryId.equals(option.getValue());
@@ -603,7 +608,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void selectCategory(Option option, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, true);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
         FilterFlagSelectedModel filterFlagSelectedModel = new FilterFlagSelectedModel();
         FilterHelper.populateWithSelectedCategory(filterMainAdapter.getFilterList(), filterFlagSelectedModel, option.getValue());
         selectedCategoryId = filterFlagSelectedModel.getCategoryId();
@@ -748,13 +753,18 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         KeyboardHelper.setKeyboardVisibilityChangedListener(bottomSheetLayout, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
             @Override
             public void onKeyboardShown() {
-                buttonFinish.setVisibility(View.GONE);
+                if (bottomSheetBehavior != null
+                        && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    buttonFinish.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onKeyboardHide() {
-                buttonFinish.setVisibility(View.VISIBLE);
-                bottomSheetLayout.requestFocus();
+                if (bottomSheetBehavior != null
+                        && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    buttonFinish.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

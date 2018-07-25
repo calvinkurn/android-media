@@ -232,6 +232,11 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void setupRecyclerView() {
         if (list_catalog.getAdapter() != null) {
             return;
@@ -259,7 +264,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
                     topAdsRecyclerAdapter.shouldLoadAds(false);
                     topAdsRecyclerAdapter.hideLoading();
                     topAdsRecyclerAdapter.unsetEndlessScrollListener();
-                    if (getActivity() instanceof  BrowseProductActivity) {
+                    if (getActivity() instanceof BrowseProductActivity) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }
@@ -368,7 +373,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void setLoading(boolean isLoading) {
-        if(isLoading){
+        if (isLoading) {
             topAdsRecyclerAdapter.showLoading();
         } else {
             topAdsRecyclerAdapter.hideLoading();

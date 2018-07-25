@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -30,9 +31,11 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewMod
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
+import com.tokopedia.train.seat.presentation.widget.TrainSeatChangesDialog;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPagerIndicator;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -260,8 +263,19 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
-    public void backToHomePage() {
-        getActivity().finish();
+    public void showExpiredPaymentDialog() {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.train_seat_expired_payment_time));
+        dialog.setDesc(getString(R.string.train_seat_expired_payment_time_desc));
+        dialog.setBtnOk(getString(R.string.train_seat_expired_payment_time_cta));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                getActivity().finish();
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -299,7 +313,8 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public void setOriginPassenger(List<TrainSeatPassengerViewModel> originPassengers) {
-        this.originPassengers = originPassengers;
+        this.originPassengers =  new ArrayList<>();
+        this.originPassengers.addAll(originPassengers);
     }
 
     @Override
@@ -335,6 +350,30 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     @Override
     public void setToolbarSubTitle(String subtitle) {
         interactionListener.setToolbar(subtitle);
+    }
+
+    @Override
+    public void showConfirmChangePassengersDialog(List<TrainSeatPassengerViewModel> passengers) {
+        TrainSeatChangesDialog dialog = new TrainSeatChangesDialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setPassengers(passengers);
+        dialog.setTitle(getString(R.string.train_seat_confirm_change_seat_title));
+        dialog.setBtnOk(getString(R.string.train_seat_confirm_dialog_accept));
+        dialog.setBtnCancel(getString(R.string.train_seat_confirm_dialog_cancel));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                presenter.onChangePassengerConfirmDialogAccepted();
+            }
+        });
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override

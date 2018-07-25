@@ -31,7 +31,7 @@ public interface TrainSeatContract {
 
         void renderExpireDateCountdown(Date expireDate);
 
-        void backToHomePage();
+        void showExpiredPaymentDialog();
 
         List<TrainSeatPassengerViewModel> getPassengers();
 
@@ -54,6 +54,8 @@ public interface TrainSeatContract {
         String getString(@StringRes int resId);
 
         void setToolbarSubTitle(String subtitle);
+
+        void showConfirmChangePassengersDialog(List<TrainSeatPassengerViewModel> passengers);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -71,5 +73,7 @@ public interface TrainSeatContract {
         void onPassengerSeatChange(TrainSeatPassengerViewModel passenger,
                                    TrainSeatViewModel seat,
                                    String wagonCode);
+
+        void onChangePassengerConfirmDialogAccepted();
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.data.model.data;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -43,6 +44,22 @@ public class Summary {
 
     @SerializedName("cost_avg_fmt")
     public String costAvgFmt;
+
+    @SerializedName("all_gross_profit")
+    @Expose
+    private float grossProfit;
+
+    @SerializedName("all_sold_sum")
+    @Expose
+    private float soldSum;
+
+    @SerializedName("all_gross_profit_fmt")
+    @Expose
+    private String grossProfitFmt;
+
+    @SerializedName("all_sold_sum_fmt")
+    @Expose
+    private String soldSumFmt;
 
     public int getClickSum() {
         return clickSum;
@@ -138,5 +155,37 @@ public class Summary {
 
     public void setCostAvgFmt(String costAvgFmt) {
         this.costAvgFmt = costAvgFmt;
+    }
+
+    public float getGrossProfit() {
+        return grossProfit;
+    }
+
+    public void setGrossProfit(float grossProfit) {
+        this.grossProfit = grossProfit;
+    }
+
+    public float getSoldSum() {
+        return soldSum;
+    }
+
+    public void setSoldSum(float soldSum) {
+        this.soldSum = soldSum;
+    }
+
+    public String getGrossProfitFmt() {
+        return grossProfitFmt;
+    }
+
+    public void setGrossProfitFmt(String grossProfitFmt) {
+        this.grossProfitFmt = grossProfitFmt;
+    }
+
+    public String getSoldSumFmt() {
+        return soldSumFmt;
+    }
+
+    public void setSoldSumFmt(String soldSumFmt) {
+        this.soldSumFmt = soldSumFmt;
     }
 }

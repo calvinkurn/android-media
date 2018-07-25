@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 
+import java.util.ArrayList;
+
 /**
  * @author by nisie on 12/4/17.
  */
@@ -34,5 +36,7 @@ public interface ChooseTokocashAccount {
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {
 
         void loginWithTokocash(String accessToken, AccountTokocash accountTokocash);
+
+        void checkAutoLogin(String key, int itemCount, ArrayList<AccountTokocash> list);
     }
 }

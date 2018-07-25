@@ -158,6 +158,11 @@
         <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
+        <item name="android:background">@color/white</item>
+    </style>
 
     <style name="BottomSheetBuilder.BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/white</item>

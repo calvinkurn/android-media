@@ -73,6 +73,7 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
                             .get(i).getAmount_changes_symbol());
                     itemHistory.setNotes(tokoCashHistoryEntity.getItems().get(i).getNotes());
                     itemHistory.setAmountPending(tokoCashHistoryEntity.getItems().get(i).getAmount_pending());
+                    itemHistory.setHelpRedirect(tokoCashHistoryEntity.getItems().get(i).getHelpRedirect());
 
                     if (tokoCashHistoryEntity.getItems().get(i).getActions() != null) {
                         List<ActionHistory> actionHistoryList = new ArrayList<>();

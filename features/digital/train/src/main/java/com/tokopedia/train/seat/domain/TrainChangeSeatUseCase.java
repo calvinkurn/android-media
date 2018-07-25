@@ -21,7 +21,7 @@ public class TrainChangeSeatUseCase extends UseCase<List<TrainPassengerSeat>> {
     @Override
     public Observable<List<TrainPassengerSeat>> createObservable(RequestParams requestParams) {
         List<ChangeSeatMapRequest> requests = (List<ChangeSeatMapRequest>) requestParams.getObject(EXTRA_CHANGES);
-        return Observable.empty();
+        return trainRepository.changeSeats(requests);
     }
 
     public RequestParams createRequest(List<ChangeSeatMapRequest> requests) {

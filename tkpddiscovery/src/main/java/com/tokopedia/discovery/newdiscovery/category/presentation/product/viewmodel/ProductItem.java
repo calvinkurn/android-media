@@ -24,6 +24,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
     private int countReview;
     private int countCourier;
     private String price;
+    private String priceRange;
     private String shopID;
     private String shopName;
     private String shopCity;
@@ -38,6 +39,8 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
+    private String topLabel;
+    private String bottomLabel;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -77,6 +80,14 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
 
     public String getPrice() {
         return price;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
     }
 
     public void setShopID(String shopID) {
@@ -224,6 +235,22 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         isOfficial = official;
     }
 
+    public String getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(String topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public String getBottomLabel() {
+        return bottomLabel;
+    }
+
+    public void setBottomLabel(String bottomLabel) {
+        this.bottomLabel = bottomLabel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -239,6 +266,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeInt(countReview);
         dest.writeInt(countCourier);
         dest.writeString(this.price);
+        dest.writeString(priceRange);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
         dest.writeString(this.shopCity);
@@ -253,6 +281,8 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeString(this.originalPrice);
         dest.writeInt(this.discountPercentage);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeString(topLabel);
+        dest.writeString(bottomLabel);
     }
 
     protected ProductItem(Parcel in) {
@@ -264,6 +294,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         countReview = in.readInt();
         countCourier = in.readInt();
         this.price = in.readString();
+        priceRange = in.readString();
         this.shopID = in.readString();
         this.shopName = in.readString();
         this.shopCity = in.readString();
@@ -278,6 +309,8 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
         this.isOfficial = in.readByte() != 0;
+        topLabel = in.readString();
+        bottomLabel = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {

@@ -44,6 +44,7 @@ public interface IRouterConstant {
 
             String FLIGHT_STRING = "flight";
             String EVENT_STRING = "events";
+            String DEALS_STRING = "deals";
             String TRAIN_STRING = "train";
 
             String COUPON_STATE = "coupon";

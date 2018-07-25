@@ -34,6 +34,8 @@
     <string name="train_select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="train_select_passenger_submit_button">Simpan</string>
     <string name="train_select_passenger_toolbar_title">Pilih Penumpang</string>
+    <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
+
 
     <!-- search -->
     <string name="train_search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
@@ -166,5 +168,11 @@
     <string name="train_seat_prefix_toolbar_title">Perjalanan Pergi</string>
     <string name="train_seat_toolbar_title">Pilih Kursi</string>
     <string name="train_seat_prefix_toolbar_return_trip_title">Perjalanan Pulang</string>
+    <string name="train_seat_expired_payment_time">Waktu Pembayaran Berakhir</string>
+    <string name="train_seat_expired_payment_time_desc">Batas waktu pembayaran tiket telah habis. Silakan lakukan pemesanan tiket baru.</string>
+    <string name="train_seat_expired_payment_time_cta">Kembali ke pencarian</string>
+    <string name="train_seat_confirm_change_seat_title">Apakah Anda yakin dengan pilihan kursi berikut?</string>
+    <string name="train_seat_confirm_dialog_accept">Lanjut</string>
+    <string name="train_seat_confirm_dialog_cancel">Ubah Kursi</string>
 
 </resources>

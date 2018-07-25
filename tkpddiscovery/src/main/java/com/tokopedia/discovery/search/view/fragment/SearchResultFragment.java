@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.search.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.TabAutoCompleteCallback;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
@@ -30,13 +32,16 @@ import butterknife.Unbinder;
 public class SearchResultFragment extends TkpdBaseV4Fragment {
 
     private static final String TAG = SearchResultFragment.class.getSimpleName();
-    private static final String ARGS_INSTANCE_TYPE = "ARGS_INSTANCE_TYPE";
+    private static final String ARGS_INSTANCE_NAME = "ARGS_INSTANCE_NAME";
     private static final String DEFAULT_INSTANCE_TPE = "unknown";
+    private static final String ARGS_INSTANCE_TYPE = "ARGS_INSTANCE_TYPE";
     private Unbinder unbinder;
     private SearchAdapter adapter;
     private LinearLayoutManager layoutManager;
     private ItemClickListener clickListener;
+    private TabAutoCompleteCallback tabAutoCompleteListener;
     private String instanceType;
+    private int instanceIndex;
 
     @BindView(R2.id.list)
     RecyclerView recyclerView;
@@ -44,15 +49,24 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     public SearchResultFragment() {
     }
 
-    public static SearchResultFragment newInstance(String tabName, ItemClickListener clickListener) {
+    public static SearchResultFragment newInstance(String tabName,
+                                                   int tabIndex,
+                                                   ItemClickListener clickListener,
+                                                   TabAutoCompleteCallback tabAutoCompleteListener) {
 
         Bundle args = new Bundle();
-        args.putString(ARGS_INSTANCE_TYPE, tabName);
+        args.putString(ARGS_INSTANCE_NAME, tabName);
+        args.putInt(ARGS_INSTANCE_TYPE, tabIndex);
 
         SearchResultFragment fragment = new SearchResultFragment();
         fragment.setCallBackListener(clickListener);
+        fragment.setHostListener(tabAutoCompleteListener);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void setHostListener(TabAutoCompleteCallback tabAutoCompleteListener) {
+        this.tabAutoCompleteListener = tabAutoCompleteListener;
     }
 
     private void setCallBackListener(ItemClickListener clickListener) {
@@ -63,7 +77,8 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        instanceType = getArguments().getString(ARGS_INSTANCE_TYPE, DEFAULT_INSTANCE_TPE);
+        instanceType = getArguments().getString(ARGS_INSTANCE_NAME, DEFAULT_INSTANCE_TPE);
+        instanceIndex = getArguments().getInt(ARGS_INSTANCE_TYPE);
     }
 
     @Nullable
@@ -73,6 +88,12 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
         unbinder = ButterKnife.bind(this, parentView);
         prepareView(parentView);
         return parentView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        tabAutoCompleteListener.onAdapterReady(instanceIndex, adapter);
     }
 
     @Override
@@ -104,6 +125,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
         adapter = new SearchAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
     }
 

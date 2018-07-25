@@ -6,9 +6,7 @@ import com.tokopedia.wishlist.common.constant.WishListParamApiConstant;
 import com.tokopedia.wishlist.common.data.source.cloud.model.WishListData;
 
 import retrofit2.Response;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 import rx.Observable;
 
@@ -22,11 +20,4 @@ public interface WishListCommonApi {
     Observable<Response<DataResponse<WishListData>>> getWishList(@Path(WishListParamApiConstant.USER_ID) String userId,
                                                                  @Path(WishListParamApiConstant.PRODUCT_ID_LIST) String productIdList);
 
-    @POST(WishListCommonUrl.SET_WISHLIST_URL)
-    Observable<Response<Void>> addToWishList(@Path(WishListParamApiConstant.USER_ID) String userId,
-                                             @Path(WishListParamApiConstant.PRODUCT_ID) String productId);
-
-    @DELETE(WishListCommonUrl.SET_WISHLIST_URL)
-    Observable<Response<Void>> removeFromWishList(@Path(WishListParamApiConstant.USER_ID) String userId,
-                                                  @Path(WishListParamApiConstant.PRODUCT_ID) String productId);
 }
