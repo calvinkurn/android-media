@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
+import com.tokopedia.explore.view.listener.ExploreContainerListener;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 
@@ -18,7 +19,7 @@ import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FeedPlusContainerListener {
+        implements FeedPlusContainerListener, ExploreContainerListener {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
 

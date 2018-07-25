@@ -5,7 +5,5 @@ package com.tokopedia.feedplus.view.listener;
  */
 
 public interface FeedPlusContainerListener {
-    void showFeedPlus();
-
     void showContentExplore();
 }

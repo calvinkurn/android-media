@@ -24,6 +24,7 @@ import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactoryImpl;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
+import com.tokopedia.explore.view.listener.ExploreContainerListener;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
@@ -51,6 +52,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
+    private View tabFeed;
 
     @Inject
     ContentExploreContract.Presenter presenter;
@@ -62,6 +64,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     ExploreImageAdapter imageAdapter;
 
     private RecyclerView.OnScrollListener scrollListener;
+    private ExploreContainerListener containerListener;
     private boolean canLoadMore;
 
     public static ContentExploreFragment newInstance() {
@@ -211,6 +214,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
         searchInspiration = view.findViewById(R.id.search_inspiration);
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
+        tabFeed = view.findViewById(R.id.tab_feed);
 
         searchInspiration.setListener(this);
 
@@ -241,6 +245,16 @@ public class ContentExploreFragment extends BaseDaggerFragment
         ExploreImageTypeFactory typeFactory = new ExploreImageTypeFactoryImpl(this);
         imageAdapter.setTypeFactory(typeFactory);
         exploreImageRv.setAdapter(imageAdapter);
+
+        if (getParentFragment() instanceof ExploreContainerListener) {
+            containerListener = (ExploreContainerListener) getParentFragment();
+        } else {
+            throw new IllegalStateException("getParentFragment() must be an instance of"
+                    + ExploreContainerListener.class.getSimpleName());
+        }
+        tabFeed.setOnClickListener(v -> {
+            containerListener.showFeedPlus();
+        });
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
