@@ -22,9 +22,9 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if(activity!!.intent.hasExtra(EXTRA_CATALOG)&&activity!!.intent.hasExtra(EXTRA_CATEGORY)) {
+        productCategory = activity!!.intent.getParcelableExtra(EXTRA_CATEGORY)
+        if(activity!!.intent.hasExtra(EXTRA_CATALOG)) {
             productCatalog = activity!!.intent.getParcelableExtra(EXTRA_CATALOG)
-            productCategory = activity!!.intent.getParcelableExtra(EXTRA_CATEGORY)
         }
     }
 

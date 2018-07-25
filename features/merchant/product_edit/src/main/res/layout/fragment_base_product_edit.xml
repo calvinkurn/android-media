@@ -51,15 +51,14 @@
                     android:id="@+id/textViewCategory"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_weight="1"
-                    style="@style/TextView.Title.Bold"
-                    android:text="Elektronik > Audio > Speaker" />
+                    style="@style/TextView.Title.Bold" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewCatalog"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_weight="1"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:text="Anker Bluetooth Speaker" />
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/llCategoryCatalog"

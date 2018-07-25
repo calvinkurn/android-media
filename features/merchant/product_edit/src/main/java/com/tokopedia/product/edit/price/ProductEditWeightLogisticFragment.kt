@@ -1,11 +1,13 @@
 package com.tokopedia.product.edit.price
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_LOGISTIC
+import com.tokopedia.product.edit.price.model.ProductLogistic
 import com.tokopedia.product.edit.util.ProductEditOptionMenuAdapter
 import com.tokopedia.product.edit.util.ProductEditOptionMenuBottomSheets
 import com.tokopedia.product.edit.util.ProductEditPreOrderTimeType
@@ -13,6 +15,8 @@ import com.tokopedia.product.edit.util.ProductEditWeightType
 import kotlinx.android.synthetic.main.fragment_product_edit_weightlogistic.*
 
 class ProductEditWeightLogisticFragment : Fragment() {
+
+    private var productLogistic = ProductLogistic()
 
     @ProductEditWeightType
     private var selectedWeightType: Int = ProductEditWeightType.GRAM
@@ -23,6 +27,9 @@ class ProductEditWeightLogisticFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        if(activity!!.intent.hasExtra(EXTRA_LOGISTIC)) {
+            productLogistic = activity!!.intent.getParcelableExtra(EXTRA_LOGISTIC)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -31,9 +38,7 @@ class ProductEditWeightLogisticFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        spinnerCounterInputViewWeight.spinnerTextView.editText.setText(getWeightTypeTitle(selectedWeightType))
-        spinnerCounterInputViewProcessTime.spinnerTextView.editText.setText(getPreOrderTimeTypeTitle(selectedPreOrderTimeType))
-
+        setDataLogistic(productLogistic)
         spinnerCounterInputViewWeight.spinnerTextView.editText.setOnClickListener({
             showBottomSheetsWeight()
         })
@@ -50,13 +55,38 @@ class ProductEditWeightLogisticFragment : Fragment() {
         }
     }
 
-    private fun getWeightTypeTitle(type: Int): String {
-        var resString = -1
-        when (type) {
-            ProductEditWeightType.GRAM -> resString = R.string.product_label_gram
-            ProductEditWeightType.KILOGRAM -> resString = R.string.product_label_kilogram
+    private fun setDataLogistic(productLogistic: ProductLogistic){
+        selectedWeightType = productLogistic.weightType
+        spinnerCounterInputViewWeight.spinnerTextView.editText.setText(getWeightTypeTitle(selectedWeightType))
+        spinnerCounterInputViewWeight.counterEditText.setText(productLogistic.weight.toString())
+
+        labelCheckboxInsurance.isChecked = productLogistic.insurance
+        labelCheckboxFreeReturn.isChecked = productLogistic.freeReturn
+        labelSwitchPreOrder.isChecked = productLogistic.preOrder
+        if(labelSwitchPreOrder.isChecked)
+            layoutProcessTime.visibility = View.VISIBLE
+        else
+            layoutProcessTime.visibility = View.GONE
+
+        selectedPreOrderTimeType = productLogistic.processTimeType
+        spinnerCounterInputViewProcessTime.spinnerTextView.editText.setText(getPreOrderTimeTypeTitle(selectedPreOrderTimeType))
+        spinnerCounterInputViewProcessTime.counterEditText.setText(productLogistic.processTime.toString())
+    }
+
+    private fun saveData(productLogistic: ProductLogistic): ProductLogistic{
+        productLogistic.weightType = selectedWeightType
+        productLogistic.weight = spinnerCounterInputViewWeight.counterEditText.text.toString().replace(",", "").toInt()
+        productLogistic.insurance = labelCheckboxInsurance.isChecked
+        productLogistic.freeReturn = labelCheckboxFreeReturn.isChecked
+        productLogistic.preOrder = labelSwitchPreOrder.isChecked
+        if(labelSwitchPreOrder.isChecked){
+            productLogistic.processTimeType = selectedPreOrderTimeType
+            productLogistic.processTime = spinnerCounterInputViewProcessTime.counterEditText.text.toString().replace(",", "").toInt()
+        } else {
+            productLogistic.processTimeType = ProductEditPreOrderTimeType.DAY
+            productLogistic.processTime = 0
         }
-        return getString(resString)
+        return productLogistic
     }
 
     private fun getPreOrderTimeTypeTitle(type: Int): String {
@@ -84,9 +114,9 @@ class ProductEditWeightLogisticFragment : Fragment() {
             }
         })
 
-        checkedBottomSheetMenu.addItem(ProductEditWeightType.GRAM, getWeightTypeTitle(ProductEditWeightType.GRAM),
+        checkedBottomSheetMenu.addItem(ProductEditWeightType.GRAM, getString(getWeightTypeTitle(ProductEditWeightType.GRAM)),
                 selectedWeightType == ProductEditWeightType.GRAM)
-        checkedBottomSheetMenu.addItem(ProductEditWeightType.KILOGRAM, getWeightTypeTitle(ProductEditWeightType.KILOGRAM),
+        checkedBottomSheetMenu.addItem(ProductEditWeightType.KILOGRAM, getString(getWeightTypeTitle(ProductEditWeightType.KILOGRAM)),
                 selectedWeightType == ProductEditWeightType.KILOGRAM)
 
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
@@ -116,7 +146,31 @@ class ProductEditWeightLogisticFragment : Fragment() {
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_next, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_next) {
+            val intent = Intent()
+            intent.putExtra(EXTRA_LOGISTIC, saveData(productLogistic))
+            activity!!.setResult(Activity.RESULT_OK, intent)
+            activity!!.finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
     companion object {
+
+        fun getWeightTypeTitle(type: Int): Int {
+            var resString = -1
+            when (type) {
+                ProductEditWeightType.GRAM -> resString = R.string.product_label_gram
+                ProductEditWeightType.KILOGRAM -> resString = R.string.product_label_kilogram
+            }
+            return resString
+        }
 
         fun createInstance(): Fragment {
             return ProductEditWeightLogisticFragment()

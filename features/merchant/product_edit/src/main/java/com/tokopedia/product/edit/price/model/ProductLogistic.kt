@@ -1,0 +1,50 @@
+package com.tokopedia.product.edit.price.model
+
+import android.os.Parcel
+import android.os.Parcelable
+import com.tokopedia.product.edit.util.ProductEditPreOrderTimeType
+import com.tokopedia.product.edit.util.ProductEditWeightType
+
+class ProductLogistic(): Parcelable{
+    var weight: Int = 0
+    var weightType: Int = ProductEditWeightType.GRAM
+    var insurance: Boolean = false
+    var freeReturn: Boolean = false
+    var preOrder: Boolean = false
+    var processTime: Int = 0
+    var processTimeType: Int = ProductEditPreOrderTimeType.DAY
+
+    constructor(parcel: Parcel) : this() {
+        weight = parcel.readInt()
+        weightType = parcel.readInt()
+        insurance = parcel.readByte() != 0.toByte()
+        freeReturn = parcel.readByte() != 0.toByte()
+        preOrder = parcel.readByte() != 0.toByte()
+        processTime = parcel.readInt()
+        processTimeType = parcel.readInt()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(weight)
+        parcel.writeInt(weightType)
+        parcel.writeByte(if (insurance) 1 else 0)
+        parcel.writeByte(if (freeReturn) 1 else 0)
+        parcel.writeByte(if (preOrder) 1 else 0)
+        parcel.writeInt(processTime)
+        parcel.writeInt(processTimeType)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ProductLogistic> {
+        override fun createFromParcel(parcel: Parcel): ProductLogistic {
+            return ProductLogistic(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ProductLogistic?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

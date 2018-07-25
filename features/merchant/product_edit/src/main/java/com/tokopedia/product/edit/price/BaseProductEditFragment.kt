@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
+import com.tokopedia.product.edit.price.model.ProductLogistic
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
 import com.tokopedia.product.edit.view.activity.*
@@ -18,10 +19,11 @@ import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 
 class BaseProductEditFragment : Fragment() {
 
-    private lateinit var productCatalog: ProductCatalog
-    private lateinit var productName: ProductName
-    private lateinit var productCategory: ProductCategory
-    private lateinit var productImages: ArrayList<String>
+    private var productCatalog = ProductCatalog()
+    private var productName = ProductName()
+    private var productCategory = ProductCategory()
+    private var productImages = ArrayList<String>()
+    private var productLogistic = ProductLogistic()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +47,7 @@ class BaseProductEditFragment : Fragment() {
         setImagesSectionData(productImages)
         setCategoryCatalogSection(productCategory,productCatalog)
         setNameSectionData(productName)
-
+        setLogisticSectionData(productLogistic)
 
         llCategoryCatalog.setOnClickListener {
             startActivityForResult(Intent(activity, ProductEditCategoryActivity::class.java)
@@ -58,7 +60,9 @@ class BaseProductEditFragment : Fragment() {
         labelViewPriceProduct.setOnClickListener { startActivity(Intent(activity, ProductEditPriceActivity::class.java)) }
         labelViewDescriptionProduct.setOnClickListener { startActivity(Intent(activity, ProductEditDescriptionActivity::class.java)) }
         labelViewStockProduct.setOnClickListener { startActivity(Intent(activity, ProductEditStockActivity::class.java)) }
-        labelViewWeightLogisticProduct.setOnClickListener { startActivity(Intent(activity, ProductEditWeightLogisticActivity::class.java)) }
+        labelViewWeightLogisticProduct.setOnClickListener {
+            startActivityForResult(Intent(activity, ProductEditWeightLogisticActivity::class.java)
+                    .putExtra(EXTRA_LOGISTIC, productLogistic), REQUEST_CODE_GET_LOGISTIC) }
     }
 
     private fun setImagesSectionData(productImages: ArrayList<String>){
@@ -71,11 +75,22 @@ class BaseProductEditFragment : Fragment() {
 
     private fun setCategoryCatalogSection(productCategory: ProductCategory, productCatalog: ProductCatalog){
         textViewCategory.text = productCategory.categoryName
-        textViewCatalog.text = productCatalog.catalogName
+        if(productCatalog.catalogName!=null) {
+            textViewCatalog.run{
+                visibility = View.VISIBLE
+                text = productCatalog.catalogName
+            }
+
+        }
     }
 
     private fun setNameSectionData(productName: ProductName){
         labelViewNameProduct.setContent(productName.name)
+    }
+
+    private fun setLogisticSectionData(productLogistic: ProductLogistic){
+        if(productLogistic.weight > 0)
+            labelViewWeightLogisticProduct.setContent("${productLogistic.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(productLogistic.weightType))}")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -90,6 +105,10 @@ class BaseProductEditFragment : Fragment() {
                     productName = data!!.getParcelableExtra(EXTRA_NAME)
                     setNameSectionData(productName)
                 }
+                REQUEST_CODE_GET_LOGISTIC -> {
+                    productLogistic = data!!.getParcelableExtra(EXTRA_LOGISTIC)
+                    setLogisticSectionData(productLogistic)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -99,11 +118,13 @@ class BaseProductEditFragment : Fragment() {
         const val REQUEST_CODE_GET_IMAGES = 1
         const val REQUEST_CODE_GET_CATALOG_CATEGORY = 2
         const val REQUEST_CODE_GET_NAME = 3
+        const val REQUEST_CODE_GET_LOGISTIC = 7
 
         const val EXTRA_NAME = "EXTRA_NAME"
         const val EXTRA_CATALOG = "EXTRA_CATALOG"
         const val EXTRA_CATEGORY = "EXTRA_CATEGORY"
         const val EXTRA_IMAGES = "EXTRA_IMAGES"
+        const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
 
         fun createInstance(): Fragment {
             return BaseProductEditFragment()

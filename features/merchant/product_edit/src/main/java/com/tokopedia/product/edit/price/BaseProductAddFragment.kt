@@ -33,9 +33,9 @@ import kotlinx.android.synthetic.main.fragment_product_add_new.*
 class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
-    private lateinit var productCatalog: ProductCatalog
-    private lateinit var productName: ProductName
-    private lateinit var productCategory: ProductCategory
+    private var productCatalog = ProductCatalog()
+    private var productName = ProductName()
+    private var productCategory = ProductCategory()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

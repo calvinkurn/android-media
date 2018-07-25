@@ -37,20 +37,20 @@ class ProductEditCatalogPickerFragment : Fragment() {
             catalogName = "wo"
             catalogImage = "url" })
         dataDummy.add(productCatalog.apply {
-            catalogId = 2
-            catalogName = "wo"
+            catalogId = 3
+            catalogName = "qw"
             catalogImage = "url" })
         dataDummy.add(productCatalog.apply {
-            catalogId = 2
-            catalogName = "wo"
+            catalogId = 4
+            catalogName = "er"
             catalogImage = "url" })
         dataDummy.add(productCatalog.apply {
-            catalogId = 2
-            catalogName = "wo"
+            catalogId = 5
+            catalogName = "ty"
             catalogImage = "url" })
         dataDummy.add(productCatalog.apply {
-            catalogId = 2
-            catalogName = "wo"
+            catalogId = 6
+            catalogName = "po"
             catalogImage = "url" })
         productCatalogAdapter = ProductCatalogAdapter(dataDummy)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
