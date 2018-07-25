@@ -13,13 +13,15 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
-import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.CartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.checkout.view.di.module.CartRemoveProductModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductHeaderViewModel;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -39,7 +41,6 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         implements RemoveCartItemContract.View, RemoveCartItemViewListener {
 
     private static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
-    private static final int TOASTER_DURATION = 3000;
 
     private TextView tvRemoveProduct;
     private RecyclerView rvCartRemoveProduct;
@@ -68,7 +69,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     @Override
     protected void initInjector() {
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
-                .cartComponent(getComponent(CartComponent.class))
+                .cartComponent(CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent())
                 .cartRemoveProductModule(new CartRemoveProductModule())
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
@@ -93,19 +94,13 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
+    protected void onFirstTimeLaunched() { }
 
     @Override
-    public void onSaveState(Bundle state) {
-
-    }
+    public void onSaveState(Bundle state) { }
 
     @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
+    public void onRestoreState(Bundle savedState) { }
 
     @Override
     protected boolean getOptionsMenuEnable() {
@@ -113,9 +108,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-
-    }
+    protected void initialListener(Activity activity) { }
 
     @Override
     protected void setupArguments(Bundle arguments) {
@@ -175,12 +168,10 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     @Override
     public void showError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, TOASTER_DURATION)
+            ToasterError.make(getView(), message, BaseToaster.LENGTH_SHORT)
                     .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                         @Override
-                        public void onClick(View view) {
-
-                        }
+                        public void onClick(View view) { }
                     })
                     .show();
         }
@@ -189,21 +180,27 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     @Override
     public void renderOnFailureDeleteCart(String message) {
         showError(message);
-        getActivity().onBackPressed();
+        onBackPressed();
     }
 
     @Override
     public void renderSuccessDeleteAllCart(String message) {
         if (getView() != null) {
-            ToasterNormal.make(getView(), message, TOASTER_DURATION)
+            ToasterNormal.make(getView(), message, BaseToaster.LENGTH_SHORT)
                     .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                         @Override
-                        public void onClick(View view) {
-
-                        }
+                        public void onClick(View view) { }
                     }).show();
         }
-        getActivity().onBackPressed();
+        onBackPressed();
+    }
+
+    private void onBackPressed() {
+        if (this.getParentFragment() instanceof CartFragment) {
+            CartFragment fragment = (CartFragment) this.getParentFragment();
+            fragment.onBackPressed();
+            fragment.startToRefresh();
+        }
     }
 
     private void showDeleteCartItemDialog(int itemCount) {
@@ -244,14 +241,10 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     }
 
     @Override
-    protected void initialVar() {
-
-    }
+    protected void initialVar() { }
 
     @Override
-    protected void setActionVar() {
-
-    }
+    protected void setActionVar() { }
 
     @Override
     public void onSingleItemCheckChanged(boolean checked, final int position) {
@@ -321,5 +314,4 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
             tvRemoveProduct.setEnabled(false);
         }
     }
-
 }

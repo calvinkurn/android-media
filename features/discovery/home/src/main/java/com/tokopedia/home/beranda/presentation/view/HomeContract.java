@@ -7,12 +7,16 @@ import android.support.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -47,6 +51,12 @@ public interface HomeContract {
         void updateListOnResume(List<Visitable> visitables);
 
         void showRecomendationButton();
+
+        Observable<TokoCashData> getTokocashBalance();
+
+        Observable<PendingCashback> getTokocashPendingCashback();
+
+        Observable<TokoPointDrawerData> getTokopoint();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -66,9 +76,9 @@ public interface HomeContract {
 
         void openProductPageIfValid(String url, String shopDomain);
 
-        void onHeaderTokocashErrorFromBroadcast();
+        void onHeaderTokocashError();
 
-        void onHeaderTokopointErrorFromBroadcast();
+        void onHeaderTokopointError();
 
         void onRefreshTokoPoint();
 

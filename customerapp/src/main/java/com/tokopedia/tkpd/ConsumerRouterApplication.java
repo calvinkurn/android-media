@@ -36,11 +36,13 @@ import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
+import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
+import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -53,6 +55,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -133,6 +136,7 @@ import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
@@ -156,7 +160,9 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
+import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
@@ -173,6 +179,10 @@ import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.di.component.DaggerTokopointComponent;
+import com.tokopedia.loyalty.di.component.TokopointComponent;
+import com.tokopedia.loyalty.di.module.ServiceApiModule;
+import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
 import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -181,12 +191,15 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
+import com.tokopedia.navigation.GlobalNavRouter;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
+import com.tokopedia.notification.presentation.activity.NotificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -202,6 +215,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -258,6 +272,8 @@ import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
+import com.tokopedia.tkpd.home.SimpleHomeActivity;
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -334,7 +350,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactApplication,
         TkpdInboxRouter,
         IWalletRouter,
-        LoyaltyRouter,
+        LoyaltyRouter, // 1 loyalty
         ReputationRouter,
         SessionRouter,
         AbstractionRouter,
@@ -349,8 +365,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GroupChatModuleRouter,
         ApplinkRouter,
         ShopModuleRouter,
-        LoyaltyModuleRouter,
-        ITkpdLoyaltyModuleRouter,
+        LoyaltyModuleRouter, // 2 loyalty
+        ITkpdLoyaltyModuleRouter, // 3 loyalty
         ICheckoutModuleRouter,
         com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
         GamificationRouter,
@@ -365,6 +381,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanRouter,
         TopChatRouter,
         TokopointRouter,
+        SearchBarRouter,
+        GlobalNavRouter,
         OtpModuleRouter,
         UnifiedOrderRouter,
         DealsModuleRouter,
@@ -389,6 +407,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
     private TokoCashComponent tokoCashComponent;
+    private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
     private UserSession userSession;
@@ -451,6 +470,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .appComponent(getApplicationComponent())
                 .eventModule(new EventModule(this))
                 .build();
+
+        tokopointComponent = DaggerTokopointComponent.builder()
+                .serviceApiModule(new ServiceApiModule())
+                .build();
+
         dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
                 .build();
@@ -1017,7 +1041,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeIntent(Context context) {
-        return new Intent(context, ParentIndexHome.class);
+        return MainParentActivity.start(context);
     }
 
     @Override
@@ -1654,6 +1678,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public BroadcastReceiver getTokoPointBroadcastReceiver() {
         return new TokoPointDrawerBroadcastReceiver();
+    }
+
+    @Override
+    public Observable<TokoPointDrawerData> getTokopointUseCase() {
+        com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+        params.putString(GetTokopointUseCase.KEY_PARAM,
+                CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
+        return this.tokopointComponent.getTokopointUseCase().createObservable(params);
     }
 
     @Override
@@ -2365,6 +2397,61 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    }
+          
+    @Override
+    public Intent gotoWishlistPage(Context context) {
+        Intent intent = new Intent(context, SimpleHomeActivity.class);
+        intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
+        return intent;
+    }
+
+    @Override
+    public Intent gotoNotificationPage(Context context) {
+        return NotificationActivity.start(context);
+    }
+
+    @Override
+    public Intent gotoQrScannerPage(Context context) {
+        return QrScannerActivity.newInstance(this);
+    }
+
+    /**
+     * Global Nav Router
+     */
+    @Override
+    public Fragment getHomeFragment() {
+        return new HomeFragment();
+    }
+
+    @Override
+    public Fragment getFeedPlusFragment() {
+        return new FeedPlusFragment();
+    }
+
+    @Override
+    public Fragment getCartFragment() {
+        return CartFragment.newInstance(CartFragment.class.getSimpleName());
+    }
+
+    @Override
+    public Intent getInboxChatIntent(Context context) {
+        return InboxChatActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getInboxDiscussionIntent(Context context) {
+        return InboxTalkActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getInboxReviewIntent(Context context) {
+        return InboxReputationActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getInboxHelpIntent(Context context) {
+        return InboxTicketActivity.getCallingIntent(context);
     }
 
     @Override

@@ -1,0 +1,15 @@
+<resources>
+    <string name="inbox">Inbox</string>
+
+    <string name="chat">Chat</string>
+    <string name="chat_desc">Percakapan pribadi Anda</string>
+
+    <string name="diskusi">Diskusi</string>
+    <string name="diskusi_desc">Tanya jawab seputar produk</string>
+
+    <string name="ulasan">Ulasan</string>
+    <string name="ulasan_desc">Berikan penilaian dan ulasan produk</string>
+
+    <string name="pesan_bantuan">Pesan Bantuan</string>
+    <string name="pesan_bantuan_desc">Pantau status bantuan dari Tokopedia</string>
+</resources>

@@ -99,6 +99,7 @@ ext {
             cardViewV7      : "com.android.support:cardview-v7:${supportLibraryVersion}",
             exifinterface   : "com.android.support:exifinterface:${supportLibraryVersion}",
             constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2",
+            preferenceV7    : "com.android.support:preference-v7:${supportLibraryVersion}",
             kotlinSupport   : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     ]
 
@@ -193,7 +194,8 @@ ext {
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
-            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
+            flexBoxLayout         : "com.google.android:flexbox:0.3.2",
+            badge                 : "q.rorbin:badgeview:1.1.3"
     ]
 
     testDependencies = [
@@ -331,7 +333,11 @@ ext {
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
-            digitalDeals          : ":features:digital:digital_deals"
+            digitalDeals          : ":features:digital:digital_deals",
+            navigation            : ":features:home:navigation",
+            searchbar             : ":features:home:searchbar",
+            notification          : ":features:home:notification",
+            accountHome           : ":features:home:account-home"
     ]
 
     libraries = [
@@ -345,11 +351,9 @@ ext {
             userSession       : ":libraries:user_session",
             config            : ":libraries:global_config",
             network           : ":libraries:network",
-            useCase           : ":libraries:use_case",
             williamchart      : ":libraries:williamchart",
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
-            userSession       : ":libraries:user_session",
             imagePicker       : ":libraries:image_picker",
             cameraView        : ":libraries:camera_view",
             imageuploader     : ":libraries:imageuploader",

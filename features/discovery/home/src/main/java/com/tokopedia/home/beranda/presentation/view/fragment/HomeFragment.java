@@ -1,9 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +32,7 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
@@ -75,11 +74,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
+import com.tokopedia.home.beranda.presentation.view.compoundview.HeaderHomeView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
+import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
-import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -88,8 +91,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
-import static com.tokopedia.tokopoints.ApplinkConstant.HOMEPAGE;
+import rx.Observable;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -112,13 +114,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Trace trace;
     private SnackbarRetry messageSnackbar;
     private String[] tabSectionTitle;
-    private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
+
+    private HeaderHomeView headerHomeView;
 
     public static HomeFragment newInstance() {
 
@@ -133,13 +136,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
-        homeFragmentBroadcastReceiver = new HomeFragmentBroadcastReceiver();
-        getActivity().registerReceiver(
-                homeFragmentBroadcastReceiver,
-                new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
-                )
-        );
     }
 
     @Override
@@ -181,6 +177,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
+        headerHomeView = view.findViewById(R.id.headerview);
+
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
@@ -266,7 +264,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
         presenter.onDestroy();
         presenter.detachView();
         recyclerView.setAdapter(null);
@@ -274,7 +271,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.setLayoutManager(null);
         layoutManager = null;
         feedLoadMoreTriggerListener = null;
-        homeFragmentBroadcastReceiver = null;
         presenter = null;
     }
 
@@ -434,7 +430,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
+        presenter.getTokocashPendingBalance();
     }
 
     @Override
@@ -570,6 +566,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        if (items.get(0) instanceof HeaderViewModel) {
+            HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
+            updateHeaderItem(dataHeader);
+        }
         adapter.setItems(items);
     }
 
@@ -580,10 +580,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
-            adapter.getItems().set(0, headerViewModel);
-            adapter.notifyItemChanged(0);
-        }
+        headerHomeView.setHeaderViewModel(headerViewModel);
+        headerHomeView.setListener(this);
+        headerHomeView.notifyHeader();
     }
 
     @Override
@@ -827,49 +826,31 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
 
-    public class HomeFragmentBroadcastReceiver extends BroadcastReceiver {
+    /**
+     * Tokocash & Tokopoint
+     */
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
-                return;
-            switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
-                    TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA
-                    );
-                    if (tokoPointDrawerData != null)
-                        presenter.updateHeaderTokoPointData(tokoPointDrawerData);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA:
-                    HomeHeaderWalletAction homeHeaderWalletAction = intent.getParcelableExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
-                    );
-                    if (homeHeaderWalletAction != null)
-                        presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
-                    int amount = intent.getIntExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_AMOUNT, 0);
-                    String amountText = intent.getStringExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING__AMOUNT_TEXT);
-
-                    CashBackData cashBackData = new CashBackData();
-                    cashBackData.setAmount(amount);
-                    cashBackData.setAmountText(amountText);
-
-                    if (cashBackData != null)
-                        presenter.updateHeaderTokoCashPendingData(cashBackData);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
-                    presenter.onHeaderTokocashErrorFromBroadcast();
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
-                    presenter.onHeaderTokopointErrorFromBroadcast();
-                    break;
-                default:
-                    break;
-            }
+    @Override
+    public Observable<TokoCashData> getTokocashBalance() {
+        if (getActivity() != null && getActivity().getApplication() instanceof TkpdCoreRouter) {
+            return ((TkpdCoreRouter) getActivity().getApplication()).getTokoCashBalance();
         }
+        return null;
+    }
+
+    @Override
+    public Observable<PendingCashback> getTokocashPendingCashback() {
+        if (getActivity() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+            return ((TokoCashRouter) getActivity().getApplication()).getPendingCashbackUseCase();
+        }
+        return null;
+    }
+
+    @Override
+    public Observable<TokoPointDrawerData> getTokopoint() {
+        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter){
+            return ((LoyaltyRouter) getActivity().getApplication()).getTokopointUseCase();
+        }
+        return null;
     }
 }

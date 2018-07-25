@@ -154,6 +154,11 @@
         <item name="android:textColorSecondary">@color/grey_400</item>
     </style>
 
+    <style name="Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/bg_switch_thumb_selector</item>
+        <item name="android:track">@drawable/bg_switch_track_selector</item>
+    </style>
+
     <style name="BottomSheetBuilder.DialogStyle" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
     </style>
@@ -220,6 +225,19 @@
         <item name="android:stepSize">0.1</item>
         <item name="android:numStars">5</item>
         <item name="android:isIndicator">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.AppBarOverlayWhite" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.AppBarOverlayWhite.White" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/grey_750</item>
+        <item name="actionMenuTextColor">@color/grey_750</item>
+        <item name="android:textColorSecondary">@color/grey_750</item>
+        <item name="android:background">@color/white</item>
     </style>
 
 </resources>
