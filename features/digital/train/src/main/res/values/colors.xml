@@ -5,5 +5,5 @@
     <color name="deep_orange">#f5a623</color>
     <color name="light_orange">#fffcf5</color>
     <color name="train_pupup_passenger_selected">#f3fef3</color>
-
+    <color name="train_banner_dark_selectable_recycler">#CCCCCC</color>
 </resources>

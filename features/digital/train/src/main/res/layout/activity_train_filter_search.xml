@@ -41,7 +41,7 @@
         <Button
             android:id="@+id/button_filter"
             style="@style/Button.Submit.Green"
-            android:text="@string/select_passenger_submit_button" />
+            android:text="@string/train_select_passenger_submit_button" />
     </LinearLayout>
 
     <ProgressBar
