@@ -15,7 +15,9 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener extends CartAdapterActionListener {
 
-    void onAddOrChangeAddress();
+    void onChangeAddress();
+
+    void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel);
 
     void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
                           RecipientAddressModel recipientAddressModel);
@@ -49,4 +51,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onInsuranceCheckedForTrackingAnalytics();
 
     void onChoosePaymentMethodButtonClicked(boolean ableToCheckout);
+
+    void onDonationChecked(boolean checked);
+
 }

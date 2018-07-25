@@ -41,7 +41,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     private int MAX_QUANTITY = 8;
     private int CURRENT_QUANTITY = 1;
 
-    private LinearLayout llContinue;
+    private TextView tvContinue;
     private CoordinatorLayout mainContent;
     private FrameLayout progressBarLayout;
 
@@ -123,7 +123,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvMrp = view.findViewById(R.id.tv_mrp);
         tvSalesPrice = view.findViewById(R.id.tv_sales_price);
         tvTotalAmount = view.findViewById(R.id.tv_total_amount);
-        llContinue = view.findViewById(R.id.ll_continue);
+        tvContinue = view.findViewById(R.id.tv_continue);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         mainContent = view.findViewById(R.id.main_content);
     }
@@ -173,7 +173,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             setUpTotalAmount();
             setButtons();
 
-        } else if (v.getId() == R.id.ll_continue) {
+        } else if (v.getId() == R.id.tv_continue) {
             packageViewModel = new PackageViewModel();
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
@@ -223,7 +223,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
         tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
 
-        llContinue.setOnClickListener(this);
+        tvContinue.setOnClickListener(this);
         ivAdd.setOnClickListener(this);
         ivSubtract.setOnClickListener(this);
     }

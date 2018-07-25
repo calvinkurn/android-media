@@ -146,7 +146,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvLocationName.setOnClickListener(this);
         tvSeeAllPromo.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-
+        rvTrendingDeals.setNestedScrollingEnabled(false);
         rvTrendingDeals.setLayoutManager(layoutManager);
         rvCatItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
