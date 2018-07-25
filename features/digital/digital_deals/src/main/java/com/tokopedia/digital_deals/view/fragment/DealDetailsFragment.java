@@ -15,7 +15,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -467,7 +466,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     @Override
-    public void showLoginSnackbar(String message) {
+    public void showLoginSnackbar(String message, int position) {
 
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
@@ -617,7 +616,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     };
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         navigateToActivityRequest(intent, requestCode);
     }
 }

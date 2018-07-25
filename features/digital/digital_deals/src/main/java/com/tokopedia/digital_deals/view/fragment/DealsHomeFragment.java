@@ -88,6 +88,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
     private TextView tvSeeAllPromo;
+    private int adapterPosition = -1;
 
     public static Fragment createInstance() {
         Fragment fragment = new DealsHomeFragment();
@@ -237,7 +238,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 if (resultCode == RESULT_OK) {
                     UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
                     if (userSession.isLoggedIn()) {
-                        startOrderListActivity();
+                        if (adapterPosition == -1) {
+                            startOrderListActivity();
+                        } else {
+                            if (rvTrendingDeals.getAdapter() != null)
+                                ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).setLike(adapterPosition);
+                        }
                     }
                 }
                 break;
@@ -459,7 +465,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
+        this.adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
     }
 }
