@@ -21,8 +21,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 public class FeedPlusContainerFragment extends BaseDaggerFragment
         implements FeedPlusContainerListener, ExploreContainerListener {
 
-    private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
-
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
 
@@ -73,8 +71,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     private void initView() {
-        feedPlusFragment = FeedPlusFragment.newInstance();
-        inflateFragment(feedPlusFragment);
+        showFeedPlus();
     }
 
     protected void inflateFragment(Fragment fragment) {
@@ -82,8 +79,16 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
             return;
         }
 
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment, TAG_FRAGMENT)
-                .commit();
+        String TAG = fragment.getClass().getSimpleName();
+        if (getChildFragmentManager().findFragmentByTag(TAG) != null) {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.container,
+                            getChildFragmentManager().findFragmentByTag(TAG))
+                    .commit();
+        } else {
+            getChildFragmentManager().beginTransaction()
+                    .add(R.id.container, fragment, TAG)
+                    .commit();
+        }
     }
 }
