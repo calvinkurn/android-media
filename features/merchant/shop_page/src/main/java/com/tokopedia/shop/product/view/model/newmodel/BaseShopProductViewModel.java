@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.view.model.newmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductAdapterTypeFactory;
 
 /**

@@ -12,9 +12,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductNewAdapter;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductClickedNewListener;
-import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
-import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 
 /**
  * Created by normansyahputa on 2/22/18.
