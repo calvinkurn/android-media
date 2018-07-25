@@ -85,4 +85,6 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     boolean isNeedRefreshAirline();
 
     void navigateToNextPage(String selectedId);
+
+    void showNoRouteFlightEmptyState(String message);
 }
