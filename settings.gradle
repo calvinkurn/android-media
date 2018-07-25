@@ -1,3 +1,4 @@
+include ':product_common', ':product_common'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

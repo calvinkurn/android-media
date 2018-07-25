@@ -24,7 +24,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.product.common.util.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;

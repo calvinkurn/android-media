@@ -26,6 +26,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.features.productCommon)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.seller)

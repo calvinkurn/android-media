@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
+import com.tokopedia.product.common.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantItemPickerSearchNewViewHolder;
 
 /**

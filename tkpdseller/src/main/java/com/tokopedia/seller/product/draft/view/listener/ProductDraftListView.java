@@ -1,8 +1,7 @@
 package com.tokopedia.seller.product.draft.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
+import com.tokopedia.product.common.model.ProductDraftViewModel;
 
 import java.util.List;
 

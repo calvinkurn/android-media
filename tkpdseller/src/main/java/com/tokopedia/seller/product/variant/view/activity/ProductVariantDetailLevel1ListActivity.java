@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.common.util.StockTypeDef;
+import com.tokopedia.product.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLevel1ListFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 

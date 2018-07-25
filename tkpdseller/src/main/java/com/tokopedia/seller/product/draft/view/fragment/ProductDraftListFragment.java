@@ -27,20 +27,18 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
-import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
+import com.tokopedia.product.common.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
-import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
-import com.tokopedia.seller.product.edit.view.service.UploadProductService;
+//import com.tokopedia.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.edit.view.service.UploadProductService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,14 +199,14 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
-        Intent intent;
-        if (productDraftViewModel.isEdit()) {
-            intent = ProductDraftEditActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-        } else {
-            intent = ProductDraftAddActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-        }
-        UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
-        startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
+//        Intent intent;
+//        if (productDraftViewModel.isEdit()) {
+//            intent = ProductDraftEditActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
+//        } else {
+//            intent = ProductDraftAddActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
+//        }
+//        UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
+//        startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
     }
 
     @Override
@@ -230,7 +228,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                         intent != null) {
                     ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
                     if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrlOrPathList);
+//                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrlOrPathList);
                     }
                 }
             }
@@ -328,7 +326,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onEmptyButtonClicked() {
         UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
-        ProductAddActivity.start(getActivity());
+//        ProductAddActivity.start(getActivity());
     }
 
     @Override
@@ -356,7 +354,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onSaveBulkDraftSuccess(List<Long> draftProductIdList) {
         hideProgressDialog();
         if (draftProductIdList.size() == 1) {
-            ProductDraftAddActivity.start(getContext(), this, draftProductIdList.get(0));
+//            ProductDraftAddActivity.start(getContext(), this, draftProductIdList.get(0));
         } else {
             resetPageAndSearch();
             CommonUtils.UniversalToast(getActivity(), getString(R.string.product_draft_instagram_save_success, draftProductIdList.size()));

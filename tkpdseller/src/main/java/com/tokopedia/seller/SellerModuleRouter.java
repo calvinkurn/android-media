@@ -7,9 +7,9 @@ import android.content.Intent;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.common.domain.interactor.GetShopInfoUseCase;
 
 import java.util.ArrayList;
 import java.util.List;

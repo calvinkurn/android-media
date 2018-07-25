@@ -1,11 +1,10 @@
 package com.tokopedia.topads.keyword.utils;
 
 import android.text.Editable;
-import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.tokopedia.design.utils.CurrencyFormatHelper;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
 
 /**
  * Created by normansyahputa on 10/12/17.

@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.manage.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.base.view.adapter.ItemIdType;
+import com.tokopedia.product.common.util.ItemIdType;
 
 /**
  * Created by zulfikarrahman on 9/22/17.

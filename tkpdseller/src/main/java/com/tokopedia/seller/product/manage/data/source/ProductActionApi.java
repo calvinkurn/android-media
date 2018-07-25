@@ -1,12 +1,9 @@
 package com.tokopedia.seller.product.manage.data.source;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.product.common.data.source.cloud.DataResponse;
 import com.tokopedia.seller.product.manage.data.model.ResponseDeleteProductData;
 import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;
-import com.tokopedia.seller.selling.orderReject.model.ResponseEditDescription;
-import com.tokopedia.seller.selling.orderReject.model.ResponseEditPrice;
 
 import java.util.Map;
 

@@ -13,14 +13,13 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyRowView
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsNonPromotedViewHolder;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsPromotedViewHolder;
 import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
-import com.tokopedia.topads.dashboard.view.listener.FragmentItemSelection;
 import com.tokopedia.topads.dashboard.view.model.BaseTopAdsProductModel;
 import com.tokopedia.topads.dashboard.view.model.EmptyTypeBasedModel;
 import com.tokopedia.topads.dashboard.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.product.common.util.ItemType;
 
 import java.util.ArrayList;
 import java.util.List;

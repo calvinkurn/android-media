@@ -6,14 +6,13 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.R;
 
 /**

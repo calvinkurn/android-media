@@ -14,7 +14,7 @@ import com.tokopedia.topads.dashboard.view.TopAdsSearchProductView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdsProductModelMapper;
 import com.tokopedia.topads.dashboard.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.product.common.util.ItemType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
-import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import rx.Subscriber;
  */
 
 public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPresenter {
+    public static final int MIN_IMG_RESOLUTION = 300;
     private SaveBulkDraftProductUseCase saveBulkDraftProductUseCase;
 
     public ProductDraftSaveBulkPresenterImpl(SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
@@ -61,7 +61,7 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(new File(localPath).getAbsolutePath(), options);
-        if (Math.min(options.outWidth, options.outHeight) >= ProductImageViewHolder.MIN_IMG_RESOLUTION){
+        if (Math.min(options.outWidth, options.outHeight) >= MIN_IMG_RESOLUTION){
             return true;
         }
         return false;

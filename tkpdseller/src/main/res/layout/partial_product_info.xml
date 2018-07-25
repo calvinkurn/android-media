@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tokopedia.seller.product.edit.view.widget.ImagesSelectView
+            <com.tokopedia.product.edit.view.widget.ImagesSelectView
                 android:id="@+id/image_select_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

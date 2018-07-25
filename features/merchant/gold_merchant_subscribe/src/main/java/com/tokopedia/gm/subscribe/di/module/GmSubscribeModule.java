@@ -16,12 +16,12 @@ import com.tokopedia.gm.subscribe.data.source.product.cloud.api.GoldMerchantApi;
 import com.tokopedia.gm.subscribe.di.scope.GmSubscribeScope;
 import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.product.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;

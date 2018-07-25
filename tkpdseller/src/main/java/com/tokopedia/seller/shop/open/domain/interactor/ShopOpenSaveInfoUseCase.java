@@ -3,9 +3,6 @@ package com.tokopedia.seller.shop.open.domain.interactor;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
@@ -14,11 +11,10 @@ import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoRequestDomainModel;
 import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
-import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
+import com.tokopedia.product.common.util.ShopSettingNetworkConstant;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

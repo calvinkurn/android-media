@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntegerRes;
 
-import com.tokopedia.seller.base.view.adapter.ItemIdType;
+import com.tokopedia.product.common.util.ItemIdType;
 import com.tokopedia.topads.dashboard.constant.TopAdsAddingOption;
 
 /**

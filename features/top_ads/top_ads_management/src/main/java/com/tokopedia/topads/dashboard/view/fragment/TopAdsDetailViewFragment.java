@@ -16,9 +16,9 @@ import android.widget.CompoundButton;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.product.common.util.ViewUtils;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;

@@ -8,7 +8,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.etalase.data.source.cloud.api.MyEtalaseApi;
 import com.tokopedia.seller.product.etalase.data.source.cloud.model.AddEtalaseServiceModel;
-import com.tokopedia.seller.product.edit.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
+import com.tokopedia.product.edit.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;
