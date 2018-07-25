@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
-import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
@@ -18,12 +17,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
-import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.widget.NestedWebView;
 
-public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPromoViewModel> implements
-        ShopProductUserVisibleHintListener {
+public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPromoViewModel>{
 
     private static final String SHOP_STATIC_URL = "shop-static";
     private static final int MIN_SHOW_WEB_VIEW_PROGRESS = 100;
@@ -88,7 +85,6 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
             clearCache(shopPagePromoWebView);
             shopPagePromoWebView.loadUrl(shopProductPromoViewModel.getUrl());
         }
-        shopProductPromoViewModel.setShopProductUserVisibleHintListener(this);
 
         isLogin = shopProductPromoViewModel.isLogin();
 
@@ -103,15 +99,6 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
     private void finishLoading() {
         loadingLayout.setVisibility(View.GONE);
         shopPagePromoWebView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean visibleToUser) {
-        if (visibleToUser) {
-            shopPagePromoWebView.onResume();
-        } else {
-            shopPagePromoWebView.onPause();
-        }
     }
 
     private class OfficialStoreWebChromeClient extends WebChromeClient {

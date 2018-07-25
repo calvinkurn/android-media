@@ -44,9 +44,9 @@ import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 
-class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
+class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener,
-        ShopProductListLimitedNewFragment.OnShopProductListLimitedNewFragmentListener{
+        ShopProductListLimitedNewFragment.OnShopProductListLimitedNewFragmentListener {
 
     var shopId: String? = null
     var shopDomain: String? = null
@@ -55,14 +55,18 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     var isTabHidden: Boolean = false
     var isTabFullyVisible: Boolean = true
 
-    @Inject lateinit var presenter: ShopPagePresenterNew
-    @Inject lateinit var shopPageTracking: ShopPageTracking
+    @Inject
+    lateinit var presenter: ShopPagePresenterNew
+    @Inject
+    lateinit var shopPageTracking: ShopPageTracking
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
 
-    private val titles by lazy { arrayOf(getString(R.string.shop_info_title_tab_product),
-            getString(R.string.shop_info_title_tab_info))}
+    private val titles by lazy {
+        arrayOf(getString(R.string.shop_info_title_tab_product),
+                getString(R.string.shop_info_title_tab_info))
+    }
 
     private var tabPosition = 0
 
@@ -98,10 +102,10 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
                 .apply { putExtra(SHOP_DOMAIN, shopDomain) }
     }
 
-    object DeepLinkIntents{
+    object DeepLinkIntents {
         @DeepLink(ShopAppLink.SHOP)
         @JvmStatic
-        fun getCallingIntent(context: Context, extras: Bundle): Intent{
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
             return Intent(context, ShopPageActivity::class.java)
                     .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
                     .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
@@ -112,7 +116,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         @DeepLink(ShopAppLink.SHOP_INFO)
         @JvmStatic
-        fun getCallingIntentInfoSelected(context: Context, extras: Bundle): Intent{
+        fun getCallingIntentInfoSelected(context: Context, extras: Bundle): Intent {
             return Intent(context, ShopPageActivity::class.java)
                     .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
                     .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
@@ -171,6 +175,9 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     }
 
+    /**
+     * make the tab to hide, only show until the last item has been scrolled.
+     */
     override fun hideTab() {
         if (!isTabHidden) {
             val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
@@ -181,6 +188,11 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
+    /**
+     * alter the scrollFlag for tab
+     * startFullyVisible = true to make the tab to sticky at top
+     * startFullyVisible = false to make the tab scrollable (not fully visible)
+     */
     override fun showTab(startFullyVisible: Boolean) {
         //show tabs
         if (isTabHidden || isTabFullyVisible != startFullyVisible) {
@@ -212,21 +224,24 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun setViewState(viewState: Int) {
-        when(viewState){
-            VIEW_LOADING -> {   shopPageLoadingState.visibility = View.VISIBLE
-                                shopPageErrorState.visibility = View.GONE
-                                appBarLayout.visibility = View.INVISIBLE
-                                container.visibility = View.INVISIBLE
+        when (viewState) {
+            VIEW_LOADING -> {
+                shopPageLoadingState.visibility = View.VISIBLE
+                shopPageErrorState.visibility = View.GONE
+                appBarLayout.visibility = View.INVISIBLE
+                container.visibility = View.INVISIBLE
             }
-            VIEW_ERROR -> { shopPageLoadingState.visibility = View.GONE
-                            shopPageErrorState.visibility = View.VISIBLE
-                            appBarLayout.visibility = View.INVISIBLE
-                            container.visibility = View.INVISIBLE
+            VIEW_ERROR -> {
+                shopPageLoadingState.visibility = View.GONE
+                shopPageErrorState.visibility = View.VISIBLE
+                appBarLayout.visibility = View.INVISIBLE
+                container.visibility = View.INVISIBLE
             }
-            else -> {   shopPageLoadingState.visibility = View.GONE
-                        shopPageErrorState.visibility = View.GONE
-                        appBarLayout.visibility = View.VISIBLE
-                        container.visibility = View.VISIBLE
+            else -> {
+                shopPageLoadingState.visibility = View.GONE
+                shopPageErrorState.visibility = View.GONE
+                appBarLayout.visibility = View.VISIBLE
+                container.visibility = View.VISIBLE
             }
         }
     }
@@ -260,7 +275,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         return super.onOptionsItemSelected(item)
     }
 
-    fun onShareShop(){
+    fun onShareShop() {
         shopInfo?.run {
             shopPageTracking.eventClickShareShop(titles[viewPager.currentItem], shopId,
                     presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
@@ -274,7 +289,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onBackPressed() {
         super.onBackPressed()
-        shopInfo?.run{
+        shopInfo?.run {
             shopPageTracking.eventBackPressed(titles[viewPager.currentItem], shopId,
                     presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
         }
@@ -304,10 +319,8 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
             })
             searchInputView.setOnClickListener {
-                if (shopInfo != null) {
-                    shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product),
-                            info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
-                }
+                shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product),
+                        info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
             }
 
             (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedNewFragment)
@@ -322,7 +335,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onErrorGetShopInfo(e: Throwable?) {
         setViewState(VIEW_ERROR)
         errorTextView.text = ErrorHandler.getErrorMessage(this, e)
-        errorButton.setOnClickListener{ getShopInfo() }
+        errorButton.setOnClickListener { getShopInfo() }
         swipeToRefresh.isRefreshing = false
     }
 
@@ -360,7 +373,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODER_USER_LOGIN){
+        if (requestCode == REQUEST_CODER_USER_LOGIN) {
             refreshData()
         }
         //TODO from product list detail, scroll to top and empty the searchView.
@@ -405,7 +418,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.eventClickFavouriteShop(titles[viewPager.currentItem], shopId, isFavourite,
                     presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
         }
-        shopId?.run {presenter.toggleFavouriteShop(this)}
+        shopId?.run { presenter.toggleFavouriteShop(this) }
     }
 
     override fun goToAddProduct() {
@@ -417,7 +430,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun openShop() {
-        if (application is ShopModuleRouter){
+        if (application is ShopModuleRouter) {
             (application as ShopModuleRouter).goToEditShop(this)
         }
     }

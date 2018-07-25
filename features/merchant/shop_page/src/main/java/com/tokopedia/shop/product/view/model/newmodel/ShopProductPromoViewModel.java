@@ -14,7 +14,6 @@ public class ShopProductPromoViewModel implements BaseShopProductViewModel {
     private boolean isLogin;
     private String userId;
     private String accessToken;
-    private ShopProductUserVisibleHintListener shopProductUserVisibleHintListener;
 
     public ShopProductPromoViewModel() {
 
@@ -41,14 +40,6 @@ public class ShopProductPromoViewModel implements BaseShopProductViewModel {
 
     public String getUserId() {
         return userId;
-    }
-
-    public ShopProductUserVisibleHintListener getShopProductUserVisibleHintListener() {
-        return shopProductUserVisibleHintListener;
-    }
-
-    public void setShopProductUserVisibleHintListener(ShopProductUserVisibleHintListener shopProductUserVisibleHintListener) {
-        this.shopProductUserVisibleHintListener = shopProductUserVisibleHintListener;
     }
 
     @Override

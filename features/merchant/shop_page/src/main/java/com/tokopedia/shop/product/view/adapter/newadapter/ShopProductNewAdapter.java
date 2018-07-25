@@ -198,20 +198,6 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         }
     }
 
-    public void updateVisibleStatus(boolean visible) {
-        List<BaseShopProductViewModel> shopProductBaseViewModelList = getData();
-        for (int i = 0; i < shopProductBaseViewModelList.size(); i++) {
-            BaseShopProductViewModel shopProductViewModel = shopProductBaseViewModelList.get(i);
-            if (shopProductViewModel instanceof ShopProductPromoViewModel) {
-                ShopProductPromoViewModel shopProductPromoViewModel = ((ShopProductPromoViewModel) shopProductViewModel);
-                if (shopProductPromoViewModel.getShopProductUserVisibleHintListener() != null) {
-                    shopProductPromoViewModel.getShopProductUserVisibleHintListener().setUserVisibleHint(visible);
-                }
-                return;
-            }
-        }
-    }
-
     @Override
     protected boolean isShowLoadingMore() {
         return shopProductViewModelList.size() > 0;

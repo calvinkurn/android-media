@@ -5,7 +5,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 /**
  * Created by normansyahputa on 2/24/18.
  */
-
+@Deprecated
 public interface ShopProductClickedListener {
 
     void onWishListClicked(ShopProductViewModelOld shopProductViewModelOld);
