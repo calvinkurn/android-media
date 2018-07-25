@@ -46,6 +46,8 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -1454,5 +1456,49 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isLoginInactivePhoneLinkEnabled() {
         return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
                 && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @Override
+    public Intent getSettingBankIntent(Context context) {
+        if (isEnabledRevampBankAccount())
+            return SettingBankActivity.Companion.createIntent(context);
+        else {
+            return ManagePeopleBankActivity.createInstance(context);
+        }
+    }
+
+    private boolean isEnabledRevampBankAccount() {
+//        return remoteConfig.getBoolean("is_enabled_new_setting_bank");
+        return true;
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return null;
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
+
+    @Override
+    public Intent getProfileSettingIntent(Context context) {
+        return ManagePeopleProfileActivity.createIntent(context);
     }
 }
