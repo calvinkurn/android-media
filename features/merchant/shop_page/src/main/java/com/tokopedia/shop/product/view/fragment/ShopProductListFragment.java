@@ -370,7 +370,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     public void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         if (list.size() > 0) {
-            shopPageTracking.eventViewProductImpressionNew(getString(R.string.shop_info_title_tab_product),
+            shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                     list, attribution,
                     true, shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()),

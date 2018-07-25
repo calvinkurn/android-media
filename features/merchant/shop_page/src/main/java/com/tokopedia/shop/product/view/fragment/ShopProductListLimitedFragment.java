@@ -422,7 +422,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
         if (list.size() > 0) {
-            shopPageTracking.eventViewProductImpressionNew(getString(R.string.shop_info_title_tab_product),
+            shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
                     list, attribution,
                     true, shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()),
@@ -479,7 +479,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     public void onSuccessGetProductFeature(@NonNull List<ShopProductViewModel> list) {
         shopProductAdapter.setShopProductFeaturedViewModel(new ShopProductFeaturedViewModel(list));
         if (list.size() > 0) {
-            shopPageTracking.eventViewProductFeaturedImpressionNew(getString(R.string.shop_info_title_tab_product),
+            shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
                     list, attribution,
                     shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()), false);
