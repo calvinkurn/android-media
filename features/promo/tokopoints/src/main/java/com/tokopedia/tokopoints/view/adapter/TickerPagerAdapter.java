@@ -75,7 +75,7 @@ public class TickerPagerAdapter extends PagerAdapter {
 
         for (TickerMetadata each : container.getMetadata()) {
             if (URLUtil.isValidUrl(each.getLink().get(CommonConstant.TickerMapKeys.APP_LINK))
-                    || URLUtil.isValidUrl(each.getLink().get(each.getLink().get(CommonConstant.TickerMapKeys.URL)))) {
+                    || URLUtil.isValidUrl(each.getLink().get(CommonConstant.TickerMapKeys.URL))) {
                 String linkContent = each.getText().get(CommonConstant.TickerMapKeys.CONTENT);
                 ssb.append(linkContent, new ClickableSpan() {
                     @Override
