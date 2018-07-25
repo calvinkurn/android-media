@@ -1,4 +1,4 @@
-package com.tokopedia.product.common.data.cloud;
+package com.tokopedia.product.common.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.product.common.data.source.cloud.TomeProductApi;

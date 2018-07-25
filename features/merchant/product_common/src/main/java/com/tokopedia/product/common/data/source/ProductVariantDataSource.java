@@ -1,7 +1,7 @@
 package com.tokopedia.product.common.data.source;
 
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
-import com.tokopedia.product.common.data.cloud.ProductVariantCloud;
+import com.tokopedia.product.common.data.source.cloud.ProductVariantCloud;
 import com.tokopedia.product.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.common.model.variantbyprdold.ProductVariantByPrdModel;
 

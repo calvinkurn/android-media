@@ -1,4 +1,4 @@
-package com.tokopedia.product.common;
+package com.tokopedia.product.common.data.mapper;
 
 import android.text.TextUtils;
 

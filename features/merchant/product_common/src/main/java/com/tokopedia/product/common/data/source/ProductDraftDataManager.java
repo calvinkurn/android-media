@@ -4,7 +4,7 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
-import com.tokopedia.product.common.DraftNotFoundException;
+import com.tokopedia.product.common.util.DraftNotFoundException;
 import com.tokopedia.product.common.data.source.database.ProductDraftDataBase;
 import com.tokopedia.product.common.data.source.database.ProductDraftDataBase_Table;
 

@@ -3,7 +3,7 @@ package com.tokopedia.product.edit.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.product.common.DraftNotFoundException;
+import com.tokopedia.product.common.util.DraftNotFoundException;
 import com.tokopedia.product.common.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.product.common.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.product.common.domain.interactor.UpdateUploadingDraftProductUseCase;

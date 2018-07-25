@@ -6,7 +6,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.product.common.data.mapper.ProductDraftMapper;
 import com.tokopedia.product.common.data.source.ProductDraftDataSource;
 import com.tokopedia.product.common.domain.ProductDraftRepository;
-import com.tokopedia.product.common.ProductDraftListMapper;
+import com.tokopedia.product.common.data.mapper.ProductDraftListMapper;
 import com.tokopedia.product.common.model.ProductDraftViewModel;
 import com.tokopedia.product.common.data.source.database.ProductDraftDataBase;
 import com.tokopedia.product.common.model.edit.ProductViewModel;
