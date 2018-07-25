@@ -30,8 +30,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -86,8 +88,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
     private TextView tvSeeAllPromo;
-    public final static String ADAPTER_POSITION = "ADAPTER_POSITION";
-    public final static String FROM_HOME = "FROM_HOME";
 
     public static Fragment createInstance() {
         Fragment fragment = new DealsHomeFragment();
@@ -175,6 +175,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         NetworkClient.init(getActivity());
         getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
+        mPresenter.initialize();
     }
 
 
@@ -232,13 +233,23 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
                 }
                 break;
+            case DealsHomeActivity.REQUEST_CODE_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    if (userSession.isLoggedIn()) {
+                        startOrderListActivity();
+                    }
+                }
+                break;
+
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem carousel, CategoryItem top) {
+    public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem
+            carousel, CategoryItem top) {
 
         if (top.getItems() != null && top.getItems().size() > 0) {
             rvTrendingDeals.setVisibility(View.VISIBLE);
@@ -304,6 +315,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void startOrderListActivity() {
         RouteManager.route(getActivity(), ApplinkConst.DEALS_ORDER);
+    }
+
+    @Override
+    public int getRequestCode() {
+        return DealsHomeActivity.REQUEST_CODE_LOGIN;
     }
 
 

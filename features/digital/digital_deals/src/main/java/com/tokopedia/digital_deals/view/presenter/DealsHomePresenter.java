@@ -9,12 +9,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
@@ -75,6 +78,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private RequestParams searchNextParams = RequestParams.create();
     private Subscription subscription;
     private HashMap<String, Object> params = new HashMap<>();
+    private UserSession userSession;
 
 
     @Inject
@@ -86,6 +90,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public void initialize() {
+        userSession =((AbstractionRouter) getView().getActivity().getApplication()).getSession();
 
     }
 
@@ -156,7 +161,13 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         } else if (id == R.id.action_promo) {
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else if (id == R.id.action_booked_history) {
-            getView().startOrderListActivity();
+            if(userSession.isLoggedIn()) {
+                getView().startOrderListActivity();
+            }else{
+                Intent intent = ((DealsModuleRouter) getView().getActivity().getApplication()).
+                        getLoginIntent(getView().getActivity());
+                getView().navigateToActivityRequest(intent, getView().getRequestCode());
+            }
         } else if (id == R.id.action_faq) {
             getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
         } else if (id == R.id.tv_see_all_brands) {

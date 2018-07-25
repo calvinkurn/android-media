@@ -473,7 +473,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
                     Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
-                    getActivity().startActivityForResult(intent, LIKE_REQUEST_CODE);
+                    startActivityForResult(intent, LIKE_REQUEST_CODE);
                 }
         ).show();
 
@@ -594,6 +594,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             if (userSession.isLoggedIn()) {
                 mPresenter2.setDealLike(dealDetail, 0);
+                if (dealDetail.getIsLiked()) {
+                    setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
+                } else {
+                    setLikes(dealDetail.getLikes() + 1, !dealDetail.getIsLiked());
+                }
             }
         }
     }
