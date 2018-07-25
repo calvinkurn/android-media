@@ -33,6 +33,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private final EmptyWrapViewHolder.Callback emptyProductOnClickListener;
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
     private final boolean isHorizontalLayout;
+    private final boolean isFeaturedOnly;
 
     private OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener;
     public interface OnShopProductAdapterTypeFactoryListener{
@@ -45,13 +46,15 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                                          ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener
                                                  onShopProductEtalaseListViewHolderListener,
                                          @Nullable OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener,
-                                         boolean isHorizontalLayout) {
+                                         boolean isHorizontalLayout,
+                                         boolean isFeaturedOnly) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         this.onShopProductAdapterTypeFactoryListener = onShopProductAdapterTypeFactoryListener;
         this.isHorizontalLayout = isHorizontalLayout;
+        this.isFeaturedOnly = isFeaturedOnly;
     }
 
     @Override
@@ -133,7 +136,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         } else if(type == ShopProductFeaturedViewHolder .LAYOUT){
             return new ShopProductFeaturedViewHolder(parent, shopProductClickedListener);
         } else if(type == ShopProductNewViewHolder.LAYOUT){
-            return new ShopProductNewViewHolder(parent, shopProductClickedListener, isHorizontalLayout);
+            return new ShopProductNewViewHolder(parent, shopProductClickedListener, isHorizontalLayout, isFeaturedOnly);
         } if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);
         } else {

@@ -135,7 +135,8 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductAdapterTypeFactory(null,
                 this, this,
-                this, null, false
+                this, null,
+                false, false
         );
     }
 
@@ -296,6 +297,11 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
         selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
         shopProductNewAdapter.setSelectedEtalaseId(selectedEtalaseId);
+        if (shopPageTracking != null) {
+            shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
+                    false, selectedEtalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
         // no need ro rearraged, just notify the adapter to reload product list by etalase id
         loadInitialData();
     }
@@ -363,7 +369,14 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
 
     @Override
     public void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
-        // TODO trackingImpressionFeatureProduct(list);
+        if (list.size() > 0) {
+            shopPageTracking.eventViewProductImpressionNew(getString(R.string.shop_info_title_tab_product),
+                    list, attribution,
+                    true, shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()),
+                    false);
+        }
+
         hideLoading();
         shopProductNewAdapter.clearAllNonDataElement();
         if (isLoadingInitialData) {
@@ -426,8 +439,9 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured) {
         if (shopInfo != null) {
+            // isFromFeature is always false
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
                     attribution, shopProductViewModel.getPositionTracking(), true,
@@ -518,8 +532,9 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     }
 
     @Override
-    public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
+    public void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeature) {
         if (shopInfo != null) {
+            //isFromFeature is always false anyway.
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
                     true, shopProductViewModel.getId(),
                     shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),

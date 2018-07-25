@@ -45,11 +45,13 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
     private View soldOutView;
 
     private boolean isFixWidth;
+    private boolean isFeatured;
 
     public ShopProductNewViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
-                                    boolean isFixWidth) {
+                                    boolean isFixWidth, boolean isFeatured) {
         super(itemView);
         this.isFixWidth = isFixWidth;
+        this.isFeatured = isFeatured;
         this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView);
     }
@@ -110,7 +112,7 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel);
+        shopProductClickedListener.onProductClicked(shopProductViewModel, isFeatured);
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
@@ -170,7 +172,7 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
     }
 
     protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onWishListClicked(shopProductViewModel);
+        shopProductClickedListener.onWishListClicked(shopProductViewModel, isFeatured);
     }
 
     protected String getImageUrl(ShopProductViewModel shopProductViewModel) {

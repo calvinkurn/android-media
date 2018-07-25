@@ -159,7 +159,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                             presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
                 }
             }
-
         })
         onProductListDetailFullyHide()
         viewPager.currentItem = tabPosition
