@@ -14,12 +14,4 @@ public interface GlobalNavRouter {
     Fragment getFeedPlusFragment();
 
     Fragment getCartFragment();
-
-    Intent getInboxChatIntent(Context context);
-
-    Intent getInboxDiscussionIntent(Context context);
-
-    Intent getInboxReviewIntent(Context context);
-
-    Intent getInboxHelpIntent(Context context);
 }

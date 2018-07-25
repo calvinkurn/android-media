@@ -2434,24 +2434,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return CartFragment.newInstance(CartFragment.class.getSimpleName());
     }
 
-    @Override
     public Intent getInboxChatIntent(Context context) {
-        return new Intent(context, InboxChatActivity.class);
+        return InboxChatActivity.getCallingIntent(context);
     }
 
-    @Override
+
     public Intent getInboxDiscussionIntent(Context context) {
-        return new Intent(context, InboxTalkActivity.class);
+        return InboxTalkActivity.getCallingIntent(context);
     }
 
-    @Override
     public Intent getInboxReviewIntent(Context context) {
-        return new Intent(context, InboxReputationActivity.class);
+        return InboxReputationActivity.getCallingIntent(context);
     }
 
-    @Override
+
     public Intent getInboxHelpIntent(Context context) {
-        return new Intent(context, InboxTicketActivity.class);
+        return InboxTicketActivity.getCallingIntent(context);
     }
 
     @Override
