@@ -53,6 +53,7 @@ public class DealsContract {
 
         void showViews();
 
+        void startOrderListActivity();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

@@ -32,6 +32,8 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.DealsModuleRouter;
@@ -297,6 +299,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
         clSearch.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void startOrderListActivity() {
+        RouteManager.route(getActivity(), ApplinkConst.DEALS_ORDER);
     }
 
 
