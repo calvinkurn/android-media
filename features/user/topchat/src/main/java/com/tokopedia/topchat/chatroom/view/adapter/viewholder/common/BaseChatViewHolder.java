@@ -62,7 +62,8 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             hourTime = element.getReplyTime();
         }
 
-        if (hour != null && TextUtils.isEmpty(hourTime)) {
+        if (hour != null
+                && (TextUtils.isEmpty(hourTime) || !element.isShowTime())) {
             hour.setVisibility(View.GONE);
         } else if (hour != null) {
             hour.setText(hourTime);
@@ -82,7 +83,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         }
 
         if (date != null
-                && element.isShowTime()
+                && element.isShowDate()
                 && !TextUtils.isEmpty(time)) {
             date.setVisibility(View.VISIBLE);
             date.setText(time);
