@@ -35,8 +35,7 @@ public class RegisterEmailDependencyInjector {
                         new RegisterEmailMapper(),
                         new SessionHandler(viewListener.getActivity())));
 
-        RegisterEmailUseCase registerEmailUseCase = new RegisterEmailUseCase(
-                new JobExecutor(), new UIThread(), registerEmailRepository);
+        RegisterEmailUseCase registerEmailUseCase = new RegisterEmailUseCase(registerEmailRepository);
 
         RegisterViewModel registerViewModel = new RegisterViewModel();
 
