@@ -3,19 +3,34 @@ package com.tokopedia.feedplus.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 
 /**
  * @author by milhamj on 25/07/18.
  */
 
-public class FeedPlusContainerFragment extends BaseDaggerFragment {
+public class FeedPlusContainerFragment extends BaseDaggerFragment
+        implements FeedPlusContainerListener {
+
+    private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
+
+    private FeedPlusFragment feedPlusFragment;
+    private ContentExploreFragment contentExploreFragment;
+
+    public FeedPlusContainerFragment newInstance() {
+        FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -40,12 +55,34 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment {
 
     }
 
-    private void initView() {
-        FeedPlusFragment fragment = FeedPlusFragment.newInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+    @Override
+    public void showFeedPlus() {
+        if (feedPlusFragment == null) {
+            feedPlusFragment = FeedPlusFragment.newInstance();
         }
-        fragmentTransaction.commit();
+        inflateFragment(feedPlusFragment);
+    }
+
+    @Override
+    public void showContentExplore() {
+        if (contentExploreFragment == null) {
+            contentExploreFragment = ContentExploreFragment.newInstance();
+        }
+        inflateFragment(contentExploreFragment);
+    }
+
+    private void initView() {
+        feedPlusFragment = FeedPlusFragment.newInstance();
+        inflateFragment(feedPlusFragment);
+    }
+
+    protected void inflateFragment(Fragment fragment) {
+        if (fragment == null) {
+            return;
+        }
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, TAG_FRAGMENT)
+                .commit();
     }
 }
