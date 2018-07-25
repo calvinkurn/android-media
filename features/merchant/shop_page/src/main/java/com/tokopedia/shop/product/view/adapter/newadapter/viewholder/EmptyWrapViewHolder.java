@@ -7,11 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.shop.R;
 
-
-/**
- * @author kulomady on 1/24/17.
- */
-
 public class EmptyWrapViewHolder extends BaseEmptyViewHolder<EmptyModel> {
 
     @LayoutRes

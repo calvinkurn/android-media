@@ -26,7 +26,6 @@ import com.tokopedia.shop.page.view.presenter.ShopPagePresenterNew
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import javax.inject.Inject
-import android.support.design.widget.AppBarLayout
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -48,8 +47,7 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
-        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener,
-        ShopProductListLimitedNewFragment.OnShopProductListLimitedNewFragmentListener {
+        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
 
     var shopId: String? = null
     var shopDomain: String? = null
@@ -160,60 +158,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 }
             }
         })
-        onProductListDetailFullyHide()
         viewPager.currentItem = tabPosition
         swipeToRefresh.setOnRefreshListener { refreshData() }
 
         mainLayout.requestFocus();
 
         getShopInfo()
-    }
-
-    private fun onProductListDetailStartShow() {
-
-    }
-
-    private fun onProductListDetailFullyHide() {
-
-    }
-
-    /**
-     * make the tab to hide, only show until the last item has been scrolled.
-     */
-    override fun hideTab() {
-        if (!isTabHidden) {
-            val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
-            params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-            tabLayout.layoutParams = params
-            tabLayout.invalidate()
-            isTabHidden = true
-        }
-    }
-
-    /**
-     * alter the scrollFlag for tab
-     * startFullyVisible = true to make the tab to sticky at top
-     * startFullyVisible = false to make the tab scrollable (not fully visible)
-     */
-    override fun showTab(startFullyVisible: Boolean) {
-        //show tabs
-        if (isTabHidden || isTabFullyVisible != startFullyVisible) {
-            val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
-            if (startFullyVisible) {
-                params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-            } else {
-                params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or
-                        AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-            }
-            tabLayout.layoutParams = params
-            tabLayout.invalidate()
-            isTabHidden = false
-            isTabFullyVisible = startFullyVisible
-        }
-    }
-
-    override fun getTabLayoutHeight(): Int {
-        return tabLayout.height
     }
 
     private fun getShopInfo() {

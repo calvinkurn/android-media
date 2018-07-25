@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -118,16 +119,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     private boolean needReloadData;
     private boolean needToShowEtalase;
 
-    private OnShopProductListLimitedNewFragmentListener onShopProductListLimitedNewFragmentListener;
-
-    public interface OnShopProductListLimitedNewFragmentListener {
-        void hideTab();
-
-        void showTab(boolean startFullyVisible);
-
-        int getTabLayoutHeight();
-    }
-
     public static ShopProductListLimitedNewFragment createInstance(String shopAttribution) {
         ShopProductListLimitedNewFragment fragment = new ShopProductListLimitedNewFragment();
         Bundle bundle = new Bundle();
@@ -170,6 +161,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 ShopProductListLimitedNewFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
             }
         });
+        bottomActionView.setVisibility(View.GONE);
         bottomActionView.hide(false);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -198,23 +190,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int firstCompletelyVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition();
-                if (firstCompletelyVisiblePosition > -1) {
-                    if (firstCompletelyVisiblePosition > (shopProductNewAdapter.getStickyHeaderPosition() - 1)) {
-                        // if hit the etalase label, hide the Tab
-                        onShopProductListLimitedNewFragmentListener.hideTab();
-                        totalDy = 0;
-                    } else {
-                        totalDy += dy;
-                        if (dy < 0) {
-                            if (-totalDy > onShopProductListLimitedNewFragmentListener.getTabLayoutHeight()) {
-                                onShopProductListLimitedNewFragmentListener.showTab(true);
-                            } else {
-                                onShopProductListLimitedNewFragmentListener.showTab(false);
-                            }
-                        }
-                    }
-                }
                 if (dy < 0) { // going up
                     if (shopProductNewAdapter.getShopProductViewModelList().size() > 0) {
                         int lastCompleteVisiblePosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
@@ -741,6 +716,5 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
-        onShopProductListLimitedNewFragmentListener = (OnShopProductListLimitedNewFragmentListener) context;
     }
 }

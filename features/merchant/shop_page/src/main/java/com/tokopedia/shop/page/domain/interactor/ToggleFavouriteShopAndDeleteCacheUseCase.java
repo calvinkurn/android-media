@@ -27,7 +27,8 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return toggleFavouriteShopUseCase.createObservable(requestParams).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+        return toggleFavouriteShopUseCase.createObservable(requestParams)
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
                 if (aBoolean) {
