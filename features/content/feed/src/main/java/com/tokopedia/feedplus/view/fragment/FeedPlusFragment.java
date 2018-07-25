@@ -125,6 +125,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
+    private View tabExplore;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
@@ -234,6 +235,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        tabExplore = parentView.findViewById(R.id.tab_explore);
 
         prepareView();
         presenter.attachView(this);
@@ -282,6 +284,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             }
 
+        });
+        tabExplore.setOnClickListener(v -> {
+            containerListener.showContentExplore();
         });
     }
 
