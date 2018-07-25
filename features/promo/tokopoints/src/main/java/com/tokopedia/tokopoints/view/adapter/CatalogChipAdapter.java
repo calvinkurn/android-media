@@ -68,7 +68,7 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
 
         /*This section is exclusively for handling flash-sale timer*/
         if (item.getTimeRemainingSeconds() > 0) {
-            holder.timer = new CountDownTimer(15 * 1000, TICK_MS) {
+            holder.timer = new CountDownTimer(item.getTimeRemainingSeconds() * 1000, TICK_MS) {
                 @Override
                 public void onTick(long l) {
                     int seconds = (int) (l / 1000) % 60;
