@@ -54,5 +54,6 @@ public interface DistrictRecommendationContract {
         String INTENT_DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address";
         String INTENT_DATA_ADDRESS = "address";
         String ARGUMENT_DATA_TOKEN = "token";
+        String ARGUMENT_IS_FROM_MARKETPLACE_CART = "ARGUMENT_IS_FROM_MARKETPLACE_CART";
     }
 }

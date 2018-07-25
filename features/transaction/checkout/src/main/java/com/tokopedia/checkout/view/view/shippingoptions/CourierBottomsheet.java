@@ -112,7 +112,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
             @Override
             public void onClick(View view) {
                 onCloseClick();
-                checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickXOnCourierOption();
+                checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickXOnCourierOption();
             }
         });
 
