@@ -35,13 +35,16 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.deposit.adapter.BankAdapter;
 import com.tokopedia.core.deposit.adapter.BankDialogAdapter;
+import com.tokopedia.core.deposit.adapter.BankNewAdapter;
 import com.tokopedia.core.deposit.listener.WithdrawFragmentView;
+import com.tokopedia.core.deposit.model.BankAccount;
 import com.tokopedia.core.deposit.model.WithdrawForm;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.deposit.presenter.WithdrawFragmentPresenter;
 import com.tokopedia.core.deposit.presenter.WithdrawFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -91,8 +94,8 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @BindView(R2.id.total_withdrawal)
     EditText totalWithdrawal;
 
-    @BindView(R2.id.bank_list)
-    Spinner bankListView;
+//    @BindView(R2.id.bank_list)
+//    Spinner bankListView;
 
     @BindView(R2.id.password)
     EditText password;
@@ -124,9 +127,10 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     TkpdProgressDialog progressDialog;
     BankAdapter bankAdapter;
     WithdrawFragmentPresenter presenter;
-    List<Bank> listBank;
+    List<BankAccount> listBank;
     Snackbar snackBar;
-    BankDialogAdapter bankDialogadapter;
+    BankNewAdapter bankDialogadapter;
+    RecyclerView bankRecyclerView;
 
     public static WithdrawFragment createInstance(Bundle extras) {
         WithdrawFragment fragment = new WithdrawFragment();
@@ -208,11 +212,16 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @Override
     protected void initView(View view) {
         snackBar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_INDEFINITE);
+        bankRecyclerView = view.findViewById(R.id.recycler_view_bank);
+        bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        listBank = new ArrayList<>();
+        bankDialogadapter = BankNewAdapter.createAdapter(context, listBank);
+        bankRecyclerView.setAdapter(bankDialogadapter);
     }
 
     @Override
     protected void setViewListener() {
-        bankListView.setOnItemSelectedListener(onBankListSelected());
+//        bankListView.setOnItemSelectedListener(onBankListSelected());
         sendOTP.setOnClickListener(onSendOTPClicked());
         bankNameView.setOnClickListener(onBankNameClicked());
         forgotPassText.setOnClickListener(onGoToForgotPass());
@@ -253,67 +262,67 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogChooseBankName();
+//                showDialogChooseBankName();
             }
         };
     }
 
-    private void showDialogChooseBankName() {
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-        LayoutInflater li = LayoutInflater.from(getActivity());
-        final View promptsView = li.inflate(R.layout.choose_bank_dialog_2, null);
-        alertDialogBuilder.setView(promptsView);
-
-        final RecyclerView lvBank = (RecyclerView) promptsView.findViewById(R.id.lv_bank);
-        listBank = presenter.getListBankFromDB("");
-        bankDialogadapter = BankDialogAdapter.createAdapter(context, listBank);
-        lvBank.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        lvBank.setAdapter(bankDialogadapter);
-
-        final SearchView Search = (SearchView) promptsView.findViewById(R.id.search);
-        Search.setIconified(false);
-        Search.setIconifiedByDefault(false);
-        Search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                listBank = presenter.getListBankFromDB(query);
-
-
-                if (listBank.size() == 0) {
-                    bankDialogadapter.showEmpty();
-                } else {
-                    bankDialogadapter.removeEmpty();
-                }
-                bankDialogadapter.setList(listBank);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() == 0) {
-                    listBank = presenter.getListBankFromDB("");
-                    bankDialogadapter.setList(listBank);
-                }
-                return false;
-            }
-        });
-
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        alertDialog.show();
-
-        bankDialogadapter.setListener(new BankDialogAdapter.OnBankClickListener() {
-            @Override
-            public void onClick(int position) {
-                bankNameView.setText(listBank.get(position).getBankName());
-                bankDialogadapter.setSelectedBankId(position);
-                alertDialog.dismiss();
-            }
-        });
-    }
+//    private void showDialogChooseBankName() {
+//
+//        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+//
+//        LayoutInflater li = LayoutInflater.from(getActivity());
+//        final View promptsView = li.inflate(R.layout.choose_bank_dialog_2, null);
+//        alertDialogBuilder.setView(promptsView);
+//
+//        final RecyclerView lvBank = (RecyclerView) promptsView.findViewById(R.id.lv_bank);
+//        listBank = presenter.getListBankFromDB("");
+//        bankDialogadapter = BankNewAdapter.createAdapter(context, listBank);
+//        lvBank.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+//        lvBank.setAdapter(bankDialogadapter);
+//
+//        final SearchView Search = (SearchView) promptsView.findViewById(R.id.search);
+//        Search.setIconified(false);
+//        Search.setIconifiedByDefault(false);
+//        Search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                listBank = presenter.getListBankFromDB(query);
+//
+//
+//                if (listBank.size() == 0) {
+//                    bankDialogadapter.showEmpty();
+//                } else {
+//                    bankDialogadapter.removeEmpty();
+//                }
+//                bankDialogadapter.setList(listBank);
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                if (newText.length() == 0) {
+//                    listBank = presenter.getListBankFromDB("");
+//                    bankDialogadapter.setList(listBank);
+//                }
+//                return false;
+//            }
+//        });
+//
+//        final AlertDialog alertDialog = alertDialogBuilder.create();
+//        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        alertDialog.show();
+//
+//        bankDialogadapter.setListener(new BankNewAdapter.OnBankClickListener() {
+//            @Override
+//            public void onClick(int position) {
+//                bankNameView.setText(listBank.get(position).getBankName());
+//                bankDialogadapter.setSelectedBankId(position);
+//                alertDialog.dismiss();
+//            }
+//        });
+//    }
 
     private View.OnClickListener onSendOTPClicked() {
         return new View.OnClickListener() {
@@ -342,7 +351,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     protected void initialVar() {
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         bankAdapter = BankAdapter.createInstance(getActivity());
-        bankListView.setAdapter(bankAdapter);
+//        bankListView.setAdapter(bankAdapter);
 
     }
 
@@ -361,8 +370,8 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     }
 
     @Override
-    public BankAdapter getAdapter() {
-        return bankAdapter;
+    public BankNewAdapter getAdapter() {
+        return bankDialogadapter;
     }
 
     @Override
@@ -415,7 +424,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public Spinner getBankList() {
-        return bankListView;
+        return null;
     }
 
     @Override
@@ -475,7 +484,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
         mainView.setVisibility(View.VISIBLE);
         codeOTP.setEnabled(true);
         totalWithdrawal.setEnabled(true);
-        bankListView.setEnabled(true);
+//        bankListView.setEnabled(true);
         password.setEnabled(true);
         bankNameView.setEnabled(true);
         accountNumber.setEnabled(true);
@@ -488,7 +497,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     public void disableView() {
         codeOTP.setEnabled(false);
         totalWithdrawal.setEnabled(false);
-        bankListView.setEnabled(false);
+//        bankListView.setEnabled(false);
         password.setEnabled(false);
         bankNameView.setEnabled(false);
         accountNumber.setEnabled(false);

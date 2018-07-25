@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tokopedia.core.deposit.adapter.BankAdapter;
+import com.tokopedia.core.deposit.adapter.BankNewAdapter;
 import com.tokopedia.core.deposit.model.WithdrawForm;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
@@ -18,7 +18,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 public interface WithdrawFragmentView {
     void showLoading();
 
-    BankAdapter getAdapter();
+    BankNewAdapter getAdapter();
 
     void setForm(WithdrawForm data);
 

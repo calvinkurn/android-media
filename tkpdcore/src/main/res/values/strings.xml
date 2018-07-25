@@ -602,6 +602,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_no_password_yes">Buat kata sandi</string>
     <string name="error_changeemail_no_password_title">Anda tidak memiliki kata sandi</string>
     <string name="error_changeemail_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk mengubah email.</string>
+
+    <string name="title_withdrawal_saldo">Saldo yang Dapat Ditarik</string>
+    <string name="title_withdrawal_nominal">Masukkan Nominal Penarikan Saldo</string>
+    <string name="choose_bank_account">Pilih Rekening Bank</string>
     <!-- Strings related Manage People -->
 
 

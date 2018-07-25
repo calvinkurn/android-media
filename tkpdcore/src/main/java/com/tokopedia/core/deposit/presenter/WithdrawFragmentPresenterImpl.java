@@ -12,10 +12,10 @@ import com.tkpd.library.utils.data.DataManager;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.Bank;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
@@ -30,7 +30,6 @@ import com.tokopedia.core.deposit.model.WithdrawForm;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 
 import java.util.HashMap;
 import java.util.List;
@@ -180,7 +179,6 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
             @Override
             public void onSuccess(@NonNull WithdrawForm data) {
                 if (viewListener != null && viewListener.getActivity() != null) {
-
                     viewListener.finishLoading();
                     viewListener.enableView();
                     viewListener.setForm(data);
@@ -312,7 +310,7 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
             param.setBankId(viewListener.getBankId());
             param.setBankBranch(viewListener.getBranchName().getText().toString());
         } else {
-            param.setBankAccountId(viewListener.getAdapter().getList().get(
+            param.setBankAccountId(viewListener.getAdapter().getListBank().get(
                     viewListener.getBankList().getSelectedItemPosition() - 1).getBankAccountId()
             );
 
@@ -383,7 +381,7 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
     }
 
     private boolean isAddNewBank(int position) {
-        return position == viewListener.getAdapter().getList().size() + 1;
+        return position == viewListener.getAdapter().getListBank().size() + 1;
     }
 
     private boolean isValid() {
