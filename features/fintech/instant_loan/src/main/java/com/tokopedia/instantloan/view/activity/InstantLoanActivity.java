@@ -67,7 +67,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private TabLayout tabLayout;
     private HeightWrappingViewPager heightWrappingViewPager;
     private int activeTabPosition = 0;
-    private boolean instantLoanEnabled = true;
+    private boolean instantLoanEnabled = false;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
@@ -157,8 +157,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         NetworkClient.init(this);
         super.onCreate(savedInstanceState);
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        instantLoanEnabled = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
+        /*RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        instantLoanEnabled = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);*/
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
