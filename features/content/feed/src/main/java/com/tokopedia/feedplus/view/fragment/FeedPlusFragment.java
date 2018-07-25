@@ -212,7 +212,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     FeedModuleRouter.class.getSimpleName());
         }
 
-        containerListener = (FeedPlusContainerListener) getParentFragment();
+        if (getParentFragment() instanceof FeedPlusContainerListener) {
+            containerListener = (FeedPlusContainerListener) getParentFragment();
+        } else {
+            throw new IllegalStateException("getParentFragment() must be an instance of"
+                    + FeedPlusContainerListener.class.getSimpleName());
+        }
 
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);

@@ -25,7 +25,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
 
-    public FeedPlusContainerFragment newInstance() {
+    public static FeedPlusContainerFragment newInstance() {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
@@ -81,7 +81,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
             return;
         }
 
-        getActivity().getSupportFragmentManager().beginTransaction()
+        getChildFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment, TAG_FRAGMENT)
                 .commit();
     }
