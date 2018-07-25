@@ -39,6 +39,7 @@ import javax.inject.Inject;
 /**
  * @author by yfsx on 23/07/18.
  */
+
 public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostListener.View.Like, KolPostListener.View.ViewHolder {
 
