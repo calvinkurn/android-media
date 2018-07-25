@@ -62,7 +62,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             List<Integer> items = new ArrayList<>();
             for (CatalogsValueEntity each : mAdapter.getItems()) {
                 if (each.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                    items.add(each.getCatalogType());
+                    items.add(each.getId());
                 }
             }
 
