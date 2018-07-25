@@ -71,7 +71,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
         return fragment;
     }
 
-
     @Override
     protected String getScreenName() {
         return null;

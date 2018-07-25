@@ -142,6 +142,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     boolean hasLoadedOnce = false;
 
+    public static FeedPlusFragment newInstance() {
+        FeedPlusFragment fragment = new FeedPlusFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected String getScreenName() {
         return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED;
