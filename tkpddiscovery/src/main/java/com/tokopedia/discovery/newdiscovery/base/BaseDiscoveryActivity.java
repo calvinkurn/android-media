@@ -36,6 +36,8 @@ public class BaseDiscoveryActivity
     private boolean requestOfficialStoreBanner;
     private int activeTabPosition;
 
+    private Boolean isPause = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,4 +195,19 @@ public class BaseDiscoveryActivity
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isPause = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isPause = false;
+    }
+
+    public Boolean isPausing() {
+        return isPause;
+    }
 }
