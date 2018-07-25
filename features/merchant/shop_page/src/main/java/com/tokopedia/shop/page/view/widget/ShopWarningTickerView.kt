@@ -15,11 +15,11 @@ import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
-import kotlinx.android.synthetic.main.partial_shop_info_ticker_v3.view.*
+import kotlinx.android.synthetic.main.partial_shop_info_ticker.view.*
 
-class ShopWarningTickerViewNew: FrameLayout {
+class ShopWarningTickerView: FrameLayout {
     private val view: View by lazy {
-        LayoutInflater.from(context).inflate(R.layout.partial_shop_info_ticker_v3, this, false)
+        LayoutInflater.from(context).inflate(R.layout.partial_shop_info_ticker, this, false)
     }
 
     constructor(context: Context):super(context){

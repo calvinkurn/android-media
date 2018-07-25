@@ -20,7 +20,7 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
@@ -212,7 +212,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                     getView().addNewEtalaseToChip(selectedEtalaseId, selectedEtalaseName);
                     ArrayList<ShopEtalaseViewModel> etalaseViewModelList = getView().getSelectedEtalaseViewModelList();
 
-                    List<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapperNew.mergeEtalaseList(
+                    List<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapper.mergeEtalaseList(
                             etalaseModelList, etalaseViewModelList, ShopPageConstant.ETALASE_TO_SHOW);
                     getView().onSuccessGetEtalaseList(shopEtalaseViewModelList, shopProductRequestModel.getEtalaseId(), selectedEtalaseName);
                     getShopProductWithWishList(shopProductRequestModel);

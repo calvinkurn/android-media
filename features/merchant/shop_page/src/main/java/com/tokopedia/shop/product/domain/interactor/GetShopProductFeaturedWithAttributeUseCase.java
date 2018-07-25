@@ -3,7 +3,7 @@ package com.tokopedia.shop.product.domain.interactor;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
@@ -31,7 +31,7 @@ public class GetShopProductFeaturedWithAttributeUseCase extends BaseGetShopProdu
                                                       GetWishListUseCase getWishListUseCase,
                                                       GetProductCampaignsUseCase getProductCampaignsUseCase,
                                                       UserSession userSession,
-                                                      ShopProductMapperNew shopProductMapper) {
+                                                      ShopProductMapper shopProductMapper) {
         super(getWishListUseCase, getProductCampaignsUseCase, userSession, shopProductMapper);
         this.getFeatureProductListUseCase = getFeatureProductListUseCase;
     }

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
@@ -28,7 +28,7 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
                                                   GetWishListUseCase getWishListUseCase,
                                                   GetProductCampaignsUseCase getProductCampaignsUseCase,
                                                   UserSession userSession,
-                                                  ShopProductMapperNew shopProductMapper) {
+                                                  ShopProductMapper shopProductMapper) {
         super(getWishListUseCase, getProductCampaignsUseCase, userSession, shopProductMapper);
         this.getShopProductListUseCase = getShopProductListUseCase;
     }

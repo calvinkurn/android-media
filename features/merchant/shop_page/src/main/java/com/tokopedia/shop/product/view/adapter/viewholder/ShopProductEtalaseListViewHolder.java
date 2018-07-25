@@ -20,7 +20,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopProductEtalaseListViewModel> implements EtalaseChipAdapter.OnEtalaseChipAdapterListener, View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_etalase_title_view_old;
+    public static final int LAYOUT = R.layout.item_shop_product_etalase_chip_list;
 
     private RecyclerView recyclerView;
     private Parcelable recyclerViewState;

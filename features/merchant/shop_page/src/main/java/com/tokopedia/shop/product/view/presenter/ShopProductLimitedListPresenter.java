@@ -17,7 +17,7 @@ import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttrib
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -222,7 +222,7 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
             public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
                 if (isViewAttached()) {
                     getView().onSuccessGetEtalaseList(
-                            ShopProductMapperNew.mergeEtalaseList(pagingListOther, selectedEtalaseIdList, limit));
+                            ShopProductMapper.mergeEtalaseList(pagingListOther, selectedEtalaseIdList, limit));
                 }
             }
         });

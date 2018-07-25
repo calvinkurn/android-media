@@ -14,10 +14,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ShopProductMapperNew {
+public class ShopProductMapper {
 
     @Inject
-    public ShopProductMapperNew() {
+    public ShopProductMapper() {
 
     }
 

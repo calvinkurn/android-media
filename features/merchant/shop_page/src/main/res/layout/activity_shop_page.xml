@@ -59,7 +59,7 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
                 <include
-                    layout="@layout/partial_shop_page_header_2"
+                    layout="@layout/partial_shop_page_header"
                     android:id="@+id/shopPageHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
