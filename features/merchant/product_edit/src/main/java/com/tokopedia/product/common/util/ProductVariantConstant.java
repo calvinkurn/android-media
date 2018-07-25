@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.variant.constant;
+package com.tokopedia.product.common.util;
 
 /**
  * Created by nathan on 8/15/17.
