@@ -1,13 +1,12 @@
 package com.tokopedia.discovery.similarsearch.model;
 
-import javax.annotation.Generated;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.SerializedName;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 
 import java.util.List;
+
+import javax.annotation.Generated;
 
 @Generated("com.robohorse.robopojogenerator")
 public class ProductsItem{
@@ -60,9 +59,7 @@ public class ProductsItem{
 	@SerializedName("badges")
 	private List<Badges> badges;
 
-
 	private String originProductID;
-
 	private boolean wishListed;
 	private boolean isWishlistButtonEnabled = true;
 
