@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.product.common.util.ProductNetworkConstant;
+import com.tokopedia.product.edit.common.util.ProductNetworkConstant;
 import com.tokopedia.product.edit.data.source.cloud.api.ImageUploadApi;
 import com.tokopedia.product.edit.data.mapper.ImageProductUploadMapper;
 import com.tokopedia.product.edit.data.source.cloud.model.AddProductPictureInputServiceModel;

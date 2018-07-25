@@ -1,6 +1,6 @@
 package com.tokopedia.product.edit.di.component;
 
-import com.tokopedia.product.common.di.component.ProductComponent;
+import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.product.edit.di.module.AddProductserviceModule;
 import com.tokopedia.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.product.edit.view.service.UploadProductService;

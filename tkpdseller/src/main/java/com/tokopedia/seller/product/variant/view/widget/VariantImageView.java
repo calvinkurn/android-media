@@ -21,7 +21,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.product.common.model.edit.BasePictureViewModel;
+import com.tokopedia.product.edit.common.model.edit.BasePictureViewModel;
 
 import java.io.File;
 

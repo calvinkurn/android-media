@@ -2,12 +2,12 @@ package com.tokopedia.product.edit.view.model.upload;
 
 import android.text.TextUtils;
 
-import com.tokopedia.product.common.model.variantsubmit.ProductVariantDataSubmit;
-import com.tokopedia.product.common.util.ProductStatus;
+import com.tokopedia.product.edit.common.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.product.edit.common.util.ProductStatus;
+import com.tokopedia.product.edit.common.util.ProductVariantConstant;
 import com.tokopedia.product.edit.constant.ProductStockTypeDef;
 
-import com.tokopedia.product.common.util.CurrencyTypeDef;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;

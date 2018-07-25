@@ -20,9 +20,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.product.common.util.CurrencyTypeDef;
-import com.tokopedia.product.common.util.CurrencyUsdTextWatcher;
+import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
+import com.tokopedia.product.edit.common.util.CurrencyUsdTextWatcher;
 import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.utils.ProductPriceRangeUtils;
 

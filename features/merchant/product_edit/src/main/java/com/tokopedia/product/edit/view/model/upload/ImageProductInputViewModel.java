@@ -2,7 +2,7 @@ package com.tokopedia.product.edit.view.model.upload;
 
 import android.text.TextUtils;
 
-import com.tokopedia.product.common.util.ImageStatusTypeDef;
+import com.tokopedia.product.edit.common.util.ImageStatusTypeDef;
 
 /**
  * @author sebastianuskh on 4/13/17.

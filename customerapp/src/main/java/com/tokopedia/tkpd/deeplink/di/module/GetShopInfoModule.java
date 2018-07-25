@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.deeplink.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.product.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.edit.common.data.source.cloud.ShopApi;
 import com.tokopedia.tkpd.deeplink.data.factory.ShopInfoSourceFactory;
 import com.tokopedia.tkpd.deeplink.data.repository.ShopInfoRepository;
 import com.tokopedia.tkpd.deeplink.data.repository.ShopInfoRepositoryImpl;

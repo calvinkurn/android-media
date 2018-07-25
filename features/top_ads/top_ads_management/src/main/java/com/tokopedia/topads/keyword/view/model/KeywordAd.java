@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.dashboard.view.model.Ad;
-import com.tokopedia.product.common.util.ItemType;
+import com.tokopedia.product.edit.common.util.ItemType;
 
 /**
  * Created by zulfikarrahman on 5/30/17.

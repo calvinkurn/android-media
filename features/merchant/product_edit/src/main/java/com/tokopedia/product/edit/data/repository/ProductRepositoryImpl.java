@@ -3,8 +3,8 @@ package com.tokopedia.product.edit.data.repository;
 import com.tokopedia.core.product.model.goldmerchant.Video;
 import com.tokopedia.product.edit.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.product.edit.data.source.ProductDataSource;
-import com.tokopedia.product.common.model.edit.ProductVideoViewModel;
-import com.tokopedia.product.common.model.edit.ProductViewModel;
+import com.tokopedia.product.edit.common.model.edit.ProductVideoViewModel;
+import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 import com.tokopedia.product.edit.domain.ProductRepository;
 
 import java.util.ArrayList;

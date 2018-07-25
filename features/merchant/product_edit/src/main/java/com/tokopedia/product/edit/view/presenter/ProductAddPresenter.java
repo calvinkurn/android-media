@@ -1,7 +1,7 @@
 package com.tokopedia.product.edit.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.product.common.model.edit.ProductViewModel;
+import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.product.edit.view.listener.ProductAddView;
 

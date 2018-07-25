@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.deeplink.data.mapper;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
 
 import javax.inject.Inject;
 

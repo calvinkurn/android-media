@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shop.setting.data.mapper;
 
-import com.tokopedia.product.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
 import com.tokopedia.seller.shop.setting.data.model.DataResponseShopSchedule;
 
 import retrofit2.Response;

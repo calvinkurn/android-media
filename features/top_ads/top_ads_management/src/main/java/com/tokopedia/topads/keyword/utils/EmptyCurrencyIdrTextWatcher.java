@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.widget.EditText;
 
 import com.tokopedia.design.utils.CurrencyFormatHelper;
-import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
 
 /**
  * Created by normansyahputa on 10/12/17.

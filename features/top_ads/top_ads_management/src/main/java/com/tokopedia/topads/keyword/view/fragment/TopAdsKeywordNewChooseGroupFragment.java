@@ -18,7 +18,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdTextInputLayout;
-import com.tokopedia.product.common.util.ViewUtils;
+import com.tokopedia.product.edit.common.util.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;

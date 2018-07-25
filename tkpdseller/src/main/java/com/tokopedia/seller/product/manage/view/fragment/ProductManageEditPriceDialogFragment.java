@@ -19,10 +19,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.R;
-import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
 import com.tokopedia.product.edit.utils.ProductPriceRangeUtils;
-import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.product.common.util.CurrencyUsdTextWatcher;
+import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.edit.common.util.CurrencyUsdTextWatcher;
 
 import java.util.Locale;
 

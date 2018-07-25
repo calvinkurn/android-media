@@ -11,7 +11,7 @@ import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.product.common.di.component.ProductComponent;
+import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.di.DaggerProductListComponent;
 import com.tokopedia.seller.product.picker.di.ProductListModule;

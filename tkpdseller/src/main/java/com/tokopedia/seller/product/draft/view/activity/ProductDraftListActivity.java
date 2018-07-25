@@ -18,7 +18,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.product.common.di.component.ProductComponent;
+import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;

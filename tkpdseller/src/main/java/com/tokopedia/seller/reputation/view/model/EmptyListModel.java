@@ -3,7 +3,7 @@ package com.tokopedia.seller.reputation.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.product.common.util.ItemType;
+import com.tokopedia.product.edit.common.util.ItemType;
 
 /**
  * Created by normansyahputa on 3/30/17.

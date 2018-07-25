@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.common.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.product.common.util.ProductUrl;
+import com.tokopedia.product.edit.common.util.ProductUrl;
 import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
 
 import java.util.ArrayList;

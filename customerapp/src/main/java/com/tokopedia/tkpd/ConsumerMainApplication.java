@@ -23,7 +23,7 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.ProductCommonGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.ProductEditGeneratedDatabaseHolder;
 import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
@@ -269,7 +269,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public void initializeDatabase() {
         FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(ProductCommonGeneratedDatabaseHolder.class)
+                .addDatabaseHolder(ProductEditGeneratedDatabaseHolder.class)
                 .build());
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)

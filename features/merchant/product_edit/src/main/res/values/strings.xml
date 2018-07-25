@@ -151,4 +151,6 @@
     <string name="product_add_wholesale_notice_variant"><b>Semua harga varian</b> otomatis mengikuti harga utama jika produk memiliki harga grosir.</string>
     <string name="rupiah_format">Rp %s</string>
     <string name="usd_format">US$ %s</string>
+    <string name="product_currency_value_idr">1</string>
+    <string name="product_currency_value_usd">2</string>
 </resources>

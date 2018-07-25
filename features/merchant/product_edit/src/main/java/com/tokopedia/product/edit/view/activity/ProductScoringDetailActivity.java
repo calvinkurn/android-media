@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.product.common.di.component.ProductComponent;
+import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.product.edit.constant.ProductExtraConstant;
 import com.tokopedia.product.edit.util.ProductEditModuleRouter;
 import com.tokopedia.product.edit.view.fragment.ProductScoringDetailFragment;

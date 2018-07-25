@@ -256,7 +256,7 @@ dependencies {
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.topchat)
-    implementation project(rootProject.ext.features.productCommon)
+    implementation project(rootProject.ext.features.productEdit)
 
 
     implementation project(rootProject.ext.features.shopCommon)

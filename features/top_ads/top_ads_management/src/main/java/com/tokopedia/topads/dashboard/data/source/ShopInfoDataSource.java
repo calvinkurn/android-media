@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.data.source;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.edit.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.topads.dashboard.data.source.cloud.ShopInfoCloud;
 
 import rx.Observable;

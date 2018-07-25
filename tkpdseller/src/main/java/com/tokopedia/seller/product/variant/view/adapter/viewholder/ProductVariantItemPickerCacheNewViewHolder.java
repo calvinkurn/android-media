@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
 import com.tokopedia.seller.common.utils.CircleTransform;
-import com.tokopedia.product.common.model.variantbycat.ProductVariantOption;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantOption;
 
 /**
  * @author normansyahputa on 5/26/17.

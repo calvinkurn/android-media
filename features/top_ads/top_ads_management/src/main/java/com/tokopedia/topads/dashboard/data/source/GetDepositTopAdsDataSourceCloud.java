@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.data.source;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.product.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.edit.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 

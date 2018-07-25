@@ -1,7 +1,7 @@
 package com.tokopedia.product.edit.utils;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.product.common.util.CurrencyTypeDef;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
 
 public class ProductPriceRangeUtils {
     private static final double MIN_IDR = 100;

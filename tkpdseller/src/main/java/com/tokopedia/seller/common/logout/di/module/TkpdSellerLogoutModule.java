@@ -15,14 +15,14 @@ import com.tokopedia.core.common.category.domain.interactor.ClearCategoryCacheUs
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
-import com.tokopedia.product.common.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.product.common.data.source.ProductDraftDataSource;
+import com.tokopedia.product.edit.common.data.repository.ProductDraftRepositoryImpl;
+import com.tokopedia.product.edit.common.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.product.common.domain.ProductDraftRepository;
-import com.tokopedia.product.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.product.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
+import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.edit.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.edit.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

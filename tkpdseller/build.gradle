@@ -49,7 +49,6 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.productEdit)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.productCommon)
 
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.features.districtRecommendation)
