@@ -62,6 +62,7 @@ public class YoutubeInitializer {
                         @Override
                         public void onThumbnailLoaded(YouTubeThumbnailView youTubeThumbnailView,
                                                       String s) {
+                            isThumbnailReadyForInitialized = true;
                             loader.release();
                             listener.onSuccessInitializeThumbnail(loader, youTubeThumbnailView);
                         }
