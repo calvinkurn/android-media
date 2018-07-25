@@ -8,13 +8,13 @@ import com.tokopedia.product.edit.view.listener.VideoRecommendationListener
 import com.tokopedia.product.edit.view.viewmodel.TitleVideoRecommendationViewModel
 import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
 
-class ProductAddVideoRecommendationAdapterTypeFactory(var videoRecommendationListener: VideoRecommendationListener) : BaseAdapterTypeFactory() {
+class ProductAddVideoRecommendationAdapterTypeFactory(private var videoRecommendationListener: VideoRecommendationListener) : BaseAdapterTypeFactory(), ProductAddVideoRecommendationTypeFactory {
 
-    fun type(titleVideoRecommendationViewModel: TitleVideoRecommendationViewModel): Int {
+    override fun type(titleVideoRecommendationViewModel: TitleVideoRecommendationViewModel): Int {
         return TitleVideoRecommendationViewHolder.LAYOUT
     }
 
-    fun type(videoRecommendationViewModel: VideoRecommendationViewModel): Int {
+    override fun type(videoRecommendationViewModel: VideoRecommendationViewModel): Int {
         return VideoRecommendationViewHolder.LAYOUT
     }
 

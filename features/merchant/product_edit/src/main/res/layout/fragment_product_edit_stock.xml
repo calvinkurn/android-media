@@ -6,28 +6,14 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <LinearLayout
+    <com.tokopedia.product.edit.price.LabelRadioButton
+        android:id="@+id/labelRadioButtonStockAvailable"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_24"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16" >
-
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_weight="1"
-            style="@style/TextView.Title"
-            android:text="@string/product_label_stock_always_available" />
-
-        <android.support.v7.widget.AppCompatRadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ProductAddEditRadioButton" />
-
-    </LinearLayout>
+        android:layout_height="@dimen/dp_60"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="@dimen/dp_16"
+        app:lr_title="@string/product_label_stock_always_available" />
 
     <View
         android:layout_width="match_parent"
@@ -35,28 +21,20 @@
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
-    <LinearLayout
+    <com.tokopedia.product.edit.price.LabelRadioButton
+        android:id="@+id/labelRadioButtonStockLimited"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_24"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16" >
+        android:layout_height="@dimen/dp_60"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="@dimen/dp_16"
+        app:lr_title="@string/product_label_stock_limited" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_weight="1"
-            style="@style/TextView.Title"
-            android:text="@string/product_label_stock_limited" />
-
-        <android.support.v7.widget.AppCompatRadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ProductAddEditRadioButton" />
-
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_divider"
+        android:layout_marginLeft="@dimen/dp_16" />
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/textInputLayoutStock"
@@ -75,12 +53,6 @@
             android:inputType="number" />
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/line_divider"
-        android:layout_marginLeft="@dimen/dp_16" />
 
 
     <android.support.v7.widget.AppCompatTextView

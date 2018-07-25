@@ -11,22 +11,22 @@ import com.tokopedia.product.edit.view.listener.SectionVideoRecommendationListen
 import com.tokopedia.product.edit.view.listener.VideoChosenListener
 import com.tokopedia.product.edit.view.viewmodel.*
 
-class ProductAddVideoAdapterTypeFactory(var sectionVideoRecommendationListener: SectionVideoRecommendationListener,
-                                        var videoChoosenListener: VideoChosenListener) : BaseAdapterTypeFactory() {
+class ProductAddVideoAdapterTypeFactory(private var sectionVideoRecommendationListener: SectionVideoRecommendationListener,
+                                        private var videoChoosenListener: VideoChosenListener) : BaseAdapterTypeFactory(), ProductAddVideoTypeFactory {
 
-    fun type(sectionVideoRecommendationViewModel: SectionVideoRecommendationViewModel): Int {
+    override fun type(sectionVideoRecommendationViewModel: SectionVideoRecommendationViewModel): Int {
         return SectionVideoRecommendationViewHolder.LAYOUT
     }
 
-    fun type(videoViewModel: VideoViewModel): Int {
+    override fun type(videoViewModel: VideoViewModel): Int {
         return VideoViewHolder.LAYOUT
     }
 
-    fun type(emptyVideoViewModel: EmptyVideoViewModel): Int {
+    override fun type(emptyVideoViewModel: EmptyVideoViewModel): Int {
         return EmptyVideoViewHolder.LAYOUT
     }
 
-    fun type(titleVideoChoosenViewModel: TitleVideoChosenViewModel): Int {
+    override fun type(titleVideoChoosenViewModel: TitleVideoChosenViewModel): Int {
         return TitleVideoChosenViewHolder.LAYOUT
     }
 

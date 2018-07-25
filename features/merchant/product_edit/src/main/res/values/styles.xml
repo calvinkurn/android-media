@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ProductAddEditSwitchCheckbox" parent="Theme.AppCompat.Light">
+    <style name="ProductAddEditRadioButtonCheckbox" parent="Theme.AppCompat.Light">
         <item name="colorAccent">#42b549</item>
         <item name="android:textColorSecondary">#bfbfbf</item>
     </style>
