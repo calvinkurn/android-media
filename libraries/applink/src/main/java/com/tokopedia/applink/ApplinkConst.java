@@ -61,6 +61,8 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
+    String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
+    String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
@@ -92,16 +94,26 @@ public interface ApplinkConst {
     String PROMO_LIST = "tokopedia://promoNative";
     String EXPLORE = "tokopedia://jump/{section}";
 
+    String DIGITAL_ORDER = "tokopedia://digital/order";
+    String EVENTS_ORDER = "tokopedia://events/order";
+    String DEALS_ORDER = "tokopedia://deals/order";
+    String FLIGHT_ORDER = "tokopedia://pesawat/order";
+
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+
+    String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
     String ORDER_TRACKING = "tokopedia://order/tracking";
+
+    String FLIGHT = "tokopedia://pesawat";
+
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

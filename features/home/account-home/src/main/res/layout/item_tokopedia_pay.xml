@@ -3,4 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/view_tokopedia_pay"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_0"/>

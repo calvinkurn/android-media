@@ -21,7 +21,6 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
-import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
@@ -92,8 +91,6 @@ public interface GMComponent {
     ImageHandler imageHandler();
 
     GMFeaturedProductGetListUseCase getFeaturedProductGetListUseCase();
-
-    SetCashbackUseCase getSetCashbackUseCase();
 
     GetCashbackUseCase getCashbackUseCase();
 }

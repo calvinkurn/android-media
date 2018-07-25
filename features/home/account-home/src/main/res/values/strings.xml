@@ -50,4 +50,39 @@
     <string name="pref_review_key" translatable="false">notification_receive_review</string>
     <string name="pref_bulletin_key" translatable="false">notification_receive_bulletin</string>
     <string name="application_version_fmt">Versi %1$s</string>
+    <string name="label_profile_completion">Kelengkapan Profile %1$d%%</string>
+    <string name="label_tokopedia_pay_title">Tokopedia Pay</string>
+    <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
+    <string name="label_tokopedia_pay_deposit">Saldo</string>
+    <string name="label_tokopedia_pay_wallet">TokoCash</string>
+    <string name="title_menu_transaction">Transaksi</string>
+    <string name="title_menu_waiting_for_payment">Menunggu Pembayaran</string>
+    <string name="label_menu_waiting_for_payment">Semua transaksi yang belum dibayar</string>
+    <string name="title_menu_shopping_transaction">Transaksi Belanja</string>
+    <string name="label_menu_show_tx_history">Lihat Riwayat</string>
+    <string name="label_menu_waiting_confirmation">Menunggu Konfirmasi</string>
+    <string name="label_menu_order_processed">Pesanan Diproses</string>
+    <string name="label_menu_shipping">Sedang Dikirim</string>
+    <string name="label_menu_delivered">Sampai Tujuan</string>
+    <string name="title_menu_complaint">Komplain</string>
+    <string name="label_menu_complaint">Selesaikan komplain belanja anda</string>
+    <string name="title_menu_other_transaction">Transaksi Lainnya</string>
+    <string name="title_menu_favorites">Favorit Saya</string>
+    <string name="title_menu_last_seen">Terakhir Dilihat</string>
+    <string name="label_menu_last_seen">Produk yang terakhir dilihat</string>
+    <string name="title_menu_favorite_shops">Toko Favorit</string>
+    <string name="label_menu_favorite_shops">Lihat Toko yang sudah Anda favoritkan</string>
+    <string name="title_menu_top_up_bill_subscription"><![CDATA[Langganan Top Up & Tagihan]]></string>
+    <string name="label_menu_top_up_bill_subscription"><![CDATA[Lihat langganan Top Up & Tagihan]]></string>
+    <string name="title_menu_top_up_numbers"><![CDATA[Nomor Top Up & Tagihan]]></string>
+    <string name="label_menu_top_up_numbers"><![CDATA[Lihat riwayat nomor Top Up & Tagihan]]></string>
+    <string name="title_menu_wallet_referral">Dapatkan TokoCash</string>
+    <string name="label_menu_wallet_referral">Bagikan Aplikasi ini ke teman Anda</string>
+    <string name="title_menu_help">Bantuan</string>
+    <string name="title_menu_resolution_center">Pusat Bantuan</string>
+    <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
+    <string name="title_menu_top_up_bill"><![CDATA[Top Up & Tagihan]]></string>
+    <string name="title_menu_deals">Deals</string>
+    <string name="title_menu_flight">Pesawat</string>
+    <string name="title_menu_show_all">Lihat Semua</string>
 </resources>

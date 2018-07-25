@@ -40,6 +40,9 @@ public class WebSocketResponseData {
     @SerializedName("rating_status")
     @Expose
     private int ratingStatus;
+    @SerializedName("is_opposite")
+    @Expose
+    private boolean isOpposite;
 
     public int getMsgId() {
         return msgId;
@@ -127,5 +130,13 @@ public class WebSocketResponseData {
 
     public void setRatingStatus(int ratingStatus) {
         this.ratingStatus = ratingStatus;
+    }
+
+    public boolean getIsOpposite() {
+        return isOpposite;
+    }
+
+    public void setIsOpposite(boolean isOpposite) {
+        this.isOpposite = isOpposite;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface BuyerAccount {
     interface View extends CustomerView {
-        void loadData(List<Visitable> visitables);
+        void loadData(List<? extends Visitable> visitables);
     }
 
     interface Presenter extends CustomerPresenter<View> {

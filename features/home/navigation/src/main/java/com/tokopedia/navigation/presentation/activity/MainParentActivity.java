@@ -1,5 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -26,19 +28,31 @@ import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by meta on 19/06/18.
  */
 public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent {
 
+    public static int HOME_MENU = 0;
+    public static int FEED_MENU = 1;
+    public static int INBOX_MENU = 2;
+    public static int CART_MENU = 3;
+    public static int ACCOUNT_MENU = 4;
+
     private BottomNavigation bottomNavigation;
     private TouchViewPager viewPager;
-    private FragmentAdapter adapterViewPager;
 
     private UserSession userSession;
 
     private boolean isUserFirstTimeLogin = false;
+
+    public static Intent start(Context context) {
+        return new Intent(context, MainParentActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +64,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
 
-        adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
+        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -82,24 +96,19 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.menu_home) {
-            viewPager.setCurrentItem(0, false);
-
+            viewPager.setCurrentItem(HOME_MENU, false);
         } else if (i == R.id.menu_feed) {
-            viewPager.setCurrentItem(1, false);
-
+            viewPager.setCurrentItem(FEED_MENU, false);
         } else if (i == R.id.menu_inbox) {
-            viewPager.setCurrentItem(2, false);
-
+            viewPager.setCurrentItem(INBOX_MENU, false);
         } else if (i == R.id.menu_cart) {
-            viewPager.setCurrentItem(3, false);
-
+            viewPager.setCurrentItem(CART_MENU, false);
         } else if (i == R.id.menu_account) {
             if(userSession.isLoggedIn()) {
-                viewPager.setCurrentItem(4, false);
+                viewPager.setCurrentItem(ACCOUNT_MENU, false);
             } else {
                 RouteManager.route(this, ApplinkConst.LOGIN);
             }
-
         }
         return true;
     }
@@ -120,49 +129,40 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     private void reloadPage() {
-        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
+        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
-        bottomNavigation.getMenu().getItem(0).setChecked(true);
+        bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
 
-    public BaseAppComponent getApplicationComponent() {
-        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    private List<Fragment> createFragments() {
+        List<Fragment> fragmentList = new ArrayList<>();
+        if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment());
+            fragmentList.add(InboxFragment.newInstance());
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
+            fragmentList.add(AccountHomeFragment.newInstance());
+        }
+        return fragmentList;
     }
 
     public class FragmentAdapter extends FragmentPagerAdapter {
 
-        public FragmentAdapter(FragmentManager fm) {
+        private List<Fragment> fragmentList;
+
+        public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
+            this.fragmentList = fragmentList;
         }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
-                    }
-                case 1:
-                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment();
-                    }
-                case 2:
-                    return InboxFragment.newInstance();
-                case 3:
-                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment();
-                    }
-                case 4:
-                    // todo: do we need router for this?
-                    return AccountHomeFragment.newInstance();
-                default:
-                    return null;
-            }
+            return fragmentList.get(position);
         }
 
         @Override
         public int getCount() {
-            return 5;
+            return fragmentList.size();
         }
 
         @Override
@@ -174,5 +174,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public BaseAppComponent getApplicationComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }
