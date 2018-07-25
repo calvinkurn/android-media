@@ -1129,7 +1129,7 @@ public class CartFragment extends BaseCheckoutFragment implements
         if (!(fragment instanceof RemoveCartItemFragment)
                 && cartListAdapter.getCartItemDataList() != null
                 && cartListAdapter.getCartItemDataList().size() > 0) {
-            cartPageAnalytics.eventClickCartClickHapusOnTopRightCorner();
+//            cartPageAnalytics.eventClickCartClickHapusOnTopRightCorner();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartListAdapter.getCartItemDataList()))
                     .addToBackStack(null)
@@ -1161,11 +1161,11 @@ public class CartFragment extends BaseCheckoutFragment implements
     public void onBackPressed() {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
         if (fragment instanceof RemoveCartItemFragment) {
-            ((RemoveCartItemFragment)fragment).getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
+//            ((RemoveCartItemFragment)fragment).getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
             getChildFragmentManager().beginTransaction().remove(fragment).commit();
             getChildFragmentManager().popBackStack();
         } else {
-            getCartPageAnalytics().eventClickCartClickArrowBack();
+//            getCartPageAnalytics().eventClickCartClickArrowBack();
             getActivity().onBackPressed();
         }
     }
