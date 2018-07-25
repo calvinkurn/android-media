@@ -164,7 +164,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             mRecyclerViewCatalog.setAdapter(mAdapter);
         }
 
-        startUpdateCatalogStatusTimer();
+        if (mTimer == null) {
+            startUpdateCatalogStatusTimer();
+        }
     }
 
     @Override
@@ -305,7 +307,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             return;
         }
 
-
         for (CatalogStatusItem each : items) {
             if (each == null) {
                 continue;
@@ -320,6 +321,10 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                     item.setQuota(each.getQuota());
                 }
             }
+        }
+
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
         }
     }
 
