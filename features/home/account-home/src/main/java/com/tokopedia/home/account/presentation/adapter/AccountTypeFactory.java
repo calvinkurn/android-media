@@ -40,7 +40,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == MenuGridViewHolder.LAYOUT) {
             return new MenuGridViewHolder(parent);
         } else if (type == MenuListViewHolder.LAYOUT) {
-            return new MenuListViewHolder(parent);
+            return new MenuListViewHolder(parent, listener);
         } else if (type == InfoCardViewHolder.LAYOUT) {
             return new InfoCardViewHolder(parent, listener);
         }
@@ -79,5 +79,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         void onMenuGridLinkClicked(MenuGridViewModel item);
 
         void onInfoCardClicked(InfoCardViewModel item);
+
+        void onMenuListClicked(MenuListViewModel item);
     }
 }

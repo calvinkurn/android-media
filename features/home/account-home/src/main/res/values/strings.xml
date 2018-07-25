@@ -21,8 +21,8 @@
     <string name="label_menu_order_processed">Pesanan Diproses</string>
     <string name="label_menu_shipping">Sedang Dikirim</string>
     <string name="label_menu_delivered">Sampai Tujuan</string>
-    <string name="title_menu_complain">Komplain</string>
-    <string name="label_menu_complain">Selesaikan komplain belanja anda</string>
+    <string name="title_menu_complaint">Komplain</string>
+    <string name="label_menu_complaint">Selesaikan komplain belanja anda</string>
     <string name="title_menu_other_transaction">Transaksi Lainnya</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_last_seen">Terakhir Dilihat</string>

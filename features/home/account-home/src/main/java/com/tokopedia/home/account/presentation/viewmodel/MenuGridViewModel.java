@@ -1,14 +1,16 @@
 package com.tokopedia.home.account.presentation.viewmodel;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import android.os.Parcel;
+
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
+import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 
 import java.util.List;
 
 /**
  * @author okasurya on 7/19/18.
  */
-public class MenuGridViewModel implements Visitable<AccountTypeFactory> {
+public class MenuGridViewModel implements ParcelableViewModel<AccountTypeFactory> {
     private String title;
     private String linkText;
     private String applinkUrl;
@@ -50,4 +52,40 @@ public class MenuGridViewModel implements Visitable<AccountTypeFactory> {
     public void setItems(List<MenuGridItemViewModel> items) {
         this.items = items;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeString(this.linkText);
+        dest.writeString(this.applinkUrl);
+        dest.writeTypedList(this.items);
+    }
+
+    public MenuGridViewModel() {
+    }
+
+    protected MenuGridViewModel(Parcel in) {
+        this.title = in.readString();
+        this.linkText = in.readString();
+        this.applinkUrl = in.readString();
+        this.items = in.createTypedArrayList(MenuGridItemViewModel.CREATOR);
+    }
+
+    public static final Creator<MenuGridViewModel> CREATOR = new Creator<MenuGridViewModel>() {
+        @Override
+        public MenuGridViewModel createFromParcel(Parcel source) {
+            return new MenuGridViewModel(source);
+        }
+
+        @Override
+        public MenuGridViewModel[] newArray(int size) {
+            return new MenuGridViewModel[size];
+        }
+    };
 }

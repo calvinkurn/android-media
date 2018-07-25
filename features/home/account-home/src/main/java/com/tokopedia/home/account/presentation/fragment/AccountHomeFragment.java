@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +27,7 @@ import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
 import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
-import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,20 +120,22 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
 
     @Override
     public void renderData(AccountViewModel accountViewModel) {
-        List<AccountFragmentItem> fragmentItems = new ArrayList<>();
-        AccountFragmentItem item = new AccountFragmentItem();
-        item.setFragment(BuyerAccountFragment.newInstance(accountViewModel));
-        item.setTitle(getContext().getString(R.string.label_account_buyer));
-        fragmentItems.add(item);
-
-        if(accountViewModel.isSeller()) {
-            item = new AccountFragmentItem();
-            item.setFragment(SellerAccountFragment.newInstance(accountViewModel));
-            item.setTitle(getContext().getString(R.string.label_account_seller));
+        if(getContext() != null) {
+            List<AccountFragmentItem> fragmentItems = new ArrayList<>();
+            AccountFragmentItem item = new AccountFragmentItem();
+            item.setFragment(BuyerAccountFragment.newInstance(accountViewModel.getBuyerViewModel()));
+            item.setTitle(getContext().getString(R.string.label_account_buyer));
             fragmentItems.add(item);
-        }
 
-        adapter.setItems(fragmentItems);
+            if (accountViewModel.isSeller()) {
+                item = new AccountFragmentItem();
+                item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
+                item.setTitle(getContext().getString(R.string.label_account_seller));
+                fragmentItems.add(item);
+            }
+
+            adapter.setItems(fragmentItems);
+        }
     }
 
     private void initInjector() {

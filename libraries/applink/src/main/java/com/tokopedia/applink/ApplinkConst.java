@@ -61,6 +61,8 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
+    String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
+    String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
@@ -109,6 +111,8 @@ public interface ApplinkConst {
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
     String ORDER_TRACKING = "tokopedia://order/tracking";
+
+    String FLIGHT = "tokopedia://pesawat";
 
 
     interface SellerApp {

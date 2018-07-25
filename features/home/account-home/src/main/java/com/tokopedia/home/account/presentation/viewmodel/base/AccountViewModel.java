@@ -1,10 +1,8 @@
-package com.tokopedia.home.account.presentation.viewmodel;
+package com.tokopedia.home.account.presentation.viewmodel.base;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,24 +11,24 @@ import java.util.List;
  * @author okasurya on 7/20/18.
  */
 public class AccountViewModel implements Parcelable {
-    private List<Visitable> buyerViewModels = new ArrayList<>();
-    private List<Visitable> sellerViewModels = new ArrayList<>();
+    private BuyerViewModel buyerViewModel;
+    private SellerViewModel sellerViewModel;
     private Boolean isSeller;
 
-    public List<Visitable> getBuyerViewModels() {
-        return buyerViewModels;
+    public BuyerViewModel getBuyerViewModel() {
+        return buyerViewModel;
     }
 
-    public void setBuyerViewModels(@NonNull List<Visitable> buyerViewModels) {
-        this.buyerViewModels = buyerViewModels;
+    public void setBuyerViewModel(BuyerViewModel buyerViewModel) {
+        this.buyerViewModel = buyerViewModel;
     }
 
-    public List<Visitable> getSellerViewModels() {
-        return sellerViewModels;
+    public SellerViewModel getSellerViewModel() {
+        return sellerViewModel;
     }
 
-    public void setSellerViewModels(@NonNull List<Visitable> sellerViewModels) {
-        this.sellerViewModels = sellerViewModels;
+    public void setSellerViewModel(SellerViewModel sellerViewModel) {
+        this.sellerViewModel = sellerViewModel;
     }
 
     public Boolean isSeller() {
@@ -41,6 +39,7 @@ public class AccountViewModel implements Parcelable {
         isSeller = seller;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -48,8 +47,8 @@ public class AccountViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.buyerViewModels);
-        dest.writeList(this.sellerViewModels);
+        dest.writeParcelable(this.buyerViewModel, flags);
+        dest.writeParcelable(this.sellerViewModel, flags);
         dest.writeValue(this.isSeller);
     }
 
@@ -57,10 +56,8 @@ public class AccountViewModel implements Parcelable {
     }
 
     protected AccountViewModel(Parcel in) {
-        this.buyerViewModels = new ArrayList<Visitable>();
-        in.readList(this.buyerViewModels, Visitable.class.getClassLoader());
-        this.sellerViewModels = new ArrayList<Visitable>();
-        in.readList(this.sellerViewModels, Visitable.class.getClassLoader());
+        this.buyerViewModel = in.readParcelable(BuyerViewModel.class.getClassLoader());
+        this.sellerViewModel = in.readParcelable(SellerViewModel.class.getClassLoader());
         this.isSeller = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 
