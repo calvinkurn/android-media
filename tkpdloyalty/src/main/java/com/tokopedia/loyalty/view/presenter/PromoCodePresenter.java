@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.ResponseErrorException;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -26,8 +25,6 @@ import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author anggaprasetiyo on 27/11/17.
