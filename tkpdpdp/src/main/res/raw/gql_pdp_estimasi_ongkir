@@ -1,0 +1,42 @@
+query Rates($service: String!, $names: String!, $from: String!, $to: String!, $weight: String!) {
+    rates(service:$service, names:$name, origin:$from, destination:$to, weight:$weigth){
+    data {
+        id
+        type
+        attributes {
+            service_name
+            service_id
+            service_etd
+            service_order
+            service_range_price
+            service_notes
+            products {
+                shipper_name
+                shipper_id
+                shipper_product_id
+                shipper_product_name
+                shipper_product_desc
+                is_show_map
+                shipper_price
+                shipper_formatted_price
+                shipper_etd
+                min_etd
+                max_etd
+                shipper_weight
+                insurance_price
+                insurance_type
+                insurance_type_info
+                insurance_used_type
+                insurance_used_default
+                insurance_used_info
+                check_sum
+                ut
+            }
+        }
+    }
+    texts {
+        text_min_price
+        text_destination
+        }
+    }
+}
