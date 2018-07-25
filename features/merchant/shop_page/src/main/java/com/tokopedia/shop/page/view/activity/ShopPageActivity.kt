@@ -22,8 +22,8 @@ import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.page.view.listener.ShopPageView
-import com.tokopedia.shop.page.view.presenter.ShopPagePresenterNew
-import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment
+import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import javax.inject.Inject
 import android.view.MenuItem
@@ -57,7 +57,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var isTabFullyVisible: Boolean = true
 
     @Inject
-    lateinit var presenter: ShopPagePresenterNew
+    lateinit var presenter: ShopPagePresenter
     @Inject
     lateinit var shopPageTracking: ShopPageTracking
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
@@ -289,7 +289,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
             }
 
-            (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedNewFragment)
+            (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
                     .displayProduct(this)
 
             (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragmentNew)

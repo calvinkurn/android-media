@@ -7,7 +7,7 @@ import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
-import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

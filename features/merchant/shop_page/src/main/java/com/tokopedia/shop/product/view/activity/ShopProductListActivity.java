@@ -23,7 +23,7 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
-import com.tokopedia.shop.product.view.fragment.ShopProductListNewFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ import static com.tokopedia.shop.common.constant.ShopParamConstant.EXTRA_SELECTE
 
 public class ShopProductListActivity extends BaseSimpleActivity
         implements HasComponent<ShopComponent>,
-        ShopProductListNewFragment.OnShopProductListFragmentListener{
+        ShopProductListFragment.OnShopProductListFragmentListener{
 
     public static final String SAVED_KEYWORD = "svd_keyword";
 
@@ -130,7 +130,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
         searchInputView.setListener(new SearchInputView.Listener() {
             @Override
             public void onSearchSubmitted(String text) {
-                ShopProductListNewFragment fragment = (ShopProductListNewFragment) getFragment();
+                ShopProductListFragment fragment = (ShopProductListFragment) getFragment();
                 if (fragment!= null) {
                     fragment.updateDataByChangingKeyword(text);
                 }
@@ -150,7 +150,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListNewFragment.createInstance(shopId, keyword, etalaseId, sort, attribution,
+        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution,
                 selectedEtalaseChipList);
     }
 
