@@ -1,6 +1,7 @@
 package com.tokopedia.train.common.constant;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.train.passenger.data.cloud.entity.TrainSoftbookWrapperEntity;
 import com.tokopedia.train.search.data.entity.ScheduleAvailabilityResponse;
 import com.tokopedia.train.search.data.entity.SearchDataResponse;
 import com.tokopedia.train.seat.data.entity.TrainKaiSeatMapEntity;
@@ -32,8 +33,6 @@ public interface TrainApi {
     @Headers({"Content-Type: application/json"})
     Observable<DataResponse<ScheduleAvailabilityResponse>> availabilityTrain(@Body Map<String, Object> params);
 
-
-
     @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<DataResponse<TrainKaiSeatMapEntity>> seats(@Body Map<String, Object> params);
@@ -41,4 +40,9 @@ public interface TrainApi {
     @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<DataResponse<String>> changeSeats(@Body HashMap<String, Object> parameters);
+
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<DataResponse<TrainSoftbookWrapperEntity>> doSoftBooking(@Body Map<String, Object> params);
+
 }
