@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
+    private LinearLayout baseView;
     private BaseKolView baseKolView;
     private ImageView ivPlay;
     private ProgressBar loadingBar;
@@ -67,7 +69,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         topShadow = itemView.findViewById(R.id.top_shadow);
-
+        baseView = itemView.findViewById(R.id.base_view);
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content_youtube);
         RelativeLayout mainView = view.findViewById(R.id.main_view);
@@ -90,9 +92,13 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             topShadow.setVisibility(View.GONE);
         }
         baseKolView.setViewListener(this, element);
-        thumbnailView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
-                YoutubeInitializer.videoThumbnailInitializer(element.getYoutubeLink(), this));
-        thumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener(element));
+        try {
+            thumbnailView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
+                    YoutubeInitializer.videoThumbnailInitializer(element.getYoutubeLink(), this));
+            thumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener(element));
+        } catch (Exception e) {
+            baseView.setVisibility(GONE);
+        }
 
         if (TextUtils.isEmpty(element.getTagsCaption())) {
             tooltipClickArea.setVisibility(View.GONE);
