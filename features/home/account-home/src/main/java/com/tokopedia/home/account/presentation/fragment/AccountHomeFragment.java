@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -40,11 +41,10 @@ import javax.inject.Inject;
  * @author okasurya on 7/16/18.
  */
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHome.View {
+
     @Inject
     AccountHomePresenter presenter;
-    private Toolbar toolbar;
 
-    private boolean isLoaded = false;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private AccountHomePagerAdapter adapter;
@@ -59,29 +59,9 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
         initInjector();
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isResumed()) {
-            onResume();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!getUserVisibleHint()) {
-            return;
-        }
-        if (!isLoaded) {
-            loadData();
-            isLoaded = true;
-        }
-    }
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
         initView(view);
         return view;
@@ -150,17 +130,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
         presenter.attachView(this);
     }
 
-    private void loadData() {
-
-    }
-
-    public void setLoaded(boolean loaded) {
-        isLoaded = loaded;
-    }
-
     private void initView(View view) {
-        setHasOptionsMenu(true);
-        getActivity().invalidateOptionsMenu();
         setToolbar(view);
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
@@ -168,11 +138,12 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     }
 
     private void setToolbar(View view) {
-        toolbar = view.findViewById(R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_account);
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
+        setHasOptionsMenu(true);
     }
 
     private void setAdapter() {

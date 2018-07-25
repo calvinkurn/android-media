@@ -11,12 +11,14 @@ import android.view.inputmethod.InputMethodManager;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.R;
@@ -42,14 +44,14 @@ import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRou
 /**
  * @author by anggaprasetiyo on 8/26/16.
  */
-public class PurchaseActivity extends DrawerPresenterActivity implements
+public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
         TxSummaryFragment.OnCenterMenuClickListener, NotificationReceivedListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener,
         CancelTransactionDialog.CancelPaymentDialogListener {
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
-    @BindView(R2.id.indicator)
+    @BindView(R2.id.tabs)
     TabLayout indicator;
 
     public List<String> tabContents;
@@ -131,7 +133,9 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_purchase_tx_module;
+        if (GlobalConfig.isSellerApp())
+            return R.layout.activity_purchase_tx_module;
+        return R.layout.layout_tablayout_secondary;
     }
 
     @Override

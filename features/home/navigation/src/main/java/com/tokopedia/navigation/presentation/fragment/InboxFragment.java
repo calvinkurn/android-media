@@ -1,27 +1,32 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.navigation.GlobalNavRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.domain.Inbox;
+import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.base.ParentFragment;
+import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavModule;
+import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
+import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.searchbar.NotificationToolbar;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends ParentFragment {
+public class InboxFragment extends ParentFragment implements InboxView {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -33,7 +38,9 @@ public class InboxFragment extends ParentFragment {
     }
 
     private NotificationToolbar toolbar;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
+    @Inject InboxPresenter presenter;
     private InboxAdapter adapter;
 
     @Override
@@ -43,59 +50,49 @@ public class InboxFragment extends ParentFragment {
 
     @Override
     public void initView(View view) {
-        if (toolbar != null)
-            toolbar.setTitle(getString(R.string.inbox));
+        this.intiInjector();
+        presenter.setView(this);
 
         adapter = new InboxAdapter();
 
-        SwipeRefreshLayout swipe = view.findViewById(R.id.swipe);
+        swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        swipe.setOnRefreshListener(() -> {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
             adapter.clear();
-            adapter.addAll(data());
         });
 
-        adapter.addAll(data());
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
-            Intent intent = getCallingIntent(position);
-            if (intent != null)
-                startActivity(intent);
+            getCallingIntent(position);
         });
     }
 
-    private Intent getCallingIntent(int position) {
-        Intent intent = null;
-        if (getActivity() != null && getActivity().getApplication() instanceof GlobalNavRouter) {
-            switch (position) {
-                case CHAT_MENU:
-                    intent = ((GlobalNavRouter) getActivity().getApplication()).getInboxChatIntent(getActivity());
-                    break;
-                case DISCUSSION_MENU:
-                    intent = ((GlobalNavRouter) getActivity().getApplication()).getInboxDiscussionIntent(getActivity());
-                    break;
-                case REVIEW_MENU:
-                    intent = ((GlobalNavRouter) getActivity().getApplication()).getInboxReviewIntent(getActivity());
-                    break;
-                case HELP_MENU:
-                    intent = ((GlobalNavRouter) getActivity().getApplication()).getInboxHelpIntent(getActivity());
-                    break;
-            }
-        }
-        return intent;
+    private void intiInjector() {
+        DaggerGlobalNavComponent.builder()
+                .globalNavModule(new GlobalNavModule())
+                .build()
+                .inject(this);
     }
 
-    private List<Inbox> data() {
-        List<Inbox> data = new ArrayList<>();
-        data.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
-        data.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
-        data.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
-        data.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
-        return data;
+    private void getCallingIntent(int position) {
+        switch (position) {
+            case CHAT_MENU:
+                RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
+                break;
+            case DISCUSSION_MENU:
+                RouteManager.route(getActivity(), ApplinkConst.TALK);
+                break;
+            case REVIEW_MENU:
+                RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
+                break;
+            case HELP_MENU:
+                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+                break;
+        }
     }
 
     @Override
@@ -107,10 +104,46 @@ public class InboxFragment extends ParentFragment {
     }
 
     @Override
-    public void loadData() { }
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public void loadData() {
+        if (toolbar != null)
+            toolbar.setTitle(getString(R.string.inbox));
+    }
 
     @Override
     protected String getScreenName() {
         return "";
+    }
+
+    @Override
+    public void onStartLoading() {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+    }
+
+    @Override
+    public void onError(String message) { }
+
+    @Override
+    public void onHideLoading() {
+        if (swipeRefreshLayout != null)
+            swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRenderInboxList(List<Inbox> inboxList) {
+        adapter.addAll(inboxList);
     }
 }

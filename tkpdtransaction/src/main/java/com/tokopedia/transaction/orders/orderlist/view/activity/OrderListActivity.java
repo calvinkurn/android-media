@@ -17,9 +17,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
@@ -36,15 +39,13 @@ import java.util.List;
 
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
 
-public class OrderListActivity extends DrawerPresenterActivity<OrderListInitContract.Presenter>
+public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInitContract.Presenter>
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener{
     private static final String ORDER_CATEGORY = "orderCategory";
     private int drawerPosition;
     private String orderCategory = "ALL";
-    private ProgressBar progressBar;
-    private TabLayout tabLayout;
+    private Tabs tabLayout;
     private ViewPager viewPager;
-    private LinearLayout mainLayout;
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
 
@@ -93,6 +94,8 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
     @Override
     protected int getLayoutId() {
+        if (GlobalConfig.isCustomerApp())
+            return R.layout.layout_tablayout_secondary;
         return R.layout.activity_order_list_module;
     }
 
@@ -124,23 +127,17 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
     @Override
     protected void initVar() {
-        progressBar = findViewById(R.id.progress);
-        tabLayout = findViewById(R.id.indicator);
+        tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.pager);
-        mainLayout = findViewById(R.id.main_content);
     }
 
     @Override
-    protected void setActionVar() {
-        progressBar.setVisibility(View.VISIBLE);
-        mainLayout.setVisibility(View.GONE);
-    }
+    protected void setActionVar() { }
 
     @Override
     protected int setDrawerPosition() {
         return drawerPosition;
     }
-
 
     @Override
     public OrderListComponent getComponent() {
@@ -187,16 +184,10 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     }
 
     @Override
-    public void removeProgressBarView() {
-
-        progressBar.setVisibility(View.GONE);
-        mainLayout.setVisibility(View.VISIBLE);
-    }
+    public void removeProgressBarView() {}
 
     @Override
-    public void showErrorNetwork(String message) {
-
-    }
+    public void showErrorNetwork(String message) { }
 
     @Override
     public void renderTabs(List<OrderLabelList> orderLabelList) {

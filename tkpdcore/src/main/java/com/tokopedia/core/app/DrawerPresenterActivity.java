@@ -420,11 +420,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         super.onDestroy();
         if (drawerDataManager != null)
             drawerDataManager.unsubscribe();
-            if (GlobalConfig.isCustomerApp()) {
-                unregisterBroadcastReceiverHeaderTokoCash();
-                unregisterBroadcastReceiverHeaderTokoCashPending();
-                unregisterBroadcastReceiverHeaderTokoPoint();
-            }
     }
 
     @Override

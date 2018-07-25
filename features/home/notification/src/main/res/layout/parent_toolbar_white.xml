@@ -6,10 +6,13 @@
     android:theme="@style/AppTheme.AppBarOverlay">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/AppTheme.AppBarOverlayWhite.White"
-        app:popupTheme="@style/Theme.AppCompat.NoActionBar" />
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:contentInsetLeft="@dimen/dp_0"
+        app:contentInsetStart="@dimen/dp_0"
+        app:contentInsetStartWithNavigation="@dimen/dp_0"
+        app:titleTextAppearance="@style/Toolbar.TitleText"/>
 
 </android.support.design.widget.AppBarLayout>

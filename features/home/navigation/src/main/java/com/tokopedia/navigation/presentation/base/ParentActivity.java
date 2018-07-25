@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.navigation.R;
 
 /**
@@ -19,6 +20,9 @@ public abstract class ParentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GraphqlClient.init(this);
+
         if (resLayout() > 0) {
             setContentView(resLayout());
             setupToolbar();
