@@ -14,13 +14,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
-import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 /**
  * @author by alvarisi on 12/12/17.
