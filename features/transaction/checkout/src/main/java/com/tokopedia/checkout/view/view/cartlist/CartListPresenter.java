@@ -298,7 +298,7 @@ public class CartListPresenter implements ICartListPresenter {
                         if (data.getCartItemData().getOriginData().isCashBack()) {
                             String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                             double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                             cashback = cashback + itemCashback;
                         }
                         subtotalPrice = subtotalPrice + itemPrice;
@@ -311,7 +311,7 @@ public class CartListPresenter implements ICartListPresenter {
                             if (data.getCartItemData().getOriginData().isCashBack()) {
                                 String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                                 double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                                 cashback = cashback + itemCashback;
                             }
                             subtotalPrice = subtotalPrice + itemPrice;
