@@ -78,14 +78,10 @@ public class AccessTokenRefresh {
         return responseString.toLowerCase().contains(FORCE_LOGOUT);
     }
 
-    protected boolean isUnauthorized(String responseString) {
-        return responseString.toLowerCase().contains(INVALID_REQUEST);
-    }
-
     protected void checkShowForceLogout(String response) throws IOException {
-        if (isUnauthorized(response) || isRequestDenied(response)) {
+        if (isRequestDenied(response)) {
             ServerErrorHandler.showForceLogoutDialog();
-            ServerErrorHandler.sendForceLogoutAnalytics(response);
+            ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
         }
     }
 }

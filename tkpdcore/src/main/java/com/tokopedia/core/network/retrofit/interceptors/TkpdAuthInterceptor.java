@@ -387,6 +387,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             } else {
                 newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
             }
+            if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
+                ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+            }
+
             return chain.proceed(newestRequest);
         } catch (IOException e) {
             e.printStackTrace();
