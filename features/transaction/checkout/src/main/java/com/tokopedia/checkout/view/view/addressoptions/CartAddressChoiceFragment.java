@@ -370,7 +370,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                         newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
                         newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
                         newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
-                        newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
+                        newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
                         mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, true);
                     } else {
                         mCartAddressChoicePresenter.getAddressShortedList(getActivity(), currentAddress, false);
