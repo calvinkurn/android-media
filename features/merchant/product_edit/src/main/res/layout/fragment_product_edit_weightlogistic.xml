@@ -17,10 +17,9 @@
         android:id="@+id/spinnerCounterInputViewWeight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:spinner_decimal_entries="@array/product_currency_entries"
         app:spinner_decimal_max_length="@integer/product_max_counter_length"
         app:spinner_decimal_show_counter_button="false"
-        app:spinner_decimal_values="@array/product_currency_values"
+        app:spinner_decimal_spinner_width="@dimen/dp_100"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"/>
 
@@ -69,7 +68,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dp_16"
         app:ls_title="@string/product_label_pre_order"
-        app:ls_content="@string/product_subtitle_product_pre_order"/>
+        app:ls_subtitle="@string/product_subtitle_product_pre_order"/>
 
     <View
         android:layout_width="match_parent"
@@ -95,10 +94,9 @@
             android:id="@+id/spinnerCounterInputViewProcessTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:spinner_decimal_entries="@array/product_currency_entries"
             app:spinner_decimal_max_length="@integer/product_max_counter_length"
             app:spinner_decimal_show_counter_button="false"
-            app:spinner_decimal_values="@array/product_currency_values"
+            app:spinner_decimal_spinner_width="@dimen/dp_100"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"/>
 

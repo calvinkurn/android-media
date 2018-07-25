@@ -21,8 +21,7 @@ class LabelSwitch : BaseCustomView {
     private lateinit var switchTextView: TextView
     private lateinit var switchStatus: SwitchCompat
     private lateinit var summaryTextView: TextView
-    
-    private var listener: CompoundButton.OnCheckedChangeListener? = null
+
     private var titleText: String? = null
     private var switchEnable: Boolean = false
     private var titleTextSize: Float = 0.toFloat()
@@ -95,11 +94,6 @@ class LabelSwitch : BaseCustomView {
         if(subTitleText!=null)
             subTitleText(subTitleText!!)
         switchStatus.isEnabled = switchEnable
-        switchStatus.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (listener != null) {
-                listener?.onCheckedChanged(buttonView, isChecked)
-            }
-        }
         this.rootView.isClickable = true
         this.rootView.setOnClickListener { switchStatus.isChecked = !switchStatus.isChecked }
         invalidate()
@@ -114,37 +108,12 @@ class LabelSwitch : BaseCustomView {
         switchStatus = view.findViewById(R.id.switch_status)
     }
 
-    fun subTitleText(summaryText: String) {
+    private fun subTitleText(summaryText: String) {
         if (TextUtils.isEmpty(summaryText)) {
             summaryTextView.visibility = View.GONE
         } else {
             summaryTextView.text = summaryText
             summaryTextView.visibility = View.VISIBLE
         }
-    }
-
-    fun setSwitchStatusText(textTitle: String) {
-        switchTextView.text = textTitle
-        invalidate()
-        requestLayout()
-    }
-
-    fun setCheckedNoListener(isChecked: Boolean) {
-        val tempListener = this.listener
-        this.listener = null
-        switchStatus.isChecked = isChecked
-        this.listener = tempListener
-        invalidate()
-        requestLayout()
-    }
-
-    fun setSwitchEnabled(enabled: Boolean) {
-        if (switchStatus.isEnabled != enabled) {
-            switchStatus.isEnabled = enabled
-        }
-    }
-
-    fun setListenerValue(listener: CompoundButton.OnCheckedChangeListener) {
-        this.listener = listener
     }
 }

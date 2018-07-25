@@ -26,16 +26,18 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="@dimen/dp_80"
-                    android:layout_height="@dimen/dp_80"
-                    android:src="@color/colorAccent"/>
-
-                <ImageView
+                    android:id="@+id/imageTwo"
                     android:layout_width="@dimen/dp_80"
                     android:layout_height="@dimen/dp_80"
                     android:src="@color/colorAccent"
                     android:layout_marginLeft="@dimen/dp_12"
                     android:layout_marginTop="@dimen/dp_12"/>
+
+                <ImageView
+                    android:id="@+id/imageOne"
+                    android:layout_width="@dimen/dp_80"
+                    android:layout_height="@dimen/dp_80"
+                    android:src="@color/colorAccent"/>
 
             </FrameLayout>
 
@@ -46,16 +48,39 @@
                 android:layout_marginLeft="@dimen/dp_16">
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewCategory"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_weight="1"
                     style="@style/TextView.Title.Bold"
                     android:text="Elektronik > Audio > Speaker" />
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewCatalog"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_weight="1"
                     style="@style/TextView.Micro.BlackSecondary"
                     android:text="Anker Bluetooth Speaker" />
+
+                <LinearLayout
+                    android:id="@+id/llCategoryCatalog"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_edit_product"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_weight="1"
+                        style="@style/TextView.Small.Green"
+                        android:text="@string/label_edit"
+                        android:layout_marginLeft="@dimen/dp_8"/>
+
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>

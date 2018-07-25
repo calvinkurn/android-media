@@ -21,8 +21,7 @@ class LabelRadioButton : BaseCustomView {
     private lateinit var radiobuttonTextView: TextView
     private lateinit var radiobuttonStatus: RadioButton
     private lateinit var summaryTextView: TextView
-    
-    private var listener: CompoundButton.OnCheckedChangeListener? = null
+
     private var titleText: String? = null
     private var radiobuttonEnable: Boolean = false
     private var titleTextSize: Float = 0.toFloat()
@@ -95,11 +94,6 @@ class LabelRadioButton : BaseCustomView {
         if(subTitleText!=null)
             subTitleText(subTitleText!!)
         radiobuttonStatus.isEnabled = radiobuttonEnable
-        radiobuttonStatus.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (listener != null) {
-                listener?.onCheckedChanged(buttonView, isChecked)
-            }
-        }
         this.rootView.isClickable = true
         this.rootView.setOnClickListener { radiobuttonStatus.isChecked = !radiobuttonStatus.isChecked }
         invalidate()
@@ -114,41 +108,12 @@ class LabelRadioButton : BaseCustomView {
         radiobuttonStatus = view.findViewById(R.id.radiobutton_status)
     }
 
-    fun subTitleText(summaryText: String) {
+    private fun subTitleText(summaryText: String) {
         if (TextUtils.isEmpty(summaryText)) {
             summaryTextView.visibility = View.GONE
         } else {
             summaryTextView.text = summaryText
             summaryTextView.visibility = View.VISIBLE
         }
-    }
-
-    fun setradiobuttonStatusText(textTitle: String) {
-        radiobuttonTextView.text = textTitle
-        invalidate()
-        requestLayout()
-    }
-
-    fun setCheckedNoListener(isChecked: Boolean) {
-        val tempListener = this.listener
-        this.listener = null
-        radiobuttonStatus.isChecked = isChecked
-        this.listener = tempListener
-        invalidate()
-        requestLayout()
-    }
-
-    fun setradiobuttonChecked() {
-        radiobuttonStatus.isChecked = !radiobuttonStatus.isChecked
-    }
-
-    fun setradiobuttonEnabled(enabled: Boolean) {
-        if (radiobuttonStatus.isEnabled != enabled) {
-            radiobuttonStatus.isEnabled = enabled
-        }
-    }
-
-    fun setListenerValue(listener: CompoundButton.OnCheckedChangeListener) {
-        this.listener = listener
     }
 }
