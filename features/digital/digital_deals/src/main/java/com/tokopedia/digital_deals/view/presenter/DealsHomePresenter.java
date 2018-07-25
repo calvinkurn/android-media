@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 
@@ -155,7 +157,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         } else if (id == R.id.action_promo) {
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else if (id == R.id.action_booked_history) {
-            getView().startGeneralWebView(DealsUrl.WebUrl.TRANSATIONSURL);
+            RouteManager.route(getView().getActivity(), ApplinkConst.DEALS_ORDER);
         } else if (id == R.id.action_faq) {
             getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
         } else if (id == R.id.tv_see_all_brands) {
@@ -203,7 +205,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
 
-                if(getView()==null){
+                if (getView() == null) {
                     return;
                 }
 
@@ -211,7 +213,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
 
-                if(restResponse == null || restResponse.isError()){
+                if (restResponse == null || restResponse.isError()) {
                     getView().hideProgressBar();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                         @Override
@@ -238,8 +240,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
                 RestResponse restResponse2 = typeRestResponseMap.get(token2);
                 DataResponse data2 = restResponse2.getData();
-                if(data2!=null){
-                AllBrandsResponse brandsResponse = (AllBrandsResponse) data2.getData();
+                if (data2 != null) {
+                    AllBrandsResponse brandsResponse = (AllBrandsResponse) data2.getData();
                     brands = brandsResponse.getBrands();
                     getView().renderBrandList(brands);
                 }

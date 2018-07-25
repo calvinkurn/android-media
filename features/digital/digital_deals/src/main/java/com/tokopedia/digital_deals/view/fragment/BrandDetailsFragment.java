@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -97,13 +98,19 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 verticalOffset = Math.abs(verticalOffset);
                 int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
                 if (verticalOffset >= difference) {
-                    DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getContext(), R.color.tkpd_dark_gray_toolbar));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
                 } else {
-                    DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getContext(), R.color.white));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
                 }
             }
         });
         return view;
+    }
+
+    public void setDrawableColorFilter(Drawable drawable, int color) {
+        if (drawable != null) {
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
 
@@ -175,7 +182,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
         loadBrandImage(ivHeader, brand.getFeaturedImage());
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-        if (productItems!=null && productItems.size() > 0) {
+        if (productItems != null && productItems.size() > 0) {
             for (ProductItem productItem : productItems) {
                 productItem.setBrand(brand);
             }
@@ -211,8 +218,8 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource,3.0f, getContext()));
-                }else{
+                    imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
+                } else {
                     imageView.setImageBitmap(resource);
                 }
             }
@@ -281,7 +288,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public void addDealsToCards(List<ProductItem> categoryList) {
-        if(categoryList!=null) {
+        if (categoryList != null) {
             ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryList);
         }
     }
@@ -317,7 +324,6 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 
     @Override

@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -412,14 +413,20 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 if (tvDealDetails.getText() != null) {
                     collapsingToolbarLayout.setTitle(tvDealDetails.getText());
                 }
-                DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
-                DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
             } else {
                 collapsingToolbarLayout.setTitle(" ");
-                DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
-                DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.white));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.white));
             }
         });
+    }
+
+    public void setDrawableColorFilter(Drawable drawable, int color) {
+        if (drawable != null) {
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
     public void startGeneralWebView(String url) {

@@ -340,6 +340,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void goBack() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
         setResult(RESULT_OK);
         super.onBackPressed();
     }
