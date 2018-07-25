@@ -59,7 +59,7 @@
     <string name="title_menu_waiting_for_payment">Menunggu Pembayaran</string>
     <string name="label_menu_waiting_for_payment">Semua transaksi yang belum dibayar</string>
     <string name="title_menu_shopping_transaction">Transaksi Belanja</string>
-    <string name="label_menu_show_tx_history">Lihat Riwayat</string>
+    <string name="label_menu_show_history">Lihat Riwayat</string>
     <string name="label_menu_waiting_confirmation">Menunggu Konfirmasi</string>
     <string name="label_menu_order_processed">Pesanan Diproses</string>
     <string name="label_menu_shipping">Sedang Dikirim</string>
@@ -85,4 +85,23 @@
     <string name="title_menu_deals">Deals</string>
     <string name="title_menu_flight">Pesawat</string>
     <string name="title_menu_show_all">Lihat Semua</string>
+    <string name="title_menu_sales">Penjualan</string>
+    <string name="label_menu_new_order">Pesanan Baru</string>
+    <string name="label_menu_ready_to_ship">Siap Dikirim</string>
+    <string name="label_menu_shipped">Sedang Dikirim</string>
+    <string name="label_menu_arrive_at_destination">Sampai Tujuan</string>
+    <string name="title_menu_product">Produk</string>
+    <string name="title_menu_product_list">Daftar Produk</string>
+    <string name="label_menu_product_list">Lihat dan atur semua produk</string>
+    <string name="title_menu_product_draft">Draft Produk</string>
+    <string name="label_menu_product_draft">Selesaikan kelengkapan detail produk</string>
+    <string name="title_menu_other_features">Fitur Lainnya</string>
+    <string name="title_menu_opportunity">Peluang Pesanan</string>
+    <string name="label_menu_opportunity">Pesanan yang dibatalkan penjual lain</string>
+    <string name="title_menu_seller_center">Seller Center</string>
+    <string name="title_menu_topads">TopAds</string>
+    <string name="label_menu_topads">Lihat dan atur promo Anda</string>
+    <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
+    <string name="title_menu_loan">Modal usaha untuk toko Anda</string>
+    <string name="label_menu_loan">Potensi pinjaman senilai Rp 1.000.000</string>
 </resources>

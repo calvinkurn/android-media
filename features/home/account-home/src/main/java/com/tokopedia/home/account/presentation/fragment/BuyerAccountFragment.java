@@ -89,10 +89,10 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     }
 
     @Override
-    public void loadData(List<? extends Visitable> data) {
-        if(data != null) {
-            Log.d("okasurya", TAG + ".loadData" + data.get(0).toString());
-            adapter.addMoreData(data);
+    public void loadData(List<? extends Visitable> visitables) {
+        if(visitables != null) {
+            adapter.clearAllElements();
+            adapter.setElement(visitables);
         }
     }
 
