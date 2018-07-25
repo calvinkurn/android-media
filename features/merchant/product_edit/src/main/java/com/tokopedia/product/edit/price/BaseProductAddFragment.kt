@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.*
+import android.widget.TextView
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -33,9 +35,10 @@ import kotlinx.android.synthetic.main.fragment_product_add_new.*
 class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
-    private lateinit var productCatalog: ProductCatalog
-    private lateinit var productName: ProductName
-    private lateinit var productCategory: ProductCategory
+    private var productCatalog = ProductCatalog()
+    private var productName = ProductName()
+    private var productCategory = ProductCategory()
+    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,9 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         super.onViewCreated(view, savedInstanceState)
         ProductEditNameViewHolder(view, this)
         productEditCategoryCatalogViewHolder = ProductEditCategoryCatalogViewHolder(view, this, context)
+        texViewMenu.text = getString(R.string.label_next)
+        texViewMenu.setOnClickListener { goToNext() }
+        validateData()
     }
 
     override fun onNameChanged(productName: ProductName) {
@@ -59,11 +65,13 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
             categoryCatalogViewHolder.visibility = View.GONE
         }
         this.productName = productName
+        validateData()
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
         this.productCategory = productCategory
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
+        validateData()
     }
 
     override fun onLabelCategoryClicked() {
@@ -71,27 +79,8 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
     }
 
     override fun onLabelCatalogClicked() {
-        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java), REQUEST_CODE_GET_CATALOG)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_next, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_next) {
-            val builder = ImagePickerBuilder(getString(R.string.product_label_product_picture),
-                    intArrayOf(TYPE_GALLERY, TYPE_CAMERA), GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE),
-                            false, null), null)
-            val intent = ImagePickerActivity.getIntent(context, builder)
-            startActivityForResult(intent, REQUEST_CODE_GET_IMAGES)
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java)
+                .putExtra(EXTRA_CATALOG, productCatalog), REQUEST_CODE_GET_CATALOG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -121,12 +110,33 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun validateData(){
+        if (isDataValid()) {
+            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.tkpd_main_green))
+        } else {
+            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.font_black_secondary_54))
+        }
+    }
+
+    private fun isDataValid() = productName.name != null && productName.name!!.isNotEmpty() && productCategory.categoryName != null
+
+    private fun goToNext(){
+        if(isDataValid()){
+            val builder = ImagePickerBuilder(getString(R.string.product_label_product_picture),
+                    intArrayOf(TYPE_GALLERY, TYPE_CAMERA), GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                    ImagePickerEditorBuilder(
+                            intArrayOf(ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE),
+                            false, null), null)
+            val intent = ImagePickerActivity.getIntent(context, builder)
+            startActivityForResult(intent, REQUEST_CODE_GET_IMAGES)
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
-        fun createInstance(): Fragment {
-            return BaseProductAddFragment()
-        }
+        fun createInstance() = BaseProductAddFragment()
     }
 }

@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.*
+import android.widget.TextView
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATEGORY
@@ -16,15 +18,16 @@ import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
 class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHolder.Listener{
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
-    private lateinit var productCatalog: ProductCatalog
-    private lateinit var productCategory: ProductCategory
+    private var productCatalog = ProductCatalog()
+    private var productCategory = ProductCategory()
+    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if(activity!!.intent.hasExtra(EXTRA_CATALOG)&&activity!!.intent.hasExtra(EXTRA_CATEGORY)) {
+        productCategory = activity!!.intent.getParcelableExtra(EXTRA_CATEGORY)
+        if(activity!!.intent.hasExtra(EXTRA_CATALOG)) {
             productCatalog = activity!!.intent.getParcelableExtra(EXTRA_CATALOG)
-            productCategory = activity!!.intent.getParcelableExtra(EXTRA_CATEGORY)
         }
     }
 
@@ -37,6 +40,10 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
         productEditCategoryCatalogViewHolder = ProductEditCategoryCatalogViewHolder(view, this, context)
         productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
+        texViewMenu.text = getString(R.string.label_save)
+        texViewMenu.setOnClickListener {
+            setResult()
+        }
     }
 
     override fun onLabelCategoryClicked() {
@@ -44,7 +51,8 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
     }
 
     override fun onLabelCatalogClicked() {
-        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java), REQUEST_CODE_GET_CATALOG)
+        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java)
+                .putExtra(EXTRA_CATALOG, productCatalog), REQUEST_CODE_GET_CATALOG)
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
@@ -52,15 +60,15 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
-                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
+                    productCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
                     productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
-                    productCategory = data.getParcelableExtra(EXTRA_CATEGORY)
+                    productCategory = data!!.getParcelableExtra(EXTRA_CATEGORY)
                     productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
                 }
             }
@@ -68,28 +76,17 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_next, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_next) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_CATALOG, productCatalog)
-            intent.putExtra(EXTRA_CATEGORY, productCategory)
-            activity!!.setResult(Activity.RESULT_OK, intent)
-            activity!!.finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+    private fun setResult(){
+        val intent = Intent()
+        intent.putExtra(EXTRA_CATALOG, productCatalog)
+        intent.putExtra(EXTRA_CATEGORY, productCategory)
+        activity!!.setResult(Activity.RESULT_OK, intent)
+        activity!!.finish()
     }
 
     companion object {
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
-        fun createInstance(): Fragment {
-            return ProductEditCategoryFragment()
-        }
+        fun createInstance() = ProductEditCategoryFragment()
     }
 }

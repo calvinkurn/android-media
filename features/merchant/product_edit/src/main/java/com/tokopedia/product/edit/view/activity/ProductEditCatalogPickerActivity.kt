@@ -3,6 +3,7 @@ package com.tokopedia.product.edit.view.activity
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.ProductEditCatalogPickerFragment
 
 class ProductEditCatalogPickerActivity : BaseSimpleActivity(){
@@ -10,6 +11,10 @@ class ProductEditCatalogPickerActivity : BaseSimpleActivity(){
 
     override fun getNewFragment(): Fragment{
         return ProductEditCatalogPickerFragment.createInstance()
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_product_edit_with_menu
     }
 
     override fun onBackPressed() {
