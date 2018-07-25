@@ -4,15 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
@@ -173,8 +175,19 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        //TODO back to dashboard/home?
+        if (isTaskRoot()) {
+            String applink = GlobalConfig.isSellerApp()? ApplinkConst.SellerApp.SELLER_APP_HOME: ApplinkConst.HOME;
+            ApplinkRouter router = (ApplinkRouter) getApplicationContext();
+            if (router.isSupportApplink(applink)) {
+                Intent intent = router.getApplinkIntent(this, applink);
+                startActivity(intent);
+                finish();
+            } else {
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

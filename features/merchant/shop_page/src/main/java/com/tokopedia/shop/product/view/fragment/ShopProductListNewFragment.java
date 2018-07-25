@@ -394,7 +394,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
 
     @Override
     public void onEmptyContentItemTextClicked() {
-        //TODO
+        // no-op
     }
 
     @Override

@@ -199,7 +199,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int firstCompletelyVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition();
-                int lastCompleteVisiblePosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
                 if (firstCompletelyVisiblePosition > -1) {
                     if (firstCompletelyVisiblePosition > (shopProductNewAdapter.getStickyHeaderPosition() - 1)) {
                         // if hit the etalase label, hide the Tab
@@ -216,16 +215,21 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                         }
                     }
                 }
-                if (lastCompleteVisiblePosition > -1) {
-                    if (lastCompleteVisiblePosition >= ShopPageConstant.ITEM_OFFSET) {
-                        if (dy > 0 && shopProductNewAdapter.getShopProductViewModelList().size() > 0) {
-                            bottomActionView.show();
+                if (dy < 0) { // going up
+                    if (shopProductNewAdapter.getShopProductViewModelList().size() > 0) {
+                        int lastCompleteVisiblePosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
+                        if (lastCompleteVisiblePosition > -1) {
+                            if (lastCompleteVisiblePosition >= ShopPageConstant.ITEM_OFFSET) {
+                                bottomActionView.show();
+                            } else {
+                                bottomActionView.hide();
+                            }
                         }
                     } else {
-                        if (dy < 0) {
-                            bottomActionView.hide();
-                        }
+                        bottomActionView.hide();
                     }
+                } else if (dy > 0) { // going down
+                    bottomActionView.hide();
                 }
             }
         });
@@ -520,7 +524,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     public void onErrorGetProductFeature(Throwable e) {
-        //TODO need test this
         shopProductNewAdapter.setShopProductFeaturedViewModel(null);
     }
 
@@ -542,7 +545,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     public void onErrorGetEtalaseList(Throwable e) {
-        //TODO need check this.
         shopProductNewAdapter.setShopEtalase(null);
         shopProductNewAdapter.setShopEtalaseTitle(null);
     }
@@ -561,7 +563,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     public void onEmptyContentItemTextClicked() {
-        //TODO
+        // no-op
     }
 
     @Override

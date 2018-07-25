@@ -33,8 +33,11 @@ import android.widget.Button
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
@@ -288,10 +291,22 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         shopInfo?.run {
             shopPageTracking.eventBackPressed(titles[viewPager.currentItem], shopId,
                     presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
+        }
+        if (isTaskRoot) {
+            val applink = if (GlobalConfig.isSellerApp()) ApplinkConst.SellerApp.SELLER_APP_HOME else ApplinkConst.HOME
+            val router = applicationContext as ApplinkRouter
+            if (router.isSupportApplink(applink)) {
+                val intent = router.getApplinkIntent(this, applink)
+                startActivity(intent)
+                finish()
+            } else {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
         }
     }
 
@@ -313,6 +328,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                             text, info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,
                             text, "", shopAttribution))
+                    //reset the search, since the result will go to another activity.
+                    searchInputView.searchTextView.text = null
                 }
 
                 override fun onSearchTextChanged(text: String?) {}
@@ -376,7 +393,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (requestCode == REQUEST_CODER_USER_LOGIN) {
             refreshData()
         }
-        //TODO from product list detail, scroll to top and empty the searchView.
     }
 
     private fun refreshData() {
