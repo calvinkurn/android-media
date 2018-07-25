@@ -40,6 +40,7 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -50,6 +51,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
@@ -69,6 +71,10 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -152,6 +158,7 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -226,7 +233,12 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
@@ -367,7 +379,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopChatRouter,
         TokopointRouter,
         SearchBarRouter,
-        GlobalNavRouter {
+        GlobalNavRouter,
+        AccountHomeRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2349,5 +2362,86 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getCartFragment() {
         return CartFragment.newInstance(CartFragment.class.getSimpleName());
+    }
+
+    @Override
+    public void goToHelpCenter(Context context) {
+        context.startActivity(getHelpUsIntent(context));
+    }
+
+    @Override
+    public Intent getManageProfileIntent(Context context) {
+        return new Intent(context, ManagePeopleProfileActivity.class);
+    }
+
+    @Override
+    public Intent getManagePasswordIntent(Context context) {
+        return new Intent(context, ManagePasswordActivity.class);
+    }
+
+    @Override
+    public Intent getManageAddressIntent(Context context) {
+        return new Intent(context, ManagePeopleAddressActivity.class);
+    }
+
+    @Override
+    public void goToShopEditor(Context context) {
+        Intent intent = new Intent(context, ShopEditorActivity.class);
+        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+        UnifyTracking.eventManageShopInfo();
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToManageShopShipping(Context context) {
+        UnifyTracking.eventManageShopShipping();
+        context.startActivity(new Intent(context, EditShippingActivity.class));
+    }
+
+    @Override
+    public void goToManageShopEtalase(Context context) {
+        UnifyTracking.eventManageShopEtalase();
+        context.startActivity(new Intent(context, EtalaseShopEditor.class));
+    }
+
+    @Override
+    public void goTotManageShopNotes(Context context) {
+        UnifyTracking.eventManageShopNotes();
+        context.startActivity(new Intent(context, ManageShopNotesActivity.class));
+    }
+
+    @Override
+    public void goToManageShopLocation(Context context) {
+        UnifyTracking.eventManageShopLocation();
+        context.startActivity(new Intent(context, ManageShopAddress.class));
+    }
+
+    @Override
+    public void goToManageShopProduct(Context context) {
+        goToManageProduct(context);
+    }
+
+    @Override
+    public void goToManageBankAccount(Context context) {
+        context.startActivity(new Intent(context, ManagePeopleBankActivity.class));
+    }
+
+    @Override
+    public void goToManageCreditCard(Context context) {
+        if (context instanceof Activity)
+        goToUserPaymentList((Activity) context);
+    }
+
+    @Override
+    public void goToTokoCash(Context context) {
+
+    }
+
+    @Override
+    public void goToSaldo(Context context) {
+        Intent intent = new Intent(context, DepositActivity.class);
+        context.startActivity(intent);
+        UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DEPOSIT);
+        AnalyticsEventTrackingHelper.homepageSaldoClick(DepositActivity.class.getName());
     }
 }

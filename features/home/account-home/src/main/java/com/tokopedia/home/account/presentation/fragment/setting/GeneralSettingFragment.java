@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -13,9 +14,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
@@ -103,8 +104,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment {
                 gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting));
                 break;
             case SettingConstant.SETTING_HELP_CENTER_ID:
-                if (getActivity().getApplication() instanceof TkpdInboxRouter){
-                    startActivity(((TkpdInboxRouter) getActivity().getApplication()).getHelpUsIntent(getActivity()));
+                Application application = getActivity().getApplication();
+                if (application instanceof AccountHomeRouter){
+                    ((AccountHomeRouter) application).goToHelpCenter(getActivity());
                 }
                 break;
             default: break;

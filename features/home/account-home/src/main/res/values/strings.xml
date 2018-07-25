@@ -50,4 +50,9 @@
     <string name="pref_review_key" translatable="false">notification_receive_review</string>
     <string name="pref_bulletin_key" translatable="false">notification_receive_bulletin</string>
     <string name="application_version_fmt">Versi %1$s</string>
+    <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
+    <string name="error_no_password_yes">Buat kata sandi</string>
+    <string name="error_no_password_no">Tutup</string>
+    <string name="message_success_change_profile">Sukses mengubah profil</string>
 </resources>
