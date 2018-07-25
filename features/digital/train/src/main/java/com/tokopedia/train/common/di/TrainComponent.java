@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 
@@ -29,4 +30,5 @@ public interface TrainComponent {
 
     GetScheduleDetailUseCase getScheduleDetailUseCase();
 
+    TrainFlowUtil trainFlowUtil();
 }

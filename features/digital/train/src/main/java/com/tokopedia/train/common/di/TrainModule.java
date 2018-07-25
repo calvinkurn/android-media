@@ -15,6 +15,7 @@ import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
@@ -48,6 +49,11 @@ public class TrainModule {
     @TrainScope
     public TrainInterceptor provideTrainInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter, UserSession userSession) {
         return new TrainInterceptor(context, abstractionRouter, userSession);
+    }
+
+    @Provides
+    public TrainFlowUtil provideTrainFlowUtil() {
+        return new TrainFlowUtil();
     }
 
     @Provides

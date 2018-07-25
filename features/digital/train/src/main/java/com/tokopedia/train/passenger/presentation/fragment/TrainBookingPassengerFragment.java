@@ -26,6 +26,8 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.common.util.TrainFlowExtraConstant;
+import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
@@ -58,6 +60,7 @@ import rx.Observable;
 public class TrainBookingPassengerFragment extends BaseDaggerFragment implements TrainBookingPassengerContract.View {
 
     public static final int ADD_PASSENGER_REQUEST_CODE = 1009;
+    public static final int NEXT_STEP_REQUEST_CODE = 1010;
     private static final String TRAIN_PARAM_PASSENGER = "train_param_passenger";
 
     private CardWithAction cardActionDeparture;
@@ -75,6 +78,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private AppCompatButton submitButton, chooseSeatButton;
     private AppCompatCheckBox sameAsBuyerCheckbox;
     private TrainPassengerViewModel buyerViewModel;
+
+    @Inject
+    TrainFlowUtil trainFlowUtil;
 
     @Inject
     TrainBookingPassengerPresenter presenter;
@@ -320,12 +326,12 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void navigateToChooseSeat(TrainSoftbook trainSoftbook) {
-        getActivity().startActivity(TrainSeatActivity.getCallingIntent(getActivity(), TrainSoftbook.dummy(), trainScheduleBookingPassData, true));
+        startActivityForResult(TrainSeatActivity.getCallingIntent(getActivity(), TrainSoftbook.dummy(), trainScheduleBookingPassData, true), NEXT_STEP_REQUEST_CODE);
     }
 
     @Override
     public void navigateToReview(TrainSoftbook trainSoftbook) {
-        startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, trainScheduleBookingPassData));
+        startActivityForResult(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, trainScheduleBookingPassData), NEXT_STEP_REQUEST_CODE);
     }
 
     @Override
@@ -388,17 +394,29 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_PASSENGER_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                TrainPassengerViewModel trainPassengerViewModel = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
-                presenter.updateDataPassengers(trainPassengerViewModel);
+        switch (requestCode) {
+            case ADD_PASSENGER_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    TrainPassengerViewModel trainPassengerViewModel = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
+                    presenter.updateDataPassengers(trainPassengerViewModel);
 
-                if (!trainParamPassenger.isCheckedSameAsBuyer() && trainPassengerViewModel.getPassengerId() == 1) {
-                    sameAsBuyerCheckbox.setChecked(true);
+                    if (!trainParamPassenger.isCheckedSameAsBuyer() && trainPassengerViewModel.getPassengerId() == 1) {
+                        sameAsBuyerCheckbox.setChecked(true);
+                    }
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    trainParamPassenger.setCheckedSameAsBuyer(true);
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                trainParamPassenger.setCheckedSameAsBuyer(true);
-            }
+                break;
+            case NEXT_STEP_REQUEST_CODE:
+                if (data != null) {
+                    if (data.getIntExtra(TrainFlowExtraConstant.EXTRA_FLOW_DATA, -1) != -1) {
+                        trainFlowUtil.actionSetResultAndClose(
+                                getActivity(),
+                                getActivity().getIntent(),
+                                data.getIntExtra(TrainFlowExtraConstant.EXTRA_FLOW_DATA, 0)
+                        );
+                    }
+                }
         }
     }
 }
