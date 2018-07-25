@@ -232,19 +232,19 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopPageLoadingState.visibility = View.VISIBLE
                 shopPageErrorState.visibility = View.GONE
                 appBarLayout.visibility = View.INVISIBLE
-                container.visibility = View.INVISIBLE
+                viewPager.visibility = View.INVISIBLE
             }
             VIEW_ERROR -> {
                 shopPageLoadingState.visibility = View.GONE
                 shopPageErrorState.visibility = View.VISIBLE
                 appBarLayout.visibility = View.INVISIBLE
-                container.visibility = View.INVISIBLE
+                viewPager.visibility = View.INVISIBLE
             }
             else -> {
                 shopPageLoadingState.visibility = View.GONE
                 shopPageErrorState.visibility = View.GONE
                 appBarLayout.visibility = View.VISIBLE
-                container.visibility = View.VISIBLE
+                viewPager.visibility = View.VISIBLE
             }
         }
     }

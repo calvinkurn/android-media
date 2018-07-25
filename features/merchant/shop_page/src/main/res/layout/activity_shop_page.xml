@@ -69,7 +69,7 @@
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabLayout"
-                    style="?tabTheme"
+                    style="@style/TabBar.White.ShopPage"
                     app:tabMode="scrollable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -79,20 +79,12 @@
 
             </android.support.design.widget.AppBarLayout>
 
-            <RelativeLayout
-                android:id="@+id/container"
+            <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-                    android:id="@+id/viewPager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:can_swipe="false" />
-
-            </RelativeLayout>
-
+                app:can_swipe="false"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
         </android.support.design.widget.CoordinatorLayout>
