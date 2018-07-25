@@ -43,6 +43,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void getHomePageData() {
+        if (getView() == null) {
+            return;
+        }
+
         mGetHomePageData.clearRequest();
         getView().showLoader();
 
@@ -94,6 +98,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void getPointData() {
+        if (getView() == null) {
+            return;
+        }
+
         mGetPointData.clearRequest();
 
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_current_points),

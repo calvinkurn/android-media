@@ -50,7 +50,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private CatalogChipAdapter mChipAdapter;
     private CatalogSortTypePagerAdapter mViewPagerAdapter;
     private int mSelectedCategory = CommonConstant.DEFAULT_CATEGORY_TYPE;
-    private TextView mTextFailedAction;
 
     @Inject
     public CatalogListingPresenter mPresenter;
@@ -117,6 +116,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void updateSelectedCategoryId(int id) {
         this.mSelectedCategory = id;
+    }
+
+    @Override
+    public boolean isAddedView() {
+        return getActivity() != null && isAdded();
     }
 
     @Override
@@ -235,7 +239,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type);
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
-        mTextFailedAction = view.findViewById(R.id.text_failed_action);
     }
 
     private void initListener() {

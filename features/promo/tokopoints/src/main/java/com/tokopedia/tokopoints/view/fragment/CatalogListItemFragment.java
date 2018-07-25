@@ -358,4 +358,10 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         mRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         mRefreshTime = mRemoteConfig.getLong(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.destroyView();
+    }
 }
