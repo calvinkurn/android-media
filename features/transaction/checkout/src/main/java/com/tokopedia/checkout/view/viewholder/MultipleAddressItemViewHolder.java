@@ -1,9 +1,13 @@
 package com.tokopedia.checkout.view.viewholder;
 
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -40,6 +44,7 @@ import static com.tokopedia.checkout.view.utils.QuantityTextWatcher.TEXTWATCHER_
 
 public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
+    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
     private static final int SINGLE_DATA_SIZE = 1;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
@@ -54,15 +59,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private View borderLine;
     private TextView phoneNumber;
     private TextView tvChangeRecipientAddress;
-    private TextView tvLabelNoteForSeller;
-    private TextView tvBtnShowNotesForSeller;
     private EditText etNotesForSeller;
     private ImageView btnQtyMin;
     private ImageView btnQtyPlus;
     private EditText etQty;
     private TextView tvErrorQtyValidation;
     private TextView tvErrorNoteValidation;
-    private View vNotesSeparator;
 
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
@@ -83,15 +85,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         address = itemView.findViewById(R.id.tv_recipient_address);
         borderLine = itemView.findViewById(R.id.border_line);
         tvChangeRecipientAddress = itemView.findViewById(R.id.tv_change_recipient_address);
-        tvLabelNoteForSeller = itemView.findViewById(R.id.tv_label_note_for_seller);
-        tvBtnShowNotesForSeller = itemView.findViewById(R.id.tv_btn_show_notes_for_seller);
         etNotesForSeller = itemView.findViewById(R.id.et_notes_for_seller);
         btnQtyMin = itemView.findViewById(R.id.btn_qty_min);
         btnQtyPlus = itemView.findViewById(R.id.btn_qty_plus);
         etQty = itemView.findViewById(R.id.et_qty);
         tvErrorQtyValidation = itemView.findViewById(R.id.tv_error_qty_validation);
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
-        vNotesSeparator = itemView.findViewById(R.id.v_notes_separator);
         phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
 
@@ -104,9 +103,9 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                                        int parentPosition) {
         multipleAddressItemData = itemData;
         renderHeader(itemData, listener, itemDataList, getAdapterPosition());
-        renderAddress(itemData, listener, itemDataList, parentPosition);
-        renderNotes(itemData);
+        renderAddress(itemData, listener, parentPosition);
         renderQuantity(itemData, getAdapterPosition());
+        renderNotes(itemData);
     }
 
     private void initTextWatcherDebouncer(CompositeSubscription compositeSubscription) {
@@ -278,14 +277,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderAddress(MultipleAddressItemData itemData,
                                MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
-                               List<MultipleAddressItemData> itemDataList,
                                int parentPosition) {
-        addressTitle.setText(itemData.getRecipientAddressModel().getAddressName());
-        addressReceiverName.setText(itemData.getRecipientAddressModel().getRecipientName());
-        address.setText(itemData.getRecipientAddressModel().getStreet()
-                + ", " + itemData.getRecipientAddressModel().getCityName()
-                + ", " + itemData.getRecipientAddressModel().getProvinceName()
-                + ", " + itemData.getRecipientAddressModel().getRecipientPhoneNumber());
         pseudoEditButton.setVisibility(View.GONE);
         tvChangeRecipientAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,6 +286,27 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                         getAdapterPosition(), parentPosition);
             }
         });
+
+        addressTitle.setVisibility(View.GONE);
+        String addressName = itemData.getRecipientAddressModel().getAddressName();
+        String recipientName = itemData.getRecipientAddressModel().getRecipientName();
+        addressName = " (" + addressName + ")";
+        recipientName += addressName;
+        int startSpan = recipientName.indexOf(addressName);
+        int endSpan = recipientName.indexOf(addressName) + addressName.length();
+        Spannable formattedPromoMessage = new SpannableString(recipientName);
+        final int color = ContextCompat.getColor(addressReceiverName.getContext(), R.color.black_38);
+        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        addressReceiverName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+        addressReceiverName.setText(formattedPromoMessage);
+        String fullAddress = itemData.getRecipientAddressModel().getStreet() + ", "
+                + itemData.getRecipientAddressModel().getDestinationDistrictName() + ", "
+                + itemData.getRecipientAddressModel().getCityName() + ", "
+                + itemData.getRecipientAddressModel().getProvinceName() + ", "
+                + itemData.getRecipientAddressModel().getRecipientPhoneNumber();
+        address.setText(fullAddress);
+
     }
 
     private void renderHeader(MultipleAddressItemData itemData,
@@ -318,36 +331,23 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderNotes(MultipleAddressItemData itemData) {
-        tvBtnShowNotesForSeller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                etNotesForSeller.setVisibility(View.VISIBLE);
-                tvBtnShowNotesForSeller.setVisibility(View.GONE);
-                vNotesSeparator.setVisibility(View.GONE);
-                itemData.setStateNotesOpen(true);
-            }
-        });
-
         if (StringUtils.isBlank(itemData.getProductNotes())) {
-            etNotesForSeller.setVisibility(View.GONE);
-            tvBtnShowNotesForSeller.setVisibility(View.VISIBLE);
             etNotesForSeller.setText("");
-            vNotesSeparator.setVisibility(View.VISIBLE);
         } else {
-            etNotesForSeller.setVisibility(View.VISIBLE);
-            tvBtnShowNotesForSeller.setVisibility(View.GONE);
             etNotesForSeller.setText(itemData.getProductNotes());
             etNotesForSeller.setSelection(etNotesForSeller.length());
-            vNotesSeparator.setVisibility(View.GONE);
-            itemData.setStateNotesOpen(true);
         }
 
-        if (itemData.isStateNotesOpen()) {
-            etNotesForSeller.setVisibility(View.VISIBLE);
-            tvBtnShowNotesForSeller.setVisibility(View.GONE);
+        if (noteTextwatcherListener != null) {
+            etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
+        } else {
+            noteTextwatcherListener = new NoteTextWatcher.NoteTextwatcherListener() {
+                @Override
+                public void onNoteChanged(Editable editable) {
+                    itemNoteTextWatcherAction(editable, multipleAddressItemData);
+                }
+            };
         }
-
-        etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
         validateNote(itemData);
     }
 

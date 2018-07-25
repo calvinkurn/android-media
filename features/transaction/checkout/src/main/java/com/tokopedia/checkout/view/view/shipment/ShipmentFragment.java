@@ -244,7 +244,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
             shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
             shipmentPresenter.setShipmentCheckoutButtonModel(savedInstanceState.getParcelable(ShipmentCheckoutButtonModel.class.getSimpleName()));
-            renderCheckoutPage();
+            renderCheckoutPage(true);
         }
     }
 
@@ -390,7 +390,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPage() {
+    public void renderCheckoutPage(boolean isInitialRender) {
         if (getArguments() != null) {
             initializePresenterData(getArguments());
         }
@@ -405,7 +405,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         initRecyclerViewData(
                 promoCodeAppliedData, cartPromoSuggestion, recipientAddressModel,
                 shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel,
-                shipmentCheckoutButtonModel, true
+                shipmentCheckoutButtonModel, isInitialRender
         );
     }
 
@@ -803,17 +803,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
                 break;
-//            case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
-//                Intent intent = new Intent();
-//                intent.putExtra(ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
-//                        shipmentAdapter.getAddressShipmentData());
-//                Token token = new Token();
-//                token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
-//                token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
-//                intent.putExtra(ShipmentActivity.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
-//                getActivity().setResult(ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
-//                getActivity().finish();
-//                break;
 
             default:
                 break;
@@ -1061,15 +1050,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             rvShipment.post(new Runnable() {
                 @Override
                 public void run() {
+                    shipmentAdapter.updateShipmentCostModel();
                     shipmentAdapter.updateItemAndTotalCost(position);
                     shipmentAdapter.updateInsuranceTncVisibility();
                 }
             });
         } else {
+            shipmentAdapter.updateShipmentCostModel();
             shipmentAdapter.updateItemAndTotalCost(position);
             shipmentAdapter.updateInsuranceTncVisibility();
         }
-        shipmentAdapter.updateShipmentCostModel();
     }
 
     private void checkRecyclerViewFillScreen() {

@@ -280,20 +280,25 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     public ProductDetailFragment() {
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (remoteConfig.getBoolean(ENABLE_VARIANT) == false) {
-            useVariant = false;
-        }
-        cacheInteractor = new CacheInteractorImpl();
-        localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
-        localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
-        localCacheHandler.applyEditor();
 
     }
 
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
+            useVariant = false;
+        }
+        cacheInteractor = new CacheInteractorImpl();
+        localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
+        localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
+        localCacheHandler.applyEditor();
     }
 
     @Override
