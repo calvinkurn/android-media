@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -27,7 +28,11 @@ import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
+import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.passenger.domain.requestmodel.TrainBuyerRequest;
+import com.tokopedia.train.passenger.domain.requestmodel.TrainPassengerRequest;
+import com.tokopedia.train.passenger.domain.requestmodel.TrainScheduleRequest;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapter;
@@ -44,6 +49,7 @@ import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDet
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.seat.presentation.activity.TrainSeatActivity;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +81,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private AppCompatButton submitButton, chooseSeatButton;
     private AppCompatCheckBox sameAsBuyerCheckbox;
     private TrainPassengerViewModel buyerViewModel;
+    private List<TrainPassengerRequest> trainPassengerRequestList;
+    private TrainBuyerRequest trainBuyerRequest;
+    private TrainScheduleRequest departureTripRequest;
+    private TrainScheduleRequest returnTripRequest;
 
     @Inject
     TrainBookingPassengerPresenter presenter;
@@ -104,6 +114,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         submitButton = view.findViewById(R.id.button_submit);
         chooseSeatButton = view.findViewById(R.id.button_choose_seat);
         sameAsBuyerCheckbox = view.findViewById(R.id.checkbox);
+        trainBuyerRequest = new TrainBuyerRequest();
+        trainPassengerRequestList = new ArrayList<>();
         return view;
     }
 
@@ -226,6 +238,17 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void setCurrentListPassenger(List<TrainPassengerViewModel> trainPassengerViewModels) {
         trainParamPassenger.setTrainPassengerViewModelList(trainPassengerViewModels);
+
+        this.trainPassengerRequestList.clear();
+        for (int i = 0; i < trainPassengerViewModels.size(); i++) {
+            TrainPassengerRequest trainPassengerRequest = new TrainPassengerRequest();
+            trainPassengerRequest.setIdNumber(trainPassengerViewModels.get(i).getIdentityNumber());
+            trainPassengerRequest.setName(trainPassengerViewModels.get(i).getName());
+            trainPassengerRequest.setPaxType(trainPassengerViewModels.get(i).getPaxType());
+            trainPassengerRequest.setPhoneNumber(trainPassengerViewModels.get(i).getPhone());
+            trainPassengerRequest.setSalutationId(trainPassengerViewModels.get(i).getSalutationId());
+            this.trainPassengerRequestList.add(trainPassengerRequest);
+        }
     }
 
     @Override
@@ -400,5 +423,40 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 trainParamPassenger.setCheckedSameAsBuyer(true);
             }
         }
+    }
+
+    @Override
+    public RequestParams getTrainSoftBookingRequestParam() {
+        trainBuyerRequest.setName(getContactNameEt());
+        trainBuyerRequest.setPhone(getPhoneNumberEt());
+        trainBuyerRequest.setEmail(getEmailEt());
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(TrainSoftBookingUseCase.DEPARTURE_TRIP, departureTripRequest);
+        requestParams.putObject(TrainSoftBookingUseCase.BUYER, trainBuyerRequest);
+        requestParams.putInt(TrainSoftBookingUseCase.TOTAL_ADULT, trainScheduleBookingPassData.getAdultPassenger());
+        requestParams.putInt(TrainSoftBookingUseCase.TOTAL_INFANT, trainScheduleBookingPassData.getInfantPassenger());
+        requestParams.putObject(TrainSoftBookingUseCase.PASSENGERS, trainPassengerRequestList);
+        requestParams.putInt(TrainSoftBookingUseCase.DEVICE, TrainSoftBookingUseCase.DEFAULT_DEVICE);
+        if (returnTripRequest != null) {
+            requestParams.putObject(TrainSoftBookingUseCase.RETURN_TRIP, returnTripRequest);
+        }
+        return requestParams;
+    }
+
+    @Override
+    public void setDepartureTripRequest(TrainScheduleRequest departureTripRequest) {
+        this.departureTripRequest = departureTripRequest;
+    }
+
+    @Override
+    public void setReturnTripRequest(TrainScheduleRequest returnTripRequest) {
+        this.returnTripRequest = returnTripRequest;
+    }
+
+    @Override
+    public void showErrorSoftBooking(Throwable e) {
+        String message = ErrorHandler.getErrorMessage(getActivity(), e);
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 }

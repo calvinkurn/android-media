@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.passenger.domain.requestmodel.TrainScheduleRequest;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -60,7 +62,7 @@ public interface TrainBookingPassengerContract {
         void setPhoneNumber(String phoneNumber);
 
         void setEmail(String email);
-        
+
         void navigateToChooseSeat(TrainSoftbook trainSoftbook);
 
         void navigateToReview(TrainSoftbook trainSoftbook);
@@ -68,6 +70,15 @@ public interface TrainBookingPassengerContract {
         void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
 
         void showMessageErrorInSnackBar(int resId);
+
+        RequestParams getTrainSoftBookingRequestParam();
+
+        void setDepartureTripRequest(TrainScheduleRequest departureTripRequest);
+
+        void setReturnTripRequest(TrainScheduleRequest returnTripRequest);
+
+        void showErrorSoftBooking(Throwable e);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
