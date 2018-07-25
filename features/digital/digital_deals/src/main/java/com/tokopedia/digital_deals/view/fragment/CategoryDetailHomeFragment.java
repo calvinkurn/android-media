@@ -146,6 +146,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
+            dealsAdapter.clearList();
             dealsAdapter.addAll(deals, false);
             dealsAdapter.notifyDataSetChanged();
             recyclerViewDeals.setVisibility(View.VISIBLE);
