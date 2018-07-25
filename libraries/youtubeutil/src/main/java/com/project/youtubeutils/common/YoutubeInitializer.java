@@ -10,6 +10,8 @@ import com.google.android.youtube.player.YouTubeThumbnailView;
  */
 public class YoutubeInitializer {
 
+    private static final String EXCEPTION_NULL = "null initializer";
+
     private static boolean isThumbnailReadyForInitialized = true;
     private static boolean isVideoReadyForInitialized = true;
 
@@ -24,7 +26,7 @@ public class YoutubeInitializer {
     }
 
     public static YouTubePlayer.OnInitializedListener
-    singleVideoInitializer(String videoUrl, OnSingleVideoInitialListener listener) {
+    singleVideoInitializer(String videoUrl, OnSingleVideoInitialListener listener) throws Exception {
         if (isVideoReadyForInitialized) {
             isVideoReadyForInitialized = false;
             return new YouTubePlayer.OnInitializedListener() {
@@ -45,11 +47,11 @@ public class YoutubeInitializer {
                     listener.onFailedInitializePlayer(initializationResult.toString());
                 }
             };
-        } else return null;
+        } else throw new NullPointerException(EXCEPTION_NULL);
     }
 
     public static YouTubeThumbnailView.OnInitializedListener
-    videoThumbnailInitializer(final String youtubeVideoId, OnVideoThumbnailInitialListener listener) {
+    videoThumbnailInitializer(final String youtubeVideoId, OnVideoThumbnailInitialListener listener) throws Exception {
         if (isThumbnailReadyForInitialized) {
             isThumbnailReadyForInitialized = false;
             return new YouTubeThumbnailView.OnInitializedListener() {
@@ -82,6 +84,6 @@ public class YoutubeInitializer {
                     listener.onErrorInitializeThumbnail(result.toString());
                 }
             };
-        } else return null;
+        } else throw new NullPointerException(EXCEPTION_NULL);
     }
 }
