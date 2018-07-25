@@ -4,13 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class TrainSeat implements Parcelable {
-    private String klass;
     private String wagonNo;
     private String row;
     private String column;
 
-    public TrainSeat(String klass, String wagonNo, String row, String column) {
-        this.klass = klass;
+    public TrainSeat(String wagonNo, String row, String column) {
         this.wagonNo = wagonNo;
         this.row = row;
         this.column = column;
@@ -20,7 +18,6 @@ public class TrainSeat implements Parcelable {
     }
 
     protected TrainSeat(Parcel in) {
-        klass = in.readString();
         wagonNo = in.readString();
         row = in.readString();
         column = in.readString();
@@ -28,7 +25,6 @@ public class TrainSeat implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(klass);
         dest.writeString(wagonNo);
         dest.writeString(row);
         dest.writeString(column);
@@ -51,10 +47,6 @@ public class TrainSeat implements Parcelable {
         }
     };
 
-    public String getKlass() {
-        return klass;
-    }
-
     public String getWagonNo() {
         return wagonNo;
     }
@@ -65,10 +57,6 @@ public class TrainSeat implements Parcelable {
 
     public String getColumn() {
         return column;
-    }
-
-    public void setKlass(String klass) {
-        this.klass = klass;
     }
 
     public void setWagonNo(String wagonNo) {

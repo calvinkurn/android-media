@@ -5,21 +5,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class TrainSeatEntity {
     /**
-     *
      * Example of response seat
-     *
-     "seat": {
-        "class": "K",
-                "wagonNo": "1",
-                "row": "3",
-                "column": "E"
-      }
+     * <p>
+     * "seat": {
+     * "wagonCode": "EKS-1",
+     * "row": "3",
+     * "column": "E"
+     * }
      */
 
-    @SerializedName("class")
-    @Expose
-    private String klass;
-    @SerializedName("wagonNo")
+    @SerializedName("wagonCode")
     @Expose
     private String wagonNo;
     @SerializedName("row")
@@ -28,10 +23,6 @@ public class TrainSeatEntity {
     @SerializedName("column")
     @Expose
     private String column;
-
-    public String getKlass() {
-        return klass;
-    }
 
     public String getWagonNo() {
         return wagonNo;
