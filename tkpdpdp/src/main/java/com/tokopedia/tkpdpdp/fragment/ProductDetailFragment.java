@@ -120,9 +120,11 @@ import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
-import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsProductDetailPage;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -165,7 +167,7 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, WishListActionListener {
+        implements ProductDetailView, ITransactionAnalyticsProductDetailPage, WishListActionListener {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -1757,7 +1759,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
-        checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
@@ -1775,7 +1776,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
-        checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
@@ -1852,10 +1852,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 eventAction = productPass.getProductName();
                 break;
         }
-        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
-                enhancedECommerceCartMapData.getCartMap(),
-                (productData.getInfo().getHasVariant() ? productVariant.generateVariantValue(productData.getInfo().getProductId()) : "non variant"),
-                eventAction
+        sendAnalyticsOnAddToCartSuccess(enhancedECommerceCartMapData.getCartMap(),
+                eventAction,
+                (productData.getInfo().getHasVariant() ? productVariant.generateVariantValue(productData.getInfo().getProductId()) : "non variant")
         );
     }
 
@@ -1949,6 +1948,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 });
     }
 
+    @Override
+    public void sendAnalyticsOnAddToCartSuccess(Map<String, Object> cartMap,
+                                                String eventAction,
+                                                String eventLabel) {
+        checkoutAnalyticsAddToCart.eventClickAtcAddToCartClickBayarOnAtcSuccess();
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(cartMap, eventLabel, eventAction);
+    }
     @Override
     public void refreshData() {
         presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
