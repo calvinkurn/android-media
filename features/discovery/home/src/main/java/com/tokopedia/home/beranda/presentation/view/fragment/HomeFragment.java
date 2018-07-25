@@ -56,6 +56,7 @@ import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -565,6 +566,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        if (items.get(0) instanceof HeaderViewModel) {
+            HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
+            updateHeaderItem(dataHeader);
+        }
         adapter.setItems(items);
     }
 

@@ -89,7 +89,7 @@ public class ShipmentAddressListPresenter
                         @Override
                         public void onError(Throwable throwable) {
                             throwable.printStackTrace();
-                            if (isViewAttached()) {
+                            if (isViewAttached() && getMvpView().getActivityContext() != null) {
                                 getMvpView().hideLoading();
                                 String message;
                                 if (throwable instanceof UnknownHostException ||
@@ -133,9 +133,9 @@ public class ShipmentAddressListPresenter
                                                             (recipientAddressModel.getDestinationDistrictId().equals(currentAddress.getDestinationDistrictId()) &&
                                                                     recipientAddressModel.getCityId().equals(currentAddress.getCityId()) &&
                                                                     recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
-                                                                    recipientAddressModel.getAddressStreet().equals(currentAddress.getAddressStreet()) &&
+                                                                    recipientAddressModel.getStreet().equals(currentAddress.getStreet()) &&
                                                                     recipientAddressModel.getAddressName().equals(currentAddress.getAddressName()) &&
-                                                                    recipientAddressModel.getAddressPostalCode().equals(currentAddress.getAddressPostalCode()) &&
+                                                                    recipientAddressModel.getPostalCode().equals(currentAddress.getPostalCode()) &&
                                                                     recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
                                                                     recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
                                                             ) {

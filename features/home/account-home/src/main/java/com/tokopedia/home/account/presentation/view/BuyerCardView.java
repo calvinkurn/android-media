@@ -63,7 +63,9 @@ public class BuyerCardView extends BaseCustomView {
         textVoucherAmount.setText(coupons);
     }
 
-    public void setProgress(int progress) {
-        textProfileCompletion.setText(Integer.toString(progress));
+    public void setProfileCompletion(int progress) {
+        if(progress <= 0 || progress < 100) {
+            textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
+        }
     }
 }

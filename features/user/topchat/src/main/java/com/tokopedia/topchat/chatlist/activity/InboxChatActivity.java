@@ -20,6 +20,7 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -32,6 +33,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 import com.tokopedia.topchat.common.InboxMessageConstant;
+import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
@@ -43,7 +45,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class InboxChatActivity extends DrawerPresenterActivity
+public class InboxChatActivity extends BaseTemporaryDrawerActivity
         implements InboxMessageConstant, NotificationReceivedListener, HasComponent,
         ChatNotifInterface, IndicatorAdapter.OnIndicatorClickListener {
 
@@ -85,7 +87,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(channelListIntent);
+        if (((TopChatRouter) context.getApplicationContext()).isEnabledGroupChat()) {
+            taskStackBuilder.addNextIntent(channelListIntent);
+        }
         return taskStackBuilder;
     }
 
@@ -144,7 +148,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
         indicator.addItemDecoration(new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.step_size_nob)));
         indicator.setAdapter(indicatorAdapter);
 
-        if (isEnabledGroupChat()) {
+        if (isIndicatorVisible()) {
             indicatorLayout.setVisibility(View.VISIBLE);
         } else {
             indicatorLayout.setVisibility(View.GONE);
@@ -164,6 +168,11 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private boolean isEnabledGroupChat() {
         return getApplicationContext() instanceof TkpdInboxRouter
                 && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat();
+    }
+
+    private boolean isIndicatorVisible() {
+        return getApplicationContext() instanceof TkpdInboxRouter
+                && ((TkpdInboxRouter) getApplicationContext()).isIndicatorVisible();
     }
 
     private List<IndicatorItem> getIndicatorList() {
@@ -219,14 +228,17 @@ public class InboxChatActivity extends DrawerPresenterActivity
     public void onSuccessGetTopChatNotification(int notifUnreads) {
 
         if (notifUnreads > 0) {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-            titleTextView.setText(String.format(getString(R.string.chat_title), notifUnreads));
+            setTitleToolbar(String.format(getString(R.string.chat_title), notifUnreads));
         } else {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-            titleTextView.setText(getString(R.string.chat_title_without_notif));
+            setTitleToolbar(getString(R.string.chat_title_without_notif));
         }
 
         indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
+    }
+
+    private void setTitleToolbar(String titleToolbar) {
+        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
+        titleTextView.setText(titleToolbar);
     }
 
     public static Intent getCallingIntent(Context context) {
@@ -302,7 +314,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
     }
 
     public void showIndicators() {
-        if (!GlobalConfig.isSellerApp() && isEnabledGroupChat()) {
+        if (!GlobalConfig.isSellerApp() && isIndicatorVisible()) {
             indicatorLayout.setVisibility(View.VISIBLE);
         }
     }

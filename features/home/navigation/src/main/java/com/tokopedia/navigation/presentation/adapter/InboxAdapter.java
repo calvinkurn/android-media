@@ -59,7 +59,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     @NonNull
     @Override
     public InboxViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new InboxViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_inbox, parent, false));
+        return new InboxViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_common_subtitle, parent, false));
     }
 
     @Override

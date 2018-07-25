@@ -1,4 +1,5 @@
 <resources>
+    <string name="inbox">Inbox</string>
 
     <string name="chat">Chat</string>
     <string name="chat_desc">Percakapan pribadi Anda</string>

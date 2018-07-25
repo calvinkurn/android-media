@@ -27,8 +27,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,6 +74,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -93,7 +93,6 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
-import com.tokopedia.vote.di.VoteModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,23 +126,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
-        }
-        taskStackBuilder.addNextIntent(detailsIntent);
-        return taskStackBuilder;
-    }
-
-    @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
-    public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
-        Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
-                .getInboxChannelsIntent(context);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
+        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChatRoom()) {
+            taskStackBuilder.addNextIntent(detailsIntent);
         }
         return taskStackBuilder;
     }
@@ -729,7 +713,14 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorGetChannelInfo(String errorMessage) {
-        onChannelNotFound(errorMessage);
+        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
+                .RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                initData();
+            }
+        });
+        setVisibilityHeader(View.GONE);
     }
 
     void setVisibilityHeader(int visible) {
@@ -1368,12 +1359,18 @@ public class GroupChatActivity extends BaseSimpleActivity
             vibratePhone();
         } else if (map instanceof AdsViewModel) {
             updateAds((AdsViewModel) map);
+        } else if(map instanceof GroupChatQuickReplyViewModel){
+            updateQuickReply(((GroupChatQuickReplyViewModel)map).getList());
         }
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
         }
+    }
+
+    private void updateQuickReply(List<GroupChatQuickReplyItemViewModel> list) {
+        viewModel.getChannelInfoViewModel().setQuickRepliesViewModel(list);
     }
 
     private void updateAds(AdsViewModel adsViewModel) {

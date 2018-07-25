@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.imagePicker)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

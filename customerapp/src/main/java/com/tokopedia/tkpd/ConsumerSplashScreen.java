@@ -19,6 +19,7 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -39,7 +40,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
-        Intent homeIntent = HomeRouter.getHomeActivity(this);
+        Intent homeIntent = MainParentActivity.start(this);
         startActivity(homeIntent);
         finish();
     }
