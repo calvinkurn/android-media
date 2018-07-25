@@ -144,7 +144,7 @@ public class ShopProductLimitedListNewPresenter extends BaseDaggerPresenter<Shop
     }
 
     public void loadProductPromoModel(String promotionWebViewUrl) {
-        if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
+        if (!TextUtils.isEmpty(promotionWebViewUrl)) {
             String url = promotionWebViewUrl;
             if (userSession.isLoggedIn()) {
                 url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
