@@ -88,8 +88,6 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
     companion object {
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
-        fun createInstance(): Fragment {
-            return ProductEditCategoryFragment()
-        }
+        fun createInstance() = ProductEditCategoryFragment()
     }
 }

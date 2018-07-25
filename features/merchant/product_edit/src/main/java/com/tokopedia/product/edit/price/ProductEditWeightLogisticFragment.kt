@@ -172,8 +172,6 @@ class ProductEditWeightLogisticFragment : Fragment() {
             return resString
         }
 
-        fun createInstance(): Fragment {
-            return ProductEditWeightLogisticFragment()
-        }
+        fun createInstance() = ProductEditWeightLogisticFragment()
     }
 }

@@ -139,8 +139,6 @@ class BaseProductEditFragment : Fragment() {
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
 
-        fun createInstance(): Fragment {
-            return BaseProductEditFragment()
-        }
+        fun createInstance() = BaseProductEditFragment()
     }
 }

@@ -75,8 +75,6 @@ class ProductEditCatalogPickerFragment : Fragment() {
     }
 
     companion object {
-        fun createInstance(): Fragment {
-            return ProductEditCatalogPickerFragment()
-        }
+        fun createInstance() = ProductEditCatalogPickerFragment()
     }
 }
