@@ -166,17 +166,17 @@
                 android:visibility="gone"
                 android:layout_marginBottom="@dimen/dp_10" />
 
-            <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
-                android:id="@+id/topads"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
-
             <com.tokopedia.tkpdpdp.customview.OtherProductsView
                 android:id="@+id/view_other_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
+
+            <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
+                android:id="@+id/topads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.NewShopView
                 android:id="@+id/view_new_shop"

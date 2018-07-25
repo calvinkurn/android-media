@@ -814,7 +814,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
-        renderTopAds();
+//        renderTopAds();
     }
 
     private boolean isAllowShowCaseNcf() {
