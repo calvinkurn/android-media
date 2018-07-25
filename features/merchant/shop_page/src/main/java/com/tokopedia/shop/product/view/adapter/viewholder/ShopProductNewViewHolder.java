@@ -71,8 +71,6 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
         soldOutView = view.findViewById(R.id.sold_out_view);
 
-        qualityRatingBar = view.findViewById(R.id.ratingBar);
-        totalReview = view.findViewById(R.id.total_review);
     }
 
     @Override
