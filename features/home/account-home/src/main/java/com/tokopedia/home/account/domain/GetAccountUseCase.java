@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
-import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

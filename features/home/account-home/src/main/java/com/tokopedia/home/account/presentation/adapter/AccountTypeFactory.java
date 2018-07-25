@@ -1,12 +1,13 @@
 package com.tokopedia.home.account.presentation.adapter;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.account.presentation.viewmodel.MenuItemViewModel;
+import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
+import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
@@ -25,6 +26,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
     private Listener listener;
 
     public AccountTypeFactory(@NonNull Listener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -38,7 +40,9 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == MenuGridViewHolder.LAYOUT) {
             return new MenuGridViewHolder(parent);
         } else if (type == MenuListViewHolder.LAYOUT) {
-            return new MenuListViewHolder(parent);
+            return new MenuListViewHolder(parent, listener);
+        } else if (type == InfoCardViewHolder.LAYOUT) {
+            return new InfoCardViewHolder(parent, listener);
         }
         return super.createViewHolder(parent, type);
     }
@@ -63,11 +67,19 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return MenuListViewHolder.LAYOUT;
     }
 
+    public int type(InfoCardViewModel infoCardViewModel) {
+        return InfoCardViewHolder.LAYOUT;
+    }
+
     public interface Listener {
         void onTokopediaPayLinkClicked();
 
-        void onMenuGridItemClicked(MenuItemViewModel item);
+        void onMenuGridItemClicked(MenuGridItemViewModel item);
 
-        void onMenuGridLinkClicked(String applink);
+        void onMenuGridLinkClicked(MenuGridViewModel item);
+
+        void onInfoCardClicked(InfoCardViewModel item);
+
+        void onMenuListClicked(MenuListViewModel item);
     }
 }

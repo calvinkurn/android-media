@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridItemViewHolder;
-import com.tokopedia.home.account.presentation.viewmodel.MenuItemViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author okasurya on 7/19/18.
  */
 public class MenuGridAdapter extends RecyclerView.Adapter<MenuGridItemViewHolder> {
-    private List<MenuItemViewModel> categories;
+    private List<MenuGridItemViewModel> categories;
 
     public MenuGridAdapter() {
         this.categories = new ArrayList<>();
@@ -40,7 +40,7 @@ public class MenuGridAdapter extends RecyclerView.Adapter<MenuGridItemViewHolder
         return categories.size();
     }
 
-    public void setNewData(List<MenuItemViewModel> items) {
+    public void setNewData(List<MenuGridItemViewModel> items) {
         categories.clear();
         categories.addAll(items);
         notifyDataSetChanged();

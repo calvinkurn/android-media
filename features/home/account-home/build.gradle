@@ -14,12 +14,16 @@ buildscript {
 
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
 
+    implementation project(rootProject.ext.features.core)
+
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.badge
 }

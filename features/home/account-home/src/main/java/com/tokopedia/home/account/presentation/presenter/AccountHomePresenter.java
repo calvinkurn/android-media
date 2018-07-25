@@ -2,7 +2,7 @@ package com.tokopedia.home.account.presentation.presenter;
 
 import com.tokopedia.home.account.domain.GetAccountUseCase;
 import com.tokopedia.home.account.presentation.AccountHome;
-import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;

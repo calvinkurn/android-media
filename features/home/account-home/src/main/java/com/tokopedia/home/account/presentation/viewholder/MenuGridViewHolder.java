@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.MenuGridAdapter;
+import com.tokopedia.home.account.presentation.util.MenuGridSpacingDecoration;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 
 /**
@@ -36,18 +37,18 @@ public class MenuGridViewHolder extends AbstractViewHolder<MenuGridViewModel> {
         adapter = new MenuGridAdapter();
         recyclerCategory.setAdapter(adapter);
         recyclerCategory.setLayoutManager(new GridLayoutManager(itemView.getContext(), 4, LinearLayoutManager.VERTICAL, false));
+        recyclerCategory.addItemDecoration(new MenuGridSpacingDecoration(4, 0, false));
     }
 
     @Override
     public void bind(MenuGridViewModel element) {
-        recyclerCategory.setRecycledViewPool(viewPool);
         if (!TextUtils.isEmpty(element.getTitle())) {
             textTitle.setText(element.getTitle());
         }
 
         if (!TextUtils.isEmpty(element.getLinkText())) {
             textLink.setText(element.getLinkText());
-//            textLink.setOnClickLis    tener(v -> listener.onLinkClicked(categoryGrid.getApplinkUrl()));
+//            textLink.setOnClickListener(v -> listener.onLinkClicked(categoryGrid.getApplinkUrl()));
         }
 
 //        adapter.setListener(listener);
