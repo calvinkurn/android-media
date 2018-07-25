@@ -9,14 +9,12 @@ public interface AccountHomeRouter {
     Intent getManageProfileIntent(Context context);
     Intent getManagePasswordIntent(Context context);
     Intent getManageAddressIntent(Context context);
-
     void goToShopEditor(Context context);
     void goToManageShopShipping(Context context);
     void goToManageShopEtalase(Context context);
     void goTotManageShopNotes(Context context);
     void goToManageShopLocation(Context context);
     void goToManageShopProduct(Context context);
-
     void goToManageBankAccount(Context context);
     void goToManageCreditCard(Context context);
     void goToTokoCash(Context context);
