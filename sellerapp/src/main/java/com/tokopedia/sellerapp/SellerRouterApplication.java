@@ -1378,11 +1378,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getOrderListIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
         return null;
     }
@@ -1456,20 +1451,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isLoginInactivePhoneLinkEnabled() {
         return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
                 && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
-    }
-
-    @Override
-    public Intent getSettingBankIntent(Context context) {
-        if (isEnabledRevampBankAccount())
-            return SettingBankActivity.Companion.createIntent(context);
-        else {
-            return ManagePeopleBankActivity.createInstance(context);
-        }
-    }
-
-    private boolean isEnabledRevampBankAccount() {
-//        return remoteConfig.getBoolean("is_enabled_new_setting_bank");
-        return true;
     }
 
     @Override
