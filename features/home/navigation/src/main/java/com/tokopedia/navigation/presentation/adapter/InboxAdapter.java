@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tokopedia.navigation.R;
 
-import com.tokopedia.navigation.domain.Inbox;
+import com.tokopedia.navigation.domain.model.Inbox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     @NonNull
     @Override
     public InboxViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new InboxViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_common_subtitle, parent, false));
+        return new InboxViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_inbox, parent, false));
     }
 
     @Override
@@ -68,6 +68,12 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         holder.icon.setImageResource(item.getIcon());
         holder.title.setText(item.getTitle());
         holder.subtitle.setText(item.getSubtitle());
+        if (!item.getTotalBadge().isEmpty()) {
+            holder.badge.setVisibility(View.VISIBLE);
+            holder.badge.setText(item.getTotalBadge());
+        } else {
+            holder.badge.setVisibility(View.GONE);
+        }
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null)
                 onItemClickListener.onItemClick(v, position);
@@ -82,13 +88,14 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     class InboxViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView icon;
-        private TextView title, subtitle;
+        private TextView title, subtitle, badge;
 
         public InboxViewHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.icon);
             title = itemView.findViewById(R.id.title);
             subtitle = itemView.findViewById(R.id.subtitle);
+            badge = itemView.findViewById(R.id.badge);
         }
     }
 }

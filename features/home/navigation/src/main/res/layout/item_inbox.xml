@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    android:id="@+id/layout_common_subtitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -48,6 +47,19 @@
                 tools:text="Percakapan pribadi Anda"/>
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/badge"
+            android:visibility="gone"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:textSize="@dimen/sp_12"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:background="@drawable/circle_red"/>
 
         <ImageView
             android:layout_gravity="center_vertical"
