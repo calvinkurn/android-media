@@ -113,17 +113,18 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
 
     private void setReadStatus(MessageViewModel element) {
         int imageResource;
-
-        if (element.isRead()) {
-            imageResource = R.drawable.ic_chat_read;
+        if(!element.isShowTime()) {
+            chatStatus.setVisibility(View.GONE);
         } else {
-            imageResource = R.drawable.ic_chat_unread;
+            if (element.isRead()) {
+                imageResource = R.drawable.ic_chat_read;
+            } else {
+                imageResource = R.drawable.ic_chat_unread;
+            }
+            if (element.isDummy()) {
+                imageResource = R.drawable.ic_chat_pending;
+            }
+            chatStatus.setImageResource(imageResource);
         }
-        if (element.isDummy()) {
-            imageResource = R.drawable.ic_chat_pending;
-        }
-
-        chatStatus.setImageResource(imageResource);
-
     }
 }
