@@ -491,9 +491,8 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
                         .getGetUserInfoDomainData().getEmail(),
                 loginTokoCashViewModel.getUserInfoDomain()
                         .getGetUserInfoDomainData().getPhone());
-        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
         getActivity().finish();
     }
 

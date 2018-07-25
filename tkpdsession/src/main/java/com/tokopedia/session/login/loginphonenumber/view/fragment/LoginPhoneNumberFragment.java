@@ -211,11 +211,10 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                     && chooseTokoCashAccountViewModel.getListAccount().size() == 1) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
-            }else if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
+            } else if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
                     .getListAccount().isEmpty()) {
                 goToChooseAccountPage(chooseTokoCashAccountViewModel);
-            }
-            else {
+            } else {
                 goToNoTokocashAccountPage();
             }
         } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
