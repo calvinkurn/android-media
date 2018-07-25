@@ -111,7 +111,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://order/tracking";
 
     String INSTANT_LOAN = "tokopedia://loan";
-    String INSTANT_LOAN_TAB = "tokopedia://loan/{tab_name}";
+    String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
