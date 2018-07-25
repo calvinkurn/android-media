@@ -34,12 +34,15 @@ import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
@@ -120,12 +123,12 @@ import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.Xparams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
@@ -149,7 +152,6 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
-import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
@@ -166,7 +168,6 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
 
 /**
@@ -815,7 +816,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
-        renderTopAds();
     }
 
     private boolean isAllowShowCaseNcf() {
@@ -827,6 +827,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onOtherProductLoaded(List<ProductOther> productOthers) {
         this.productOthers = productOthers;
         otherProductsView.renderOtherProduct(productOthers);
+        renderTopAds(productOthers.size());
     }
 
     @Override
@@ -1828,7 +1829,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
                 enhancedECommerceCartMapData.getCartMap(),
-                (productData.getInfo().getHasVariant() ? productVariant.generateVariantValue(productData.getInfo().getProductId()): "non variant"),
+                (productData.getInfo().getHasVariant() ? productVariant.generateVariantValue(productData.getInfo().getProductId()) : "non variant"),
                 eventAction
         );
     }
@@ -1923,36 +1924,58 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 });
     }
 
-    private void renderTopAds(){
-        TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, SRC_PDP_VALUE);
-        params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
+    private void renderTopAds(int itemSize) {
+        try {
+            Xparams xparams = new Xparams();
+            xparams.setProduct_id(productData.getInfo().getProductId());
+            xparams.setProduct_name(productData.getInfo().getProductName());
+            xparams.setSource_shop_id(Integer.parseInt(productData.getShopInfo().getShopId()));
+            if (productData.getBreadcrumb().size() > 2) {
+                xparams.setChild_cat_id(Integer.parseInt(productData.getBreadcrumb().get(2).getDepartmentId()));
+            }
+            TopAdsParams params = new TopAdsParams();
+            params.getParam().put(TopAdsParams.KEY_SRC, SRC_PDP_VALUE);
+            params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
+            params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(itemSize));
+            params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
 
-        Config config = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
-                .topAdsParams(params)
-                .build();
+            Config config = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                    .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .topAdsParams(params)
+                    .build();
 
-        topAds.setAdsItemClickListener(this);
-        topAds.setAdsListener(this);
-        topAds.setConfig(config);
-        topAds.loadTopAds();
+            topAds.setAdsItemClickListener(this);
+            topAds.setAdsListener(this);
+            topAds.setConfig(config);
+            topAds.loadTopAds();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onTopAdsLoaded() {
-
+        topAds.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-
+        topAds.setVisibility(View.GONE);
     }
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
     }
 
     @Override
