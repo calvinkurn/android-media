@@ -113,7 +113,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onPause() {
         super.onPause();
-        isPause = true;
         unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
@@ -123,7 +122,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onResume() {
         super.onResume();
-        isPause = false;
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
         cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
