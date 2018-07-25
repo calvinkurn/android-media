@@ -1,5 +1,6 @@
 package com.tokopedia.train.search.presentation.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.common.util.TrainFlowExtraConstant;
+import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
@@ -28,7 +31,6 @@ import javax.inject.Inject;
 
 public class TrainSearchReturnFragment extends TrainSearchFragment
         implements TrainSearchReturnContract.View {
-
     @Inject
     TrainSearchReturnPresenter presenterReturn;
 
@@ -84,7 +86,25 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     @Override
     public void selectSchedule(TrainScheduleViewModel trainScheduleViewModel) {
         trainScheduleBookingPassData.setReturnScheduleId(trainScheduleViewModel.getIdSchedule());
-        startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));
+        startActivityForResult(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData), NEXT_STEP_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case NEXT_STEP_REQUEST_CODE:
+                if (data != null) {
+                    if (data.getIntExtra(TrainFlowExtraConstant.EXTRA_FLOW_DATA, -1) != -1) {
+                        trainFlowUtil.actionSetResultAndClose(
+                                getActivity(),
+                                getActivity().getIntent(),
+                                data.getIntExtra(TrainFlowExtraConstant.EXTRA_FLOW_DATA, 0)
+                        );
+                    }
+                }
+                break;
+        }
     }
 
     @Override

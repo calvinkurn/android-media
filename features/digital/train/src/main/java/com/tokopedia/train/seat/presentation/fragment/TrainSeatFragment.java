@@ -1,6 +1,7 @@
 package com.tokopedia.train.seat.presentation.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.util.TrainFlowConstant;
+import com.tokopedia.train.common.util.TrainFlowExtraConstant;
+import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.presentation.activity.TrainReviewDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
@@ -42,11 +46,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatContract.View, TrainSeatPassengerAndWagonView.TrainSeatActionListener {
+    public static final int NEXT_STEP_REQUEST_CODE = 1010;
     private static final String EXTRA_SOFTBOOK = "EXTRA_SOFTBOOK";
     private static final String EXTRA_PASSDATA = "EXTRA_PASSDATA";
     private static final String EXTRA_DEPARTURE_STATE = "EXTRA_DEPARTURE_STATE";
     @Inject
     TrainSeatPresenter presenter;
+    @Inject
+    TrainFlowUtil trainFlowUtil;
 
     private CountdownTimeView countdownTimeView;
     private TrainSeatPassengerAndWagonView trainSeatHeader;
@@ -272,7 +279,11 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                getActivity().finish();
+                trainFlowUtil.actionSetResultAndClose(
+                        getActivity(),
+                        getActivity().getIntent(),
+                        TrainFlowConstant.RESEARCH
+                );
             }
         });
         dialog.show();
@@ -292,12 +303,12 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     public void navigateToReview(TrainSoftbook trainSoftbook) {
         if (!isReturning()) {
             if (trainSoftbook.getReturnTrips() != null && trainSoftbook.getReturnTrips().size() > 0) {
-                startActivity(TrainSeatActivity.getCallingIntent(getActivity(), trainSoftbook, passData, false));
+                startActivityForResult(TrainSeatActivity.getCallingIntent(getActivity(), trainSoftbook, passData, false), NEXT_STEP_REQUEST_CODE);
             } else {
-                startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
+                startActivityForResult(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData), NEXT_STEP_REQUEST_CODE);
             }
         } else {
-            startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
+            startActivityForResult(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData), NEXT_STEP_REQUEST_CODE);
         }
     }
 
@@ -383,6 +394,24 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             interactionListener = (InteractionListener) context;
         } else {
             throw new RuntimeException("Activity must implement " + InteractionListener.class.getSimpleName());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case NEXT_STEP_REQUEST_CODE:
+                if (data != null) {
+                    if (data.getIntExtra(TrainFlowExtraConstant.EXTRA_FLOW_DATA, -1) != -1) {
+                        trainFlowUtil.actionSetResultAndClose(
+                                getActivity(),
+                                getActivity().getIntent(),
+                                data.getIntExtra(TrainFlowExtraConstant.EXTRA_FLOW_DATA, 0)
+                        );
+                    }
+                }
+                break;
         }
     }
 }

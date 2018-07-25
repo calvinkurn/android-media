@@ -46,21 +46,21 @@
     <string name="train_search_no_connection">Periksa kembali koneksi internet Anda dan coba lagi.</string>
     <string name="train_search_sort">Urutkan</string>
     <string name="train_search_filter">Filter</string>
-    <string name="train_search_passenger_adult">%d Dewasa</string>
-    <string name="train_search_passenger_infant">%d Infant</string>
+    <string name="train_search_passenger_adult" formatted="false">%d Dewasa</string>
+    <string name="train_search_passenger_infant" formatted="false">%d Infant</string>
     <string name="train_search_departure_title">Perjalanan Pergi</string>
     <string name="train_search_return_title">Perjalanan Pulang</string>
     <string name="train_search_cheapest_label">TERMURAH</string>
     <string name="train_search_fastest_label">TERCEPAT</string>
     <string name="train_search_seat_full_label">Penuh</string>
-    <string name="train_search_remains_seat_label">Sisa %d kursi</string>
+    <string name="train_search_remains_seat_label" formatted="false">Sisa %d kursi</string>
 
     <!-- filter -->
     <string name="train_filter_time_departure">Waktu Berangkat</string>
     <string name="train_filter_train_name">Kereta</string>
     <string name="train_filter_class_name">Kelas</string>
     <string name="train_filter_menu_reset">Reset</string>
-    <string name="train_filter_button_info">Terdapat %d perjalanan</string>
+    <string name="train_filter_button_info" formatted="false">Terdapat %d perjalanan</string>
 
     <!-- passenger info -->
     <string name="train_booking_passenger_title">Isi Data Penumpang</string>
@@ -83,14 +83,14 @@
     <string name="train_passenger_additional_info">Bila tidak ada, mohon masukkan tanggal lahir dalam format (DDMMYYYY)</string>
     <string name="train_passenger_identity_number">Nomor Identitas (KTP/SIM/Paspor)</string>
     <string name="train_passenger_identity_number_hint">Isi Nomor Identitas</string>
-    <string name="train_passenger_header_format">%s %d (%s)</string>
+    <string name="train_passenger_header_format" formatted="false">%s %d (%s)</string>
     <string name="train_passenger_header_title">Penumpang</string>
     <string name="train_passenger_error_salutation">Sapaan harus dipilih</string>
     <string name="train_passenger_error_contact_name">Nama Lengkap harus diisi</string>
     <string name="train_passenger_error_phone_number">Nomor Telepon harus diisi</string>
     <string name="train_passenger_error_identity_number">Nomor Identitas harus diisi</string>
     <string name="train_passenger_error_identity_number_max">Nomor Identitas maksimal 20 huruf</string>
-    <string name="train_passenger_label_identity_number">No ID : %s</string>
+    <string name="train_passenger_label_identity_number" formatted="false">No ID : %s</string>
     <string name="train_passenger_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
     <string name="train_passenger_contact_name_max">Nama kontak maksimal 60 huruf</string>
     <string name="train_passenger_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>

@@ -32,10 +32,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
+import com.tokopedia.train.common.util.TrainFlowExtraConstant;
+import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.constant.TrainSortOption;
+import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
 import com.tokopedia.train.search.domain.FilterParam;
@@ -65,6 +68,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     private static final int RETURN_SEARCH_FRAGMENT_REQUEST_CODE = 1010;
     private static final int FILTER_SEARCH_REQUEST_CODE = 1011;
+    protected static final int NEXT_STEP_REQUEST_CODE = 1010;
 
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
 
@@ -105,6 +109,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected String arrivalScheduleSelected;
 
     private BottomActionView filterAndSortBottomAction;
+
+    @Inject
+    TrainFlowUtil trainFlowUtil;
 
     @Inject
     TrainSearchPresenter presenter;
@@ -437,7 +444,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     RETURN_SEARCH_FRAGMENT_REQUEST_CODE);
         } else {
             trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
-            startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));
+            startActivityForResult(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData), NEXT_STEP_REQUEST_CODE);
         }
     }
 
@@ -472,6 +479,12 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         trains = new ArrayList<>();
         trainClass = new ArrayList<>();
         departureTrains = new ArrayList<>();
+    }
+
+    @Override
+    public void resetFilterAndSortParam() {
+        filterSearchData = new FilterSearchData();
+        selectedSortOption = TrainSortOption.CHEAPEST;
     }
 
     @Override

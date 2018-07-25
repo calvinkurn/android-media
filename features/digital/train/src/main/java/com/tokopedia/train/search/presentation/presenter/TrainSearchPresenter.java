@@ -129,4 +129,12 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
         });
     }
 
+    @Override
+    public void reSearch() {
+        getView().clearAdapterData();
+        getView().resetFilterAndSortParam();
+        getView().resetFilterParam();
+        getTrainSchedules();
+    }
+
 }

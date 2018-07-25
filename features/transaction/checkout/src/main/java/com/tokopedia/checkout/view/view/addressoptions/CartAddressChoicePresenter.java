@@ -139,7 +139,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                         recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
                         recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()) &&
                         recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
-                        recipientAddressModel.getAddressStreet().equals(currentAddress.getAddressStreet())) {
+                        recipientAddressModel.getStreet().equals(currentAddress.getStreet())) {
                     recipientAddressModel.setSelected(true);
                     setSelectedRecipientAddress(recipientAddressModel);
                     break;

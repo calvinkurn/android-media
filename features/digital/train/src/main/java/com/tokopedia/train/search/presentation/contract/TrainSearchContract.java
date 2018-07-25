@@ -47,11 +47,14 @@ public interface TrainSearchContract {
 
         int getScheduleVariantSelected();
 
+        void resetFilterAndSortParam();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getTrainSchedules();
 
         void getFilteredAndSortedSchedules();
+
+        void reSearch();
     }
 }
