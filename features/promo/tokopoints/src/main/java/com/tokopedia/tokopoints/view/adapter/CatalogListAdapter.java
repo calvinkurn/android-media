@@ -165,4 +165,8 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     public void updateItems(List<CatalogsValueEntity> items) {
         this.mItems = items;
     }
+
+    public List<CatalogsValueEntity> getItems() {
+        return this.mItems;
+    }
 }

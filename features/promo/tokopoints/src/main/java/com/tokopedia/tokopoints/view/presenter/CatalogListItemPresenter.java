@@ -10,12 +10,14 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogListingOuter;
+import com.tokopedia.tokopoints.view.model.CatalogStatusOuter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -28,6 +30,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     private GraphqlUseCase mSaveCouponUseCase;
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
+    private GraphqlUseCase mFetchCatalogStatusUseCase;
 
     @Inject
     public CatalogListItemPresenter(GraphqlUseCase getHomePageData,
@@ -192,6 +195,38 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void fetchLatestStatus(List<Integer> catalogsIds) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_IDS, catalogsIds);
+
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.tp_gql_catalog_status),
+                CatalogStatusOuter.class,
+                variables);
+        mFetchCatalogStatusUseCase.clearRequest();
+        mFetchCatalogStatusUseCase.addRequest(request);
+        mFetchCatalogStatusUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                //NA
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                CatalogStatusOuter data = response.getData(CatalogStatusOuter.class);
+                if (data != null && data.getCatalogStatus() != null) {
+                    getView().refreshCatalog(data.getCatalogStatus().getCatalogs());
                 }
             }
         });

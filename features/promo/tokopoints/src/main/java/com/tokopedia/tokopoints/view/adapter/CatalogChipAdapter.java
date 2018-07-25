@@ -37,9 +37,7 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
             synchronized (mViewHolders) {
                 long currentTime = System.currentTimeMillis();
                 for (ViewHolder holder : mViewHolders) {
-                    if (mItem.getTimeRemainingSeconds() > 0) {
                         holder.updateTimeRemaining(currentTime);
-                    }
                 }
             }
         }

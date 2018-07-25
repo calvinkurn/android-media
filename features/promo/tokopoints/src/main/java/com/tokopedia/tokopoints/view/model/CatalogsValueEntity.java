@@ -109,7 +109,7 @@ public class CatalogsValueEntity implements Serializable {
 
     @Expose
     @SerializedName("catalogType")
-    private String catalogType;
+    private int catalogType;
 
     public String getBaseCode() {
         return baseCode;
@@ -311,11 +311,11 @@ public class CatalogsValueEntity implements Serializable {
         this.expiredStr = expiredStr;
     }
 
-    public String getCatalogType() {
+    public int getCatalogType() {
         return catalogType;
     }
 
-    public void setCatalogType(String catalogType) {
+    public void setCatalogType(int catalogType) {
         this.catalogType = catalogType;
     }
 

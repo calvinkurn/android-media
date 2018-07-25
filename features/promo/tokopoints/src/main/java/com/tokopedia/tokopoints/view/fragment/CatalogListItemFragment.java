@@ -1,9 +1,10 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -12,12 +13,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
@@ -26,11 +27,15 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
+import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -46,6 +51,24 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private ViewFlipper mContainer;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
+    private RemoteConfig mRemoteConfig;
+    private long mRefreshTime;
+    private Timer mTimer;
+    private Handler mHandler = new Handler();
+
+    private Runnable mRunnableUpdateCatalogStatus = new Runnable() {
+        @Override
+        public void run() {
+            List<Integer> items = new ArrayList<>();
+            for (CatalogsValueEntity each : mAdapter.getItems()) {
+                if (each.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                    items.add(each.getCatalogType());
+                }
+            }
+
+            mPresenter.fetchLatestStatus(items);
+        }
+    };
 
     @Inject
     public CatalogListItemPresenter mPresenter;
@@ -65,6 +88,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initInjector();
+        fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
         mContainer = rootView.findViewById(R.id.container);
@@ -139,6 +163,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
             mRecyclerViewCatalog.setAdapter(mAdapter);
         }
+
+        startUpdateCatalogStatusTimer();
     }
 
     @Override
@@ -273,6 +299,30 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         decorateDialog(dialog);
     }
 
+    @Override
+    public void refreshCatalog(@NonNull List<CatalogStatusItem> items) {
+        if (items == null || items.isEmpty()) {
+            return;
+        }
+
+
+        for (CatalogStatusItem each : items) {
+            if (each == null) {
+                continue;
+            }
+
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                CatalogsValueEntity item = mAdapter.getItems().get(i);
+                if (each.getCatalogID() == item.getId()) {
+                    item.setDisabled(each.isDisabled());
+                    item.setDisabledButton(each.isDisabled());
+                    item.setUpperTextDesc(each.getUpperTextDesc());
+                    item.setQuota(each.getQuota());
+                }
+            }
+        }
+    }
+
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
@@ -289,5 +339,23 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     public CatalogListItemPresenter getPresenter() {
         return this.mPresenter;
+    }
+
+    /*This section is exclusively for handling flash-sale timer*/
+    private void startUpdateCatalogStatusTimer() {
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (mHandler != null) {
+                    mHandler.post(mRunnableUpdateCatalogStatus);
+                }
+            }
+        }, 0, mRefreshTime);
+    }
+
+    private void fetchRemoteConfig() {
+        mRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        mRefreshTime = mRemoteConfig.getLong(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
 }

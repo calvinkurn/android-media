@@ -14,6 +14,9 @@ public interface CommonConstant {
     int HOMEPAGE_TAB_COUNT = 2;
     int DEFAULT_SORT_TYPE = 1;
     int DEFAULT_CATEGORY_TYPE = 0;
+    int DEFAULT_AUTO_REFRESH_S = 10;
+    int CATALOG_TYPE_FLASH_SALE = 3;
+    String TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s";
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;
@@ -35,6 +38,7 @@ public interface CommonConstant {
         String SERVICE_ID = "serviceID";
         String CATEGORY_ID_COUPON = "categoryIDCoupon";
         String SLUG = "slug";
+        String CATALOG_IDS = "catalogIDs";
     }
 
     interface TickerMapKeys {
