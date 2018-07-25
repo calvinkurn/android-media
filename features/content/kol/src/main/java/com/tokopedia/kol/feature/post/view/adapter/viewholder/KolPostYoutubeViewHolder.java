@@ -5,7 +5,6 @@ import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,7 +36,7 @@ import static android.view.View.VISIBLE;
  */
 
 public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeViewModel>
-        implements BaseKolListener, YoutubeInitializer.OnVideoThumbnailInitialListener {
+        implements BaseKolListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_post_youtube_layout;
@@ -46,7 +45,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
-    private LinearLayout baseView;
     private BaseKolView baseKolView;
     private ImageView ivPlay;
     private ProgressBar loadingBar;
@@ -69,7 +67,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         topShadow = itemView.findViewById(R.id.top_shadow);
-        baseView = itemView.findViewById(R.id.base_view);
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content_youtube);
         RelativeLayout mainView = view.findViewById(R.id.main_view);
@@ -94,10 +91,28 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         baseKolView.setViewListener(this, element);
         try {
             thumbnailView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
-                    YoutubeInitializer.videoThumbnailInitializer(element.getYoutubeLink(), this));
-            thumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener(element));
+                    YoutubeInitializer.videoThumbnailInitializer(element.getYoutubeLink(), new YoutubeInitializer.OnVideoThumbnailInitialListener() {
+                        @Override
+                        public void onSuccessInitializeThumbnail(YouTubeThumbnailLoader loader, YouTubeThumbnailView youTubeThumbnailView) {
+                            thumbnailView.setVisibility(VISIBLE);
+                            thumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener(element));
+                            youTubeThumbnailLoader = loader;
+                            loader.release();
+                            destroyReleaseProcess();
+                            ivPlay.setVisibility(VISIBLE);
+                            loadingBar.setVisibility(GONE);
+                        }
+
+                        @Override
+                        public void onErrorInitializeThumbnail(String error) {
+                            destroyReleaseProcess();
+                            ivPlay.setVisibility(VISIBLE);
+                            loadingBar.setVisibility(GONE);
+                        }
+                    }));
         } catch (Exception e) {
-            baseView.setVisibility(GONE);
+            loadingBar.setVisibility(VISIBLE);
+            thumbnailView.setVisibility(GONE);
         }
 
         if (TextUtils.isEmpty(element.getTagsCaption())) {
@@ -107,22 +122,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             tooltipClickArea.setVisibility(View.VISIBLE);
             tooltipClickArea.setOnClickListener(v -> tooltipAreaClicked(element));
         }
-    }
-
-    @Override
-    public void onSuccessInitializeThumbnail(YouTubeThumbnailLoader loader, YouTubeThumbnailView youTubeThumbnailView) {
-        youTubeThumbnailLoader = loader;
-        loader.release();
-        destroyReleaseProcess();
-        ivPlay.setVisibility(VISIBLE);
-        loadingBar.setVisibility(GONE);
-    }
-
-    @Override
-    public void onErrorInitializeThumbnail(String error) {
-        destroyReleaseProcess();
-        ivPlay.setVisibility(VISIBLE);
-        loadingBar.setVisibility(GONE);
     }
 
     @Override

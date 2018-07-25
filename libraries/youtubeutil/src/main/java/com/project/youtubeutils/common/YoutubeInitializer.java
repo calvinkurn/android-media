@@ -62,7 +62,6 @@ public class YoutubeInitializer {
                         @Override
                         public void onThumbnailLoaded(YouTubeThumbnailView youTubeThumbnailView,
                                                       String s) {
-                            isThumbnailReadyForInitialized = true;
                             loader.release();
                             listener.onSuccessInitializeThumbnail(loader, youTubeThumbnailView);
                         }
@@ -70,10 +69,10 @@ public class YoutubeInitializer {
                         @Override
                         public void onThumbnailError(YouTubeThumbnailView youTubeThumbnailView,
                                                      YouTubeThumbnailLoader.ErrorReason errorReason) {
-                            isThumbnailReadyForInitialized = true;
                             listener.onErrorInitializeThumbnail(errorReason.toString());
                         }
                     });
+                    isThumbnailReadyForInitialized = true;
                 }
 
                 @Override
