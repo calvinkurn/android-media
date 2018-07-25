@@ -7,6 +7,7 @@ import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductCarouselListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductBigViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductListViewHolder;
@@ -15,6 +16,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopListViewHo
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
@@ -85,6 +87,11 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     }
 
     @Override
+    public int type(ProductCarouselListViewModel viewModel) {
+        return ProductCarouselListViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
@@ -101,6 +108,8 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
             holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, imageLoader, itemClickListener);
+        } else if (viewType == ProductCarouselListViewHolder.LAYOUT) {
+            holder = new ProductCarouselListViewHolder(view, imageLoader, itemClickListener, clickPosition);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

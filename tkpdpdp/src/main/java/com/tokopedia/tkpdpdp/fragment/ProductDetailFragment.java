@@ -125,6 +125,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
@@ -814,7 +815,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
-//        renderTopAds();
+        renderTopAds();
     }
 
     private boolean isAllowShowCaseNcf() {

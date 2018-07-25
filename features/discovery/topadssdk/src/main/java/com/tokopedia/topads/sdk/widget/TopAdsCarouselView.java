@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
@@ -71,6 +72,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
 
     public void setConfig(Config config) {
         presenter.setConfig(config);
+        setDisplayMode(DisplayMode.CAROUSEL);
     }
 
     public void setAdsListener(TopAdsListener adsListener) {
@@ -87,7 +89,6 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         presenter.attachView(this);
         presenter.setMaxItems(15);
         presenter.setEndpoinParam("1");
-        setDisplayMode(DisplayMode.GRID);
     }
 
     @Override

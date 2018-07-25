@@ -80,6 +80,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                                 visitables.add(ModelConverter.convertToProductFeedViewModel(data));
                             } else if (displayMode == DisplayMode.BIG) {
                                 visitables.add(ModelConverter.convertToProductBigViewModel(data));
+                            } else if (displayMode == DisplayMode.CAROUSEL) {
+                                visitables.add(ModelConverter.convertToCarouselListViewModel(data));
                             }
                         } else if (data.getShop() != null) {
                             if (displayMode == DisplayMode.GRID) {
