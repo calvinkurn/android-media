@@ -45,6 +45,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         SelectVerification.View {
 
     private static final String PASS_MODEL = "pass_model";
+    private static final int TYPE_HIDE_LINK = 0;
     private static final int TYPE_CHANGE_PHONE_UPLOAD_KTP = 1;
     private static final int TYPE_PROFILE_SETTING = 2;
     private RecyclerView methodListRecyclerView;
@@ -131,10 +132,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 .VERTICAL, false));
         methodListRecyclerView.setAdapter(adapter);
 
-        if (!userSession.isMsisdnVerified() ||
-                passModel.getOtpType() == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
-            changePhoneNumberButton.setVisibility(View.GONE);
-        }
+//        if (!userSession.isMsisdnVerified() ||
+//                passModel.getOtpType() == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
+//            changePhoneNumberButton.setVisibility(View.GONE);
+//        }
 
     }
 
@@ -190,22 +191,27 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     public void onSuccessGetList(ListVerificationMethod listVerificationMethod) {
         adapter.setList(listVerificationMethod.getList());
 
-        changePhoneNumberButton.setOnClickListener(v -> {
-            if (getActivity() != null
-                    && getActivity().getApplicationContext() != null
-                    && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
+        if(listVerificationMethod.getFooterLinkType() == TYPE_HIDE_LINK){
+            changePhoneNumberButton.setVisibility(View.GONE);
+        }else {
+            changePhoneNumberButton.setVisibility(View.VISIBLE);
+            changePhoneNumberButton.setOnClickListener(v -> {
+                if (getActivity() != null
+                        && getActivity().getApplicationContext() != null
+                        && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
 
-                switch (listVerificationMethod.getFooterLinkType()) {
-                    case TYPE_CHANGE_PHONE_UPLOAD_KTP:
-                        goToRequestChangePhoneNumberUploadKTP();
-                        break;
-                    case TYPE_PROFILE_SETTING:
-                        goToProfileSetting();
-                        break;
+                    switch (listVerificationMethod.getFooterLinkType()) {
+                        case TYPE_CHANGE_PHONE_UPLOAD_KTP:
+                            goToRequestChangePhoneNumberUploadKTP();
+                            break;
+                        case TYPE_PROFILE_SETTING:
+                            goToProfileSetting();
+                            break;
+                    }
+
                 }
-
-            }
-        });
+            });
+        }
     }
 
     private void goToProfileSetting() {
