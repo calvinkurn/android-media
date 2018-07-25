@@ -1,13 +1,9 @@
 package com.tokopedia.seller.product.imagepicker.view.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
-import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.seller.R;

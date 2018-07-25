@@ -65,7 +65,7 @@ public class GetProfileKolDataMapper
                     "",
                     getTagType(tag),
                     getTagCaption(tag),
-                    getTagLink(tag)
+                    !TextUtils.isEmpty(getTagLink(tag)) ? getTagLink(tag) : getTagUrl(tag)
             );
             kolPostViewModels.add(kolPostViewModel);
         }
@@ -150,6 +150,14 @@ public class GetProfileKolDataMapper
     private String getTagLink(TagsFeedKol tag) {
         if (tag != null && tag.link != null) {
             return tag.link;
+        } else {
+            return "";
+        }
+    }
+
+    private String getTagUrl(TagsFeedKol tag) {
+        if (tag != null && tag.url != null) {
+            return tag.url;
         } else {
             return "";
         }

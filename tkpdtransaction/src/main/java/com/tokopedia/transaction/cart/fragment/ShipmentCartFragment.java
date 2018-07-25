@@ -465,7 +465,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                     || TextUtils.isEmpty(locationPass.getLatitude()))) {
                 locationArg = locationPass;
             }
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationArg);
+            Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationArg);
             startActivityForResult(intent, CHOOSE_LOCATION);
         } else {
             Toast.makeText(

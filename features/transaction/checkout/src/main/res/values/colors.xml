@@ -6,4 +6,7 @@
     <color name="yellow_ticker">#ecdb77</color>
     <color name="background_no_pinpoint">#ccfffffe</color>
     <color name="grey_nonactive_text">#42000000</color>
+    <color name="separator_color">#e0e0e0</color>
+    <color name="background_cashback_enable">#e3f9e3</color>
+    <color name="cashback_text_color">#42b549</color>
 </resources>
