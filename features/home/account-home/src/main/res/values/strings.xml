@@ -7,6 +7,49 @@
     <string name="label_menu_notification">Feed</string>
     <string name="label_user_tokopoint">TokoPoints</string>
     <string name="label_user_voucher">Kupon Saya</string>
+    <string name="title_account_setting">Akun</string>
+    <string name="title_shop_setting">Toko</string>
+    <string name="title_tkpd_pay_setting">Tokopedia Pay</string>
+    <string name="title_notification_setting">Notifikasi</string>
+    <string name="title_touch_id_setting">Touch ID</string>
+    <string name="title_tnc_setting">Syarat dan Ketentuan</string>
+    <string name="title_privacy_setting">Kebijakan Privasi</string>
+    <string name="title_help_center_setting">Pusat Bantuan</string>
+    <string name="subtitle_account_setting">Atur Data Diri, Kata Sandi dan Alamat</string>
+    <string name="subtitle_shop_setting">Atur Lokasi, Etalase, Pengiriman, dan...</string>
+    <string name="subtitle_tkpd_pay_setting">Atur Kartu Kredit, Akun Bank, dan lainnya</string>
+    <string name="subtitle_notification_setting">Atur Chat, Diskusi, Ulasan, dan Buletin</string>
+    <string name="logout">Keluar</string>
+    <string name="title_personal_data_setting">Data Diri</string>
+    <string name="title_password_setting">Kata Sandi</string>
+    <string name="title_address_setting">Daftar Alamat</string>
+    <string name="screentitle_account_setting">Atur Akun</string>
+    <string name="title_shop_info_setting">Informasi</string>
+    <string name="title_shop_etalase_setting">Etalase</string>
+    <string name="title_shop_product_setting">Produk</string>
+    <string name="title_shop_location_setting">Lokasi</string>
+    <string name="title_shop_shipment_setting">Pengiriman</string>
+    <string name="title_shop_note_setting">Catatan</string>
+    <string name="screentitle_store_setting">Atur Toko</string>
+    <string name="title_tokocash_setting">TokoCash</string>
+    <string name="title_saldo_setting">Saldo</string>
+    <string name="title_bank_account_setting">Akun Bank</string>
+    <string name="title_credit_card_setting">Kartu Kredit</string>
+    <string name="screentitle_tkpd_pay_setting">Atur Tokopedia Pay</string>
+    <string name="screentitle_notification_setting">Atur Notifikasi</string>
+
+    <string name="label_chat">Chat</string>
+    <string name="label_chat_admin">Chat dari Admin</string>
+    <string name="label_talk">Diskusi</string>
+    <string name="label_review">Ulasan</string>
+    <string name="label_bulletin">Buletin</string>
+
+    <string name="pref_chat_key" translatable="false">notification_receive_chat</string>
+    <string name="pref_chat_admin_key" translatable="false">notification_receive_chat_admin</string>
+    <string name="pref_talk_key" translatable="false">notification_receive_talk</string>
+    <string name="pref_review_key" translatable="false">notification_receive_review</string>
+    <string name="pref_bulletin_key" translatable="false">notification_receive_bulletin</string>
+    <string name="application_version_fmt">Versi %1$s</string>
     <string name="label_profile_completion">Kelengkapan Profile %1$d%%</string>
     <string name="label_tokopedia_pay_title">Tokopedia Pay</string>
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>

@@ -97,6 +97,7 @@ ext {
             cardViewV7      : "com.android.support:cardview-v7:${supportLibraryVersion}",
             exifinterface   : "com.android.support:exifinterface:${supportLibraryVersion}",
             constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2",
+            preferenceV7    : "com.android.support:preference-v7:${supportLibraryVersion}",
             kotlinSupport   : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     ]
 

@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -24,6 +25,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
 import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
@@ -109,7 +111,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_setting) {
-            Toast.makeText(getContext(), "Setting", Toast.LENGTH_LONG).show();
+            startActivity(GeneralSettingActivity.createIntent(getActivity()));
             return true;
         } else if (item.getItemId() == R.id.menu_notification) {
             Toast.makeText(getContext(), "Notif", Toast.LENGTH_LONG).show();

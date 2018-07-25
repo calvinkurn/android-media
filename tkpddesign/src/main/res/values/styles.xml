@@ -154,6 +154,11 @@
         <item name="android:textColorSecondary">@color/grey_400</item>
     </style>
 
+    <style name="Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/bg_switch_thumb_selector</item>
+        <item name="android:track">@drawable/bg_switch_track_selector</item>
+    </style>
+
     <style name="BottomSheetBuilder.DialogStyle" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
     </style>
