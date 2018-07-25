@@ -36,24 +36,22 @@
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/textInputLayoutStock"
-        style="@style/HintTextInputLayout"
+    <com.tokopedia.design.text.DecimalInputView
+        android:id="@+id/decimalInputViewStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:hint="@string/product_label_stock_count"
         android:layout_marginRight="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
-        app:helper="@string/product_helper_product_stock"
-        android:visibility="gone">
+        app:decimal_max_length="@integer/product_max_counter_int_length"
+        app:decimal_input_hint="@string/product_label_stock_count" />
 
-        <EditText
-            style="@style/EditText"
-            android:layout_width="match_parent"
-            android:imeOptions="actionDone"
-            android:inputType="number" />
-
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textViewHelperStock"
+        style="@style/TextView.Nano"
+        android:text="@string/product_helper_product_stock"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"/>
 
     <android.support.v7.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
@@ -71,6 +69,7 @@
         android:layout_marginLeft="@dimen/dp_12">
 
         <EditText
+            android:id="@+id/editTextSku"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:imeOptions="actionDone"
