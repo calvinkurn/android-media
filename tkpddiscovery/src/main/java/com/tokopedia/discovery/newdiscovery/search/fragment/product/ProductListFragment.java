@@ -208,7 +208,6 @@ public class ProductListFragment extends SearchSectionFragment
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
-        addLoading();
 
         setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
@@ -216,6 +215,7 @@ public class ProductListFragment extends SearchSectionFragment
             showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
+            adapter.addLoading();
             showBottomBarNavigation(true);
         }
 

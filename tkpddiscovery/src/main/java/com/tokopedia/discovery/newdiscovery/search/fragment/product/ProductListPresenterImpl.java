@@ -190,10 +190,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 getView().removeLoading();
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
-                                getView().addLoading();
                                 if (getView().isEvenPage()) {
                                     getView().addGuidedSearch();
                                 }
+                                getView().addLoading();
                                 getView().showBottomBarNavigation(true);
                             }
                             getView().storeTotalData(productViewModel.getTotalData());
