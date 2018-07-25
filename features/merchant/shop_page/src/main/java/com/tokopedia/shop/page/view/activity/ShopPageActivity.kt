@@ -53,6 +53,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
     var isTabHidden: Boolean = false
+    var isTabFullyVisible: Boolean = true
 
     @Inject lateinit var presenter: ShopPagePresenterNew
     @Inject lateinit var shopPageTracking: ShopPageTracking
@@ -180,18 +181,24 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
-    override fun showTab() {
+    override fun showTab(startFullyVisible: Boolean) {
         //show tabs
-        if (isTabHidden) {
+        if (isTabHidden || isTabFullyVisible != startFullyVisible) {
             val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
-            params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+            if (startFullyVisible) {
+                params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+            } else {
+                params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or
+                        AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+            }
             tabLayout.layoutParams = params
             tabLayout.invalidate()
             isTabHidden = false
+            isTabFullyVisible = startFullyVisible
         }
     }
 
-    override fun getTabHeight(): Int {
+    override fun getTabLayoutHeight(): Int {
         return tabLayout.height
     }
 

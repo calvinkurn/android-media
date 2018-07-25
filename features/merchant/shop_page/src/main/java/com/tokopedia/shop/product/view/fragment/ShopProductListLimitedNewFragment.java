@@ -123,9 +123,9 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     public interface OnShopProductListLimitedNewFragmentListener {
         void hideTab();
 
-        void showTab();
+        void showTab(boolean startFullyVisible);
 
-        int getTabHeight();
+        int getTabLayoutHeight();
     }
 
     public static ShopProductListLimitedNewFragment createInstance(String shopAttribution) {
@@ -190,6 +190,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int totalDy;
+
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -205,11 +206,13 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                         onShopProductListLimitedNewFragmentListener.hideTab();
                         totalDy = 0;
                     } else {
-                        totalDy+= dy;
-                        Log.i("TestABCDE", String.valueOf(totalDy));
-                        if ((-1 * totalDy) > onShopProductListLimitedNewFragmentListener.getTabHeight()) {
-                            Log.i("TestABCDE", "show Tab");
-                            onShopProductListLimitedNewFragmentListener.showTab();
+                        totalDy += dy;
+                        if (dy < 0) {
+                            if (-totalDy > onShopProductListLimitedNewFragmentListener.getTabLayoutHeight()) {
+                                onShopProductListLimitedNewFragmentListener.showTab(true);
+                            } else {
+                                onShopProductListLimitedNewFragmentListener.showTab(false);
+                            }
                         }
                     }
                 }
