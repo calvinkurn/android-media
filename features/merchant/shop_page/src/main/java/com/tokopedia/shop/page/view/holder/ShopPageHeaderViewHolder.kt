@@ -16,7 +16,7 @@ import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.util.TextApiUtils
 import com.tokopedia.shop.extension.formatToSimpleNumber
-import kotlinx.android.synthetic.main.partial_shop_page_header_2.view.*
+import kotlinx.android.synthetic.main.partial_shop_page_header.view.*
 
 class ShopPageHeaderViewHolder(private val view: View, private val listener: ShopPageHeaderListener){
     private var isShopFavourited = false
