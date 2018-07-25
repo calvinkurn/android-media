@@ -4,15 +4,19 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.*
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
+import android.widget.TextView
+
 
 class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
 
-    lateinit var productName: ProductName
+    private lateinit var productName: ProductName
+    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,32 +31,35 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ProductEditNameViewHolder(view, this).setName(productName.name!!)
+        texViewMenu.text = getString(R.string.label_save)
+        texViewMenu.setOnClickListener {
+            setResult()
+        }
     }
 
     override fun onNameChanged(productName: ProductName) {
+        if (productName.name!!.isNotEmpty()) {
+            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.tkpd_main_green))
+        } else {
+            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.font_black_secondary_54))
+        }
         this.productName = productName
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_next, menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    private fun isDataValid(): Boolean{
+        return productName.name!!.isNotEmpty()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_next) {
+    private fun setResult(){
+        if(isDataValid()) {
             val intent = Intent()
             intent.putExtra(EXTRA_NAME, productName)
             activity!!.setResult(Activity.RESULT_OK, intent)
             activity!!.finish()
-            return true
         }
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {
-
-        fun createInstance(): Fragment {
-            return ProductEditNameFragment()
-        }
+        fun createInstance() = ProductEditNameFragment()
     }
 }

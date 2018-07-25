@@ -74,8 +74,6 @@ class ProductEditPriceFragment : Fragment() {
 
     companion object {
 
-        fun createInstance(): Fragment {
-            return ProductEditPriceFragment()
-        }
+        fun createInstance() = ProductEditPriceFragment()
     }
 }

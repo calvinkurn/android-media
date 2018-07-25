@@ -8,7 +8,7 @@ import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import kotlinx.android.synthetic.main.item_product_edit_catalog.view.*
 
-class ProductCatalogAdapter(private var catatogList: ArrayList<ProductCatalog>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class ProductCatalogAdapter(private var catalogList: ArrayList<ProductCatalog>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var selectedPosition = -1
 
@@ -23,26 +23,35 @@ class ProductCatalogAdapter(private var catatogList: ArrayList<ProductCatalog>) 
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.textViewName.text = catatogList[position].catalogName
+        holder.itemView.textViewName.text = catalogList[position].catalogName
         if(selectedPosition == position)
             holder.itemView.imageViewCheck.visibility = View.VISIBLE
         else
             holder.itemView.imageViewCheck.visibility = View.GONE
     }
 
-    override fun getItemCount() = catatogList.size
+    override fun getItemCount() = catalogList.size
 
     override fun getItemId(position: Int): Long {
         return super.getItemId(position)
     }
 
     fun replaceData(catatogList: ArrayList<ProductCatalog>) {
-        this.catatogList = catatogList
+        this.catalogList = catatogList
         notifyDataSetChanged()
     }
 
     fun getSelectedCatalog(): ProductCatalog{
-        return catatogList[selectedPosition]
+        return catalogList[selectedPosition]
+    }
+
+    fun setSelectedCategory(productCatalog: ProductCatalog){
+        for (i in 0 until catalogList.size){
+            if(catalogList[i].catalogName == productCatalog.catalogName){
+                selectedPosition = i
+                notifyDataSetChanged()
+            }
+        }
     }
 
     inner class ProductCategoryRecommendationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
