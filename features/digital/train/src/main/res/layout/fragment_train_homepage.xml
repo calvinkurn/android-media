@@ -15,7 +15,10 @@
 
             <include layout="@layout/view_train_homepage_form" />
 
-            <include layout="@layout/view_train_promo" />
+            <com.tokopedia.train.homepage.presentation.widget.TrainPromoListView
+                android:id="@+id/train_promo_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

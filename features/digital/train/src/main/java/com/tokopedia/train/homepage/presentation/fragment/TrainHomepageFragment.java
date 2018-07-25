@@ -1,22 +1,14 @@
 package com.tokopedia.train.homepage.presentation.fragment;
 
-
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,8 +18,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -40,15 +30,14 @@ import com.tokopedia.train.common.constant.TrainAppScreen;
 import com.tokopedia.train.common.constant.TrainEventTracking;
 import com.tokopedia.train.common.presentation.TextInputView;
 import com.tokopedia.train.homepage.di.TrainHomepageComponent;
-import com.tokopedia.train.homepage.presentation.TrainPromoAdapter;
 import com.tokopedia.train.homepage.presentation.activity.TrainPassengerPickerActivity;
 import com.tokopedia.train.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
-import com.tokopedia.train.homepage.presentation.model.TrainPromoAttributesViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPromoViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.homepage.presentation.presenter.TrainHomepagePresenterImpl;
+import com.tokopedia.train.homepage.presentation.widget.TrainPromoListView;
 import com.tokopedia.train.search.presentation.activity.TrainSearchDepartureActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
@@ -66,6 +55,7 @@ import javax.inject.Inject;
  */
 public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHomepageView {
 
+    private static final String PROMO_PATH = "promo";
     private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
     private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
     private static final int PASSENGER_REQUEST_CODE = 1004;
@@ -73,10 +63,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private static final int DATE_PICKER_RETURN_REQUEST_CODE = 1006;
     private static final int DEPARTURE_SCHEDULE_REQUEST_CODE = 1007;
     private static final int REQUEST_CODE_LOGIN = 2008;
-    private static final int HORIZONTAL = 0;
-
-    private static final String CLIP_DATA_LABEL_VOUCHER_CODE_TRAIN =
-            "CLIP_DATA_LABEL_VOUCHER_CODE_TRAIN";
 
     private AppCompatButton buttonOneWayTrip;
     private AppCompatButton buttonRoundTrip;
@@ -90,10 +76,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private TextInputView textInputViewPassenger;
     private AppCompatButton buttonSearchTicket;
     private View separatorDateReturn;
-    private TextView seeAllPromo;
-    private RecyclerView recyclerViewPromo;
-    private TrainPromoAdapter adapter;
-    private RelativeLayout layoutTrainPromo;
+    private TrainPromoListView trainPromoView;
+    private List<TrainPromoViewModel> trainPromoViewModelList;
 
     private TrainHomepageViewModel viewModel;
 
@@ -126,9 +110,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         textInputViewPassenger = view.findViewById(R.id.text_input_view_passenger);
         buttonSearchTicket = view.findViewById(R.id.button_search_ticket);
         separatorDateReturn = view.findViewById(R.id.separator_date_return);
-        seeAllPromo = view.findViewById(R.id.see_all_promo);
-        recyclerViewPromo = view.findViewById(R.id.recycler_view_train_promo);
-        layoutTrainPromo = view.findViewById(R.id.layout_train_promo);
+        trainPromoView = view.findViewById(R.id.train_promo_view);
 
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
@@ -162,16 +144,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                     TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
                     ""
             );
-        });
-
-        seeAllPromo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getActivity().getApplication() instanceof TrainRouter) {
-                    Intent intentToPromoList = ((TrainRouter) getActivity().getApplication()).getPromoListIntent(getActivity());
-                    startActivity(intentToPromoList);
-                }
-            }
         });
 
         imageReverseOriginDestitation.setOnClickListener(v -> {
@@ -229,48 +201,66 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         trainHomepagePresenterImpl.attachView(this);
         trainHomepagePresenterImpl.initialize();
-        initializeListPromo();
+        initializePromoList();
     }
 
-    private void initializeListPromo() {
-        adapter = new TrainPromoAdapter();
-        adapter.setListener(new TrainPromoAdapter.ListenerTrainPromoAdapter() {
+    private void initializePromoList() {
+        trainPromoViewModelList = new ArrayList<>();
+        trainPromoView.setListener(new TrainPromoListView.ActionListener() {
             @Override
-            public void onClickCopyPromoCode(String promoCode) {
-                copyPromoCode(promoCode);
+            public void showToastMessage(String message) {
+                View view = getView();
+                if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+                else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void navigateToPromoPage() {
+                if (getActivity().getApplication() instanceof TrainRouter) {
+                    Intent intentToPromoList = ((TrainRouter) getActivity().getApplication()).getPromoListIntent(getActivity());
+                    startActivity(intentToPromoList);
+                }
+            }
+
+            @Override
+            public void navigateToPromoDetail(int position) {
+                if (trainPromoViewModelList.size() > position && trainPromoViewModelList.get(position).getAttributes() != null) {
+                    String url = trainPromoViewModelList.get(position).getAttributes().getImageUrl();
+                    Uri uri = Uri.parse(url);
+                    boolean isPromoNativeActive = isPromoNativeActive();
+                    if (isPromoNativeActive && uri != null
+                            && uri.getPathSegments() != null
+                            && uri.getPathSegments().size() == 2
+                            && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
+                        String slug = uri.getPathSegments().get(1);
+                        if (getActivity().getApplication() instanceof TrainRouter
+                                && ((TrainRouter) getActivity().getApplication())
+                                .getPromoDetailIntent(getActivity(), slug) != null) {
+                            startActivity(((TrainRouter) getActivity().getApplication())
+                                    .getPromoDetailIntent(getActivity(), slug));
+                        }
+                    } else {
+                        if (getActivity().getApplication() instanceof TrainRouter
+                                && ((TrainRouter) getActivity().getApplication())
+                                .getBannerWebViewIntent(getActivity(), url) != null) {
+                            startActivity(((TrainRouter) getActivity().getApplication())
+                                    .getBannerWebViewIntent(getActivity(), url));
+                        }
+                    }
+                }
+            }
+
+            private boolean isPromoNativeActive() {
+                if (getActivity() != null && getActivity().getApplication() instanceof TrainRouter) {
+                    return ((TrainRouter) getActivity().getApplication()).isPromoNativeEnable();
+                } else {
+                    return false;
+                }
             }
         });
-        recyclerViewPromo.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewPromo.setAdapter(adapter);
-        if (getActivity().getApplication() instanceof TrainRouter) {
-            recyclerViewPromo.addItemDecoration(((TrainRouter) getActivity().getApplication())
-                    .getSpacingItemDecorationHome(convertDpToPixel(16, getActivity()), HORIZONTAL));
-            SnapHelper snapHelper = ((TrainRouter) getActivity().getApplication()).getSnapHelper();
-            snapHelper.attachToRecyclerView(recyclerViewPromo);
-        }
         trainHomepagePresenterImpl.getTrainPromoList();
     }
 
-    private void copyPromoCode(String promoCode) {
-        ClipboardManager clipboard = (ClipboardManager)
-                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(
-                CLIP_DATA_LABEL_VOUCHER_CODE_TRAIN, promoCode
-        );
-        clipboard.setPrimaryClip(clip);
-        showToastMessage(getString(R.string.message_voucher_code_banner_copied));
-    }
-
-    private void showToastMessage(String message) {
-        View view = getView();
-        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
-        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    public static int convertDpToPixel(float dp, Context context) {
-        Resources r = context.getResources();
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -475,13 +465,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderPromoList(List<TrainPromoViewModel> trainPromoViewModelList) {
-        layoutTrainPromo.setVisibility(View.VISIBLE);
-        adapter.addItems(trainPromoViewModelList);
+        this.trainPromoViewModelList = trainPromoViewModelList;
+        trainPromoView.setPromoListData(trainPromoViewModelList);
     }
 
     @Override
     public void hidePromoList() {
-        layoutTrainPromo.setVisibility(View.GONE);
+        trainPromoView.hidePromoList();
     }
 
     @Override
@@ -514,7 +504,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     public void showBottomMenus() {
         menus = new Menus(getActivity());
-        String [] menuItem = new String[] {
+        String[] menuItem = new String[]{
                 getResources().getString(R.string.train_homepage_bottom_menu_order_list),
                 getResources().getString(R.string.train_homepage_bottom_menu_check_orders)
         };

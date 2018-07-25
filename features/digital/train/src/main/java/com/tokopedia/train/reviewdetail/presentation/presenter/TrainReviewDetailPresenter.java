@@ -32,6 +32,8 @@ import rx.schedulers.Schedulers;
 public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewDetailContract.View>
         implements TrainReviewDetailContract.Presenter {
 
+    private static final String TAG = TrainReviewDetailPresenter.class.getSimpleName();
+
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
     private GetScheduleDetailUseCase getScheduleDetailUseCase;
 
@@ -73,8 +75,6 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                         return new TrainReviewPassengerInfoViewModelBuilder()
                                 .name(departureTrainPaxPassenger.getName())
                                 .noID(departureTrainPaxPassenger.getIdNumber())
-                                .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
-                                .returnTripClass(returnTrainPaxPassenger.getSeat().getKlass())
                                 .originStationCode(originStationCode)
                                 .destinationStationCode(destinationStationCode)
                                 .departureSeat(departureTrainPaxPassenger.getSeat().getWagonNo() + "/"
@@ -99,7 +99,6 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                         return new TrainReviewPassengerInfoViewModelBuilder()
                                 .name(departureTrainPaxPassenger.getName())
                                 .noID(departureTrainPaxPassenger.getIdNumber())
-                                .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
                                 .returnTripClass(null)
                                 .originStationCode(originStationCode)
                                 .destinationStationCode(destinationStationCode)
@@ -198,7 +197,7 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("TrainReviewDetailPresenter", e.getMessage());
+                        Log.d(TAG, e.getMessage());
                     }
 
                     @Override

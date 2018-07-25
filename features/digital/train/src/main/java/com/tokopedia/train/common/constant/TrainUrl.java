@@ -8,6 +8,7 @@ public class TrainUrl {
 
     public static final String QUERY_GQL = "query";
     public static final String VARIABLE_GQL = "variables";
+    public static final String INPUT_GQL = "input";
 
     public static String BASE_URL = "http://gql-staging.tokopedia.com";
 

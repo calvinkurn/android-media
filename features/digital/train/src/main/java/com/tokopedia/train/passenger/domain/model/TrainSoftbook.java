@@ -132,7 +132,6 @@ public class TrainSoftbook implements Parcelable {
         seat1.setColumn("A");
         seat1.setRow("10");
         seat1.setWagonNo("EKO_AC-1");
-        seat1.setKlass("C");
         trainPaxPassenger1.setSeat(seat1);
         trainPaxPassengers.add(trainPaxPassenger1);
         TrainPaxPassenger trainPaxPassenger2 = new TrainPaxPassenger();
@@ -143,7 +142,6 @@ public class TrainSoftbook implements Parcelable {
         seat2.setColumn("B");
         seat2.setRow("11");
         seat2.setWagonNo("EKO_AC-1");
-        seat2.setKlass("C");
         trainPaxPassenger2.setSeat(seat2);
         trainPaxPassengers.add(trainPaxPassenger2);
         TrainPaxPassenger trainPaxPassenger3 = new TrainPaxPassenger();
@@ -154,7 +152,6 @@ public class TrainSoftbook implements Parcelable {
         seat3.setColumn("C");
         seat3.setRow("11");
         seat3.setWagonNo("EKO_AC-1");
-        seat3.setKlass("C");
         trainPaxPassenger3.setSeat(seat3);
         trainPaxPassengers.add(trainPaxPassenger3);
         TrainPaxPassenger trainPaxPassenger4 = new TrainPaxPassenger();
@@ -165,7 +162,6 @@ public class TrainSoftbook implements Parcelable {
         seat4.setColumn("D");
         seat4.setRow("11");
         seat4.setWagonNo("EKO_AC-1");
-        seat4.setKlass("C");
         trainPaxPassenger4.setSeat(seat4);
         trainPaxPassengers.add(trainPaxPassenger4);
         trainTrip.setPaxPassengers(trainPaxPassengers);

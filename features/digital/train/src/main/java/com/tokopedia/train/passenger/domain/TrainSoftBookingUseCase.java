@@ -1,5 +1,6 @@
 package com.tokopedia.train.passenger.domain;
 
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.usecase.RequestParams;
@@ -9,6 +10,15 @@ import rx.Observable;
 
 public class TrainSoftBookingUseCase extends UseCase<TrainSoftbook> {
 
+    public static final String DEPARTURE_TRIP = "departureTrip";
+    public static final String RETURN_TRIP = "returnTrip";
+    public static final String BUYER = "buyer";
+    public static final String PASSENGERS = "passengers";
+    public static final String TOTAL_ADULT = "numPaxAdult";
+    public static final String TOTAL_INFANT = "numPaxInfant";
+    public static final String DEVICE = "device";
+    public static final int DEFAULT_DEVICE = 5;
+
     private TrainRepository trainRepository;
 
     public TrainSoftBookingUseCase(TrainRepository trainRepository) {
@@ -17,13 +27,13 @@ public class TrainSoftBookingUseCase extends UseCase<TrainSoftbook> {
 
     @Override
     public Observable<TrainSoftbook> createObservable(RequestParams requestParams) {
-        TrainSoftbook trainSoftbook = TrainSoftbook.dummy();
-
-        return Observable.just(trainSoftbook);
+        return trainRepository.doSoftBookTrainTicket(requestParams.getParameters());
     }
 
-    public RequestParams create() {
-        return RequestParams.create();
+    public RequestParams create(RequestParams requestParams) {
+        RequestParams requestParamsInput = RequestParams.create();
+        requestParamsInput.putObject(TrainUrl.INPUT_GQL, requestParams.getParameters());
+        return requestParamsInput;
     }
 
 }
