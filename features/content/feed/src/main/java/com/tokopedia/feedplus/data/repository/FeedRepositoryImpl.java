@@ -62,5 +62,4 @@ public class FeedRepositoryImpl implements FeedRepository {
     public Observable<FollowKolDomain> followUnfollowKol(RequestParams requestParams) {
         return kolSource.followKolPost(requestParams);
     }
-
 }

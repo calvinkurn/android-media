@@ -3,6 +3,9 @@ package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * @author anggaprasetiyo on 22/02/18.
  */
@@ -100,4 +103,34 @@ public class ShipProd implements Parcelable {
             return new ShipProd[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof ShipProd)) return false;
+
+        ShipProd shipProd = (ShipProd) o;
+
+        return new EqualsBuilder()
+                .append(getShipProdId(), shipProd.getShipProdId())
+                .append(getShipGroupId(), shipProd.getShipGroupId())
+                .append(getAdditionalFee(), shipProd.getAdditionalFee())
+                .append(getMinimumWeight(), shipProd.getMinimumWeight())
+                .append(getShipProdName(), shipProd.getShipProdName())
+                .append(getShipGroupName(), shipProd.getShipGroupName())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getShipProdId())
+                .append(getShipProdName())
+                .append(getShipGroupName())
+                .append(getShipGroupId())
+                .append(getAdditionalFee())
+                .append(getMinimumWeight())
+                .toHashCode();
+    }
 }

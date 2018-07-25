@@ -67,7 +67,6 @@ import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryBrandsAdapt
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.topads.sdk.base.Config;
@@ -81,6 +80,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
         IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener,
         BannerPagerAdapter.OnPromoClickListener,
-        WishlistActionListener {
+        WishListActionListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
@@ -218,22 +218,22 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
+    public void onErrorAddWishList(String errorMessage, String productId) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddWishlist(int adapterPosition) {
+    public void onSuccessAddWishlist(String productId) {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
     @Override
-    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessRemoveWishlist(int adapterPosition) {
+    public void onSuccessRemoveWishlist(String productId) {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 

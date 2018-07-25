@@ -1,10 +1,10 @@
 package com.tokopedia.imagepicker.picker.instagram.domain.mapper;
 
 import com.tokopedia.imagepicker.picker.instagram.data.model.Images;
-import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
-import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaResponse;
 import com.tokopedia.imagepicker.picker.instagram.data.model.MediaInstagram;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseListMediaInstagram;
+import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
+import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaResponse;
 
 import java.util.ArrayList;
 import java.util.List;
