@@ -1,9 +1,12 @@
 package com.tokopedia.train.search.presentation.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.tokopedia.train.common.util.TrainFlowConstant;
+import com.tokopedia.train.common.util.TrainFlowExtraConstant;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;
@@ -42,5 +45,25 @@ public class TrainSearchDepartureFragment extends TrainSearchFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == NEXT_STEP_REQUEST_CODE) {
+            if (data != null) {
+                int extraConstantData = data.getIntExtra(TrainFlowExtraConstant.EXTRA_FLOW_DATA, -1);
+                switch (extraConstantData) {
+                    case TrainFlowConstant.HOME:
+                        if (getActivity() != null) {
+                            getActivity().finish();
+                        }
+                        break;
+                    case TrainFlowConstant.RESEARCH:
+                        presenter.reSearch();
+                        break;
+                }
+            }
+        }
     }
 }

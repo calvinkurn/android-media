@@ -77,7 +77,7 @@
                 android:id="@+id/arrival_time"
                 android:layout_toEndOf="@+id/arrival_time_circle"
                 android:layout_toRightOf="@+id/arrival_time_circle"
-                android:layout_alignTop="@id/arrival_info"
+                android:layout_alignTop="@+id/arrival_info"
                 style="@style/TextView.Micro.Green"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
