@@ -40,7 +40,8 @@ import javax.inject.Inject;
  * @author by milhamj on 19/07/18.
  */
 
-public class ContentExploreFragment extends BaseDaggerFragment implements ContentExploreContract.View {
+public class ContentExploreFragment extends BaseDaggerFragment
+        implements ContentExploreContract.View, SearchInputView.Listener {
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
@@ -136,6 +137,11 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     }
 
     @Override
+    public void updateSearch(String search) {
+        presenter.updateSearch(search);
+    }
+
+    @Override
     public void clearData() {
         imageAdapter.clearData();
     }
@@ -190,10 +196,24 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         startActivity(intent);
     }
 
+    @Override
+    public void onSearchSubmitted(String text) {
+        updateSearch(text);
+        imageAdapter.clearData();
+        presenter.getExploreData(true);
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+
+    }
+
     private void initView() {
         searchInspiration = view.findViewById(R.id.search_inspiration);
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
+
+        searchInspiration.setListener(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL,

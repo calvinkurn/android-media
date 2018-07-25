@@ -18,6 +18,7 @@ public class ContentExplorePresenter
     private final GetExploreDataUseCase getExploreDataUseCase;
     private String cursor = "";
     private int categoryId = 0;
+    private String search = "";
 
     @Inject
     public ContentExplorePresenter(GetExploreDataUseCase getExploreDataUseCase) {
@@ -35,7 +36,7 @@ public class ContentExplorePresenter
         //TODO milhamj do search?
         getView().showLoading();
         getExploreDataUseCase.execute(
-                GetExploreDataUseCase.getVariables(categoryId, cursor, ""),
+                GetExploreDataUseCase.getVariables(categoryId, cursor, search),
                 new GetExploreDataSubscriber(getView(), clearData)
         );
     }
@@ -48,5 +49,10 @@ public class ContentExplorePresenter
     @Override
     public void updateCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    @Override
+    public void updateSearch(String search) {
+        this.search = search;
     }
 }

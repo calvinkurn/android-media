@@ -24,6 +24,8 @@ public interface ContentExploreContract {
 
         void updateCategoryId(int categoryId);
 
+        void updateSearch(String search);
+
         void clearData();
 
         void onCategoryClicked(int position, int categoryId);
@@ -41,5 +43,7 @@ public interface ContentExploreContract {
         void updateCursor(String cursor);
 
         void updateCategoryId(int categoryId);
+
+        void updateSearch(String search);
     }
 }
