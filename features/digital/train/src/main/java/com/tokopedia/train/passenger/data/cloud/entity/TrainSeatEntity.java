@@ -4,12 +4,18 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TrainSeatEntity {
-//    "seat": {
-//        "class": "K",
-//                "wagonNo": "1",
-//                "row": "3",
-//                "column": "E"
-//    }
+    /**
+     *
+     * Example of response seat
+     *
+     "seat": {
+        "class": "K",
+                "wagonNo": "1",
+                "row": "3",
+                "column": "E"
+      }
+     */
+
     @SerializedName("class")
     @Expose
     private String klass;
