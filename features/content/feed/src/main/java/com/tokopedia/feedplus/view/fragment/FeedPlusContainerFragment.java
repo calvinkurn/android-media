@@ -17,9 +17,6 @@ import com.tokopedia.feedplus.R;
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment {
 
-    public FeedPlusContainerFragment() {
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
