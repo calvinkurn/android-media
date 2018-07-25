@@ -82,7 +82,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         }
 
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, TAG_FRAGMENT)
+                .replace(R.id.container, fragment, TAG_FRAGMENT)
                 .commit();
     }
 }
