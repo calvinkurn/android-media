@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import android.widget.TextView
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_LOGISTIC
 import com.tokopedia.product.edit.price.model.ProductLogistic
@@ -23,6 +24,8 @@ class ProductEditWeightLogisticFragment : Fragment() {
 
     @ProductEditPreOrderTimeType
     private var selectedPreOrderTimeType: Int = ProductEditPreOrderTimeType.DAY
+
+    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +55,11 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 layoutProcessTime.visibility = View.VISIBLE
             else
                 layoutProcessTime.visibility = View.GONE
+        }
+
+        texViewMenu.text = getString(R.string.label_save)
+        texViewMenu.setOnClickListener {
+            setResult()
         }
     }
 
@@ -146,21 +154,13 @@ class ProductEditWeightLogisticFragment : Fragment() {
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_next, menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    private fun setResult(){
+        val intent = Intent()
+        intent.putExtra(EXTRA_LOGISTIC, saveData(productLogistic))
+        activity!!.setResult(Activity.RESULT_OK, intent)
+        activity!!.finish()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_next) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_LOGISTIC, saveData(productLogistic))
-            activity!!.setResult(Activity.RESULT_OK, intent)
-            activity!!.finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
     companion object {
 
         fun getWeightTypeTitle(type: Int): Int {

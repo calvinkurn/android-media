@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.*
@@ -21,6 +22,7 @@ class BaseProductEditFragment : Fragment() {
     private var productImages = ArrayList<String>()
     private var productLogistic = ProductLogistic()
     private var productStock = ProductStock()
+    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +65,9 @@ class BaseProductEditFragment : Fragment() {
         labelViewWeightLogisticProduct.setOnClickListener {
             startActivityForResult(Intent(activity, ProductEditWeightLogisticActivity::class.java)
                     .putExtra(EXTRA_LOGISTIC, productLogistic), REQUEST_CODE_GET_LOGISTIC) }
+
+        texViewMenu.text = getString(R.string.label_save)
+        texViewMenu.setOnClickListener {  }
     }
 
     private fun setImagesSectionData(productImages: ArrayList<String>){

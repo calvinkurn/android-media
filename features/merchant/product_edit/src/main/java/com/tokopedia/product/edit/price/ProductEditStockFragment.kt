@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import android.widget.TextView
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.edit.price.model.ProductStock
@@ -13,6 +14,8 @@ import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
 class ProductEditStockFragment : Fragment() {
 
     private var productStock = ProductStock()
+
+    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,11 @@ class ProductEditStockFragment : Fragment() {
                 labelRadioButtonStockLimited.isChecked = !labelRadioButtonStockAvailable.isChecked
             }
             setVisibleStockTextInputLayout()
+        }
+
+        texViewMenu.text = getString(R.string.label_save)
+        texViewMenu.setOnClickListener {
+            setResult()
         }
     }
 
@@ -75,21 +83,13 @@ class ProductEditStockFragment : Fragment() {
         return productStock
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_next, menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    private fun setResult(){
+        val intent = Intent()
+        intent.putExtra(EXTRA_STOCK, saveData(productStock))
+        activity!!.setResult(Activity.RESULT_OK, intent)
+        activity!!.finish()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_next) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_STOCK, saveData(productStock))
-            activity!!.setResult(Activity.RESULT_OK, intent)
-            activity!!.finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
     companion object {
 
         fun createInstance() = ProductEditStockFragment()

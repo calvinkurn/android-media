@@ -71,6 +71,7 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
         this.productCategory = productCategory
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
+        validateData()
     }
 
     override fun onLabelCategoryClicked() {
@@ -78,7 +79,8 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
     }
 
     override fun onLabelCatalogClicked() {
-        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java), REQUEST_CODE_GET_CATALOG)
+        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java)
+                .putExtra(EXTRA_CATALOG, productCatalog), REQUEST_CODE_GET_CATALOG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -116,7 +118,7 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         }
     }
 
-    private fun isDataValid() = productName.name!!.isNotEmpty() && productCategory.categoryName != null
+    private fun isDataValid() = productName.name != null && productName.name!!.isNotEmpty() && productCategory.categoryName != null
 
     private fun goToNext(){
         if(isDataValid()){
