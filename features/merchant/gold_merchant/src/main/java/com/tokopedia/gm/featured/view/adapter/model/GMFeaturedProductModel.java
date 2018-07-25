@@ -1,6 +1,6 @@
 package com.tokopedia.gm.featured.view.adapter.model;
 
-import com.tokopedia.product.common.util.ItemIdType;
+import com.tokopedia.product.edit.common.util.ItemIdType;
 
 /**
  * Created by normansyahputa on 9/6/17.

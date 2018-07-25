@@ -3,7 +3,7 @@ package com.tokopedia.product.edit.view.model.wholesale;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.product.common.util.ItemType;
+import com.tokopedia.product.edit.common.util.ItemType;
 
 
 /**

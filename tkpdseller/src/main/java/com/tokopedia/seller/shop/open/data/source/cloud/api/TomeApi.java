@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shop.open.data.source.cloud.api;
 
-import com.tokopedia.product.common.util.ShopOpenNetworkConstant;
+import com.tokopedia.product.edit.common.util.ShopOpenNetworkConstant;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShopName;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;

@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.productEdit)
 
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)

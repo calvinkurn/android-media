@@ -11,13 +11,13 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.product.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.product.common.util.CurrencyTypeDef;
-import com.tokopedia.product.common.util.CurrencyUsdPrefixEdittextTextWatcher;
-import com.tokopedia.product.common.util.PrefixEditText;
+import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
+import com.tokopedia.product.edit.common.util.CurrencyUsdPrefixEdittextTextWatcher;
+import com.tokopedia.product.edit.common.util.PrefixEditText;
 import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.utils.ProductPriceRangeUtils;
-import com.tokopedia.product.common.model.edit.ProductWholesaleViewModel;
+import com.tokopedia.product.edit.common.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.product.edit.view.model.wholesale.WholesaleModel;
 
 import java.text.DecimalFormat;
@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.tokopedia.product.common.util.CurrencyUsdPrefixEdittextTextWatcher.PREFIX_DOLLAR;
-import static com.tokopedia.product.common.util.CurrencyUsdPrefixEdittextTextWatcher.PREFIX_RUPIAH;
+import static com.tokopedia.product.edit.common.util.CurrencyUsdPrefixEdittextTextWatcher.PREFIX_DOLLAR;
+import static com.tokopedia.product.edit.common.util.CurrencyUsdPrefixEdittextTextWatcher.PREFIX_RUPIAH;
 
 /**
  * Created by yoshua on 02/05/18.

@@ -10,7 +10,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.product.common.util.ItemType;
+import com.tokopedia.product.edit.common.util.ItemType;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.db.williamchart.util.GoldMerchantDateUtils;

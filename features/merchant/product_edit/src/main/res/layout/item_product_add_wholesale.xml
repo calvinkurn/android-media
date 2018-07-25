@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/min_product_add"
         style="@style/TextInputLayout">
-        <com.tokopedia.product.common.util.PrefixEditText
+        <com.tokopedia.product.edit.common.util.PrefixEditText
             android:id="@+id/et_range_whole_sale"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_16"
         style="@style/TextInputLayout">
-        <com.tokopedia.product.common.util.PrefixEditText
+        <com.tokopedia.product.edit.common.util.PrefixEditText
             android:id="@+id/et_whole_sale_price"
             android:layout_height="match_parent"
             android:layout_width="match_parent"

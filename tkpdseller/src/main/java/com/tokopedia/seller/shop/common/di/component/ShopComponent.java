@@ -16,8 +16,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.product.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.product.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 

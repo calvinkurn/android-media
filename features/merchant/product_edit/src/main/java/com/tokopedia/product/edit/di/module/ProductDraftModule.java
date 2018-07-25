@@ -1,7 +1,7 @@
 package com.tokopedia.product.edit.di.module;
 
-import com.tokopedia.product.common.domain.interactor.FetchDraftProductUseCase;
-import com.tokopedia.product.common.domain.ProductDraftRepository;
+import com.tokopedia.product.edit.common.domain.interactor.FetchDraftProductUseCase;
+import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
 import com.tokopedia.product.edit.di.scope.ProductAddScope;
 
 import dagger.Module;

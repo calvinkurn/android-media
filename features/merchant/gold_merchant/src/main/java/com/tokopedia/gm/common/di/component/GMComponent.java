@@ -23,7 +23,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
-import com.tokopedia.product.common.view.presenter.DatePickerPresenter;
+import com.tokopedia.product.edit.common.view.presenter.DatePickerPresenter;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.di.scope.GMScope;
 

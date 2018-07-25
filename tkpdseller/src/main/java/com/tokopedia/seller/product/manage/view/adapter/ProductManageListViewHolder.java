@@ -11,7 +11,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.product.common.utils.CurrencyUtils;
-import com.tokopedia.product.common.util.FreeReturnTypeDef;
+import com.tokopedia.product.edit.common.util.FreeReturnTypeDef;
 import com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef;
 import com.tokopedia.seller.product.manage.constant.ProductManageStockDef;
 import com.tokopedia.seller.product.manage.constant.ProductManageWholesaleDef;

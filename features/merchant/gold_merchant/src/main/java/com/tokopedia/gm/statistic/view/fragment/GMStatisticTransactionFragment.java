@@ -28,7 +28,7 @@ import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.product.common.model.DatePickerViewModel;
+import com.tokopedia.product.edit.common.model.DatePickerViewModel;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.widget.LabelView;
 

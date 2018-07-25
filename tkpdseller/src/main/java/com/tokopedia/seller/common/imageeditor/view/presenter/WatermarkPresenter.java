@@ -3,7 +3,7 @@ package com.tokopedia.seller.common.imageeditor.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
-import com.tokopedia.product.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
 
 import javax.inject.Inject;
 

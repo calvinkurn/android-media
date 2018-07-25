@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.product.common.util.ProductNetworkConstant;
+import com.tokopedia.product.edit.common.util.ProductNetworkConstant;
 import com.tokopedia.product.edit.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.product.edit.data.source.cloud.model.GenerateHost;
 import com.tokopedia.product.edit.data.source.cloud.model.GenerateHostModel;

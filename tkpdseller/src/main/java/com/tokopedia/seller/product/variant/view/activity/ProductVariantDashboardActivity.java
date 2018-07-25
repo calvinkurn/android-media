@@ -9,11 +9,11 @@ import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.common.util.CurrencyTypeDef;
-import com.tokopedia.product.common.util.StockTypeDef;
-import com.tokopedia.product.common.model.edit.ProductPictureViewModel;
-import com.tokopedia.product.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.common.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
+import com.tokopedia.product.edit.common.util.StockTypeDef;
+import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardFragment;
 
 import java.util.ArrayList;

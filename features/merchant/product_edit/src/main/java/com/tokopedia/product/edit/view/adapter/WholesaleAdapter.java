@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.product.common.util.CurrencyTypeDef;
-import com.tokopedia.product.common.model.edit.ProductWholesaleViewModel;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
+import com.tokopedia.product.edit.common.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.view.model.wholesale.WholesaleModel;
 

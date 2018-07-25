@@ -18,11 +18,11 @@ import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.product.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.common.model.variantbycat.ProductVariantOption;
-import com.tokopedia.product.common.model.variantbycat.ProductVariantUnit;
-import com.tokopedia.product.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
-import com.tokopedia.product.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantOption;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantUnit;
+import com.tokopedia.product.edit.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.edit.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListNewAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 

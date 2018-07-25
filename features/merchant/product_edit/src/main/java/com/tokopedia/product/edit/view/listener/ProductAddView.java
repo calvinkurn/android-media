@@ -1,10 +1,10 @@
 package com.tokopedia.product.edit.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.product.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
-import com.tokopedia.product.common.model.edit.ProductViewModel;
+import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
 
 import java.util.List;

@@ -16,15 +16,7 @@
         <item>Des</item>
     </string-array>
 
-    <!-- Product =============================================================================== -->
-    <string-array name="product_currency_entries">
-        <item>Rp</item>
-        <item>US$</item>
-    </string-array>
-    <string-array name="product_currency_values">
-        <item>@string/product_currency_value_idr</item>
-        <item>@string/product_currency_value_usd</item>
-    </string-array>
+
 
     <string-array name="product_weight_entries">
         <item>Gram</item>

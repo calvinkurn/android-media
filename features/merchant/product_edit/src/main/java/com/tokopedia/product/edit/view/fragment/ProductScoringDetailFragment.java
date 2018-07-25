@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.product.common.di.component.ProductComponent;
+import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.constant.ProductExtraConstant;
 import com.tokopedia.product.edit.di.component.DaggerProductScoringComponent;

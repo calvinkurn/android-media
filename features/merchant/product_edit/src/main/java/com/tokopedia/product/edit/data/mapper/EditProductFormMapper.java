@@ -2,8 +2,8 @@ package com.tokopedia.product.edit.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.product.common.util.ProductStatus;
-import com.tokopedia.product.common.util.StockTypeDef;
+import com.tokopedia.product.edit.common.util.ProductStatus;
+import com.tokopedia.product.edit.common.util.StockTypeDef;
 import com.tokopedia.product.edit.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.product.edit.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 import com.tokopedia.product.edit.data.source.cloud.model.editproductform.ProductEditForm;

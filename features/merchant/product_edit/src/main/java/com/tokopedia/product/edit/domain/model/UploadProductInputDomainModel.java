@@ -1,10 +1,10 @@
 package com.tokopedia.product.edit.domain.model;
 
-import com.tokopedia.product.common.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.product.edit.common.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.product.edit.common.util.ProductVariantConstant;
 import com.tokopedia.product.edit.constant.ProductStockTypeDef;
-import com.tokopedia.product.common.util.StockTypeDef;
-import com.tokopedia.product.common.util.ProductStatus;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
+import com.tokopedia.product.edit.common.util.StockTypeDef;
+import com.tokopedia.product.edit.common.util.ProductStatus;
 
 import java.util.List;
 

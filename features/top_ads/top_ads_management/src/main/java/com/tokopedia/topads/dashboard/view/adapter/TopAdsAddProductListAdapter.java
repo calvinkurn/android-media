@@ -19,7 +19,7 @@ import com.tokopedia.topads.dashboard.view.model.NonPromotedTopAdsAddProductMode
 import com.tokopedia.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.product.common.util.ItemType;
+import com.tokopedia.product.edit.common.util.ItemType;
 
 import java.util.ArrayList;
 import java.util.List;

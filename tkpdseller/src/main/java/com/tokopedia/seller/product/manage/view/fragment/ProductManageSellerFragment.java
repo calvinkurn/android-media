@@ -14,7 +14,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.product.common.di.component.ProductComponent;
+import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;

@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
-import com.tokopedia.product.common.di.component.ProductComponent;
+import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.di.component.DaggerCategoryPickerComponent;
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.seller.product.category.view.adapter.CategoryPickerLevelAdapter;

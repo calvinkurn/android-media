@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.data.mapper;
 
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
-import com.tokopedia.product.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
 
 import javax.inject.Inject;
 

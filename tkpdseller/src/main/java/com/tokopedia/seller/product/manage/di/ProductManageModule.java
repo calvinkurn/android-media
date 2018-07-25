@@ -34,8 +34,8 @@ import com.tokopedia.seller.product.picker.data.repository.GetProductListSelling
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
-import com.tokopedia.product.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.edit.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;

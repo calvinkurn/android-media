@@ -11,7 +11,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
-import com.tokopedia.product.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.di.module.TopAdsShopModule;

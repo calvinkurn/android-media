@@ -1,6 +1,6 @@
 package com.tokopedia.product.edit.domain.interactor;
 
-import com.tokopedia.product.common.model.edit.ProductViewModel;
+import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 import com.tokopedia.product.edit.domain.ProductRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

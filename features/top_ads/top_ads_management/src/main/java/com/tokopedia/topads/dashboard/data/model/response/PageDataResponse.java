@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.data.Meta;
 import com.tokopedia.topads.dashboard.data.model.data.Page;
 

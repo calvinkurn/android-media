@@ -2,11 +2,11 @@ package com.tokopedia.product.edit.view.mapper;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.product.common.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
-import com.tokopedia.product.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.edit.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.edit.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.product.edit.constant.ProductStockTypeDef;
-import com.tokopedia.product.common.model.edit.ProductViewModel;
+import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,10 +3,10 @@ package com.tokopedia.seller.product.draft.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.product.common.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.product.common.data.source.ProductDraftDataSource;
-import com.tokopedia.product.common.domain.interactor.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.product.common.domain.ProductDraftRepository;
+import com.tokopedia.product.edit.common.data.repository.ProductDraftRepositoryImpl;
+import com.tokopedia.product.edit.common.data.source.ProductDraftDataSource;
+import com.tokopedia.product.edit.common.domain.interactor.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;

@@ -8,7 +8,7 @@ import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.request.StatisticRequest;
-import com.tokopedia.product.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 
