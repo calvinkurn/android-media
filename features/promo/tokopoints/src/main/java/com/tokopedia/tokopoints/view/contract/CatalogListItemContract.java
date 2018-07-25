@@ -46,6 +46,8 @@ public interface CatalogListItemContract {
         void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
 
         void refreshCatalog(List<CatalogStatusItem> items);
+
+        void showRedeemFullError(CatalogsValueEntity item, String title);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -254,6 +254,12 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
+                } else {
+                    String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
+                    if(errorsMessage != null && errorsMessage.length > 0){
+                        String title = errorsMessage[0];
+                        getView().showRedeemFullError(item, title);
+                    }
                 }
             }
         });

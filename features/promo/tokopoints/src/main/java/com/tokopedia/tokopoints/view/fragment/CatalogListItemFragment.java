@@ -13,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -385,5 +387,35 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void showRedeemFullError(CatalogsValueEntity item, String title) {
+        if (getActivity() == null || !isAdded()) {
+            return;
+        }
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.layout_tp_network_error_large, null, false);
+
+        ImageView img = view.findViewById(R.id.img_error);
+        img.setImageResource(R.drawable.ic_tp_error_redeem_full);
+        TextView titleText = view.findViewById(R.id.text_title_error);
+        titleText.setText(R.string.tp_label_too_many_access);
+        TextView label = view.findViewById(R.id.text_label_error);
+        label.setText(R.string.tp_label_wait);
+
+        view.findViewById(R.id.text_failed_action).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.startSaveCoupon(item);
+            }
+        });
+
+        adb.setView(view);
+        AlertDialog dialog = adb.create();
+        dialog.show();
+        decorateDialog(dialog);
     }
 }

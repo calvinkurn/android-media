@@ -410,4 +410,34 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
         mToolTip.show();
     }
+
+    @Override
+    public void showRedeemFullError(CatalogsValueEntity item, String title) {
+        if (getActivity() == null || !isAdded()) {
+            return;
+        }
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.layout_tp_network_error_large, null, false);
+
+        ImageView img = view.findViewById(R.id.img_error);
+        img.setImageResource(R.drawable.ic_tp_error_redeem_full);
+        TextView titleText = view.findViewById(R.id.text_title_error);
+        titleText.setText(R.string.tp_label_too_many_access);
+        TextView label = view.findViewById(R.id.text_label_error);
+        label.setText(R.string.tp_label_wait);
+
+        view.findViewById(R.id.text_failed_action).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.startSaveCoupon(item);
+            }
+        });
+
+        adb.setView(view);
+        AlertDialog dialog = adb.create();
+        dialog.show();
+        decorateDialog(dialog);
+    }
 }

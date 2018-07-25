@@ -50,6 +50,7 @@ public interface HomepageContract {
 
         void onErrorTicker(String errorMessage);
 
+        void showRedeemFullError(CatalogsValueEntity item, String title);
     }
 
     interface Presenter extends CustomerPresenter<View> {
