@@ -939,6 +939,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
 
                                 if (response != null && statusSuccess) {
+                                    if (recipientAddressModel != null) {
+                                        recipientAddressModel.setLatitude(Double.parseDouble(latitude));
+                                        recipientAddressModel.setLongitude(Double.parseDouble(longitude));
+                                    } else {
+                                        shipmentCartItemModel.getRecipientAddressModel().setLatitude(Double.parseDouble(latitude));
+                                        shipmentCartItemModel.getRecipientAddressModel().setLongitude(Double.parseDouble(longitude));
+                                    }
                                     getView().renderEditAddressSuccess(latitude, longitude);
                                 } else {
                                     if (TextUtils.isEmpty(messageError)) {

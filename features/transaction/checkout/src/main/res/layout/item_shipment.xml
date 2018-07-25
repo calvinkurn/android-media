@@ -280,7 +280,7 @@
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8">
 
@@ -288,14 +288,12 @@
                 android:id="@+id/cb_insurance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckbox" />
 
             <CheckBox
                 android:id="@+id/cb_insurance_disabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckboxDisabled" />
 
             <TextView
@@ -320,7 +318,7 @@
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_4"
             tools:visibility="visible">
@@ -329,7 +327,6 @@
                 android:id="@+id/cb_dropshipper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckbox" />
 
             <TextView

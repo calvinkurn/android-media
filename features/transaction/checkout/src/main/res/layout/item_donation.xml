@@ -11,13 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
-        android:padding="@dimen/dp_16">
+        android:paddingBottom="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16">
 
         <CheckBox
             android:id="@+id/cb_donation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="-5dp"
             android:theme="@style/TransactionCheckbox" />
 
         <TextView
