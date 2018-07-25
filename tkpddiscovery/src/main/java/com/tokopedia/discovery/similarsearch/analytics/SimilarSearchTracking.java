@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.similarsearch.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
@@ -25,7 +26,7 @@ public class SimilarSearchTracking extends UnifyTracking {
     }
 
     public static void eventUserSeeSimilarProduct(String productId, List<Object> productsItem) {
-        sendGTMEvent(new SimilarSearchEventTracking(
+        TrackingUtils.eventTrackingEnhancedEcommerce(new SimilarSearchEventTracking(
                 SimilarSearchAppEventTracking.Event.GenericProductView,
                 SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventImpressionProduct,
@@ -39,7 +40,7 @@ public class SimilarSearchTracking extends UnifyTracking {
     }
 
     public static void eventClickSimilarProduct(String screenName,String productsId,List<Object> productsItem) {
-        sendGTMEvent(new SimilarSearchEventTracking(
+        TrackingUtils.eventTrackingEnhancedEcommerce(new SimilarSearchEventTracking(
                 SimilarSearchAppEventTracking.Event.GenericProductClick,
                 SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventClickSimilarProduct,
