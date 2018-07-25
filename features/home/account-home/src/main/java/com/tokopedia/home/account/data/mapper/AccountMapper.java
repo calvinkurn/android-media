@@ -90,7 +90,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokopoint,
+                R.drawable.ic_waiting_for_confirmation,
                 context.getString(R.string.label_menu_waiting_confirmation),
                 // TODO: 7/25/18 need applink
                 "tokopedia://home",
@@ -100,7 +100,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_order_processed,
                 context.getString(R.string.label_menu_order_processed),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
@@ -110,7 +110,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipping),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
@@ -120,7 +120,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_delivered),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
@@ -146,28 +146,28 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
         menuGridItems = new ArrayList<>();
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
                 ApplinkConst.DIGITAL_ORDER,
                 0
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_deals,
                 context.getString(R.string.title_menu_deals),
                 ApplinkConst.DEALS_ORDER,
                 0
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
                 0
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
                 // TODO: 7/25/18 need applink
                 "",
@@ -210,6 +210,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         items.add(menuList);
 
         InfoCardViewModel infoCard = new InfoCardViewModel();
+        infoCard.setIconRes(R.drawable.ic_tokocash_big);
         infoCard.setMainText(context.getString(R.string.title_menu_wallet_referral));
         infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
         infoCard.setApplink(ApplinkConst.REFERRAL);
@@ -243,7 +244,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
 
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokopoint,
+                R.drawable.ic_new_order,
                 context.getString(R.string.label_menu_new_order),
                 // TODO: 7/25/18 need applink
                 "tokopedia://home",
@@ -253,7 +254,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_ready_to_ship,
                 context.getString(R.string.label_menu_ready_to_ship),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
@@ -263,7 +264,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipped),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
@@ -273,7 +274,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_arrive_at_destination),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
@@ -327,6 +328,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         items.add(menuList);
 
         InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
+        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
         infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
         infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
         infoCardViewModel.setApplink("tokopedia://loan");
