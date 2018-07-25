@@ -35,7 +35,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.checkout.view.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME;
 import static com.tokopedia.checkout.view.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME;
 
 /**
@@ -48,6 +47,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private static final int SINGLE_DATA_SIZE = 1;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
+    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 500;
 
     private TextView shippingIndex;
     private TextViewCompat pseudoEditButton;
@@ -172,8 +172,11 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
-        data.setProductNotes(editable.toString());
-        validateNote(data);
+        if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
+            data.setProductNotes(editable.toString());
+            validateNote(data);
+            multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
+        }
     }
 
     private void validateNote(MultipleAddressItemData data) {

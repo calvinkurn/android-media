@@ -178,6 +178,6 @@
     <string name="label_total">Jumlah</string>
     <string name="label_change_address">Ganti Alamat</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
-    <string name="note_counter_format">%d/%d</string>
+    <string name="note_counter_format" formatted="false">%d/%d</string>
 
 </resources>

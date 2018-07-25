@@ -114,9 +114,9 @@
             android:layout_marginTop="@dimen/dp_8" />
 
         <View
-            android:layout_marginTop="@dimen/dp_8"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@color/separator_color" />
 
     </LinearLayout>
@@ -288,12 +288,14 @@
                 android:id="@+id/cb_insurance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckbox" />
 
             <CheckBox
                 android:id="@+id/cb_insurance_disabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckboxDisabled" />
 
             <TextView
@@ -327,6 +329,7 @@
                 android:id="@+id/cb_dropshipper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckbox" />
 
             <TextView
