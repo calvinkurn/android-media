@@ -1,9 +1,12 @@
-package com.tokopedia.train.passenger.data.cloud.response;
+package com.tokopedia.train.passenger.data.cloud.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TrainPaxPassengerEntity {
+
+
+
     @SerializedName("name")
     @Expose
     private String name;

@@ -2,6 +2,9 @@ package com.tokopedia.train.common.data;
 
 
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.passenger.data.TrainDoSoftBookingSpecification;
+import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
+import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.scheduledetail.data.specification.TrainStationByStationCodeSpecification;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.train.search.data.specification.TrainAvailabilitySearchSpecification;
@@ -39,13 +42,16 @@ public class TrainRepositoryImpl implements TrainRepository {
     private TrainSeatCloudDataStore trainSeatCloudDataStore;
     private TrainStationDataStoreFactory trainStationDataStoreFactory;
     private TrainScheduleDataStoreFactory trainScheduleDataStoreFactory;
+    private TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore;
 
     public TrainRepositoryImpl(TrainSeatCloudDataStore trainSeatCloudDataStore,
                                TrainStationDataStoreFactory trainStationDataStoreFactory,
-                               TrainScheduleDataStoreFactory scheduleDataStoreFactory) {
+                               TrainScheduleDataStoreFactory scheduleDataStoreFactory,
+                               TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore) {
         this.trainSeatCloudDataStore = trainSeatCloudDataStore;
         this.trainStationDataStoreFactory = trainStationDataStoreFactory;
         this.trainScheduleDataStoreFactory = scheduleDataStoreFactory;
+        this.trainSoftBookingCloudDataStore = trainSoftBookingCloudDataStore;
     }
 
     @Override
@@ -107,5 +113,10 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<List<TrainSeatMapEntity>> getSeat(HashMap<String, Object> parameters) {
         return trainSeatCloudDataStore.getData(new TrainSeatSpecification(parameters));
+    }
+
+    @Override
+    public Observable<TrainSoftbook> doSoftBookTrainTicket(Map<String, Object> mapParam) {
+        return trainSoftBookingCloudDataStore.doSoftBookingTrainTicket(new TrainDoSoftBookingSpecification(mapParam));
     }
 }

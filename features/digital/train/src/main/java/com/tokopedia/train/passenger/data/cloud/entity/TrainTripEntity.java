@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.data.cloud.response;
+package com.tokopedia.train.passenger.data.cloud.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class TrainTripEntity {
+
     @SerializedName("errCode")
     @Expose
     private int errCode;
@@ -87,6 +88,12 @@ public class TrainTripEntity {
     @SerializedName("paxPassenger")
     @Expose
     private List<TrainPaxPassengerEntity> paxPassengers;
+    @SerializedName("trainClass")
+    @Expose
+    private String trainClass;
+    @SerializedName("subclass")
+    @Expose
+    private String subclass;
 
     public int getErrCode() {
         return errCode;
@@ -194,5 +201,13 @@ public class TrainTripEntity {
 
     public String getDisplayTotalPrice() {
         return displayTotalPrice;
+    }
+
+    public String getTrainClass() {
+        return trainClass;
+    }
+
+    public String getSubclass() {
+        return subclass;
     }
 }

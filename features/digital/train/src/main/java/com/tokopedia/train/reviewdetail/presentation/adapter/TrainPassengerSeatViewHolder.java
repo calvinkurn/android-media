@@ -46,13 +46,13 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
                 element.getName(), element.getPassengerType()));
         textNumberID.setText(element.getNoID());
         textDepartureSeat.setText(itemView.getContext().getString(R.string.train_review_item_passenger_seat,
-                element.getDepartureTripClass(), element.getDepartureSeat()));
+                element.getDepartureSeat()));
         textDepartureTrip.setText(itemView.getContext().getString(R.string.train_review_item_passenger_info_seat,
                 element.getOriginStationCode(), element.getDestinationStationCode()));
-        if (!TextUtils.isEmpty(element.getReturnTripClass()) && !TextUtils.isEmpty(element.getReturnSeat())) {
+        if (!TextUtils.isEmpty(element.getReturnSeat())) {
             layoutTextReturnTrip.setVisibility(View.VISIBLE);
             textReturnSeat.setText(itemView.getContext().getString(R.string.train_review_item_passenger_seat,
-                    element.getReturnTripClass(), element.getReturnSeat()));
+                    element.getReturnSeat()));
             textReturnTrip.setText(itemView.getContext().getString(R.string.train_review_item_passenger_info_seat,
                     element.getDestinationStationCode(), element.getOriginStationCode()));
         } else {
