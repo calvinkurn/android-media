@@ -47,6 +47,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -1459,6 +1460,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
+//        if(remoteConfig.getBoolean("is_new_change_password_enabled")){
+//            return ChangePasswordActivity.Companion.createIntent(context);
+//        }else{
+//            return  new Intent(context, ManagePasswordActivity.class);
+//        }
         return ChangePasswordActivity.Companion.createIntent(context);
     }
 }

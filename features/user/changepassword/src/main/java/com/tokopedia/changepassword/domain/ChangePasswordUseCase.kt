@@ -3,15 +3,11 @@ package com.tokopedia.changepassword.domain
 import com.tokopedia.changepassword.data.ChangePasswordApi
 import com.tokopedia.changepassword.domain.mapper.ChangePasswordMapper
 import com.tokopedia.changepassword.domain.model.ChangePasswordDomain
-import com.tokopedia.core.app.MainApplication
-import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.network.retrofit.utils.AuthUtil
-import com.tokopedia.core.util.SessionHandler
+import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author by nisie on 7/25/18.
@@ -43,13 +39,11 @@ class ChangePasswordUseCase(val api: ChangePasswordApi,
         fun getParam(
                 oldPassword: String,
                 newPassword: String,
-                confirmPassword: String): RequestParams {
+                confirmPassword: String,
+                userId: String,
+                deviceId: String): RequestParams {
             val requestParams: RequestParams = RequestParams.create()
 
-            val userId = SessionHandler.getLoginID(MainApplication
-                    .getAppContext().applicationContext)
-            val deviceId = GCMHandler.getRegistrationId(MainApplication
-                    .getAppContext().applicationContext)
             val hash = AuthUtil.md5("$userId~$deviceId")
 
             requestParams.putString(PARAM_OLD_PASSWORD, oldPassword)

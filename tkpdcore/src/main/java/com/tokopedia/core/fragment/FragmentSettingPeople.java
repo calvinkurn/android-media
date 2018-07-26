@@ -22,7 +22,6 @@ import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -155,7 +154,8 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 					break;*/
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(getActivity(), ManagePasswordActivity.class);
+                            intent = ((TkpdCoreRouter)getActivity().getApplication())
+                                    .getChangePasswordIntent(getActivity());
                             startActivity(intent);
                         } else {
                             intentToAddPassword();
@@ -205,7 +205,8 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 					break;*/
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(getActivity(), ManagePasswordActivity.class);
+                            intent = ((TkpdCoreRouter)getActivity().getApplication())
+                                    .getChangePasswordIntent(getActivity());
                             startActivity(intent);
                         } else {
                             intentToAddPassword();

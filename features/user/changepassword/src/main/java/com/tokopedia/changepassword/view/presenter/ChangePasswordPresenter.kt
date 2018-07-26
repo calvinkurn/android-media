@@ -23,7 +23,9 @@ class ChangePasswordPresenter(val changePasswordUseCase: ChangePasswordUseCase,
         changePasswordUseCase.execute(ChangePasswordUseCase.getParam(
                 oldPassword,
                 newPassword,
-                confirmPassword
+                confirmPassword,
+                userSession.userId,
+                userSession.deviceId
         ), object : Subscriber<ChangePasswordDomain>() {
             override fun onCompleted() {
 

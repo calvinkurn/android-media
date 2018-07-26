@@ -69,6 +69,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -2335,15 +2336,38 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token, boolean isFromMarketplaceCart) {
-        if (isFromMarketplaceCart)
-            return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
-        else
-            return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
+    public FingerprintModel getFingerprintModel() {
+        return FingerprintModelGenerator.generateFingerprintModel(this);
+    }
+
+    @Override
+    public void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
+        try {
+            sessionRefresh.gcmUpdate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
+                && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @Override
+    public Intent getChangePhoneNumberRequestIntent(Context context) {
+        return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
+//        if(remoteConfig.getBoolean("is_new_change_password_enabled")){
+//            return ChangePasswordActivity.Companion.createIntent(context);
+//        }else{
+//            return  new Intent(context, ManagePasswordActivity.class);
+//        }
         return ChangePasswordActivity.Companion.createIntent(context);
     }
 
@@ -2357,4 +2381,33 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         remoteConfig.setString(key, value);
     }
 
+    @Override
+    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token, boolean isFromMarketplaceCart) {
+        return null;
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Fragment getFlightOrderListFragment() {
+        return null;
+    }
+
+    @Override
+    public Intent getInstantLoanActivityIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
+        return false;
+    }
+
+    @Override
+    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+
+    }
 }
