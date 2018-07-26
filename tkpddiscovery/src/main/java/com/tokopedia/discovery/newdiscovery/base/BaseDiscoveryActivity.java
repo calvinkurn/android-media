@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.URLParser;
@@ -34,6 +35,8 @@ public class BaseDiscoveryActivity
     private boolean forceSearch;
     private boolean requestOfficialStoreBanner;
     private int activeTabPosition;
+
+    private Boolean isPause = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,15 +100,15 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseHotlist(String url, String query) {
-        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query));
+        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
         finish();
     }
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
         finish();
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override
@@ -121,7 +124,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseIntermediary(String departmentId) {
-        IntermediaryActivity.moveTo(this, departmentId);
+        IntermediaryActivity.moveTo(this, departmentId, isPausing());
         overridePendingTransition(0, 0);
         finish();
     }
@@ -129,7 +132,7 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseCatalog(String url) {
         URLParser urlParser = new URLParser(url);
-        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias()));
+        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias(), isPausing()));
         finish();
     }
 
@@ -155,7 +158,22 @@ public class BaseDiscoveryActivity
     }
 
     @Override
+    public void showErrorNetwork(String message) {
+
+    }
+
+    @Override
+    public void showTimeoutErrorNetwork(String message) {
+
+    }
+
+    @Override
     public void onHandleImageSearchResponseSuccess() {
+
+    }
+
+    @Override
+    public void showImageNotSupportedError() {
 
     }
 
@@ -177,4 +195,19 @@ public class BaseDiscoveryActivity
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isPause = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isPause = false;
+    }
+
+    public Boolean isPausing() {
+        return isPause;
+    }
 }

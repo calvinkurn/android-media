@@ -46,6 +46,7 @@ public class GetProductListManageMapperView {
             ProductManageViewModel productListPickerViewModel = new ProductManageViewModel();
             productListPickerViewModel.setId(product.getProductId());
             productListPickerViewModel.setImageUrl(product.getProductImage());
+            productListPickerViewModel.setImageFullUrl(product.getProductImageFull());
             productListPickerViewModel.setTitle(product.getProductName());
             productListPickerViewModel.setProductPrice(product.getProductNormalPrice());
             productListPickerViewModel.setProductCurrencyId(Integer.parseInt(product.getProductCurrencyId()));
@@ -61,6 +62,7 @@ public class GetProductListManageMapperView {
             productListPickerViewModel.setProductStock(product.getProductStock());
             productListPickerViewModel.setProductUsingStock(product.getProductUsingStock());
             productListPickerViewModel.setProductVariant(product.getProductVariant());
+            productListPickerViewModel.setProductShopId(String.valueOf(product.getProductShopId()));
             productManageViewModels.add(productListPickerViewModel);
         }
         return productManageViewModels;

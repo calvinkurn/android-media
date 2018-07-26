@@ -1,15 +1,13 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
-import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
 import com.tokopedia.feedplus.view.listener.RecentView;
-import com.tokopedia.feedplus.view.listener.WishlistListener;
-import com.tokopedia.feedplus.view.subscriber.AddWishlistSubscriber;
 import com.tokopedia.feedplus.view.subscriber.RecentViewSubscriber;
-import com.tokopedia.feedplus.view.subscriber.RemoveWishlistSubscriber;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import javax.inject.Inject;
 
@@ -21,26 +19,26 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         implements RecentView.Presenter {
 
     private final GetRecentViewUseCase getRecentProductUseCase;
-    private final AddWishlistUseCase addWishlistUseCase;
-    private final RemoveWishlistUseCase removeWishlistUseCase;
-    private final SessionHandler sessionHandler;
+    private final AddWishListUseCase addWishListUseCase;
+    private final RemoveWishListUseCase removeWishListUseCase;
+    private final UserSession userSession;
     private RecentView.View viewListener;
-    private WishlistListener wishlistListener;
+    private WishListActionListener wishListActionListener;
 
     @Inject
     RecentViewPresenter(GetRecentViewUseCase getRecentProductUseCase,
-                        AddWishlistUseCase addWishlistUseCase,
-                        RemoveWishlistUseCase removeWishlistUseCase,
-                        SessionHandler sessionHandler) {
+                        AddWishListUseCase addWishListUseCase,
+                        RemoveWishListUseCase removeWishListUseCase,
+                        UserSession userSession) {
         this.getRecentProductUseCase = getRecentProductUseCase;
-        this.addWishlistUseCase = addWishlistUseCase;
-        this.removeWishlistUseCase = removeWishlistUseCase;
-        this.sessionHandler = sessionHandler;
+        this.addWishListUseCase = addWishListUseCase;
+        this.removeWishListUseCase = removeWishListUseCase;
+        this.userSession = userSession;
     }
 
-    public void attachView(RecentView.View view, WishlistListener wishlistListener) {
+    public void attachView(RecentView.View view, WishListActionListener wishListActionListener) {
         this.viewListener = view;
-        this.wishlistListener = wishlistListener;
+        this.wishListActionListener = wishListActionListener;
         super.attachView(view);
     }
 
@@ -48,8 +46,13 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     public void detachView() {
         super.detachView();
         getRecentProductUseCase.unsubscribe();
-        addWishlistUseCase.unsubscribe();
-        removeWishlistUseCase.unsubscribe();
+        if (removeWishListUseCase != null) {
+            removeWishListUseCase.unsubscribe();
+        }
+
+        if (addWishListUseCase != null) {
+            addWishListUseCase.unsubscribe();
+        }
     }
 
 
@@ -58,24 +61,25 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         viewListener.showLoading();
         getRecentProductUseCase.execute(
                 getRecentProductUseCase.getParam(
-                        sessionHandler.getLoginID()),
+                        userSession.getUserId()),
                 new RecentViewSubscriber(viewListener)
         );
     }
 
     public void addToWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
-        addWishlistUseCase.execute(
-                AddWishlistUseCase.generateParam(productId, sessionHandler),
-                new AddWishlistSubscriber(wishlistListener, adapterPosition));
-    }
 
+        addWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
+
+    }
 
     @Override
     public void removeFromWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
-        removeWishlistUseCase.execute(
-                RemoveWishlistUseCase.generateParam(productId, sessionHandler),
-                new RemoveWishlistSubscriber(wishlistListener, adapterPosition));
+
+        removeWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
+
     }
 }

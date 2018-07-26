@@ -55,16 +55,9 @@ public class EventDetailsDomain {
     private Boolean dateRange;
     private String cityName;
     private String seatMapImage;
-
-    public String getSeatMapImage() {
-        return seatMapImage;
-    }
-
-    public void setSeatMapImage(String seatMapImage) {
-        this.seatMapImage = seatMapImage;
-    }
-
     private List<ScheduleDomain> schedules = null;
+    private List<Form> forms = null;
+
 
     public List<Form> getForms() {
         return forms;
@@ -73,8 +66,6 @@ public class EventDetailsDomain {
     public void setForms(List<Form> forms) {
         this.forms = forms;
     }
-
-    private List<Form> forms = null;
 
     public int getId() {
         return id;
@@ -122,6 +113,14 @@ public class EventDetailsDomain {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getSeatMapImage() {
+        return seatMapImage;
+    }
+
+    public void setSeatMapImage(String seatMapImage) {
+        this.seatMapImage = seatMapImage;
     }
 
     public String getUrl() {

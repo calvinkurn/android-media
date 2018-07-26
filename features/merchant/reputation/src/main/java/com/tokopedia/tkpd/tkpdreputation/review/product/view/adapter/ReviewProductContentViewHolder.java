@@ -36,6 +36,9 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     public static final String WIB = "WIB";
     public static final String TARGET = "WIB";
 
+    private static final int MENU_REPORT = 102;
+    private static final int MENU_DELETE = 103;
+
     boolean isReplyOpened = false;
     private ListenerReviewHolder viewListener;
 
@@ -230,14 +233,14 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 public void onClick(View v) {
 
                     final PopupMenu popup = new PopupMenu(itemView.getContext(), v);
-                    popup.getMenu().add(1, R.id.menu_delete, 1,
+                    popup.getMenu().add(1, MENU_DELETE, 1,
                             MainApplication.getAppContext()
                                     .getString(R.string.menu_delete));
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId() == R.id.menu_delete) {
+                            if (item.getItemId() == MENU_DELETE) {
                                 viewListener.onDeleteReviewResponse(element, getAdapterPosition());
                                 return true;
                             } else {
@@ -308,12 +311,12 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             public void onClick(View v) {
                 viewListener.onMenuClicked(getAdapterPosition());
                 PopupMenu popup = new PopupMenu(itemView.getContext(), v);
-                popup.getMenu().add(1, R.id.menu_report, 2, v.getContext().getString(R.string.menu_report));
+                popup.getMenu().add(1, MENU_REPORT, 2, v.getContext().getString(R.string.menu_report));
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.menu_report) {
+                        if (item.getItemId() == MENU_REPORT) {
                             viewListener.onGoToReportReview(
                                     element.getShopId(),
                                     element.getReviewId(),

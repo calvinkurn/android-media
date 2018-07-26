@@ -1,7 +1,7 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
+import com.tokopedia.topads.keyword.domain.interactor.TopAdsOldKeywordActionBulkUseCase;
 import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
 import com.tokopedia.topads.keyword.domain.model.KeywordDetailDomain;
 import com.tokopedia.topads.keyword.view.mapper.TopAdsKeywordDetailMapperView;
@@ -18,12 +18,12 @@ import rx.Subscriber;
 public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresenter<TopAdsDetailViewListener> {
 
     private final TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase;
-    private final TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase;
+    private final TopAdsOldKeywordActionBulkUseCase topAdsOldKeywordActionBulkUseCase;
 
     public TopAdsKeywordDetailPresenterImpl(TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase,
-                                            TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase) {
+                                            TopAdsOldKeywordActionBulkUseCase topAdsOldKeywordActionBulkUseCase) {
         this.topAdsKeywordGetDetailUseCase = topAdsKeywordGetDetailUseCase;
-        this.topAdsKeywordActionBulkUseCase = topAdsKeywordActionBulkUseCase;
+        this.topAdsOldKeywordActionBulkUseCase = topAdsOldKeywordActionBulkUseCase;
     }
 
     @Override
@@ -34,21 +34,21 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
 
     @Override
     public void deleteAd(String id, String groupId, String shopId) {
-        topAdsKeywordActionBulkUseCase.execute(TopAdsKeywordActionBulkUseCase.createRequestParams(id, groupId,
+        topAdsOldKeywordActionBulkUseCase.execute(TopAdsOldKeywordActionBulkUseCase.createRequestParams(id, groupId,
                 shopId, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD),
                 getSubscriberDeleteAd());
     }
 
     @Override
     public void turnOnAd(String id, String groupId, String shopID) {
-        topAdsKeywordActionBulkUseCase.execute(TopAdsKeywordActionBulkUseCase.createRequestParams(id, groupId,
+        topAdsOldKeywordActionBulkUseCase.execute(TopAdsOldKeywordActionBulkUseCase.createRequestParams(id, groupId,
                 shopID, TopAdsNetworkConstant.ACTION_BULK_ON_AD),
                 getSubscriberTurnOnAd());
     }
 
     @Override
     public void turnOffAd(String id, String groupId, String shopID) {
-        topAdsKeywordActionBulkUseCase.execute(TopAdsKeywordActionBulkUseCase.createRequestParams(id, groupId,
+        topAdsOldKeywordActionBulkUseCase.execute(TopAdsOldKeywordActionBulkUseCase.createRequestParams(id, groupId,
                 shopID, TopAdsNetworkConstant.ACTION_BULK_OFF_AD),
                 getSubscriberTurnOffAd());
     }
@@ -147,7 +147,7 @@ public class TopAdsKeywordDetailPresenterImpl extends TopadsKeywordDetailPresent
 
     @Override
     public void unSubscribe() {
-        topAdsKeywordActionBulkUseCase.unsubscribe();
+        topAdsOldKeywordActionBulkUseCase.unsubscribe();
         topAdsKeywordGetDetailUseCase.unsubscribe();
     }
 }

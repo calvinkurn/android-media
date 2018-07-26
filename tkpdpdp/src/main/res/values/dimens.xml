@@ -125,6 +125,7 @@
     <dimen name="text_size_l_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="text_size_xlarge">20sp</dimen>
+    <dimen name="text_size_xxlarge">24sp</dimen>
     <dimen name="text_size_xxxlarge">30sp</dimen>
 
     <dimen name="keyline_1">16dp</dimen>
@@ -177,4 +178,5 @@
 
     <dimen name="icon_stock_width">27dp</dimen>
     <dimen name="icon_stock_height">21dp</dimen>
+    <dimen name="pdp_discount_background_radius">16dp</dimen>
 </resources>

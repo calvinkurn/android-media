@@ -27,10 +27,14 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
@@ -40,14 +44,11 @@ import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
-import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
@@ -74,6 +75,8 @@ public class DrawerSellerHelper extends DrawerHelper
     private GetShopInfoUseCase getShopInfoUseCase;
 
     private boolean isGoldMerchant;
+
+    private RemoteConfig remoteConfig;
 
     public DrawerSellerHelper(Activity activity,
                               SessionHandler sessionHandler,
@@ -102,6 +105,7 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public ArrayList<DrawerItem> createDrawerData() {
+        initRemoteConfig();
         ArrayList<DrawerItem> data = new ArrayList<>();
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home),
@@ -113,8 +117,13 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(getGoldMerchantMenu(false));
         data.add(getPaymentAndTopupMenu());
+        data.add(getGoldMerchantMenu(false));
+
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
+                R.drawable.ic_top_ads,
+                TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
                 R.drawable.ic_reso,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
@@ -127,10 +136,6 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),
                 R.drawable.statistik_icon,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
-                true));
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
-                R.drawable.ic_top_ads,
-                TkpdState.DrawerPosition.SELLER_TOP_ADS,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
@@ -156,6 +161,10 @@ public class DrawerSellerHelper extends DrawerHelper
         isGoldMerchantAsync();
 
         return data;
+    }
+
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     private DrawerItem getSellerMenu() {
@@ -442,9 +451,13 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                    + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST));
+                    if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
+                        intent = TransactionPurchaseRouter.createIntentOrderListSummary(context);
+                    else
+                        intent = ((IDigitalModuleRouter) context.getApplication())
+                                .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
+                    context.startActivity(intent);
                     UnifyTracking.eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
@@ -511,8 +524,10 @@ public class DrawerSellerHelper extends DrawerHelper
         alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (context.getApplication() instanceof SellerModuleRouter) {
-                    ((SellerModuleRouter) context.getApplication()).goToGMSubscribe(context);
+                if (selectedPosition != TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND) {
+                    if (context.getApplication() instanceof SellerModuleRouter) {
+                        ((SellerModuleRouter) context.getApplication()).goToGMSubscribe(context);
+                    }
                 }
             }
         });

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/white"
+    android:background="@color/feed_bg_color"
     android:descendantFocusability="blocksDescendants">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
@@ -58,5 +58,4 @@
             android:textColor="@color/medium_green"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>
-
 </RelativeLayout>

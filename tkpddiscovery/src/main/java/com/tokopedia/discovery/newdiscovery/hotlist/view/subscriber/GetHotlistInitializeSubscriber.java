@@ -74,8 +74,11 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         view.setQueryModel(hotlistModel.getBanner().getHotlistQueryModel());
         view.setDisableTopads(hotlistModel.getBanner().isDisableTopads());
         view.setShareUrl(hotlistModel.getShareURL());
-
-        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(), hotlistModel.getAttribute().getHastTags());
+        view.loadImageHeader(hotlistModel.getBanner().getBannerImage());
+        view.setTitleHeader(hotlistModel.getBanner().getHotlistTitle());
+        view.setDescription(hotlistModel.getBanner().getBannerDesc());
+        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(),
+                hotlistModel.getAttribute().getHastTags(), hotlistModel.getTotalData());
 
         view.clearLastProductTracker(page == 1);
 
@@ -141,14 +144,15 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             HotlistProductViewModel model = new HotlistProductViewModel();
             model.setBadgesList(mappingBadges(domain.getBadgesList()));
             model.setLabelList(mappingLabels(domain.getLabelList()));
-            model.setCountReview(domain.getCountReview());
+            model.setCountReview(Integer.toString(domain.getCountReview()));
             model.setGoldMerchant(domain.isGoldMerchant());
+            model.setProductUrl(domain.getProductUrl());
             model.setImageUrl(domain.getImageUrl());
             model.setImageUrl700(domain.getImageUrl700());
             model.setPrice(domain.getPrice());
             model.setProductID(domain.getProductID());
             model.setProductName(domain.getProductName());
-            model.setRating(domain.getRating());
+            model.setRating(Integer.toString(domain.getRating()));
             model.setShopCity(domain.getShopCity());
             model.setShopID(domain.getShopID());
             model.setShopName(domain.getShopName());
@@ -158,6 +162,14 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setTrackerName(String.format(Locale.getDefault(), "/hot/%s - product %d", view.getHotlistAlias().toLowerCase(), page));
             model.setTrackerPosition(String.valueOf(lastPositionProduct));
             model.setHomeAttribution(view.getHomeAttribution());
+            model.setCountCourier(Integer.toString(domain.getCountCourier()));
+            model.setOriginalPrice(domain.getOriginalPrice());
+            model.setDiscountPercentage(domain.getDiscountPercentage());
+            model.setOfficial(domain.isOfficial());
+            model.setPriceRange(domain.getPriceRange());
+            model.setTopLabel(domain.getTopLabel());
+            model.setBottomLabel(domain.getBottomLabel());
+
             list.add(model);
         }
         view.setLastPositionProductTracker(lastPositionProduct);
@@ -170,6 +182,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             HotlistProductViewModel.BadgeModel viewModel = new HotlistProductViewModel.BadgeModel();
             viewModel.setImageUrl(domain.getImageUrl());
             viewModel.setTitle(domain.getTitle());
+            viewModel.setShown(domain.isShown());
             list.add(viewModel);
         }
         return list;
@@ -186,9 +199,10 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         return list;
     }
 
-    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags) {
+    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags, double totalData) {
         HotlistHeaderViewModel headerViewModel = new HotlistHeaderViewModel();
         headerViewModel.setImageUrl(banner.getBannerImage());
+        headerViewModel.setTotalData(totalData);
         headerViewModel.setHotlistTitle(banner.getHotlistTitle());
         headerViewModel.setDesc(banner.getBannerDesc());
         headerViewModel.setHashTags(mappingHashtags(hashTags));

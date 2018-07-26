@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.subscriber;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 
@@ -23,6 +24,10 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
 
     @Override
     public void onError(Throwable e) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace(); 
+        }
+
         viewListener.shouldLoadTopAds(false);
         viewListener.onShowRetryGetFeed();
         viewListener.hideTopAdsAdapterLoading();

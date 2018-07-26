@@ -11,17 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.seller.R;
 
 import java.util.ArrayList;
+
 
 /**
  * Created by Hendry on 9/25/2017.
  */
 
 public class ImageEditorActivity extends AppCompatActivity implements ImageEditorFragment.OnImageEditorFragmentListener {
+
 
     public static final int REQUEST_CODE = 520;
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
@@ -228,7 +230,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
                 toBeDeletedFiles.add(savedCroppedPath);
             }
         }
-        FileUtils.deleteAllCacheTkpdFiles(toBeDeletedFiles);
+        ImageUtils.deleteFilesInTokopediaFolder(toBeDeletedFiles);
     }
 
     @Override

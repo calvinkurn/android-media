@@ -206,6 +206,8 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int PEOPLE_DIGITAL_TRANSACTION_LIST = 207;
         public static final int PEOPLE_FLIGHT_TRANSACTION_LIST = 208;
         public static final int PEOPLE_TRAIN_TRANSACTION_LIST = 209;
+        public static final int PEOPLE_DEALS_TRANSACTION_LIST = 210;
+        public static final int PEOPLE_EVENTS_TRANSACTION_LIST = 211;
 
         public static final int SHOP_NEW_ORDER = 301;
         public static final int SHOP_CONFIRM_SHIPPING = 302;
@@ -243,6 +245,10 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int RESOLUTION_CENTER_SELLER = 56;
 
         public static final int FEATURED_PRODUCT = 99;
+
+        public static final int POS_TRANSACTION_HISTORY = 401;
+        public static final int POS_OUTLET = 402;
+        public static final int POS_PRODUCT_MANAGEMENET = 403;
 
         public static final int APPSHARE = 58;
 
@@ -286,6 +292,9 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final String TYPE_IMAGE = "image/jpeg";
         public static final String TYPE_IMAGE_2 = "image/*";
         public static final String TYPE_TEXT = "text/plain";
+        public static final String Gmail = "com.google.android.gm";
+        public static final String Sms = "com.google.android.apps.messaging";
+
         /**
          * Format for twitter : "http://www.twitter.com/intent/tweet?url=YOURURL&text=YOURTEXT"
          */
@@ -477,6 +486,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
     public class SHIPPING_ID {
         public static final String WAHANA = "6";
         public static final String GOJEK = "10";
+        public static final String ALFAMART = "22";
     }
 
     public class Gender {

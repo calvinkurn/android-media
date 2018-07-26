@@ -1,11 +1,7 @@
 package com.tokopedia.digital.product.view.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +19,9 @@ public class CategoryData implements Parcelable {
     public static final String STYLE_PRODUCT_CATEGORY_4 = "style_4";
     public static final String STYLE_PRODUCT_CATEGORY_5 = "style_5";
     public static final String STYLE_PRODUCT_CATEGORY_99 = "style_99";
+
     public static final String SLUG_PRODUCT_CATEGORY_PULSA = "pulsa";
+    public static final String SLUG_PRODUCT_CATEGORY_EMONEY = "emoney";
 
     private static final String[] STYLE_COLLECTION_SUPPORTED = new String[]{
             STYLE_PRODUCT_CATEGORY_1, STYLE_PRODUCT_CATEGORY_2, STYLE_PRODUCT_CATEGORY_2,
@@ -43,10 +41,12 @@ public class CategoryData implements Parcelable {
     private String defaultOperatorId;
     private String operatorStyle;
     private String operatorLabel;
+    private AdditionalFeature additionalFeature;
     private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Operator> operatorList = new ArrayList<>();
     private List<BannerData> bannerDataListIncluded = new ArrayList<>();
     private List<BannerData> otherBannerDataListIncluded = new ArrayList<>();
+    private List<GuideData> guideDataList = new ArrayList<>();
 
     private CategoryData(Builder builder) {
         setCategoryId(builder.categoryId);
@@ -60,11 +60,73 @@ public class CategoryData implements Parcelable {
         setDefaultOperatorId(builder.defaultOperatorId);
         setOperatorStyle(builder.operatorStyle);
         setOperatorLabel(builder.operatorLabel);
+        setAdditionalFeature(builder.additionalFeature);
         setClientNumberList(builder.clientNumberList);
         setOperatorList(builder.operatorList);
         setBannerDataListIncluded(builder.bannerDataListIncluded);
         setOtherBannerDataListIncluded(builder.otherBannerDataListIncluded);
+        setGuideDataList(builder.guideDataList);
     }
+
+    protected CategoryData(Parcel in) {
+        categoryId = in.readString();
+        categoryType = in.readString();
+        titleText = in.readString();
+        name = in.readString();
+        icon = in.readString();
+        iconUrl = in.readString();
+        isNew = in.readByte() != 0;
+        instantCheckout = in.readByte() != 0;
+        slug = in.readString();
+        defaultOperatorId = in.readString();
+        operatorStyle = in.readString();
+        operatorLabel = in.readString();
+        additionalFeature = in.readParcelable(AdditionalFeature.class.getClassLoader());
+        clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
+        operatorList = in.createTypedArrayList(Operator.CREATOR);
+        bannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
+        otherBannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
+        guideDataList = in.createTypedArrayList(GuideData.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(categoryId);
+        dest.writeString(categoryType);
+        dest.writeString(titleText);
+        dest.writeString(name);
+        dest.writeString(icon);
+        dest.writeString(iconUrl);
+        dest.writeByte((byte) (isNew ? 1 : 0));
+        dest.writeByte((byte) (instantCheckout ? 1 : 0));
+        dest.writeString(slug);
+        dest.writeString(defaultOperatorId);
+        dest.writeString(operatorStyle);
+        dest.writeString(operatorLabel);
+        dest.writeParcelable(additionalFeature, flags);
+        dest.writeTypedList(clientNumberList);
+        dest.writeTypedList(operatorList);
+        dest.writeTypedList(bannerDataListIncluded);
+        dest.writeTypedList(otherBannerDataListIncluded);
+        dest.writeTypedList(guideDataList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CategoryData> CREATOR = new Creator<CategoryData>() {
+        @Override
+        public CategoryData createFromParcel(Parcel in) {
+            return new CategoryData(in);
+        }
+
+        @Override
+        public CategoryData[] newArray(int size) {
+            return new CategoryData[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -138,6 +200,14 @@ public class CategoryData implements Parcelable {
         this.operatorLabel = operatorLabel;
     }
 
+    public AdditionalFeature getAdditionalFeature() {
+        return additionalFeature;
+    }
+
+    public void setAdditionalFeature(AdditionalFeature additionalFeature) {
+        this.additionalFeature = additionalFeature;
+    }
+
     public List<ClientNumber> getClientNumberList() {
         return clientNumberList;
     }
@@ -190,65 +260,16 @@ public class CategoryData implements Parcelable {
         this.otherBannerDataListIncluded = otherBannerDataListIncluded;
     }
 
+    public List<GuideData> getGuideDataList() {
+        return guideDataList;
+    }
+
+    public void setGuideDataList(List<GuideData> guideDataList) {
+        this.guideDataList = guideDataList;
+    }
+
     public CategoryData() {
     }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.categoryId);
-        dest.writeString(this.categoryType);
-        dest.writeString(this.titleText);
-        dest.writeString(this.name);
-        dest.writeString(this.icon);
-        dest.writeString(this.iconUrl);
-        dest.writeByte(this.isNew ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.instantCheckout ? (byte) 1 : (byte) 0);
-        dest.writeString(this.slug);
-        dest.writeString(this.defaultOperatorId);
-        dest.writeString(this.operatorStyle);
-        dest.writeString(this.operatorLabel);
-        dest.writeTypedList(this.clientNumberList);
-        dest.writeTypedList(this.operatorList);
-        dest.writeTypedList(this.bannerDataListIncluded);
-        dest.writeTypedList(this.otherBannerDataListIncluded);
-    }
-
-    protected CategoryData(Parcel in) {
-        this.categoryId = in.readString();
-        this.categoryType = in.readString();
-        this.titleText = in.readString();
-        this.name = in.readString();
-        this.icon = in.readString();
-        this.iconUrl = in.readString();
-        this.isNew = in.readByte() != 0;
-        this.instantCheckout = in.readByte() != 0;
-        this.slug = in.readString();
-        this.defaultOperatorId = in.readString();
-        this.operatorStyle = in.readString();
-        this.operatorLabel = in.readString();
-        this.clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
-        this.operatorList = in.createTypedArrayList(Operator.CREATOR);
-        this.bannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
-        this.otherBannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
-    }
-
-    public static final Creator<CategoryData> CREATOR = new Creator<CategoryData>() {
-        @Override
-        public CategoryData createFromParcel(Parcel source) {
-            return new CategoryData(source);
-        }
-
-        @Override
-        public CategoryData[] newArray(int size) {
-            return new CategoryData[size];
-        }
-    };
 
     public static final class Builder {
         private String categoryId;
@@ -264,10 +285,12 @@ public class CategoryData implements Parcelable {
         private String defaultOperatorId;
         private String operatorStyle;
         private String operatorLabel;
+        private AdditionalFeature additionalFeature;
         private List<ClientNumber> clientNumberList;
         private List<Operator> operatorList;
         private List<BannerData> bannerDataListIncluded;
         private List<BannerData> otherBannerDataListIncluded;
+        private List<GuideData> guideDataList;
 
         public Builder() {
         }
@@ -337,6 +360,11 @@ public class CategoryData implements Parcelable {
             return this;
         }
 
+        public Builder additionalFeature(AdditionalFeature val) {
+            additionalFeature = val;
+            return this;
+        }
+
         public Builder clientNumberList(List<ClientNumber> val) {
             clientNumberList = val;
             return this;
@@ -354,6 +382,11 @@ public class CategoryData implements Parcelable {
 
         public Builder otherBannerDataListIncluded(List<BannerData> val) {
             otherBannerDataListIncluded = val;
+            return this;
+        }
+
+        public Builder guideDataList(List<GuideData> val) {
+            guideDataList = val;
             return this;
         }
 

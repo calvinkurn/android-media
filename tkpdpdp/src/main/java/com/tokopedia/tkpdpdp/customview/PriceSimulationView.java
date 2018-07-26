@@ -1,7 +1,6 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -10,17 +9,17 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 
 public class PriceSimulationView extends BaseView<ProductDetailData, ProductDetailView> {
 
@@ -100,6 +99,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList(InstallmentActivity.KEY_INSTALLMENT_DATA,
                             new ArrayList<>(data.getInfo().getProductInstallments()));
+                    bundle.putString(EXTRA_PRODUCT_ID, String.valueOf(data.getInfo().getProductId()));
                     listener.onInstallmentClicked(bundle);
                 }
             });
@@ -116,6 +116,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList(WholesaleActivity.KEY_WHOLESALE_DATA,
                             new ArrayList<>(data.getWholesalePrice()));
+                    bundle.putString(EXTRA_PRODUCT_ID, String.valueOf(data.getInfo().getProductId()));
                     listener.onWholesaleClicked(bundle);
                 }
             });
@@ -130,10 +131,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         variantLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
-                bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productDetailData);
-                listener.onVariantClicked(bundle);
+                listener.openVariantPage(0);
 
             }
         });

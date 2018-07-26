@@ -80,9 +80,6 @@
 
     <color name="background_transparent">#99000000</color>
 
-    <color name="colorPrimary">#2BAF2B</color>
-    <color name="colorPrimaryDark">#0A8F08</color>
-    <color name="colorAccent">#2BAF2B</color>
     <color name="text_error">#FFFF6E6E</color>
 
     <color name="digital_voucher">#8a000000</color>
@@ -95,6 +92,7 @@
     <color name="white_grey">#fbfbfb</color>
 
     <color name="medium_green">#42b549</color>
+
     <color name="medium_green_70">#b242b549</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="price_pdp">#ff5722</color>
@@ -102,6 +100,7 @@
 
     <!--COLOR NEW ONBOARDING-->
     <color name="green_nob">#42b549</color>
+    <color name="transparent_green_nob">#a642b549</color>
     <color name="orange_nob">#f79b21</color>
     <color name="blue_nob">#00bcd4</color>
     <color name="grey_hint">#e0e0e0</color>

@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
@@ -101,6 +103,16 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
         image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
         return image;
+    }
+
+    public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
@@ -216,6 +228,41 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(imageview);
+        }
+    }
+
+    /* This method specifically designed to display cached image from different size when offline */
+    public static void loadImageSourceSize(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context)
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(imageview);
+        }
+    }
+
+    /* This method specifically designed to display cached image from different size when offline */
+    public static void loadImageSourceSizeFitCenter(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context.getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .fitCenter()
+                    .into(imageview);
+        }
+    }
+
+    /* This method specifically designed to display cached image from different size when offline */
+    public static void loadImageSourceSizeCenterCrop(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context.getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .centerCrop()
                     .into(imageview);
         }
     }
@@ -384,7 +431,8 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     }
 
-    public static void LoadImageWGender(ImageView imageview, String url, Activity context, String gender) {
+    public static void LoadImageWGender(ImageView imageview, String url, Context context, String
+            gender) {
         if (!url.equals("null")) {
             loadImageCircle2(imageview.getContext(), imageview, url);
         } else {
@@ -397,6 +445,10 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     private static boolean isContextValid(Context context) {
-        return (context instanceof Activity && !((Activity) context).isFinishing()) || context instanceof Application;
+        Context tempContext = context;
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            tempContext = CommonUtils.getActivity(context);
+        }
+        return (tempContext instanceof Activity && !((Activity) tempContext).isFinishing()) || tempContext instanceof Application;
     }
 }

@@ -10,6 +10,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -147,5 +148,11 @@ public class InterceptorModule {
     @Provides
     TkpdErrorResponseInterceptor provideTopAdsErrorResponseInterceptor() {
         return new TkpdErrorResponseInterceptor(TopAdsResponseError.class);
+    }
+
+    @ApplicationScope
+    @Provides
+    public CreditCardInterceptor provideCreditCardInterceptor() {
+        return new CreditCardInterceptor();
     }
 }

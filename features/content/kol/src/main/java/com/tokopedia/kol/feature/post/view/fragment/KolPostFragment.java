@@ -36,7 +36,9 @@ import javax.inject.Inject;
  * @author by milhamj on 19/02/18.
  */
 
-public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
+public class KolPostFragment extends BaseDaggerFragment implements
+        KolPostListener.View,
+        KolPostListener.View.ViewHolder {
 
     public static final String PARAM_IS_LIKED = "is_liked";
     public static final String PARAM_TOTAL_LIKES = "total_likes";
@@ -129,6 +131,8 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
         }
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         kolRecyclerView.setLayoutManager(layoutManager);
+
+        adapter.clearData();
         kolRecyclerView.setAdapter(adapter);
     }
 
@@ -215,44 +219,54 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     public void updateCursor(String lastCursor) {
         canLoadMore = !TextUtils.isEmpty(lastCursor);
         presenter.updateCursor(lastCursor);
+
+        if (!canLoadMore
+                && !adapter.isEmpty()
+                && adapter.getList().get(0) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(0);
+            adapter.showExplore(kolPostViewModel.getName());
+        }
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String url) {
-
+    public void onGoToKolProfile(int rowNumber, String userId, int postId) {
     }
 
     @Override
-    public void onOpenKolTooltip(int page, int rowNumber, String url) {
-        ((KolRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), url);
+    public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
     }
 
     @Override
-    public void onFollowKolClicked(int page, int rowNumber, int id) {
+    public void onOpenKolTooltip(int rowNumber, String url) {
+        ((KolRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+    }
+
+    @Override
+    public void onFollowKolClicked(int rowNumber, int id) {
         presenter.followKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnfollowKolClicked(int page, int rowNumber, int id) {
+    public void onUnfollowKolClicked(int rowNumber, int id) {
         presenter.unfollowKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onLikeKolClicked(int page, int rowNumber, int id) {
+    public void onLikeKolClicked(int rowNumber, int id) {
         presenter.likeKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnlikeKolClicked(int page, int rowNumber, int id) {
+    public void onUnlikeKolClicked(int rowNumber, int id) {
         presenter.unlikeKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
+    public void onGoToKolComment(int rowNumber, int id) {
         Intent intent = KolCommentActivity.getCallingIntent(
-                getContext(), kolPostViewModel.getId(), rowNumber
+                getContext(), id, rowNumber
         );
         startActivityForResult(intent, KOL_COMMENT_CODE);
     }
@@ -289,7 +303,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();
@@ -329,7 +343,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();

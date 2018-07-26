@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.viewmodel.kol;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 
 /**
@@ -13,23 +13,14 @@ public class ContentProductViewModel implements Visitable<FeedPlusTypeFactory> {
     private String buttonTitle;
     private String textHeader;
     private String textDescription;
-    private boolean isContentProductShowing;
 
-    public ContentProductViewModel(String imageUrl, String applink, String buttonTitle, String textHeader, String textDescription, boolean isContentProductShowing) {
+    public ContentProductViewModel(String imageUrl, String applink, String buttonTitle,
+                                   String textHeader, String textDescription) {
         this.imageUrl = imageUrl;
         this.applink = applink;
         this.buttonTitle = buttonTitle;
         this.textHeader = textHeader;
         this.textDescription = textDescription;
-        this.isContentProductShowing = isContentProductShowing;
-    }
-
-    public ContentProductViewModel(boolean isContentProductShowing) {
-        this.isContentProductShowing = isContentProductShowing;
-    }
-
-    public boolean isContentProductShowing() {
-        return isContentProductShowing;
     }
 
     public String getImageUrl() {

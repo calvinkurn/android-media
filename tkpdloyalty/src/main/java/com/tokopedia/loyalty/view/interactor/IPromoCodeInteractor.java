@@ -1,7 +1,9 @@
 package com.tokopedia.loyalty.view.interactor;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -17,5 +19,11 @@ public interface IPromoCodeInteractor {
     void submitDigitalVoucher(
             String voucherCode,
             TKPDMapParam<String, String> param, Subscriber<VoucherViewModel> subscriber);
+
+    void submitCheckPromoCodeMarketPlace(
+            TKPDMapParam<String, String> paramUpdateCart,
+            TKPDMapParam<String, String> paramCheckPromo,
+            Subscriber<VoucherViewModel> subscriber);
+
 
 }

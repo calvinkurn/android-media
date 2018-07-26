@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsShopAdFactory;
@@ -19,7 +20,7 @@ import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryIm
 import com.tokopedia.topads.dashboard.data.repository.TopAdsProductAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsShopAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
@@ -29,6 +30,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMoveProductGroupTo
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupEditPromoPresenterImpl;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 
 /**
  * Created by zulfikarrahman on 3/1/17.
@@ -43,7 +45,7 @@ public class TopAdsGroupeditPromoDI {
         UIThread postExecutionThread = new UIThread();
 
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
-        TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
+        TopAdsOldManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();
         TopAdsDetailGroupMapper topAdsDetailGroupMapper = new TopAdsDetailGroupMapper();
@@ -70,7 +72,10 @@ public class TopAdsGroupeditPromoDI {
                         topAdsShopAdsRepository,topAdsGroupAdsRepository);
         TopAdsMoveProductGroupToExistGroupUseCase topAdsMoveProductGroupToExistGroupUseCase =
                 new TopAdsMoveProductGroupToExistGroupUseCase(threadExecutor, postExecutionThread, topAdsProductAdsRepository);
+        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase = TopAdsSourceTaggingUseCaseUtil.getTopAdsGetSourceTaggingUseCase(context);
+
         return new TopAdsGroupEditPromoPresenterImpl(topAdsSearchGroupAdsNameUseCase,
-                topAdsCheckExistGroupUseCase, topAdsEditProductGroupToNewGroupUseCase, topAdsMoveProductGroupToExistGroupUseCase);
+                topAdsCheckExistGroupUseCase, topAdsEditProductGroupToNewGroupUseCase,
+                topAdsMoveProductGroupToExistGroupUseCase,  topAdsGetSourceTaggingUseCase);
     }
 }

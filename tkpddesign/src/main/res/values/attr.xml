@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="CountDownView">
+        <attr name="countDownTxtColor" format="color" />
+        <attr name="countDownSparatorColor" format="color" />
+        <attr name="coundDownBackgroud" format="reference" />
+    </declare-styleable>
     <declare-styleable name="LabelView">
         <attr name="lv_image" format="reference" />
         <attr name="lv_image_width" format="dimension" />
+        <attr name="lv_image_margin_right" format="dimension"/>
         <attr name="lv_title" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
         <attr name="lv_title_color" format="color" />
@@ -32,6 +38,7 @@
         <attr name="siv_search_icon" format="reference" />
         <attr name="siv_search_text" format="string" />
         <attr name="siv_search_hint" format="string" />
+        <attr name="isEditable" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="DecimalInputView">
@@ -66,6 +73,7 @@
     </declare-styleable>
 
     <declare-styleable name="SpinnerCounterInputView">
+        <attr name="spinner_counter_max_length" format="integer" />
         <attr name="spinner_decimal_max_length" format="integer" />
         <attr name="spinner_decimal_entries" format="reference" />
         <attr name="spinner_decimal_values" format="reference" />
@@ -217,6 +225,17 @@
         <attr name="buttonDrawableRightCompat" format="reference"/>
         <attr name="buttonDrawableTopCompat" format="reference"/>
         <attr name="buttonDrawableBottomCompat" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="DeletableItemView">
+        <attr name="layout" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="NumberPickerWithCounterView">
+        <attr name="npc_min_value" format="integer" />
+        <attr name="npc_max_value" format="integer" />
+        <attr name="npc_value" format="integer" />
+        <attr name="npc_enabled" format="boolean" />
     </declare-styleable>
 
 </resources>

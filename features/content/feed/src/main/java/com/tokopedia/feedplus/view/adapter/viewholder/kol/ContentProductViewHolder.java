@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
@@ -22,18 +22,18 @@ public class ContentProductViewHolder extends AbstractViewHolder<ContentProductV
     @LayoutRes
     public static final int LAYOUT = R.layout.item_content_product;
 
-    FeedPlus.View mainView;
-    TextView tvHeader, tvDescription;
-    ImageView ivHeader;
-    Button btnContent;
+    private FeedPlus.View mainView;
+    private TextView tvHeader, tvDescription;
+    private ImageView ivHeader;
+    private Button btnContent;
 
     public ContentProductViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
         mainView = viewListener;
-        tvHeader = (TextView) itemView.findViewById(R.id.tv_header);
-        tvDescription = (TextView) itemView.findViewById(R.id.tv_description);
-        btnContent = (Button) itemView.findViewById(R.id.btn_content);
-        ivHeader = (ImageView) itemView.findViewById(R.id.iv_content_product);
+        tvHeader = itemView.findViewById(R.id.tv_header);
+        tvDescription = itemView.findViewById(R.id.tv_description);
+        btnContent = itemView.findViewById(R.id.btn_content);
+        ivHeader = itemView.findViewById(R.id.iv_content_product);
     }
 
     @Override

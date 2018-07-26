@@ -8,6 +8,7 @@ package com.tokopedia.tkpd;
 public class ConsumerAppBaseUrl {
 
     public static final String BASE_TOKOPEDIA_WEBSITE = "https://staging.tokopedia.com/";
+    public static final String BASE_TOKOPEDIA_GQL = "https://gql-staging.tokopedia.com/";
     public static final String BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace-staging.tokopedia.com/";
@@ -20,6 +21,7 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_INBOX_DOMAIN = "https://inbox-staging.tokopedia.com";
     public static final String BASE_JS_DOMAIN = "https://js-staging.tokopedia.com/";
     public static final String BASE_KERO_DOMAIN = "https://kero-staging.tokopedia.com/";
+    public static final String BASE_KERO_RATES_DOMAIN = "https://gw-staging.tokopedia.com/";
     public static final String BASE_JAHE_DOMAIN = "https://jahe-staging.tokopedia.com/";
     public static final String BASE_PULSA_WEB_DOMAIN = "https://pulsa-staging.tokopedia.com";
     public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant-staging.tokopedia.com";
@@ -48,4 +50,7 @@ public class ConsumerAppBaseUrl {
     public static final String GAMIFICATION_BASE_URL = "https://gql-staging.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay-staging.tokopedia.id";
+    public static final String OMS_DOMAIN = "https://omscart-staging.tokopedia.com/";
+    public static final String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
+    public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
 }

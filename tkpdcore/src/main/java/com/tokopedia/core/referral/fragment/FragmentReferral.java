@@ -4,8 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.TabLayout;
+import android.support.v4.widget.NestedScrollView;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,20 +21,25 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.referral.HeightWrappingViewPager;
+import com.tokopedia.core.referral.adapter.ReferralGuidePagerAdapter;
+import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
 import com.tokopedia.core.referral.di.ReferralComponent;
 import com.tokopedia.core.referral.di.ReferralModule;
 import com.tokopedia.core.referral.listener.ReferralView;
+import com.tokopedia.core.referral.model.ShareApps;
 import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdUrl;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import javax.inject.Inject;
 
@@ -41,25 +52,46 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by ashwanityagi on 18/09/17.
  */
 
-public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> implements ReferralView {
+public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter> implements ReferralView, ReferralGuidePagerAdapter.ReferralGuidePagerListener {
 
     @Inject
     ReferralPresenter presenter;
-
-    @BindView(R2.id.btn_app_share)
-    TextView appShareButton;
     @BindView(R2.id.tv_referral_code)
     TextView referralCodeTextView;
-    @BindView(R2.id.tv_app_share_desc)
+    @BindView(R2.id.tv_referral_desc)
     TextView referralContentTextView;
     @BindView(R2.id.tv_referral_help_link)
     TextView TextViewHelpLink;
     @BindView(R2.id.rl_referral_code)
     RelativeLayout referralCodeLayout;
+    @BindView(R2.id.view_pager_referral_guide)
+    HeightWrappingViewPager pagerGuide;
+    @BindView(R2.id.tab_referral_guide)
+    TabLayout tabGuide;
+    @BindView(R2.id.ll_share_icons)
+    LinearLayout llShareIcons;
+    @BindView(R2.id.nested_scroll_view)
+    NestedScrollView nestedScrollView;
+    @BindView(R2.id.view_line)
+    View viewLine;
+    @BindView(R2.id.referral_count)
+    TextView referralCount;
+    @BindView(R2.id.img_tick)
+    ImageView imgTick;
+    @BindView(R2.id.btn_copy_referral_code)
+    TextView btnCopyReferralCode;
+    @BindView(R2.id.progress_bar_referral)
+    ProgressBar progressBarReferral;
+    @BindView(R2.id.tv_referral_percent)
+    TextView tvPercent;
+    @BindView((R2.id.tv_referral_title))
+    TextView referralTitleTextview;
+
+    private ReferralGuidePagerAdapter referralGuidePagerAdapter;
 
     private ProgressDialog progressBar;
     public static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
-    public static final int LOGIN_REQUEST_CODE=1012;
+    public static final int LOGIN_REQUEST_CODE = 1012;
 
     public static FragmentReferral newInstance() {
         FragmentReferral fragmentReferral = new FragmentReferral();
@@ -114,38 +146,47 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_app_share;
+        return R.layout.fragment_referral;
     }
 
     @Override
     protected void initView(View view) {
         presenter.initialize();
-        appShareButton.setOnClickListener(getButtonAppShareClickListner());
-        referralContentTextView.setText(presenter.getReferralContents());
+        referralContentTextView.setText(presenter.getReferralSubHeader());
+        referralTitleTextview.setText(presenter.getReferralTitleDesc());
         if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
             TextViewHelpLink.setVisibility(View.VISIBLE);
-            TextViewHelpLink.setText(presenter.getHowItWorks());
-            renderVoucherCode(presenter.getVoucherCodeFromCache());
-            TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
-                    startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString()));
+            TextViewHelpLink.setOnClickListener(view1 -> {
+                focusOnView();
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
 
-                }
             });
         } else {
             referralCodeLayout.setVisibility(View.INVISIBLE);
             TextViewHelpLink.setVisibility(View.INVISIBLE);
         }
+
+        referralGuidePagerAdapter = new ReferralGuidePagerAdapter(getActivity(), this);
+        pagerGuide.setAdapter(referralGuidePagerAdapter);
+
+        pagerGuide.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabGuide));
+        tabGuide.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pagerGuide));
+
+        llShareIcons.removeAllViews();
+        presenter.getSharableApps();
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        initInjector();
+        super.onCreate(savedInstanceState);
+    }
+
     protected void initInjector() {
         ReferralComponent referralComponent = DaggerReferralComponent.builder()
                 .referralModule(new ReferralModule())
-                .appComponent(((BasePresenterActivity) context).getApplicationComponent())
+                .appComponent(((BasePresenterActivity) getActivity()).getApplicationComponent())
                 .build();
         referralComponent.inject(this);
 
@@ -154,6 +195,11 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     @OnClick(R2.id.btn_copy_referral_code)
     public void clickOnCopyButton() {
         presenter.copyVoucherCode(referralCodeTextView.getText().toString());
+        if (!TextUtils.isEmpty(referralCodeTextView.getText().toString())) {
+            btnCopyReferralCode.setText(R.string.copied);
+            btnCopyReferralCode.setTextColor(getResources().getColor(R.color.green_250));
+            imgTick.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -171,25 +217,17 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     }
 
-    private View.OnClickListener getButtonAppShareClickListner() {
-
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.shareApp();
-                if (presenter.isAppShowReferralButtonActivated()) {
-                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
-                } else {
-                    UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.CLICK,AppEventTracking.EventLabel.APP_SHARE_LABEL);
-                }
-            }
-        };
-
-    }
-
     @Override
-    public void renderVoucherCode(String voucherCode) {
-        referralCodeTextView.setText(voucherCode);
+    public void renderVoucherCodeData(ReferralCodeEntity referralData) {
+        referralCodeTextView.setText(referralData.getPromoContent().getCode());
+        referralCount.setText(referralData.getPromoContent().getFriendCount() + " " + getString(R.string.fiends_invited_lable));
+        if (referralData.getPromoBenefit() != null) {
+            progressBarReferral.setProgress((referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
+                    referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getCurrentBenefit() * 100
+                    / referralData.getPromoBenefit().getMaxBenefit()));
+            tvPercent.setText("Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getCurrentBenefit(), false) +
+                    " / Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(), false));
+        }
     }
 
     @Override
@@ -206,8 +244,8 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-        startActivityForResult(intent,LOGIN_REQUEST_CODE);
+        Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(getActivity());
+        startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 
     @Override
@@ -225,7 +263,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         if (requestCode == REFERRAL_PHONE_VERIFY_REQUEST_CODE) {
             switch (resultCode) {
                 case Activity.RESULT_CANCELED:
-                    Toast.makeText(getActivity(),getActivity().getString(R.string.phone_not_verified_error_message), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.phone_not_verified_error_message), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                     break;
                 default:
@@ -270,11 +308,36 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     public void renderErrorGetVoucherCode(String message) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getReferralVoucherCode();
-            }
-        }).showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, () -> presenter.getReferralVoucherCode()).showRetrySnackbar();
     }
+
+    @Override
+    public void renderSharableApps(ShareApps shareApps, int index) {
+        if (index == 0) {
+            llShareIcons.removeAllViews();
+        }
+        ImageView imageView = new ImageView(getActivity());
+        imageView.setImageResource(shareApps.getIcon());
+        imageView.setTag(shareApps);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setOnClickListener(v -> {
+            presenter.appShare(((ShareApps) v.getTag()), getChildFragmentManager());
+        });
+        llShareIcons.addView(imageView);
+
+    }
+
+    private final void focusOnView() {
+        nestedScrollView.post(() -> {
+            nestedScrollView.fling(0);
+            nestedScrollView.smoothScrollTo(0, viewLine.getBottom());
+        });
+    }
+
+    @Override
+    public void onShareClick() {
+        presenter.shareApp(getChildFragmentManager());
+    }
+
 }

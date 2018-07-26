@@ -7,7 +7,7 @@ import com.tokopedia.topads.keyword.data.source.TopAdsKeywordGetDetailDataSource
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
 import com.tokopedia.topads.keyword.domain.TopAdsKeywordActionBulkRepository;
 import com.tokopedia.topads.keyword.domain.TopAdsKeywordGetDetailRepository;
-import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordActionBulkUseCase;
+import com.tokopedia.topads.keyword.domain.interactor.TopAdsOldKeywordActionBulkUseCase;
 import com.tokopedia.topads.keyword.domain.interactor.TopAdsKeywordGetDetailUseCase;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordDetailPresenterImpl;
 import com.tokopedia.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
@@ -26,8 +26,8 @@ public class TopAdsKeywordDetailModule extends TopAdsKeywordModule {
     @TopAdsKeywordScope
     @Provides
     TopadsKeywordDetailPresenter providePresenterKeywordDetail(TopAdsKeywordGetDetailUseCase topAdsKeywordGetDetailUseCase,
-                                                               TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase){
-        return new TopAdsKeywordDetailPresenterImpl(topAdsKeywordGetDetailUseCase, topAdsKeywordActionBulkUseCase);
+                                                               TopAdsOldKeywordActionBulkUseCase topAdsOldKeywordActionBulkUseCase){
+        return new TopAdsKeywordDetailPresenterImpl(topAdsKeywordGetDetailUseCase, topAdsOldKeywordActionBulkUseCase);
     }
 
     @TopAdsKeywordScope

@@ -3,12 +3,13 @@ package com.tokopedia.feedplus.view.listener;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.ArrayList;
 
@@ -20,24 +21,23 @@ public interface FeedPlus {
 
     interface View extends CustomerView {
 
+        Context getContext();
+
+        Context getActivity();
+
+        UserSession getUserSession();
+
+        Resources getResources();
+
         void showLoadingProgress();
 
         void finishLoadingProgress();
 
         interface Kol {
-            void onGoToKolProfile(int page, int rowNumber, String userId, int postId);
 
-            void onOpenKolTooltip(int page, int rowNumber, String url);
+            UserSession getUserSession();
 
-            void onFollowKolClicked(int page, int rowNumber, int id);
-
-            void onUnfollowKolClicked(int page, int rowNumber, int id);
-
-            void onLikeKolClicked(int page, int rowNumber, int id);
-
-            void onUnlikeKolClicked(int page, int adapterPosition, int id);
-
-            void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
+            void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId);
 
             void onGoToListKolRecommendation(int page, int rowNumber, String url);
 
@@ -56,15 +56,34 @@ public interface FeedPlus {
             void onSuccessFollowKolFromRecommendation(int rowNumber, int position);
 
             void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position);
+
+            void onGoToKolProfile(int rowNumber, String userId, int postId);
+
+            void onOpenKolTooltip(int rowNumber, String url);
+
+            void onFollowKolClicked(int rowNumber, int id);
+
+            void onUnfollowKolClicked(int rowNumber, int id);
+
+            void onLikeKolClicked(int rowNumber, int id);
+
+            void onUnlikeKolClicked(int adapterPosition, int id);
+
+            void onGoToKolComment(int rowNumber, int id);
+
+            void onGoToLink(String link);
+        }
+
+        interface Polling {
+            UserSession getUserSession();
+
+            void onVoteOptionClicked(int rowNumber, String pollId,
+                                     PollOptionViewModel optionViewModel);
+
+            void onGoToLink(String link);
         }
 
         void setFirstCursor(String firstCursor);
-
-        interface Toppicks {
-            void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition);
-
-            void onSeeAllToppicks(int page, int rowNumber);
-        }
 
         void onShareButtonClicked(String shareUrl,
                                   String title,
@@ -98,13 +117,9 @@ public interface FeedPlus {
 
         void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url);
 
-        void onCopyClicked(int page, int rowNumber, String id, String s, String name);
-
         void onGoToBlogWebView(String url);
 
         void onOpenVideo(String videoUrl, String subtitle);
-
-        void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel);
 
         void onInfoClicked();
 
@@ -118,11 +133,7 @@ public interface FeedPlus {
 
         void showSnackbar(String s);
 
-        Context getActivity();
-
         void updateFavorite(int adapterPosition);
-
-        void onViewMorePromoClicked(int page, int rowNumber);
 
         void showRefresh();
 
@@ -133,8 +144,6 @@ public interface FeedPlus {
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
         void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
-
-        void onSeePromo(int page, int rowNumber, String id, String link, String name);
 
         void onRetryClicked();
 
@@ -150,8 +159,6 @@ public interface FeedPlus {
 
         int getColor(int black);
 
-        Resources getResources();
-
         void onSeeAllRecentView();
 
         void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
@@ -164,15 +171,11 @@ public interface FeedPlus {
 
         void onShowNewFeed(String totalData);
 
-        void onGoToPromoPageFromHeader(int page, int rowNumber);
-
         void onHideNewFeed();
 
         boolean hasFeed();
 
         void updateFavoriteFromEmpty(String shopId);
-
-        void onEmptyOfficialStoreClicked();
 
         void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel);
 
@@ -193,7 +196,14 @@ public interface FeedPlus {
 
         void onGoToLogin();
 
+        void onSuccessSendVote(int rowNumber, PollOptionViewModel optionViewModel,
+                               VoteStatisticDomainModel voteStatisticDomainModel);
+
+        void onErrorSendVote(String message);
+
         int getAdapterListSize();
+
+        void onWhitelistClicked(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -214,12 +224,12 @@ public interface FeedPlus {
 
         void unlikeKol(int id, int rowNumber, View.Kol kolListener);
 
+        void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel);
 
         void followKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
 
         void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
-
     }
 }

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
           package="com.tokopedia.session">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+
+        <meta-data android:name="android.support.VERSION" android:value="26.1.0"
+            tools:replace="android:value" />
 
         <activity
             android:name=".forgotpassword.activity.ForgotPasswordActivity"
@@ -86,24 +91,16 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <activity
             android:name=".login.loginemail.view.activity.LoginActivity"
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".register.view.activity.SmartLockActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme"/>
+            android:theme="@style/AppTheme.Dialog"/>
         <activity
             android:name=".google.GoogleSignInActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme"/>
+            android:theme="@style/AppTheme.Dialog"/>
 
         <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
         </activity>
@@ -111,6 +108,7 @@
         <activity
             android:name=".register.view.activity.RegisterInitialActivity"
             android:label="@string/title_register"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"/>
 
         <activity
@@ -195,6 +193,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+
+        <activity android:name=".inactivephonenumber.ChangeInactivePhoneNumberWebView"
+                  android:label="@string/title_change_inactive_phone_number"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/Theme.White"
+                  android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->

@@ -1,6 +1,8 @@
 package com.tokopedia.feedplus.view.listener;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 
@@ -27,6 +29,8 @@ public interface RecentView {
         void onSuccessGetRecentView(ArrayList<Visitable> listProduct);
 
         void onEmptyGetRecentView();
+
+        Context getContext();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

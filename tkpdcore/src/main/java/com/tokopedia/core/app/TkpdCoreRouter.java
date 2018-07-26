@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -17,6 +16,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;
@@ -27,6 +27,7 @@ import rx.Observable;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
+    String EXTRAS = "extras";
 
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
 
@@ -189,7 +190,12 @@ public interface TkpdCoreRouter {
 
     void sendTrackingGroupChatLeftNavigation();
 
-    Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams);
-
     String getDesktopLinkGroupChat();
+
+    Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
+
+    String getStringRemoteConfig(String key);
+
+    void setStringRemoteConfigLocal(String key, String value);
+
 }

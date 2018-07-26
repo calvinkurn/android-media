@@ -23,6 +23,15 @@ public class ProductWholesalePrice implements Parcelable {
     @SerializedName("wholesale_max")
     @Expose
     private String wholesaleMax;
+    @SerializedName("wholesale_min_number")
+    @Expose
+    private int wholesaleMinRaw;
+    @SerializedName("wholesale_price_number")
+    @Expose
+    private int wholesalePriceRaw;
+    @SerializedName("wholesale_max_number")
+    @Expose
+    private int wholesaleMaxRaw;
 
     public ProductWholesalePrice() {
     }
@@ -51,37 +60,29 @@ public class ProductWholesalePrice implements Parcelable {
         this.wholesaleMax = wholesaleMax;
     }
 
-    protected ProductWholesalePrice(Parcel in) {
-        wholesaleMin = in.readString();
-        wholesalePrice = in.readString();
-        wholesaleMax = in.readString();
+    public int getWholesaleMinRaw() {
+        return wholesaleMinRaw;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setWholesaleMinRaw(int wholesaleMinRaw) {
+        this.wholesaleMinRaw = wholesaleMinRaw;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(wholesaleMin);
-        dest.writeString(wholesalePrice);
-        dest.writeString(wholesaleMax);
+    public int getWholesalePriceRaw() {
+        return wholesalePriceRaw;
     }
 
-    @SuppressWarnings("unused")
-    public static final Creator<ProductWholesalePrice> CREATOR = new Creator<ProductWholesalePrice>() {
-        @Override
-        public ProductWholesalePrice createFromParcel(Parcel in) {
-            return new ProductWholesalePrice(in);
-        }
+    public void setWholesalePriceRaw(int wholesalePriceRaw) {
+        this.wholesalePriceRaw = wholesalePriceRaw;
+    }
 
-        @Override
-        public ProductWholesalePrice[] newArray(int size) {
-            return new ProductWholesalePrice[size];
-        }
-    };
+    public int getWholesaleMaxRaw() {
+        return wholesaleMaxRaw;
+    }
 
+    public void setWholesaleMaxRaw(int wholesaleMaxRaw) {
+        this.wholesaleMaxRaw = wholesaleMaxRaw;
+    }
 
     public static class Builder {
         private String wholesaleMin;
@@ -131,4 +132,40 @@ public class ProductWholesalePrice implements Parcelable {
         }
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.wholesaleMin);
+        dest.writeString(this.wholesalePrice);
+        dest.writeString(this.wholesaleMax);
+        dest.writeInt(this.wholesaleMinRaw);
+        dest.writeInt(this.wholesalePriceRaw);
+        dest.writeInt(this.wholesaleMaxRaw);
+    }
+
+    protected ProductWholesalePrice(Parcel in) {
+        this.wholesaleMin = in.readString();
+        this.wholesalePrice = in.readString();
+        this.wholesaleMax = in.readString();
+        this.wholesaleMinRaw = in.readInt();
+        this.wholesalePriceRaw = in.readInt();
+        this.wholesaleMaxRaw = in.readInt();
+    }
+
+    public static final Creator<ProductWholesalePrice> CREATOR = new Creator<ProductWholesalePrice>() {
+        @Override
+        public ProductWholesalePrice createFromParcel(Parcel source) {
+            return new ProductWholesalePrice(source);
+        }
+
+        @Override
+        public ProductWholesalePrice[] newArray(int size) {
+            return new ProductWholesalePrice[size];
+        }
+    };
 }

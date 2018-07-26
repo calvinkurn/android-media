@@ -36,6 +36,12 @@ public class CartDigitalActivity extends BasePresenterActivity implements
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
+
     public static Intent newInstance(Context context, Bundle bundle) {
         DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
         passData.setAction(bundle.getString(DigitalCheckoutPassData.PARAM_ACTION));
@@ -63,7 +69,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     }
 
     @DeepLink({Constants.Applinks.DIGITAL_CART})
-    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
+    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
@@ -80,9 +86,8 @@ public class CartDigitalActivity extends BasePresenterActivity implements
                 .setData(uri.build())
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
-        taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+        return destination;
     }
 
     @Override
