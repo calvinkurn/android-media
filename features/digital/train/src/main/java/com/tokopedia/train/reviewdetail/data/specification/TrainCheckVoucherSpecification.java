@@ -18,7 +18,7 @@ public class TrainCheckVoucherSpecification implements GqlNetworkSpecification {
 
     @Override
     public int rawFileNameQuery() {
-        return R.raw.kai_check_voucher_query;
+        return R.raw.kai_check_voucher_mutation;
     }
 
     @Override
