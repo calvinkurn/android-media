@@ -174,7 +174,7 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     public void onClickOverFlow(PaymentListModel paymentListModel) {
         Menus menus = new Menus(getContext());
         menus.setItemMenuList(paymentListModel.getListOfAction().toArray(new String[paymentListModel.getListOfAction().size()]));
-        menus.setActionText(getString(R.string.payment_label_back));
+        menus.setActionText(getString(R.string.payment_label_close));
         menus.setOnActionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
