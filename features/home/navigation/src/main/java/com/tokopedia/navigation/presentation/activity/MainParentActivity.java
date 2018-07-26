@@ -19,23 +19,30 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.constant.TkpdAppLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.domain.model.Notification;
+import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
+import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
+import com.tokopedia.navigation.presentation.view.MainParentView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by meta on 19/06/18.
  */
 public class MainParentActivity extends BaseAppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, HasComponent {
+        NavigationView.OnNavigationItemSelectedListener, HasComponent, MainParentView {
 
     public static int HOME_MENU = 0;
     public static int FEED_MENU = 1;
@@ -47,6 +54,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private TouchViewPager viewPager;
 
     private UserSession userSession;
+    @Inject MainParentPresenter presenter;
 
     private boolean isUserFirstTimeLogin = false;
 
@@ -57,6 +65,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GraphqlClient.init(this);
+        this.intiInjector();
+        presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
 
         userSession = ((AbstractionRouter) this.getApplication()).getSession();
@@ -87,9 +98,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
         }
+    }
 
-        bottomNavigation.setNotification(2000, 2);
-        bottomNavigation.setNotification(1200, 3);
+    private void intiInjector() {
+        DaggerGlobalNavComponent.builder()
+                .globalNavModule(new GlobalNavModule())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -100,17 +115,22 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         } else if (i == R.id.menu_feed) {
             viewPager.setCurrentItem(FEED_MENU, false);
         } else if (i == R.id.menu_inbox) {
-            viewPager.setCurrentItem(INBOX_MENU, false);
+            if (isUserLogin())
+                viewPager.setCurrentItem(INBOX_MENU, false);
         } else if (i == R.id.menu_cart) {
-            viewPager.setCurrentItem(CART_MENU, false);
+            if (isUserLogin())
+                viewPager.setCurrentItem(CART_MENU, false);
         } else if (i == R.id.menu_account) {
-            if(userSession.isLoggedIn()) {
+            if (isUserLogin())
                 viewPager.setCurrentItem(ACCOUNT_MENU, false);
-            } else {
-                RouteManager.route(this, ApplinkConst.LOGIN);
-            }
         }
         return true;
+    }
+
+    private boolean isUserLogin() {
+        if (!userSession.isLoggedIn())
+            RouteManager.route(this, ApplinkConst.LOGIN);
+        return userSession.isLoggedIn();
     }
 
     @Override
@@ -121,11 +141,17 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
         }
-
         isUserFirstTimeLogin = !userSession.isLoggedIn();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     private void reloadPage() {
@@ -144,6 +170,26 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             fragmentList.add(AccountHomeFragment.newInstance());
         }
         return fragmentList;
+    }
+
+    @Override
+    public void renderNotification(Notification notification) {
+        bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
+        bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
+    }
+
+    @Override
+    public void onStartLoading() { }
+
+    @Override
+    public void onError(String message) { }
+
+    @Override
+    public void onHideLoading() { }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     public class FragmentAdapter extends FragmentPagerAdapter {

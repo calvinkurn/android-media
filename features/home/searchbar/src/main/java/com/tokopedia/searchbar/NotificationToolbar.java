@@ -5,8 +5,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 
 import q.rorbin.badgeview.QBadgeView;
 
@@ -34,7 +40,12 @@ public class NotificationToolbar extends Toolbar {
     private ImageButton btnNotification;
     private QBadgeView badgeView;
 
+    private UserSession userSession;
+
     private void init() {
+
+        userSession = ((AbstractionRouter) this.getContext().getApplicationContext()).getSession();
+
         inflate(getContext(), R.layout.notification_toolbar, this);
         textViewTitle = findViewById(R.id.textview_title);
         btnNotification = findViewById(R.id.btn_notification);
@@ -44,9 +55,14 @@ public class NotificationToolbar extends Toolbar {
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(2);
 
-        btnNotification.setOnClickListener(v ->
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoNotificationPage(getContext())));
+        btnNotification.setOnClickListener(v -> {
+            if (userSession.isLoggedIn()) {
+                getContext().startActivity(((SearchBarRouter) getContext().getApplicationContext())
+                        .gotoNotificationPage(getContext()));
+            } else {
+                RouteManager.route(this.getContext(), ApplinkConst.LOGIN);
+            }
+        });
     }
 
     @Override

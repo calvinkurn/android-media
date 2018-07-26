@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -46,6 +47,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
@@ -75,7 +77,7 @@ public class ActivitySellingTransaction extends TkpdActivity
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
 
     ViewPager mViewPager;
-    private TabLayout indicator;
+    private Tabs indicator;
     private TextView sellerTickerView;
 
     private String[] CONTENT;
@@ -169,11 +171,17 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
+    private @LayoutRes Integer layoutId() {
+        if (GlobalConfig.isCustomerApp())
+            return R.layout.layout_tablayout_secondary;
+        return R.layout.activity_shop_transaction_v2;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clearNotif();
-        inflateView(R.layout.activity_shop_transaction_v2);
+        inflateView(layoutId());
         setView();
         initVariable();
         setAdapter();
@@ -202,10 +210,10 @@ public class ActivitySellingTransaction extends TkpdActivity
     }
 
     private void setView() {
-        sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
+        sellerTickerView = findViewById(R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+        mViewPager = findViewById(R.id.pager);
+        indicator = findViewById(R.id.tabs);
     }
 
     private void initSellerTicker() {
@@ -560,6 +568,6 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
+        super.onSaveInstanceState(outState);
     }
 }

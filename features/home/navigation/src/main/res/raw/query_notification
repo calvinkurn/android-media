@@ -1,0 +1,17 @@
+query NotificationQuery() {
+  notifications {
+    total_cart
+    total_notif
+    inbox {
+      talk
+      ticket
+      review
+      friend
+      wishlist
+      message
+    }
+    chat {
+      unreads
+    }
+  }
+}

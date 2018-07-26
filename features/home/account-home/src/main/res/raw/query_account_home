@@ -1,4 +1,4 @@
-query AccountQuery() {
+query {
   isAuthenticated
   saldo {
     deposit
@@ -54,6 +54,26 @@ query AccountQuery() {
       newOrder
       shippingConfirm
       shippingStatus
-		}
+	}
+    resolutionAs {
+      buyer
+      seller
+    }
+    sellerInfo {
+      notification
+    }
+    userSatisfactionSurvey
+    buyerOrderStatus {
+      confirmed
+      processed
+      shipped
+      arriveAtDestination
+    }
+    sellerOrderStatus {
+      newOrder
+      readyToShip
+      shipped
+      arriveAtDestination
+    }
   }
 }

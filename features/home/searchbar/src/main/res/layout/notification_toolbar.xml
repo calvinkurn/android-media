@@ -12,8 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp">
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/textview_title"
@@ -21,6 +20,8 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:textSize="16sp"/>
 
         <ImageButton

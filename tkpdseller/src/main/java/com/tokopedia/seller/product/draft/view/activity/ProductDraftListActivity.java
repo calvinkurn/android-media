@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -33,7 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-
+@DeepLink(ApplinkConst.PRODUCT_DRAFT)
 public class ProductDraftListActivity extends DrawerPresenterActivity
         implements HasComponent<ProductComponent>, ProductDraftSaveBulkView,
         ProductDraftListFragment.OnProductDraftListFragmentListener {

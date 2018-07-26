@@ -30,6 +30,7 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
@@ -58,8 +59,8 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
 
     @BindView(R2.id.pager)
     ViewPager mViewPager;
-    @BindView(R2.id.indicator)
-    TabLayout indicator;
+    @BindView(R2.id.tabs)
+    Tabs indicator;
 
 
     private Boolean ContextualStats = false;
@@ -188,7 +189,9 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_inbox_talk;
+        if (GlobalConfig.isSellerApp())
+            return R.layout.activity_inbox_talk;
+        return R.layout.layout_tablayout_secondary;
     }
 
     @Override

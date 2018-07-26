@@ -8,6 +8,11 @@ import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+
 import q.rorbin.badgeview.QBadgeView;
 
 /**
@@ -21,6 +26,8 @@ public class MainToolbar extends Toolbar {
     private EditText editTextSearch;
 
     private QBadgeView badgeView;
+
+    private UserSession userSession;
 
     public MainToolbar(Context context) {
         super(context);
@@ -38,6 +45,9 @@ public class MainToolbar extends Toolbar {
     }
 
     private void init() {
+
+        userSession = ((AbstractionRouter) this.getContext().getApplicationContext()).getSession();
+
         inflate(getContext(), R.layout.main_toolbar, this);
         btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
@@ -53,12 +63,22 @@ public class MainToolbar extends Toolbar {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoQrScannerPage(getContext())));
 
-        btnWishlist.setOnClickListener(v ->
+        btnWishlist.setOnClickListener(v -> {
+            if (userSession.isLoggedIn()) {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoWishlistPage(getContext())));
+                        .gotoWishlistPage(getContext()));
+            } else {
+                RouteManager.route(this.getContext(), ApplinkConst.LOGIN);
+            }
+        });
 
-        btnNotification.setOnClickListener(v ->
+        btnNotification.setOnClickListener(v -> {
+            if (userSession.isLoggedIn()) {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoNotificationPage(getContext())));
+                        .gotoNotificationPage(getContext()));
+            } else {
+                RouteManager.route(this.getContext(), ApplinkConst.LOGIN);
+            }
+        });
     }
 }
