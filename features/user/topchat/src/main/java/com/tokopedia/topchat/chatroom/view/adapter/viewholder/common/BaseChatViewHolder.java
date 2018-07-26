@@ -2,6 +2,8 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common;
 
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
+import android.text.format.Time;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +15,7 @@ import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.common.util.ChatTimeConverter;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -77,7 +80,14 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
         try {
             long myTime = Long.parseLong(element.getReplyTime());
-            time = DateFormat.getLongDateFormat(itemView.getContext()).format(new Date(myTime));
+            Date date = new Date(myTime);
+            if(DateUtils.isToday(myTime)) {
+                time = itemView.getContext().getString(R.string.chat_today_date);
+            } else if(DateUtils.isToday(myTime + DateUtils.DAY_IN_MILLIS)){
+                time = itemView.getContext().getString(R.string.chat_yesterday_date);
+            } else {
+                time = DateFormat.getLongDateFormat(itemView.getContext()).format(date);
+            }
         } catch (NumberFormatException e) {
             time = element.getReplyTime();
         }
