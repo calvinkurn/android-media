@@ -78,12 +78,8 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(AndroidJUnit4.class)
 public class MainParentActivityTest {
-//    @Rule
-//    public ActivityTestRule<MainParentActivity2> mIntentsRule = new ActivityTestRule<>(
-//            MainParentActivity2.class, false, false
-//    );
 
-    UserSession userSession;
+    private UserSession userSession;
 
     @Rule
     public GuessTokopediaTestRule<MainParentActivity> mIntentsRule = new GuessTokopediaTestRule<>(
@@ -92,40 +88,6 @@ public class MainParentActivityTest {
 
     @Test
     public void testInitialUI() throws Exception {
-        startEmptyActivity();
-
-//        Thread.sleep(10_000);
-
-
-
-        // TODO locate bottom nav home, etc
-        ViewInteraction buttonHome = bottomNavViewTextMatcher(bottomNavViewMatcher(R.id.menu_home));
-        buttonHome.check(matches(withText("Home")));
-
-        ViewInteraction buttonFeed = bottomNavViewTextMatcher(bottomNavViewMatcher(R.id.menu_feed));
-        buttonHome.perform(click()).check(matches(withText("Feed")));
-
-        buttonHome.perform(click());
-
-        ViewInteraction buttonInbox = bottomNavViewTextMatcher(bottomNavViewMatcher(R.id.menu_inbox));
-        buttonHome.check(matches(withText("Inbox")));
-
-        ViewInteraction buttonKeranjang = bottomNavViewTextMatcher(bottomNavViewMatcher(R.id.menu_cart));
-        buttonHome.check(matches(withText("Keranjang")));
-
-        ViewInteraction buttonAkun = bottomNavViewTextMatcher(bottomNavViewMatcher(R.id.menu_account));
-        buttonHome.check(matches(withText("Akun")));
-
-
-
-        // TODO tap all nav bar button
-        // TODO verify go to all locations
-        // TODO tap toolbar then go back
-        // TODO check checked nav bar
-    }
-
-    @Test
-    public void testInitialUI2() throws Exception {
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -136,13 +98,14 @@ public class MainParentActivityTest {
 
         when(userSession.isLoggedIn()).thenReturn(true);
 
-//        mockAlreadyLogin();
-        mockAlreadyLogin2();
+        mockAlreadyLogin3();
 
         onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
-        Thread.sleep(10_000);
-
+        // TODO tap all nav bar button
+        // TODO verify go to all locations
+        // TODO tap toolbar then go back
+        // TODO check checked nav bar
     }
 
     private void prepareForFullSmartLockBundle() {
