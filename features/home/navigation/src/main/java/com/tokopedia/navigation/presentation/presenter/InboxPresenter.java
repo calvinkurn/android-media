@@ -36,9 +36,7 @@ public class InboxPresenter {
         getNotificationUseCase.execute(requestParams, new InboxSubscriber(this.inboxView));
     }
 
-    public void onResume() {
-        this.getInboxData();
-    }
+    public void onResume() { }
 
     public void onDestroy() {
         this.getNotificationUseCase.unsubscribe();

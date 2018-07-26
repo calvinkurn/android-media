@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.view;
 
+import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 
 import java.util.List;
@@ -9,6 +10,6 @@ import java.util.List;
  */
 public interface InboxView extends LoadDataView {
 
-    void onRenderInboxList(List<Inbox> inboxList);
+    void onRenderNotifINbox(NotificationEntity.Notification entity);
 
 }

@@ -9,7 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tokopedia.navigation.R;
 
+import com.tokopedia.navigation.data.entity.InboxEntity;
+import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
+import com.tokopedia.navigation.domain.model.Notification;
+import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +40,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
 
     public void add(Inbox item) {
         items.add(item);
+        notifyItemInserted(items.size() - 1);
     }
 
     public void add(Inbox item, int position) {
@@ -44,16 +49,25 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     }
 
     public void addAll(List<Inbox> items) {
-        for (Inbox item : items) {
-            add(item);
-        }
+        this.items.addAll(items);
+        notifyDataSetChanged();
     }
 
-    public void clear() {
-        if (items != null && !items.isEmpty()) {
-            notifyItemRangeRemoved(0, getItemCount());
-            items.clear();
+    public void updateValue(NotificationEntity.Notification entity) {
+        if (items != null && items.size() > 0) {
+            items.get(InboxFragment.CHAT_MENU)
+                    .setTotalBadge(entity.getChat().getUnreads());
+
+            items.get(InboxFragment.DISCUSSION_MENU)
+                    .setTotalBadge(entity.getInbox().getTalk());
+
+            items.get(InboxFragment.REVIEW_MENU)
+                    .setTotalBadge(entity.getInbox().getReview());
+
+            items.get(InboxFragment.HELP_MENU)
+                    .setTotalBadge(entity.getInbox().getTicket());
         }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -68,7 +82,9 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         holder.icon.setImageResource(item.getIcon());
         holder.title.setText(item.getTitle());
         holder.subtitle.setText(item.getSubtitle());
-        if (!item.getTotalBadge().isEmpty()) {
+        if (item.getTotalBadge() != null
+                && !item.getTotalBadge().isEmpty()
+                && !item.getTotalBadge().equalsIgnoreCase("0")) {
             holder.badge.setVisibility(View.VISIBLE);
             holder.badge.setText(item.getTotalBadge());
         } else {

@@ -8,6 +8,7 @@ import android.view.View;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
@@ -18,6 +19,7 @@ import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.searchbar.NotificationToolbar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,15 +62,25 @@ public class InboxFragment extends ParentFragment implements InboxView {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            adapter.clear();
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
+        adapter.addAll(getData());
         recyclerView.setAdapter(adapter);
+
+        presenter.getInboxData();
 
         adapter.setOnItemClickListener((view1, position) -> {
             getCallingIntent(position);
         });
+    }
+
+    private List<Inbox> getData() {
+        List<Inbox> inboxList = new ArrayList<>();
+        inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
+        inboxList.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
+        inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
+        inboxList.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
+        return inboxList;
     }
 
     private void intiInjector() {
@@ -143,7 +155,7 @@ public class InboxFragment extends ParentFragment implements InboxView {
     }
 
     @Override
-    public void onRenderInboxList(List<Inbox> inboxList) {
-        adapter.addAll(inboxList);
+    public void onRenderNotifINbox(NotificationEntity.Notification entity) {
+        adapter.updateValue(entity);
     }
 }
