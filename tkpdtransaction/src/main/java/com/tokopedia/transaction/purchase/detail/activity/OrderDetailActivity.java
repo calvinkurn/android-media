@@ -503,10 +503,9 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void trackShipment(String orderId, String trackingUrl) {
         String routingAppLink;
-        routingAppLink = ApplinkConst.ORDER_TRACKING;
+        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);;
         Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, orderId)
-                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
         RouteManager.route(this, routingAppLink);
     }

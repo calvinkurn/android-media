@@ -23,10 +23,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:lineSpacingExtra="5sp"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:lineSpacingExtra="@dimen/sp_5"
             android:text="@string/label_seller" />
 
         <TextView
@@ -35,9 +35,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
             android:layout_toEndOf="@id/tv_text_sent_by"
             android:layout_toRightOf="@id/tv_text_sent_by"
             android:lineSpacingExtra="5sp"
@@ -45,8 +45,8 @@
 
         <ImageView
             android:id="@+id/img_shop_badge"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_toRightOf="@+id/tv_shop_name"
@@ -85,7 +85,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="@dimen/dp_16"
             android:textColor="@color/medium_green"
             app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_24dp"
             tools:text="+3 Produk Lainnya" />
@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <include
             layout="@layout/item_recipient_address"
@@ -114,10 +114,10 @@
             android:layout_marginTop="@dimen/dp_8" />
 
         <View
-            android:layout_marginTop="@dimen/dp_8"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#e0e0e0" />
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@color/separator_color" />
 
     </LinearLayout>
 
@@ -150,8 +150,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
             android:text="@string/label_courier" />
 
         <TextView
@@ -159,14 +159,14 @@
             style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:background="@drawable/green_button_rounded_unify"
             android:foreground="?selectableItemBackground"
-            android:paddingBottom="9dp"
-            android:paddingLeft="27dp"
-            android:paddingRight="27dp"
-            android:paddingTop="9dp"
+            android:paddingBottom="@dimen/dp_9"
+            android:paddingLeft="@dimen/dp_27"
+            android:paddingRight="@dimen/dp_27"
+            android:paddingTop="@dimen/dp_9"
             android:text="@string/label_button_choose_courier"
             android:textColor="@color/white" />
 
@@ -187,7 +187,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -205,7 +205,7 @@
                         style="@style/TextMidNormalBlack70"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4sp"
+                        android:lineSpacingExtra="@dimen/sp_4"
                         tools:text="Next Day" />
 
                     <TextView
@@ -229,7 +229,7 @@
                         style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4sp"
+                        android:lineSpacingExtra="@dimen/sp_4"
                         tools:text="JNE Reg (Reguler)" />
 
                     <TextView
@@ -280,7 +280,7 @@
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_9"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8">
 
@@ -318,7 +318,7 @@
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_4"
             tools:visibility="visible">
@@ -332,7 +332,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dropshipper" />
+                android:text="@string/label_dropshipper_new" />
 
             <ImageView
                 android:id="@+id/img_dropshipper_info"
@@ -347,8 +347,8 @@
             android:id="@+id/ll_dropshipper_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/new_margin_med"
-            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
             android:layout_marginTop="@dimen/margin_ms"
             android:orientation="vertical"
             android:visibility="gone"
@@ -402,7 +402,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e0e0e0" />
+        android:background="@color/separator_color" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -429,13 +429,13 @@
 
             <ImageView
                 android:id="@+id/iv_detail_option_chevron"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
                 app:srcCompat="@drawable/ic_keyboard_arrow_down_24dp"
                 tools:ignore="ContentDescription" />
 
@@ -457,9 +457,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="84dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginBottom="@dimen/dp_84"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:gravity="end"
                 android:textColor="@color/medium_green"
                 android:visibility="gone"
