@@ -53,12 +53,12 @@ public interface CommonConstant {
     }
 
     interface WebLink {
-        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/membership";
-        String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/history";
-        String SEE_COUPON = WEB_DOMAIN_MOBILE + "tokopoints/kupon-saya/";
+        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
+        String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
+        String SEE_COUPON = WEB_DOMAIN_MOBILE + "tokopoints/mobile/kupon-saya/";
         String LUCKY_EGG_PAGE = WEB_DOMAIN_MOBILE + "tokopoints/hadiah";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
-        String EXCHANGE_COUPON = WEB_DOMAIN_MOBILE + "tokopoints/tukar-point";
-        String COUPON_DETAIL = WEB_DOMAIN_MOBILE + "tokopoints/detail/";
+        String EXCHANGE_COUPON = WEB_DOMAIN_MOBILE + "tokopoints/mobile/tukar-point";
+        String COUPON_DETAIL = WEB_DOMAIN_MOBILE + "tokopoints/mobile/detail/";
     }
 }

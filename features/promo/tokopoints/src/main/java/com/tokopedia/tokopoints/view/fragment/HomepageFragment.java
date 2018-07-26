@@ -195,8 +195,19 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     @Override
-    public void onSuccessPromos(TokoPointPromosEntity data) {
+    public void onSuccessPromos(@NonNull TokoPointPromosEntity data) {
         initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons());
+
+        if (data.getCoupon() != null && data.getCoupon().getCoupons() != null) {
+            TextView counterCoupon = getView().findViewById(R.id.text_count);
+            if (data.getCoupon().getCoupons().size() > 9) {
+                counterCoupon.setVisibility(View.VISIBLE);
+                counterCoupon.setText("9+");
+            } else if (data.getCoupon().getCoupons().size() > 0) {
+                counterCoupon.setVisibility(View.VISIBLE);
+                counterCoupon.setText(data.getCoupon().getTotalData());
+            }
+        }
     }
 
     @Override

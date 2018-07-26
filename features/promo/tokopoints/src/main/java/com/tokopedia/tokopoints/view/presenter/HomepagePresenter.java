@@ -123,7 +123,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     public void getPromos() {
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.PAGE, 1);
-        variables.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.HOMEPAGE_PAGE_SIZE);  //For home page max page will be 1
+        variables.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, 10);  //For home page max page will be 1
         variables.put(CommonConstant.GraphqlVariableKeys.SORT_ID, CommonConstant.DEFAULT_SORT_TYPE); // 1 for all catalog
         variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, CommonConstant.DEFAULT_CATEGORY_TYPE); // zero for no filter
         variables.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, 0); //zero for all catalog
@@ -256,7 +256,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
                 } else {
                     String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
-                    if(errorsMessage != null && errorsMessage.length > 0){
+                    if (errorsMessage != null && errorsMessage.length > 0) {
                         String title = errorsMessage[0];
                         getView().showRedeemFullError(item, title);
                     }
