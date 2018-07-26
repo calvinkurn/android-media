@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter;
 
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
@@ -21,6 +23,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener;
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +43,11 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     private ShopProductEtalaseListViewModel shopProductEtalaseListViewModel;
     private ShopProductEtalaseTitleViewModel shopProductEtalaseTitleViewModel;
 
-    //    private View promoView;
-//    private String promoUrl;
-
     private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
     private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
+
+    private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListViewHolderWeakReference;
+    private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListStickyWeakReference;
 
     public ShopProductAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
@@ -219,15 +222,56 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     }
 
     @Override
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        AbstractViewHolder abstractViewHolder = super.onCreateViewHolder(parent, viewType);
+        if (viewType == ShopProductEtalaseListViewHolder.LAYOUT &&
+                abstractViewHolder instanceof ShopProductEtalaseListViewHolder) {
+            shopProductEtalaseListViewHolderWeakReference = new WeakReference<>((ShopProductEtalaseListViewHolder) abstractViewHolder);
+        }
+        return abstractViewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        if (holder instanceof ShopProductEtalaseListViewHolder) {
+            Parcelable recyclerViewState = null;
+            try {
+                if (shopProductEtalaseListStickyWeakReference != null &&
+                        shopProductEtalaseListStickyWeakReference.get()!= null) {
+                    recyclerViewState = shopProductEtalaseListStickyWeakReference.get().getRecyclerViewState();
+                }
+            } catch (Throwable e) {
+                recyclerViewState = null;
+            }
+            ((ShopProductEtalaseListViewHolder)holder).setRecyclerViewState(recyclerViewState);
+        }
+        super.onBindViewHolder(holder, position);
+    }
+
+    @Override
     public RecyclerView.ViewHolder createStickyViewHolder(ViewGroup parent) {
         int stickyViewType = getItemViewType(getStickyHeaderPosition());
         View view = onCreateViewItem(parent, stickyViewType);
-        return shopProductAdapterTypeFactory.createViewHolder(view, stickyViewType);
+        AbstractViewHolder abstractViewHolder = shopProductAdapterTypeFactory.createViewHolder(view, stickyViewType);
+        if (abstractViewHolder instanceof ShopProductEtalaseListViewHolder) {
+            shopProductEtalaseListStickyWeakReference = new WeakReference<>((ShopProductEtalaseListViewHolder) abstractViewHolder);
+        }
+        return abstractViewHolder;
     }
 
     @Override
     public void bindSticky(RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof ShopProductEtalaseListViewHolder) {
+            Parcelable recyclerViewState = null;
+            try {
+                if (shopProductEtalaseListViewHolderWeakReference != null &&
+                        shopProductEtalaseListViewHolderWeakReference.get()!= null) {
+                    recyclerViewState = shopProductEtalaseListViewHolderWeakReference.get().getRecyclerViewState();
+                }
+            } catch (Throwable e) {
+                recyclerViewState = null;
+            }
+            ((ShopProductEtalaseListViewHolder)viewHolder).setRecyclerViewState(recyclerViewState);
             ((ShopProductEtalaseListViewHolder)viewHolder).bind(shopProductEtalaseListViewModel);
         }
     }

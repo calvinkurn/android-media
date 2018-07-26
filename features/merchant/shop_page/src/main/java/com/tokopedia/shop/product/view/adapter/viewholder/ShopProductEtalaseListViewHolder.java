@@ -65,8 +65,9 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
 
     @Override
     public void bind(ShopProductEtalaseListViewModel shopProductEtalaseListViewModel) {
-        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-
+        if (recyclerViewState == null) {
+            recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+        }
         etalaseChipAdapter.setEtalaseViewModelList(shopProductEtalaseListViewModel.getEtalaseModelList());
         String selectedEtalaseId = shopProductEtalaseListViewModel.getSelectedEtalaseId();
         etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
@@ -78,6 +79,14 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
         }
 
         goToSelectedPositionIfNeeded();
+    }
+
+    public void setRecyclerViewState(Parcelable recyclerViewState) {
+        this.recyclerViewState = recyclerViewState;
+    }
+
+    public Parcelable getRecyclerViewState() {
+        return recyclerView.getLayoutManager().onSaveInstanceState();
     }
 
     // scroll to selected position (only if the item is not visible)
