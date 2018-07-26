@@ -1,12 +1,14 @@
 package com.tokopedia.feedplus.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
@@ -23,6 +25,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
+    private FrameLayout feedPlusContainer;
+    private FrameLayout contentExploreContainer;
 
     public static FeedPlusContainerFragment newInstance() {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
@@ -35,7 +39,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
+        View view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
+        feedPlusContainer = view.findViewById(R.id.feed_plus_container);
+        contentExploreContainer = view.findViewById(R.id.content_explore_container);
+        return view;
     }
 
     @Override
@@ -59,7 +66,9 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (feedPlusFragment == null) {
             feedPlusFragment = FeedPlusFragment.newInstance();
         }
-        inflateFragment(feedPlusFragment);
+        feedPlusContainer.setVisibility(View.VISIBLE);
+        contentExploreContainer.setVisibility(View.GONE);
+        inflateFragment(R.id.feed_plus_container, feedPlusFragment);
     }
 
     @Override
@@ -67,14 +76,16 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (contentExploreFragment == null) {
             contentExploreFragment = ContentExploreFragment.newInstance();
         }
-        inflateFragment(contentExploreFragment);
+        feedPlusContainer.setVisibility(View.GONE);
+        contentExploreContainer.setVisibility(View.VISIBLE);
+        inflateFragment(R.id.content_explore_container, contentExploreFragment);
     }
 
     private void initView() {
         showFeedPlus();
     }
 
-    protected void inflateFragment(Fragment fragment) {
+    protected void inflateFragment(@IdRes int containerId, Fragment fragment) {
         if (fragment == null) {
             return;
         }
@@ -82,12 +93,12 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         String TAG = fragment.getClass().getSimpleName();
         if (getChildFragmentManager().findFragmentByTag(TAG) != null) {
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.container,
+                    .replace(containerId,
                             getChildFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getChildFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, TAG)
+                    .add(containerId, fragment, TAG)
                     .commit();
         }
     }

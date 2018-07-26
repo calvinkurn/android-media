@@ -216,7 +216,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getParentFragment() instanceof FeedPlusContainerListener) {
             containerListener = (FeedPlusContainerListener) getParentFragment();
         } else {
-            throw new IllegalStateException("getParentFragment() must be an instance of"
+            throw new IllegalStateException("getParentFragment() must be an instance of "
                     + FeedPlusContainerListener.class.getSimpleName());
         }
 

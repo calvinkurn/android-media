@@ -249,7 +249,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
         if (getParentFragment() instanceof ExploreContainerListener) {
             containerListener = (ExploreContainerListener) getParentFragment();
         } else {
-            throw new IllegalStateException("getParentFragment() must be an instance of"
+            throw new IllegalStateException("getParentFragment() must be an instance of "
                     + ExploreContainerListener.class.getSimpleName());
         }
         tabFeed.setOnClickListener(v -> {
