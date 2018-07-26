@@ -11,14 +11,6 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
 
-
-        <activity
-            android:name=".info.view.activity.ShopInfoActivity"
-            android:exported="true"
-            android:label="@string/shop_info_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
         <activity android:name=".page.view.activity.ShopWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

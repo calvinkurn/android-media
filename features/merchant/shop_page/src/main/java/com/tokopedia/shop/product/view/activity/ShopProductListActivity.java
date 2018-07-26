@@ -18,7 +18,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
-import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
@@ -82,7 +81,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
         return intent;
     }
 
-    @DeepLink(ShopAppLink.SHOP_ETALASE)
+    @DeepLink(ApplinkConst.SHOP_ETALASE)
     public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopProductListActivity.class)
@@ -92,7 +91,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID));
     }
 
-    @DeepLink(ShopAppLink.SHOP_ETALASE_WITH_KEYWORD_AND_SORT)
+    @DeepLink(ApplinkConst.SHOP_ETALASE_WITH_KEYWORD_AND_SORT)
     public static Intent getCallingIntentEtalaseSelectedWithKeywordAndSort(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopProductListActivity.class)

@@ -43,7 +43,7 @@ import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductNewViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
@@ -262,7 +262,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (shopProductAdapter.getItemViewType(position) == ShopProductNewViewHolder.LAYOUT) {
+                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
                     return LIST_SPAN_COUNT;
                 } else {
                     return GRID_SPAN_COUNT;

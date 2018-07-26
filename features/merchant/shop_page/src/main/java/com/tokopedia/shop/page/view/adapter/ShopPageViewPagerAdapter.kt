@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
-import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 
 class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
@@ -18,7 +18,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> ShopProductListLimitedFragment.createInstance(shopAttribution)
-            1 -> ShopInfoFragmentNew.createInstance()
+            1 -> ShopInfoFragment.createInstance()
             else -> Fragment()
         }
     }

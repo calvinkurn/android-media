@@ -26,7 +26,7 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
     private Parcelable recyclerViewState;
 
     private OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
-    private View ivEtalaseMore;
+    private View buttonEtalaseMore;
 
     public interface OnShopProductEtalaseListViewHolderListener{
         void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel);
@@ -39,12 +39,12 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
         findViews(itemView);
-        ivEtalaseMore.setOnClickListener(this);
+        buttonEtalaseMore.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        // click ivEtalaseMore
+        // click buttonEtalaseMore
         if (onShopProductEtalaseListViewHolderListener!= null) {
             onShopProductEtalaseListViewHolderListener.onEtalaseMoreListClicked();
         }
@@ -60,7 +60,7 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
         }
         recyclerView.setAdapter(etalaseChipAdapter);
 
-        ivEtalaseMore = view.findViewById(R.id.iv_etalase_more);
+        buttonEtalaseMore = view.findViewById(R.id.v_etalase_more);
     }
 
     @Override

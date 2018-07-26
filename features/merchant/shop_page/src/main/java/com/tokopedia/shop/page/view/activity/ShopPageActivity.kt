@@ -40,10 +40,9 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
-import com.tokopedia.shop.common.constant.ShopAppLink
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
-import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -104,7 +103,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     object DeepLinkIntents {
-        @DeepLink(ShopAppLink.SHOP)
+        @DeepLink(ApplinkConst.SHOP)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             return Intent(context, ShopPageActivity::class.java)
@@ -115,7 +114,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     .putExtras(extras)
         }
 
-        @DeepLink(ShopAppLink.SHOP_INFO)
+        @DeepLink(ApplinkConst.SHOP_INFO)
         @JvmStatic
         fun getCallingIntentInfoSelected(context: Context, extras: Bundle): Intent {
             return Intent(context, ShopPageActivity::class.java)
@@ -124,6 +123,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
                     .putExtras(extras)
+        }
+
+        @DeepLink(ApplinkConst.SHOP_NOTE)
+        @JvmStatic
+        fun getCallingIntentNoteSelected(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return Intent(context, ShopPageActivity::class.java)
+                    .setData(uri.build())
+                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
         }
     }
 
@@ -292,7 +302,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
                     .displayProduct(this)
 
-            (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragmentNew)
+            (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragment)
                     .updateShopInfo(this)
         }
         swipeToRefresh.isRefreshing = false

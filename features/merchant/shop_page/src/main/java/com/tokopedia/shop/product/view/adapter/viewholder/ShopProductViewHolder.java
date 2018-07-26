@@ -21,7 +21,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductViewModel> {
+public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_grid;
@@ -46,8 +46,8 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
     private boolean isFixWidth;
     private boolean isFeatured;
 
-    public ShopProductNewViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
-                                    boolean isFixWidth, boolean isFeatured) {
+    public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
+                                 boolean isFixWidth, boolean isFeatured) {
         super(itemView);
         this.isFixWidth = isFixWidth;
         this.isFeatured = isFeatured;
