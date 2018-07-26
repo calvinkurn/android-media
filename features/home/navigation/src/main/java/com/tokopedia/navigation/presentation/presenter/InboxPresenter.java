@@ -28,6 +28,9 @@ public class InboxPresenter {
     }
 
     public void getInboxData() {
+        if (this.inboxView == null)
+            return;
+
         this.inboxView.onStartLoading();
 
         RequestParams requestParams = RequestParams.create();

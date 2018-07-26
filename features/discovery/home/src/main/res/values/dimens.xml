@@ -30,4 +30,5 @@
     <dimen name="discount_background_radius">16dp</dimen>
     <dimen name="item_space">20dp</dimen>
     <dimen name="pading_4dp">4dp</dimen>
+    <dimen name="count_down_item_size">24dp</dimen>
 </resources>

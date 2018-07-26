@@ -199,7 +199,6 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.notification.presentation.activity.NotificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -2408,7 +2407,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoNotificationPage(Context context) {
-        return NotificationActivity.start(context);
+        return null;
     }
 
     @Override
@@ -2432,24 +2431,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getCartFragment() {
         return CartFragment.newInstance(CartFragment.class.getSimpleName());
-    }
-
-    public Intent getInboxChatIntent(Context context) {
-        return InboxChatActivity.getCallingIntent(context);
-    }
-
-
-    public Intent getInboxDiscussionIntent(Context context) {
-        return InboxTalkActivity.getCallingIntent(context);
-    }
-
-    public Intent getInboxReviewIntent(Context context) {
-        return InboxReputationActivity.getCallingIntent(context);
-    }
-
-
-    public Intent getInboxHelpIntent(Context context) {
-        return InboxTicketActivity.getCallingIntent(context);
     }
 
     @Override

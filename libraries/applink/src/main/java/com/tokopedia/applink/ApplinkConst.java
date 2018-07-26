@@ -114,6 +114,12 @@ public interface ApplinkConst {
 
     String FLIGHT = "tokopedia://pesawat";
 
+    String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
+    String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
+    String SELLER_CENTER = "tokopedia://seller/seller-center";
+    String TOPADS = "tokopedia://topads";
+
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
@@ -132,4 +138,6 @@ public interface ApplinkConst {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
     }
+
+    String CONTACT_US = "tokopedia://contact-us";
 }
