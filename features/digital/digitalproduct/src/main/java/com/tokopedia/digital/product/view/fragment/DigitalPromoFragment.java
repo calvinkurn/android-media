@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,6 +27,7 @@ import com.tokopedia.digital.product.view.adapter.BannerAdapter;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +39,10 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
 
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
+    private static final String EXTRA_BANNER_TITLE = "EXTRA_BANNER_TITLE";
+    private static final String EXTRA_OTHER_BANNER_TITLE = "EXTRA_OTHER_BANNER_TITLE";
+    private static final String EXTRA_BANNER_LIST = "EXTRA_BANNER_LIST";
+    private static final String EXTRA_OTHER_BANNER_LIST = "EXTRA_OTHER_BANNER_LIST";
 
     private RecyclerView rvPromo;
 
@@ -45,8 +51,25 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
 
     private String voucherCodeCopiedState;
 
+    private String bannerDataTitle;
+    private String otherBannerDataTitle;
+    private List<BannerData> bannerDataList;
+    private List<BannerData> otherBannerDataList;
+
     public static DigitalPromoFragment createInstance() {
         return new DigitalPromoFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            bannerDataTitle = savedInstanceState.getString(EXTRA_BANNER_TITLE);
+            bannerDataList = savedInstanceState.getParcelableArrayList(EXTRA_BANNER_LIST);
+            otherBannerDataTitle = savedInstanceState.getString(EXTRA_OTHER_BANNER_TITLE);
+            otherBannerDataList = savedInstanceState.getParcelableArrayList(EXTRA_OTHER_BANNER_LIST);
+        }
     }
 
     @Nullable
@@ -65,6 +88,16 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
         renderData();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(EXTRA_BANNER_TITLE, bannerDataTitle);
+        outState.putString(EXTRA_OTHER_BANNER_TITLE, otherBannerDataTitle);
+        outState.putParcelableArrayList(EXTRA_BANNER_LIST, (ArrayList<? extends Parcelable>) bannerDataList);
+        outState.putParcelableArrayList(EXTRA_OTHER_BANNER_LIST, (ArrayList<? extends Parcelable>) otherBannerDataList);
+    }
+
     public void setDigitalPromoConnector(DigitalPromoConnector digitalPromoConnector) {
         this.digitalPromoConnector = digitalPromoConnector;
     }
@@ -76,10 +109,22 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     }
 
     private void renderData() {
-        renderBannerListData(digitalPromoConnector.getBannerDataTitle(),
-                digitalPromoConnector.getBannerDataList());
-        renderOtherBannerListData(digitalPromoConnector.getOtherBannerDataTitle(),
-                digitalPromoConnector.getOtherBannerDataList());
+
+        if (bannerDataTitle == null) {
+            bannerDataTitle = digitalPromoConnector.getBannerDataTitle();
+        }
+        if (bannerDataList == null) {
+            bannerDataList = digitalPromoConnector.getBannerDataList();
+        }
+        if (otherBannerDataTitle == null) {
+            otherBannerDataTitle = digitalPromoConnector.getOtherBannerDataTitle();
+        }
+        if (otherBannerDataList == null) {
+            otherBannerDataList = digitalPromoConnector.getOtherBannerDataList();
+        }
+
+        renderBannerListData(bannerDataTitle, bannerDataList);
+        renderOtherBannerListData(otherBannerDataTitle, otherBannerDataList);
     }
 
     private void renderBannerListData(String title, List<BannerData> bannerDataList) {

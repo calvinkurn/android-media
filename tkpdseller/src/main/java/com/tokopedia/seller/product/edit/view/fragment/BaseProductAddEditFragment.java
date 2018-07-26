@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.edit.view.fragment;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
@@ -26,25 +24,20 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.product.edit.view.activity.ProductAddVideoActivity;
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.common.widget.LabelSwitch;
-import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddWholesaleActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
-import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditProductDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductChangeVariantPriceDialogFragment;
@@ -55,6 +48,7 @@ import com.tokopedia.seller.product.edit.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductManageViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductPriceViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
+import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
@@ -62,10 +56,10 @@ import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCatego
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
@@ -78,16 +72,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
-
-@RuntimePermissions
 public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         extends BaseDaggerFragment
         implements ProductAddView,
@@ -97,6 +81,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         ProductDescriptionViewHolder.Listener {
 
     public static final int DEFAULT_PARENT_STOCK_IF_VARIANT = 1;
+    public static final int REQUEST_CODE_ADD_PRODUCT_IMAGE = 3912;
+    public static final int REQUEST_CODE_EDIT_IMAGE = 3412;
     @Inject
     protected T presenter;
 
@@ -119,13 +105,12 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     private boolean hasOriginalVariantLevel1;
     private boolean hasOriginalVariantLevel2;
     private boolean hasLoadShopInfo;
+    private boolean officialStore;
 
     public interface Listener {
         void startUploadProduct(long productId);
 
         void startUploadProductWithShare(long productId);
-
-        void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void startUploadProductAndAddWithShare(Long productId);
 
@@ -206,11 +191,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         return view;
     }
 
-    protected boolean needHideShareAndAddMore(){
+    protected boolean needHideShareAndAddMore() {
         return false;
     }
 
-    private void hideShareAndAddMore(View view){
+    private void hideShareAndAddMore(View view) {
         view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
         view.findViewById(R.id.label_switch_share).setVisibility(View.GONE);
     }
@@ -243,7 +228,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         // if it has catalog, image is valid (because no image needed)
         // if no catalog, check stock, if the stock is not empty, it should have picture.
         return productInfoViewHolder.getCatalogId() > 0 ||
-                !currentProductViewModel.isProductStatusActive()||
+                !currentProductViewModel.isProductStatusActive() ||
                 productImageViewHolder.isDataValid();
     }
 
@@ -252,12 +237,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             presenter.getCategoryRecommendation(productName);
         }
     }
-
-    @Override
-    public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
-        listener.startAddWholeSaleDialog(currencyType, previousWholesalePrice, officialStore);
-    }
-
 
     // Clicked Part
     @Override
@@ -268,27 +247,13 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onAddImagePickerClicked(final int imagePosition) {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        ProductAddImageDialogFragment dialogFragment = ProductAddImageDialogFragment.newInstance(imagePosition);
-        dialogFragment.show(fm, ProductAddImageDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageAddListener(new ProductAddImageDialogFragment.OnImageAddListener() {
-            @Override
-            public void clickAddProductFromCamera(int position) {
-                BaseProductAddEditFragmentPermissionsDispatcher.goToCameraWithCheck(BaseProductAddEditFragment.this, imagePosition);
-            }
-
-            @Override
-            public void clickAddProductFromGallery(int position) {
-                BaseProductAddEditFragmentPermissionsDispatcher.goToGalleryWithCheck(BaseProductAddEditFragment.this, imagePosition);
-            }
-
-            @Override
-            public void clickAddProductFromInstagram(int position) {
-                int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragment.this,
-                        INSTAGRAM_SELECT_REQUEST_CODE, remainingEmptySlot);
-            }
-        });
+        String catalogId = "";
+        if(productInfoViewHolder.getCatalogId() > 0){
+            catalogId = String.valueOf(productInfoViewHolder.getCatalogId());
+        }
+        Intent intent = AddProductImagePickerBuilder.createPickerIntentWithCatalog(getContext(),
+                productImageViewHolder.getImagesSelectView().getImageStringList(), catalogId);
+        startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE);
     }
 
     @Override
@@ -299,20 +264,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         ((ProductAddImageEditProductDialogFragment) dialogFragment).setOnImageEditListener(new ProductAddImageEditProductDialogFragment.OnImageEditListener() {
 
             @Override
-            public void clickEditImagePathFromCamera(int position) {
-                GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), BaseProductAddEditFragment.this, position,
-                        true, 1, true);
-            }
-
-            @Override
-            public void clickEditImagePathFromGallery(int position) {
-                GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), BaseProductAddEditFragment.this, position, 1, true);
-            }
-
-            @Override
-            public void clickEditImagePathFromInstagram(int position) {
-                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragment.this,
-                        INSTAGRAM_SELECT_REQUEST_CODE, 1);
+            public void clickChangeImage(int position) {
+                onAddImagePickerClicked(position);
             }
 
             @Override
@@ -358,7 +311,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 if (imageSelectModel != null) {
                     String path = imageSelectModel.getUriOrPath();
                     if (!TextUtils.isEmpty(path) && !isEdittingDraft()) {
-                        FileUtils.deleteAllCacheTkpdFile(path);
+                        ImageUtils.deleteFileInTokopediaFolder(path);
                     }
                 }
                 imagesSelectView.removeImage();
@@ -380,17 +333,14 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onImageEditor(String uriOrPath) {
-        ArrayList<String> imageUrls = new ArrayList<>();
-        imageUrls.add(uriOrPath);
-        ImageEditorWatermarkActivity.start(getContext(),
-                BaseProductAddEditFragment.this, imageUrls,
-                !isEdittingDraft());
+        Intent editorIntent = AddProductImagePickerBuilder.createEditorIntent(getContext(), uriOrPath);
+        startActivityForResult(editorIntent, REQUEST_CODE_EDIT_IMAGE);
     }
 
     @Override
     public void onRemovePreviousPath(String uri) {
         if (!TextUtils.isEmpty(uri) && !isEdittingDraft()) {
-            FileUtils.deleteAllCacheTkpdFile(uri);
+            ImageUtils.deleteFileInTokopediaFolder(uri);
         }
     }
 
@@ -405,22 +355,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 }
             }
         });
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToGallery(int imagePosition) {
-        int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToCamera(int imagePosition) {
-        int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
-                true, remainingEmptySlot, true);
-
     }
 
     @Override
@@ -442,6 +376,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -451,6 +386,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             }).showRetrySnackbar();
             return;
         }
+
+        boolean hasWholesale = currentProductViewModel.getProductWholesale() != null && currentProductViewModel.getProductWholesale().size() > 0;
+
         Intent intent = ProductVariantDashboardActivity.getIntent(getActivity(),
                 productVariantByCatModelList,
                 currentProductViewModel.getProductVariant(),
@@ -462,7 +400,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 isEdittingDraft(),
                 currentProductViewModel.getProductSizeChart(),
                 hasOriginalVariantLevel1,
-                hasOriginalVariantLevel2);
+                hasOriginalVariantLevel2,
+                hasWholesale);
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -500,7 +439,19 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public boolean hasVariant() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         return currentProductViewModel.hasVariant();
+    }
+
+    @Override
+    public boolean hasWholesale() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
+        return currentProductViewModel.getProductWholesale() != null && currentProductViewModel.getProductWholesale().size() > 0;
+    }
+
+    @Override
+    public void changeAllPriceVariant(int currencyType, double currencyValue) {
+        currentProductViewModel.changePriceTo(currencyType, currencyValue);
     }
 
     @Override
@@ -532,9 +483,23 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         });
     }
 
+    @Override
+    public void startProductAddWholesaleActivity() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
+        ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList = (ArrayList<ProductWholesaleViewModel>) currentProductViewModel.getProductWholesale();
+        Intent intent = ProductAddWholesaleActivity.getIntent(getActivity(),
+                productWholesaleViewModelList,
+                (int) currentProductViewModel.getProductPriceCurrency(),
+                currentProductViewModel.getProductPrice(),
+                officialStore,
+                hasVariant());
+        startActivityForResult(intent, ProductPriceViewHolder.REQUEST_CODE_GET_PRODUCT_WHOLESALE);
+    }
+
     public void onChangeAllPriceVariantSubmit(int currencyType, double currencyValue) {
         currentProductViewModel.setProductPriceCurrency(productPriceViewHolder.getCurrencyType());
         currentProductViewModel.changePriceTo(currencyType, currencyValue);
+        currentProductViewModel.setProductWholesale(new ArrayList<ProductWholesaleViewModel>());
         productPriceViewHolder.renderData(currentProductViewModel);
     }
 
@@ -659,6 +624,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDeliveryInfoViewHolder.showViewFreeReturn(isFreeReturn);
 
         hasLoadShopInfo = true;
+        this.officialStore = officialStore;
     }
 
     public boolean isHasLoadShopInfo() {
@@ -694,7 +660,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public final void onResolutionImageCheckFailed(String uri) {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_image_resolution));
-        FileUtils.deleteAllCacheTkpdFile(uri);
+        ImageUtils.deleteFileInTokopediaFolder(uri);
     }
 
     @Override
@@ -708,7 +674,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onCatalogPicked(boolean isCatalogExist) {
-        if (valueIndicatorScoreModel.isHasCatalog()!= isCatalogExist) {
+        if (valueIndicatorScoreModel.isHasCatalog() != isCatalogExist) {
             valueIndicatorScoreModel.setHasCatalog(isCatalogExist);
             updateProductScoring();
         }
@@ -737,10 +703,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
     }
 
-    public final void addWholesaleItem(WholesaleModel wholesaleModel) {
-        productPriceViewHolder.addWholesaleItem(wholesaleModel);
-    }
-
     @Override
     public final void populateCategory(List<String> strings) {
         String[] stringArray = new String[strings.size()];
@@ -757,7 +719,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         for (int i = 0, sizei = imageSelectModelArrayList.size(); i < sizei; i++) {
             uriArrayList.add(imageSelectModelArrayList.get(i).getUriOrPath());
         }
-        FileUtils.deleteAllCacheTkpdFiles(uriArrayList);
+        ImageUtils.deleteFilesInTokopediaFolder(uriArrayList);
     }
 
     public void saveDraft(boolean isUploading) {
@@ -817,33 +779,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productImageViewHolder.onActivityResult(requestCode, resultCode, data);
         productManageViewHolder.onActivityResult(requestCode, resultCode, data);
         productDescriptionViewHolder.onActivityResult(requestCode, resultCode, data);
+        productPriceViewHolder.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    // Permission part
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        BaseProductAddEditFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showDeniedForExternalStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showRationaleForExternalStorage(final PermissionRequest request) {
-        request.proceed();
     }
 
     // View holder listener part
@@ -905,7 +842,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onVariantCountChange(boolean hasActiveVariant) {
-        if (hasActiveVariant!= valueIndicatorScoreModel.isVariantActive()) {
+        if (hasActiveVariant != valueIndicatorScoreModel.isVariantActive()) {
             valueIndicatorScoreModel.setVariantActive(hasActiveVariant);
             updateProductScoring();
         }
@@ -921,7 +858,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onImageResolutionChanged(long maxSize) {
-        if (valueIndicatorScoreModel.getImageResolution()!= maxSize) {
+        if (valueIndicatorScoreModel.getImageResolution() != maxSize) {
             valueIndicatorScoreModel.setImageResolution((int) maxSize);
             updateProductScoring();
         }
@@ -938,7 +875,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public void onTotalStockUpdated(int total) {
         //we need to update this in "realtime" because stock and total will be needed for variant immediately
-        if (currentProductViewModel!= null) {
+        if (currentProductViewModel != null) {
             currentProductViewModel.setProductStock(total);
         }
         boolean stockStatus = total > 0;
@@ -950,7 +887,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onStockStatusUpdated(boolean isActive) {
-        if (currentProductViewModel!= null) {
+        if (currentProductViewModel != null) {
             currentProductViewModel.setProductStatus(isActive);
         }
     }
@@ -965,7 +902,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public void onDescriptionTextChanged(String text) {
-        if (valueIndicatorScoreModel.getLengthDescProduct()!= text.length()) {
+        if (valueIndicatorScoreModel.getLengthDescProduct() != text.length()) {
             valueIndicatorScoreModel.setLengthDescProduct(text.length());
             updateProductScoring();
         }
@@ -1024,7 +961,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     @Override
     public List<ProductVideoViewModel> getVideoIdList() {
         if (currentProductViewModel == null || currentProductViewModel.getProductVideo() == null ||
-                currentProductViewModel.getProductVideo().size() == 0){
+                currentProductViewModel.getProductVideo().size() == 0) {
             return new ArrayList<>();
         }
         return currentProductViewModel.getProductVideo();

@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
 public class Review {
 
     public static final int INACTIVE_LIKE_DISLIKE = -1;
+    public static final int MAX_STAR = 5;
+    public static final int DIVIDER_MAX_STAR = 20;
     @SerializedName("review_id")
     @Expose
     private int reviewId;
@@ -156,5 +158,12 @@ public class Review {
 
     public int getLikeStatus() {
         return likeStatus;
+    }
+
+    public float getReviewStar() {
+        if(productRating > MAX_STAR){
+            return productRating / DIVIDER_MAX_STAR;
+        }
+        return productRating;
     }
 }

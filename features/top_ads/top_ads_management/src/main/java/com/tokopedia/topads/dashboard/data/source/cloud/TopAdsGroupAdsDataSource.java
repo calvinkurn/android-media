@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -15,7 +14,7 @@ import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
@@ -35,10 +34,10 @@ public class TopAdsGroupAdsDataSource {
     private final TopAdsSearchGroupMapper topAdsSearchGroupMapper;
     private final TopAdsDetailGroupMapper topAdsDetailGroupMapper;
     private final TopAdsDetailGroupDomainMapper topAdsDetailGroupDomainMapper;
-    private final TopAdsManagementApi topAdsManagementApi;
+    private final TopAdsOldManagementApi topAdsManagementApi;
     private final Context context;
 
-    public TopAdsGroupAdsDataSource(Context context, TopAdsManagementApi topAdsManagementApi,
+    public TopAdsGroupAdsDataSource(Context context, TopAdsOldManagementApi topAdsManagementApi,
                                     TopAdsSearchGroupMapper topAdsSearchGroupMapper,
                                     TopAdsDetailGroupMapper topAdsDetailGroupMapper,
                                     TopAdsDetailGroupDomainMapper topAdsDetailGroupDomainMapper) {

@@ -505,12 +505,10 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.discoverLogin();
             }
         }).showRetrySnackbar();
-        loginButton.setEnabled(false);
     }
 
     @Override
     public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> listProvider) {
-        loginButton.setEnabled(true);
         listProvider.add(2, getLoginPhoneNumberBean());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -542,7 +540,9 @@ public class LoginFragment extends BaseDaggerFragment
         return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
             @Override
             public void onErrorGetFacebookCredential(String errorMessage) {
-                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                if (isAdded() && getActivity() != null) {
+                    NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                }
             }
 
             @Override

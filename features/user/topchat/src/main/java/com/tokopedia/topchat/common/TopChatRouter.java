@@ -19,4 +19,6 @@ public interface TopChatRouter {
 
     void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>
             imageDesc, String title, String date);
+
+    boolean isEnabledGroupChat();
 }

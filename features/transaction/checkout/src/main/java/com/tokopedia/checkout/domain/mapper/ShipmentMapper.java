@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.domain.mapper;
 
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
@@ -42,6 +43,12 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
+
+        Donation donation = new Donation();
+        donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
+        donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
+        donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
+        dataResult.setDonation(donation);
 
         if (!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
             List<GroupAddress> groupAddressListResult = new ArrayList<>();
