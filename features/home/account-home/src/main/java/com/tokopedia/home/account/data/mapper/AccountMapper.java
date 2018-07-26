@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.presentation.view.InfoCardView;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -60,6 +61,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
     }
 
     private BuyerViewModel getBuyerModel(AccountModel accountModel) {
+        BuyerViewModel model = new BuyerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
         BuyerCardViewModel buyerCardViewModel = new BuyerCardViewModel();
@@ -89,48 +91,44 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokopoint,
+                R.drawable.ic_waiting_for_confirmation,
                 context.getString(R.string.label_menu_waiting_confirmation),
                 // TODO: 7/25/18 need applink
                 "tokopedia://home",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getBuyerOrder().getConfirmed()
         );
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_order_processed,
                 context.getString(R.string.label_menu_order_processed),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getBuyerOrder().getProcessed()
         );
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipping),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getBuyerOrder().getShipped()
         );
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_delivered),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getBuyerOrder().getArriveAtDestination()
         );
         menuGridItems.add(gridItem);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_shopping_transaction));
-        menuGrid.setLinkText(context.getString(R.string.label_menu_show_tx_history));
+        menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
         menuGrid.setApplinkUrl("tokopedia://buyer");
         menuGrid.setItems(menuGridItems);
         items.add(menuGrid);
@@ -145,28 +143,28 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
         menuGridItems = new ArrayList<>();
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
                 ApplinkConst.DIGITAL_ORDER,
                 0
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_deals,
                 context.getString(R.string.title_menu_deals),
                 ApplinkConst.DEALS_ORDER,
                 0
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
                 0
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_tokocash_green,
+                R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
                 // TODO: 7/25/18 need applink
                 "",
@@ -183,8 +181,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_last_seen));
         menuList.setMenuDescription(context.getString(R.string.label_menu_last_seen));
-        // TODO: 7/25/18 need applink
-        menuList.setApplink("");
+        menuList.setApplink(ApplinkConst.RECENT_VIEW);
         items.add(menuList);
 
         menuList = new MenuListViewModel();
@@ -197,18 +194,17 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
         menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
-        // TODO: 7/25/18 need applink
-        menuList.setApplink("");
+        menuList.setApplink("https://pulsa.tokopedia.com/subscribe/");
         items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
         menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
-        // TODO: 7/25/18 need applink
-        menuList.setApplink("");
+        menuList.setApplink("https://pulsa.tokopedia.com/favorite-list/");
         items.add(menuList);
 
         InfoCardViewModel infoCard = new InfoCardViewModel();
+        infoCard.setIconRes(R.drawable.ic_tokocash_big);
         infoCard.setMainText(context.getString(R.string.title_menu_wallet_referral));
         infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
         infoCard.setApplink(ApplinkConst.REFERRAL);
@@ -221,17 +217,114 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_resolution_center));
         menuList.setMenuDescription(context.getString(R.string.label_menu_resolution_center));
-        // TODO: 7/25/18 need applink
-        menuList.setApplink("");
+        menuList.setApplink(ApplinkConst.CONTACT_US);
         items.add(menuList);
 
-        BuyerViewModel model = new BuyerViewModel();
         model.setItems(items);
 
         return model;
     }
 
     private SellerViewModel getSellerModel(AccountModel accountModel) {
-        return new SellerViewModel();
+        SellerViewModel sellerViewModel = new SellerViewModel();
+        List<ParcelableViewModel> items = new ArrayList<>();
+
+        MenuGridViewModel menuGrid = new MenuGridViewModel();
+        menuGrid.setTitle(context.getString(R.string.title_menu_sales));
+        menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
+        menuGrid.setApplinkUrl("tokopedia://seller");
+        List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
+
+        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_new_order,
+                context.getString(R.string.label_menu_new_order),
+                // TODO: 7/25/18 need applink
+                "tokopedia://home",
+                // TODO: 7/25/18 need notification counter
+                0
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_ready_to_ship,
+                context.getString(R.string.label_menu_ready_to_ship),
+                // TODO: 7/25/18 need applink
+                "tokopedia://buyer/payment",
+                // TODO: 7/25/18 need notification counter
+                0
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_shipped,
+                context.getString(R.string.label_menu_shipped),
+                // TODO: 7/25/18 need applink
+                "tokopedia://buyer/payment",
+                // TODO: 7/25/18 need notification counter
+                0
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_delivered,
+                context.getString(R.string.label_menu_arrive_at_destination),
+                // TODO: 7/25/18 need applink
+                "tokopedia://buyer/payment",
+                // TODO: 7/25/18 need notification counter
+                0
+        );
+        menuGridItems.add(gridItem);
+
+        menuGrid.setItems(menuGridItems);
+        items.add(menuGrid);
+
+        MenuTitleViewModel menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_product));
+        items.add(menuTitle);
+
+        MenuListViewModel menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_product_list));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_product_list));
+        menuList.setApplink(ApplinkConst.PRODUCT_MANAGE);
+        items.add(menuList);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_product_draft));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_product_draft));
+        menuList.setApplink(ApplinkConst.PRODUCT_DRAFT);
+        items.add(menuList);
+
+        menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_other_features));
+        items.add(menuTitle);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_opportunity));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_opportunity));
+        // TODO: 7/25/18 applink
+        menuList.setApplink("tokopedia://product/list");
+        items.add(menuList);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_topads));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_topads));
+        // TODO: 7/25/18 applink
+        menuList.setApplink("tokopedia://product/list");
+        items.add(menuList);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_seller_center));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_seller_center));
+        // TODO: 7/25/18 applink
+        menuList.setApplink("tokopedia://product/list");
+        items.add(menuList);
+
+        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
+        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
+        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
+        infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
+        infoCardViewModel.setApplink("tokopedia://loan");
+        items.add(infoCardViewModel);
+
+        sellerViewModel.setItems(items);
+        return sellerViewModel;
     }
 }

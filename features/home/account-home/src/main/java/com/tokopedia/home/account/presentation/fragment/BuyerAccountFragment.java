@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.BuyerAccountComponent;
@@ -37,7 +38,7 @@ import javax.inject.Inject;
 /**
  * @author okasurya on 7/16/18.
  */
-public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAccount.View, AccountTypeFactory.Listener {
+public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAccount.View, AccountTypeFactory.Listener {
     public static final String TAG = BuyerAccountFragment.class.getSimpleName();
     private static final String BUYER_DATA = "buyer_data";
 
@@ -89,40 +90,36 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     }
 
     @Override
-    public void loadData(List<? extends Visitable> data) {
-        if(data != null) {
-            Log.d("okasurya", TAG + ".loadData" + data.get(0).toString());
-            adapter.addMoreData(data);
+    public void loadData(List<? extends Visitable> visitables) {
+        if(visitables != null) {
+            adapter.clearAllElements();
+            adapter.setElement(visitables);
         }
     }
 
     @Override
     public void onTokopediaPayLinkClicked() {
-        if(getContext() != null) {
-            RouteManager.route(getContext(), "tokopedia://wallet");
-        }
+        openApplink(ApplinkConst.WALLET_HOME);
     }
 
     @Override
     public void onMenuGridItemClicked(MenuGridItemViewModel item) {
-
+        openApplink(item.getApplink());
     }
 
     @Override
     public void onMenuGridLinkClicked(MenuGridViewModel item) {
-
+        openApplink(item.getApplinkUrl());
     }
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
-
+        openApplink(item.getApplink());
     }
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
-        if(getContext() != null && !TextUtils.isEmpty(item.getApplink())) {
-            RouteManager.route(getContext(), item.getApplink());
-        }
+        openApplink(item.getApplink());
     }
 
     private void initInjector() {
