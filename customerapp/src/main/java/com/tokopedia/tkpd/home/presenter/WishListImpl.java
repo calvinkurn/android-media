@@ -1,10 +1,15 @@
 package com.tokopedia.tkpd.home.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -15,21 +20,27 @@ import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
 import com.tokopedia.core.network.entity.wishlist.WishlistPaging;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
 import com.tokopedia.tkpd.home.wishlist.WishlistViewModelMapper;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
+import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 
 import org.parceler.Parcels;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -273,25 +284,43 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void addToCart(Context context, String productId) {
+    public void addToCart(Activity activity, String productId) {
         for (int i = 0; i < dataWishlist.size(); i++) {
             if (productId.equals(dataWishlist.get(i).getId())) {
                 Wishlist dataDetail = dataWishlist.get(i);
-
-                ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                        .setImageUri(dataDetail.getImageUrl())
-                        .setMinOrder(dataDetail.getMinimumOrder())
-                        .setProductId(dataDetail.getId())
-                        .setProductName(dataDetail.getName())
-                        .setShopId(dataDetail.getShop().getId())
-                        .setPrice(dataDetail.getPriceFmt()).build();
-                context.startActivity(
-                        TransactionAddToCartRouter.createInstanceAddToCartActivity(context, pass)
-                );
-
+                routeToNewCheckout(activity, dataDetail);
                 return;
             }
         }
+    }
+
+    private void routeToNewCheckout(Activity activity, Wishlist dataDetail) {
+        wishListView.showProgressDialog();
+        ((TransactionRouter) activity.getApplication()).addToCartProduct(
+                new AddToCartRequest.Builder()
+                        .productId(Integer.parseInt(dataDetail.getId()))
+                        .notes("")
+                        .quantity(dataDetail.getMinimumOrder())
+                        .shopId(Integer.parseInt(dataDetail.getShop().getId()))
+                        .build()
+        ).subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(addToCartSubscriber(dataDetail));
+    }
+
+    private void routeToOldCheckout(Activity activity, Wishlist dataDetail) {
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setImageUri(dataDetail.getImageUrl())
+                .setMinOrder(dataDetail.getMinimumOrder())
+                .setProductId(dataDetail.getId())
+                .setProductName(dataDetail.getName())
+                .setShopId(dataDetail.getShop().getId())
+                .setPrice(dataDetail.getPriceFmt()).build();
+
+        activity.startActivity(
+                TransactionAddToCartRouter.createInstanceAddToCartActivity(activity, pass)
+        );
     }
 
     @Override
@@ -360,7 +389,7 @@ public class WishListImpl implements WishList {
                     wishListView.displayLoadMore(false);
                 }
                 wishListView.setPullEnabled(true);
-                if(response.body().getWishlist().size() == 0){
+                if (response.body().getWishlist().size() == 0) {
                     wishListView.setEmptyState();
                 }
             }
@@ -418,7 +447,7 @@ public class WishListImpl implements WishList {
     }
 
     private void sendMoEngageTracker(String productId) {
-        if(productId != null) {
+        if (productId != null) {
             for (int i = 0; i < dataWishlist.size(); i++) {
                 if (dataWishlist.get(i) != null) {
                     if (productId.equals(dataWishlist.get(i).getId())) {
@@ -440,7 +469,7 @@ public class WishListImpl implements WishList {
             ProductItem product = new ProductItem();
             product.setId(wishlists.get(i).getId());
             product.setImgUri(wishlists.get(i).getImageUrl());
-            product.setIsNewGold(wishlists.get(i).getShop().getIsGoldMerchant() ? 1 : 0);
+            product.setIsNewGold(wishlists.get(i).getShop().isGoldMerchant() ? 1 : 0);
             product.setName(wishlists.get(i).getName());
             product.setPrice(wishlists.get(i).getPriceFmt());
             product.setShop(wishlists.get(i).getShop().getName());
@@ -449,12 +478,12 @@ public class WishListImpl implements WishList {
             product.setIsAvailable(wishlists.get(i).getIsAvailable());
             product.setWholesale(wishlists.get(i).getWholesale().size() > 0 ? "1" : "0");
             product.setPreorder(wishlists.get(i).getIsPreOrder() ? "1" : "0");
-            product.setIsGold(wishlists.get(i).getShop().getIsGoldMerchant() ? "1" : "0");
+            product.setIsGold(wishlists.get(i).getShop().isGoldMerchant() ? "1" : "0");
             product.setLuckyShop(wishlists.get(i).getShop().getLuckyMerchant());
             product.setBadges(wishlists.get(i).getBadges());
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
-            product.setOfficial(wishlists.get(i).getShop().getOfficial());
+            product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(product);
         }
 
@@ -518,4 +547,50 @@ public class WishListImpl implements WishList {
             return new WishlistViewModelMapper(dataWishlist).getWishlistData();
         }
     }
+
+    private Subscriber<AddToCartResult> addToCartSubscriber(Wishlist dataDetail) {
+        return new Subscriber<AddToCartResult>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                wishListView.dismissProgressDialog();
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    /* Ini kalau ga ada internet */
+                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    /* Ini kalau timeout */
+                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else if (e instanceof ResponseErrorException) {
+                    /* Ini kalau error dari API kasih message error */
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else if (e instanceof ResponseDataNullException) {
+                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else if (e instanceof HttpErrorException) {
+                    /* Ini Http error, misal 403, 500, 404,
+                     code http errornya bisa diambil
+                     e.getErrorCode */
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else if (e instanceof ResponseCartApiErrorException) {
+                    wishListView.showAddToCartMessage(e.getMessage());
+                } else {
+                    /* Ini diluar dari segalanya hahahaha */
+                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(AddToCartResult addToCartResult) {
+                wishListView.dismissProgressDialog();
+                wishListView.showAddToCartMessage(addToCartResult.getMessage());
+                wishListView.sendAddToCartAnalytics(dataDetail, addToCartResult);
+            }
+        };
+    }
+
 }

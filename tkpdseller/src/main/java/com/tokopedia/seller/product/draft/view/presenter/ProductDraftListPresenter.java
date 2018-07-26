@@ -17,6 +17,6 @@ public abstract class ProductDraftListPresenter extends BaseDaggerPresenter<Prod
 
     public abstract void fetchAllDraftDataWithUpdateUploading();
     public abstract void fetchAllDraftData();
-    public abstract void deleteProductDraft(long draftId);
+    public abstract void deleteProductDraft(long draftProductId);
     public abstract void clearAllDraftData();
 }

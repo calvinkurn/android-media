@@ -23,4 +23,5 @@ public interface PromoApi {
 
     @GET(TkpdBaseURL.Promo.PATH_PROMO_LIST)
     Observable<Response<List<PromoResponse>>> getPromoList(@QueryMap Map<String, String> params);
+
 }

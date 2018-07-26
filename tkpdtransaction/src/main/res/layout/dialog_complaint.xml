@@ -18,19 +18,19 @@
         android:id="@+id/complaint_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:text="@string/string_complain_body"
         android:textColor="@color/color_complain_body"
         android:textSize="@dimen/text_size_medium" />
 
     <LinearLayout
         android:id="@+id/layout_free_return"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_free_return"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <ImageView
             android:layout_width="30dp"
@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
             android:text="@string/string_complain_body"/>
 
     </LinearLayout>
@@ -50,7 +50,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal">
 
         <Button

@@ -20,7 +20,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 
@@ -192,14 +193,13 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     }
 
     private boolean isPriceValid() {
-        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(
-                spinnerCounterInputViewPrice.getContext(),
-                Integer.parseInt(spinnerCounterInputViewPrice.getSpinnerValue()), isOfficialStore);
-
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-        if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
-            spinnerCounterInputViewPrice.setCounterError(spinnerCounterInputViewPrice.getContext().getString(R.string.product_error_product_price_not_valid,
-                    numberFormat.format(minMaxPrice.first), numberFormat.format(minMaxPrice.second)));
+        double priceValue = getPriceValue();
+        int currencyType = getCurrencyType();
+        if (!ProductPriceRangeUtils.isPriceValid(priceValue, currencyType, isOfficialStore )) {
+            spinnerCounterInputViewPrice.setCounterError(
+                    spinnerCounterInputViewPrice.getContext().getString(R.string.product_error_product_price_not_valid,
+                            ProductPriceRangeUtils.getMinPriceString(currencyType, isOfficialStore),
+                            ProductPriceRangeUtils.getMaxPriceString(currencyType, isOfficialStore)));
             return false;
         }
         spinnerCounterInputViewPrice.setCounterError(null);
@@ -208,6 +208,15 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
 
     public double getPriceValue() {
         return spinnerCounterInputViewPrice.getCounterValue();
+    }
+
+    public int getCurrencyType() {
+        if (spinnerCounterInputViewPrice.getSpinnerTextView().getSpinnerValue()
+                .equalsIgnoreCase(spinnerCounterInputViewPrice.getContext().getString(R.string.product_currency_value_idr))) {
+            return CurrencyTypeDef.TYPE_IDR;
+        } else {
+            return CurrencyTypeDef.TYPE_USD;
+        }
     }
 
     private String formatDecimal(double productPrice) {

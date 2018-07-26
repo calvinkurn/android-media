@@ -26,11 +26,11 @@ import com.tokopedia.seller.base.domain.interactor.SaveDatePickerUseCase;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenterImpl;
 import com.tokopedia.gm.common.di.scope.GMScope;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -87,8 +87,8 @@ public class GMModule {
 
     @GMScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeApi.class);
+    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeProductApi.class);
     }
     @Provides
     @GMScope

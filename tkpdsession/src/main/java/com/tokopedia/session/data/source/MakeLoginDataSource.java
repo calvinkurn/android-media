@@ -1,13 +1,13 @@
 package com.tokopedia.session.data.source;
 
-import android.util.Log;
-
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
+
+import java.util.Iterator;
+import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -29,11 +29,20 @@ public class MakeLoginDataSource {
         this.sessionHandler = sessionHandler;
     }
 
-    public Observable<MakeLoginDomain> makeLogin(TKPDMapParam<String, Object> parameters) {
+    public Observable<MakeLoginDomain> makeLogin(Map<String, Object> parameters) {
         return accountsService.getApi()
-                .makeLogin(parameters)
+                .makeLogin(convert(parameters))
                 .map(makeLoginMapper)
                 .doOnNext(saveToCache());
+    }
+
+    private static Map<String, String> convert(Map<String, Object> params){
+        Map<String, String> newParams = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
+        for(Iterator<String> key = params.keySet().iterator(); key.hasNext(); ){
+            String next = key.next();
+            newParams.put(next, params.get(next).toString());
+        }
+        return newParams;
     }
 
     private Action1<MakeLoginDomain> saveToCache() {
@@ -54,6 +63,7 @@ public class MakeLoginDataSource {
                 }else{
                     sessionHandler.setTempLoginName(makeLoginDomain.getFullName());
                     sessionHandler.setTempLoginSession(String.valueOf(makeLoginDomain.getUserId()));
+                    sessionHandler.setIsMSISDNVerified(makeLoginDomain.isMsisdnVerified());
                 }
             }
         };

@@ -53,7 +53,7 @@
             android:id="@+id/gm_statistic_transaction_range_compare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small" />
+            android:layout_marginLeft="@dimen/dp_10" />
     </LinearLayout>
 
     <HorizontalScrollView

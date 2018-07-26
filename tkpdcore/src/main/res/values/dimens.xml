@@ -10,7 +10,6 @@
     <dimen name="fontvl">25sp</dimen>
     <dimen name="font_large">18sp</dimen>
     <dimen name="font_medium">16sp</dimen>
-    <dimen name="font_small">14sp</dimen>
     <dimen name="fontvs">12sp</dimen>
     <dimen name="fontvvs">10sp</dimen>
     <dimen name="fontvvvs">8sp</dimen>
@@ -256,4 +255,6 @@
     <dimen name="space_extra_sm">5sp</dimen>
     <dimen name="space_extra_med">7sp</dimen>
     <dimen name="separator_size">0.5dp</dimen>
+
+
 </resources>

@@ -27,7 +27,6 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;

@@ -35,7 +35,7 @@
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginLeft="@dimen/margin_med"
+                android:layout_marginLeft="@dimen/dp_20"
                 android:tint="@color/colorGreen"
                 app:srcCompat="@drawable/ic_thumb_up_black_24dp" />
 
@@ -55,8 +55,8 @@
                 android:id="@+id/tv_promo_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/new_margin_med"
-                android:layout_marginRight="@dimen/margin_med"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_20"
                 android:text="@string/edit"
                 android:textStyle="bold"
                 android:textColor="@color/blue_link"
@@ -66,8 +66,8 @@
                 android:id="@+id/iv_promo_desc_close"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/new_margin_med"
-                android:layout_marginRight="@dimen/margin_med"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_20"
                 app:srcCompat="@drawable/cabs_cross_white"
                 android:tint="@color/grey_900"
                 android:visibility="gone" />

@@ -18,6 +18,15 @@ public class ProductCartPass implements Parcelable {
     private String shopId;
     private String price;
     private String notes;
+    private String categoryId;
+    private String shopName;
+    private String categoryLevelName;
+    private String shopType;
+    private String trackerAttribution;
+    private String listName;
+    private int orderQuantity;
+    private boolean skipToCart;
+    private String sourceAtc;
 
     public ProductCartPass() {
     }
@@ -94,6 +103,54 @@ public class ProductCartPass implements Parcelable {
         this.notes = notes;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getCategoryLevelName() {
+        return categoryLevelName;
+    }
+
+    public void setCategoryLevelName(String categoryLevelName) {
+        this.categoryLevelName = categoryLevelName;
+    }
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
+    }
+
+    public String getTrackerAttribution() {
+        return trackerAttribution;
+    }
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    public String getListName() {
+        return listName;
+    }
+
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
+
     protected ProductCartPass(Parcel in) {
         productId = in.readString();
         productName = in.readString();
@@ -104,6 +161,14 @@ public class ProductCartPass implements Parcelable {
         shopId = in.readString();
         price = in.readString();
         notes = in.readString();
+        categoryId = in.readString();
+        shopName = in.readString();
+        categoryLevelName = in.readString();
+        shopType = in.readString();
+        trackerAttribution = in.readString();
+        listName = in.readString();
+        orderQuantity = in.readInt();
+        sourceAtc = in.readString();
     }
 
 
@@ -123,6 +188,14 @@ public class ProductCartPass implements Parcelable {
         dest.writeString(shopId);
         dest.writeString(price);
         dest.writeString(notes);
+        dest.writeString(categoryId);
+        dest.writeString(shopName);
+        dest.writeString(categoryLevelName);
+        dest.writeString(shopType);
+        dest.writeString(trackerAttribution);
+        dest.writeString(listName);
+        dest.writeInt(orderQuantity);
+        dest.writeString(sourceAtc);
     }
 
     @SuppressWarnings("unused")
@@ -139,6 +212,29 @@ public class ProductCartPass implements Parcelable {
                 }
             };
 
+    public int getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(int orderQuantity) {
+        this.orderQuantity = orderQuantity;
+    }
+
+    public boolean isSkipToCart() {
+        return skipToCart;
+    }
+
+    public void setSkipToCart(boolean skipToCart) {
+        this.skipToCart = skipToCart;
+    }
+
+    public void setSourceAtc(String sourceAtc) {
+        this.sourceAtc = sourceAtc;
+    }
+
+    public String getSourceAtc() {
+        return sourceAtc;
+    }
 
     public static class Builder {
         private String productId;
@@ -150,6 +246,15 @@ public class ProductCartPass implements Parcelable {
         private String shopId;
         private String price;
         private String notes;
+        private String categoryId;
+        private String shopName;
+        private String categoryLevelName;
+        private String shopType;
+        private String homeAttribution;
+        private String listName;
+        private int orderQuantity;
+        private boolean isSkipToCart;
+        private String sourceAtc;
 
         private Builder() {
         }
@@ -203,6 +308,51 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
+        public Builder setCategoryId(String categoryId) {
+            this.categoryId = categoryId;
+            return this;
+        }
+
+        public Builder setShopName(String shopName) {
+            this.shopName = shopName;
+            return this;
+        }
+
+        public Builder setCategoryLevelName(String categoryLevelName) {
+            this.categoryLevelName = categoryLevelName;
+            return this;
+        }
+
+        public Builder setShopType(String shopType) {
+            this.shopType = shopType;
+            return this;
+        }
+
+        public Builder setHomeAttribution(String shopType) {
+            this.homeAttribution = shopType;
+            return this;
+        }
+
+        public Builder setListName(String shopType) {
+            this.listName = shopType;
+            return this;
+        }
+
+        public Builder setOrderQuantity(int orderQuantity) {
+            this.orderQuantity = orderQuantity;
+            return this;
+        }
+
+        public Builder setSkipToCart(boolean skipToCart) {
+            this.isSkipToCart = skipToCart;
+            return this;
+        }
+
+        public Builder setSourceAtc(String sourceAtc) {
+            this.sourceAtc = sourceAtc;
+            return this;
+        }
+
         public Builder but() {
             return aProductCartPass()
                     .setProductId(productId)
@@ -213,7 +363,15 @@ public class ProductCartPass implements Parcelable {
                     .setWeight(weight)
                     .setShopId(shopId)
                     .setPrice(price)
-                    .setNotes(notes);
+                    .setNotes(notes)
+                    .setCategoryId(categoryId)
+                    .setShopName(shopName)
+                    .setCategoryLevelName(categoryLevelName)
+                    .setShopType(shopType)
+                    .setHomeAttribution(homeAttribution)
+                    .setListName(listName)
+                    .setOrderQuantity(orderQuantity)
+                    .setSkipToCart(isSkipToCart);
 
         }
 
@@ -228,6 +386,15 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setShopId(shopId);
             productCartPass.setPrice(price);
             productCartPass.setNotes(notes);
+            productCartPass.setCategoryId(categoryId);
+            productCartPass.setShopName(shopName);
+            productCartPass.setCategoryLevelName(categoryLevelName);
+            productCartPass.setShopType(shopType);
+            productCartPass.setTrackerAttribution(homeAttribution);
+            productCartPass.setListName(listName);
+            productCartPass.setOrderQuantity(orderQuantity);
+            productCartPass.setSkipToCart(isSkipToCart);
+            productCartPass.setSourceAtc(sourceAtc);
             return productCartPass;
         }
     }

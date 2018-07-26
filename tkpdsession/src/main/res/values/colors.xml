@@ -21,6 +21,8 @@
         <item>@color/green_100</item>
     </array>
 
+    <color name="red_error">#d50000</color>
+
     <color name="grey_background">#f3f3f3</color>
     <color name="separator_color">#e0e0e0</color>
 

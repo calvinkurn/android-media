@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/med_dp"
         android:gravity="center"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:text="@string/text_complaint_dialog" />
 
     <LinearLayout

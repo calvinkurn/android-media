@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.etalase.view.adapter;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,22 +22,32 @@ import java.util.List;
 
 public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
 
+    private final EtalasePickerAdapterListener listener;
     private List<EtalaseViewModel> data = new ArrayList<>();
     private List<EtalaseViewModel> dataRendered = new ArrayList<>();
-    private final EtalasePickerAdapterListener listener;
     private long selectedEtalase;
     private String query = "";
     private boolean hasNextPage;
     private int page = 1;
+    @LayoutRes
+    private int customLayoutRes = -1;
 
     public EtalasePickerAdapter(EtalasePickerAdapterListener listener) {
         this.listener = listener;
     }
 
+    public void setCustomLayoutRes(int customLayoutRes) {
+        this.customLayoutRes = customLayoutRes;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == MyEtalaseItemViewModel.LAYOUT) {
-            return setMyEtalaseItemViewHolder(parent, viewType);
+            if (customLayoutRes > 0) {
+                return setMyEtalaseItemViewHolder(parent, customLayoutRes);
+            } else {
+                return setMyEtalaseItemViewHolder(parent, viewType);
+            }
         } else {
             return super.onCreateViewHolder(parent, viewType);
         }

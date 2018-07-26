@@ -104,7 +104,7 @@
             android:text="Transaksi Sukses"
             android:gravity="center_horizontal"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
 
         <TextView
             android:id="@+id/total_transaction"
@@ -137,7 +137,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/no_transaction"
             android:text="Message Here"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:padding="@dimen/padding_small"/>
 

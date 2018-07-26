@@ -33,13 +33,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +70,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     public static final int TAB_SHOP_SUGGESTION = 1;
     public static final int TAB_PRODUCT_SUGGESTION = 0;
     public static final int TAB_DEFAULT_SUGGESTION = TAB_PRODUCT_SUGGESTION;
+    private static final long IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY = 600;
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -74,13 +84,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private EditTextCompat mSearchSrcTextView;
     private ImageButton mBackBtn;
     private ImageButton mVoiceBtn;
+    private ImageButton mImageSearchButton;
     private ImageButton mEmptyBtn;
-    private RelativeLayout mSearchTopBar;
+    private LinearLayout mSearchTopBar;
     private LinearLayout mSearchContainer;
     private CharSequence mOldQueryText;
     private CharSequence mUserQuery;
 
     private OnQueryTextListener mOnQueryChangeListener;
+    private ImageSearchClickListener mImageSearchClickListener;
     private SearchViewListener mSearchViewListener;
     private AppCompatActivity activity;
     private boolean finishOnClose = false;
@@ -90,12 +102,16 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private boolean ellipsize = false;
 
     private boolean allowVoiceSearch;
+    private boolean allowImageSearch;
     private Drawable suggestionIcon;
     private boolean copyText = false;
     private Context mContext;
     private CompositeSubscription compositeSubscription;
     private Subscription querySubscription;
     private QueryListener queryListener;
+    private ShowCaseDialog showCaseDialog;
+    private RemoteConfig remoteConfig;
+    private boolean showShowCase = false;
 
     private interface QueryListener {
         void onQueryChanged(String query);
@@ -194,6 +210,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 setVoiceIcon(a.getDrawable(R.styleable.DiscoverySearchView_searchVoiceIcon));
             }
 
+            if (a.hasValue(R.styleable.DiscoverySearchView_searchImageIcon)) {
+                setImageIcon(a.getDrawable(R.styleable.DiscoverySearchView_searchImageIcon));
+            }
+
             if (a.hasValue(R.styleable.DiscoverySearchView_searchCloseIcon)) {
                 setCloseIcon(a.getDrawable(R.styleable.DiscoverySearchView_searchCloseIcon));
             }
@@ -230,10 +250,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         LayoutInflater.from(mContext).inflate(R.layout.search_view, this, true);
         mSearchLayout = findViewById(R.id.search_layout);
         mSearchContainer = (LinearLayout) mSearchLayout.findViewById(R.id.search_container);
-        mSearchTopBar = (RelativeLayout) mSearchLayout.findViewById(R.id.search_top_bar);
+        mSearchTopBar = (LinearLayout) mSearchLayout.findViewById(R.id.search_top_bar);
         mSearchSrcTextView = (EditTextCompat) mSearchLayout.findViewById(R.id.searchTextView);
         mBackBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_up_btn);
         mVoiceBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_voice_btn);
+        mImageSearchButton = (ImageButton) mSearchLayout.findViewById(R.id.action_image_search_btn);
         mEmptyBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_empty_btn);
         mTintView = mSearchLayout.findViewById(R.id.transparent_view);
         mSuggestionView = (RelativeLayout) mSearchLayout.findViewById(R.id.search_suggestion_container);
@@ -242,14 +263,27 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mVoiceBtn.setOnClickListener(mOnClickListener);
         mEmptyBtn.setOnClickListener(mOnClickListener);
         mTintView.setOnClickListener(mOnClickListener);
-
+        mImageSearchButton.setOnClickListener(mOnClickListener);
         allowVoiceSearch = true;
 
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
+                false));
+
         showVoice(true);
+        showImageSearch(true);
 
         initSearchView();
         mSuggestionView.setVisibility(GONE);
         setAnimationDuration(AnimationUtil.ANIMATION_DURATION_MEDIUM);
+    }
+
+    public void hideShowCaseDialog(boolean b) {
+        showShowCase = true;
+    }
+
+    public boolean isShowShowCase() {
+        return showShowCase;
     }
 
     private void initSearchView() {
@@ -298,6 +332,68 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         });
     }
 
+    private void startShowCase() {
+
+        if (isAllowImageSearch() &&
+                !isShowShowCase()) {
+
+
+            final String showCaseTag = "Image Search ShowCase";
+            if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
+                return;
+            }
+            if (showCaseDialog != null) {
+                return;
+            }
+            showCaseDialog = createShowCase();
+            showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+                @Override
+                public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                    return false;
+                }
+            });
+
+            if (remoteConfig == null) {
+                remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            }
+
+            mImageSearchButton.setWillNotCacheDrawing(false);
+            ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+            showCaseObjectList.add(new ShowCaseObject(
+                    mImageSearchButton,
+                    mContext.getResources().getString(R.string.on_board_title),
+                    remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                            mContext.getResources().getString(R.string.on_board_desc)),
+                    ShowCaseContentPosition.UNDEFINED,
+                    R.color.tkpd_main_green));
+            if(activity != null) {
+                showCaseDialog.show(activity, showCaseTag, showCaseObjectList);
+            }
+
+        }
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_showcase)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .prevStringRes(R.string.navigate_back)
+                .nextStringRes(R.string.next)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
+    }
+
     private final OnClickListener mOnClickListener = new OnClickListener() {
 
         public void onClick(View v) {
@@ -310,6 +406,8 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 }
             } else if (v == mVoiceBtn) {
                 onVoiceClicked();
+            } else if (v == mImageSearchButton) {
+                onImageSearchClicked();
             } else if (v == mEmptyBtn) {
                 mSearchSrcTextView.setText(null);
             } else if (v == mSearchSrcTextView) {
@@ -319,6 +417,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
         }
     };
+
+    private void onImageSearchClicked() {
+        clearFocus();
+        mImageSearchClickListener.onImageSearchClicked();
+    }
 
     private void onVoiceClicked() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -338,9 +441,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         if (hasText) {
             mEmptyBtn.setVisibility(VISIBLE);
             showVoice(false);
+            showImageSearch(false);
         } else {
             mEmptyBtn.setVisibility(GONE);
             showVoice(true);
+            showImageSearch(true);
         }
 
         if (mOnQueryChangeListener != null && !TextUtils.equals(newText, mOldQueryText)) {
@@ -417,6 +522,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mVoiceBtn.setImageDrawable(drawable);
     }
 
+    public void setImageIcon(Drawable drawable) {
+        mImageSearchButton.setImageDrawable(drawable);
+    }
+
     public void setCloseIcon(Drawable drawable) {
         mEmptyBtn.setImageDrawable(drawable);
     }
@@ -446,6 +555,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void setVoiceSearch(boolean voiceSearch) {
         allowVoiceSearch = voiceSearch;
+    }
+
+    public void setImageSearch(boolean imageSearch) {
+        allowImageSearch = imageSearch;
+    }
+
+    public boolean isAllowImageSearch() {
+        return allowImageSearch;
     }
 
     //Public Methods
@@ -514,6 +631,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
     }
 
+    public void showImageSearch(boolean show) {
+        if (show && allowImageSearch) {
+            mImageSearchButton.setVisibility(VISIBLE);
+        } else {
+            mImageSearchButton.setVisibility(GONE);
+        }
+    }
+
     /**
      * Call this method and pass the menu item so this class can handle click events for the Menu Item.
      *
@@ -528,6 +653,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 if (finishOnClose) {
                     setFinishOnClose(false);
                 }
+                initShowCase();
                 return true;
             }
         });
@@ -560,15 +686,17 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void showSearch(boolean finishOnClose, boolean animate) {
         this.finishOnClose = finishOnClose;
-        if (finishOnClose) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showKeyboard(mSearchSrcTextView);
-                }
-            }, 500);
-        }
         showSearch(animate);
+        initShowCase();
+    }
+
+    private void initShowCase() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startShowCase();
+            }
+        }, IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY);
     }
 
     public boolean isFinishOnClose() {
@@ -703,6 +831,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSearchViewListener = listener;
     }
 
+
+    public void setOnImageSearchClickListener(ImageSearchClickListener imageSearchClickListener) {
+        mImageSearchClickListener = imageSearchClickListener;
+    }
+
     /**
      * Ellipsize suggestions longer than one line.
      *
@@ -746,6 +879,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSavedState = new SavedState(superState);
         mSavedState.query = mUserQuery != null ? mUserQuery.toString() : null;
         mSavedState.isSearchOpen = this.mIsSearchOpen;
+        mSavedState.allowImageSearch = this.allowImageSearch;
 
         return mSavedState;
     }
@@ -764,12 +898,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             setQuery(mSavedState.query, false);
         }
 
+        setImageSearch(mSavedState.allowImageSearch);
+
         super.onRestoreInstanceState(mSavedState.getSuperState());
     }
 
     static class SavedState extends BaseSavedState {
         String query;
         boolean isSearchOpen;
+        boolean allowImageSearch;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -779,6 +916,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             super(in);
             this.query = in.readString();
             this.isSearchOpen = in.readInt() == 1;
+            this.allowImageSearch = in.readInt() == 1;
         }
 
         @Override
@@ -786,6 +924,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             super.writeToParcel(out, flags);
             out.writeString(query);
             out.writeInt(isSearchOpen ? 1 : 0);
+            out.writeInt(allowImageSearch ? 1 : 0);
         }
 
         //required field that makes Parcelables from a Parcel
@@ -830,6 +969,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         void onSearchViewShown();
 
         void onSearchViewClosed();
+    }
+
+    public interface ImageSearchClickListener {
+        void onImageSearchClicked();
     }
 
 

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.view.TextureView;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
@@ -15,7 +17,6 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -39,19 +40,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
-
-        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
-
-        ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
-        // [variable for add product before share]
-        if(isAddingProduct){
-            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa,isAddingProduct));
-            viewListener.closeView();
-            // [variable for add product before share]
-        }else if(shareDa !=null){
-            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa));
-            viewListener.closeView();
-        } else if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
+        if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
             viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
                             .setProductKey(uri.getPathSegments().get(1))
                             .setShopDomain(uri.getPathSegments().get(0))
@@ -94,6 +83,8 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductName(bundleData.getString("product_key", ""))
                         .setProductPrice(bundleData.getString("product_price", ""))
                         .setShopDomain(bundleData.getString("shop_domain", ""))
+                        .setTrackerAttribution(bundleData.getString("tracker_attribution", ""))
+                        .setTrackerListName(bundleData.getString("tracker_list_name", ""))
                         .build();
             } else if (productItem != null) {
                 productPass = ProductPass.Builder.aProductPass()
@@ -101,6 +92,19 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setProductId(productItem.getId())
                         .setProductName(productItem.getName())
                         .setProductImage(productItem.getImgUri())
+                        .setTrackerAttribution(productItem.getTrackerAttribution())
+                        .setTrackerListName(productItem.getTrackerListName())
+                        .setWishlist(productItem.getIsWishlist())
+                        .setDiscountedPrice(productItem.getOriginalPrice())
+                        .setDiscountPercentage(productItem.getDiscountPercentage())
+                        .setCountReview(!TextUtils.isEmpty(productItem.getReviewCount()) && productItem.getReviewCount().matches("\\d+")
+                                ? Integer.parseInt(productItem.getReviewCount()) : 0)
+                        .setCountCourrier(productItem.getCountCourier())
+                        .setRating(!TextUtils.isEmpty(productItem.getRating()) && productItem.getRating().matches("\\d+")
+                                ? Integer.parseInt(productItem.getRating()) : 0)
+                        .setCashback(productItem.getCashback())
+                        .setOfficial(productItem.getOfficial())
+                        .setShopName(productItem.getShop())
                         .build();
             }
         } else {

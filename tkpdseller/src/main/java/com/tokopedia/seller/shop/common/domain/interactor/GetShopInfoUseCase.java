@@ -15,6 +15,10 @@ import rx.Observable;
  * Created by User on 9/8/2017.
  */
 
+/**
+ * Get shop info object from tkpd shop
+ */
+@Deprecated
 public class GetShopInfoUseCase extends UseCase<ShopModel> {
 
     private ShopInfoRepository shopInfoRepository;
@@ -24,6 +28,10 @@ public class GetShopInfoUseCase extends UseCase<ShopModel> {
                               ShopInfoRepository shopInfoRepository) {
         super(threadExecutor, postExecutionThread);
         this.shopInfoRepository = shopInfoRepository;
+    }
+
+    public Observable<ShopModel> createObservable() {
+        return createObservable(RequestParams.EMPTY);
     }
 
     @Override

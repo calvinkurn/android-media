@@ -1,10 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.catalog;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,10 +24,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -235,7 +234,8 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void setOnCatalogClicked(String catalogID) {
+    public void setOnCatalogClicked(String catalogID, String catalogName) {
+        SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
@@ -254,18 +254,19 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     protected void setupAdapter() {
 
-        CatalogTypeFactory typeFactory = new CatalogAdapterTypeFactory(this, query);
-        catalogAdapter = new CatalogAdapter(this, typeFactory);
-
-        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), catalogAdapter);
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
+
+        CatalogTypeFactory typeFactory = new CatalogAdapterTypeFactory(this, topAdsConfig);
+        catalogAdapter = new CatalogAdapter(this, typeFactory);
+
+        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), catalogAdapter);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setTopAdsListener(this);
         topAdsRecyclerAdapter.setHasHeader(true);
         recyclerView.setAdapter(topAdsRecyclerAdapter);
@@ -354,6 +355,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             topAdsRecyclerAdapter.shouldLoadAds(false);
             String message = String.format(getString(R.string.empty_search_content_template), query);
             catalogAdapter.showEmptyState(message);
+            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -453,6 +455,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
+                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getActivity());
                         openFilterActivity();
                         return true;
                     case 2:
@@ -473,7 +476,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getContext()));
         enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
@@ -484,9 +487,8 @@ public class CatalogFragment extends SearchSectionFragment implements
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
-
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getContext()));
         enrichWithFilterAndSortParams(adsParams);
-
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
     }
@@ -502,7 +504,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -516,16 +518,19 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        startActivity(intent);
     }
 
     @Override
     public void onAddFavorite(int position, Data data) {
 
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
     }
 
     @Override
@@ -544,7 +549,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         catalogAdapter.resetStartFrom();
         catalogAdapter.clearData();
         topAdsRecyclerAdapter.reset();

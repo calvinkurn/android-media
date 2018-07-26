@@ -213,37 +213,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     private void setDrawerSidePosition(int position) {
         if (drawerHelper != null) {
-            switch (position) {
-                case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                    break;
-                case TAB_POSITION_PURCHASE_VERIFICATION:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
-                    break;
-                case TAB_POSITION_PURCHASE_STATUS_ORDER:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
-                    break;
-                case TAB_POSITION_PURCHASE_DELIVER_ORDER:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
-                    break;
-                case TAB_POSITION_PURCHASE_ALL_ORDER:
-                    switch (stateTxFilterID) {
-                        case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
-                            drawerHelper.setSelectedPosition(
-                                    TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
-                            );
-                            break;
-                        default:
-                            drawerHelper.setSelectedPosition(
-                                    TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
-                            );
-                            break;
-                    }
-                    break;
-                default:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                    break;
-            }
+            drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_SHOPPING_LIST);
         }
     }
 

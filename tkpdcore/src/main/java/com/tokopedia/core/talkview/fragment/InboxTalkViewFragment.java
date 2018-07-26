@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.talk.model.model.InboxTalk;
@@ -34,7 +35,7 @@ public class InboxTalkViewFragment extends TalkViewFragment{
 
     @Override
     protected TalkViewAdapter getAdapter() {
-        return InboxTalkViewAdapter.createAdapter(this, items);
+        return InboxTalkViewAdapter.createAdapter(this, items, (TkpdCoreRouter) getActivity().getApplication());
     }
 
     @Override

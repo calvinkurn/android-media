@@ -13,9 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.RefreshHandler;
@@ -33,7 +34,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
 
 /**
  * @author anggaprasetiyo on 29/11/17.
@@ -60,6 +60,18 @@ public class PromoCouponFragment extends BasePresenterFragment
     private static final String PLATFORM_KEY = "PLATFORM_KEY";
 
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
+
+    private static final String PLATFORM_PAGE_KEY = "PLATFORM_PAGE_KEY";
+
+    private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
+
+    private static final String DIGITAL_CATEGORY_ID = "DIGI_CATEGORY_ID";
+
+    private static final String DIGITAL_PRODUCT_ID = "DIGI_PRODUCT_ID";
+
+    private static final String CART_ID_KEY = "CART_ID_KEY";
+
+    private static final String CHECKOUT = "checkoutdata";
 
     @Override
     protected boolean isRetainInstance() {
@@ -134,7 +146,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     protected void initInjector() {
         super.initInjector();
         PromoCouponComponent promoCouponComponent = DaggerPromoCouponComponent.builder()
-                .appComponent((AppComponent) getComponent(AppComponent.class))
+                .baseAppComponent((BaseAppComponent) getComponent(BaseAppComponent.class))
                 .promoCouponViewModule(new PromoCouponViewModule(this))
                 .build();
         promoCouponComponent.inject(this);
@@ -199,9 +211,26 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void couponDataNoResult() {
+        couponDataNoResult(getString(R.string.loyalty_default_empty_coupons_title),
+                getString(R.string.loyalty_default_empty_coupons_subtitle));
+    }
+
+    @Override
+    public void couponDataNoResult(String title, String subTitle) {
+        if (getArguments().getString(PLATFORM_KEY, "")
+                .equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
+            switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    listener.sendAnalyticsImpressionCouponEmptyCartListPage();
+                    break;
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    listener.sendAnalyticsImpressionCouponEmptyShipmentPage();
+                    break;
+            }
+        }
         NetworkErrorHelper.showEmptyState(context, mainView,
-                "Anda Tidak Memiliki Kupon",
-                "Tukar poin Anda dengan kupon di halaman TokoPoints.",
+                title,
+                subTitle,
                 "",
                 R.drawable.ic_coupon_image_big, null);
     }
@@ -332,23 +361,73 @@ public class PromoCouponFragment extends BasePresenterFragment
         refreshHandler.setPullEnabled(true);
     }
 
-    public static PromoCouponFragment newInstance(String platform, String categoryKey) {
+    @Override
+    public String getCategoryId() {
+        return getArguments().getString(CATEGORY_KEY);
+    }
+
+    public static PromoCouponFragment newInstance(
+            String platformString, String platformPageString, String additionalDataString,
+            String categoryKey, String cartIdString,
+            int categoryId, int productId) {
+        PromoCouponFragment fragment = new PromoCouponFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platformString);
+        bundle.putString(PLATFORM_PAGE_KEY, platformPageString);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putString(CART_ID_KEY, cartIdString);
+        bundle.putInt(DIGITAL_CATEGORY_ID, categoryId);
+        bundle.putInt(DIGITAL_PRODUCT_ID, productId);
+        bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Deprecated
+    public static PromoCouponFragment newInstanceEvent(
+            String platform, String categoryKey, int categoryId, int productId
+    ) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
         bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putInt(DIGITAL_CATEGORY_ID, categoryId);
+        bundle.putInt(DIGITAL_PRODUCT_ID, productId);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     public void onVoucherChosen(CouponData data) {
+        switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
+            case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                listener.sendAnalyticsOnCouponItemClickedCartListPage();
+                listener.sendAnalyticsOnCouponItemClicked(data.getTitle());
+                break;
+            case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                listener.sendAnalyticsOnCouponItemClickedCartShipmentPage();
+                listener.sendAnalyticsOnCouponItemClicked(data.getTitle());
+                break;
+        }
+
         adapter.clearError();
         UnifyTracking.eventCouponChosen(data.getTitle());
-        if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
-            dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
+        if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
+            dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY, ""));
+        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)
+                || getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
+            String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
+            dPresenter.parseAndSubmitEventVoucher(jsonbody, data, getArguments().getString(PLATFORM_KEY));
+        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
+            dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
-            dPresenter.submitVoucher(data);
+            dPresenter.processCheckMarketPlaceCartListPromoCode(
+                    getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, "")
+            );
         }
     }
 
@@ -377,13 +456,34 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing())
-            dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+            if (getArguments().getString(PLATFORM_KEY, "").equals(
+                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)
+                    || getArguments().getString(PLATFORM_KEY, "").equals(
+                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
+                dPresenter.processGetEventCouponList(getArguments().getInt(DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID));
+            } else {
+                dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+            }
     }
 
     @Override
     public void onDestroy() {
         dPresenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            listener.sendAnalyticsScreenNameCoupon();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) listener.sendAnalyticsScreenNameCoupon();
     }
 
     public interface ChooseCouponListener {
@@ -401,7 +501,20 @@ public class PromoCouponFragment extends BasePresenterFragment
                 long discountAmount,
                 long cashbackAmount);
 
+        void sendAnalyticsOnCouponItemClickedCartListPage();
+
+        void sendAnalyticsOnCouponItemClicked(String couponName);
+
+        void sendAnalyticsOnCouponItemClickedCartShipmentPage();
+
+        void sendAnalyticsImpressionCouponEmptyCartListPage();
+
+        void sendAnalyticsImpressionCouponEmptyShipmentPage();
+
+        void sendAnalyticsScreenNameCoupon();
+
     }
 
 
 }
+

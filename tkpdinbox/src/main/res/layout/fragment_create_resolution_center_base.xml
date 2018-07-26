@@ -23,7 +23,7 @@
             android:id="@+id/btn_create_resolution"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_ms"
+            android:layout_margin="@dimen/dp_8"
             android:background="@drawable/bg_button_disable"
             android:text="@string/string_button_create_complain"
             android:textAllCaps="false"
@@ -44,16 +44,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="75dp"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_layout_enable"
             android:elevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/margin_sm"
+                android:layout_margin="@dimen/dp_15"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -74,7 +74,7 @@
                         android:id="@+id/tv_product_problem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vvs"
+                        android:layout_marginTop="@dimen/dp_3"
                         android:text="@string/string_choose_product_problem"
                         android:textColor="@color/black_70"/>
                 </LinearLayout>
@@ -84,7 +84,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/margin_med"
+                    android:layout_marginLeft="@dimen/dp_20"
                     app:srcCompat="@drawable/chevron_thin_right"/>
 
             </LinearLayout>
@@ -95,16 +95,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="75dp"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_layout_disable"
             android:elevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/margin_sm"
+                android:layout_margin="@dimen/dp_15"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -125,7 +125,7 @@
                         android:id="@+id/tv_solution"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vvs"
+                        android:layout_marginTop="@dimen/dp_3"
                         android:text="@string/string_choose_solution"
                         android:textColor="@color/black_38"/>
 
@@ -136,7 +136,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/margin_med"
+                    android:layout_marginLeft="@dimen/dp_20"
                     app:srcCompat="@drawable/chevron_thin_right"/>
             </LinearLayout>
         </FrameLayout>
@@ -146,16 +146,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="75dp"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_layout_disable"
             android:elevation="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/margin_sm"
+                android:layout_margin="@dimen/dp_15"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -176,7 +176,7 @@
                         android:id="@+id/tv_prove"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_vvs"
+                        android:layout_marginTop="@dimen/dp_3"
                         android:text="@string/string_upload_prove_information"
                         android:textColor="@color/black_38"/>
                 </LinearLayout>
@@ -186,7 +186,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/margin_med"
+                    android:layout_marginLeft="@dimen/dp_20"
                     app:srcCompat="@drawable/chevron_thin_right"/>
             </LinearLayout>
         </FrameLayout>

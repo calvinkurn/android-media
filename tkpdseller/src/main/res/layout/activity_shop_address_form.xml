@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <LinearLayout
             android:id="@+id/mainView"
@@ -20,10 +20,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/cards_ui_2"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
                     android:id="@+id/address_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:inputType="text" />
 
                 <TextView
@@ -53,98 +53,29 @@
                     android:inputType="textMultiLine" />
             </LinearLayout>
 
-            <!-- Alamat -->
-
-
-            <!-- End of alamat -->
-
-
-            <!-- Detail alamat -->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/cards_ui_2"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_province"
+                    android:text="@string/title_district_recommendation"
                     android:textColor="@color/label_color"
                     android:textSize="@dimen/fonts" />
 
-                <Spinner
-                    android:id="@+id/provinsi"
+                <EditText
+                    android:id="@+id/district"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:inputType="text" />
-
-                <TextView
-                    android:id="@+id/province_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/error_province"
-                    android:textColor="#ff0000"
-                    android:visibility="invisible" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_regency"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
-
-                <Spinner
-                    android:id="@+id/regency"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:inputType="text" />
-
-                <TextView
-                    android:id="@+id/regency_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/error_regency"
-                    android:textColor="#ff0000"
-                    android:visibility="invisible" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_sub_district"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/fonts" />
-
-                <Spinner
-                    android:id="@+id/sub_district"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-
-                <TextView
-                    android:id="@+id/sub_district_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/error_sub_district"
-                    android:textColor="#ff0000"
-                    android:visibility="invisible" />
-            </LinearLayout>
-            <!-- End of detail alamat -->
-
-
-            <!-- No HP dan kodepos -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/cards_ui_2"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:inputType="textMultiLine" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -153,13 +84,23 @@
                     android:textColor="@color/label_color"
                     android:textSize="@dimen/fonts" />
 
-                <EditText
-                    android:id="@+id/post_code"
+                <AutoCompleteTextView
+                    android:id="@+id/postal_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
-                    android:inputType="number"
-                    android:maxLength="10" />
+                    android:completionThreshold="1"
+                    android:digits="1234567890"
+                    android:inputType="phone"
+                    android:maxLength="5" />
+            </LinearLayout>
+            <!-- End of detail alamat -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cards_ui_2"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -172,7 +113,7 @@
                     android:id="@+id/shop_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:lines="1" />
 
                 <TextView
@@ -186,7 +127,7 @@
                     android:id="@+id/shop_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginBottom="@dimen/dp_20"
                     android:inputType="number" />
 
                 <TextView
@@ -209,7 +150,7 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/button_buy_from_cart"
                 android:gravity="center"
                 android:text="@string/title_save"

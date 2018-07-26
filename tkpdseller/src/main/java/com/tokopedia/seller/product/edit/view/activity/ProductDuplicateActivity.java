@@ -4,18 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.view.fragment.ProductDraftEditFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductDuplicateFragment;
 
 /**
  * Created by zulfikarrahman on 4/27/17.
  */
 
-public class ProductDuplicateActivity extends ProductDraftAddActivity {
+public class ProductDuplicateActivity extends BaseProductAddEditActivity {
 
     public static final String PRODUCT_ID = "PRODUCT_ID";
 
@@ -28,7 +26,7 @@ public class ProductDuplicateActivity extends ProductDraftAddActivity {
     @Override
     protected void setupFragment(Bundle savedInstance) {
         String productId = getIntent().getStringExtra(PRODUCT_ID);
-        if (StringUtils.isBlank(productId)){
+        if (TextUtils.isEmpty(productId)){
             throw new RuntimeException("Product id is not selected");
         }
         if (savedInstance == null) {
@@ -43,8 +41,8 @@ public class ProductDuplicateActivity extends ProductDraftAddActivity {
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
+    protected int getCancelMessageRes() {
+        return R.string.product_draft_dialog_cancel_message;
     }
 
     @Override

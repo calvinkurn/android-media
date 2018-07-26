@@ -9,7 +9,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="#c7c7c7" />
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:text="Last update"
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontvs"
@@ -26,7 +26,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/dp_5"
         android:background="#c7c7c7" />
 
     <View

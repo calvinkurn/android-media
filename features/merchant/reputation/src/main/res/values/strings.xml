@@ -68,7 +68,7 @@
     <string name="success_edit_review">Ulasan telah diubah</string>
     <string name="success_send_review">Sukses mengirim ulasan</string>
     <string name="success_skip_review">Ulasan telah dilewati</string>
-    <string name="title_reputation_history">Penalti Reputasi</string>
+    <string name="title_reputation_history">Penalti dan Reward</string>
     <string name="more_to_complete">Selengkapnya</string>
     <string name="tips1_title">Kesesuaian dengan deskripsi</string>
     <string name="tips1_tips">Ukuran dan warna sesuai dengan foto dan deskripsi produk yang dijual</string>
@@ -121,4 +121,6 @@
     <string name="product_review_label_counter_like_3_formatted">Terbantu?</string>
     <string name="product_review_label_counter_like_4_formatted">%1$d orang terbantu</string>
     <string name="product_review_label_by">Oleh</string>
+    <string name="review_shop_label_show_more_review">Lihat Ulasan Selengkapnya</string>
+    <string name="review_shop_empty_list_content">Belum ada ulasan yang diberikan untuk toko ini</string>
 </resources>

@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_vs"
-    android:layout_marginEnd="@dimen/margin_small"
-    android:layout_marginLeft="@dimen/margin_small"
-    android:layout_marginRight="@dimen/margin_small"
-    android:layout_marginStart="@dimen/margin_small"
-    android:layout_marginTop="@dimen/margin_vs"
+    android:layout_marginBottom="@dimen/dp_5"
+    android:layout_marginEnd="@dimen/dp_10"
+    android:layout_marginLeft="@dimen/dp_10"
+    android:layout_marginRight="@dimen/dp_10"
+    android:layout_marginStart="@dimen/dp_10"
+    android:layout_marginTop="@dimen/dp_5"
     android:background="@drawable/card_thick_edge"
     android:orientation="vertical">
 
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/product_image"
@@ -88,7 +88,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <TextView
             android:id="@+id/order_detail_notes"

@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/iv_attachment"
@@ -43,10 +43,10 @@
                 android:background="@color/transparent"
                 android:gravity="center|left"
                 android:hint="@string/string_hint_write_message"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
                 android:textColorHint="@color/black_38"
-                android:textSize="@dimen/font_small" />
+                android:textSize="@dimen/sp_14" />
 
             <ImageView
                 android:id="@+id/iv_send"
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingBottom="@dimen/margin_small"
+            android:paddingBottom="@dimen/dp_10"
             context:listitem="@layout/item_detail_common_left"/>
 
     </LinearLayout>
@@ -118,8 +118,8 @@
         android:layout_above="@id/rl_attach_action"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
         app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
         android:tint="@color/white"
         android:background="@color/tkpd_main_green"

@@ -2,34 +2,54 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.vie
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 10/31/17.
@@ -37,9 +57,9 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 
 public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
 
+    public static final String SEARCH_NF_VALUE = "1";
     private final int MAX_TOPADS = 4;
     private TopAdsView topAdsView;
-    private Config config;
     private TopAdsParams params = new TopAdsParams();
     private Context context;
     private ImageView noResultImage;
@@ -47,7 +67,9 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private TextView emptyContentTextView;
     private Button emptyButtonItemButton;
     private final ItemClickListener clickListener;
-
+    private TopAdsBannerView topAdsBannerView;
+    private RecyclerView selectedFilterRecyclerView;
+    private SelectedFilterAdapter selectedFilterAdapter;
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
@@ -60,26 +82,70 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         this.clickListener = clickListener;
         context = itemView.getContext();
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
-        config = new Config.Builder()
+        topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
+        selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView);
+
+        params = topAdsConfig.getTopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
+        initSelectedFilterRecyclerView();
+    }
+
+    private void initSelectedFilterRecyclerView() {
+        selectedFilterAdapter = new SelectedFilterAdapter(clickListener);
+        selectedFilterRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        selectedFilterRecyclerView.setAdapter(selectedFilterAdapter);
+        selectedFilterRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
+                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+        ));
+    }
+
+    private void loadProductAds() {
+        Config productAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))
                 .withMerlinCategory()
+                .topAdsParams(params)
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
-        params.getParam().put(TopAdsParams.KEY_QUERY, topAdsConfig.getTopAdsParams()
-                .getParam().get(TopAdsParams.KEY_QUERY));
-        params.getParam().put(TopAdsParams.KEY_SRC, topAdsConfig.getTopAdsParams()
-                .getParam().get(TopAdsParams.KEY_SRC));
-        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, "1");
-        config.setTopAdsParams(params);
-        topAdsView.setConfig(config);
+        topAdsView.setConfig(productAdsConfig);
         topAdsView.setDisplayMode(DisplayMode.FEED);
         topAdsView.setMaxItems(MAX_TOPADS);
         topAdsView.setAdsItemClickListener(this);
+        topAdsView.loadTopAds();
+    }
+
+    private void loadBannerAds() {
+        Config bannerAdsConfig = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .withMerlinCategory()
+                .topAdsParams(params)
+                .setEndpoint(Endpoint.CPM)
+                .build();
+        topAdsBannerView.setConfig(bannerAdsConfig);
+        topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String appLink) {
+                clickListener.onBannerAdsClicked(appLink);
+            }
+        });
+        topAdsBannerView.setAdsListener(new TopAdsListener() {
+            @Override
+            public void onTopAdsLoaded() {
+                loadProductAds();
+            }
+
+            @Override
+            public void onTopAdsFailToLoad(int errorCode, String message) {
+                loadProductAds();
+            }
+        });
+        topAdsBannerView.loadTopAds();
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -93,7 +159,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
+    public void onShopItemClicked(int position, Shop shop) {
         //Not implemented just leave empty
     }
 
@@ -103,13 +169,18 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void bind(EmptySearchModel model) {
 
         noResultImage.setImageResource(model.getImageRes());
         emptyTitleTextView.setText(model.getTitle());
 
         if (!TextUtils.isEmpty(model.getContent())) {
-            emptyContentTextView.setText(model.getContent());
+            emptyContentTextView.setText(boldTextBetweenQuotes(model.getContent()));
             emptyContentTextView.setVisibility(View.VISIBLE);
         } else {
             emptyContentTextView.setVisibility(View.GONE);
@@ -129,6 +200,129 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
             });
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
-        topAdsView.loadTopAds();
+        if (model.getFilterFlagSelectedModel() != null) {
+            selectedFilterRecyclerView.setVisibility(View.VISIBLE);
+            selectedFilterAdapter.setOptionList(convertToOptionList(model.getFilterFlagSelectedModel()));
+        } else {
+            selectedFilterRecyclerView.setVisibility(View.GONE);
+        }
+        loadBannerAds();
+    }
+
+    private CharSequence boldTextBetweenQuotes(String text) {
+        String quoteSymbol = "\"";
+        int firstQuotePos = text.indexOf(quoteSymbol);
+        int lastQuotePos = text.lastIndexOf(quoteSymbol);
+
+        SpannableStringBuilder str = new SpannableStringBuilder(text);
+        str.setSpan(new StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return str;
+    }
+
+    private List<Option> convertToOptionList(FilterFlagSelectedModel filterFlagSelectedModel) {
+        List<Option> optionList = new ArrayList<>();
+        if (filterFlagSelectedModel.getSavedTextInput() != null) {
+            if (!TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MIN))
+                || !TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MAX))) {
+                optionList.add(generatePriceOption());
+            }
+        }
+
+        if (!TextUtils.isEmpty(filterFlagSelectedModel.getCategoryId())) {
+            optionList.add(generateCategoryOption(filterFlagSelectedModel));
+        }
+
+        if (filterFlagSelectedModel.getSavedCheckedState() != null) {
+            optionList.addAll(generateCheckedOptionList(filterFlagSelectedModel.getSavedCheckedState()));
+        }
+
+        return optionList;
+    }
+
+    private List<Option> generateCheckedOptionList(HashMap<String, Boolean> savedCheckedState) {
+        List<Option> optionList = new ArrayList<>();
+        for (HashMap.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
+            optionList.add(generateOptionFromUniqueId(entry.getKey()));
+        }
+        return optionList;
+    }
+
+    private Option generateOptionFromUniqueId(String uniqueId) {
+        Option option = new Option();
+        option.setName(OptionHelper.parseNameFromUniqueId(uniqueId));
+        option.setKey(OptionHelper.parseKeyFromUniqueId(uniqueId));
+        option.setValue(OptionHelper.parseValueFromUniqueId(uniqueId));
+        return option;
+    }
+
+    private Option generateCategoryOption(FilterFlagSelectedModel filterFlagSelectedModel) {
+        Option option = new Option();
+        option.setName(filterFlagSelectedModel.getSelectedCategoryName());
+        option.setKey(Option.KEY_CATEGORY);
+        option.setValue(filterFlagSelectedModel.getCategoryId());
+        return option;
+    }
+
+    private Option generatePriceOption() {
+        Option option = new Option();
+        option.setName(context.getResources().getString(R.string.empty_state_selected_filter_price_name));
+        option.setKey(Option.KEY_PRICE_MIN);
+        option.setValue("0");
+        return option;
+    }
+
+    private static class SelectedFilterAdapter extends RecyclerView.Adapter<SelectedFilterItemViewHolder> {
+
+        private List<Option> optionList = new ArrayList<>();
+        private ItemClickListener clickListener;
+
+        public SelectedFilterAdapter(ItemClickListener clickListener) {
+            this.clickListener = clickListener;
+        }
+
+        public void setOptionList(List<Option> optionList) {
+            this.optionList.clear();
+            this.optionList.addAll(optionList);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public SelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_state_selected_filter_item, parent, false);
+            return new SelectedFilterItemViewHolder(view, clickListener);
+        }
+
+        @Override
+        public void onBindViewHolder(SelectedFilterItemViewHolder holder, int position) {
+            holder.bind(optionList.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return optionList.size();
+        }
+    }
+
+    private static class SelectedFilterItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView filterText;
+        private final ItemClickListener clickListener;
+        private View deleteButton;
+
+        public SelectedFilterItemViewHolder(View itemView, ItemClickListener clickListener) {
+            super(itemView);
+            filterText = itemView.findViewById(R.id.filter_text);
+            deleteButton = itemView.findViewById(R.id.delete_button);
+            this.clickListener = clickListener;
+        }
+
+        public void bind(final Option option) {
+            filterText.setText(option.getName());
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickListener.onSelectedFilterRemoved(option.getUniqueId());
+                }
+            });
+        }
     }
 }

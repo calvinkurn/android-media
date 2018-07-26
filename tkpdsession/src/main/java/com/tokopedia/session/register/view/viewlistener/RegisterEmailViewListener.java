@@ -48,4 +48,6 @@ public interface RegisterEmailViewListener {
     void showInfo();
 
     void onForbidden();
+
+    void goToLoginEmail();
 }

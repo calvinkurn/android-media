@@ -18,8 +18,8 @@
             android:id="@+id/notes_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:padding="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:padding="@dimen/dp_10"
             android:text="@string/title_replacement_cancellation"
             android:textSize="@dimen/text_size_l_medium"
             android:textStyle="bold" />
@@ -42,8 +42,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:layout_weight="8"
                     android:text="@string/title_replacement_reason_1" />
 
@@ -59,7 +59,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/black" />
 
         </LinearLayout>
@@ -82,8 +82,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:layout_weight="8"
                     android:text="@string/title_replacement_reason_2" />
 
@@ -99,7 +99,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/black" />
 
         </LinearLayout>
@@ -121,8 +121,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:layout_weight="8"
                     android:text="@string/title_replacement_reason_3" />
 
@@ -138,7 +138,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/black" />
 
         </LinearLayout>
@@ -161,8 +161,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:layout_weight="8"
                     android:text="@string/title_other_reason" />
 
@@ -198,7 +198,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/bg_grey_button_rounded"
                 android:gravity="center"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 android:text="@string/cancel_search_replacement"
                 android:textColor="@color/grey_700" />
 

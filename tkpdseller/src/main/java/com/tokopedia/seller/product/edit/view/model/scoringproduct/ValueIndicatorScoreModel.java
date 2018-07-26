@@ -17,11 +17,12 @@ public class ValueIndicatorScoreModel implements Parcelable {
     private boolean freeReturnActive;
     private boolean isVariantActive;
     private boolean hasVideo;
+    private boolean hasCatalog;
 
     public ValueIndicatorScoreModel(int imageCount, int imageResolution,
                                     int lengthProductName, int lengthDescProduct, boolean stockStatus,
                                     boolean cashbackStatus, boolean freeReturnStatus, boolean videoStatus,
-                                    boolean isVariantActive, boolean hasVideo) {
+                                    boolean isVariantActive, boolean hasVideo, boolean hasCatalog) {
         this.imageCount = imageCount;
         this.imageResolution = imageResolution;
         this.lengthProductName = lengthProductName;
@@ -30,6 +31,15 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.freeReturnStatus = freeReturnStatus;
         this.isVariantActive = isVariantActive;
         this.hasVideo = hasVideo;
+        this.hasCatalog = hasCatalog;
+    }
+
+    public void setHasCatalog(boolean hasCatalog) {
+        this.hasCatalog = hasCatalog;
+    }
+
+    public boolean isHasCatalog() {
+        return hasCatalog;
     }
 
     public boolean isVariantActive() {
@@ -107,7 +117,6 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.freeReturnActive = freeReturnActive;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -124,6 +133,7 @@ public class ValueIndicatorScoreModel implements Parcelable {
         dest.writeByte(this.freeReturnActive ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isVariantActive ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasVideo ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasCatalog ? (byte) 1 : (byte) 0);
     }
 
     protected ValueIndicatorScoreModel(Parcel in) {
@@ -136,9 +146,10 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.freeReturnActive = in.readByte() != 0;
         this.isVariantActive = in.readByte() != 0;
         this.hasVideo = in.readByte() != 0;
+        this.hasCatalog = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<ValueIndicatorScoreModel> CREATOR = new Parcelable.Creator<ValueIndicatorScoreModel>() {
+    public static final Creator<ValueIndicatorScoreModel> CREATOR = new Creator<ValueIndicatorScoreModel>() {
         @Override
         public ValueIndicatorScoreModel createFromParcel(Parcel source) {
             return new ValueIndicatorScoreModel(source);

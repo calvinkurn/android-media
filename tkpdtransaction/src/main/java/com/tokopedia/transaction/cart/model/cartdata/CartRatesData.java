@@ -11,6 +11,8 @@ public class CartRatesData {
 
     private String ratesResponse;
 
+    private String errorResponse;
+
     private String keroRatesKey;
 
     private Integer courierServiceId;
@@ -75,5 +77,13 @@ public class CartRatesData {
 
     public void setInsuranced(boolean insuranced) {
         isInsuranced = insuranced;
+    }
+
+    public String getErrorResponse() {
+        return errorResponse;
+    }
+
+    public void setErrorResponse(String errorResponse) {
+        this.errorResponse = errorResponse;
     }
 }

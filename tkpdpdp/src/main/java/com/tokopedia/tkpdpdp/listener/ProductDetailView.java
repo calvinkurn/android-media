@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -15,6 +16,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 
 import java.util.List;
 
@@ -24,7 +26,10 @@ import java.util.List;
 public interface ProductDetailView extends ViewListener {
 
     String SOURCE_BUTTON_BUY_PDP = "BUTTON_BUY_PDP";
+    String SOURCE_BUTTON_CART_PDP = "BUTTON_CART_PDP";
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
+    String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
+    String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
 
     /**
      * Saat salah satu kategori product di klik.
@@ -131,7 +136,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onWholesaleClicked(@NonNull Bundle bundle);
 
-    void onVariantClicked(@NonNull Bundle bundle);
+    void openVariantPage(int source);
 
     void onInstallmentClicked(@NonNull Bundle bundle);
 
@@ -278,7 +283,7 @@ public interface ProductDetailView extends ViewListener {
 
     void showFullScreenError();
 
-    void moveToEditFragment(boolean isEdit, String productId);
+    void moveToEditFragment(boolean isEdit);
 
     void showSuccessWishlistSnackBar();
 
@@ -293,6 +298,10 @@ public interface ProductDetailView extends ViewListener {
     void showLatestTalkView(LatestTalkViewModel discussion);
 
     void addProductVariant(ProductVariant productVariant);
+
+    void setVariantFalse();
+
+    void addProductStock(Child productStock);
 
     void actionSuccessAddToWishlist(Integer productId);
 
@@ -310,5 +319,17 @@ public interface ProductDetailView extends ViewListener {
 
     boolean isSellerApp();
 
+    void renderAddToCartSuccess(AddToCartResult addToCartResult);
+
+    void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult);
+
+    void openLoginPage();
+
+    int generateStateVariant(String source);
+
     void updateButtonBuyListener();
+
+    void trackingEnhanceProductDetail();
+
+    void refreshData();
 }

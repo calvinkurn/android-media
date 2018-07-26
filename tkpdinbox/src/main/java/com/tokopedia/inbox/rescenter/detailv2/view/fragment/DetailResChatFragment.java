@@ -43,6 +43,9 @@ import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
@@ -89,6 +92,11 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+
 /**
  * Created by yoasfs on 10/6/17.
  */
@@ -118,6 +126,8 @@ public class DetailResChatFragment
     public static final int ACTION_BY_SYSTEM = 4;
 
     private static final int TOP_POSITION = 0;
+    private static final int REQUEST_CODE_IMAGE_REPUTATION = 423;
+    private static final int REQUEST_CODE_VIDEO = 238;
 
     private TextView tvNextStep;
     private RecyclerView rvChat, rvAttachment;
@@ -176,15 +186,11 @@ public class DetailResChatFragment
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
-            startActivityForResult(
-                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
-                    ImageUploadHandler.REQUEST_CODE_GALLERY
-            );
-        } else {
-            uploadImageDialog.actionImagePicker();
-        }
+    public void actionVideoPicker() {
+        startActivityForResult(
+                GalleryActivity.createIntent(getActivity(), GalleryType.ofVideoOnly()),
+                REQUEST_CODE_VIDEO
+        );
     }
 
     @Override
@@ -437,23 +443,28 @@ public class DetailResChatFragment
             @Override
             public void onClick(View v) {
                 if (attachmentAdapter.getList().size() < COUNT_MAX_ATTACHMENT) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage(context.getString(R.string.dialog_upload_option));
-                    builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            DetailResChatFragmentPermissionsDispatcher.actionImagePickerWithCheck(DetailResChatFragment.this);
-                        }
-                    }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            DetailResChatFragmentPermissionsDispatcher.actionCameraWithCheck(DetailResChatFragment.this);
-                        }
-                    });
+                    if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
 
-                    Dialog dialog = builder.create();
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage(context.getString(R.string.dialog_upload_option));
+                        builder.setPositiveButton(context.getString(R.string.title_video), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DetailResChatFragmentPermissionsDispatcher.actionVideoPickerWithCheck(DetailResChatFragment.this);
+                            }
+                        }).setNegativeButton(context.getString(R.string.title_image), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                openImagePicker();
+                            }
+                        });
+
+                        Dialog dialog = builder.create();
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.show();
+                    } else {
+                        openImagePicker();
+                    }
                 } else {
                     NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
                 }
@@ -469,15 +480,20 @@ public class DetailResChatFragment
         });
     }
 
+    private void openImagePicker() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                , null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_REPUTATION);
+    }
+
     @Override
     public void showDummyText() {
-        ConversationDomain conversationDomain;
-        if (attachmentAdapter.getList().size() == 0) {
-            conversationDomain = getTempConversationDomain(etChat.getText().toString());
-        } else {
-            conversationDomain = getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
-        }
-
+        ConversationDomain conversationDomain =
+                getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
         chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
         chatAdapter.notifyItemInserted(chatAdapter.getItemCount() - 1);
         scrollChatToBottom(false);
@@ -485,23 +501,6 @@ public class DetailResChatFragment
 
     private void scrollChatToBottom(boolean isInitChat) {
         rvChat.scrollToPosition(chatAdapter.getItemCount() - 1);
-    }
-
-    private ConversationDomain getTempConversationDomain(String message) {
-        conversationDomain = new ConversationDomain(
-                0,
-                null,
-                message.replaceAll("(\r\n|\n)", "<br />"),
-                null,
-                null,
-                getDummySendingMessage(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-        return conversationDomain;
     }
 
     private ConversationDomain getTempConversationDomain(String message, List<AttachmentViewModel> attachmentList) {
@@ -512,7 +511,9 @@ public class DetailResChatFragment
                 null,
                 null,
                 getDummySendingMessage(),
-                getConversationAttachmentTemp(attachmentList),
+                attachmentList != null ?
+                        getConversationAttachmentTemp(attachmentList)
+                        : null,
                 null,
                 null,
                 null,
@@ -581,14 +582,12 @@ public class DetailResChatFragment
         mainView.setVisibility(View.VISIBLE);
         if (detailResChatDomain.getResolution().getStatus() == STATUS_CANCEL ||
                 detailResChatDomain.getResolution().getStatus() == STATUS_FINISHED) {
-            etChat.setEnabled(false);
-            ivSend.setEnabled(false);
+            disableIvSend();
             etChat.clearFocus();
             ivNextStepStatic.setVisibility(View.VISIBLE);
         } else {
             ffChat.setVisibility(View.VISIBLE);
-            etChat.setEnabled(true);
-            ivSend.setEnabled(true);
+            enableIvSend();
             glowingView.setVisibility(View.VISIBLE);
             glowingView.renderData(new Object());
 
@@ -1123,13 +1122,13 @@ public class DetailResChatFragment
         NetworkErrorHelper.createSnackbarWithAction(
                 getActivity(),
                 error,
-                Snackbar.LENGTH_LONG,getResources().getString(R.string.string_reload_page),
+                Snackbar.LENGTH_LONG, getResources().getString(R.string.string_reload_page),
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                initView();
-            }
-        }).showRetrySnackbar();
+                    @Override
+                    public void onRetryClicked() {
+                        initView();
+                    }
+                }).showRetrySnackbar();
 
     }
 
@@ -1139,26 +1138,26 @@ public class DetailResChatFragment
             case DetailResChatActivity.REQUEST_GO_DETAIL:
                 initView();
                 break;
-            case ImageUploadHandler.REQUEST_CODE:
-                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
+            case REQUEST_CODE_IMAGE_REPUTATION:
+                presenter.handleImageResult(resultCode, data);
                 break;
-            case ImageUploadHandler.REQUEST_CODE_GALLERY:
-                presenter.handleNewGalleryResult(resultCode, data);
+            case REQUEST_CODE_VIDEO:
+                presenter.handleVideoResult(resultCode, data);
                 break;
             case REQUEST_EDIT_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
                     showSnackBar(getActivity().getString(R.string.string_success_edit_solution));
-                    initView();
+                initView();
                 break;
             case REQUEST_APPEAL_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
                     showSnackBar(getActivity().getString(R.string.string_success_appeal));
-                    initView();
+                initView();
                 break;
             case REQUEST_INPUT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK)
                     showSnackBar(getActivity().getString(R.string.string_success_input_awb));
-                    initView();
+                initView();
                 break;
             case REQUEST_EDIT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {

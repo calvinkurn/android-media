@@ -43,6 +43,9 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
             title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (getAdapterPosition() < 0) {
+                        return;
+                    }
                     if (filterViewModel.getListChild().get(getAdapterPosition()).isExpanded()) {
                         collapseGroup(getAdapterPosition());
                     } else {

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.MethodChecker;
@@ -144,9 +142,8 @@ public class FragmentShopPreview extends Fragment {
     }
 
     private void openShop() {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle("", ShopDomain));
-        getActivity().startActivity(intent);
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getShopPageIntentByDomain(getActivity(), ShopDomain);
+        startActivity(intent);
     }
 
     public void GetShopInfo() {

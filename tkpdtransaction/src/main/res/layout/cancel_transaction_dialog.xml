@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:minWidth="300dp"
     android:orientation="vertical"
-    android:padding="@dimen/padding_med">
+    android:padding="@dimen/dp_20">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/dp_30"
         android:gravity="end"
         android:orientation="horizontal">
 
@@ -42,11 +42,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="@dimen/padding_vs"
-            android:paddingEnd="@dimen/padding_small"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
-            android:paddingStart="@dimen/padding_small"
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
             android:text="@string/title_no"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/text_size_l_medium"
@@ -56,15 +56,15 @@
             android:id="@+id/confirm_delete_transaction_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_med"
-            android:layout_marginStart="@dimen/padding_med"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_20"
             android:gravity="center"
-            android:paddingBottom="@dimen/padding_vs"
-            android:paddingEnd="@dimen/padding_small"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
-            android:paddingStart="@dimen/padding_small"
-            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10"
             android:text="@string/title_yes"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/text_size_l_medium"

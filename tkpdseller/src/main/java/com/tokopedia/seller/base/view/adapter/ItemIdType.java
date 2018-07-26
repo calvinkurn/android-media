@@ -6,6 +6,6 @@ package com.tokopedia.seller.base.view.adapter;
 
 public interface ItemIdType extends ItemType {
 
-    String getId();
+    String getItemId();
 
 }

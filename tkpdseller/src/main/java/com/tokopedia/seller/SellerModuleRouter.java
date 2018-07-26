@@ -34,8 +34,6 @@ public interface SellerModuleRouter {
 
     void goToGMSubscribe(Activity activity);
 
-    Observable<Boolean> setCashBack(String productId, int cashback);
-
     Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 
     GetShopInfoUseCase getShopInfo();
@@ -46,11 +44,20 @@ public interface SellerModuleRouter {
 
     void sendEventTracking(String event, String category, String action, String label);
 
+    void sendMoEngageOpenShopEventTracking(String screenName);
+
     Intent getLoginIntent(Context context);
 
     Intent getPhoneVerificationActivityIntent(Context context);
 
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getInboxMessageIntent(Context context);
+
+    void gotoTopAdsDashboard(Context context);
 }
+

@@ -12,22 +12,22 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,13 +49,16 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     @Inject
     GetSearchGuideUseCase getSearchGuideUseCase;
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    RemoveWishListUseCase removeWishlistActionUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
-    private WishlistActionListener wishlistActionListener;
+    @Inject
+    GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
+    private WishListActionListener wishlistActionListener;
     private Context context;
+    private boolean isUsingFilterV4;
 
     public ProductListPresenterImpl(Context context) {
         this.context = context;
@@ -67,24 +70,28 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void attachView(ProductListFragmentView viewListener,
-                           WishlistActionListener wishlistActionListener) {
+                           WishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
         this.wishlistActionListener = wishlistActionListener;
     }
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        if (isUsingFilterV4) {
+            getDynamicFilterV4UseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        } else {
+            getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        }
     }
 
     @Override
-    public void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
+    public void handleWishlistButtonClicked(ProductItem productItem) {
         if (getView().isUserHasLogin()) {
-            getView().disableWishlistButton(adapterPosition);
+            getView().disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
-                removeWishlist(productItem.getProductID(), getView().getUserId(), adapterPosition);
+                removeWishlist(productItem.getProductID(), getView().getUserId());
             } else {
-                addWishlist(productItem.getProductID(), getView().getUserId(), adapterPosition);
+                addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
             launchLoginActivity(productItem.getProductID());
@@ -97,16 +104,15 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         getView().launchLoginActivity(extras);
     }
 
-    private void addWishlist(String productId, String userId, int adapterPosition) {
+    private void addWishlist(String productId, String userId) {
         Log.d(this.toString(), "Add Wishlist " + productId);
-        addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
-                new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        addWishlistActionUseCase.createObservable(productId, userId,
+                wishlistActionListener);
     }
 
-    private void removeWishlist(String productId, String userId, int adapterPosition) {
+    private void removeWishlist(String productId, String userId) {
         Log.d(this.toString(), "Remove Wishlist " + productId);
-        removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
-                new RemoveWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        removeWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     @Override
@@ -200,12 +206,14 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onStart() {
                         getView().setTopAdsEndlessListener();
+                        getView().showRefreshLayout();
                         getView().incrementStart();
                     }
 
                     @Override
                     public void onCompleted() {
                         getView().getDynamicFilter();
+                        getView().getQuickFilter();
                         getView().hideRefreshLayout();
                     }
 
@@ -225,6 +233,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             List<Visitable> list = new ArrayList<Visitable>();
                             if (productViewModel.getProductList().isEmpty()) {
                                 getView().setEmptyProduct();
+                                getView().setTotalSearchResultCount("0");
                                 getView().showBottomBarNavigation(false);
                             } else {
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
@@ -232,6 +241,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 list.add(headerViewModel);
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
+                                getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
                                 getView().showBottomBarNavigation(true);
                                 if (getView().getStartFrom() > searchResultModel.getTotalData()) {
                                     getView().unSetTopAdsEndlessListener();
@@ -255,7 +265,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
             @Override
             public void onError(Throwable e) {
-                
+
             }
 
             @Override
@@ -263,6 +273,34 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 getView().onGetGuidedSearchComplete(guidedSearchViewModel);
             }
         });
+    }
+
+    @Override
+    public void requestQuickFilter(HashMap<String, String> additionalParams) {
+        RequestParams params = getQuickFilterRequestParams();
+        params = enrichWithFilterAndSortParams(params);
+        params = enrichWithAdditionalParams(params, additionalParams);
+        getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
+    }
+
+    @Override
+    public void setIsUsingFilterV4(boolean isUsingFilterV4) {
+        this.isUsingFilterV4 = isUsingFilterV4;
+    }
+
+    private RequestParams getQuickFilterRequestParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
+        requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_QUICK_FILTER);
+        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(BrowseApi.Q, getView().getQueryKey());
+        if (getView().getSearchParameter().getDepartmentId() != null
+                && !getView().getSearchParameter().getDepartmentId().isEmpty()) {
+            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().getDepartmentId());
+        } else {
+            requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
+        }
+        return requestParams;
     }
 
     private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
@@ -277,5 +315,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         addWishlistActionUseCase.unsubscribe();
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
+        getDynamicFilterV4UseCase.unsubscribe();
     }
 }

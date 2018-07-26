@@ -6,8 +6,8 @@
               android:layout_height="wrap_content"
               android:layout_gravity="center"
               android:gravity="center"
-              android:layout_margin="@dimen/margin_small"
-              android:padding="@dimen/padding_small"
+              android:layout_margin="@dimen/dp_10"
+              android:padding="@dimen/dp_10"
               android:orientation="vertical">
 
     <ImageView
@@ -21,6 +21,6 @@
         android:id="@+id/smiley_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         tools:text="Smiley"/>
 </LinearLayout>

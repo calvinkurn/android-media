@@ -10,10 +10,11 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 
@@ -55,7 +56,6 @@ public class ImagesSelectView extends BaseCustomView {
     private String primaryImageString;
     private int imageLimit;
     private String titleString;
-    private String addImageString;
 
     private OnCheckResolutionListener onCheckResolutionListener;
     private OnImageChanged onImageChanged;
@@ -99,7 +99,6 @@ public class ImagesSelectView extends BaseCustomView {
         primaryImageString = a.getString(R.styleable.ImagesSelectView_primaryImageString);
         imageLimit = a.getInt(R.styleable.ImagesSelectView_imageLimit, DEFAULT_LIMIT);
         titleString = a.getString(R.styleable.ImagesSelectView_titleString);
-        addImageString = a.getString(R.styleable.ImagesSelectView_addImageString);
         a.recycle();
     }
 
@@ -107,7 +106,7 @@ public class ImagesSelectView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_images_select_view, this);
 
         imageSelectorAdapter = new ImageSelectorAdapter(new ArrayList<ImageSelectModel>(),
-                imageLimit, addPictureDrawableRes, null, primaryImageString, addImageString);
+                imageLimit, addPictureDrawableRes, null, primaryImageString);
 
         TextView textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
         if (TextUtils.isEmpty(titleString)) {
@@ -158,6 +157,9 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public boolean successHandleResolution(String localUri) {
+        if (URLUtil.isNetworkUrl(localUri)) {
+            return true;
+        }
         if (onCheckResolutionListener == null || onCheckResolutionListener.isResolutionCorrect(localUri)) {
             return true;
         } else { // resolution is not correct
@@ -194,8 +196,12 @@ public class ImagesSelectView extends BaseCustomView {
         }
     }
 
+    public void setImagesString(List<String> imageStringList) {
+        imageSelectorAdapter.setImageString(imageStringList);
+    }
+
     public void setImage(ArrayList<ImageSelectModel> imageSelectModelList) {
-//        handleResolutionFromList(imageSelectModelList);
+        handleResolutionFromList(imageSelectModelList);
 
         if (imageSelectModelList.size() > 0) {
             imageSelectorAdapter.setImage(imageSelectModelList);
@@ -253,10 +259,6 @@ public class ImagesSelectView extends BaseCustomView {
         return imageSelectorAdapter.getPrimaryImage();
     }
 
-    public int getPrimaryImageIndex() {
-        return imageSelectorAdapter.getPrimaryImageIndex();
-    }
-
     public ImageSelectModel getSelectedImage() {
         return imageSelectorAdapter.getSelectedImage();
     }
@@ -267,6 +269,10 @@ public class ImagesSelectView extends BaseCustomView {
 
     public ArrayList<ImageSelectModel> getImageList() {
         return imageSelectorAdapter.getImageSelectModelList();
+    }
+
+    public ArrayList<String> getImageStringList() {
+        return imageSelectorAdapter.getImageStringList();
     }
 
     public int getSelectedImageIndex() {

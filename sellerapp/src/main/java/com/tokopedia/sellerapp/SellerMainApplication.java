@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -15,26 +16,39 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.otp.cotp.data.CotpUrl;
+import com.tokopedia.otp.cotp.data.SQLoginUrl;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
+import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.WhiteList;
+import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
+import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 
-import java.util.List;
+import rx.Observable;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -150,6 +164,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.ACE_DOMAIN = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.BASE_API_DOMAIN = SellerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
+        TopAdsCommonConstant.BASE_DOMAIN_URL = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = SellerAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = SellerAppBaseUrl.BASE_HADES_DOMAIN;
         TkpdBaseURL.DIGITAL_API_DOMAIN = SellerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
@@ -173,12 +188,24 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
-
+        ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
+        ShopCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
+        ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
+        ReputationCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
+        CatalogConstant.URL_HADES = SellerAppBaseUrl.BASE_HADES_DOMAIN;
 
         MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
         DigitalUrl.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
+        PaymentFingerprintConstant.ACCOUNTS_DOMAIN = SellerAppBaseUrl.ACCOUNTS_DOMAIN;
+        PaymentFingerprintConstant.TOP_PAY_DOMAIN = SellerAppBaseUrl.TOP_PAY_DOMAIN;
+        TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
+        CotpUrl.BASE_URL = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
+        SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
+        SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
+
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -188,24 +215,72 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     public void initDbFlow() {
         super.initDbFlow();
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
-                .build());
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdGMGeneratedDatabaseHolder.class)
-                .build());
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
-                .build());
+        try {
+            FlowManager.getConfig();
+        } catch (IllegalStateException e) {
+            FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
+        }
+        FlowManager.initModule(TkpdSellerGeneratedDatabaseHolder.class);
+        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
+        PushNotification.initDatabase(getApplicationContext());
     }
 
-    public void initCacheApi() {
+    private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = WhiteList.getWhiteList();
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
-                cacheApiWhiteListDomains,
+                CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
+    @Override
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        return null;
+    }
+
+    @Override
+    public Intent getCartIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
+
+    }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoDetailIntent(Context context, String slug) {
+        return null;
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return OrderListActivity.getInstance(context);
+    }
+
+    @Override
+    public boolean isSupportApplink(String appLink) {
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLink);
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
 
 }

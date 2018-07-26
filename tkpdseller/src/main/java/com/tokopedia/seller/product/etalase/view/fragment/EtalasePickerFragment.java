@@ -22,19 +22,15 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.etalase.di.component.DaggerEtalasePickerComponent;
 import com.tokopedia.seller.product.etalase.di.module.EtalasePickerModule;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapter;
 import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapterListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -45,17 +41,16 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     public static final String TAG = "EtalasePicker";
     public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
     public static final int UNSELECTED_ETALASE_ID = -1;
-
+    protected EtalasePickerAdapter adapter;
     @Inject
     EtalasePickerPresenter presenter;
-
-    protected EtalasePickerAdapter adapter;
     private EtalasePickerFragmentListener listener;
     private TkpdProgressDialog tkpdProgressDialog;
 
     public static EtalasePickerFragment createInstance(long etalaseId) {
         EtalasePickerFragment fragment = new EtalasePickerFragment();
         Bundle args = new Bundle();
+        args.putLong(SELECTED_ETALASE_ID, etalaseId);
         args.putLong(SELECTED_ETALASE_ID, etalaseId);
         fragment.setArguments(args);
         return fragment;
@@ -115,7 +110,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
         RecyclerView etalaseRecyclerView = (RecyclerView) view.findViewById(R.id.etalase_picker_recycler_view);
         final LinearLayoutManager layout = new LinearLayoutManager(getActivity());
         etalaseRecyclerView.setLayoutManager(layout);
-        adapter = new EtalasePickerAdapter(this);
+        adapter = getNewAdapter();
         RetryDataBinder topAdsRetryDataBinder = new BaseRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
@@ -136,6 +131,10 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
                 }
             }
         });
+    }
+
+    protected EtalasePickerAdapter getNewAdapter() {
+        return new EtalasePickerAdapter(this);
     }
 
     @Override

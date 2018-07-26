@@ -1,8 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -11,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -24,31 +28,57 @@ import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by hangnadi on 10/3/17.
  */
-
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
+        DiscoverySearchView.ImageSearchClickListener,
         DiscoverySearchView.OnQueryTextListener,
         BottomNavigationListener {
 
+    private static final int REQUEST_CODE_IMAGE = 2390;
+    private static final double MIN_SCORE = 10.0;
+    private static final String FAILURE = "no matching result found";
+    private static final String NO_RESPONSE = "no response";
+    private static final String SUCCESS = "success match found";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
     protected DiscoverySearchView searchView;
-    protected View loadingView;
+    protected ProgressBar loadingView;
 
-    private MenuItem searchItem;
+    public MenuItem searchItem;
     private boolean isLastRequestForceSearch;
+
+    private TkpdProgressDialog tkpdProgressDialog;
+    private boolean fromCamera;
+    private String imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
+        proceed();
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        proceed();
+    }
+
+    private void proceed() {
         initView();
         prepareView();
     }
@@ -118,6 +148,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         searchView.setActivity(this);
         searchView.setOnQueryTextListener(this);
         searchView.setOnSearchViewListener(this);
+        searchView.setOnImageSearchClickListener(this);
     }
 
     protected void setLastQuerySearchView(String lastQuerySearchView) {
@@ -139,6 +170,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        AutoCompleteTracking.eventClickSubmit(this, query);
         if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
             onHandleOfficialStorePage();
             sendSearchProductGTM(query);
@@ -194,6 +226,22 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
+    private void sendCameraImageSearchProductGTM() {
+        UnifyTracking.eventDiscoveryCameraImageSearch();
+    }
+
+    private void sendGalleryImageSearchProductGTM() {
+        UnifyTracking.eventDiscoveryGalleryImageSearch();
+    }
+
+    private void sendGalleryImageSearchResultGTM(String label) {
+        UnifyTracking.eventDiscoveryGalleryImageSearchResult(label);
+    }
+
+    private void sendCameraImageSearchResultGTM(String label) {
+        UnifyTracking.eventDiscoveryCameraImageSearchResult(label);
+    }
+
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
@@ -218,8 +266,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -331,6 +377,20 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
+    public void enableAutoShowBottomNav() {
+        if (bottomNavigation != null) {
+            bottomNavigation.setBehaviorTranslationEnabled(true);
+        }
+    }
+
+    @Override
+    public void disableAutoShowBottomNav() {
+        if (bottomNavigation != null) {
+            bottomNavigation.setBehaviorTranslationEnabled(false);
+        }
+    }
+
+    @Override
     public void refreshBottomNavigationIcon(List<AHBottomNavigationItem> items) {
         bottomNavigation.removeAllItems();
         bottomNavigation.addItems(items);
@@ -338,6 +398,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onHandleResponseError() {
+
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
         showLoadingView(false);
         showContainer(true);
         NetworkErrorHelper.showEmptyState(this, container, new NetworkErrorHelper.RetryClickedListener() {
@@ -350,9 +414,33 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
+    public void onImageSearchClicked() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
+                null, null);
+        Intent intent = ImagePickerActivity.getIntent(this, builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            if (imagePathList == null || imagePathList.size() <= 0) {
+                return;
+            }
+            String imagePath = imagePathList.get(0);
+            if (!TextUtils.isEmpty(imagePath)) {
+                onImagePickedSuccess(imagePath);
+            } else {
+                showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+            }
+            if (searchView != null) {
+                searchView.clearFocus();
+            }
+        } else if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
                     List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -365,5 +453,122 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                     break;
             }
         }
+    }
+
+    public void onImagePickedSuccess(String imagePath) {
+        setImagePath(imagePath);
+        tkpdProgressDialog = new TkpdProgressDialog(this, 1);
+        tkpdProgressDialog.showDialog();
+        getPresenter().requestImageSearch(imagePath);
+    }
+
+    @Override
+    public void onHandleImageSearchResponseError() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(FAILURE);
+        } else {
+            sendGalleryImageSearchResultGTM(FAILURE);
+        }
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
+    }
+
+    @Override
+    public void showErrorNetwork(String message) {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(NO_RESPONSE);
+        } else {
+            sendGalleryImageSearchResultGTM(NO_RESPONSE);
+        }
+
+        if (TextUtils.isEmpty(getImagePath())) {
+            NetworkErrorHelper.showSnackbar(this, message);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    onImagePickedSuccess(getImagePath());
+                }
+            }).showRetrySnackbar();
+        }
+    }
+
+    @Override
+    public void showTimeoutErrorNetwork(String message) {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (TextUtils.isEmpty(getImagePath())) {
+            NetworkErrorHelper.showSnackbar(this, message);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    onImagePickedSuccess(getImagePath());
+                }
+            }).showRetrySnackbar();
+        }
+    }
+
+    @Override
+    public void onHandleInvalidImageSearchResponse() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(NO_RESPONSE);
+        } else {
+            sendGalleryImageSearchResultGTM(NO_RESPONSE);
+        }
+
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.invalid_image_search_response));
+    }
+
+    @Override
+    public void onHandleImageSearchResponseSuccess() {
+
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
+        } else {
+            sendGalleryImageSearchResultGTM(SUCCESS);
+        }
+    }
+
+    @Override
+    public void showImageNotSupportedError() {
+        super.showImageNotSupportedError();
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.image_not_supported));
+    }
+
+    public void showSnackBarView(String message) {
+        if (message == null) {
+            NetworkErrorHelper.showSnackbar(this);
+        } else {
+            NetworkErrorHelper.showSnackbar(this, message);
+        }
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }

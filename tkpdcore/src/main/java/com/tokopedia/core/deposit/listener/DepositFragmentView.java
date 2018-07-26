@@ -28,7 +28,7 @@ public interface DepositFragmentView {
 
     void showErrorMessage(String s);
 
-    void showHoldWarning(String summaryHoldDepositIdr);
+    void showHoldWarning(String warningText);
 
     void removeError();
 
@@ -53,4 +53,6 @@ public interface DepositFragmentView {
     void showEmptyState(String error);
 
     void setRetry(String error);
+
+    void showWithdrawalNoPassword();
 }

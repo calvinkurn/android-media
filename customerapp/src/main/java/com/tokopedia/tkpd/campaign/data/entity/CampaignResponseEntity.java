@@ -25,8 +25,22 @@ public class CampaignResponseEntity {
 	@SerializedName("tkp_url")
 	private String url;
 
+    @SerializedName("vibrate")
+    private int vibrate;
+
 	@SerializedName("status")
 	private int status;
+
+	@SerializedName("message")
+	private String message;
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
 	public void setUpdatedAt(String updatedAt){
 		this.updatedAt = updatedAt;
@@ -92,6 +106,14 @@ public class CampaignResponseEntity {
 		return status;
 	}
 
+    public int getVibrate() {
+        return vibrate;
+    }
+
+    public void setVibrate(int vibrate) {
+        this.vibrate = vibrate;
+    }
+
 	@Override
  	public String toString(){
 		return 
@@ -102,8 +124,9 @@ public class CampaignResponseEntity {
 			",created_at = '" + createdAt + '\'' + 
 			",id = '" + id + '\'' + 
 			",title = '" + title + '\'' + 
-			",url = '" + url + '\'' + 
-			",status = '" + status + '\'' + 
-			"}";
+			",url = '" + url + '\'' +
+                    ",status = '" + status + '\'' +
+                    ",vibrate = '" + vibrate + '\'' +
+                    "}";
 		}
 }

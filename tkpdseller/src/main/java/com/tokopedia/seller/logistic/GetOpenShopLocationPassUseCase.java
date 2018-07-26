@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -89,6 +89,8 @@ public class GetOpenShopLocationPassUseCase extends UseCase<LocationPass> {
             LocationPass locationPass = new LocationPass();
             locationPass.setLatitude(model.getShopShipping().getShopLatitude());
             locationPass.setLongitude(model.getShopShipping().getShopLongitude());
+            locationPass.setCityName(model.getShopShipping().getCityName());
+            locationPass.setDistrictName(model.getShopShipping().getDistrictName());
             locationPass.setGeneratedAddress(generatedAddress);
 
             return locationPass;

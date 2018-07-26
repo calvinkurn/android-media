@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 
+
 /**
  * modified by m.normansyah
  *
@@ -45,6 +46,8 @@ import io.branch.referral.BranchError;
  * fetch some data from server in order to worked around.
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
+
+
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
@@ -61,6 +64,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        setContentView(R.layout.activity_splash);
 
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -211,9 +216,13 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
+                    if (isFinishing()) {
+                        return;
+                    }
+
                     if (error == null) {
                         try {
-                            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,SplashScreen.this);
+                            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
 
                             String deeplink = referringParams.getString("$android_deeplink_path");
                             Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
@@ -229,6 +238,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                     } else {
                         moveToHome();
                     }
+
                 }
             }, this.getIntent().getData(), this);
         }

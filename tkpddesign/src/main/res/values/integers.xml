@@ -5,4 +5,6 @@
     <integer name="product_max_counter_int_length">9</integer>
 
     <integer name="max_length_price_input">11</integer>
+
+    <integer name="corner_radius_shimmering">20</integer>
 </resources>

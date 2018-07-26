@@ -3,9 +3,6 @@ package com.tokopedia;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
-
 import okhttp3.Interceptor;
 
 /**
@@ -13,15 +10,16 @@ import okhttp3.Interceptor;
  */
 
 public interface SessionRouter {
+
+    String ENABLE_LOGIN_INACTIVE_PHONE_LINK = "mainapp_login_inactive_phone_no_link";
+
     Intent getHomeIntent(Context context);
-
-    BaseDaggerFragment getKolPostFragment(String userId);
-
-    void doFollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
-
-    void doUnfollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
 
     Intent getTopProfileIntent(Context context, String userId);
 
     Interceptor getChuckInterceptor();
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    boolean isLoginInactivePhoneLinkEnabled();
 }

@@ -32,7 +32,7 @@
                 android:layout_height="@dimen/btn_height"
                 android:layout_gravity="center"
                 app:drawableLeftCompat="@drawable/ic_sort"
-                android:drawablePadding="@dimen/padding_vs"
+                android:drawablePadding="@dimen/dp_5"
                 android:gravity="center_vertical"
                 android:text="@string/action_sort" />
         </RelativeLayout>
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
                 app:drawableLeftCompat="@drawable/ic_filter_black"
-                android:drawablePadding="@dimen/padding_vs"
+                android:drawablePadding="@dimen/dp_5"
                 android:gravity="center_vertical"
                 android:text="@string/filter" />
 
@@ -70,17 +70,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
             android:background="@drawable/bg_yellow_border_yelow"
             android:gravity="center"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:text="@string/header_opportunity" />
 
         <android.support.v7.widget.SearchView
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_5"
             android:background="@drawable/cards_ui"
             android:hint="@string/search_product"
             android:iconifiedByDefault="false"

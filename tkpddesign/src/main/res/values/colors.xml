@@ -14,6 +14,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
+    <color name="countdown_background">#ff3b30</color>
     <color name="background_apps">@color/grey_200</color>
     <color name="background_error">#D50000</color>
     <color name="background_notification">#EA212D</color>
@@ -27,6 +28,8 @@
     <color name="font_white_primary_70">#FFFFFFFF</color>
     <color name="font_white_secondary_54">#B3FFFFFF</color>
     <color name="font_white_disabled_38">#88FFFFFF</color>
+    <color name="light_grey">#FAFBFC</color>
+    <color name="label_text_color">#9B9B9B</color>
 
     <color name="font_voucher">#8a000000</color>
     <color name="separator_voucher">#1f000000</color>
@@ -47,10 +50,14 @@
 
     <color name="black_55">#8C000000</color>
 
-    <color name="bottomnav_bg">#FAFAFA</color>
+    <color name="bottomnav_bg">#FFFFFF</color>
     <color name="bottomnav_active">@color/green_250</color>
     <color name="bottomnav_inactive">#8C000000</color>
 
     <color name="snackbar_border_error">#f05f68</color>
     <color name="snackbar_border_normal">#87d58b</color>
+
+    <color name="bg_button_border_outline">#E0E0E0</color>
+    <color name="white_two">#e0e0e0</color>
+    <color name="gray_background">#fff2f3f4</color>
 </resources>

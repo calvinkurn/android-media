@@ -9,6 +9,8 @@ import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,6 +25,7 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
 
     private ReputationReviewRepository reputationReviewRepository;
 
+    @Inject
     public ReviewReputationUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,

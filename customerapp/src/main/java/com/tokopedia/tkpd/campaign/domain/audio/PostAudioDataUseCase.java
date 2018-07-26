@@ -1,18 +1,11 @@
 package com.tokopedia.tkpd.campaign.domain.audio;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 import okhttp3.MediaType;
@@ -47,8 +40,12 @@ public class PostAudioDataUseCase extends ShakeUseCase {
         RequestBody isAudio = RequestBody.create(MediaType.parse("text/plain"),
                 requestParams.getString(IS_AUDIO,
                         "false"));
+        RequestBody screenName = RequestBody.create(MediaType.parse("text/plain"),
+                requestParams.getString(SCREEN_NAME,
+                        "false"));
         HashMap<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put(IS_AUDIO, isAudio);
+        requestBodyMap.put(SCREEN_NAME, screenName);
         return requestBodyMap;
     }
 

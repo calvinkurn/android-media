@@ -3,12 +3,13 @@ package com.tokopedia.loyalty.domain.repository;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.DigitalVoucherData;
-import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public interface ITokoPointResponseMapper {
 
     String getSuccessValidateRedeemMessage(ValidateRedeemCouponResponse response);
 
-    TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData);
+    TokoPointDrawerData convertTokoplusPointDrawer(GqlTokoPointDrawerDataResponse tokoplusPointDrawerData);
 
     VoucherViewModel voucherViewModel(VoucherResponse voucherResponse, String voucherCode);
 
@@ -39,4 +40,6 @@ public interface ITokoPointResponseMapper {
     CouponViewModel digitalCouponViewModel(DigitalVoucherData voucherResponse,
                                            String voucherCode,
                                            String couponTitle);
+
+    CouponsDataWrapper convertCouponsDataWraper(CouponListDataResponse couponListDataResponse);
 }

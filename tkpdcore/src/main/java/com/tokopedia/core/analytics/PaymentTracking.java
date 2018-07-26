@@ -67,9 +67,9 @@ public class PaymentTracking extends TrackingUtils {
                 .clearCheckoutDataLayer();
     }
 
-    public static void eventCartCheckoutStep2(Checkout checkout) {
+    public static void eventCartCheckoutStep2(Checkout checkout, String paymentId) {
         getGTMEngine()
-                .eventCheckout(checkout)
+                .eventCheckout(checkout, paymentId)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)
                 .clearCheckoutDataLayer();
     }

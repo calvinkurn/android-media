@@ -39,8 +39,11 @@ public class BranchIOModule {
     }
 
     @Provides
-    BranchIOAPI provideCampaignApi(Retrofit retrofit) {
-        return retrofit.create(BranchIOAPI.class);
+    BranchIOAPI provideCampaignApi(Retrofit.Builder retrofitBuilder, HttpLoggingInterceptor httpLoggingInterceptor) {
+        return retrofitBuilder.client(new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(new ErrorResponseInterceptor(CampaignErrorResponse.class))
+                .build()).build().create(BranchIOAPI.class);
     }
 
 

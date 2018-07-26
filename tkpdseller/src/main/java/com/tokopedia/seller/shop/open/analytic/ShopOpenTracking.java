@@ -29,6 +29,10 @@ public class ShopOpenTracking {
                 "");
     }
 
+    public void eventMoEngageOpenShop(String screenName){
+        sellerModuleRouter.sendMoEngageOpenShopEventTracking(screenName);
+    }
+
     public void eventOpenShopBiodataError(String labelError){
         eventOpenShop(
                 ShopOpenTrackingConstant.OPEN_SHOP_BIODATA_FORM,

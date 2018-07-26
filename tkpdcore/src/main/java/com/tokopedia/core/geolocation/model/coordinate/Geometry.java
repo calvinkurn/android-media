@@ -12,9 +12,9 @@ public class Geometry {
     @SerializedName("location_type")
     @Expose
     private String locationType;
-    @SerializedName("bounds")
-    @Expose
-    private Bounds bounds;
+//    @SerializedName("bounds")
+//    @Expose
+//    private Bounds bounds;
     @SerializedName("viewport")
     @Expose
     private Viewport viewport;
@@ -38,13 +38,13 @@ public class Geometry {
         this.locationType = locationType;
     }
 
-    public Bounds getBounds() {
-        return bounds;
-    }
-
-    public void setBounds(Bounds bounds) {
-        this.bounds = bounds;
-    }
+//    public Bounds getBounds() {
+//        return bounds;
+//    }
+//
+//    public void setBounds(Bounds bounds) {
+//        this.bounds = bounds;
+//    }
 
     public Viewport getViewport() {
         return viewport;

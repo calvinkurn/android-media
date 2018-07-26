@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 
 import java.io.File;
-import java.net.URI;
 
 /**
  * @author hendry on 5/19/17.
@@ -92,7 +92,7 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
 
             if (TextUtils.isEmpty(model.getPrimaryImageUrl())) {
                 ivProduct.setImageResource(R.drawable.ic_image_unavailable);
-            } else if (isValidURL(model.getPrimaryImageUrl())) {
+            } else if (URLUtil.isNetworkUrl(model.getPrimaryImageUrl())) {
                 ImageHandler.loadImageFitCenter(
                         ivProduct.getContext(),
                         ivProduct,
@@ -107,13 +107,5 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
             }
         }
 
-        private boolean isValidURL(String urlStr) {
-            try {
-                URI uri = new URI(urlStr);
-                return uri.getScheme().equals("http") || uri.getScheme().equals("https");
-            } catch (Exception e) {
-                return false;
-            }
-        }
     }
 }

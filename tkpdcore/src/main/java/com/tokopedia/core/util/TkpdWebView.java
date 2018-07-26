@@ -1,5 +1,6 @@
 package com.tokopedia.core.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +13,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,6 +49,10 @@ public class TkpdWebView extends WebView {
 
     public void loadAuthUrl(String url) {
         loadUrl(url, getWebviewHeaders(url));
+    }
+
+    public void loadOtherUrl(String url) {
+        loadUrl(url, new HashMap<String, String>());
     }
 
     public static Map<String, String> getWebviewHeaders(String url) {

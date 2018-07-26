@@ -1,6 +1,6 @@
 package com.tokopedia.gm.statistic.view.widget.config;
 
-import com.tokopedia.seller.common.williamchart.config.GrossGraphDataSetConfig;
+import com.db.williamchart.config.GrossGraphDataSetConfig;
 
 /**
  * Created by normansyahputa on 7/7/17.

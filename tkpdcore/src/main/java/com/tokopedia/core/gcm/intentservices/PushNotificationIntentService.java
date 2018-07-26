@@ -27,6 +27,9 @@ public class PushNotificationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if (intent == null){
+            return;
+        }
         int code = intent.getIntExtra(ARG_EXTRA_GCM_UPDATE, 0);
         switch (code) {
             case CODE_EXTRA_GCM_UPDATE:

@@ -65,6 +65,7 @@
     <string name="error_reply_discussion_resolution_reach_max">Maksimal video yg dapat diupload 1 buah</string>
     <string name="error_reply_discussion_resolution_not_support">Extensi file belum disupport</string>
     <string name="error_reply_discussion_resolution_file_not_allowed">Maaf, file Extension tidak disupport</string>
+    <string name="error_reply_discussion_resolution_version_minimum">Mohon maaf device Anda tidak dapat menggunakan fitur ini</string>
     <string name="error_reply_discussion_resolution_reach_max_size_video">Maksimum ukuran file adalah 20mb</string>
     <string name="error_reply_discussion_resolution_reach_max_size_image">Maksimum ukuran gambar adalah 15mb</string>
     <string name="error_reply_discussion_resolution_min_size">Ukuran panjang dan lebar minimal adalah 300px</string>
@@ -75,25 +76,6 @@
         Pesan</string>
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
         Pesan</string>
-
-    <string name="no_existing_chat"> Tidak Ada Chat</string>
-    <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
-yang ditemukan</string>
-    <string name="please_try_chat"> Silakan mengirim chat untuk\nmemulai percakapan</string>
-    <string name="old_message_warn"> Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: </string>
-    <string name="delete_message_warn"> Jumlah pesan yang bisa dihapus hanya </string>
-    <string name="delete_confirmation">Apakah anda yakin menghapus %1$d pesan?</string>
-    <string name="delete_choose">"Pilih chat yang dihapus"</string>
-    <string name="connected_websocket">"Terhubung!"</string>
-    <string name="is_typing">"sedang mengetik"</string>
-    <string name="just_now">"baru saja"</string>
-    <string name="delete_error">"Gagal mengirim pesan."</string>
-    <string name="delete_chat">"Hapus chat?"</string>
-    <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
-    <string name="search_chat_user">"Cari chat atau pengguna"</string>
-    <string name="resend">"Kirim Ulang"</string>
-    <string name="delete">"Hapus"</string>
-    <string name="cancel">"Batal"</string>
 
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
     <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
@@ -256,27 +238,6 @@ yang ditemukan</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="add_template_chat_title">Tambah Template Pesan</string>
-    <string name="edit_template_chat_title">Ubah Template Pesan</string>
-    <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
-    <string name="minimum_template_chat_warning">Minimal harus memiliki 1 template.</string>
-    <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
-    <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
-    <string name="success_delete_template_chat">Template berhasil dihapus</string>
-    <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
-    <string name="success_switch_template_chat">Berhasil mengubah urutan template</string>
-    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali.
-        \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
-    <string name="delete_chat_template">"Hapus template?"</string>
-    <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
-    <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
-    <string name="maximal_char_template">"Template pesan maksimal %1$d karakter"</string>
-
-    <string name="title_info_list_template">"Kelola Template Pesan"</string>
-    <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
-    <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
-
-
     <!--reso inbox-->
     <string name="string_buyer">Pembeli:</string>
     <string name="string_seller">Penjual:</string>
@@ -309,8 +270,6 @@ yang ditemukan</string>
     <string name="string_attach_product_send_button_text">Kirim (%1$s/%2$s)</string>
     <string name="string_attach_product_search_placeholder_text">Cari produk di semua etalase</string>
     <string name="string_attach_product_activity_title">Lampirkan Produk</string>
-
-    <string name="title_personal">Personal</string>
-    <string name="title_community">Channel</string>
-    <string name="chat_title">Chat ( %d )</string>
+    <string name="title_video">Video</string>
+    <string name="title_image">Gambar</string>
 </resources>

@@ -85,6 +85,9 @@ public class DepositAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindDeposit(ViewHolder holder, int position) {
+        if (position < 0 || position >= list.size()) {
+            return;
+        }
         holder.date.setText(list.get(position).getDepositDate());
         holder.balance.setText(list.get(position).getDepositSaldoIdr());
         holder.nominal.setText(list.get(position).getDepositAmountIdr());

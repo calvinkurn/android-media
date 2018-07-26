@@ -23,6 +23,10 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 
+        void onHandleImageResponseSearch(ProductViewModel productViewModel);
+
+        void onHandleImageSearchResponseError();
+
         void onHandleResponseIntermediary(String departmentId);
 
         void onHandleOfficialStorePage();
@@ -32,6 +36,16 @@ public interface BaseDiscoveryContract {
         void onHandleResponseCatalog(String redirectUrl);
 
         void onHandleResponseError();
+
+        void onHandleInvalidImageSearchResponse();
+
+        void showErrorNetwork(String message);
+
+        void showTimeoutErrorNetwork(String message);
+
+        void onHandleImageSearchResponseSuccess();
+
+        void showImageNotSupportedError();
     }
 
     interface Presenter<D extends View> {
@@ -39,5 +53,8 @@ public interface BaseDiscoveryContract {
         void setDiscoveryView(D discoveryView);
 
         void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner);
+
+        void requestImageSearch(String filePath);
+
     }
 }

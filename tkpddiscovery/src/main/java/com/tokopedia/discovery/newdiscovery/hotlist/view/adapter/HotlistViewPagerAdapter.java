@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.ticker.SelectableSpannedMovementMethod;
+import com.tokopedia.design.component.ticker.SelectableSpannedMovementMethod;
 import com.tokopedia.discovery.R;
 
 /**

@@ -20,6 +20,8 @@ public class ShareData implements Parcelable {
     public static final String DISCOVERY_TYPE = "Discovery";
     public static final String HOTLIST_TYPE = "Hotlist";
     public static final String RIDE_TYPE = "Ride";
+    public static final String PROMO_TYPE = "Promo";
+
     private static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
     public static final String APP_SHARE_TYPE = "App";
@@ -37,6 +39,8 @@ public class ShareData implements Parcelable {
     private String textContent;
     private String source;
     private String id = "";
+    private String shareUrl;
+    private String pathSticker;
 
     public ShareData() {
     }
@@ -51,6 +55,8 @@ public class ShareData implements Parcelable {
         textContent = in.readString();
         source = in.readString();
         id = in.readString();
+        shareUrl = in.readString();
+        pathSticker = in.readString();
     }
 
     @Override
@@ -64,6 +70,8 @@ public class ShareData implements Parcelable {
         dest.writeString(textContent);
         dest.writeString(source);
         dest.writeString(id);
+        dest.writeString(shareUrl);
+        dest.writeString(pathSticker);
     }
 
     @Override
@@ -162,6 +170,14 @@ public class ShareData implements Parcelable {
         this.id = id;
     }
 
+    public String getshareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
+    }
+
     public String renderShareUri() {
         if (getUri() == null) {
             return "";
@@ -226,6 +242,14 @@ public class ShareData implements Parcelable {
             return new String[0];
     }
 
+    public String getPathSticker() {
+        return pathSticker;
+    }
+
+    public void setPathSticker(String pathSticker) {
+        this.pathSticker = pathSticker;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -236,6 +260,8 @@ public class ShareData implements Parcelable {
         private String textContent;
         private String source;
         private String id;
+        private String shareUrl;
+        private String pathSticker;
 
         private Builder() {
         }
@@ -289,8 +315,17 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setShareUrl(String shareUrl) {
+            this.shareUrl = shareUrl;
+            return this;
+        }
+        public Builder setPathSticker(String pathSticker) {
+            this.pathSticker = pathSticker;
+            return this;
+        }
+
         public Builder but() {
-            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri);
+            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
 
         public ShareData build() {
@@ -304,6 +339,8 @@ public class ShareData implements Parcelable {
             shareData.setTextContent(textContent);
             shareData.setSource(source);
             shareData.setId(id);
+            shareData.setShareUrl(shareUrl);
+            shareData.setPathSticker(pathSticker);
             return shareData;
         }
 

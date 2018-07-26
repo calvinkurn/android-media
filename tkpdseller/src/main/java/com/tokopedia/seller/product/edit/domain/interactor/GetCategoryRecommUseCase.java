@@ -1,12 +1,10 @@
 package com.tokopedia.seller.product.edit.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.edit.data.mapper.CategoryRecommDataToDomainMapper;
 import com.tokopedia.seller.product.edit.domain.CategoryRecommRepository;
 import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -24,11 +22,8 @@ public class GetCategoryRecommUseCase extends UseCase<CategoryRecommDomainModel>
     private final CategoryRecommDataToDomainMapper categoryRecommDataToDomainMapper;
 
     @Inject
-    public GetCategoryRecommUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    CategoryRecommRepository categoryRecommRepository,
+    public GetCategoryRecommUseCase(CategoryRecommRepository categoryRecommRepository,
                                     CategoryRecommDataToDomainMapper categoryRecommDataToDomainMapper) {
-        super(threadExecutor, postExecutionThread);
         this.categoryRecommRepository = categoryRecommRepository;
         this.categoryRecommDataToDomainMapper = categoryRecommDataToDomainMapper;
     }

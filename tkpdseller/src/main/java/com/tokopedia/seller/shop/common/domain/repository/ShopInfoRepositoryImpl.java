@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.common.domain.repository;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.edit.data.mapper.ShopInfoDataToDomainMapper;
@@ -21,7 +22,7 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
     private Context context;
 
     @Inject
-    public ShopInfoRepositoryImpl(Context context, ShopInfoDataSource shopInfoDataSource) {
+    public ShopInfoRepositoryImpl(@ApplicationContext  Context context, ShopInfoDataSource shopInfoDataSource) {
         this.shopInfoDataSource = shopInfoDataSource;
         this.context = context;
     }

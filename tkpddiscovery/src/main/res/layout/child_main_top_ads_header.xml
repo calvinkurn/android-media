@@ -12,18 +12,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:paddingLeft="@dimen/margin_small"
+        android:paddingLeft="@dimen/dp_10"
         android:text="@string/title_promote"
         android:textColor="@color/label_color"
         android:textSize="@dimen/abc_text_size_small_material" />
 
     <ImageView
         android:id="@+id/info_topads"
-        android:layout_width="@dimen/large_dp"
-        android:layout_height="@dimen/large_dp"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:paddingRight="@dimen/margin_small"
+        android:paddingRight="@dimen/dp_10"
         app:srcCompat="@drawable/icon_info" />
 </RelativeLayout>

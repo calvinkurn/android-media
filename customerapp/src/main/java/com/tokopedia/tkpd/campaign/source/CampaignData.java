@@ -32,7 +32,7 @@ public class CampaignData implements CampaignDataRepository {
     }
 
     @Override
-    public Observable<CampaignResponseEntity> getCampaignFromShake(HashMap<String, RequestBody> params) {
+    public Observable<CampaignResponseEntity> getCampaignFromShake(HashMap<String, Object> params) {
         return campaignDataFactory.createCloudCampaignDataStore().getCampaignForShake(params);
     }
 

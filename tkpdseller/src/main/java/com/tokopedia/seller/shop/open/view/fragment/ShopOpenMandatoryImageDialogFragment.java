@@ -3,13 +3,13 @@ package com.tokopedia.seller.shop.open.view.fragment;
 import android.os.Bundle;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageEditDialogFragment;
 
 /**
  * Created by zulfikarrahman on 1/9/18.
  */
 
-public class ShopOpenMandatoryImageDialogFragment extends ImageEditDialogFragment {
+public class ShopOpenMandatoryImageDialogFragment extends ProductAddImageEditDialogFragment {
 
     public static ShopOpenMandatoryImageDialogFragment newInstance(int position) {
         ShopOpenMandatoryImageDialogFragment f = new ShopOpenMandatoryImageDialogFragment();

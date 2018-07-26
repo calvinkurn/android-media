@@ -37,7 +37,7 @@
                 android:textSize="@dimen/text_item_revamp_category"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/dp_15"
                 android:shadowColor="@color/checkbox_text"
                 android:shadowDx="3"
                 android:shadowDy="3"
@@ -50,9 +50,9 @@
             android:id="@id/recycler_view_revamp_categories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_10"
             android:focusableInTouchMode="true"
             android:visibility="gone"
             android:scrollbars="none" />
@@ -65,7 +65,7 @@
             android:layout_gravity="center_horizontal">
 
             <TextView
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -90,7 +90,7 @@
             android:layout_gravity="center_horizontal">
 
             <TextView
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -112,18 +112,18 @@
             android:id="@id/top_ads_banner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vvvs"/>
+            android:layout_marginTop="@dimen/dp_2"/>
 
         <android.support.v7.widget.CardView
             android:id="@id/card_hoth_intermediary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
             android:visibility="gone"
             card_view:cardCornerRadius="0dip"
             card_view:cardElevation="3dip"
-            card_view:contentPadding="@dimen/padding_vs">
+            card_view:contentPadding="@dimen/dp_5">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -137,7 +137,7 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:padding="@dimen/padding_vvvs">
+                    android:padding="@dimen/dp_2">
 
                     <TextView
                         android:id="@+id/itemTitle"
@@ -147,8 +147,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="@dimen/margin_med"
-                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:layout_marginBottom="@dimen/dp_10"
                         android:textColor="@color/grey_750"
                         android:textSize="@dimen/text_size_large"
                         android:text="@string/title_activity_browse_hot_detail" />
@@ -170,12 +170,12 @@
             android:id="@id/card_official_intermediary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
             android:visibility="gone"
             card_view:cardCornerRadius="0dip"
             card_view:cardElevation="3dip"
-            card_view:contentPadding="@dimen/padding_vs">
+            card_view:contentPadding="@dimen/dp_5">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -189,7 +189,7 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:padding="@dimen/padding_vvvs">
+                    android:padding="@dimen/dp_2">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -198,8 +198,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="@dimen/margin_med"
-                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:layout_marginBottom="@dimen/dp_10"
                         android:textColor="@color/grey_750"
                         android:textSize="@dimen/text_size_large"
                         android:text="@string/title_official_store" />
@@ -239,11 +239,11 @@
             android:id="@id/card_video_intermediary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_10"
             android:visibility="gone"
             card_view:cardCornerRadius="0dip"
             card_view:cardElevation="3dip"
-            card_view:contentPadding="@dimen/padding_vs">
+            card_view:contentPadding="@dimen/dp_5">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -255,10 +255,10 @@
                     android:id="@id/intermediary_video_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_sm"
-                    android:layout_marginBottom="@dimen/margin_sm"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_marginBottom="@dimen/dp_15"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
                     android:layout_gravity="center_horizontal"
                     android:textSize="@dimen/fontxl"
                     android:textColor="@color/black_70"
@@ -269,9 +269,9 @@
                     android:id="@id/intermediary_video_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
                     android:layout_gravity="center_horizontal"
                     android:textSize="@dimen/fonts"
                     android:textColor="@color/warm_grey"
@@ -291,13 +291,13 @@
             android:id="@id/category_view_all"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginTop="@dimen/margin_large"
-            android:layout_marginBottom="@dimen/margin_large"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@color/tkpd_main_green"
             android:gravity="center"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:text="@string/title_category_view_all"
             android:textColor="@android:color/white"
             android:textStyle="bold"

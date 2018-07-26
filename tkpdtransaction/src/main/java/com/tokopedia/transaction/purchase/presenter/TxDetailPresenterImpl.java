@@ -27,7 +27,6 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -71,9 +70,10 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
 
     @Override
     public void processToShop(Context context, OrderShop orderShop) {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(orderShop.getShopId(), "");
-        viewListener.navigateToActivity(intent.putExtras(bundle));
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext()).getShopPageIntent(context, orderShop.getShopId());
+            MainApplication.getAppContext().startActivity(intent);
+        }
     }
 
     @Override

@@ -1,14 +1,17 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -32,6 +35,8 @@ public class BaseDiscoveryActivity
     private boolean forceSearch;
     private boolean requestOfficialStoreBanner;
     private int activeTabPosition;
+
+    private Boolean isPause = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,19 +100,31 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseHotlist(String url, String query) {
-        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query));
+        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
         finish();
     }
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        finish();
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+    }
+
+    @Override
+    public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
+        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }
 
     @Override
+    public void onHandleImageSearchResponseError() {
+    }
+
+    @Override
     public void onHandleResponseIntermediary(String departmentId) {
-        IntermediaryActivity.moveTo(this, departmentId);
+        IntermediaryActivity.moveTo(this, departmentId, isPausing());
         overridePendingTransition(0, 0);
         finish();
     }
@@ -115,7 +132,7 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseCatalog(String url) {
         URLParser urlParser = new URLParser(url);
-        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias()));
+        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias(), isPausing()));
         finish();
     }
 
@@ -132,6 +149,31 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseError() {
+
+    }
+
+    @Override
+    public void onHandleInvalidImageSearchResponse() {
+
+    }
+
+    @Override
+    public void showErrorNetwork(String message) {
+
+    }
+
+    @Override
+    public void showTimeoutErrorNetwork(String message) {
+
+    }
+
+    @Override
+    public void onHandleImageSearchResponseSuccess() {
+
+    }
+
+    @Override
+    public void showImageNotSupportedError() {
 
     }
 
@@ -153,4 +195,19 @@ public class BaseDiscoveryActivity
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isPause = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isPause = false;
+    }
+
+    public Boolean isPausing() {
+        return isPause;
+    }
 }

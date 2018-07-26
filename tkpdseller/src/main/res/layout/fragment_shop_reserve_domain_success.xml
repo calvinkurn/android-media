@@ -44,20 +44,20 @@
             android:id="@+id/tv_title"
             style="@style/TextView.Title"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_large"
-            android:layout_marginRight="@dimen/margin_large"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30"
             android:gravity="center"
             android:text="@string/shop_open_shop_reserve_success_title" />
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Micro.BlackSecondary"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_large"
-            android:layout_marginRight="@dimen/margin_large"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_20"
             android:gravity="center"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
             android:text="@string/shop_open_shop_reserve_success_info" />
 
         <View

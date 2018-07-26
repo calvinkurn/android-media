@@ -1,6 +1,7 @@
 package com.tokopedia.core.myproduct.utils;
 
 import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -28,10 +30,12 @@ import java.util.Random;
 
 /**
  * Created by m.normansyah on 12/8/15.
+ * Use ImageUtils instead
  */
+@Deprecated
 public class FileUtils {
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
-    public static final String PNG = ".png";
+    public static final String FILE_IMAGE_EXT = ".png"; //to handle transparent issues.
     public static final int DEF_WIDTH_CMPR = 2048;
     public static final int DEF_QLTY_COMPRESS = 100;
 
@@ -68,7 +72,7 @@ public class FileUtils {
     @NonNull
     public static File getTkpdImageCacheFile(String fileName) {
         File tkpdCachedirectory = getTkpdCacheDirectory();
-        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + PNG);
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + FILE_IMAGE_EXT);
     }
 
     /**
@@ -123,6 +127,10 @@ public class FileUtils {
     public static File writeImageToTkpdPath(String galleryOrCameraPath) {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
                 DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
+    }
+    public static File writeImageToTkpdPath(String galleryOrCameraPath,  int compressionQuality) {
+        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
+                DEF_WIDTH_CMPR, compressionQuality));
     }
 
     /**
@@ -183,72 +191,18 @@ public class FileUtils {
         }
     }
 
-    // URI starts with "content://gmail-ls/"
-    public static String getPathFromGmail(Context context, Uri contentUri) {
-        File attach;
-        try {
-            InputStream attachment = context.getContentResolver().openInputStream(contentUri);
-            attach = FileUtils.writeImageToTkpdPath(attachment);
-            if (attach == null) {
-                return null;
-            }
-            return attach.getAbsolutePath();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static String getTkpdPathFromURI(Context context, Uri uri) {
-        InputStream is = null;
-        if (uri.getAuthority() != null) {
-            try {
-                is = context.getContentResolver().openInputStream(uri);
-                String path = getPathFromMediaUri(context, uri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-                if (!TextUtils.isEmpty(path)) {
-                    bmp = ImageHandler.RotatedBitmap(bmp, path);
-                }
-                File file = writeImageToTkpdPath(bmp);
-                if (file != null) {
-                    return file.getAbsolutePath();
-                } else {
-                    return null;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
-    public static String getPathFromMediaUri(Context context, Uri contentUri) {
-
-        String res = "";
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    res = cursor.getString(column_index);
-                    return res;
-                }
-            } catch (Exception e) {
-                return null;
-            }
-            finally {
-                cursor.close();
-            }
+    private static String getMimeType(Context context, Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
         } else {
-            return contentUri.getPath();
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
         }
-        return res;
+        return mimeType;
     }
 
     /**

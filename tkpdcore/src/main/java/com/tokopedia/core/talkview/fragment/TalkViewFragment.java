@@ -314,7 +314,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
             textReputation.setText(String.format("%s%%", reputationHeader));
             if (noReputationHeader == 0) {
                 iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile_active);
-                textReputation.setVisibility(View.VISIBLE);
+                textReputation.setVisibility(View.INVISIBLE);
             } else {
                 iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile);
                 textReputation.setVisibility(View.GONE);

@@ -24,9 +24,14 @@ public class ProductManageSortModel implements ItemIdType, Parcelable {
         return TYPE;
     }
 
-    @Override
     @SortProductOption
     public String getId() {
+        return sortId;
+    }
+
+    @Override
+    @SortProductOption
+    public String getItemId() {
         return sortId;
     }
 

@@ -8,22 +8,20 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistInitializeUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.AddWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistInitializeSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotlistSubscriber;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RemoveWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
-import com.tokopedia.discovery.newdiscovery.util.WishlistActionListener;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import javax.inject.Inject;
 
@@ -32,7 +30,7 @@ import javax.inject.Inject;
  */
 
 public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl<HotlistFragmentContract.View>
-        implements HotlistFragmentContract.Presenter, WishlistActionListener {
+        implements HotlistFragmentContract.Presenter, WishListActionListener {
 
     @Inject
     GetHotlistInitializeUseCase getHotlistInitializeUseCase;
@@ -47,10 +45,10 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     GetProductUseCase getProductUseCase;
 
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
 
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    RemoveWishListUseCase removeWishlistActionUseCase;
 
     private final Context context;
 
@@ -60,13 +58,15 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void requestDataForTheFirstTime(HotlistParameter parameter) {
+        int page = (parameter.getStartRow() / 12) + 1;
         getHotlistInitializeUseCase.setHotlistParameter(parameter);
-        getHotlistInitializeUseCase.execute(RequestParams.EMPTY, new GetHotlistInitializeSubscriber(getView()));
+        getHotlistInitializeUseCase.execute(RequestParams.EMPTY, new GetHotlistInitializeSubscriber(getView(), page));
     }
 
     @Override
     public void requestLoadMore() {
-        getHotlistLoadMoreUseCase.execute(getParamLoadMoreHotlist(), new GetHotlistLoadMoreSubscriber(getView()));
+        int page = (getView().getStartFrom() / 12);
+        getHotlistLoadMoreUseCase.execute(getParamLoadMoreHotlist(), new GetHotlistLoadMoreSubscriber(getView(), page));
     }
 
     private RequestParams getParamLoadMoreHotlist() {
@@ -148,7 +148,7 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void refreshSort(HotlistHeaderViewModel headerViewModel) {
-        getProductUseCase.execute(getParamRefreshHotlist(), new RefreshHotlistSubscriber(getView(), headerViewModel));
+        getProductUseCase.execute(getParamRefreshHotlist(), new RefreshHotlistSubscriber(getView(), headerViewModel, 1));
     }
 
     private RequestParams getParamRefreshHotlist() {
@@ -185,20 +185,20 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
         return requestParams;
     }
 
+    private static final String PARAM_USER_ID = "userId";
+    private static final String PARAM_PRODUCT_ID = "productId";
+
+
     @Override
     public void addWishlist(String productID) {
-        addWishlistActionUseCase.execute(
-                AddWishlistActionUseCase.generateParam(productID, SessionHandler.getLoginID(context)),
-                new AddWishlistActionSubscriber(this, productID)
-        );
+        addWishlistActionUseCase.createObservable(productID, SessionHandler.getLoginID(context),
+                this);
     }
 
     @Override
     public void removeWishlist(String productID) {
-        removeWishlistActionUseCase.execute(
-                RemoveWishlistActionUseCase.generateParam(productID, SessionHandler.getLoginID(context)),
-                new RemoveWishlistActionSubscriber(this, productID)
-        );
+        removeWishlistActionUseCase.createObservable(productID, SessionHandler.getLoginID(context),
+                this);
     }
 
     @Override
@@ -225,6 +225,11 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     @Override
     public void onSuccessRemoveWishlist(String productID) {
         getView().onEditWishlistSuccess(context.getString(R.string.msg_remove_wishlist), productID);
+    }
+
+    @Override
+    public String getString(int resId) {
+        return getView().getString(resId);
     }
 
     @Override

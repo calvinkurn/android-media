@@ -28,6 +28,7 @@ import okio.Buffer;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
+@Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
@@ -159,9 +160,12 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         String contentTypeHeader = null;
         if (!REQUEST_METHOD_GET.equals(originRequest.method())
                 && originRequest.body() != null
-                && originRequest.body().contentType() != null)
+                && originRequest.body().contentType() != null) {
             contentTypeHeader = originRequest.body().contentType().toString();
-        if (REQUEST_METHOD_GET.equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
+        }
+        if (REQUEST_METHOD_GET.equalsIgnoreCase(originRequest.method())) {
+            contentTypeHeader = "";
+        }
         switch (originRequest.method()) {
             case REQUEST_METHOD_PATCH:
             case REQUEST_METHOD_DELETE:
@@ -192,22 +196,25 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId());
     }
 
-    void generateHeader(
-            Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest
-    ) {
-        for (Map.Entry<String, String> entry : authHeaders.entrySet())
+    private void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
+        for (Map.Entry<String, String> entry : authHeaders.entrySet()) {
             newRequest.addHeader(entry.getKey(), entry.getValue());
+        }
         newRequest.method(originRequest.method(), originRequest.body());
     }
 
-    String generateParamBodyString(final Request request) {
+    private String generateParamBodyString(final Request request) {
+        String paramBody = "";
         try {
-            final Buffer buffer = new Buffer();
-            request.body().writeTo(buffer);
-            return buffer.readUtf8();
-        } catch (final IOException e) {
-            return "";
+            if (request.body() != null) {
+                final Buffer buffer = new Buffer();
+                request.body().writeTo(buffer);
+                paramBody = buffer.readUtf8();
+            }
+        } catch (IOException e) {
+            paramBody = "";
         }
+        return paramBody;
     }
 
     private String generateQueryString(final Request request) {
@@ -355,7 +362,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
@@ -392,7 +399,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();

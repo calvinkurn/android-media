@@ -1,18 +1,21 @@
 package com.tokopedia.loyalty.view.interactor;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
-import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
-import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
-import com.tokopedia.loyalty.view.data.CouponData;
-import com.tokopedia.loyalty.view.data.CouponViewModel;
+import android.support.annotation.NonNull;
 
-import java.util.List;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
+import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
+import com.tokopedia.transactiondata.repository.ICartRepository;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -23,34 +26,23 @@ import rx.subscriptions.CompositeSubscription;
 public class PromoCouponInteractor implements IPromoCouponInteractor {
     private final CompositeSubscription compositeSubscription;
     private final ITokoPointRepository tokoplusRepository;
+    private final ICartRepository cartRepository;
 
     @Inject
     public PromoCouponInteractor(CompositeSubscription compositeSubscription,
-                                 ITokoPointRepository tokoplusRepository) {
+                                 ITokoPointRepository tokoplusRepository,
+                                 ICartRepository cartRepository) {
         this.compositeSubscription = compositeSubscription;
         this.tokoplusRepository = tokoplusRepository;
+        this.cartRepository = cartRepository;
     }
 
 
     @Override
     public void getCouponList(TKPDMapParam<String, String> param,
-                              Subscriber<List<CouponData>> subscriber) {
+                              Subscriber<CouponsDataWrapper> subscriber) {
         compositeSubscription.add(
                 tokoplusRepository.getCouponList(param)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber)
-        );
-    }
-
-    @Override
-    public void submitVoucher(String couponTitle,
-                              String couponCode,
-                              TKPDMapParam<String, String> param,
-                              Subscriber<CouponViewModel> subscriber) {
-        compositeSubscription.add(
-                tokoplusRepository.checkCouponValidity(param, couponCode, couponTitle)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
@@ -72,50 +64,56 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     }
 
     @Override
-    public void postCouponValidateRedeem(RequestBodyValidateRedeem requestBodyValidateRedeem,
-                                         Subscriber<String> subscriber) {
-
+    public void submitCheckPromoCodeMarketPlace(Map<String, String> paramUpdateCart,
+                                                Map<String, String> paramCheckPromo,
+                                                Subscriber<CouponViewModel> subscriber) {
+        if (paramUpdateCart != null)
+            compositeSubscription.add(cartRepository.updateCartData(paramUpdateCart)
+                    .flatMap(updateCartDataResponse -> cartRepository.checkPromoCodeCartList(paramCheckPromo)
+                            .map(
+                                    getCheckPromoCodeCartListDataResponseVoucherViewModelFunc1()
+                            ))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .subscribe(subscriber));
+        else
+            compositeSubscription.add(cartRepository.checkPromoCodeCartList(paramCheckPromo)
+                    .map(
+                            getCheckPromoCodeCartListDataResponseVoucherViewModelFunc1()
+                    )
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .subscribe(subscriber));
     }
 
-    @Override
-    public void postCouponRedeem(RequestBodyCouponRedeem requestBodyCouponRedeem,
-                                 Subscriber<String> subscriber) {
-
-    }
-
-    @Override
-    public void getPointRecentHistory(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
-
-    }
-
-    @Override
-    public void getPointMain(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
-
-    }
-
-    @Override
-    public void getPointDrawer(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
-
-    }
-
-    @Override
-    public void getPointStatus(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
-
-    }
-
-    @Override
-    public void getCatalogList(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
-
-    }
-
-    @Override
-    public void getCatalogDetail(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
-
-    }
-
-    @Override
-    public void getCatalogFilterCategory(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
-
+    @NonNull
+    private Func1<CheckPromoCodeCartListDataResponse, CouponViewModel>
+    getCheckPromoCodeCartListDataResponseVoucherViewModelFunc1() {
+        return checkPromoCodeCartListDataResponse -> {
+            CouponViewModel couponViewModel = new CouponViewModel();
+            if (checkPromoCodeCartListDataResponse.getError() != null
+                    && !checkPromoCodeCartListDataResponse.getError().isEmpty()) {
+                couponViewModel.setSuccess(false);
+                couponViewModel.setMessage(checkPromoCodeCartListDataResponse.getError());
+            } else {
+                couponViewModel.setSuccess(true);
+                couponViewModel.setMessage(
+                        checkPromoCodeCartListDataResponse.getDataVoucher().getMessageSuccess()
+                );
+                couponViewModel.setCode(
+                        checkPromoCodeCartListDataResponse.getDataVoucher().getCode()
+                );
+                couponViewModel.setAmount(
+                        checkPromoCodeCartListDataResponse.getDataVoucher().getCashbackVoucherDescription()
+                );
+                couponViewModel.setRawCashback(
+                        checkPromoCodeCartListDataResponse.getDataVoucher().getCashbackVoucherAmount()
+                );
+            }
+            return couponViewModel;
+        };
     }
 
     @Override
@@ -123,5 +121,4 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
     }
-
 }

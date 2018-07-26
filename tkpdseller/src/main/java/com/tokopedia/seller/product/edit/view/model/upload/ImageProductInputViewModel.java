@@ -7,7 +7,7 @@ import com.tokopedia.seller.product.edit.constant.ImageStatusTypeDef;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-
+@Deprecated
 public class ImageProductInputViewModel {
     private String imagePath;
     private String imageDescription;

@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
@@ -38,9 +39,9 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void setProductList(List<Visitable> list);
 
-    void disableWishlistButton(int adapterPosition);
+    void disableWishlistButton(String productId);
 
-    void enableWishlistButton(int adapterPosition);
+    void enableWishlistButton(String productId);
 
     void showBottomBarNavigation(boolean show);
 
@@ -58,4 +59,8 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void addGuidedSearch();
 
     void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel);
+
+    void getQuickFilter();
+
+    void renderQuickFilter(DynamicFilterModel dynamicFilterModel);
 }

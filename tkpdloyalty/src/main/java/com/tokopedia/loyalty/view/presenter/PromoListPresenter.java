@@ -42,6 +42,11 @@ public class PromoListPresenter implements IPromoListPresenter {
     }
 
     @Override
+    public int getPage() {
+        return page;
+    }
+
+    @Override
     public void processGetPromoList(String subCategories, final String categoryName) {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -76,6 +81,8 @@ public class PromoListPresenter implements IPromoListPresenter {
             }
         });
     }
+
+
 
     public void sendImpressionTrackingData(List<PromoData> promoDataList, String categoryName) {
 

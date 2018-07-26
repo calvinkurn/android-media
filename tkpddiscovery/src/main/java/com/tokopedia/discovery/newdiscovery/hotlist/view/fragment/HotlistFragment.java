@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,10 +13,15 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.app.MainApplication;
@@ -25,18 +31,22 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
@@ -48,7 +58,10 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragme
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -60,7 +73,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -75,13 +90,20 @@ public class HotlistFragment extends SearchSectionFragment
         implements
         HotlistFragmentContract.View,
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
-        ItemClickListener, TopAdsListener, TopAdsItemClickListener {
+        ItemClickListener, TopAdsListener, TopAdsItemClickListener,
+        HotlistActivity.FragmentListener {
 
+    private static final String HOTLIST_DETAIL_ENHANCE_ANALYTIC = "HOTLIST_DETAIL_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
+
+    private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
     private static final String EXTRA_URL = "extra_url";
     private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
     private static final String EXTRA_ALIAS = "extra_alias";
     private static final String EXTRA_QUERY_HOTLIST = "EXTRA_QUERY_HOTLIST";
     private static final String EXTRA_DISABLE_TOPADS = "EXTRA_DISABLE_TOPADS";
+    private static final String EXTRA_HEADER_URL = "EXTRA_HEADER_URL";
+    private static final String EXTRA_DESC = "EXTRA_DESC";
 
     private static final int REQUEST_ACTIVITY_SORT_HOTLIST = 2021;
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
@@ -96,13 +118,28 @@ public class HotlistFragment extends SearchSectionFragment
 
     private String aliasHotlist;
     private String shareUrl;
+    private String descTxt;
+    private String headerUrl;
     private HotlistQueryModel queryModel;
     private boolean disableTopads;
 
     private Config topAdsConfig;
 
+    private LocalCacheHandler trackerProductCache;
+
     @Inject
     HotlistFragmentPresenter presenter;
+    private String trackerAttribution;
+
+
+    public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
+        HotlistFragment fragment = new HotlistFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ALIAS, alias);
+        bundle.putString(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public static Fragment createInstanceUsingAlias(String alias) {
         HotlistFragment fragment = new HotlistFragment();
@@ -121,7 +158,8 @@ public class HotlistFragment extends SearchSectionFragment
         return fragment;
     }
 
-    protected String getHotlistAlias() {
+    @Override
+    public String getHotlistAlias() {
         return aliasHotlist;
     }
 
@@ -142,6 +180,24 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
+    }
+
+    @Override
+    public void loadImageHeader(String bannerImageUrl) {
+        this.headerUrl = bannerImageUrl;
+        ImageView imageHeader = getActivity().findViewById(R.id.hotlist_background);
+        ImageHandler.loadImageSourceSize(getContext(), imageHeader, bannerImageUrl);
+    }
+
+    @Override
+    public void setTitleHeader(String title) {
+        getActivity().setTitle(title);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.descTxt = description;
+        ((HotlistActivity) getActivity()).renderHotlistDescription(description);
     }
 
     @Override
@@ -191,13 +247,53 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
+        trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
+            setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));
             if (getArguments().getString(EXTRA_URL, "").isEmpty()) {
                 setHotlistAlias(getArguments().getString(EXTRA_ALIAS));
             } else {
                 setHotlistAlias(generateAliasUsingURL(getArguments().getString(EXTRA_URL, "")));
             }
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        screenTrack();
+    }
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    @Override
+    public String getHomeAttribution() {
+        return trackerAttribution;
+    }
+
+    @Override
+    public void trackImpressionProduct(Map<String, Object> dataLayer) {
+        HotlistPageTracking.eventEnhance(dataLayer);
+    }
+
+    @Override
+    public void setLastPositionProductTracker(int lastPositionProductTracker) {
+        trackerProductCache.putInt(LAST_POSITION_ENHANCE_PRODUCT, lastPositionProductTracker);
+        trackerProductCache.applyEditor();
+    }
+
+    @Override
+    public int getLastPositionProductTracker() {
+        return trackerProductCache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
+    }
+
+    @Override
+    public void clearLastProductTracker(boolean clear) {
+        if (clear) {
+            LocalCacheHandler.clearCache(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         }
     }
 
@@ -222,6 +318,8 @@ public class HotlistFragment extends SearchSectionFragment
         outState.putString(EXTRA_ALIAS, getHotlistAlias());
         outState.putParcelable(EXTRA_QUERY_HOTLIST, getQueryModel());
         outState.putBoolean(EXTRA_DISABLE_TOPADS, isDisableTopads());
+        outState.putString(EXTRA_HEADER_URL, headerUrl);
+        outState.putString(EXTRA_DESC, descTxt);
     }
 
     @Override
@@ -233,6 +331,8 @@ public class HotlistFragment extends SearchSectionFragment
         switchLayoutType();
         initTopAdsParams();
         hotlistAdapter.onRestoreInstanceState(savedInstanceState);
+        loadImageHeader(savedInstanceState.getString(EXTRA_HEADER_URL));
+        setDescription(savedInstanceState.getString(EXTRA_DESC));
     }
 
     @Override
@@ -325,6 +425,51 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
+    protected void switchLayoutType() {
+        if (!getUserVisibleHint()) {
+            return;
+        }
+
+        switch (getAdapter().getCurrentLayoutType()) {
+            case GRID_1:
+                setSpanCount(2);
+                getGridLayoutManager().setSpanCount(spanCount);
+                getAdapter().changeDoubleGridView();
+                HotlistPageTracking.eventHotlistDisplay("grid");
+                break;
+            case GRID_2:
+                setSpanCount(1);
+                getGridLayoutManager().setSpanCount(spanCount);
+                getAdapter().changeSingleGridView();
+                HotlistPageTracking.eventHotlistDisplay("full");
+                break;
+            case GRID_3:
+                setSpanCount(1);
+                getAdapter().changeListView();
+                HotlistPageTracking.eventHotlistDisplay("list");
+                break;
+        }
+        refreshBottomBarGridIcon();
+    }
+
+    @Override
+    protected void startShareActivity(String shareUrl) {
+        if (TextUtils.isEmpty(shareUrl)) {
+            return;
+        }
+
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.DISCOVERY_TYPE)
+                .setName(getString(R.string.message_share_catalog))
+                .setTextContent(getString(R.string.message_share_category))
+                .setUri(shareUrl)
+                .build();
+
+        shareData.setType(ShareData.HOTLIST_TYPE);
+        ShareBottomSheet.show(getChildFragmentManager(), shareData);
+    }
+
+    @Override
     protected int getFilterRequestCode() {
         return REQUEST_ACTIVITY_FILTER_HOTLIST;
     }
@@ -349,6 +494,10 @@ public class HotlistFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
+        recyclerView.addItemDecoration(new ProductItemDecoration(
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                getContext().getResources().getColor(R.color.white)
+        ));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
     }
 
@@ -364,7 +513,7 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -378,13 +527,40 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((HotlistActivity) getActivity()).setFragmentListener(this);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == getSortRequestCode()) {
+                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
+                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
+                HotlistPageTracking.eventHotlistSort(selectedSortName);
+                clearDataFilterSort();
+                showBottomBarNavigation(false);
+                reloadData();
+            } else if (requestCode == getFilterRequestCode()) {
+                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
+                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
+                if (getActivity() instanceof HotlistActivity) {
+                    HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
+                } else {
+                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
+                }
+                clearDataFilterSort();
+                showBottomBarNavigation(false);
+                updateDepartmentId(getFlagFilterHelper().getCategoryId());
+                reloadData();
+            }
+        }
         onHandlingDataFromPDP(requestCode, resultCode, data);
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         if (!hotlistAdapter.getItemList().isEmpty()) {
             HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
             presenter.refreshSort(headerViewModel);
@@ -409,16 +585,19 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }
 
     @Override
     public void onAddFavorite(int position, Data data) {
 
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        presenter.addWishlist(data.getProduct().getId());
     }
 
     @Override
@@ -576,6 +755,7 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onHashTagClicked(String name, String url, String departmentID) {
         IntermediaryActivity.moveTo(getActivity(), departmentID, name);
+        HotlistPageTracking.eventClickHastag(url);
     }
 
     @Override
@@ -586,7 +766,26 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onProductClicked(HotlistProductViewModel product, int adapterPosition) {
         trackingClicker(product, adapterPosition);
+        trackingClickEnhance(product);
         gotoProductDetail(mappingIntoProductItem(product), adapterPosition);
+    }
+
+    private void trackingClickEnhance(HotlistProductViewModel product) {
+        Map<String, Object> map = DataLayer.mapOf("event", "productClick",
+                "eventCategory", "hotlist page",
+                "eventAction", "click product list",
+                "eventLabel", product.getProductUrl(),
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", product.getTrackerName()),
+                                "products", DataLayer.listOf(
+                                        product.generateClickDataLayer()
+                                )
+                        )
+                )
+        );
+        HotlistPageTracking.eventEnhance(map);
     }
 
     @Override
@@ -602,6 +801,29 @@ public class HotlistFragment extends SearchSectionFragment
         data.setName(product.getProductName());
         data.setPrice(product.getPrice());
         data.setImgUri(product.getImageUrl());
+        data.setTrackerAttribution(product.getHomeAttribution());
+        data.setTrackerListName(product.getTrackerName());
+        data.setCountCourier(!TextUtils.isEmpty(product.getCountCourier()) && product.getCountCourier().matches("\\d+") ?
+                Integer.parseInt(product.getCountCourier()) : 0);
+        data.setOfficial(product.isOfficial());
+        data.setOriginalPrice(product.getOriginalPrice());
+        data.setDiscountPercentage(product.getDiscountPercentage());
+        data.setIsWishlist(product.isWishlist());
+        data.setRating(product.getRating());
+        data.setShop(product.getShopName());
+        data.setShopLocation(product.getShopCity());
+        data.setReviewCount(product.getCountReview());
+
+        if (product.getLabelList() != null) {
+            for (int i = 0; i < product.getLabelList().size(); i++) {
+                if (product.getLabelList().get(i).getTitle().toLowerCase()
+                        .contains(ProductItem.CASHBACK)) {
+                    data.setCashback(product.getLabelList().get(i).getTitle());
+                    break;
+                }
+            }
+        }
+
         return data;
     }
 
@@ -615,7 +837,7 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistClicked(String productID, boolean wishlist) {
+    public void onWishlistClicked(int position, String productName, String productID, boolean wishlist) {
         if (SessionHandler.isV4Login(getActivity())) {
             hotlistAdapter.disableWishlistButton(productID);
             if (wishlist) {
@@ -626,6 +848,7 @@ public class HotlistFragment extends SearchSectionFragment
         } else {
             openLoginActivity(productID);
         }
+        HotlistPageTracking.eventAddWishlist(position, productName, productID);
     }
 
     @Override
@@ -761,5 +984,10 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void stopScroll() {
+        recyclerView.stopScroll();
     }
 }

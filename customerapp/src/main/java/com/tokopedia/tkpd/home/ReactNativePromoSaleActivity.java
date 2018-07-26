@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
@@ -25,7 +26,7 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
     private static final String KEY_SLUG = "slug";
 
 
-    @DeepLink({Constants.Applinks.PROMO_SALE})
+    @DeepLink({ApplinkConst.PROMO_SALE, ApplinkConst.PROMO_SALE_NO_SLASH})
     public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(SALE_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(

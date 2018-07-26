@@ -1,5 +1,6 @@
 package com.tokopedia.core.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -18,7 +20,6 @@ import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +53,7 @@ public class DeepLinkChecker {
     public static final int REFERRAL = 19;
     public static final int TOKOPOINT = 20;
     public static final int GROUPCHAT = 21;
+    public static final int SALE = 22;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "pesawat";
@@ -59,9 +61,7 @@ public class DeepLinkChecker {
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
 
-    public static int
-
-    getDeepLinkType(String url) {
+    public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
 
         List<String> linkSegment = uriData.getPathSegments();
@@ -82,6 +82,8 @@ public class DeepLinkChecker {
                 return FLIGHT;
             else if (isPromo(linkSegment))
                 return PROMO;
+            else if(isSale(linkSegment))
+                return SALE;
             else if (isInvoice(linkSegment))
                 return INVOICE;
             else if (isBlog(linkSegment))
@@ -154,7 +156,10 @@ public class DeepLinkChecker {
     }
 
     private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO) || linkSegment.get(0).equals(KEY_SALE));
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO));
+    }
+    private static boolean isSale(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_SALE));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {
@@ -313,22 +318,22 @@ public class DeepLinkChecker {
     }
 
     public static void openProduct(String url, Context context) {
-        Bundle bundle = new Bundle();
-        if (getLinkSegment(url).size() > 1) {
-            bundle.putString("shop_domain", getLinkSegment(url).get(0));
-            bundle.putString("product_key", getLinkSegment(url).get(1));
+        if (context != null) {
+            Bundle bundle = new Bundle();
+            if (getLinkSegment(url).size() > 1) {
+                bundle.putString("shop_domain", getLinkSegment(url).get(0));
+                bundle.putString("product_key", getLinkSegment(url).get(1));
+            }
+            bundle.putString("url", url);
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            intent.putExtras(bundle);
+            intent.setData(Uri.parse(url));
+            context.startActivity(intent);
         }
-        bundle.putString("url", url);
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        intent.putExtras(bundle);
-        intent.setData(Uri.parse(url));
-        context.startActivity(intent);
     }
 
-    public static void openShop(String url, Context context) {
-        Bundle bundle = ShopInfoActivity.createBundle("", getLinkSegment(url).get(0));
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
+    public static void openShop(String url, Activity context) {
+        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntentByDomain(context, getLinkSegment(url).get(0));
         context.startActivity(intent);
     }
 
@@ -344,11 +349,10 @@ public class DeepLinkChecker {
     }
 
     public static void openShopWithParameter(String url, Context context, Bundle parameter) {
-        Bundle bundle = ShopInfoActivity.createBundle("", getLinkSegment(url).get(0));
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        intent.putExtras(parameter);
-        context.startActivity(intent);
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getShopPageIntentByDomain(context, getLinkSegment(url).get(0));
+            MainApplication.getAppContext().startActivity(intent);
+        }
     }
 
     public static void openTokoPoint(Context context, String url) {

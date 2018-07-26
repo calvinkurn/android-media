@@ -1,10 +1,10 @@
 package com.tokopedia.gm.statistic.domain.mapper;
 
 import com.tokopedia.gm.statistic.constant.GMStatConstant;
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.gm.statistic.constant.GMTransactionGraphType;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetTransactionGraph;
-import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
+import com.db.williamchart.util.GMStatisticUtil;
 import com.tokopedia.gm.statistic.view.model.GMDateRangeDateViewModel;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;

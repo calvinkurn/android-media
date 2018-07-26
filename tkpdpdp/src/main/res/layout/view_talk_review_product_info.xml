@@ -5,24 +5,24 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/margin_small">
+    android:paddingBottom="@dimen/dp_10">
 
     <LinearLayout
         android:id="@id/l_talk"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_vs"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_vs"
-        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_10"
         android:layout_weight=".50"
         android:background="@drawable/cards_ui_2_selected"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_10">
 
         <TextView
             android:id="@id/tv_talk"
@@ -37,8 +37,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginStart="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_5"
             android:text="@string/title_talk_only"
             android:textColor="#868686"
             android:textSize="@dimen/fontm" />
@@ -49,18 +49,18 @@
         android:id="@id/l_review"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginStart="@dimen/margin_vs"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_5"
         android:layout_weight=".50"
         android:background="@drawable/cards_ui_2_selected"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_vs"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_10">
 
         <TextView
             android:id="@id/tv_review"
@@ -75,8 +75,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginStart="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_5"
             android:text="@string/title_review"
             android:textColor="#868686"
             android:textSize="@dimen/fontm" />

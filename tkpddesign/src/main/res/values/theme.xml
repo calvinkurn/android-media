@@ -3,7 +3,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Base.Theme" parent="Theme.AppCompat.Light.NoActionBar">
-
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="Base.Toolbar.Theme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -18,11 +21,11 @@
     </style>
 
     <style name="TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/font_title</item>
+        <item name="android:textSize">@dimen/sp_16</item>
     </style>
 
     <style name="SubTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">@dimen/font_micro</item>
+        <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
     <style name="BaseTabBar" parent="Widget.Design.TabLayout">

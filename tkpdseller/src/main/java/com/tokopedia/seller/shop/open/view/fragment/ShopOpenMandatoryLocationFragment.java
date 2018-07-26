@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,34 +16,34 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.shop.common.exception.ShopException;
+import com.tokopedia.seller.common.exception.TomeException;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
-import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
-import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
-import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
-import com.tokopedia.seller.shop.open.view.holder.LocationMapViewHolder;
-import com.tokopedia.seller.shop.open.view.holder.LocationShippingViewHolder;
-import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
-import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
-import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
+import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
+import com.tokopedia.seller.shop.open.view.holder.LocationMapViewHolder;
+import com.tokopedia.seller.shop.open.view.holder.LocationShippingViewHolder;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenLocView;
+import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
+import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
+import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
 
 import java.util.HashMap;
 
@@ -65,6 +66,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     private static final String TAG = "ShopOpenMandatoryLocati";
     private LocationShippingViewHolder locationShippingViewHolder;
     private LocationMapViewHolder locationMapViewHolder;
+    private final String SCREEN_NAME = "Alamat Pengiriman";
 
     @Inject
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
@@ -107,6 +109,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     private void initView(View root) {
 
+        trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
         new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
             public void navigateToChooseAddressActivityRequest() {
@@ -224,6 +227,16 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
+
+        if (!TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())
+                && !TextUtils.isEmpty(locationShippingViewHolder.getCityName())) {
+
+            if(locationPass == null)
+                locationPass = new LocationPass();
+
+            locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
+            locationPass.setCityName(locationShippingViewHolder.getCityName());
+        }
         logisticRouter.navigateToGeoLocationActivityRequest(
                 ShopOpenMandatoryLocationFragment.this,
                 REQUEST_CODE_GOOGLE_MAP,
@@ -386,10 +399,11 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-
+		if (!GlobalConfig.DEBUG) {
+        		Crashlytics.logException(t);
+        	}
         String errorMessage;
-        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
-        if (t instanceof ShopException) {
+        if (t instanceof TomeException) {
             errorMessage = t.getMessage();
         } else {
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());

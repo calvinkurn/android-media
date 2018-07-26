@@ -11,20 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingTop="@dimen/dp_10">
 
         <CheckBox
             android:id="@+id/stock_epmty_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs" />
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5" />
 
         <ImageView
             android:id="@+id/product_image"
@@ -73,12 +73,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/padding_vvvs"
-                android:paddingEnd="@dimen/padding_vs"
-                android:paddingLeft="@dimen/padding_vs"
-                android:paddingRight="@dimen/padding_vs"
-                android:paddingStart="@dimen/padding_vs"
-                android:paddingTop="@dimen/padding_vvvs"
+                android:paddingBottom="@dimen/dp_2"
+                android:paddingEnd="@dimen/dp_5"
+                android:paddingLeft="@dimen/dp_5"
+                android:paddingRight="@dimen/dp_5"
+                android:paddingStart="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_2"
                 android:text="@string/label_empty_stock"
                 android:textColor="@color/white"
                 android:textSize="@dimen/fontvs" />

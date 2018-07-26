@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-
+@Deprecated
 public class ProductPhotoListViewModel {
     private List<ImageProductInputViewModel> photos;
     private int productDefaultPicture;

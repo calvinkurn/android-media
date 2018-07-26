@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:ellipsize="end"
         android:maxLength="320"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         style="@style/TextView.Small"
         />
 

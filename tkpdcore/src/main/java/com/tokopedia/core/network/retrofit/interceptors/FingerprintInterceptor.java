@@ -12,6 +12,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
+import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -21,6 +22,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
+
+import javax.inject.Inject;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -44,6 +47,10 @@ public class FingerprintInterceptor implements Interceptor {
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
     private static final String BEARER = "Bearer ";
     private static final String KEY_ADSID = "X-GA-ID";
+
+    @Inject
+    public FingerprintInterceptor() {
+    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -78,21 +85,16 @@ public class FingerprintInterceptor implements Interceptor {
         try {
             GetFingerprintUseCase getFingerprintUseCase;
             FingerprintRepository fpRepo = new FingerprintDataRepository();
-            getFingerprintUseCase = new GetFingerprintUseCase(fpRepo);
+            getFingerprintUseCase = new CacheGetFingerprintUseCase(fpRepo);
             json = getFingerprintUseCase.createObservable(RequestParams.EMPTY)
                     .map(new Func1<String, String>() {
-                        @Override
-                        public String call(String s) {
-                            return s;
-                        }
-                    }).map(new Func1<String, String>() {
                         @Override
                         public String call(String s) {
                             try {
                                 return Utilities.toBase64(s, Base64.NO_WRAP);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                return "UnsupportedEncoding";
+                                return "";
                             }
 
                         }
@@ -110,6 +112,7 @@ public class FingerprintInterceptor implements Interceptor {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+
         return json;
     }
 

@@ -175,6 +175,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 if (bitmap != null) {
                     bitmap = processBitmap(bitmap);
                     File file = FileUtils.writeImageToTkpdPath(bitmap);
+                    bitmap.recycle();
                     if (file != null && file.exists()) {
                         String path = file.getAbsolutePath();
                         onImageEditorFragmentListener.onSuccessCrop(path);

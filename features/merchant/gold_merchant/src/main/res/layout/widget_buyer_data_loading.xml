@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginBottom="@dimen/dp_16"
     android:layout_marginLeft="@dimen/gmstat_padding_item_left_right"
     android:layout_marginRight="@dimen/gmstat_padding_item_left_right"
     android:layout_marginTop="8dp"

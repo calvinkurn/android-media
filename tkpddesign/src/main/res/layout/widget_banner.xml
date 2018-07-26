@@ -15,10 +15,10 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_gravity="left|bottom"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_vs" />
+        android:paddingBottom="@dimen/dp_5" />
 
 
     <TextView
@@ -31,8 +31,8 @@
         android:clickable="true"
         android:focusableInTouchMode="false"
         android:gravity="center_horizontal|center_vertical"
-        android:paddingRight="@dimen/margin_small"
-        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
         android:text="@string/all_promo"
         android:textColor="@color/white"
         android:textSize="13sp" />

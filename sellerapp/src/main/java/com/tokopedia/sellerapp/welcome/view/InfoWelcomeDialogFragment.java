@@ -84,8 +84,10 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
-                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                                  if (isAdded()) {
+                                      ds.setUnderlineText(true);
+                                      ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                                  }
                               }
                           }
                 , sourceString.indexOf("Pembeli")

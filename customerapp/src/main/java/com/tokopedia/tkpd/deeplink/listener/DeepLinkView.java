@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.deeplink.listener;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,4 +30,6 @@ public interface DeepLinkView {
     void showLoading();
 
     void finishLoading();
+
+    void goToPage(Intent destination);
 }

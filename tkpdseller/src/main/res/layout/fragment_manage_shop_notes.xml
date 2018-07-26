@@ -13,7 +13,7 @@
             android:layout_height="match_parent"
             android:id="@+id/shop_notes"
             android:scrollbars="vertical"
-            android:padding="@dimen/padding_vs"/>
+            android:padding="@dimen/dp_5"/>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </android.support.design.widget.CoordinatorLayout>

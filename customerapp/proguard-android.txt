@@ -189,6 +189,8 @@ public protected *;
 
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
+-keep class com.tokopedia.payment.model.PaymentPassData
+-keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
@@ -196,7 +198,7 @@ public protected *;
 
 -dontwarn android.content.pm.PackageManager
 
--keep public class com.tokopedia.design.bottomnavigation.BottomNavigation { *; }
+-keep public class com.tokopedia.design.component.BottomNavigation { *; }
 -keep public class android.support.design.widget.BottomNavigationView { *; }
 -keep public class android.support.design.internal.BottomNavigationMenuView { *; }
 -keep public class android.support.design.internal.BottomNavigationPresenter { *; }

@@ -1,6 +1,7 @@
 package com.tokopedia.core.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -20,6 +21,7 @@ import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.gcm.Constants;
 
@@ -45,6 +47,9 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     private static Context context;
     private CustomCheckBoxPreference optionVibrate;
     private CustomCheckBoxPreference optionPromo;
+    private CustomCheckBoxPreference optionShakeShake;
+    public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
+    public static final String SETTING_NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -81,11 +86,23 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         addPreferencesFromResource(R.xml.pref_notification);
 
         bindPreferenceSummaryToValue(findPreference(Constants.Settings.NOTIFICATION_RINGTONE));
+        optionShakeShake = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_SHAKE_SHAKE);
+        optionShakeShake.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
 
+                return true;
+            }
+        });
         optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
         optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                //SystemPreferencesHandler.setVibrate(context, preference.get)
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences
+                        (context);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean(SETTING_NOTIFICATION_VIBRATE, !settings.getBoolean(SETTING_NOTIFICATION_VIBRATE
+                        , false));
+                editor.apply();
                 return true;
             }
         });
@@ -94,9 +111,10 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
 
+
     /** {@inheritDoc} */
     /*@Override
-	public boolean onIsMultiPane() {
+    public boolean onIsMultiPane() {
 		return isXLargeTablet(context) && !isSimplePreferences(context);
 	}*/
 
@@ -173,11 +191,15 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                     }
                 }
 
-            } else  {
+            } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
-                if(!preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO))
+                if (!preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO))
                     preference.setSummary(stringValue);
+
+                if(value instanceof Boolean) {
+                    TrackingUtils.setMoEngagePushPreference((Boolean) value);
+                }
             }
 
             return true;
@@ -209,7 +231,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded() && getActivity() !=null) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);

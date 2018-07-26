@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
@@ -37,9 +37,7 @@ public interface RegisterInitial {
 
         void onSuccessRegisterSosmed(String methodName);
 
-        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
-
-        void clearToken();
+        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData, String methodName);
 
         void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
 
@@ -48,6 +46,26 @@ public interface RegisterInitial {
         GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
 
         void onForbidden();
+
+        void showRegisteredEmailDialog(String email);
+
+        void showRegisteredPhoneDialog(String phone);
+
+        void showProceedWithPhoneDialog(String phone);
+
+        void goToRegisterEmailPage();
+
+        void goToLoginPage();
+
+        void goToRegisterEmailPageWithEmail(String email);
+
+        void goToVerificationPhoneRegister(String phone);
+
+        void onErrorValidateRegister(String message);
+
+        void onErrorConnectionSnackbar(String message);
+
+        void setTempPhoneNumber(String maskedPhoneNumber);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -60,8 +78,8 @@ public interface RegisterInitial {
 
         void registerFacebook(AccessToken accessToken);
 
-        void clearToken();
-
         void registerGoogle(String model);
+
+        void validateRegister(String id);
     }
 }

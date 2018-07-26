@@ -17,6 +17,10 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
  */
+@Deprecated
+/**
+ @see com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
+ */
 public class TkpdResponse {
 
     public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
@@ -27,6 +31,7 @@ public class TkpdResponse {
     private String strResponse;
     private String stringData = "";
     private JSONObject jsonData;
+    private JSONArray jsonDataArray;
     private List<String> errorMessages = new ArrayList<>();
     private List<String> statusMessages = new ArrayList<>();
 
@@ -42,10 +47,12 @@ public class TkpdResponse {
         String status = "";
         JSONObject jsonResponse;
         JSONObject jsonData;
+        JSONArray jsonDataArray = null;
+
         try {
             jsonResponse = new JSONObject(strResponse);
             status = jsonResponse.getString("status");
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return null;
         }
@@ -64,7 +71,7 @@ public class TkpdResponse {
                 msgError.add("");
                 isError = false;
             }
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 
@@ -75,15 +82,32 @@ public class TkpdResponse {
                 jsonData = null;
             }
 
-            isNullData = jsonData == null;
-        } catch (JSONException e) {
+            isNullData = jsonData == null && jsonDataArray == null;
+        } catch (Throwable e) {
             e.printStackTrace();
             jsonData = null;
         }
-        if (jsonData == null) {
+
+
+        try {
+            if (!jsonResponse.isNull("data")) {
+                jsonDataArray = jsonResponse.getJSONArray("data");
+            } else {
+                jsonDataArray = null;
+            }
+
+            isNullData = jsonDataArray == null && jsonData == null;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            jsonDataArray = null;
+        }
+
+
+        if (jsonData == null && jsonDataArray == null) {
             isError = true;
             if (msgError.isEmpty()) msgError.add("Data Tidak Ditemukan");
         }
+
 
         try {
             if (!jsonResponse.isNull("message_status")) {
@@ -96,12 +120,13 @@ public class TkpdResponse {
             } else {
                 msgStatus.add("");
             }
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 
         TkpdResponse tkpdResponse = new TkpdResponse();
         if (!isNullData & jsonData != null) tkpdResponse.setJsonData(jsonData);
+        if (!isNullData & jsonDataArray != null) tkpdResponse.setJsonDataArray(jsonDataArray);
         tkpdResponse.setErrorMessages(msgError);
         tkpdResponse.setIsError(isError || isNullData);
         tkpdResponse.setStatus(status);
@@ -151,8 +176,17 @@ public class TkpdResponse {
     }
 
     private void setJsonData(@NonNull JSONObject jsonData) {
-        this.stringData = jsonData.toString();
-        this.jsonData = jsonData;
+        try {
+            this.stringData = jsonData.toString();
+            this.jsonData = jsonData;
+        } catch (Throwable throwable) {
+
+        }
+    }
+
+    private void setJsonDataArray(@NonNull JSONArray jsonDataArray) {
+        this.stringData = jsonDataArray.toString();
+        this.jsonDataArray = jsonDataArray;
     }
 
     public boolean isError() {
