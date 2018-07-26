@@ -31,6 +31,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
@@ -39,10 +40,10 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CartPartialDeliver;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
-import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
@@ -107,7 +108,39 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             renderHolderViewListener(holderItemCart, cartData, adapterProduct, position);
             renderInsuranceOption(holderItemCart, cartItemEditable);
             renderAcceptPartial(holderItemCart);
+            /* renderPickupPoint(holderItemCart, cartData); */
         }
+    }
+
+    private void renderPickupPoint(final ViewHolder holderItemCart, final CartItem cartData) {
+        holderItemCart.pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
+            @Override
+            public void onChoosePickupPoint() {
+
+            }
+
+            @Override
+            public void onClearPickupPoint() {
+                cartItemActionListener.onClearPickupPoint(cartData);
+            }
+
+            @Override
+            public void onEditPickupPoint() {
+                cartItemActionListener.onEditPickupPoint(cartData);
+            }
+        });
+        holderItemCart.pickupPointLayout.disableChooserButton(holderItemCart.pickupPointLayout.getContext());
+        // Dummy store
+        Store store = new Store();
+        store.setId(2392);
+        store.setDistrictId(2287);
+        store.setAddress("Jl. Bentengan 2, Kel.Sunter Jaya,Kec. Tanjungpriok");
+        store.setGeolocation("-6.150220,106.867300");
+        store.setStoreName("Bentengan 2");
+        store.setStoreCode("Alfa - J492");
+
+        holderItemCart.pickupPointLayout.setData(holderItemCart.pickupPointLayout.getContext(),
+                store.getStoreName(), store.getAddress());
     }
 
     private boolean unEditable(CartItem cartData) {
@@ -251,7 +284,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
 
 
-        holder.btnOverflow.setOnClickListener(new View.OnClickListener() {
+        holder.editCartLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(hostFragment.getActivity(), v);
@@ -753,7 +786,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     CartProductItemAdapter adapterProduct) {
         if (isEditMode) {
             holder.holderActionEditor.setVisibility(View.VISIBLE);
-            holder.btnOverflow.setVisibility(View.GONE);
+            holder.editCartLabel.setVisibility(View.GONE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.holderContainer.setBackground(
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
@@ -763,12 +796,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
                 );
             }
-            holder.btnOverflow.setEnabled(false);
+            holder.editCartLabel.setEnabled(false);
             adapterProduct.enableEditMode();
             adapterProduct.notifyDataSetChanged();
         } else {
             holder.holderActionEditor.setVisibility(View.GONE);
-            holder.btnOverflow.setVisibility(View.VISIBLE);
+            holder.editCartLabel.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.holderContainer.setBackground(
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
@@ -778,12 +811,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
                 );
             }
-            holder.btnOverflow.setEnabled(true);
+            holder.editCartLabel.setEnabled(true);
             adapterProduct.disableEditMode();
             adapterProduct.notifyDataSetChanged();
         }
         holder.holderActionEditor.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
-        holder.btnOverflow.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
+        holder.editCartLabel.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -799,8 +832,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LinearLayout holderError;
         @BindView(R2.id.tv_shop_name)
         TextView tvShopName;
-        @BindView(R2.id.btn_overflow)
-        ImageView btnOverflow;
+        @BindView(R2.id.edit_cart_label)
+        TextView editCartLabel;
         @BindView(R2.id.rv_cart_product)
         RecyclerView rvCartProduct;
         @BindView(R2.id.cb_dropshiper)
@@ -853,6 +886,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ImageView imgInsuranceInfo;
         @BindView(R2.id.label_partial_order)
         TextView labelPartialOrder;
+        @BindView(R2.id.pickup_point_layout)
+        PickupPointLayout pickupPointLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -876,5 +911,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onShopDetailInfoClicked(CartShop cartShop);
 
         void onDropShipperOptionChecked();
+
+        void onClearPickupPoint(CartItem data);
+
+        void onEditPickupPoint(CartItem data);
     }
 }

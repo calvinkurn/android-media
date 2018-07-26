@@ -2,7 +2,9 @@ package com.tokopedia.core.referral.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -24,13 +26,16 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.domain.GetReferralDataUseCase;
 import com.tokopedia.core.referral.listener.ReferralView;
+import com.tokopedia.core.referral.model.ShareApps;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.TokoCashTypeDef;
 
 import java.net.ConnectException;
@@ -39,7 +44,11 @@ import java.net.UnknownHostException;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by ashwanityagi on 18/09/17.
@@ -53,6 +62,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private GetReferralDataUseCase getReferralDataUseCase;
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
+    private final static int MAX_APPS = 4;
+    private String url = "";
 
     @Inject
     public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
@@ -73,7 +84,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 } else {
                     getView().showVerificationPhoneNumberPage();
                     TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_phone_number_verify_screen_name));
-
                 }
             }
         } else {
@@ -82,43 +92,39 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     }
 
     @Override
-    public void shareApp() {
-        formatSharingContents();
-        String type= ShareData.APP_SHARE_TYPE;
-        if(isAppShowReferralButtonActivated()){
-            type= ShareData.REFERRAL_TYPE;
+    public void shareApp(FragmentManager fragmentManager) {
+        String type = ShareData.APP_SHARE_TYPE;
+        if (isAppShowReferralButtonActivated()) {
+            type = ShareData.REFERRAL_TYPE;
         }
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
-                .setTextContent(contents)
+                .setTextContent(formatSharingContents())
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
+                .setShareUrl(url)
                 .build();
-        activity.startActivity(ShareActivity.createIntent(activity, shareData));
+
+        new DefaultShare(activity, shareData).show();
         TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
-
-
     }
 
-    private void formatSharingContents() {
+    private String formatSharingContents() {
         if (!isAppShowReferralButtonActivated()) {
             contents = getAppShareDescription();
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
-        if(!contents.contains(activity.getString(R.string.cek_label))){
-            contents = contents + activity.getString(R.string.cek_label);
+        if (url != null && !contents.contains(url)) {
+            contents = contents + url;
         }
-
+        return contents;
     }
 
     @Override
     public void getReferralVoucherCode() {
-        if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
-            getView().showProcessDialog();
-        }
-
+        getView().showProcessDialog();
         getReferralDataUseCase.execute(RequestParams.EMPTY, new Subscriber<ReferralCodeEntity>() {
             @Override
             public void onCompleted() {
@@ -127,7 +133,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 getView().hideProcessDialog();
@@ -150,7 +156,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 if (referralCodeEntity.getErorMessage() == null) {
@@ -158,7 +164,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     localCacheHandler.putString(TkpdCache.Key.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());
                     localCacheHandler.applyEditor();
                     contents = referralCodeEntity.getPromoContent().getContent();
-                    getView().renderVoucherCode(referralCodeEntity.getPromoContent().getCode());
+                    getView().renderVoucherCodeData(referralCodeEntity);
+                    url = referralCodeEntity.getPromoContent().getShareUrl();
                 } else {
                     getView().renderErrorGetVoucherCode(referralCodeEntity.getErorMessage());
                 }
@@ -170,7 +177,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void copyVoucherCode(String voucherCode) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-        android.content.ClipData clip = android.content.ClipData.newPlainText(getView().getActivity().getString(R.string.copy_coupon_code_text), voucherCode);
+        android.content.ClipData clip = android.content.ClipData.newPlainText(getView().getActivity().getString(R.string.copy_coupon_code_text), formatSharingContents());
         clipboard.setPrimaryClip(clip);
         if (TextUtils.isEmpty(voucherCode)) {
             getView().showToastMessage(getView().getActivity().getString(R.string.no_coupon_to_copy_text));
@@ -182,9 +189,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     }
 
     @Override
-    public String getReferralContents() {
+    public String getReferralSubHeader() {
         if (isAppShowReferralButtonActivated()) {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFFERAL_CONTENT, getView().getActivity().getString(R.string.app_share_referral_label_desc));
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_SUBHEADER, getView().getActivity().getString(R.string.app_share_referral_label_desc));
         } else {
             return getView().getActivity().getString(R.string.app_share_label_desc);
         }
@@ -219,6 +226,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         return message;
     }
 
+    @Override
+    public String getReferralTitleDesc() {
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_TITLE_DESC, getView().getActivity().getString(R.string.referral_title_desc));
+    }
+
+
     /**
      * This function fetches the tokocash balance and then check Voucher code
      */
@@ -236,7 +249,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(TokoCashData tokoCashData) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
 
@@ -260,5 +273,168 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 }
             }
         });
+    }
+
+
+    public ShareApps[] checkInstalledApps() {
+        int index = 0;
+        ShareApps shareApps;
+        ShareApps[] selectedApps = new ShareApps[MAX_APPS];
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Whatsapp)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Whatsapp, R.drawable.btn_wa);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Line)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Line, R.drawable.ic_btn_line);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Instagram)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Instagram, R.drawable.ic_btn_instagram);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Facebook)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Facebook, R.drawable.ic_btn_fb);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Gplus)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Gplus, R.drawable.ic_btn_g);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Twitter)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Twitter, R.drawable.ic_btn_twitter);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Gmail)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Gmail, R.drawable.ic_btn_gmail);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Sms)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Sms, R.drawable.ic_btn_sms);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Pinterest)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Pinterest, R.drawable.ic_pinterest_share);
+            selectedApps[index++] = shareApps;
+        }
+        return selectedApps;
+    }
+
+    public void getSharableApps() {
+        getShareAppsObservable().subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ShareApps[]>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ShareApps[] shareApps) {
+                        try {
+                            int index = 0;
+                            if (shareApps != null) {
+                                for (ShareApps shareApp : shareApps) {
+                                    if (shareApp != null) { //shareApps is an array so it will complete the loop till length
+                                        getView().renderSharableApps(shareApp, index++);
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            }
+                            ShareApps shareApp = new ShareApps("", R.drawable.ic_btn_share_more);
+                            getView().renderSharableApps(shareApp, index);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getView().getActivity().getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_META_DATA);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+
+        return false;
+    }
+
+    private Observable<ShareApps[]> getShareAppsObservable() {
+
+        return Observable.just(null).map(new Func1<Object, ShareApps[]>() {
+            @Override
+            public ShareApps[] call(Object o) {
+                return checkInstalledApps();
+            }
+        });
+    }
+
+    public void appShare(ShareApps shareApp, FragmentManager fragmentManager) {
+        String type = ShareData.APP_SHARE_TYPE;
+        if (isAppShowReferralButtonActivated()) {
+            type = ShareData.REFERRAL_TYPE;
+        }
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(type)
+                .setId(getView().getReferralCodeFromTextView())
+                .setName(activity.getString(R.string.app_share_title))
+                .setTextContent(formatSharingContents())
+                .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
+                .setShareUrl(url)
+                .build();
+
+        if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Whatsapp)) {
+            actionShare(shareData, TkpdState.PackageName.Whatsapp, AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Line)) {
+            actionShare(shareData, TkpdState.PackageName.Line, AppEventTracking.SOCIAL_MEDIA.LINE);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Instagram)) {
+            actionShare(shareData, TkpdState.PackageName.Instagram, AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Facebook)) {
+            actionShare(shareData, TkpdState.PackageName.Facebook, AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Gplus)) {
+            actionShare(shareData, TkpdState.PackageName.Gplus, AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Twitter)) {
+            actionShare(shareData, TkpdState.PackageName.Twitter, AppEventTracking.SOCIAL_MEDIA.TWITTER);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Gmail)) {
+            actionShare(shareData, TkpdState.PackageName.Gmail, AppEventTracking.SOCIAL_MEDIA.GMAIL);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Sms)) {
+            actionShare(shareData, TkpdState.PackageName.Sms, AppEventTracking.SOCIAL_MEDIA.SMS);
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Pinterest)) {
+            actionShare(shareData, TkpdState.PackageName.Pinterest, AppEventTracking.SOCIAL_MEDIA.PINTEREST);
+        } else {
+            shareApp(fragmentManager);
+            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, AppEventTracking.SOCIAL_MEDIA.OTHER);
+
+        }
+    }
+
+    private void actionShare(ShareData data, String packageName, String media) {
+        data.setSource(media);
+
+        ShareSocmedHandler.ShareSpecific(data, getView().getActivity(), packageName,
+                "text/plain", null, null);
+
+        sendAnalyticsToGTM(data.getType(), media);
+
+    }
+
+
+    private void sendAnalyticsToGTM(String type, String channel) {
+        if (type.equals(ShareData.REFERRAL_TYPE)) {
+            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(channel);
+        } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
+            UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL, channel);
+        } else {
+            UnifyTracking.eventShare(channel);
+        }
     }
 }

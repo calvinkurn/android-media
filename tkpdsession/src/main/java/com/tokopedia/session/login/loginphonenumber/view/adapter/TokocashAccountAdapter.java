@@ -21,16 +21,16 @@ import java.util.ArrayList;
 
 public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccountAdapter.ViewHolder> {
 
-    private ChooseTokocashAccount.View viewListener;
+    private ChooseTokocashAccount.ViewAdapter viewListener;
     private ArrayList<AccountTokocash> list;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView avatar;
+
         TextView name;
         TextView email;
         View mainView;
-
         public ViewHolder(View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.avatar);
@@ -45,14 +45,14 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
                 }
             });
         }
-    }
 
-    public static TokocashAccountAdapter createInstance(ChooseTokocashAccount.View
+    }
+    public static TokocashAccountAdapter createInstance(ChooseTokocashAccount.ViewAdapter
                                                                 viewListener, ArrayList<AccountTokocash> listAccount) {
         return new TokocashAccountAdapter(viewListener, listAccount);
     }
 
-    public TokocashAccountAdapter(ChooseTokocashAccount.View viewListener, ArrayList<AccountTokocash> listAccount) {
+    public TokocashAccountAdapter(ChooseTokocashAccount.ViewAdapter viewListener, ArrayList<AccountTokocash> listAccount) {
         this.list = listAccount;
         this.viewListener = viewListener;
     }
@@ -73,6 +73,10 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public ArrayList<AccountTokocash> getList() {
+        return list;
     }
 
 }

@@ -6,12 +6,12 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -22,6 +22,7 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,9 @@ public class BranchSdkUtils {
     public static final String PRODUCTTYPE_MARKETPLACE = "marketplace";
     private static final String BRANCH_PROMOCODE_KEY = "branch_promo";
     public static String REFERRAL_ADVOCATE_PROMO_CODE = "";
+    private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "android_url";
+    private static final String BRANCH_IOS_DESKTOP_URL_KEY = "ios_url";
+
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
@@ -65,18 +69,22 @@ public class BranchSdkUtils {
     public static void generateBranchLink(final ShareData data, final Activity activity, final GenerateShareContents ShareContentsCreateListener) {
 
         if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
-            BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
-            LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
-            branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
-                @Override
-                public void onLinkCreate(String url, BranchError error) {
-                    if (error == null) {
-                        ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
-                    } else {
-                        ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
+            if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getshareUrl())) {
+                ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl());
+            } else {
+                BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
+                LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
+                branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
+                    @Override
+                    public void onLinkCreate(String url, BranchError error) {
+                        if (error == null) {
+                            ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
+                        } else {
+                            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
+                        }
                     }
-                }
-            });
+                });
+            }
         } else {
             ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), data.renderShareUri());
 
@@ -113,6 +121,8 @@ public class BranchSdkUtils {
 
         if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+            linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
+            linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
 
         }
 
@@ -152,11 +162,9 @@ public class BranchSdkUtils {
             if (purchase != null && purchase.getListProduct() != null) {
                 List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
                 SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-
                 for (Object objProduct : purchase.getListProduct()) {
                     Map<String, Object> product = (Map<String, Object>) objProduct;
                     BranchUniversalObject buo = new BranchUniversalObject()
-
                             .setTitle(String.valueOf(product.get(Product.KEY_NAME)))
                             .setContentMetadata(
                                     new ContentMetadata()
@@ -169,17 +177,73 @@ public class BranchSdkUtils {
                                             .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
                     branchUniversalObjects.add(buo);
                 }
+
+                double revenuePrice;
+                double shippingPrice;
+                if (PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(productType)) {
+                    revenuePrice = Double.parseDouble(String.valueOf(purchase.getRevenue()));
+                    shippingPrice = Double.parseDouble(String.valueOf(purchase.getShipping()));
+                } else {
+                    revenuePrice = convertIDRtoDouble(String.valueOf(purchase.getRevenue()));
+                    shippingPrice = convertIDRtoDouble(String.valueOf(purchase.getShipping()));
+                }
+
                 new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                         .setTransactionID(String.valueOf(purchase.getTransactionID()))
                         .setCurrency(CurrencyType.IDR)
-                        .setShipping(convertIDRtoDouble(String.valueOf(purchase.getShipping())))
-                        .setRevenue(convertIDRtoDouble(String.valueOf(purchase.getRevenue())))
+                        .setShipping(shippingPrice)
+                        .setRevenue(revenuePrice)
                         .addCustomDataProperty(PAYMENT_KEY, purchase.getPaymentId())
                         .addCustomDataProperty(PRODUCTTYPE_KEY, productType)
                         .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
                         .addContentItems(branchUniversalObjects)
                         .logEvent(MainApplication.getAppContext());
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public static void sendCommerceEvent(BranchIOPayment branchIOPayment) {
+        try {
+            List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
+            SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+
+            for (HashMap<String, String> product : branchIOPayment.getProducts()) {
+                BranchUniversalObject buo = new BranchUniversalObject()
+                        .setTitle(product.get(BranchIOPayment.KEY_NAME))
+                        .setContentMetadata(
+                                new ContentMetadata()
+                                        .setPrice(convertIDRtoDouble(product.get(BranchIOPayment.KEY_PRICE)), CurrencyType.IDR)
+                                        .setProductName(product.get(BranchIOPayment.KEY_NAME))
+                                        .setQuantity(convertStringToDouble(product.get(BranchIOPayment.KEY_QTY)))
+                                        .setSku(product.get(BranchIOPayment.KEY_ID))
+                                        .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
+                branchUniversalObjects.add(buo);
+            }
+
+            double revenuePrice;
+            double shippingPrice;
+            if (PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
+                revenuePrice = Double.parseDouble(branchIOPayment.getItemPrice());
+                shippingPrice = Double.parseDouble(branchIOPayment.getShipping());
+            } else {
+                revenuePrice = convertIDRtoDouble(branchIOPayment.getRevenue());
+                shippingPrice = convertIDRtoDouble(branchIOPayment.getShipping());
+            }
+
+            new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                    .setTransactionID(branchIOPayment.getOrderId())
+                    .setCurrency(CurrencyType.IDR)
+                    .setShipping(shippingPrice)
+                    .setRevenue(revenuePrice)
+                    .addCustomDataProperty(PAYMENT_KEY, branchIOPayment.getPaymentId())
+                    .addCustomDataProperty(PRODUCTTYPE_KEY, branchIOPayment.getProductType())
+                    .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
+                    .addContentItems(branchUniversalObjects)
+                    .logEvent(MainApplication.getAppContext());
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -221,7 +285,7 @@ public class BranchSdkUtils {
     private static double convertIDRtoDouble(String value) {
         double result = 0;
         try {
-            result = CurrencyFormatHelper.convertRupiahToInt(value);
+            result = CurrencyFormatHelper.convertRupiahToLong(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
         }

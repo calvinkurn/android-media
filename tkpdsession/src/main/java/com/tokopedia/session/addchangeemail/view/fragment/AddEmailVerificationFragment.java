@@ -395,4 +395,10 @@ public class AddEmailVerificationFragment extends BaseDaggerFragment implements 
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
         button.setEnabled(true);
     }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

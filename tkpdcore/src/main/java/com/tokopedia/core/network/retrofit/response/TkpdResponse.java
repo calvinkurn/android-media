@@ -17,6 +17,10 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
  */
+@Deprecated
+/**
+ @see com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
+ */
 public class TkpdResponse {
 
     public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
@@ -48,7 +52,7 @@ public class TkpdResponse {
         try {
             jsonResponse = new JSONObject(strResponse);
             status = jsonResponse.getString("status");
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return null;
         }
@@ -67,7 +71,7 @@ public class TkpdResponse {
                 msgError.add("");
                 isError = false;
             }
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 
@@ -79,7 +83,7 @@ public class TkpdResponse {
             }
 
             isNullData = jsonData == null && jsonDataArray == null;
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             jsonData = null;
         }
@@ -93,7 +97,7 @@ public class TkpdResponse {
             }
 
             isNullData = jsonDataArray == null && jsonData == null;
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             jsonDataArray = null;
         }
@@ -116,7 +120,7 @@ public class TkpdResponse {
             } else {
                 msgStatus.add("");
             }
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 
@@ -172,8 +176,12 @@ public class TkpdResponse {
     }
 
     private void setJsonData(@NonNull JSONObject jsonData) {
-        this.stringData = jsonData.toString();
-        this.jsonData = jsonData;
+        try {
+            this.stringData = jsonData.toString();
+            this.jsonData = jsonData;
+        } catch (Throwable throwable) {
+
+        }
     }
 
     private void setJsonDataArray(@NonNull JSONArray jsonDataArray) {

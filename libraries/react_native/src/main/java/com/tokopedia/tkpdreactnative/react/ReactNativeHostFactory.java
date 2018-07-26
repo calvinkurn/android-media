@@ -19,24 +19,17 @@ import java.util.List;
  */
 
 public class ReactNativeHostFactory {
+    private static ReactNativeHostFactory instance;
 
+    protected ReactNativeHostFactory() {}
 
     public static ReactNativeHost init(Application application) {
-        /*reactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(application)
-                .setBundleAssetName("index.android.bundle")
-                .setJSMainModuleName("reactscript/index.android")
-                .addPackage(new MainReactPackage())
-                .addPackage(new CoreReactPackage())
-                .setUseDeveloperSupport(true)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build();*/
+        if(instance == null) instance = new ReactNativeHostFactory();
 
-        return createReactNativeHost(application);
-
+        return instance.createReactNativeHost(application);
     }
 
-    private static ReactNativeHost createReactNativeHost(final Application application) {
+    private ReactNativeHost createReactNativeHost(final Application application) {
         return new ReactNativeHost(application) {
             @Override
             protected String getJSBundleFile() {
@@ -55,7 +48,7 @@ public class ReactNativeHostFactory {
         };
     }
 
-    private static ReactNativeHost createReactNativeHostDev(final Application application) {
+    private ReactNativeHost createReactNativeHostDev(final Application application) {
         return new ReactNativeHost(application) {
             @Override
             public boolean getUseDeveloperSupport() {
@@ -79,7 +72,7 @@ public class ReactNativeHostFactory {
         };
     }
 
-    private static List<ReactPackage> getListPackages(Application application) {
+    protected List<ReactPackage> getListPackages(Application application) {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),

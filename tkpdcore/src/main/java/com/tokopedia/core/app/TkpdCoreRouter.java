@@ -16,6 +16,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;
@@ -26,6 +27,7 @@ import rx.Observable;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
+    String EXTRAS = "extras";
 
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
 
@@ -189,4 +191,11 @@ public interface TkpdCoreRouter {
     void sendTrackingGroupChatLeftNavigation();
 
     String getDesktopLinkGroupChat();
+
+    Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
+
+    String getStringRemoteConfig(String key);
+
+    void setStringRemoteConfigLocal(String key, String value);
+
 }

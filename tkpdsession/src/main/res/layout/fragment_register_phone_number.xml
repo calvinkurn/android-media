@@ -67,5 +67,6 @@
         android:gravity="center_horizontal"
         android:text="@string/string_bottom_info"
         tools:text="@string/string_bottom_info"
+        android:visibility="gone"
         />
 </LinearLayout>

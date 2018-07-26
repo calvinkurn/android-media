@@ -244,4 +244,11 @@ public final class CurrencyFormatHelper {
         rupiah = rupiah.replace(" ", "");
         return Integer.parseInt(rupiah);
     }
+
+	public static long convertRupiahToLong(String rupiah) {
+		rupiah = rupiah.replace("Rp", "");
+		rupiah = rupiah.replace(".", "");
+		rupiah = rupiah.replace(" ", "");
+		return Long.parseLong(rupiah);
+	}
 }

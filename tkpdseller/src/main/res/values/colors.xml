@@ -25,4 +25,7 @@
 
     <color name="redTransparant">#AAd50000</color>
     <color name="watermark_text_color">#26DDDDDD</color>
+
+    <color name="rounded_green">#42b549</color>
+    <color name="shadow_sticker">#60000000</color>
 </resources>

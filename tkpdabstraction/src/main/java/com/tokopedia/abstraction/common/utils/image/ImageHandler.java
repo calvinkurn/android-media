@@ -12,6 +12,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.os.Build;
@@ -69,7 +70,7 @@ public class ImageHandler {
      * @return
      * @throws IOException
      */
-    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+    public static Bitmap RotatedBitmap(Bitmap bitmap, String file) throws IOException {
         ExifInterface exif = new ExifInterface(file);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
@@ -229,6 +230,18 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(colorDrawable)
+                .error(colorDrawable)
+                .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
         Glide.with(context)
                 .load(url)
@@ -265,6 +278,18 @@ public class ImageHandler {
                 .load(url)
                 .asBitmap()
                 .fitCenter()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(simpleTarget);
+    }
+
+    public static void loadImageWithTargetCenterCrop(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .fitCenter()
+                .centerCrop()
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
@@ -419,6 +444,10 @@ public class ImageHandler {
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
+        loadImageRounded2(context, imageview, url, 5.0f);
+    }
+
+    public static void loadImageRounded2(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
@@ -426,7 +455,7 @@ public class ImageHandler {
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, 5.0f));
+                    .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
 
@@ -586,7 +615,7 @@ public class ImageHandler {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
-                    .override(80,80)
+                    .override(80, 80)
                     .centerCrop()
                     .into(imageView);
         }
@@ -628,6 +657,7 @@ public class ImageHandler {
 
         return outputBitmap;
     }
+
     public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
         Glide.with(context)
                 .load(url)
@@ -635,5 +665,11 @@ public class ImageHandler {
                 .placeholder(placeHolder)
                 .error(placeHolder)
                 .into(getCircleImageViewTarget(imageView));
+    }
+
+    public static void clearImage(ImageView imageView) {
+        if (imageView != null) {
+            Glide.clear(imageView);
+        }
     }
 }

@@ -15,6 +15,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
 
     private String productName;
     private String imageUrl;
+    private String imageFullUrl;
     private String productId;
     private String productPrice;
     private String productPricePlain;
@@ -30,6 +31,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private int productUsingStock;
     private int productStock;
     private int productVariant;
+    private String productShopId;
 
     @Override
     public int getType() {
@@ -129,6 +131,14 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productId = productId;
     }
 
+    public String getProductShopId() {
+        return productShopId;
+    }
+
+    public void setProductShopId(String productShopId) {
+        this.productShopId = productShopId;
+    }
+
     public boolean isStockOrImageEmpty(){
         return productStatus != null && !productStatus.equals(STOCK_READY_VALUE);
     }
@@ -209,6 +219,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productName);
         dest.writeString(this.imageUrl);
+        dest.writeString(this.imageFullUrl);
         dest.writeString(this.productId);
         dest.writeString(this.productPrice);
         dest.writeString(this.productPricePlain);
@@ -224,11 +235,13 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeInt(this.productUsingStock);
         dest.writeInt(this.productStock);
         dest.writeInt(this.productVariant);
+        dest.writeString(this.productShopId);
     }
 
     protected ProductManageViewModel(Parcel in) {
         this.productName = in.readString();
         this.imageUrl = in.readString();
+        this.imageFullUrl = in.readString();
         this.productId = in.readString();
         this.productPrice = in.readString();
         this.productPricePlain = in.readString();
@@ -244,6 +257,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productUsingStock = in.readInt();
         this.productStock = in.readInt();
         this.productVariant = in.readInt();
+        this.productShopId = in.readString();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {
@@ -257,4 +271,12 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
             return new ProductManageViewModel[size];
         }
     };
+
+    public String getImageFullUrl() {
+        return imageFullUrl;
+    }
+
+    public void setImageFullUrl(String imageFullUrl) {
+        this.imageFullUrl = imageFullUrl;
+    }
 }

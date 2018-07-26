@@ -27,10 +27,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
-import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
@@ -47,10 +44,9 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
+import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 
 import java.util.Map;
-
-import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -148,15 +144,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             serverId,
                             new SavePushNotificationCallback()
                     );
-                    break;
-                case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                    if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
-                        buildNotifByData(data);
-                    } else {
-                        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
-                        RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
-                        push.processReceivedNotification(data);
-                    }
                     break;
 
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:

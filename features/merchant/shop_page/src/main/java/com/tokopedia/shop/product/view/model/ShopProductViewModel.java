@@ -27,6 +27,7 @@ public abstract class ShopProductViewModel<T> implements Visitable<T> {
     private String productUrl;
     private boolean showWishList;
     private boolean isSoldOut;
+    private int positionTracking;
 
     public ShopProductViewModel() {
     }
@@ -173,5 +174,13 @@ public abstract class ShopProductViewModel<T> implements Visitable<T> {
 
     public void setSoldOut(boolean soldOut) {
         isSoldOut = soldOut;
+    }
+
+    public int getPositionTracking() {
+        return positionTracking;
+    }
+
+    public void setPositionTracking(int positionTracking) {
+        this.positionTracking = positionTracking;
     }
 }

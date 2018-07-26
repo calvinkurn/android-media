@@ -98,15 +98,23 @@ public class ProductViewModelHelper {
         productItem.setImageUrl700(productModel.getImageUrl700());
         productItem.setRating(productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
+        productItem.setCountCourier(productModel.getCountCourier());
+        productItem.setDiscountPercentage(productModel.getDiscountPercentage());
+        productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
+        productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShopID());
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getShopCity());
         productItem.setGoldMerchant(productModel.isGoldMerchant());
+        productItem.setOfficial(productModel.isOfficial());
+        productItem.setOfficial(productModel.isOfficial());
         productItem.setWishlisted(productModel.isWishlisted());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
         productItem.setPosition(position);
+        productItem.setTopLabel(productModel.getTopLabel());
+        productItem.setBottomLabel(productModel.getBottomLabel());
         return productItem;
     }
 
@@ -123,6 +131,7 @@ public class ProductViewModelHelper {
         BadgeItem badgeItem = new BadgeItem();
         badgeItem.setImageUrl(badgeModel.getImageUrl());
         badgeItem.setTitle(badgeModel.getTitle());
+        badgeItem.setShown(badgeModel.isShown());
         return badgeItem;
     }
 

@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
@@ -57,6 +56,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ import javax.inject.Inject;
 
 public class ShopProductListLimitedFragment extends BaseListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
         implements SearchInputView.Listener, ShopProductLimitedPromoViewHolder.PromoViewHolderListener,
-        ShopProductListLimitedView, ShopProductClickedListener, EmptyViewHolder.Callback, ShopProductFeaturedViewHolder.ShopProductFeaturedListener {
+        ShopProductListLimitedView, ShopProductClickedListener, WishListActionListener, EmptyViewHolder.Callback, ShopProductFeaturedViewHolder.ShopProductFeaturedListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
@@ -135,7 +135,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
-        shopProductListLimitedPresenter.attachView(this);
+        shopProductListLimitedPresenter.attachView(this, this);
     }
 
     @Override
@@ -250,7 +250,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(this, this, this, promoWebViewListener, this);
+        return new ShopProductLimitedAdapterTypeFactory(this, this, this, promoWebViewListener, this,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", "", attribution));
+                    }
+                });
     }
 
     @NonNull
@@ -413,7 +419,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         }
         if (featuredViewModelList.size() > 0) {
             shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
-                    featuredViewModelList, attribution, 
+                    featuredViewModelList, attribution,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
         if (productHomeViewModelList.size() > 0) {
@@ -421,7 +427,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
                     productHomeViewModelList, attribution,
                     true, shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()),
-                    false, getCurrentPage());
+                    false);
         }
     }
 
@@ -441,47 +447,25 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel, int adapterPosition) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
-                    attribution, adapterPosition, true,
+                    attribution, shopProductViewModel.getPositionTracking(), true,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
                 shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
-                shopPageTracking.getListNameOfProduct(adapterPosition, false, ShopPageTrackingConstant.PRODUCT_ETALASE));
+                shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), false, ShopPageTrackingConstant.PRODUCT_ETALASE));
     }
 
     @Override
-    public void onErrorRemoveFromWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
+    public void onUserNotLoginError(Throwable e) {
+        if (e instanceof UserNotLoginException && getActivity() != null) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
-    }
-
-    @Override
-    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
-        ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, false);
-    }
-
-    @Override
-    public void onErrorAddToWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
-        }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
-    }
-
-    @Override
-    public void onSuccessAddToWishList(String productId, Boolean value) {
-        ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, true);
     }
 
     @Override
@@ -542,15 +526,15 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     }
 
     @Override
-    public void onProductFeaturedClickedTracking(ShopProductViewModel shopProductViewModel, int adapterPosition) {
+    public void onProductFeaturedClickedTracking(ShopProductViewModel shopProductViewModel) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution, adapterPosition, true,
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution, shopProductViewModel.getPositionTracking(), true,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
                 shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(),
-                attribution, shopPageTracking.getListNameOfProduct(adapterPosition, false, ShopPageTrackingConstant.PRODUCT_FEATURED));
+                attribution, shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), false, ShopPageTrackingConstant.PRODUCT_FEATURED));
     }
 
     public void onLastItemVisibleTracking() {
@@ -558,5 +542,25 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
             shopPageTracking.eventViewBottomNavigation(getString(R.string.shop_info_title_tab_product), shopInfo.getInfo().getShopId(),
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
+    }
+
+    @Override
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(String productId) {
+        ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
+        ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, false);
     }
 }

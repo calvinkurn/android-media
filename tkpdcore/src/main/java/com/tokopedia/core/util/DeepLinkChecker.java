@@ -53,6 +53,7 @@ public class DeepLinkChecker {
     public static final int REFERRAL = 19;
     public static final int TOKOPOINT = 20;
     public static final int GROUPCHAT = 21;
+    public static final int SALE = 22;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "pesawat";
@@ -60,9 +61,7 @@ public class DeepLinkChecker {
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
 
-    public static int
-
-    getDeepLinkType(String url) {
+    public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
 
         List<String> linkSegment = uriData.getPathSegments();
@@ -83,6 +82,8 @@ public class DeepLinkChecker {
                 return FLIGHT;
             else if (isPromo(linkSegment))
                 return PROMO;
+            else if(isSale(linkSegment))
+                return SALE;
             else if (isInvoice(linkSegment))
                 return INVOICE;
             else if (isBlog(linkSegment))
@@ -155,7 +156,10 @@ public class DeepLinkChecker {
     }
 
     private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO) || linkSegment.get(0).equals(KEY_SALE));
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO));
+    }
+    private static boolean isSale(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_SALE));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {
@@ -314,16 +318,18 @@ public class DeepLinkChecker {
     }
 
     public static void openProduct(String url, Context context) {
-        Bundle bundle = new Bundle();
-        if (getLinkSegment(url).size() > 1) {
-            bundle.putString("shop_domain", getLinkSegment(url).get(0));
-            bundle.putString("product_key", getLinkSegment(url).get(1));
+        if (context != null) {
+            Bundle bundle = new Bundle();
+            if (getLinkSegment(url).size() > 1) {
+                bundle.putString("shop_domain", getLinkSegment(url).get(0));
+                bundle.putString("product_key", getLinkSegment(url).get(1));
+            }
+            bundle.putString("url", url);
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            intent.putExtras(bundle);
+            intent.setData(Uri.parse(url));
+            context.startActivity(intent);
         }
-        bundle.putString("url", url);
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        intent.putExtras(bundle);
-        intent.setData(Uri.parse(url));
-        context.startActivity(intent);
     }
 
     public static void openShop(String url, Activity context) {

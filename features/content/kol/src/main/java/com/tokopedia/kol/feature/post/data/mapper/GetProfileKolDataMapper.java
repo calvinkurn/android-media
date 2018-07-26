@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.kol.common.network.GraphqlErrorException;
 import com.tokopedia.kol.feature.post.data.pojo.GetUserKolPostResponse;
 import com.tokopedia.kol.feature.post.data.pojo.PostKol;
 import com.tokopedia.kol.feature.post.data.pojo.PostKolContent;
@@ -42,30 +43,29 @@ public class GetProfileKolDataMapper
             TagsFeedKol tag = getKolTag(content);
 
             KolPostViewModel kolPostViewModel = new KolPostViewModel(
+                    postKolData.id != null ? postKolData.id : 0,
+                    "",
                     "",
                     postKolData.userName != null ? postKolData.userName : "",
                     postKolData.userPhoto != null ? postKolData.userPhoto : "",
                     postKolData.userInfo != null ? postKolData.userInfo : "",
+                    "",
                     true,
-                    getImageUrl(content),
-                    getTagCaption(tag),
                     postKolData.description != null ? postKolData.description : "",
                     postKolData.isLiked != null ? postKolData.isLiked : false,
                     postKolData.likeCount != null ? postKolData.likeCount : 0,
                     postKolData.commentCount != null ? postKolData.commentCount : 0,
                     0,
-                    "",
-                    getTagId(tag),
                     postKolData.id != null ? postKolData.id : 0,
                     postKolData.createTime != null ? postKolData.createTime : "",
-                    "",
-                    getTagPrice(tag),
-                    false,
-                    getTagType(tag),
-                    getTagLink(tag),
-                    postKolData.userId != null ? postKolData.userId : 0,
                     postKolData.showComment != null ? postKolData.showComment : true,
-                    ""
+                    postKolData.showLike != null ? postKolData.showLike : true,
+                    getImageUrl(content),
+                    getTagId(tag),
+                    "",
+                    getTagType(tag),
+                    getTagCaption(tag),
+                    !TextUtils.isEmpty(getTagLink(tag)) ? getTagLink(tag) : getTagUrl(tag)
             );
             kolPostViewModels.add(kolPostViewModel);
         }
@@ -81,7 +81,7 @@ public class GetProfileKolDataMapper
                 if (TextUtils.isEmpty(graphqlResponse.body().getData().postKol.error)) {
                     return graphqlResponse.body().getData().postKol;
                 } else {
-                    throw new RuntimeException(ERROR_SERVER);
+                    throw new GraphqlErrorException(graphqlResponse.body().getData().postKol.error);
                 }
             } else {
                 throw new RuntimeException(ERROR_NETWORK);
@@ -150,6 +150,14 @@ public class GetProfileKolDataMapper
     private String getTagLink(TagsFeedKol tag) {
         if (tag != null && tag.link != null) {
             return tag.link;
+        } else {
+            return "";
+        }
+    }
+
+    private String getTagUrl(TagsFeedKol tag) {
+        if (tag != null && tag.url != null) {
+            return tag.url;
         } else {
             return "";
         }

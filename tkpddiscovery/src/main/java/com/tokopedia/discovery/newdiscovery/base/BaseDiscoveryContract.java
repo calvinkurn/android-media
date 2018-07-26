@@ -3,8 +3,6 @@ package com.tokopedia.discovery.newdiscovery.base;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
-import java.util.List;
-
 /**
  * Created by hangnadi on 9/26/17.
  */
@@ -25,6 +23,8 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 
+        void onHandleImageResponseSearch(ProductViewModel productViewModel);
+
         void onHandleImageSearchResponseError();
 
         void onHandleResponseIntermediary(String departmentId);
@@ -39,7 +39,13 @@ public interface BaseDiscoveryContract {
 
         void onHandleInvalidImageSearchResponse();
 
+        void showErrorNetwork(String message);
+
+        void showTimeoutErrorNetwork(String message);
+
         void onHandleImageSearchResponseSuccess();
+
+        void showImageNotSupportedError();
     }
 
     interface Presenter<D extends View> {

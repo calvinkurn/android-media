@@ -28,6 +28,9 @@
           buttonText
           buttonApplink
           buttonURL
+          backgroundImgUrl
+          imageUrl
+          version
       }
       countingMessage
       tokensUser {

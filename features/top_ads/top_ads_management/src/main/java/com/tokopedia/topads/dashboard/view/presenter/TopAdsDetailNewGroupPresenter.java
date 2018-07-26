@@ -12,8 +12,8 @@ import java.util.List;
 public interface TopAdsDetailNewGroupPresenter<T extends TopAdsDetailNewGroupView> extends TopAdsDetailEditGroupPresenter<T> {
     void saveAdNew(String groupName,
                    TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                   List<TopAdsProductViewModel> topAdsProductViewModelList);
+                   List<TopAdsProductViewModel> topAdsProductViewModelList, String source);
 
     void saveAdExisting(String groupId,
-                        List<TopAdsProductViewModel> topAdsProductViewModelList);
+                        List<TopAdsProductViewModel> topAdsProductViewModelList, String source);
 }

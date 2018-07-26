@@ -24,7 +24,6 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
-    String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
     String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
     String ARG_NOTIFICATION_APPLINK_GROUPCHAT = "groupchat";
@@ -94,7 +93,6 @@ public interface Constants {
         String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
-        String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL_CART = "tokopedia://digital/cart";
         String DIGITAL_CATEGORY = "tokopedia://digital/category";
         String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
@@ -183,6 +181,8 @@ public interface Constants {
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
         String NOTIFICATION_SELLER_INFO = "notification_seller_info";
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
+        String NOTIFICATION_SHAKE_SHAKE ="notification_shake_shake";
+
     }
 
     interface AppLinkQueryParameter {

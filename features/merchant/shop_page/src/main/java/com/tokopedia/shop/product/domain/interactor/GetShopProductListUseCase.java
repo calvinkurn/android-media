@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -36,6 +37,7 @@ public class GetShopProductListUseCase extends UseCase<PagingList<ShopProduct>> 
     @Override
     public Observable<PagingList<ShopProduct>> createObservable(RequestParams requestParams) {
         final ShopProductRequestModel shopProductRequestModel = (ShopProductRequestModel) requestParams.getObject(SHOP_REQUEST);
+        shopProductRequestModel.setPerPage(ShopPageTrackingConstant.DEFAULT_PER_PAGE);
         return getShopInfoUseCase.createObservable(GetShopInfoUseCase.createRequestParam(shopProductRequestModel.getShopId())).flatMap(new Func1<ShopInfo, Observable<PagingList<ShopProduct>>>() {
             @Override
             public Observable<PagingList<ShopProduct>> call(ShopInfo shopInfo) {

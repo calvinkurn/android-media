@@ -12,6 +12,7 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -209,7 +210,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             CommonUtils.dumper("FCM wvlogin deeplink type " + type);
             switch (type) {
                 case DeepLinkChecker.HOME:
-                    screenName = AppScreen.SCREEN_INDEX_HOME;
+                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHomepage();
                     break;
@@ -278,7 +279,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     break;
                 case DeepLinkChecker.PELUANG:
-                    screenName = AppScreen.SCREEN_INDEX_HOME;
+                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openPeluangPage(uriData.getPathSegments(), uriData);
                     break;
@@ -292,6 +293,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.PROMO:
                     openPromo(linkSegment);
+                    screenName = "";
+                    break;
+                case DeepLinkChecker.SALE:
+                    openSale(linkSegment);
                     screenName = "";
                     break;
                 default:
@@ -313,9 +318,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
                     context);
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         context.startActivity(intent);
         context.finish();
     }
@@ -344,8 +347,33 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPromo(List<String> linkSegment) {
         LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
-        Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
 
+        Intent intent;
+        if(linkSegment.size() <= 1) {
+            intent = router.getPromoListIntent(context);
+        }
+        else {
+            intent = router.getPromoDetailIntent(context, linkSegment.get(1));
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openSale(List<String> linkSegment) {
+        Intent intent;
+        if(linkSegment.size() <= 1) {
+            LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
+            intent = router.getPromoListIntent(context);
+        } else {
+            String SLUG_PARAM = "{slug}";
+            String applink = ApplinkConst.PROMO_SALE_NO_SLASH.
+                    replace(SLUG_PARAM, linkSegment.get(1));
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(applink));
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -521,6 +549,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 .setShopDomain(linkSegment.get(0))
                 .setProductUri(uriData.toString())
                 .build());
+        productInfoIntent.setData(uriData);
         viewListener.goToPage(productInfoIntent);
     }
 

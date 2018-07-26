@@ -11,6 +11,7 @@ public class RegisterUtil {
     public static final int MAX_PHONE_NUMBER = 13;
     public static final int MIN_PHONE_NUMBER = 6;
     public static final int MAX_NAME = 35;
+    public static final int MAX_NAME_128 = 128;
     public static final int MIN_NAME = 3;
 
 

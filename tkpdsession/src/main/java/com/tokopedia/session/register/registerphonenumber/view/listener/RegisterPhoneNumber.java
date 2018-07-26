@@ -19,21 +19,17 @@ public interface RegisterPhoneNumber {
 
         void goToVerifyAccountPage(String phoneNumber);
 
+        void goToAddNamePage(String phoneNumber);
+
         void goToLoginPhoneNumber();
 
         void showConfirmationPhoneNumber(String phoneNumber);
-
-        void doRegisterPhoneNumber();
 
         void dismissLoading();
 
         void showLoading();
 
         void showAlreadyRegisteredDialog(String phoneNumber);
-
-        void showSuccessRegisterPhoneNumber(LoginRegisterPhoneNumberModel model);
-
-        void showErrorRegisterPhoneNumber(String message);
 
         void dismissFocus();
 
@@ -44,8 +40,5 @@ public interface RegisterPhoneNumber {
     interface Presenter extends CustomerPresenter<View> {
 
         void checkPhoneNumber(String phoneNumber);
-
-        void registerPhoneNumber(String phoneNumber);
-
     }
 }

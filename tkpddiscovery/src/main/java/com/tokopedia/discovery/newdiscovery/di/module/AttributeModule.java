@@ -7,6 +7,7 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.data.mapper.DynamicAttributeMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.AttributeRepositoryImpl;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.data.mapper.HotlistAttributeMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.AttributeRepository;
 import com.tokopedia.discovery.newdiscovery.data.source.AttributeDataSource;
@@ -41,6 +42,14 @@ public class AttributeModule {
             PostExecutionThread postExecutionThread,
             AttributeRepository attributeRepository) {
         return new GetDynamicFilterUseCase(threadExecutor, postExecutionThread, attributeRepository);
+    }
+
+    @Provides
+    GetDynamicFilterV4UseCase getDynamicFilterV4UseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            AttributeRepository attributeRepository) {
+        return new GetDynamicFilterV4UseCase(threadExecutor, postExecutionThread, attributeRepository);
     }
 
     @Provides

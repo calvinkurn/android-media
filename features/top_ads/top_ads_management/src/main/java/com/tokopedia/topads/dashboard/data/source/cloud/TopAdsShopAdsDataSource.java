@@ -7,7 +7,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 
@@ -22,10 +22,10 @@ import rx.Observable;
 public class TopAdsShopAdsDataSource {
 
     private final TopAdsDetailShopMapper topAdsDetailShopMapper;
-    private final TopAdsManagementApi topAdsManagementApi;
+    private final TopAdsOldManagementApi topAdsManagementApi;
     private final Context context;
 
-    public TopAdsShopAdsDataSource(Context context, TopAdsManagementApi topAdsManagementApi, TopAdsDetailShopMapper topAdsDetailShopMapper) {
+    public TopAdsShopAdsDataSource(Context context, TopAdsOldManagementApi topAdsManagementApi, TopAdsDetailShopMapper topAdsDetailShopMapper) {
         this.context = context;
         this.topAdsManagementApi = topAdsManagementApi;
         this.topAdsDetailShopMapper = topAdsDetailShopMapper;
@@ -73,7 +73,7 @@ public class TopAdsShopAdsDataSource {
         dataModel.setAdEndTime(domainModel.getAdEndTime());
         dataModel.setAdImage(domainModel.getAdImage());
         dataModel.setAdTitle(domainModel.getAdTitle());
-        dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
+        dataModel.setSource(domainModel.getSource());
         switch (Integer.parseInt(domainModel.getStatus())) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:

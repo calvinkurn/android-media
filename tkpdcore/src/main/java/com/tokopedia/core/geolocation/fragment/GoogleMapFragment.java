@@ -39,6 +39,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
+import com.tokopedia.core.geolocation.listener.ITransactionAnalyticsGeoLocationPinPoint;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
@@ -85,6 +86,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     private SuggestionLocationAdapter adapter;
     private ActionBar actionBar;
     private BottomSheetDialog dialog;
+    private ITransactionAnalyticsGeoLocationPinPoint analyticsGeoLocationListener;
 
     public static Fragment newInstance(LocationPass locationPass) {
         GoogleMapFragment fragment = new GoogleMapFragment();
@@ -144,6 +146,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     protected void initialListener(Activity activity) {
+        analyticsGeoLocationListener = (ITransactionAnalyticsGeoLocationPinPoint) activity;
     }
 
     @Override
@@ -219,6 +222,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
             @Override
             public void onClick(View view) {
                 presenter.onSubmitPointer(getActivity());
+                analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
             }
         });
     }
@@ -258,6 +262,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long itemID) {
                 presenter.onSuggestionItemClick(adapterView, position);
+                analyticsGeoLocationListener.sendAnalyticsOnDropdownSuggestionItemClicked();
             }
         });
 
@@ -265,6 +270,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
             @Override
             public void onClick(View view) {
                 dialog.show();
+                analyticsGeoLocationListener.sendAnalyticsOnGetCurrentLocationClicked();
             }
         });
     }
@@ -474,7 +480,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             presenter.onMapReady();
         }
     }

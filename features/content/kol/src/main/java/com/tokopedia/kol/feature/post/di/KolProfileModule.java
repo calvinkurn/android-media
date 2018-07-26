@@ -1,8 +1,12 @@
 package com.tokopedia.kol.feature.post.di;
 
+import com.tokopedia.kol.common.data.source.api.KolApi;
+import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
+import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
 import com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
+import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
 
@@ -15,16 +19,17 @@ import dagger.Provides;
 
 @Module
 public class KolProfileModule {
-    private final KolPostListener.View viewListener;
+    private final KolPostListener.View.ViewHolder viewListener;
 
-    public KolProfileModule(KolPostListener.View viewListener) {
+    public KolProfileModule(KolPostListener.View.ViewHolder viewListener) {
         this.viewListener = viewListener;
     }
 
     @KolProfileScope
     @Provides
-    KolPostListener.Presenter providesPresenter(GetKolPostUseCase getKolPostUseCase) {
-        return new KolPostPresenter(getKolPostUseCase);
+    KolPostListener.Presenter providesPresenter(GetKolPostUseCase getKolPostUseCase,
+                                                LikeKolPostUseCase likeKolPostUseCase) {
+        return new KolPostPresenter(getKolPostUseCase, likeKolPostUseCase);
     }
 
     @KolProfileScope
@@ -32,4 +37,13 @@ public class KolProfileModule {
     KolPostTypeFactory provideKolTypeFactory() {
         return new KolPostTypeFactoryImpl(viewListener);
     }
+
+
+    @KolProfileScope
+    @Provides
+    LikeKolPostSourceCloud provideLikeKolPostSourceCloud(KolApi kolApi, LikeKolPostMapper likeKolPostMapper) {
+        return new LikeKolPostSourceCloud(viewListener.getContext(), kolApi, likeKolPostMapper);
+    }
+
+
 }

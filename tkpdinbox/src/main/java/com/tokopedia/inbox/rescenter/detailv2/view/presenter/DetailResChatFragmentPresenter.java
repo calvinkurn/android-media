@@ -39,10 +39,13 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Detai
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by yoasfs on 09/10/17.
@@ -113,12 +116,15 @@ public class DetailResChatFragmentPresenter
     @Override
     public void detachView() {
         getResChatUseCase.unsubscribe();
+        getResChatMoreUseCase.unsubscribe();
         sendDiscussionUseCase.unsubscribe();
         sendDiscussionV2UseCase.unsubscribe();
         acceptSolutionUseCase.unsubscribe();
         askHelpResolutionUseCase.unsubscribe();
         cancelResolutionUseCase.unsubscribe();
-        getResChatMoreUseCase.unsubscribe();
+        inputAddressUseCase.unsubscribe();
+        editAddressUseCase.unsubscribe();
+        finishResolutionUseCase.unsubscribe();
     }
 
     @Override
@@ -254,29 +260,22 @@ public class DetailResChatFragmentPresenter
     }
 
     @Override
-    public void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
-        switch (resultCode) {
-            case GalleryBrowser.RESULT_CODE:
-                if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL),
-                            AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
-            case Activity.RESULT_OK:
-                if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(),
-                            AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
+    public void handleImageResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                onAddImageAttachment(imageUrlOrPathList.get(0),
+                        AttachmentViewModel.FILE_IMAGE);
+            }else{
+                onFailedAddAttachment();
+            }
+        }else{
+            onFailedAddAttachment();
         }
     }
 
     @Override
-    public void handleNewGalleryResult(int resultCode, Intent data) {
+    public void handleVideoResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
                 MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
