@@ -16,7 +16,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
@@ -34,15 +33,12 @@ import com.tokopedia.inbox.rescenter.createreso.data.repository.PostAppealSoluti
 import com.tokopedia.inbox.rescenter.createreso.data.repository.PostAppealSolutionRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.PostEditSolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.PostEditSolutionRepositoryImpl;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepository;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
@@ -135,14 +131,7 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    GetProductProblemMapper provideGetProductProblemMapper() {
-        return new GetProductProblemMapper();
-    }
-
-    @CreateResoScope
-    @Provides
     CreateResolutionFactory provideProductProblemFactory(@ApplicationContext Context context,
-                                                         GetProductProblemMapper getProductProblemMapper,
                                                          SolutionMapper solutionMapper,
                                                          CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper,
                                                          CreateValidateMapper createValidateMapper,
@@ -156,7 +145,6 @@ public class CreateResoModule {
                                                          AppealSolutionMapper appealSolutionMapper,
                                                          EditAppealResolutionResponseMapper editAppealResolutionResponseMapper) {
         return new CreateResolutionFactory(context,
-                getProductProblemMapper,
                 solutionMapper,
                 createResoWithoutAttachmentMapper,
                 createValidateMapper,
@@ -206,12 +194,6 @@ public class CreateResoModule {
     @Provides
     SolutionRepository provideSolutionRepository(CreateResolutionFactory createResolutionFactory) {
         return new SolutionRepositoryImpl(createResolutionFactory);
-    }
-
-    @CreateResoScope
-    @Provides
-    ProductProblemRepository provideProductProblemRepository(CreateResolutionFactory createResolutionFactory) {
-        return new ProductProblemRepositoryImpl(createResolutionFactory);
     }
 
     @CreateResoScope
@@ -343,16 +325,6 @@ public class CreateResoModule {
         return new PostAppealSolutionUseCase(threadExecutor,
                 postExecutionThread,
                 postAppealSolutionRepository);
-    }
-
-    @CreateResoScope
-    @Provides
-    GetProductProblemUseCase provideGetProductProblemUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             ProductProblemRepository productProblemRepository) {
-        return new GetProductProblemUseCase(threadExecutor,
-                postExecutionThread,
-                productProblemRepository);
     }
 
     @CreateResoScope

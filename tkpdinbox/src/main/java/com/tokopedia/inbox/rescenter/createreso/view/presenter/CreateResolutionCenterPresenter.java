@@ -64,14 +64,20 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private String resolutionId;
 
     @Inject
-    public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
-                                           CreateResoWithoutAttachmentUseCase createResoWithoutAttachmentUseCase,
-                                           CreateResoWithAttachmentUseCase createResoWithAttachmentUseCase) {
+    public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase) {
         this.getProductProblemUseCase = getProductProblemUseCase;
-        this.createResoWithoutAttachmentUseCase = createResoWithoutAttachmentUseCase;
-        this.createResoWithAttachmentUseCase = createResoWithAttachmentUseCase;
         resultViewModel = new ResultViewModel();
     }
+
+//    @Inject
+//    public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
+//                                           CreateResoWithoutAttachmentUseCase createResoWithoutAttachmentUseCase,
+//                                           CreateResoWithAttachmentUseCase createResoWithAttachmentUseCase) {
+//        this.getProductProblemUseCase = getProductProblemUseCase;
+//        this.createResoWithoutAttachmentUseCase = createResoWithoutAttachmentUseCase;
+//        this.createResoWithAttachmentUseCase = createResoWithAttachmentUseCase;
+//        resultViewModel = new ResultViewModel();
+//    }
 
     @Override
     public void attachView(CreateResolutionCenter.View view) {
@@ -308,7 +314,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     public void detachView() {
         super.detachView();
         getProductProblemUseCase.unsubscribe();
-        createResoWithoutAttachmentUseCase.unsubscribe();
-        createResoWithAttachmentUseCase.unsubscribe();
+//        createResoWithoutAttachmentUseCase.unsubscribe();
+//        createResoWithAttachmentUseCase.unsubscribe();
     }
 }

@@ -11,7 +11,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
@@ -21,7 +20,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateValidate
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GenerateHostCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetAppealSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetEditSolutionCloudSource;
-import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetProductProblemCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GetSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.PostAppealSolutionCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.PostEditSolutionCloudSource;
@@ -34,7 +32,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.UploadCloudSou
 public class CreateResolutionFactory {
     private final UploadVideoMapper uploadVideoMapper;
     private Context context;
-    private GetProductProblemMapper productProblemMapper;
     private SolutionMapper solutionMapper;
     private CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper;
     private CreateValidateMapper createValidateMapper;
@@ -48,7 +45,6 @@ public class CreateResolutionFactory {
     private EditAppealResolutionResponseMapper editAppealResolutionResponseMapper;
 
     public CreateResolutionFactory(Context context,
-                                   GetProductProblemMapper productProblemMapper,
                                    SolutionMapper solutionMapper,
                                    CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper,
                                    CreateValidateMapper createValidateMapper,
@@ -62,7 +58,6 @@ public class CreateResolutionFactory {
                                    AppealSolutionMapper appealSolutionMapper,
                                    EditAppealResolutionResponseMapper editAppealResolutionResponseMapper) {
         this.context = context;
-        this.productProblemMapper = productProblemMapper;
         this.solutionMapper = solutionMapper;
         this.createResoWithoutAttachmentMapper = createResoWithoutAttachmentMapper;
         this.createValidateMapper = createValidateMapper;
@@ -75,10 +70,6 @@ public class CreateResolutionFactory {
         this.editSolutionMapper = editSolutionMapper;
         this.appealSolutionMapper = appealSolutionMapper;
         this.editAppealResolutionResponseMapper = editAppealResolutionResponseMapper;
-    }
-
-    public GetProductProblemCloudSource getProductProblemCloudSource() {
-        return new GetProductProblemCloudSource(context, productProblemMapper, resolutionApi);
     }
 
     public GetSolutionCloudSource getSolutionCloudSource() {
