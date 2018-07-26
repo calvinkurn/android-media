@@ -93,7 +93,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     private String shopId;
     private String keyword;
-    private int sortValue = Integer.MIN_VALUE;
+    private String sortValue;
     private String attribution;
 
     private ArrayList<ShopEtalaseViewModel> selectedEtalaseList;
@@ -183,13 +183,13 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
             selectedEtalaseName = "";
             keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
-            sortValue = getArguments().getInt(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE);
+            sortValue = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, String.valueOf(Integer.MIN_VALUE));
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST);
             selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID);
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME);
             keyword = savedInstanceState.getString(SAVED_KEYWORD);
-            sortValue = savedInstanceState.getInt(SAVED_SORT_VALUE);
+            sortValue = savedInstanceState.getString(SAVED_SORT_VALUE);
         }
         super.onCreate(savedInstanceState);
         shopProductListPresenter.attachView(this);
@@ -220,7 +220,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId,
                             shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
-                Intent intent = ShopProductSortActivity.createIntent(getActivity(), String.valueOf(sortValue), shopId);
+                Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortValue, shopId);
                 ShopProductListFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
             }
         });
@@ -332,7 +332,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                 selectedEtalaseId,
                 0,
                 page,
-                sortValue);
+                Integer.valueOf(sortValue));
     }
 
     @Override
@@ -592,7 +592,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             case REQUEST_CODE_SORT:
                 if (resultCode == Activity.RESULT_OK) {
                     String sortId = data.getStringExtra(ShopProductSortActivity.SORT_ID);
-                    sortValue = Integer.valueOf(data.getStringExtra(ShopProductSortActivity.SORT_NAME));
+                    sortValue = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
                     this.isLoadingInitialData = true;
                     loadInitialData();
                 }
@@ -648,7 +648,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         outState.putParcelableArrayList(SAVED_SELECTED_ETALASE_LIST, selectedEtalaseList);
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId);
         outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName);
-        outState.putInt(SAVED_SORT_VALUE, sortValue);
+        outState.putString(SAVED_SORT_VALUE, sortValue);
         outState.putString(SAVED_KEYWORD, keyword);
     }
 

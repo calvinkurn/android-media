@@ -624,18 +624,27 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK && shopProductLimitedListPresenter != null && shopInfo != null) {
-                    selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
-                    selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
+                    String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
+                    String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
 
                     // if etalase id is on the list, refresh this page; if etalase id is in other list, go to new page.
-                    boolean isAddedToCurrentEtalaseList = shopProductAdapter.addEtalaseFromListMore(selectedEtalaseId, selectedEtalaseName);
-                    if (isAddedToCurrentEtalaseList) {
-                        selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName));
-                        if (selectedEtalaseList.size() > ShopPageConstant.MAXIMUM_SELECTED_ETALASE_LIST) {
-                            selectedEtalaseList.remove(selectedEtalaseList.size());
-                        }
-                        Intent intent = ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "",
-                                selectedEtalaseId, attribution, sortName, selectedEtalaseList);
+//                    boolean isAddedToCurrentEtalaseList = shopProductAdapter.addEtalaseFromListMore(selectedEtalaseId, selectedEtalaseName);
+//                    if (isAddedToCurrentEtalaseList) {
+//                        selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName));
+//                        if (selectedEtalaseList.size() > ShopPageConstant.MAXIMUM_SELECTED_ETALASE_LIST) {
+//                            selectedEtalaseList.remove(selectedEtalaseList.size());
+//                        }
+//                        Intent intent = ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "",
+//                                selectedEtalaseId, attribution, sortName, selectedEtalaseList);
+//                        startActivity(intent);
+//                    }
+                    if (shopProductAdapter.isEtalaseInChip(etalaseId)) {
+                        this.selectedEtalaseId = etalaseId;
+                        this.selectedEtalaseName = etalaseName;
+                    } else {
+                        Intent intent = ShopProductListActivity.createIntent(getActivity(),
+                                shopInfo.getInfo().getShopId(), "",
+                                etalaseId, attribution, sortName, selectedEtalaseList);
                         startActivity(intent);
                     }
                     shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
@@ -656,8 +665,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 break;
             case REQUEST_CODE_SORT:
                 if (resultCode == Activity.RESULT_OK) {
-                    sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
-                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", "", "", sortName));
+                    String sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(),
+                            "", "", "", sortName));
                 }
                 break;
             default:

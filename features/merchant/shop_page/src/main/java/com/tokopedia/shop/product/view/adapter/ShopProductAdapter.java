@@ -109,14 +109,17 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
      * @return true, if add etalase to current list; false if no add needed.
      */
     public boolean addEtalaseFromListMore(String etalaseId, String etalaseName) {
-        List<ShopEtalaseViewModel> shopEtalaseViewModelList = shopProductEtalaseListViewModel.getEtalaseModelList();
-        for (int i = 0, sizei = shopEtalaseViewModelList.size(); i < sizei; i++) {
-            if (shopEtalaseViewModelList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
-                return false;
-            }
+        if (isEtalaseInChip(etalaseId)) {
+            return false;
         }
+        addEtalaseToChip(etalaseId, etalaseName);
+        return true;
+    }
+
+    public void addEtalaseToChip(String etalaseId, String etalaseName){
         // add the etalase by permutation
         // 1 2 3 4 5; after add 6 will be 1 6 2 3 4
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = shopProductEtalaseListViewModel.getEtalaseModelList();
         ShopEtalaseViewModel shopEtalaseViewModelToAdd = new ShopEtalaseViewModel(etalaseId, etalaseName);
         // index no 0 will always be "All Etalase", so, add from index 1.
         int indexToAdd = shopEtalaseViewModelList.size() > 1 ? 1 : 0;
@@ -124,7 +127,16 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         if (shopEtalaseViewModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
             shopEtalaseViewModelList.remove(shopEtalaseViewModelList.size() - 1);
         }
-        return true;
+    }
+
+    public boolean isEtalaseInChip(String etalaseId) {
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = shopProductEtalaseListViewModel.getEtalaseModelList();
+        for (int i = 0, sizei = shopEtalaseViewModelList.size(); i < sizei; i++) {
+            if (shopEtalaseViewModelList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ShopProductEtalaseListViewModel getShopProductEtalaseListViewModel() {
