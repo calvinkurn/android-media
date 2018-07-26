@@ -11,6 +11,13 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
 public class MenuTitleViewModel implements ParcelableViewModel<AccountTypeFactory> {
     private String title;
 
+    public MenuTitleViewModel() {
+    }
+
+    public MenuTitleViewModel(String title) {
+        this.title = title;
+    }
+
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -33,9 +40,6 @@ public class MenuTitleViewModel implements ParcelableViewModel<AccountTypeFactor
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
-    }
-
-    public MenuTitleViewModel() {
     }
 
     protected MenuTitleViewModel(Parcel in) {
