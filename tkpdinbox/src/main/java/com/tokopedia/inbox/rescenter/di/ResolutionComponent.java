@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndProblemFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.CreateResolutionCenterFragment;
 
 import dagger.Component;
@@ -19,4 +20,6 @@ public interface ResolutionComponent {
     Context getContext();
 
     void inject(CreateResolutionCenterFragment createResolutionCenterFragment);
+
+    void inject(ChooseProductAndProblemFragment chooseProductAndProblemFragment);
 }

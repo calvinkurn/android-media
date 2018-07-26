@@ -46,18 +46,8 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> getInboxSingleItem(@Path(PATH_RESOLUTION_ID) int resolutionId,
                                                                @QueryMap HashMap<String, Object> params);
 
-
-
-    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_STEP_1)
-    Observable<Response<TkpdResponse>> getProductProblemList(@Path(PATH_ORDER_ID) String orderId,
-                                                             @QueryMap TKPDMapParam<String, Object> params);
-
     @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_STEP_2_3)
     Observable<Response<TkpdResponse>> getSolution(@Path(PATH_ORDER_ID) String orderId,
-                                                   @Body String object);
-
-    @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_CREATE)
-    Observable<Response<TkpdResponse>> postCreateResolution(@Path(PATH_ORDER_ID) String orderId,
                                                    @Body String object);
 
 

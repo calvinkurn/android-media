@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.AppealSolutionMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoWithoutAttachmentMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
@@ -14,7 +13,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateResoWithoutAttachmentCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateSubmitCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.CreateValidateCloudSource;
 import com.tokopedia.inbox.rescenter.createreso.data.source.cloud.GenerateHostCloudSource;
@@ -33,7 +31,6 @@ public class CreateResolutionFactory {
     private final UploadVideoMapper uploadVideoMapper;
     private Context context;
     private SolutionMapper solutionMapper;
-    private CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper;
     private CreateValidateMapper createValidateMapper;
     private GenerateHostMapper generateHostMapper;
     private UploadMapper uploadMapper;
@@ -46,7 +43,6 @@ public class CreateResolutionFactory {
 
     public CreateResolutionFactory(Context context,
                                    SolutionMapper solutionMapper,
-                                   CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper,
                                    CreateValidateMapper createValidateMapper,
                                    GenerateHostMapper generateHostMapper,
                                    UploadMapper uploadMapper,
@@ -59,7 +55,6 @@ public class CreateResolutionFactory {
                                    EditAppealResolutionResponseMapper editAppealResolutionResponseMapper) {
         this.context = context;
         this.solutionMapper = solutionMapper;
-        this.createResoWithoutAttachmentMapper = createResoWithoutAttachmentMapper;
         this.createValidateMapper = createValidateMapper;
         this.generateHostMapper = generateHostMapper;
         this.uploadMapper = uploadMapper;
@@ -74,10 +69,6 @@ public class CreateResolutionFactory {
 
     public GetSolutionCloudSource getSolutionCloudSource() {
         return new GetSolutionCloudSource(context, solutionMapper, resolutionApi);
-    }
-
-    public CreateResoWithoutAttachmentCloudSource createResoStep1CloudSource() {
-        return new CreateResoWithoutAttachmentCloudSource(context, createResoWithoutAttachmentMapper, resolutionApi);
     }
 
     public CreateValidateCloudSource getCreateValidateCloudSource() {

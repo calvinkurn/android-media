@@ -21,8 +21,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.AppealSolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.AppealSolutionRepositoryImpl;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoWithoutAttachmentRepository;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoWithoutAttachmentRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateValidateSubmitRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateValidateSubmitRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.EditSolutionRepository;
@@ -36,7 +34,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.repository.PostEditSolution
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
@@ -133,7 +130,6 @@ public class CreateResoModule {
     @Provides
     CreateResolutionFactory provideProductProblemFactory(@ApplicationContext Context context,
                                                          SolutionMapper solutionMapper,
-                                                         CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper,
                                                          CreateValidateMapper createValidateMapper,
                                                          GenerateHostMapper generateHostMapper,
                                                          UploadMapper uploadMapper,
@@ -146,7 +142,6 @@ public class CreateResoModule {
                                                          EditAppealResolutionResponseMapper editAppealResolutionResponseMapper) {
         return new CreateResolutionFactory(context,
                 solutionMapper,
-                createResoWithoutAttachmentMapper,
                 createValidateMapper,
                 generateHostMapper,
                 uploadMapper,
@@ -182,12 +177,6 @@ public class CreateResoModule {
     @Provides
     AppealSolutionRepository provideAppealSolutionRepository(CreateResolutionFactory createResolutionFactory) {
         return new AppealSolutionRepositoryImpl(createResolutionFactory);
-    }
-
-    @CreateResoScope
-    @Provides
-    CreateResoWithoutAttachmentRepository provideCreateResoStep1Repository(CreateResolutionFactory createResolutionFactory) {
-        return new CreateResoWithoutAttachmentRepositoryImpl(createResolutionFactory);
     }
 
     @CreateResoScope
@@ -275,16 +264,6 @@ public class CreateResoModule {
                 createSubmitUseCase,
                 uploadVideoUseCase
         );
-    }
-
-    @CreateResoScope
-    @Provides
-    CreateResoWithoutAttachmentUseCase provideCreateResoStep1UseCase(ThreadExecutor threadExecutor,
-                                                                     PostExecutionThread postExecutionThread,
-                                                                     CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository) {
-        return new CreateResoWithoutAttachmentUseCase(threadExecutor,
-                postExecutionThread,
-                createResoWithoutAttachmentRepository);
     }
 
     @CreateResoScope

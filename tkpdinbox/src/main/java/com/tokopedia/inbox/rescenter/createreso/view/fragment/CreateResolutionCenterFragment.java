@@ -450,9 +450,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel,
                                                         ArrayList<ProblemResult> problemResults) {
-        Intent intent = new Intent(getActivity(), ProductProblemListActivity.class);
-        intent.putExtra(KEY_PARAM_PASS_DATA, productProblemListViewModel);
-        intent.putParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA, problemResults);
+        Intent intent = ProductProblemListActivity.getInstance(getActivity(), productProblemListViewModel, problemResults);
         startActivityForResult(intent, REQUEST_STEP1);
     }
 

@@ -1,12 +1,16 @@
 package com.tokopedia.inbox.rescenter.network;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoWithoutAttachmentResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ProductProblemListResponse;
 
 import java.util.HashMap;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -22,6 +26,12 @@ public interface ResolutionApi {
     String PATH_CONVERSATION_ID = "conversation_id";
 
     @GET(ResolutionUrl.GET_RESOLUTION_STEP_1)
-    Observable<Response<DataResponse<ProductProblemListResponse>>> getProductProblemList(@Path(PATH_ORDER_ID) String orderId,
-                                                                                         @QueryMap HashMap<String, Object> params);
+    Observable<Response<DataResponse<ProductProblemListResponse>>>
+    getProductProblemList(@Path(PATH_ORDER_ID) String orderId,
+                          @QueryMap HashMap<String, Object> params);
+
+    @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_CREATE)
+    Observable<Response<DataResponse<CreateResoWithoutAttachmentResponse>>>
+    postCreateResolution(@Path(PATH_ORDER_ID) String orderId,
+                         @Body String object);
 }

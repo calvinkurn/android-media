@@ -64,8 +64,10 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private String resolutionId;
 
     @Inject
-    public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase) {
+    public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
+                                          CreateResoWithoutAttachmentUseCase createResoWithoutAttachmentUseCase) {
         this.getProductProblemUseCase = getProductProblemUseCase;
+        this.createResoWithoutAttachmentUseCase = createResoWithoutAttachmentUseCase;
         resultViewModel = new ResultViewModel();
     }
 
@@ -314,7 +316,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     public void detachView() {
         super.detachView();
         getProductProblemUseCase.unsubscribe();
-//        createResoWithoutAttachmentUseCase.unsubscribe();
+        createResoWithoutAttachmentUseCase.unsubscribe();
 //        createResoWithAttachmentUseCase.unsubscribe();
     }
 }
