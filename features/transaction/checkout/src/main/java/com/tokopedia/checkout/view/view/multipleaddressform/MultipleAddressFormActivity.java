@@ -12,9 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
-import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Dialog;
 
@@ -49,8 +47,9 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
                                         RecipientAddressModel recipientAddressData,
                                         List<ShipmentCartItemModel> shipmentCartItemModels,
                                         ShipmentCostModel shipmentCostModel,
-                                        ShipmentDonationModel shipmentDonationModel,
-                                        ShipmentCheckoutButtonModel shipmentCheckoutButtonModel) {
+                                        ShipmentDonationModel shipmentDonationModel
+//                                        ShipmentCheckoutButtonModel shipmentCheckoutButtonModel
+    ) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
         intent.putExtra(EXTRA_PROMO_DATA, cartItemPromoHolderData);
         intent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, cartPromoSuggestion);
@@ -58,7 +57,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
         intent.putExtra(EXTRA_SHIPMENT_CART_TEM_LIST_DATA, new ArrayList<>(shipmentCartItemModels));
         intent.putExtra(EXTRA_SHIPMENT_COST_SATA, shipmentCostModel);
         intent.putExtra(EXTRA_SHIPMENT_DONATION_DATA, shipmentDonationModel);
-        intent.putExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA, shipmentCheckoutButtonModel);
+//        intent.putExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA, shipmentCheckoutButtonModel);
         return intent;
     }
 
@@ -151,9 +150,9 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
         if (getIntent().hasExtra(EXTRA_SHIPMENT_DONATION_DATA)) {
             resultIntent.putExtra(EXTRA_SHIPMENT_DONATION_DATA, (ShipmentDonationModel) getIntent().getParcelableExtra(EXTRA_SHIPMENT_DONATION_DATA));
         }
-        if (getIntent().hasExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA)) {
-            resultIntent.putExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA, (ShipmentCheckoutButtonModel) getIntent().getParcelableExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA));
-        }
+//        if (getIntent().hasExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA)) {
+//            resultIntent.putExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA, (ShipmentCheckoutButtonModel) getIntent().getParcelableExtra(EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA));
+//        }
         setResult(RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM, resultIntent);
         finish();
     }

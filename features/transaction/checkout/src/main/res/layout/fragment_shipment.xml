@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -13,7 +13,60 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_shipment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_above="@+id/ll_checkout_button_container" />
+
+        <LinearLayout
+            android:id="@+id/ll_checkout_button_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_shadow_top"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextSmallNormalBlack54"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_payment_total" />
+
+                <TextView
+                    android:id="@+id/tv_total_payment"
+                    style="@style/TextMidMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="-"
+                    android:textColor="@color/orange_red"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_select_payment_method"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/btn_height"
+                android:layout_margin="@dimen/margin_small"
+                android:layout_weight="1"
+                android:background="@drawable/orange_button_rounded"
+                android:gravity="center"
+                android:text="@string/label_pay"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_network_error_view"
@@ -23,6 +76,6 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-    </FrameLayout>
+    </RelativeLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
