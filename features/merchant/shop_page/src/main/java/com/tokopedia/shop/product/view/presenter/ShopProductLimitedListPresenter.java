@@ -39,21 +39,21 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
 
     //    private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
     private final GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase;
-    private final GetShopProductListWithAttributeUseCase productListWithAttributeNewUseCase;
+    private final GetShopProductListWithAttributeUseCase productListWithAttributeUseCase;
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
     private final RemoveFromWishListUseCase removeFromWishListUseCase;
     private final UserSession userSession;
 
     @Inject
-    public ShopProductLimitedListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeNewUseCase,
+    public ShopProductLimitedListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeUseCase,
                                            GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase,
                                            GetShopEtalaseUseCase getShopEtalaseUseCase,
                                            AddToWishListUseCase addToWishListUseCase,
                                            RemoveFromWishListUseCase removeFromWishListUseCase,
                                            UserSession userSession) {
         this.getShopProductFeaturedWithAttributeUseCase = getShopProductFeaturedWithAttributeUseCase;
-        this.productListWithAttributeNewUseCase = productListWithAttributeNewUseCase;
+        this.productListWithAttributeUseCase = productListWithAttributeUseCase;
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
@@ -85,7 +85,8 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
         if (!TextUtils.isEmpty(etalaseId)) {
             shopProductRequestModel.setEtalaseId(etalaseId);
         }
-        productListWithAttributeNewUseCase.execute(
+        productListWithAttributeUseCase.unsubscribe();
+        productListWithAttributeUseCase.execute(
                 GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel),
                 new Subscriber<PagingList<ShopProductViewModel>>() {
                     @Override
@@ -231,7 +232,7 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
     @Override
     public void detachView() {
         super.detachView();
-        productListWithAttributeNewUseCase.unsubscribe();
+        productListWithAttributeUseCase.unsubscribe();
         getShopProductFeaturedWithAttributeUseCase.unsubscribe();
         getShopEtalaseUseCase.unsubscribe();
         addToWishListUseCase.unsubscribe();

@@ -107,7 +107,7 @@
     <string name="total_point_format">(%1$s)</string>
 
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
-    <string name="favorited_shop_title">Yang Memfavoritkan</string>
+    <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
     <string name="reputation_point_format">%1$s poin</string>
     <string name="shop_note_title">Catatan</string>

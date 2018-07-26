@@ -16,7 +16,7 @@ import com.tokopedia.shop.product.view.adapter.viewholder.HideViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductNewViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.model.HideViewModel;
@@ -84,7 +84,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(ShopProductViewModel shopProductViewModel) {
-        return ShopProductNewViewHolder.LAYOUT;
+        return ShopProductViewHolder.LAYOUT;
     }
 
     public int type(ErrorNetworkModel errorNetworkModel) {
@@ -135,8 +135,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
         } else if(type == ShopProductFeaturedViewHolder .LAYOUT){
             return new ShopProductFeaturedViewHolder(parent, shopProductClickedListener);
-        } else if(type == ShopProductNewViewHolder.LAYOUT){
-            return new ShopProductNewViewHolder(parent, shopProductClickedListener, isHorizontalLayout, isFeaturedOnly);
+        } else if(type == ShopProductViewHolder.LAYOUT){
+            return new ShopProductViewHolder(parent, shopProductClickedListener, isHorizontalLayout, isFeaturedOnly);
         } if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);
         } else {

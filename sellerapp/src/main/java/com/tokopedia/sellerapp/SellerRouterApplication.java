@@ -279,14 +279,14 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
@@ -1322,7 +1322,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void gotoTopAdsDashboard(Context context) {
-        startActivity(TopAdsDashboardActivity.getCallingIntent(context));
+        context.startActivity(TopAdsDashboardActivity.getCallingIntent(context));
     }
 
     @Override
@@ -1387,21 +1387,21 @@ public abstract class SellerRouterApplication extends MainApplication
         SessionHandler sessionHandler = new SessionHandler(this);
         ReputationTracking tracking = new ReputationTracking(this);
         tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, sessionHandler.getShopID().equals(shopId));
-        startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
     }
 
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
-        startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+        context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
     }
 
     @Override
     public void goToManageShipping(Context context) {
-        startActivity(new Intent(context, EditShippingActivity.class));
+        context.startActivity(new Intent(context, EditShippingActivity.class));
     }
 
     @Override
     public void goToEditShop(Context context) {
-        startActivity(getIntentManageShop(context));
+        context.startActivity(getIntentManageShop(context));
     }
 }

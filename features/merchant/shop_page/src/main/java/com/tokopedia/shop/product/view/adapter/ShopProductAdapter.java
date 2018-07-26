@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter;
 
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
@@ -21,6 +23,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener;
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +43,12 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     private ShopProductEtalaseListViewModel shopProductEtalaseListViewModel;
     private ShopProductEtalaseTitleViewModel shopProductEtalaseTitleViewModel;
 
-    //    private View promoView;
-//    private String promoUrl;
-
     private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
     private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
+
+    // this view holder is to hold the state between the sticky and non-sticky etalase view holder.
+    private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListViewHolderWeakReference;
+    private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListStickyWeakReference;
 
     public ShopProductAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
@@ -105,14 +109,17 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
      * @return true, if add etalase to current list; false if no add needed.
      */
     public boolean addEtalaseFromListMore(String etalaseId, String etalaseName) {
-        List<ShopEtalaseViewModel> shopEtalaseViewModelList = shopProductEtalaseListViewModel.getEtalaseModelList();
-        for (int i = 0, sizei = shopEtalaseViewModelList.size(); i < sizei; i++) {
-            if (shopEtalaseViewModelList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
-                return false;
-            }
+        if (isEtalaseInChip(etalaseId)) {
+            return false;
         }
+        addEtalaseToChip(etalaseId, etalaseName);
+        return true;
+    }
+
+    public void addEtalaseToChip(String etalaseId, String etalaseName){
         // add the etalase by permutation
         // 1 2 3 4 5; after add 6 will be 1 6 2 3 4
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = shopProductEtalaseListViewModel.getEtalaseModelList();
         ShopEtalaseViewModel shopEtalaseViewModelToAdd = new ShopEtalaseViewModel(etalaseId, etalaseName);
         // index no 0 will always be "All Etalase", so, add from index 1.
         int indexToAdd = shopEtalaseViewModelList.size() > 1 ? 1 : 0;
@@ -120,7 +127,16 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         if (shopEtalaseViewModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
             shopEtalaseViewModelList.remove(shopEtalaseViewModelList.size() - 1);
         }
-        return true;
+    }
+
+    public boolean isEtalaseInChip(String etalaseId) {
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = shopProductEtalaseListViewModel.getEtalaseModelList();
+        for (int i = 0, sizei = shopEtalaseViewModelList.size(); i < sizei; i++) {
+            if (shopEtalaseViewModelList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ShopProductEtalaseListViewModel getShopProductEtalaseListViewModel() {
@@ -219,15 +235,58 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     }
 
     @Override
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        AbstractViewHolder abstractViewHolder = super.onCreateViewHolder(parent, viewType);
+        if (viewType == ShopProductEtalaseListViewHolder.LAYOUT &&
+                abstractViewHolder instanceof ShopProductEtalaseListViewHolder) {
+            shopProductEtalaseListViewHolderWeakReference = new WeakReference<>((ShopProductEtalaseListViewHolder) abstractViewHolder);
+        }
+        return abstractViewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        // mechanism to transfer the state from sticky etalase state to non-sticky view holder
+        if (holder instanceof ShopProductEtalaseListViewHolder) {
+            Parcelable recyclerViewState = null;
+            try {
+                if (shopProductEtalaseListStickyWeakReference != null &&
+                        shopProductEtalaseListStickyWeakReference.get()!= null) {
+                    recyclerViewState = shopProductEtalaseListStickyWeakReference.get().getRecyclerViewState();
+                }
+            } catch (Throwable e) {
+                recyclerViewState = null;
+            }
+            ((ShopProductEtalaseListViewHolder)holder).setRecyclerViewState(recyclerViewState);
+        }
+        super.onBindViewHolder(holder, position);
+    }
+
+    @Override
     public RecyclerView.ViewHolder createStickyViewHolder(ViewGroup parent) {
         int stickyViewType = getItemViewType(getStickyHeaderPosition());
         View view = onCreateViewItem(parent, stickyViewType);
-        return shopProductAdapterTypeFactory.createViewHolder(view, stickyViewType);
+        AbstractViewHolder abstractViewHolder = shopProductAdapterTypeFactory.createViewHolder(view, stickyViewType);
+        if (abstractViewHolder instanceof ShopProductEtalaseListViewHolder) {
+            shopProductEtalaseListStickyWeakReference = new WeakReference<>((ShopProductEtalaseListViewHolder) abstractViewHolder);
+        }
+        return abstractViewHolder;
     }
 
     @Override
     public void bindSticky(RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof ShopProductEtalaseListViewHolder) {
+            // mechanism to transfer the state from the current etalase state to sticky view holder
+            Parcelable recyclerViewState = null;
+            try {
+                if (shopProductEtalaseListViewHolderWeakReference != null &&
+                        shopProductEtalaseListViewHolderWeakReference.get()!= null) {
+                    recyclerViewState = shopProductEtalaseListViewHolderWeakReference.get().getRecyclerViewState();
+                }
+            } catch (Throwable e) {
+                recyclerViewState = null;
+            }
+            ((ShopProductEtalaseListViewHolder)viewHolder).setRecyclerViewState(recyclerViewState);
             ((ShopProductEtalaseListViewHolder)viewHolder).bind(shopProductEtalaseListViewModel);
         }
     }

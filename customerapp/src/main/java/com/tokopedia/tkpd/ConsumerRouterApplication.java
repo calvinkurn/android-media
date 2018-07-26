@@ -723,7 +723,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
@@ -2292,17 +2292,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToShopReview(Context context, String shopId, String shopDomain) {
         ReputationTracking tracking = new ReputationTracking(this);
         tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));
-        startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
     }
 
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
-        startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+        context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
     }
 
     @Override
     public void goToManageShipping(Context context) {
-        startActivity(new Intent(context, EditShippingActivity.class));
+        context.startActivity(new Intent(context, EditShippingActivity.class));
     }
 
     @Override
@@ -2311,6 +2311,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
         UnifyTracking.eventManageShopInfo();
 
-        startActivity(intent);
+        context.startActivity(intent);
     }
 }

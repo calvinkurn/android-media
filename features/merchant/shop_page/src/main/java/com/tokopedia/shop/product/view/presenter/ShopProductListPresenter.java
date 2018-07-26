@@ -50,6 +50,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     private final DeleteShopProductUseCase deleteShopProductUseCase;
     private final static int USE_ACE = 1;
 
+    public static final String ALL_ETALASE_ID = "etalase"; // from api
+
     @Inject
     public ShopProductListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeNewUseCase,
                                     AddToWishListUseCase addToWishListUseCase,
@@ -157,6 +159,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
             // the view has already had shop etalase list. So, no need to get from network.
             getShopProductWithWishList(shopProductRequestModel);
         } else {
+            getShopEtalaseUseCase.unsubscribe();
             getShopEtalaseUseCase.execute(GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel), new Subscriber<PagingListOther<EtalaseModel>>() {
                 @Override
                 public void onCompleted() {
@@ -209,7 +212,13 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                         }
                     }
 
-                    getView().addNewEtalaseToChip(selectedEtalaseId, selectedEtalaseName);
+                    // name is empty means etalase is deleted, so no need to add to chip, and make it to all etalase.
+                    if (TextUtils.isEmpty(selectedEtalaseName) || ALL_ETALASE_ID.equalsIgnoreCase(selectedEtalaseId)) {
+                        shopProductRequestModel.setEtalaseId("");
+                    } else {
+                        getView().addNewEtalaseToChip(selectedEtalaseId, selectedEtalaseName);
+                    }
+
                     ArrayList<ShopEtalaseViewModel> etalaseViewModelList = getView().getSelectedEtalaseViewModelList();
 
                     List<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapper.mergeEtalaseList(
@@ -226,6 +235,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     }
 
     private void getShopProductWithWishList(ShopProductRequestModel shopProductRequestModel) {
+        productListWithAttributeNewUseCase.unsubscribe();
         productListWithAttributeNewUseCase.execute(
                 GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel),
                 new Subscriber<PagingList<ShopProductViewModel>>() {
