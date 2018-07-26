@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
@@ -20,7 +21,7 @@ import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.widget.NestedWebView;
 
-public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPromoViewModel>{
+public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPromoViewModel> {
 
     private static final String SHOP_STATIC_URL = "shop-static";
     private static final int MIN_SHOW_WEB_VIEW_PROGRESS = 100;
@@ -73,41 +74,44 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
 
     @Override
     public void bind(ShopProductPromoViewModel shopProductPromoViewModel) {
-        if (isBind || isLogin == shopProductPromoViewModel.isLogin()) {
+        if (isBind && isLogin == shopProductPromoViewModel.isLogin()) {
             return;
         }
+        clearCache(shopPagePromoWebView);
         if (shopProductPromoViewModel.isLogin()) {
-            clearCache(shopPagePromoWebView);
             shopPagePromoWebView.loadAuthUrl(shopProductPromoViewModel.getUrl(),
                     shopProductPromoViewModel.getUserId(),
                     shopProductPromoViewModel.getAccessToken());
+            Log.i("PromoViewHolder", "loadURL : " + shopProductPromoViewModel.getUrl() + shopProductPromoViewModel.getUserId());
         } else {
-            clearCache(shopPagePromoWebView);
             shopPagePromoWebView.loadUrl(shopProductPromoViewModel.getUrl());
+            Log.i("PromoViewHolder", "loadURL : " + shopProductPromoViewModel.getUrl());
         }
 
         isLogin = shopProductPromoViewModel.isLogin();
-
         isBind = true;
     }
 
     private void showLoading() {
         loadingLayout.setVisibility(View.VISIBLE);
         shopPagePromoWebView.setVisibility(View.GONE);
+        Log.i("PromoViewHolder", "showLoading");
     }
 
     private void finishLoading() {
         loadingLayout.setVisibility(View.GONE);
         shopPagePromoWebView.setVisibility(View.VISIBLE);
+        Log.i("PromoViewHolder", "hideLoading");
     }
 
     private class OfficialStoreWebChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            CommonUtils.dumper("OfficialStoreWebChromeClient progress: " + newProgress);
+            Log.i("PromoViewHolder", "progress: " + newProgress);
             if (newProgress >= MIN_SHOW_WEB_VIEW_PROGRESS) {
                 view.setVisibility(View.VISIBLE);
                 finishLoading();
+                Log.i("PromoViewHolder", "finish progress");
             }
             super.onProgressChanged(view, newProgress);
         }
@@ -126,16 +130,18 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
             super.onReceivedSslError(view, handler, error);
             handler.cancel();
             finishLoading();
+            Log.i("PromoViewHolder", "onReceivedSslError");
         }
 
         @Override
         public void onLoadResource(WebView view, String url) {
-            CommonUtils.dumper("onLoadResource url: " + url);
+            Log.i("PromoViewHolder", "onLoadResource url: " + url);
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             finishLoading();
+            Log.i("PromoViewHolder", "onReceivedError: " + errorCode + description + failingUrl);
         }
 
         @Override
@@ -144,7 +150,7 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
             if (url.contains(SHOP_STATIC_URL)) {
                 view.loadUrl(url);
             } else if (uri.getScheme().equals(ShopProductOfficialStoreUtils.TOKOPEDIA_HOST) || uri.getScheme().startsWith(ShopProductOfficialStoreUtils.HTTP)) {
-                if (promoViewHolderListener!=null) {
+                if (promoViewHolderListener != null) {
                     promoViewHolderListener.promoClicked(url);
                 }
             }
