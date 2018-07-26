@@ -548,6 +548,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
+        if (shopProductAdapter.isLoading()) {
+            return;
+        }
         selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);

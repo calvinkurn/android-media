@@ -159,6 +159,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
             // the view has already had shop etalase list. So, no need to get from network.
             getShopProductWithWishList(shopProductRequestModel);
         } else {
+            getShopEtalaseUseCase.unsubscribe();
             getShopEtalaseUseCase.execute(GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel), new Subscriber<PagingListOther<EtalaseModel>>() {
                 @Override
                 public void onCompleted() {
@@ -234,6 +235,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     }
 
     private void getShopProductWithWishList(ShopProductRequestModel shopProductRequestModel) {
+        productListWithAttributeNewUseCase.unsubscribe();
         productListWithAttributeNewUseCase.execute(
                 GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel),
                 new Subscriber<PagingList<ShopProductViewModel>>() {

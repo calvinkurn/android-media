@@ -294,6 +294,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
+        if (shopProductAdapter.isLoading()) {
+            return;
+        }
         selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
@@ -303,6 +306,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
         // no need ro rearraged, just notify the adapter to reload product list by etalase id
+
         loadInitialData();
     }
 
