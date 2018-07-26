@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -58,11 +59,10 @@ public class TickerPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup view, final int position) {
-        TextView item = (TextView) mInflater.inflate(R.layout.tp_layout_ticker_item, view, false);
+        TextView item = (TextView) LayoutInflater.from(view.getContext()).inflate(R.layout.tp_layout_ticker_item, view, false);
         item.setMovementMethod(LinkMovementMethod.getInstance());
         item.setText(generateText(view.getContext(), mItems.get(position)));
-        view.addView(item);
-
+        view.addView(item, 0);
         return item;
     }
 
@@ -102,5 +102,14 @@ public class TickerPagerAdapter extends PagerAdapter {
         }
 
         return ssb.build();
+    }
+
+    @Override
+    public void restoreState(Parcelable state, ClassLoader loader) {
+    }
+
+    @Override
+    public Parcelable saveState() {
+        return null;
     }
 }

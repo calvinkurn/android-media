@@ -8,16 +8,19 @@
     android:layout_marginRight="@dimen/tp_margin_medium"
     android:layout_marginTop="@dimen/tp_margin_medium"
     android:background="@drawable/bg_tp_ticker"
-    android:padding="@dimen/tp_padding_regular"
+    android:paddingBottom="@dimen/tp_padding_small"
+    android:paddingLeft="@dimen/tp_padding_regular"
+    android:paddingRight="@dimen/tp_padding_regular"
+    android:paddingTop="@dimen/tp_padding_small"
     android:visibility="visible"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/line_separator_points_horizontal">
 
-    <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_ticker"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
