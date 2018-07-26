@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -17,4 +18,6 @@ public interface LoyaltyRouter extends ILoyaltyRouter {
     Intent getPromoDetailIntent(Context context, String slug);
 
     Observable<TokoPointDrawerData> getTokopointUseCase();
+  
+    Intent getPromoListIntent(Activity activity);
 }

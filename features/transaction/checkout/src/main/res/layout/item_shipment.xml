@@ -22,6 +22,7 @@
             style="@style/TextSmallMediumBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
@@ -33,6 +34,7 @@
             style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginStart="10dp"
@@ -40,13 +42,17 @@
             android:layout_toRightOf="@id/tv_text_sent_by"
             android:lineSpacingExtra="5sp"
             tools:text="Adidas" />
-    </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:background="#e0e0e0" />
+        <ImageView
+            android:id="@+id/img_shop_badge"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_toRightOf="@+id/tv_shop_name"
+            tools:src="@drawable/ic_badge_official" />
+
+    </RelativeLayout>
 
     <include layout="@layout/item_cart_product" />
 
@@ -54,39 +60,6 @@
         android:id="@+id/rv_cart_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/address_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_small"
-        tools:visibility="gone">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#e0e0e0" />
-
-        <include
-            layout="@layout/item_recipient_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8" />
-
-    </LinearLayout>
-
-    <com.tokopedia.design.pickuppoint.PickupPointLayout
-        android:id="@+id/pickup_point_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
         android:visibility="gone" />
 
     <View
@@ -124,6 +97,38 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/grey_300" />
+
+    <LinearLayout
+        android:id="@+id/address_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:visibility="visible">
+
+        <include
+            layout="@layout/item_recipient_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8" />
+
+        <View
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#e0e0e0" />
+
+    </LinearLayout>
+
+    <com.tokopedia.design.pickuppoint.PickupPointLayout
+        android:id="@+id/pickup_point_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_shipment_option_view_layout"

@@ -13,8 +13,8 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 

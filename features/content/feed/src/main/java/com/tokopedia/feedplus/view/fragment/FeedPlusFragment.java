@@ -67,9 +67,11 @@ import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -108,6 +110,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
+    private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
 
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
@@ -155,11 +158,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        GraphqlClient.init(getActivity());
         trace = TrackingUtils.startTrace("feed_trace");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
             firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
         initVar();
+        setRetainInstance(true);
     }
 
 
@@ -658,6 +663,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     );
                 }
                 break;
+            case CREATE_POST:
+                break;
             case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfileRecommendation(
@@ -895,7 +902,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onOpenKolTooltip(int rowNumber, String url) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
@@ -1123,6 +1130,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getAdapterListSize() {
         return adapter.getItemCount();
+    }
+
+    @Override
+    public void onWhitelistClicked(String url) {
+        startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity(), url), CREATE_POST);
     }
 
     @Override

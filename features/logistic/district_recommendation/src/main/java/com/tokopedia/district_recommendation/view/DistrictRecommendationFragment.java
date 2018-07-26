@@ -1,5 +1,6 @@
 package com.tokopedia.district_recommendation.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -8,7 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -18,13 +21,13 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,8 +43,9 @@ import static com.tokopedia.district_recommendation.view.DistrictRecommendationC
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DISTRICT_RECOMMENDATION_ADDRESS;
 
 public class DistrictRecommendationFragment
-        extends BasePresenterFragment<DistrictRecommendationContract.Presenter>
-        implements DistrictRecommendationContract.View, DistrictRecommendationAdapter.Listener {
+        extends BasePresenterFragment<DistrictRecommendationContract.Presenter> implements
+        DistrictRecommendationContract.View,
+        DistrictRecommendationAdapter.Listener {
 
     private static final int THRESHOLD = 3;
 
@@ -55,6 +59,8 @@ public class DistrictRecommendationFragment
     private OnQueryListener queryListener;
     private DistrictRecommendationAdapter adapter;
     private CompositeSubscription compositeSubscription;
+
+    private ITransactionAnalyticsDistrictRecommendation transactionAnalyticsDistrictRecommendation;
 
     @Inject
     DistrictRecommendationContract.Presenter presenter;
@@ -117,7 +123,7 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initialListener(Activity activity) {
-
+        transactionAnalyticsDistrictRecommendation = (ITransactionAnalyticsDistrictRecommendation) activity;
     }
 
     @Override
@@ -130,6 +136,7 @@ public class DistrictRecommendationFragment
         return R.layout.fragment_search_address;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initView(View view) {
         this.searchAddress = view.findViewById(R.id.search_address);
@@ -151,6 +158,18 @@ public class DistrictRecommendationFragment
                 return true;
             }
         });
+
+
+        ImageView closeButton = searchAddress.findViewById(R.id.search_close_btn);
+        if (closeButton != null) closeButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                    transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput();
+                return false;
+            }
+        });
+
     }
 
     private void submitQuery(String text) {
@@ -178,7 +197,6 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void setViewListener() {
-
     }
 
     @Override
@@ -329,6 +347,7 @@ public class DistrictRecommendationFragment
 
     @Override
     public void onItemClick(Address address) {
+        transactionAnalyticsDistrictRecommendation.sendAnalyticsOnDistrictDropdownSelectionItemClicked(address.getDistrictName());
         Intent resultIntent = new Intent();
         resultIntent.putExtra(INTENT_DATA_ADDRESS, address);
         resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address));
