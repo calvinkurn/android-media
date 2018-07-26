@@ -9,8 +9,6 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tkpd.library.utils.CommonUtils
@@ -34,6 +32,7 @@ import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewAddPresenter
 import kotlinx.android.synthetic.main.fragment_top_ads_keyword_new_add.*
 import kotlinx.android.synthetic.main.top_ads_empty_layout.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNewStepperModel>(),
@@ -94,11 +93,6 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         stepperModel?.run {
             maxKeyword = maxWords
             this@TopAdsKeywordNewAddFragment.serverCount = serverCount
-        }
-        if (savedInstanceState != null){
-            localKeywordAdapter.clear()
-            localKeywordAdapter.addBulk(savedInstanceState.getParcelableArrayList(EXTRA_LOCAL_WORDS))
-            errorList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS)
         }
     }
 
@@ -213,17 +207,15 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK){
-            if (requestCode == REQUEST_ADD_ITEM_CODE){
-                val localKeywords = data?.getParcelableArrayListExtra<AddKeywordDomainModelDatum>(TopAdsKeywordNewItemFragment
-                        .ADDED_KEYWORDS_PARAM)
-                localKeywords?.run {
-                    localKeywordAdapter.addBulk(localKeywords)
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_ADD_ITEM_CODE){
+            val localKeywords = data?.getParcelableArrayListExtra<AddKeywordDomainModelDatum>(TopAdsKeywordNewItemFragment.PARAM_ADDED_KEYWORDS)
+            localKeywords?.run {
+                localKeywordAdapter.addBulk(localKeywords)
+                if (isAdded) {
                     setCurrentMaxKeyword()
                     checkButtonEnabled()
                     needShowEmptyLayout()
                 }
-
             }
         }
     }
@@ -268,6 +260,22 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
                 }
             }
             return tempList
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.let { it.putParcelableArrayList(EXTRA_LOCAL_WORDS, ArrayList(localKeywordAdapter.localKeywords)) }
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        localKeywordAdapter.clear()
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_LOCAL_WORDS)) {
+            localKeywordAdapter.addBulk(savedInstanceState.getParcelableArrayList(EXTRA_LOCAL_WORDS))
+        }
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_ERROR_WORDS)) {
+            errorList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS)
         }
     }
 
