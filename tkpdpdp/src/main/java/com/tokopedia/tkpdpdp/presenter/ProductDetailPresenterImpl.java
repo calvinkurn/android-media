@@ -21,10 +21,12 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -158,6 +160,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processDataPass(@NonNull ProductPass productPass) {
         if (productPass.haveBasicData()) viewListener.renderTempProductData(productPass);
+    }
+
+    public void getCostEstimation(String shippingService, String shippingName, String origin, String dest,
+                                  float weigth, String rawQuery){
+        HashMap<String, Object> variables = new HashMap<>();
+        variables.put("service", shippingService);
+        variables.put("names", shippingName);
+        variables.put("from", origin);
+        variables.put("to", dest);
+        variables.put("weight", weigth+"");
+
+        GraphqlRequest request = new GraphqlRequest(rawQuery, variables);
     }
 
     @Override

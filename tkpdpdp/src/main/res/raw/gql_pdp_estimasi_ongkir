@@ -1,5 +1,5 @@
 query Rates($service: String!, $names: String!, $from: String!, $to: String!, $weight: String!) {
-    rates(service:$service, names:$name, origin:$from, destination:$to, weight:$weigth){
+    rates(service:$service, names:$names, origin:$from, destination:$to, weight:$weigth){
     data {
         id
         type
