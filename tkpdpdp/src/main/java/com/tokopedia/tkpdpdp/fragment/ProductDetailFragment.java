@@ -43,6 +43,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
@@ -271,6 +272,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ShowCaseDialog showCaseDialog;
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
     private String lastStateOnClickBuyWhileRequestVariant;
+    private RemoteConfig firebaseRemoteConfig;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -467,13 +469,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
+        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
         loading.setCancelable(false);
-        loading.setMessage("Loading");
+        loading.setMessage(getString(R.string.title_loading));
         if (presenter != null)
             presenter.initRetrofitInteractor();
         else
             initialPresenter();
+
     }
 
     private AnalyticTracker getAnalyticTracker() {
@@ -1925,6 +1929,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void renderTopAds(int itemSize) {
+        if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
+            return;
         try {
             Xparams xparams = new Xparams();
             xparams.setProduct_id(productData.getInfo().getProductId());
@@ -1949,7 +1955,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             topAds.setAdsListener(this);
             topAds.setConfig(config);
             topAds.loadTopAds();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

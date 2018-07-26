@@ -6,8 +6,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.imageutils.ImageCache;
 import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
 import com.tokopedia.topads.sdk.imageutils.ImageWorker;
@@ -43,6 +45,23 @@ public class ImageLoader {
 
     public void loadImage(String ecs, ImageView imageView) {
         loadImage(ecs, null, imageView);
+    }
+
+    public void loadImage(Product product, final ImageView imageView) {
+        Glide.with(context)
+                .load(product.getImage().getS_ecs())
+                .asBitmap()
+                .placeholder(R.drawable.loading_page)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imageView.setImageBitmap(resource);
+                        if (!product.isLoaded()) {
+                            product.setLoaded(true);
+                            new ImpresionTask().execute(product.getImage().getXs_url());
+                        }
+                    }
+                });
     }
 
     public void loadImage(String ecs, final String url, final ImageView imageView) {
