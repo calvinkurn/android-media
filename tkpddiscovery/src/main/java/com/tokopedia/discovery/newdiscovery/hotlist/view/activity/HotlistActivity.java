@@ -194,7 +194,11 @@ public class HotlistActivity extends DiscoveryActivity
     }
 
     private CharSequence getToolbarTitle() {
-        return toolbarLayout.getTitle();
+        try {
+            return toolbarLayout.getTitle();
+        }catch (Exception e){
+            return "";
+        }
     }
 
     @Override
