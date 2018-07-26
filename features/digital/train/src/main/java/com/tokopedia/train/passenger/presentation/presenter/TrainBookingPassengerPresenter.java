@@ -1,6 +1,7 @@
 package com.tokopedia.train.passenger.presentation.presenter;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -9,6 +10,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.passenger.domain.requestmodel.TrainScheduleRequest;
 import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
@@ -105,16 +107,30 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                         getView().setCityRouteTripInfo(cardWithAction,
                                 getView().getDestinationCity(), getView().getOriginCity());
                         getView().showReturnTripInfo();
+                        getView().setReturnTripRequest(convertTripToRequestParam(viewModel));
                     } else {
                         getView().showDepartureTripInfo();
                         getView().setCityRouteTripInfo(cardWithAction,
                                 getView().getOriginCity(), getView().getDestinationCity());
                         getView().hideReturnTripInfo();
+                        getView().setDepartureTripRequest(convertTripToRequestParam(viewModel));
                     }
                     getView().loadDetailSchedule(viewModel, cardWithAction);
                 }
             }
         });
+    }
+
+    private TrainScheduleRequest convertTripToRequestParam(TrainScheduleViewModel trainScheduleViewModel) {
+        TrainScheduleRequest trainScheduleRequest = new TrainScheduleRequest();
+        trainScheduleRequest.setDepartureTimestamp(trainScheduleViewModel.getDepartureTimestamp());
+        trainScheduleRequest.setDestination(trainScheduleViewModel.getDestination());
+        trainScheduleRequest.setOrigin(trainScheduleViewModel.getOrigin());
+        trainScheduleRequest.setSubClass(trainScheduleViewModel.getSubclass());
+        trainScheduleRequest.setTrainClass(trainScheduleViewModel.getClassTrain());
+        trainScheduleRequest.setTrainName(trainScheduleViewModel.getTrainName());
+        trainScheduleRequest.setTrainNo(trainScheduleViewModel.getTrainNumber());
+        return trainScheduleRequest;
     }
 
     @Override
@@ -138,7 +154,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     @Override
     public void onSubmitButtonClicked() {
         if (isAllDataValid()) {
-            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(
+                    getView().getTrainSoftBookingRequestParam()), new Subscriber<TrainSoftbook>() {
                 @Override
                 public void onCompleted() {
 
@@ -146,7 +163,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
                 @Override
                 public void onError(Throwable e) {
-
+                    getView().showErrorSoftBooking(e);
                 }
 
                 @Override
@@ -160,7 +177,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     @Override
     public void onChooseSeatButtonClicked() {
         if (isAllDataValid()) {
-            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(
+                    getView().getTrainSoftBookingRequestParam()), new Subscriber<TrainSoftbook>() {
                 @Override
                 public void onCompleted() {
 
@@ -168,12 +186,12 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
                 @Override
                 public void onError(Throwable e) {
-
+                    getView().showErrorSoftBooking(e);
                 }
 
                 @Override
                 public void onNext(TrainSoftbook trainSoftbook) {
-                    getView().navigateToChooseSeat(null);
+                    getView().navigateToChooseSeat(trainSoftbook);
                 }
             });
         }

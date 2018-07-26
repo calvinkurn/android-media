@@ -284,7 +284,6 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         cloneSeatViewModel.setColumn(trainPaxPassenger.getSeat().getColumn());
         cloneSeatViewModel.setRow(trainPaxPassenger.getSeat().getRow());
         cloneSeatViewModel.setWagonCode(trainPaxPassenger.getSeat().getWagonNo());
-        cloneSeatViewModel.setClassSeat(trainPaxPassenger.getSeat().getKlass());
         cloneViewModel.setSeatViewModel(cloneSeatViewModel);
         return cloneViewModel;
     }

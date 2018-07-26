@@ -34,4 +34,10 @@ public interface TrainRouter {
 
     Intent getPromoListIntent(Activity activity);
 
+    boolean isPromoNativeEnable();
+
+    Intent getPromoDetailIntent(Context context, String slug);
+
+    Intent getBannerWebViewIntent(Activity activity, String url);
+
 }
