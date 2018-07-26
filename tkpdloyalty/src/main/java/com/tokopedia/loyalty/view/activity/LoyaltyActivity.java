@@ -534,8 +534,18 @@ public class LoyaltyActivity extends BasePresenterActivity
         return intent;
     }
 
-    public static Intent newInstanceCouponNotActive(Context context, String platform, String category,
-                                                    String trainReservationId, String trainReservationCode) {
+    public static Intent newInstanceCouponNotActive(Context context, String platform, String category) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceTrainCouponNotActive(Context context, String platform, String category,
+                                                         String trainReservationId, String trainReservationCode) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
