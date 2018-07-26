@@ -72,10 +72,10 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mTvProductName.setText(cartItem.getName());
         mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItem.getPrice(), true));
-        mTvProductCountAndWeight.setText(cartItem.getWeightFmt());
         mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(cartItem.getQuantity()), cartItem.getWeightFmt()));
+                String.valueOf(cartItem.getQuantity()),
+                getWeightFormatted(cartItem.getWeight(), cartItem.getQuantity())));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItem.getNoteToSeller());
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
@@ -94,6 +94,18 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         } else {
             mllProductPoliciesLayout.setVisibility(View.GONE);
         }
+    }
+
+    private String getWeightFormatted(double weight, int qty) {
+        String weighTotalFormatted;
+        double weightTotal = weight * qty;
+        if (weightTotal >= 1000) {
+            weighTotalFormatted = String.valueOf(weightTotal / 1000.0f) + " kg";
+        } else {
+            weighTotalFormatted = ((int) weightTotal) + " gr";
+        }
+
+        return weighTotalFormatted.replace(".0", "");
     }
 
     private void showShipmentWarning(String message) {

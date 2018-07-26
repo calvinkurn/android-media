@@ -191,7 +191,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
             data.setProductNotes(editable.toString());
             validateNote(data);
-//            multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
         }
     }
 
