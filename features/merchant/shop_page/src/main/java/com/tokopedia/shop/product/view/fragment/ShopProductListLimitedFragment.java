@@ -274,12 +274,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void renderShopProductPromo(ShopProductPromoViewModel shopProductPromoViewModel) {
         shopProductAdapter.setShopProductPromoViewModel(shopProductPromoViewModel);
-        if (!TextUtils.isEmpty(shopProductPromoViewModel.getUrl())){
-            if (shopInfo != null) {
-                shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
-                        shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(),
-                        shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-                        ShopPageTracking.getShopType(shopInfo.getInfo()));
+        if (shopProductPromoViewModel!= null) {
+            if (!TextUtils.isEmpty(shopProductPromoViewModel.getUrl())) {
+                if (shopInfo != null) {
+                    shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
+                            shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopId(),
+                            shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                            ShopPageTracking.getShopType(shopInfo.getInfo()));
+                }
             }
         }
     }
