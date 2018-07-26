@@ -10,11 +10,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
@@ -56,6 +59,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int DEFAULT_VALUE = -1;
 
     private RecyclerView recyclerView;
+    private ImageView userAvatar;
+    private EditText replyEditText;
     private KolPostAdapter adapter;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
@@ -91,6 +96,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_kol_post_detail, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
+        userAvatar = view.findViewById(R.id.user_avatar);
+        replyEditText = view.findViewById(R.id.reply_edit_text);
         return view;
     }
 
@@ -112,6 +119,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     + KolRouter.class.getSimpleName());
         }
 
+        ImageHandler.loadImageCircle2(getContext(), userAvatar, userSession.getProfilePicture());
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
         adapter = new KolPostAdapter(typeFactory);

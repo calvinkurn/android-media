@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
@@ -45,7 +46,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -83,6 +83,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
@@ -504,7 +505,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private void setupViewPager() {
         adapter.addFragment(HomeFragment.newInstance(), getString(R.string.title_categories));
-        adapter.addFragment(new FeedPlusFragment(), getString(R.string.title_index_prod_shop));
+        adapter.addFragment(FeedPlusContainerFragment.newInstance(), getString(R.string.title_index_prod_shop));
         adapter.addFragment(new FragmentFavorite(), getString(R.string.title_index_favorite));
         adapter.addFragment(new FragmentHotListV2(), getString(R.string.title_index_hot_list));
         mViewPager.setAdapter(adapter);
