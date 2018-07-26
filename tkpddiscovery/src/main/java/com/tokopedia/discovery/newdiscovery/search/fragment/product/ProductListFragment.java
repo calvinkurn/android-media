@@ -820,14 +820,6 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        ProductItem productItem = new ProductItem();
-        productItem.setWishlisted(data.isWislished());
-        productItem.setProductID(data.getProduct().getId());
-        presenter.handleWishlistButtonClicked(productItem);
-    }
-
-    @Override
     public SearchParameter getSearchParameter() {
         return searchParameter;
     }
