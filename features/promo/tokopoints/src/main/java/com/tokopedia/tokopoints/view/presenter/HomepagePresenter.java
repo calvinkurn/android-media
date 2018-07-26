@@ -98,7 +98,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             public void onNext(GraphqlResponse graphqlResponse) {
                 //Handling for main data
                 TokoPointDetailEntity data = graphqlResponse.getData(TokoPointDetailEntity.class);
-                getView().onSuccess(data.getTokoPoints().getStatus().getTier(), data.getTokoPoints().getStatus().getPoints());
+                getView().onSuccess(data.getTokoPoints().getStatus().getTier(), data.getTokoPoints().getStatus().getPoints(),data.getTokoPoints().getLobs());
 
                 //handling for lucky egg data
                 TokenDetailOuter tokenDetail = graphqlResponse.getData(TokenDetailOuter.class);

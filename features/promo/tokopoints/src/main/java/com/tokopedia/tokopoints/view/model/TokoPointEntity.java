@@ -16,6 +16,18 @@ public class TokoPointEntity {
     @SerializedName("ticker")
     private TickerBase ticker;
 
+    @Expose
+    @SerializedName("sheetHowToGet")
+    LobDetails lobs;
+
+    public LobDetails getLobs() {
+        return lobs;
+    }
+
+    public void setLobs(LobDetails lobs) {
+        this.lobs = lobs;
+    }
+
     public TickerBase getTicker() {
         return ticker;
     }
@@ -46,6 +58,7 @@ public class TokoPointEntity {
                 "resultStatus=" + resultStatus +
                 ", status=" + status +
                 ", ticker=" + ticker +
+                ", lobs=" + lobs +
                 '}';
     }
 }

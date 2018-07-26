@@ -32,12 +32,12 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
-import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.HomepagePagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
+import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
@@ -61,6 +61,10 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private ViewPager mPagerPromos;
     @Inject
     public HomepagePresenter mPresenter;
+
+    private int mSumToken;
+
+    StartPurchaseBottomSheet mStartPurchaseBottomSheet;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
@@ -148,8 +152,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             openWebView(CommonConstant.WebLink.HISTORY);
         } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getTokoPointDetail();
-        } else if (source.getId() == R.id.container_fab_egg_token) {
-            RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
         }
     }
 
@@ -176,7 +178,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         getView().findViewById(R.id.text_loyalty_label).setOnClickListener(this);
         getView().findViewById(R.id.text_loyalty_value).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
-        getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(this);
     }
 
     @Override
@@ -211,13 +212,32 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     @Override
-    public void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData) {
+    public void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData, LobDetails lobDetails) {
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
         mPresenter.getPromos();
         mTextMembershipValue.setText(String.valueOf(tierData.getNameDesc()));
         mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(pointData.getReward(), false));
         mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(pointData.getLoyalty(), false));
         ImageHandler.loadImageFitCenter(getActivityContext(), mImgEgg, tierData.getEggImageUrl());
+
+        //init bottom sheet
+        mStartPurchaseBottomSheet = new StartPurchaseBottomSheet();
+        mStartPurchaseBottomSheet.setData(lobDetails);
+
+        if (getView() != null) {
+            getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mSumToken <= 0) {
+                        showStartPurchaseBottomSheet(lobDetails.getTitle());
+                    } else {
+                        if (getActivity() != null) {
+                            RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -229,6 +249,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
                 ImageView imgToken = getView().findViewById(R.id.img_token);
                 textCount.setText(String.valueOf(tokenDetail.getSumToken()));
+                this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
                 ImageHandler.loadImageFit2(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
@@ -455,5 +476,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+    }
+
+    public void showStartPurchaseBottomSheet(String title) {
+        mStartPurchaseBottomSheet.show(getChildFragmentManager(), title);
     }
 }

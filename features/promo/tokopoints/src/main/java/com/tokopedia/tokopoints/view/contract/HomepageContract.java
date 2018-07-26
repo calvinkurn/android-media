@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
@@ -22,7 +23,7 @@ public interface HomepageContract {
 
         void onError(String error);
 
-        void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData);
+        void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData, LobDetails lobDetails);
 
         void onErrorPromos(String error);
 
