@@ -242,4 +242,10 @@
         <item name="android:scaleY">1</item>
     </style>
 
+    <style name="CheckBoxNotification" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/grey_400</item>
+        <item name="colorControlActivated">@color/tkpd_main_green</item>
+    </style>
+
+
 </resources>
