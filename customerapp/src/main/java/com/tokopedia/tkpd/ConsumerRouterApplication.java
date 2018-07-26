@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -2342,29 +2343,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public FingerprintModel getFingerprintModel() {
-        return FingerprintModelGenerator.generateFingerprintModel(this);
-    }
-
-    @Override
-    public void doRelogin(String newAccessToken) {
-        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
-        try {
-            sessionRefresh.gcmUpdate();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean isLoginInactivePhoneLinkEnabled() {
-        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
-                && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
-    }
-
-    @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context) {
-        return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    public Intent getChangePasswordIntent(Context context) {
+        return ChangePasswordActivity.Companion.createIntent(context);
     }
 
     @Override
@@ -2376,4 +2356,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void setStringRemoteConfigLocal(String key, String value) {
         remoteConfig.setString(key, value);
     }
+
 }

@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -1454,5 +1455,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isLoginInactivePhoneLinkEnabled() {
         return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
                 && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
+        return ChangePasswordActivity.Companion.createIntent(context);
     }
 }
