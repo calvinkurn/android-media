@@ -3,6 +3,9 @@ package com.tokopedia.navigation.presentation.fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.applink.ApplinkConst;
@@ -11,13 +14,13 @@ import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
-import com.tokopedia.navigation.presentation.base.ParentFragment;
+import com.tokopedia.navigation.presentation.base.BaseParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
-import com.tokopedia.searchbar.NotificationToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,7 @@ import javax.inject.Inject;
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends ParentFragment implements InboxView {
+public class InboxFragment extends BaseParentFragment implements InboxView {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -39,7 +42,6 @@ public class InboxFragment extends ParentFragment implements InboxView {
         return new InboxFragment();
     }
 
-    private NotificationToolbar toolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Inject InboxPresenter presenter;
@@ -55,7 +57,7 @@ public class InboxFragment extends ParentFragment implements InboxView {
         this.intiInjector();
         presenter.setView(this);
 
-        adapter = new InboxAdapter();
+        adapter = new InboxAdapter(getActivity());
 
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
@@ -70,6 +72,20 @@ public class InboxFragment extends ParentFragment implements InboxView {
         adapter.setOnItemClickListener((view1, position) -> {
             getCallingIntent(position);
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_notification, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_notification) {
+            startActivity(NotificationActivity.start(getActivity()));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private List<Inbox> getData() {
@@ -106,14 +122,6 @@ public class InboxFragment extends ParentFragment implements InboxView {
     }
 
     @Override
-    public void setupToolbar(View view) {
-        try {
-            this.toolbar = view.findViewById(R.id.toolbar);
-            ((MainParentActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
-        } catch (Exception ignored) {}
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         presenter.onResume();
@@ -129,11 +137,6 @@ public class InboxFragment extends ParentFragment implements InboxView {
     public void loadData() {
         if (toolbar != null)
             toolbar.setTitle(getString(R.string.inbox));
-    }
-
-    @Override
-    protected String getScreenName() {
-        return "";
     }
 
     @Override
@@ -155,5 +158,10 @@ public class InboxFragment extends ParentFragment implements InboxView {
     @Override
     public void onRenderNotifINbox(NotificationEntity.Notification entity) {
         adapter.updateValue(entity);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getString(R.string.inbox);
     }
 }

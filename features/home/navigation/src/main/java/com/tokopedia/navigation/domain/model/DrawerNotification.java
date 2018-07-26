@@ -1,22 +1,22 @@
-package com.tokopedia.notification.domain;
+package com.tokopedia.navigation.domain.model;
 
 import java.util.List;
 
 /**
- * Created by meta on 21/06/18.
+ * Created by meta on 26/07/18.
  */
-public class Notification {
+public class DrawerNotification {
 
     private String id;
     private String title;
-    private List<ChildNotification> childs;
+    private List<ChildDrawerNotification> childs;
 
-    public static class ChildNotification {
+    public static class ChildDrawerNotification {
 
         private String title;
         private Integer badge;
 
-        public ChildNotification(String title) {
+        public ChildDrawerNotification(String title) {
             this.title = title;
         }
 
@@ -53,11 +53,11 @@ public class Notification {
         this.title = title;
     }
 
-    public List<ChildNotification> getChilds() {
+    public List<ChildDrawerNotification> getChilds() {
         return childs;
     }
 
-    public void setChilds(List<ChildNotification> childs) {
+    public void setChilds(List<ChildDrawerNotification> childs) {
         this.childs = childs;
     }
 }

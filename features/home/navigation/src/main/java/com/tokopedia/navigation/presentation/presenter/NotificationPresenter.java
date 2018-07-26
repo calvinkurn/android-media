@@ -1,6 +1,6 @@
-package com.tokopedia.notification.presentation.presenter;
+package com.tokopedia.navigation.presentation.presenter;
 
-import com.tokopedia.notification.presentation.view.NotificationView;
+import com.tokopedia.navigation.presentation.view.NotificationView;
 
 /**
  * Created by meta on 26/07/18.
@@ -8,8 +8,6 @@ import com.tokopedia.notification.presentation.view.NotificationView;
 public class NotificationPresenter {
 
     private NotificationView notificationView;
-
-
 
     public void setView(NotificationView notificationView) {
         this.notificationView = notificationView;

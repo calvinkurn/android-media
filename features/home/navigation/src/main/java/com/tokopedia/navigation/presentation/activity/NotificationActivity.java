@@ -1,4 +1,4 @@
-package com.tokopedia.notification.presentation.activity;
+package com.tokopedia.navigation.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.notification.presentation.fragment.NotificationFragment;
+import com.tokopedia.navigation.presentation.fragment.NotificationFragment;
 
 /**
  * Created by meta on 20/06/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.notification.presentation.adapter;
+package com.tokopedia.navigation.presentation.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,13 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.notification.R;
-import com.tokopedia.notification.domain.Notification;
+import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.domain.model.DrawerNotification;
 
 /**
  * Created by meta on 03/07/18.
  */
-public class NotificationAdapter extends BaseListAdapter<Notification, BaseViewHolder> {
+public class NotificationAdapter extends BaseListAdapter<DrawerNotification, BaseViewHolder> {
 
     private static final int TYPE_ITEM = 2;
     private static final int TYPE_SINGLE = 3;
@@ -27,7 +27,7 @@ public class NotificationAdapter extends BaseListAdapter<Notification, BaseViewH
     @Override
     protected int getItemResourceLayout(int viewType) {
         if(viewType == TYPE_SINGLE) {
-            return R.layout.item_single;
+            return R.layout.item_common_title;
         } else if(viewType == TYPE_ITEM) {
             return R.layout.item_notification;
         }
@@ -51,28 +51,30 @@ public class NotificationAdapter extends BaseListAdapter<Notification, BaseViewH
         return new NotificationHolder(getView(parent, viewType));
     }
 
-    public class NotificationSingleHolder extends BaseViewHolder<Notification> {
+    public class NotificationSingleHolder extends BaseViewHolder<DrawerNotification> {
 
         private TextView title;
         private TextView badge;
         private ImageView arrow;
+        private View border;
 
         NotificationSingleHolder(View itemView, BaseListAdapter.OnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
             title = itemView.findViewById(R.id.title);
-            badge = itemView.findViewById(R.id.text_badge);
-            arrow = itemView.findViewById(R.id.image_arrow);
+            badge = itemView.findViewById(R.id.badge);
+            arrow = itemView.findViewById(R.id.arrow);
+            border = itemView.findViewById(R.id.border);
         }
 
         @Override
-        public void bind(Notification item) {
-            Notification.ChildNotification child = item.getChilds().get(0);
+        public void bind(DrawerNotification item) {
+            DrawerNotification.ChildDrawerNotification child = item.getChilds().get(0);
             if (child == null)
                 return;
 
             title.setText(child.getTitle());
 
-            if (child.getBadge() > 0) {
+            if (child.getBadge() != null && child.getBadge() > 0) {
                 badge.setVisibility(View.VISIBLE);
                 arrow.setVisibility(View.VISIBLE);
                 badge.setText(String.format("%s", child.getBadge()));
@@ -80,10 +82,12 @@ public class NotificationAdapter extends BaseListAdapter<Notification, BaseViewH
                 badge.setVisibility(View.GONE);
                 arrow.setVisibility(View.GONE);
             }
+
+            border.setVisibility(View.GONE);
         }
     }
 
-    public class NotificationHolder extends BaseViewHolder<Notification> {
+    public class NotificationHolder extends BaseViewHolder<DrawerNotification> {
 
         private RecyclerView recyclerView;
         private TextView textView;
@@ -95,7 +99,7 @@ public class NotificationAdapter extends BaseListAdapter<Notification, BaseViewH
         }
 
         @Override
-        public void bind(Notification item) {
+        public void bind(DrawerNotification item) {
             textView.setText(item.getTitle());
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));

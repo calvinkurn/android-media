@@ -15,7 +15,7 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 /**
  * Created by meta on 19/06/18.
  */
-public abstract class ParentFragment extends TkpdBaseV4Fragment {
+public abstract class BaseParentFragment extends TkpdBaseV4Fragment {
 
     public abstract int resLayout();
     public abstract void initView(View view);
