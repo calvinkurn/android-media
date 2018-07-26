@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -133,6 +134,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return userSession.isLoggedIn();
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setUserSession(UserSession userSession){
+        this.userSession = userSession;
+    }
+
     @Override
     public BaseAppComponent getComponent() {
         return getApplicationComponent();
@@ -160,7 +166,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
 
-    private List<Fragment> createFragments() {
+    List<Fragment> createFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());

@@ -55,6 +55,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 
 import okhttp3.mockwebserver.MockResponse;
 
@@ -584,6 +585,48 @@ public class Utils {
                 description.appendText(resourceName);
                 description.appendText("]");
             }
+        }
+    }
+
+    /**
+     * get private filed in this specific object
+     *
+     * @param targetClass
+     * @param instance    the filed owner
+     * @param fieldName
+     * @param <T>
+     * @return field if success, null otherwise.
+     */
+    public static <T> T getField(Class targetClass, Object instance, String fieldName) {
+        try {
+            Field field = targetClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (T) field.get(instance);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * change the field value
+     *
+     * @param targetClass
+     * @param instance    the filed owner
+     * @param fieldName
+     * @param value
+     */
+    public static void setField(Class targetClass, Object instance, String fieldName, Object value) {
+        try {
+            Field field = targetClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(instance, value);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
