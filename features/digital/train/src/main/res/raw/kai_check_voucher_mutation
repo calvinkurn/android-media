@@ -1,14 +1,12 @@
 mutation kaiCheckVoucher($reservationId: String!, $reservationCode: String!, $galaCode: String!) {
-  kaiCheckGala(input : {reservationId: $reservationId, reservationCode: $reservationCode, galaCode: $galaCode} ) {
-      promo {
-            galaCode
-            discountAmount
-            cashbackAmount
-            successMessage
-            failureMessage
-            isCoupon
-            invoiceDescription
-            galaCodeStatus
-      }
-  }
+    kaiCheckGala(input : {reservationId: $reservationId, reservationCode: $reservationCode, galaCode: $galaCode} ) {
+        galaCode
+        discountAmount
+        cashbackAmount
+        successMessage
+        failureMessage
+        isCoupon
+        invoiceDescription
+        galaCodeStatus
+    }
 }

@@ -70,9 +70,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -121,6 +118,9 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
@@ -188,9 +188,9 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
+import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -270,8 +270,8 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
-import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
+import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -2305,7 +2305,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
         return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
                 trainReservationId, trainReservationCode, voucherCode
-        )).map(trainCheckVoucherModel -> new VoucherViewModel());
+        )).map(trainCheckVoucherModel -> new VoucherViewModel(
+                trainCheckVoucherModel.isSuccess(),
+                trainCheckVoucherModel.getMessage(),
+                null,
+                trainCheckVoucherModel.getVoucherCode(),
+                ((long) trainCheckVoucherModel.getDiscountAmountPlain()),
+                ((long) trainCheckVoucherModel.getCashbackAmountPlain())
+        ));
     }
 
     @Override

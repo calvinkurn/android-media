@@ -1,13 +1,11 @@
 package com.tokopedia.train.reviewdetail.domain;
 
 import com.tokopedia.train.common.domain.TrainRepository;
-import com.tokopedia.train.reviewdetail.data.TrainPromoEntity;
 import com.tokopedia.train.reviewdetail.presentation.model.TrainCheckVoucherModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by Rizky on 23/07/18.
@@ -27,10 +25,10 @@ public class TrainCheckVoucherUseCase extends UseCase<TrainCheckVoucherModel> {
     @Override
     public Observable<TrainCheckVoucherModel> createObservable(RequestParams requestParams) {
         return trainRepository.checkVoucher(requestParams.getParameters())
-                .map(trainPromoEntity -> new TrainCheckVoucherModel(trainPromoEntity.getPromoCode(),
-                        trainPromoEntity.getFailureMessage(), trainPromoEntity.getDiscountAmount(),
-                        trainPromoEntity.getCashbackAmount(),
-                        trainPromoEntity.getPromoCodeStatus().equalsIgnoreCase("success")));
+                .map(trainCheckVoucherEntity -> new TrainCheckVoucherModel(trainCheckVoucherEntity.getPromoCode(),
+                        trainCheckVoucherEntity.getFailureMessage(), trainCheckVoucherEntity.getDiscountAmount(),
+                        trainCheckVoucherEntity.getCashbackAmount(),
+                        trainCheckVoucherEntity.getPromoCodeStatus().equalsIgnoreCase("success")));
     }
 
     public RequestParams createRequestParams(String reservationId, String reservationCode, String galaCode) {
