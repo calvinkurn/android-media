@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.InfoCardView;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 
@@ -17,9 +17,9 @@ public class InfoCardViewHolder extends AbstractViewHolder<InfoCardViewModel> {
     public static int LAYOUT = R.layout.item_announcement_card;
 
     private InfoCardView infoCardView;
-    private AccountTypeFactory.Listener listener;
+    private AccountItemListener listener;
 
-    public InfoCardViewHolder(View itemView, AccountTypeFactory.Listener listener) {
+    public InfoCardViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
         this.infoCardView = itemView.findViewById(R.id.view_info_card);
         this.listener = listener;

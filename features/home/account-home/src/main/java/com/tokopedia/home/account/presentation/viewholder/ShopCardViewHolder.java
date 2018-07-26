@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.ShopCardView;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 
@@ -16,10 +17,12 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
     public static final int LAYOUT = R.layout.item_shop_card;
 
     private ShopCardView shopCardView;
+    private AccountItemListener listener;
 
-    public ShopCardViewHolder(View view) {
+    public ShopCardViewHolder(View view, AccountItemListener listener) {
         super(view);
         shopCardView = itemView.findViewById(R.id.view_shop_card);
+        this.listener = listener;
     }
 
     @Override
@@ -31,5 +34,8 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
         }
         shopCardView.setShopReputation(element.getMedalType(), element.getLevel());
         shopCardView.setBalance(element.getBalance());
+
+        shopCardView.setOnClickShopAvatar(v -> listener.onShopAvatarClicked(element));
+        shopCardView.setOnClickShopName(v -> listener.onShopNameClicked(element));
     }
 }

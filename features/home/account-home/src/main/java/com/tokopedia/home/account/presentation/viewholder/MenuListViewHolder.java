@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 
 /**
@@ -23,9 +23,9 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     private ImageView icon;
     private TextView menu;
     private TextView menuDescription;
-    private AccountTypeFactory.Listener listener;
+    private AccountItemListener listener;
 
-    public MenuListViewHolder(View itemView, AccountTypeFactory.Listener listener) {
+    public MenuListViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
         layout = itemView.findViewById(R.id.layout_common_subtitle);
         icon = itemView.findViewById(R.id.icon);

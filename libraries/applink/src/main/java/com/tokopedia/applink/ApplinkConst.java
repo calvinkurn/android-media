@@ -119,7 +119,14 @@ public interface ApplinkConst {
     String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String TOPADS = "tokopedia://topads";
+    String FAVORITE_SHOPS = "tokopedia://favorite-shops";
+    String CONTACT_US = "tokopedia://contact-us";
 
+    String ORDER_LIST = "tokopedia://order";
+    String PAYMENT_UNPAID = "tokopedia://payment/unpaid";
+    String TOKOPOINTS = "tokopedia://tokopoints";
+
+    String DEVELOPER_OPTIONS = "tokopedia://dev-opts";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
@@ -138,6 +145,4 @@ public interface ApplinkConst {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
     }
-
-    String CONTACT_US = "tokopedia://contact-us";
 }

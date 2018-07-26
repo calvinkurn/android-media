@@ -9,12 +9,21 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
  * @author okasurya on 7/26/18.
  */
 public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory> {
+    private String shopId;
     private String shopName;
     private String balance;
     private String shopImageUrl;
     private Boolean isGoldMerchant;
     private int medalType;
     private int level;
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
 
     public String getShopName() {
         return shopName;

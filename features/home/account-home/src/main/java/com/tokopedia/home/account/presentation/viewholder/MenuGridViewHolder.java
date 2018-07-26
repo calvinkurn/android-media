@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.MenuGridAdapter;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.MenuGridSpacingDecoration;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 
@@ -26,10 +26,10 @@ public class MenuGridViewHolder extends AbstractViewHolder<MenuGridViewModel> {
     private TextView textLink;
     private RecyclerView recyclerCategory;
     private MenuGridAdapter adapter;
-    private AccountTypeFactory.Listener listener;
+    private AccountItemListener listener;
     private RecyclerView.RecycledViewPool viewPool;
 
-    public MenuGridViewHolder(View itemView, AccountTypeFactory.Listener listener) {
+    public MenuGridViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
         this.listener = listener;
         textTitle = itemView.findViewById(R.id.text_title);

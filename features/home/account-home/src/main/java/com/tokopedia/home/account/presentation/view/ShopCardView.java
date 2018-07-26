@@ -89,4 +89,12 @@ public class ShopCardView extends BaseCustomView {
     public void setShopReputation(int medalType, int level) {
         shopReputation.setValue(medalType, level, "");
     }
+
+    public void setOnClickShopAvatar(View.OnClickListener listener) {
+        imageShop.setOnClickListener(listener);
+    }
+
+    public void setOnClickShopName(View.OnClickListener listener) {
+        textShopName.setOnClickListener(listener);
+    }
 }

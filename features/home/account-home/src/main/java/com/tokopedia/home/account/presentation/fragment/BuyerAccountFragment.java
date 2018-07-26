@@ -23,9 +23,12 @@ import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
@@ -38,7 +41,7 @@ import javax.inject.Inject;
 /**
  * @author okasurya on 7/16/18.
  */
-public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAccount.View, AccountTypeFactory.Listener {
+public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAccount.View {
     public static final String TAG = BuyerAccountFragment.class.getSimpleName();
     private static final String BUYER_DATA = "buyer_data";
 
@@ -95,31 +98,6 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
             adapter.clearAllElements();
             adapter.setElement(visitables);
         }
-    }
-
-    @Override
-    public void onTokopediaPayLinkClicked() {
-        openApplink(ApplinkConst.WALLET_HOME);
-    }
-
-    @Override
-    public void onMenuGridItemClicked(MenuGridItemViewModel item) {
-        openApplink(item.getApplink());
-    }
-
-    @Override
-    public void onMenuGridLinkClicked(MenuGridViewModel item) {
-        openApplink(item.getApplinkUrl());
-    }
-
-    @Override
-    public void onInfoCardClicked(InfoCardViewModel item) {
-        openApplink(item.getApplink());
-    }
-
-    @Override
-    public void onMenuListClicked(MenuListViewModel item) {
-        openApplink(item.getApplink());
     }
 
     private void initInjector() {

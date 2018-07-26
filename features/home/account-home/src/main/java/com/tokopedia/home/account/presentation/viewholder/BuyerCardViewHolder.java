@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.BuyerCardView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 
@@ -18,9 +18,9 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
     public static final int LAYOUT = R.layout.item_buyer_card;
 
     private BuyerCardView buyerCardView;
-    private AccountTypeFactory.Listener listener;
+    private AccountItemListener listener;
 
-    public BuyerCardViewHolder(View itemView, AccountTypeFactory.Listener listener) {
+    public BuyerCardViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
         buyerCardView = itemView.findViewById(R.id.view_buyer_card);
         this.listener = listener;
@@ -33,5 +33,11 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
         buyerCardView.setProfileCompletion(element.getProgress());
         buyerCardView.setTokopoint(element.getTokopoint());
         buyerCardView.setVoucher(element.getVoucher());
+
+        buyerCardView.setOnClickAvatar(v -> listener.onBuyerAvatarClicked(element));
+        buyerCardView.setOnClickName(v -> listener.onBuyerNameClicked(element));
+        buyerCardView.setOnClickProfileCompletion(v -> listener.onProfileCompletionClicked(element));
+        buyerCardView.setOnClickTokoPoint(v -> listener.onBuyerTokopointClicked(element));
+        buyerCardView.setOnClickVoucher(v -> listener.onBuyerVoucherClicked(element));
     }
 }

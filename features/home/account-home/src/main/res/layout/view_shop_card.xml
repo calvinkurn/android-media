@@ -31,6 +31,7 @@
 
         <TextView
             android:id="@+id/text_shop_name"
+            style="@style/TextView.TitleBig.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"

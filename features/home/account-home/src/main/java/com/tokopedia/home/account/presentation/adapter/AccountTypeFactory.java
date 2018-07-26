@@ -5,10 +5,12 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
+import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
@@ -25,9 +27,9 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
  * @author okasurya on 7/17/18.
  */
 public class AccountTypeFactory extends BaseAdapterTypeFactory {
-    private Listener listener;
+    private AccountItemListener listener;
 
-    public AccountTypeFactory(@NonNull Listener listener) {
+    public AccountTypeFactory(@NonNull AccountItemListener listener) {
         this.listener = listener;
     }
 
@@ -46,7 +48,9 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == InfoCardViewHolder.LAYOUT) {
             return new InfoCardViewHolder(parent, listener);
         } else if (type == ShopCardViewHolder.LAYOUT) {
-            return new ShopCardViewHolder(parent);
+            return new ShopCardViewHolder(parent, listener);
+        } else if (type == AddProductViewHolder.LAYOUT) {
+            return new AddProductViewHolder(parent, listener);
         }
         return super.createViewHolder(parent, type);
     }
@@ -79,15 +83,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return ShopCardViewHolder.LAYOUT;
     }
 
-    public interface Listener {
-        void onTokopediaPayLinkClicked();
-
-        void onMenuGridItemClicked(MenuGridItemViewModel item);
-
-        void onMenuGridLinkClicked(MenuGridViewModel item);
-
-        void onInfoCardClicked(InfoCardViewModel item);
-
-        void onMenuListClicked(MenuListViewModel item);
+    public int type(AddProductViewModel viewModel) {
+        return AddProductViewHolder.LAYOUT;
     }
 }
