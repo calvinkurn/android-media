@@ -178,6 +178,7 @@ public class ProductViewModelHelper {
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());
         productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
+        productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShopID());
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getShopCity());
@@ -188,6 +189,8 @@ public class ProductViewModelHelper {
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
         productItem.setPosition(position);
+        productItem.setTopLabel(productModel.getTopLabel());
+        productItem.setBottomLabel(productModel.getBottomLabel());
         return productItem;
     }
 
@@ -204,6 +207,7 @@ public class ProductViewModelHelper {
         BadgeItem badgeItem = new BadgeItem();
         badgeItem.setImageUrl(badgeModel.getImageUrl());
         badgeItem.setTitle(badgeModel.getTitle());
+        badgeItem.setShown(badgeModel.isShown());
         return badgeItem;
     }
 

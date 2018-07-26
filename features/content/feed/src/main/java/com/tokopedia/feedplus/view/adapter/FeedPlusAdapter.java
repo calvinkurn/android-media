@@ -63,6 +63,7 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.loadingMoreModel = new LoadingMoreModel();
         this.retryModel = new RetryModel();
         this.addFeedModel = new AddFeedModel();
+        this.emptyFeedBeforeLoginModel = new EmptyFeedBeforeLoginModel();
     }
 
     @Override
@@ -87,44 +88,59 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.size();
     }
 
+    private void add(Visitable visitable) {
+        int position = this.list.size();
+        if (this.list.add(visitable)) {
+            notifyItemInserted(position);
+        }
+    }
+
+    private void remove(Visitable visitable) {
+        int position = this.list.indexOf(visitable);
+        if (this.list.remove(visitable)) {
+            notifyItemRemoved(position);
+        }
+    }
+
     public void setList(List<Visitable> list) {
         this.list = list;
+        notifyDataSetChanged();
     }
 
     public void addList(List<Visitable> list) {
-        this.list.addAll(list);
+        int positionStart = getItemCount();
+        if (this.list.addAll(list)) {
+            notifyItemRangeInserted(positionStart, list.size());
+        }
     }
 
     public void clearData() {
         this.list.clear();
+        notifyDataSetChanged();
     }
 
     public void showEmpty() {
-        this.list.add(emptyModel);
+        add(emptyModel);
     }
 
     public void removeEmpty() {
-        this.list.remove(emptyModel);
+        remove(emptyModel);
     }
 
     public void showRetry(){
-        int positionStart = getItemCount();
-        this.list.add(retryModel);
-        notifyItemRangeInserted(positionStart, 1);
+        add(retryModel);
     }
 
     public void removeRetry(){
-        int index = this.list.indexOf(retryModel);
-        this.list.remove(retryModel);
-        notifyItemRemoved(index);
+        remove(retryModel);
     }
 
     public void showLoading() {
-        this.list.add(loadingMoreModel);
+        add(loadingMoreModel);
     }
 
     public void removeLoading() {
-        this.list.remove(loadingMoreModel);
+        remove(loadingMoreModel);
     }
 
     public boolean isLoading() {
@@ -136,15 +152,19 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showAddFeed() {
-        this.list.add(addFeedModel);
+        add(addFeedModel);
     }
 
     public void removeAddFeed(){
-        this.list.remove(addFeedModel);
+        remove(addFeedModel);
     }
 
     public void addItem(Visitable item) {
-        this.list.add(item);
+        add(item);
+    }
+
+    public void showUserNotLogin() {
+        add(emptyFeedBeforeLoginModel);
     }
 
     public int getItemTreshold() {
@@ -193,10 +213,5 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public interface OnScrollListener extends OnLoadListener {
         void onScroll(int lastVisiblePosition);
 
-    }
-
-    public void showUserNotLogin() {
-        emptyFeedBeforeLoginModel = new EmptyFeedBeforeLoginModel();
-        this.list.add(emptyFeedBeforeLoginModel);
     }
 }

@@ -36,6 +36,8 @@ public class BaseDiscoveryActivity
     private boolean requestOfficialStoreBanner;
     private int activeTabPosition;
 
+    private Boolean isPause = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +100,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseHotlist(String url, String query) {
-        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query));
+        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
         finish();
     }
 
@@ -106,7 +108,7 @@ public class BaseDiscoveryActivity
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override
@@ -122,7 +124,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseIntermediary(String departmentId) {
-        IntermediaryActivity.moveTo(this, departmentId);
+        IntermediaryActivity.moveTo(this, departmentId, isPausing());
         overridePendingTransition(0, 0);
         finish();
     }
@@ -130,7 +132,7 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseCatalog(String url) {
         URLParser urlParser = new URLParser(url);
-        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias()));
+        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias(), isPausing()));
         finish();
     }
 
@@ -171,6 +173,11 @@ public class BaseDiscoveryActivity
     }
 
     @Override
+    public void showImageNotSupportedError() {
+
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_FORCE_SEARCH, isForceSearch());
@@ -188,4 +195,19 @@ public class BaseDiscoveryActivity
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isPause = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isPause = false;
+    }
+
+    public Boolean isPausing() {
+        return isPause;
+    }
 }

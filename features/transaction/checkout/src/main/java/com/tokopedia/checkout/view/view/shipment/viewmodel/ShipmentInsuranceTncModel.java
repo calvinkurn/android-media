@@ -2,6 +2,10 @@ package com.tokopedia.checkout.view.view.shipment.viewmodel;
 
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 
+/**
+ * @author Irfan Khoirul on 09/05/18.
+ */
+
 public class ShipmentInsuranceTncModel implements ShipmentData {
 
     private boolean visible;

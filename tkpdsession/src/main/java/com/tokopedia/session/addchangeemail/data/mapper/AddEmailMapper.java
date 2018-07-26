@@ -38,11 +38,7 @@ public class AddEmailMapper implements Func1<Response<TkpdResponse>, AddEmailVie
             }
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);
-            if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
-            } else {
-                throw new RuntimeException(String.valueOf(response.code()));
-            }
+            throw new ErrorMessageException(messageError);
         }
     }
 

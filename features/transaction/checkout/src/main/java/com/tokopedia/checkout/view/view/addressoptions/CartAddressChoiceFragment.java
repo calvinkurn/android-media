@@ -62,6 +62,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     private Token token;
     private RecipientAddressModel currentAddress;
+    private boolean isMenuVisible;
 
     @Inject
     CartAddressChoicePresenter mCartAddressChoicePresenter;
@@ -90,16 +91,19 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_address_choice, menu);
+        if (isMenuVisible) {
+            menu.clear();
+            inflater.inflate(R.menu.menu_address_choice, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickAddNewAddressFromChangeAddress();
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
+            checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickPlusIconFromTujuanPengiriman();
+            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
@@ -192,6 +196,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                         currentAddress, false);
             }
         });
+
+        isMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -202,6 +209,10 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels, boolean isNewlyCreatedAddress) {
+        if (!isMenuVisible && recipientAddressModels.size() > 0) {
+            isMenuVisible = true;
+            getActivity().invalidateOptionsMenu();
+        }
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         for (RecipientAddressModel recipientAddressModel : recipientAddressModels) {
@@ -223,6 +234,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void renderEmptyRecipientData() {
+        isMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -232,7 +245,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 getString(R.string.checkout_module_subtitle_error_empty_address),
                 getString(R.string.checkout_module_label_button_retry_error_empty_address),
                 R.drawable.ic_empty_state,
-                () -> startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
+                () -> startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(getActivity(), token),
                         ManageAddressConstant.REQUEST_CODE_PARAM_CREATE));
     }
 
@@ -276,6 +289,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void showNoConnection(@NonNull String message) {
+        isMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -303,11 +318,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         getFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .commit();
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChooseOtherAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickPilihAlamatLainnyaFromGantiAlamat();
     }
 
     private void onSendToMultipleAddress() {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToMultipleAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat();
         mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
@@ -324,20 +339,25 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         } else {
             getActivity().finish();
         }
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToThisAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickKirimKeAlamatIniFromGantiAlamat();
     }
 
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
+        sendAnalyticsOnAddressSelectionClicked();
+    }
+
+    private void sendAnalyticsOnAddressSelectionClicked() {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromTujuanPengiriman();
     }
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickEditFromChooseOtherAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
+        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
@@ -356,7 +376,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                         newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
                         newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
                         newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
-                        newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
+                        newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
                         mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, true);
                     } else {
                         mCartAddressChoicePresenter.getAddressShortedList(getActivity(), currentAddress, false);

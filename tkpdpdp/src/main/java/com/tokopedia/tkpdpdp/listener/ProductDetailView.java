@@ -26,7 +26,10 @@ import java.util.List;
 public interface ProductDetailView extends ViewListener {
 
     String SOURCE_BUTTON_BUY_PDP = "BUTTON_BUY_PDP";
+    String SOURCE_BUTTON_CART_PDP = "BUTTON_CART_PDP";
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
+    String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
+    String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
 
     /**
      * Saat salah satu kategori product di klik.
@@ -133,7 +136,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onWholesaleClicked(@NonNull Bundle bundle);
 
-    void onVariantClicked(@NonNull Bundle bundle);
+    void openVariantPage(int source);
 
     void onInstallmentClicked(@NonNull Bundle bundle);
 
@@ -318,7 +321,15 @@ public interface ProductDetailView extends ViewListener {
 
     void renderAddToCartSuccess(AddToCartResult addToCartResult);
 
+    void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult);
+
+    void openLoginPage();
+
+    int generateStateVariant(String source);
+
     void updateButtonBuyListener();
 
     void trackingEnhanceProductDetail();
+
+    void refreshData();
 }

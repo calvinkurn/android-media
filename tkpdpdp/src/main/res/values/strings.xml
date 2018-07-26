@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">tkpdpdp</string>
     <string name="title_send_message">Kirim Pesan</string>
-    <string name="title_sold">Terjual</string>
+    <string name="title_sold">Terkirim</string>
     <string name="title_seen">Dilihat</string>
     <string name="title_other_shop_product">Produk Lainnya dari Toko Ini</string>
     <string name="dapatkan">Dapatkan</string>
@@ -43,4 +43,21 @@
     <string name="product_variant_onboarding">Produk ini tersedia dalam beberapa varian (seperti warna dan ukuran)</string>
 
     <string name="product_updated_on_message_container">Produk telah diperbaharui pada %1$s</string>
+    <string name="product_price">Harga Barang</string>
+    <string name="title_buy_now">Beli Sekarang</string>
+    <string name="title_add_to_cart">Tambah ke Keranjang</string>
+    <string name="catatan_untuk_penjual_opsional">Catatan untuk Penjual (Opsional)</string>
+    <string name="title_show_case_pdp">Tambah ke Keranjang</string>
+    <string name="desc_show_case_pdp">Tambahkan produk ini ke keranjang dan lanjutkan pencarian produk lainnya</string>
+    <string name="title_total_price">Total Harga</string>
+    <string name="event_action_click_beli">click - beli</string>
+    <string name="event_action_click_keranjang">click - tambah ke keranjang</string>
+    <string name="event_action_click_beli_in_variants_page">click - beli on variants page</string>
+    <string name="event_action_click_keranjang_in_variants_page">click - tambah ke keranjang on variants page</string>
+    <string name="format_notes_variant">Variant : %1$s</string>
+    <string name="exp_dialog_title">Waktu sudah berakhir</string>
+    <string name="exp_dialog_message">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
+    <string name="exp_dialog_ok">Balik ke Beranda</string>
+    <string name="exp_dialog_cancel">Tutup</string>
+    <string name="flash_sale_title">Flash Sale</string>
 </resources>

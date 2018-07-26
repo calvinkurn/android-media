@@ -1,12 +1,15 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -16,6 +19,8 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
+
+import java.io.FileInputStream;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -167,15 +172,20 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-        if (data.getImgUri() != null) {
+        if(data.getPathSticker() == null) {
+            if (data.getImgUri() != null) {
+                ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
+                        TkpdState.PackageName.TYPE_IMAGE,
+                        data.getImgUri(), null);
+            } else {
+                ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
+                        TkpdState.PackageName.TYPE_TEXT, null, null);
+            }
+        } else {
             ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
                     TkpdState.PackageName.TYPE_IMAGE,
-                    data.getImgUri(), null);
-        } else {
-            ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_TEXT, null, null);
+                    data.getPathSticker(), null);
         }
-
     }
 
     @Override
@@ -228,6 +238,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             TrackingUtils.sendMoEngageReferralShareEvent(channel);
         }else if (type.equals(ShareData.APP_SHARE_TYPE)) {
             UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL, channel);
+        }else if (type.equals(ShareData.HOTLIST_TYPE)) {
+            HotlistPageTracking.eventShareHotlist(channel);
         }else{
             UnifyTracking.eventShare(channel);
         }

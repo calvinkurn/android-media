@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="CountDownView">
+        <attr name="countDownTxtColor" format="color" />
+        <attr name="countDownSparatorColor" format="color" />
+        <attr name="coundDownBackgroud" format="reference" />
+    </declare-styleable>
     <declare-styleable name="LabelView">
         <attr name="lv_image" format="reference" />
         <attr name="lv_image_width" format="dimension" />
+        <attr name="lv_image_margin_right" format="dimension"/>
         <attr name="lv_title" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
         <attr name="lv_title_color" format="color" />
@@ -223,6 +229,13 @@
 
     <declare-styleable name="DeletableItemView">
         <attr name="layout" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="NumberPickerWithCounterView">
+        <attr name="npc_min_value" format="integer" />
+        <attr name="npc_max_value" format="integer" />
+        <attr name="npc_value" format="integer" />
+        <attr name="npc_enabled" format="boolean" />
     </declare-styleable>
 
 </resources>

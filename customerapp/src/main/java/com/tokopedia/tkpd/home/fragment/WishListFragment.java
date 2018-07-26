@@ -52,8 +52,8 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
-import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 
 import java.util.List;
 
@@ -136,6 +136,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         intent.putExtra(AddFavoriteShopService.EXTRAS_SHOP_ID, shop.getId());
         intent.putExtra(AddFavoriteShopService.EXTRAS_AD_KEY, data.getAdRefKey());
         getActivity().startService(intent);
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
     }
 
     @Override
@@ -257,7 +262,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
-        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCartClickBeli(
                 enhancedECommerceCartMapData.getCartMap(), dataDetail.getName());
     }
 

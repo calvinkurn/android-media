@@ -12,12 +12,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +87,8 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                         kolItem.setFollowed(false);
                         notifyItemChanged(getAdapterPosition());
                     } else {
+                        String userId = kolViewListener.getUserSession().getUserId();
+
                         UnifyTracking.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
 
                         List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
@@ -101,7 +103,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                 recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
                         TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
                                 .getClickTracking(list,
-                                        Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))
+                                        Integer.parseInt(userId)
                                 ));
 
                         kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),

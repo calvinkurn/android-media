@@ -33,6 +33,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
@@ -346,7 +347,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVariantClicked(@NonNull Bundle bundle) {
+    public void openVariantPage(int source) {
 
     }
 
@@ -612,8 +613,23 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void renderAddToCartSuccess(String message) {
+    public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
 
+    }
+
+    @Override
+    public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
+
+    }
+
+    @Override
+    public void openLoginPage() {
+
+    }
+
+    @Override
+    public int generateStateVariant(String source) {
+        return 0;
     }
 
     @Override
@@ -623,6 +639,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void trackingEnhanceProductDetail() {
+
+    }
+
+    @Override
+    public void refreshData() {
 
     }
 

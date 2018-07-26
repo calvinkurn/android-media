@@ -24,7 +24,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
-import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +146,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         rvCartRemoveProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvCartRemoveProduct.setAdapter(removeCartItemAdapter);
         rvCartRemoveProduct.addItemDecoration(
-                new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_16), false, 0));
+                new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
 
         removeCartItemAdapter.addCartProductHeaderViewModel(removeCartItemPresenter.getCartProductHeaderViewModel());
         removeCartItemAdapter.addCartProductItemViewModel(removeCartItemPresenter.getCartProductItemViewModelList());
@@ -154,8 +154,10 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         tvRemoveProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartPageAnalytics.eventClickCartClickHapusFormHapus();
-                showDeleteCartItemDialog(removeCartItemAdapter.getCheckedItemCount());
+                if (removeCartItemAdapter.getCheckedItemCount() > 0) {
+                    cartPageAnalytics.eventClickAtcCartClickHapusFromHapus();
+                    showDeleteCartItemDialog(removeCartItemAdapter.getCheckedItemCount());
+                }
             }
         });
     }
@@ -215,7 +217,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartPageAnalytics.enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(
+                cartPageAnalytics.enhanceECommerceRemoveFromCartClickHapusDanTambahWishlistFromClickHapus(
                         removeCartItemPresenter.generateCartDataAnalytics(
                                 removeCartItemAdapter.getCheckedCartIds(), EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
@@ -227,7 +229,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartPageAnalytics.enhanceECommerceCartClickHapusFromClickHapus(
+                cartPageAnalytics.enhanceECommerceRemoveFromCartClickHapusFromClickHapus(
                         removeCartItemPresenter.generateCartDataAnalytics(
                                 removeCartItemAdapter.getCheckedCartIds(), EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
@@ -254,7 +256,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     @Override
     public void onSingleItemCheckChanged(boolean checked, final int position) {
         if (checked) {
-            cartPageAnalytics.eventClickCartClickChecklistBoxFormHapus();
+            cartPageAnalytics.eventClickAtcCartClickChecklistBoxFromHapus();
         }
         if (rvCartRemoveProduct.isComputingLayout()) {
             rvCartRemoveProduct.post(new Runnable() {
@@ -283,7 +285,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     @Override
     public void onAllItemCheckChanged(final boolean checked) {
         if (checked) {
-            cartPageAnalytics.eventClickCartClickPilihSemuaFormHapus();
+            cartPageAnalytics.eventClickAtcCartClickPilihSemuaFromHapus();
         }
         if (rvCartRemoveProduct.isComputingLayout()) {
             rvCartRemoveProduct.post(new Runnable() {

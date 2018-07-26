@@ -52,6 +52,7 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidget;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.router.SellerRouter;
@@ -76,11 +77,15 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -123,6 +128,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private static final String NON_LOGIN_USER_ID = "0";
     private static final String OFFICIAL_STORE_TYPE = "os";
     private static final String MERCHANT_TYPE = "merchant";
+    private final WishListActionListener wishListActionListener;
 
 
     private ProductDetailView viewListener;
@@ -135,8 +141,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
 
-    public ProductDetailPresenterImpl(ProductDetailView viewListener) {
+    public ProductDetailPresenterImpl(ProductDetailView viewListener,
+                                      WishListActionListener wishListActionListener) {
         this.viewListener = viewListener;
+        this.wishListActionListener = wishListActionListener;
         this.retrofitInteractor = new RetrofitInteractorImpl();
         this.cacheInteractor = new CacheInteractorImpl();
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -174,8 +182,84 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        routeToNewCheckout(context, data);
+        routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()));
         UnifyTracking.eventPDPCart();
+    }
+
+    private Subscriber getCartSubscriber(String sourceAtc) {
+        return new Subscriber<AddToCartResult>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onAtcError(e);
+            }
+
+            @Override
+            public void onNext(AddToCartResult addToCartResult) {
+                viewListener.hideProgressLoading();
+                if (addToCartResult.isSuccess()) {
+                    addToCartResult.setSource(sourceAtc);
+                    viewListener.renderAddToCartSuccess(addToCartResult);
+                } else {
+                    viewListener.showToastMessage(addToCartResult.getMessage());
+                }
+            }
+        };
+    }
+
+    private void onAtcError(Throwable e) {
+        viewListener.hideProgressLoading();
+        e.printStackTrace();
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            viewListener.showToastMessage(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            viewListener.showToastMessage(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+                                /* Ini Http error, misal 403, 500, 404,
+                                code http errornya bisa diambil
+                                e.getErrorCode */
+            viewListener.showToastMessage(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private Subscriber getBuySubscriber(String sourceAtc) {
+        return new Subscriber<AddToCartResult>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onAtcError(e);
+            }
+
+            @Override
+            public void onNext(AddToCartResult addToCartResult) {
+                viewListener.hideProgressLoading();
+                if (addToCartResult.isSuccess()) {
+                    addToCartResult.setSource(sourceAtc);
+                    viewListener.renderAddToCartSuccessOpenCart(addToCartResult);
+                } else {
+                    viewListener.showToastMessage(addToCartResult.getMessage());
+                }
+            }
+        };
     }
 
     private void routeToOldCheckout(@NonNull Activity context, @NonNull ProductCartPass data) {
@@ -184,14 +268,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         );
     }
 
-    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data) {
+    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data, Subscriber subscriber) {
         if (context.getApplication() instanceof PdpRouter) {
             viewListener.showProgressLoading();
             ((PdpRouter) context.getApplication()).addToCartProduct(
                     new AddToCartRequest.Builder()
                             .productId(Integer.parseInt(data.getProductId()))
                             .notes(data.getNotes())
-                            .quantity(data.getMinOrder())
+                            .quantity(data.getOrderQuantity())
                             .trackerAttribution(data.getTrackerAttribution())
                             .trackerListName(data.getListName())
                             .shopId(Integer.parseInt(data.getShopId()))
@@ -199,28 +283,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             ).subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<AddToCartResult>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            viewListener.hideProgressLoading();
-                            e.printStackTrace();
-                            handleCheckoutError(e);
-                        }
-
-                        @Override
-                        public void onNext(AddToCartResult addToCartResult) {
-                            viewListener.hideProgressLoading();
-                            if (addToCartResult.isSuccess())
-                                viewListener.renderAddToCartSuccess(addToCartResult);
-                            else
-                                viewListener.showToastMessage(addToCartResult.getMessage());
-                        }
-                    });
+                    .subscribe(subscriber);
         }
     }
 
@@ -870,45 +933,20 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private void requestAddWishList(final Context context, final Integer productId) {
         viewListener.loadingWishList();
         UnifyTracking.eventPDPWishlit();
-        retrofitInteractor.addToWishList(context, productId,
-                new RetrofitInteractor.AddWishListListener() {
-                    @Override
-                    public void onSuccess() {
-                        viewListener.finishLoadingWishList();
-                        viewListener.showSuccessWishlistSnackBar();
-                        viewListener.updateWishListStatus(1);
-                        viewListener.actionSuccessAddToWishlist(productId);
-                        cacheInteractor.deleteProductDetail(productId);
-                    }
 
-                    @Override
-                    public void onError(String error) {
-                        viewListener.finishLoadingWishList();
-                        viewListener.showWishListRetry(error);
-                    }
-                });
+        AddWishListUseCase addWishListUseCase = new AddWishListUseCase(context);
+        addWishListUseCase.createObservable(String.valueOf(productId),
+                SessionHandler.getLoginID(context), wishListActionListener);
+
     }
 
     private void requestRemoveWishList(final Context context, final Integer productId) {
         viewListener.loadingWishList();
-        retrofitInteractor.removeFromWishList(context, productId,
-                new RetrofitInteractor.RemoveWishListListener() {
-                    @Override
-                    public void onSuccess() {
-                        viewListener.finishLoadingWishList();
-                        viewListener.showToastMessage(context
-                                .getString(R.string.msg_remove_wishlist));
-                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
-                        viewListener.actionSuccessRemoveFromWishlist(productId);
-                        cacheInteractor.deleteProductDetail(productId);
-                    }
 
-                    @Override
-                    public void onError(String error) {
-                        viewListener.finishLoadingWishList();
-                        viewListener.showWishListRetry(error);
-                    }
-                });
+        RemoveWishListUseCase removeWishListUseCase = new RemoveWishListUseCase(context);
+        removeWishListUseCase.createObservable(String.valueOf(productId),
+                SessionHandler.getLoginID(context), wishListActionListener);
+
     }
 
     public void getProductDetailFromCache(@NonNull final ProductPass productPass,
@@ -1046,6 +1084,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
                         && result.getShortDescHtml() != null) {
                     viewListener.showPromoWidget(result);
+                    ProductPageTracking.eventImpressionWidgetPromo(
+                            context,
+                            result.getShortDesc(),
+                            result.getCustomPromoId(),
+                            result.getCode()
+                    );
                 }
             }
 
@@ -1057,7 +1101,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             public void onSucccess(DataPromoWidget dataPromoWidget) {
                                 cacheInteractor.storePromoWidget(targetType, userId, shopType, dataPromoWidget);
                                 if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                    viewListener.showPromoWidget(dataPromoWidget.getPromoWidgetList().get(0).getPromoAttributes());
+                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
+                                    PromoAttributes attributes = item.getPromoAttributes();
+                                    attributes.setCustomPromoId(item.getId());
+                                    viewListener.showPromoWidget(attributes);
+                                    ProductPageTracking.eventImpressionWidgetPromo(
+                                            context,
+                                            attributes.getShortDesc(),
+                                            attributes.getCustomPromoId(),
+                                            attributes.getCode()
+                                    );
                                 }
                             }
 

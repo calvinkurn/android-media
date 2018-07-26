@@ -9,19 +9,22 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.checkout.view.utils.NoteTextWatcher;
+import com.tokopedia.checkout.view.utils.QuantityTextWatcher;
+import com.tokopedia.checkout.view.utils.QuantityWrapper;
 import com.tokopedia.design.component.TextViewCompat;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +39,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.checkout.view.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME;
+import static com.tokopedia.checkout.view.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME;
+
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
@@ -43,8 +49,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
-    private static final int TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500;
-    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 100;
 
     private final CartListAdapter.ActionListener actionListener;
     private final Context context;
@@ -69,10 +73,13 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private TextViewCompat tvError;
     private FrameLayout layoutWarning;
     private TextViewCompat tvWarning;
+    private ImageView imgShopBadge;
+    private TextView tvNoteCharCounter;
+    private LinearLayout productProperties;
 
     private CartItemHolderData cartItemHolderData;
-    private QuantityTextwatcherListener quantityTextwatcherListener;
-    private NoteTextwatcherListener noteTextwatcherListener;
+    private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
+    private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
 
     public CartListItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
                                   CartListAdapter.ActionListener actionListener) {
@@ -100,6 +107,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvError = itemView.findViewById(R.id.tv_error);
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
+        this.imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
+        this.tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
+        this.productProperties = itemView.findViewById(R.id.product_properties);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -123,7 +133,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         compositeSubscription.add(Observable.create(new Observable.OnSubscribe<QuantityWrapper>() {
             @Override
             public void call(final Subscriber<? super QuantityWrapper> subscriber) {
-                quantityTextwatcherListener = new QuantityTextwatcherListener() {
+                quantityTextwatcherListener = new QuantityTextWatcher.QuantityTextwatcherListener() {
                     @Override
                     public void onQuantityChanged(QuantityWrapper quantity) {
                         subscriber.onNext(quantity);
@@ -153,7 +163,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Editable>() {
             @Override
             public void call(final Subscriber<? super Editable> subscriber) {
-                noteTextwatcherListener = new NoteTextwatcherListener() {
+                noteTextwatcherListener = new NoteTextWatcher.NoteTextwatcherListener() {
                     @Override
                     public void onNoteChanged(Editable editable) {
                         subscriber.onNext(editable);
@@ -204,7 +214,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.etQty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((AppCompatEditText) v).selectAll();
                 String qtyStr = ((AppCompatEditText) v).getText().toString();
                 actionListener.onCartItemQuantityInputFormClicked(
                         !TextUtils.isEmpty(qtyStr) ? qtyStr : ""
@@ -229,26 +238,33 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-
         this.tvLabelRemarkOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 actionListener.onCartItemLabelInputRemarkClicked();
                 etRemark.setVisibility(View.VISIBLE);
                 tvLabelRemarkOption.setVisibility(View.GONE);
+                data.setStateRemarkExpanded(true);
             }
         });
 
         if (StringUtils.isBlank(data.getCartItemData().getUpdatedData().getRemark())
                 && !data.isEditableRemark()) {
             this.etRemark.setVisibility(View.GONE);
+            this.tvNoteCharCounter.setVisibility(View.GONE);
             this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
             this.etRemark.setText("");
         } else {
             this.etRemark.setVisibility(View.VISIBLE);
+            this.tvNoteCharCounter.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
             this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
             this.etRemark.setSelection(etRemark.length());
+        }
+
+        if (data.isStateRemarkExpanded()) {
+            this.etRemark.setVisibility(View.VISIBLE);
+            this.tvLabelRemarkOption.setVisibility(View.GONE);
         }
 
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
@@ -275,6 +291,14 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         );
 
         this.tvInfoCashBack.setText(data.getCartItemData().getOriginData().getCashBackInfo());
+
+        if (data.getCartItemData().getOriginData().isCashBack() ||
+                data.getCartItemData().getOriginData().isPreOrder() ||
+                data.getCartItemData().getOriginData().isFreeReturn()) {
+            productProperties.setVisibility(View.VISIBLE);
+        } else {
+            productProperties.setVisibility(View.GONE);
+        }
 
 
         this.btnQtyPlus.setOnClickListener(new View.OnClickListener() {
@@ -315,13 +339,23 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (!TextUtils.isEmpty(etQty.getText().toString())) {
             checkQtyMustDisabled(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
         }
-        this.etRemark.addTextChangedListener(new RemarkTextWatcher());
-        this.etQty.addTextChangedListener(new QuantityTextWatcher());
+        this.etRemark.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
+        this.etQty.addTextChangedListener(new QuantityTextWatcher(quantityTextwatcherListener));
 
         if (data.getCartItemData().getOriginData().isFavorite()) {
             this.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist_red);
         } else {
             this.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist);
+        }
+
+        if (data.getCartItemData().getOriginData().isOfficialStore()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else if (data.getCartItemData().getOriginData().isGoldMerchant()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else {
+            imgShopBadge.setVisibility(View.GONE);
         }
 
     }
@@ -351,6 +385,13 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderErrorFormItemValidation(CartItemHolderData data) {
+        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                data.getCartItemData().getUpdatedData().getRemark().length(),
+                data.getCartItemData().getUpdatedData().getMaxCharRemark());
+        tvNoteCharCounter.setText(noteCounter);
+        if (data.getCartItemData().getUpdatedData().getRemark().length() > 0) {
+            this.tvNoteCharCounter.setVisibility(View.VISIBLE);
+        }
         if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_EMPTY) {
             this.tvErrorFormValidation.setText("");
             this.tvErrorFormValidation.setVisibility(View.GONE);
@@ -364,16 +405,17 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 }
                 this.tvErrorFormRemarkValidation.setVisibility(View.VISIBLE);
                 this.tvErrorFormRemarkValidation.setText(data.getErrorFormItemValidationMessage());
+                this.tvNoteCharCounter.setVisibility(View.GONE);
             } else {
                 this.tvErrorFormValidation.setText(data.getErrorFormItemValidationMessage());
                 this.tvErrorFormValidation.setVisibility(View.VISIBLE);
                 this.tvErrorFormRemarkValidation.setVisibility(View.GONE);
                 this.tvErrorFormRemarkValidation.setText("");
+                this.tvNoteCharCounter.setVisibility(View.VISIBLE);
             }
         }
         actionListener.onCartItemAfterErrorChecked();
     }
-
 
     private void renderErrorItemHeader(CartItemHolderData data) {
         if (data.getCartItemData().isError()) {
@@ -447,84 +489,38 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         actionListener.onCartItemAfterErrorChecked();
     }
 
-    private class RemarkTextWatcher implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            noteTextwatcherListener.onNoteChanged(editable);
-        }
-    }
-
     private void itemNoteTextWatcherAction(Editable editable) {
         cartItemHolderData.getCartItemData().getUpdatedData().setRemark(editable.toString());
         renderErrorFormItemValidation(cartItemHolderData);
     }
 
-    private class QuantityTextWatcher implements TextWatcher {
-
-        int qtyBefore;
-        QuantityWrapper quantityWrapper = new QuantityWrapper();
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            try {
-                qtyBefore = Integer.parseInt(s.toString());
-            } catch (NumberFormatException e) {
-                qtyBefore = 0;
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            quantityWrapper.editable = editable;
-            quantityWrapper.qtyBefore = qtyBefore;
-            quantityTextwatcherListener.onQuantityChanged(quantityWrapper);
-        }
-    }
-
     private void itemQuantityTextWatcherAction(QuantityWrapper quantity) {
-        boolean needToUpdateView = !String.valueOf(quantity.qtyBefore).equals(quantity.editable.toString());
-        if (quantity.editable.length() != 0) {
+        boolean needToUpdateView = !String.valueOf(quantity.getQtyBefore()).equals(quantity.getEditable().toString());
+        if (quantity.getEditable().length() != 0) {
             int zeroCount = 0;
-            for (int i = 0; i < quantity.editable.length(); i++) {
-                if (quantity.editable.charAt(i) == '0') {
+            for (int i = 0; i < quantity.getEditable().length(); i++) {
+                if (quantity.getEditable().charAt(i) == '0') {
                     zeroCount++;
                 } else {
                     break;
                 }
             }
-            if (zeroCount == quantity.editable.length()) {
+            if (zeroCount == quantity.getEditable().length()) {
                 actionListener.onCartItemQuantityReseted(getAdapterPosition(), needToUpdateView);
-            } else if (quantity.editable.charAt(0) == '0') {
-                etQty.setText(quantity.editable.toString()
-                        .substring(zeroCount, quantity.editable.toString().length()));
+            } else if (quantity.getEditable().charAt(0) == '0') {
+                etQty.setText(quantity.getEditable().toString()
+                        .substring(zeroCount, quantity.getEditable().toString().length()));
                 etQty.setSelection(etQty.length());
                 needToUpdateView = true;
             }
         } else if (TextUtils.isEmpty(etQty.getText())) {
             actionListener.onCartItemQuantityReseted(getAdapterPosition(),
-                    !String.valueOf(quantity.qtyBefore).equals(quantity.editable.toString()));
+                    !String.valueOf(quantity.getQtyBefore()).equals(quantity.getEditable().toString()));
         }
 
         int qty = 0;
         try {
-            qty = Integer.parseInt(quantity.editable.toString());
+            qty = Integer.parseInt(quantity.getEditable().toString());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -532,19 +528,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
         validateWithAvailableQuantity(cartItemHolderData, qty);
         actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), needToUpdateView);
-    }
-
-    private interface QuantityTextwatcherListener {
-        void onQuantityChanged(QuantityWrapper quantityWrapper);
-    }
-
-    private interface NoteTextwatcherListener {
-        void onNoteChanged(Editable editable);
-    }
-
-    private class QuantityWrapper {
-        int qtyBefore;
-        Editable editable;
     }
 
 }

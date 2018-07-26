@@ -35,9 +35,9 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void setProductList(List<Visitable> list);
 
-    void disableWishlistButton(int adapterPosition);
+    void disableWishlistButton(String productId);
 
-    void enableWishlistButton(int adapterPosition);
+    void enableWishlistButton(String productId);
 
     void showBottomBarNavigation(boolean show);
 

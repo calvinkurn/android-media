@@ -15,19 +15,14 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
@@ -39,6 +34,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,15 +59,15 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     @Inject
     GetSearchGuideUseCase getSearchGuideUseCase;
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    RemoveWishListUseCase removeWishlistActionUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     @Inject
     GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
+    private WishListActionListener wishlistActionListener;
     GraphqlUseCase graphqlUseCase;
-    private WishlistActionListener wishlistActionListener;
     private Context context;
     private boolean isUsingFilterV4;
 
@@ -84,7 +82,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void attachView(ProductListFragmentView viewListener,
-                           WishlistActionListener wishlistActionListener) {
+                           WishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
         this.wishlistActionListener = wishlistActionListener;
     }
@@ -99,13 +97,13 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
+    public void handleWishlistButtonClicked(ProductItem productItem) {
         if (getView().isUserHasLogin()) {
-            getView().disableWishlistButton(adapterPosition);
+            getView().disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
-                removeWishlist(productItem.getProductID(), getView().getUserId(), adapterPosition);
+                removeWishlist(productItem.getProductID(), getView().getUserId());
             } else {
-                addWishlist(productItem.getProductID(), getView().getUserId(), adapterPosition);
+                addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
             launchLoginActivity(productItem.getProductID());
@@ -118,16 +116,15 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         getView().launchLoginActivity(extras);
     }
 
-    private void addWishlist(String productId, String userId, int adapterPosition) {
+    private void addWishlist(String productId, String userId) {
         Log.d(this.toString(), "Add Wishlist " + productId);
-        addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
-                new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        addWishlistActionUseCase.createObservable(productId, userId,
+                wishlistActionListener);
     }
 
-    private void removeWishlist(String productId, String userId, int adapterPosition) {
+    private void removeWishlist(String productId, String userId) {
         Log.d(this.toString(), "Remove Wishlist " + productId);
-        removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
-                new RemoveWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        removeWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     @Override
