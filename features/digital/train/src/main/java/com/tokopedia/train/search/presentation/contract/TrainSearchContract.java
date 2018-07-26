@@ -17,10 +17,6 @@ public interface TrainSearchContract {
     interface View extends BaseListViewListener<TrainScheduleViewModel> {
         RequestParams getRequestParam();
 
-        void hideLayoutTripInfo();
-
-        void showLayoutTripInfo();
-
         void showEmptyResult();
 
         void clearAdapterData();

@@ -50,7 +50,6 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().hideLayoutTripInfo();
                         getView().showGetListError(e);
                     }
 
@@ -78,7 +77,6 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().hideLayoutTripInfo();
                     getView().showGetListError(e);
                 }
             }
@@ -86,7 +84,6 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             @Override
             public void onNext(List<List<TrainScheduleViewModel>> trainScheduleViewModels) {
                 if (isViewAttached() && trainScheduleViewModels != null) {
-                    getView().showLayoutTripInfo();
                     getView().addPaddingSortAndFilterSearch();
                     getView().showFilterAndSortButtonAction();
 
@@ -117,7 +114,6 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             public void onNext(List<TrainScheduleViewModel> trainSchedulesViewModel) {
                 if (isViewAttached()) {
                     if (trainSchedulesViewModel != null && !trainSchedulesViewModel.isEmpty()) {
-                        getView().showLayoutTripInfo();
                         getView().showDataScheduleFromCache(trainSchedulesViewModel);
                     } else {
                         getView().showEmptyResult();

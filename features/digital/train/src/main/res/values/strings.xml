@@ -50,8 +50,8 @@
     <string name="train_search_passenger_infant" formatted="false">%d Infant</string>
     <string name="train_search_departure_title">Perjalanan Pergi</string>
     <string name="train_search_return_title">Perjalanan Pulang</string>
-    <string name="train_search_cheapest_label">TERMURAH</string>
-    <string name="train_search_fastest_label">TERCEPAT</string>
+    <string name="train_search_cheapest_label">Termurah</string>
+    <string name="train_search_fastest_label">Tercepat</string>
     <string name="train_search_seat_full_label">Penuh</string>
     <string name="train_search_remains_seat_label" formatted="false">Sisa %d kursi</string>
 
