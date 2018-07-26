@@ -9,14 +9,15 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlayWhite">
+        android:background="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-        <com.tokopedia.searchbar.NotificationToolbar
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:contentInsetStart="0dp"
-            app:contentInsetLeft="0dp"/>
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/Toolbar.White"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -130,7 +130,7 @@
 
         <TextView
             android:id="@+id/text_voucher_amount"
-            style="@style/TextView.Small.Bold"
+            style="@style/TextView.Small.Green.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -139,6 +139,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_voucher"
             app:layout_constraintTop_toBottomOf="@+id/label_voucher"
-            tools:text="3 Kupon" />
+            android:text="@string/label_tokopoint_see_voucher" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
