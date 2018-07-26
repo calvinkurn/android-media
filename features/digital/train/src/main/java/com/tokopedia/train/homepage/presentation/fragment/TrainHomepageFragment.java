@@ -28,6 +28,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainAppScreen;
 import com.tokopedia.train.common.constant.TrainEventTracking;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.presentation.TextInputView;
 import com.tokopedia.train.homepage.di.TrainHomepageComponent;
 import com.tokopedia.train.homepage.presentation.activity.TrainPassengerPickerActivity;
@@ -84,6 +85,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private Menus menus;
 
     private AbstractionRouter abstractionRouter;
+
+    @Inject
+    TrainRouter trainRouter;
 
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
@@ -472,6 +476,12 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void hidePromoList() {
         trainPromoView.hidePromoList();
+    }
+
+    @Override
+    public void navigateToKaiWebView() {
+        startActivity(trainRouter.getWebviewActivity(getActivity(), TrainUrl.KAI_WEBVIEW));
+        getActivity().finish();
     }
 
     @Override

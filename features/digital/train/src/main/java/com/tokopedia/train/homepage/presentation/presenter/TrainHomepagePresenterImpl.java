@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.domain.GetTrainPromoUseCase;
 import com.tokopedia.train.homepage.presentation.TrainHomepageCache;
@@ -35,14 +36,16 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     private TrainHomepageCache trainHomepageCache;
     private UserSession userSession;
     private GetTrainPromoUseCase getTrainPromoUseCase;
+    private TrainRouter trainRouter;
 
     @Inject
     public TrainHomepagePresenterImpl(TrainHomepageCache trainHomepageCache,
                                       GetTrainPromoUseCase getTrainPromoUseCase,
-                                      UserSession userSession) {
+                                      UserSession userSession, TrainRouter trainRouter) {
         this.trainHomepageCache = trainHomepageCache;
         this.getTrainPromoUseCase = getTrainPromoUseCase;
         this.userSession = userSession;
+        this.trainRouter = trainRouter;
     }
 
     @Override
@@ -146,10 +149,15 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
 
     @Override
     public void initialize() {
-        if (userSession.isLoggedIn()) {
-            onInitialize();
+        // TODO : please remove true statement
+        if (trainRouter.isTrainNativeEnable() || true) {
+            if (userSession.isLoggedIn()) {
+                onInitialize();
+            } else {
+                getView().navigateToLoginPage();
+            }
         } else {
-            getView().navigateToLoginPage();
+            getView().navigateToKaiWebView();
         }
     }
 

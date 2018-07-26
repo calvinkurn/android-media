@@ -57,4 +57,5 @@ public interface TrainHomepageView extends CustomerView {
 
     void hidePromoList();
 
+    void navigateToKaiWebView();
 }
