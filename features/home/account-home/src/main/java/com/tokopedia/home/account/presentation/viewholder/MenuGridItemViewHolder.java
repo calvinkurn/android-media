@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 
 import q.rorbin.badgeview.QBadgeView;
@@ -30,10 +31,12 @@ public class MenuGridItemViewHolder extends RecyclerView.ViewHolder {
     private QBadgeView badge;
 
     private Context context;
+    private AccountTypeFactory.Listener listener;
 
-    public MenuGridItemViewHolder(Context context, View itemView) {
+    public MenuGridItemViewHolder(Context context, View itemView, AccountTypeFactory.Listener listener) {
         super(itemView);
         this.context = context;
+        this.listener = listener;
 
         this.layoutCategoryGrid = itemView.findViewById(R.id.layout_category_grid);
         this.imageIcon = itemView.findViewById(R.id.image_icon);
@@ -58,6 +61,6 @@ public class MenuGridItemViewHolder extends RecyclerView.ViewHolder {
 
         textDescription.setText(menuItem.getDescription());
 
-//        if(listener != null) layoutCategoryGrid.setOnClickListener(v -> listener.onCategoryItemClicked(menuItemViewModel));
+        if(listener != null) layoutCategoryGrid.setOnClickListener(v -> listener.onMenuGridItemClicked(menuItem));
     }
 }

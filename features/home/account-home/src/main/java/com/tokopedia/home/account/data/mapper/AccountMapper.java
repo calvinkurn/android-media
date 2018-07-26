@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.view.InfoCardView;
+import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -67,6 +68,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         BuyerCardViewModel buyerCardViewModel = new BuyerCardViewModel();
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
         buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
+        buyerCardViewModel.setVoucher(context.getString(R.string.label_tokopoint_see_voucher));
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         items.add(buyerCardViewModel);
@@ -229,6 +231,13 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
+        ShopCardViewModel shopCard = new ShopCardViewModel();
+        shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
+        shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
+        shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
+        shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+        items.add(shopCard);
+
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
@@ -240,8 +249,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 context.getString(R.string.label_menu_new_order),
                 // TODO: 7/25/18 need applink
                 "tokopedia://home",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getSellerOrder().getNewOrder()
         );
         menuGridItems.add(gridItem);
 
@@ -250,8 +258,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 context.getString(R.string.label_menu_ready_to_ship),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getSellerOrder().getReadyToShip()
         );
         menuGridItems.add(gridItem);
 
@@ -260,8 +267,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 context.getString(R.string.label_menu_shipped),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getSellerOrder().getShipped()
         );
         menuGridItems.add(gridItem);
 
@@ -270,11 +276,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 context.getString(R.string.label_menu_arrive_at_destination),
                 // TODO: 7/25/18 need applink
                 "tokopedia://buyer/payment",
-                // TODO: 7/25/18 need notification counter
-                0
+                accountModel.getNotifications().getSellerOrder().getArriveAtDestination()
         );
         menuGridItems.add(gridItem);
-
         menuGrid.setItems(menuGridItems);
         items.add(menuGrid);
 
@@ -321,7 +325,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
         infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
         infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
-        infoCardViewModel.setApplink("tokopedia://loan");
+        infoCardViewModel.setApplink("");
         items.add(infoCardViewModel);
 
         sellerViewModel.setItems(items);

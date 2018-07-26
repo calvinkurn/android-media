@@ -18,16 +18,19 @@ import java.util.List;
  */
 public class MenuGridAdapter extends RecyclerView.Adapter<MenuGridItemViewHolder> {
     private List<MenuGridItemViewModel> categories;
+    private AccountTypeFactory.Listener listener;
 
-    public MenuGridAdapter() {
+    public MenuGridAdapter(AccountTypeFactory.Listener listener) {
         this.categories = new ArrayList<>();
+        this.listener = listener;
+
     }
 
     @NonNull
     @Override
     public MenuGridItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_menu_grid_item, parent, false);
-        return new MenuGridItemViewHolder(parent.getContext(), view);
+        return new MenuGridItemViewHolder(parent.getContext(), view, listener);
     }
 
     @Override
