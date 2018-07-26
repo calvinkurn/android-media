@@ -28,6 +28,9 @@ public class InboxPresenter {
     }
 
     public void getInboxData() {
+        if (this.inboxView == null)
+            return;
+
         this.inboxView.onStartLoading();
 
         RequestParams requestParams = RequestParams.create();
@@ -36,7 +39,9 @@ public class InboxPresenter {
         getNotificationUseCase.execute(requestParams, new InboxSubscriber(this.inboxView));
     }
 
-    public void onResume() { }
+    public void onResume() {
+        this.getInboxData();
+    }
 
     public void onDestroy() {
         this.getNotificationUseCase.unsubscribe();

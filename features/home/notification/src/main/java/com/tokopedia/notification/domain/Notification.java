@@ -14,13 +14,10 @@ public class Notification {
     public static class ChildNotification {
 
         private String title;
-        private boolean isNew;
         private Integer badge;
 
-        public ChildNotification(String title, boolean isNew, Integer badge) {
+        public ChildNotification(String title) {
             this.title = title;
-            this.isNew = isNew;
-            this.badge = badge;
         }
 
         public String getTitle() {
@@ -29,14 +26,6 @@ public class Notification {
 
         public void setTitle(String title) {
             this.title = title;
-        }
-
-        public boolean isNew() {
-            return isNew;
-        }
-
-        public void setNew(boolean aNew) {
-            isNew = aNew;
         }
 
         public Integer getBadge() {

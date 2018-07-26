@@ -15,7 +15,7 @@
         android:textSize="16sp"
         android:fontFamily="sans-serif"
         android:textColor="@color/grey_700"
-        android:text="Info Penjual"/>
+        tools:text="Info Penjual"/>
 
     <TextView
         android:id="@+id/text_badge"
@@ -27,7 +27,7 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:background="@drawable/circle_red"
-        android:text=" 2 "/>
+        tools:text="2"/>
 
     <ImageView
         android:id="@+id/image_arrow"

@@ -67,8 +67,6 @@ public class InboxFragment extends ParentFragment implements InboxView {
         adapter.addAll(getData());
         recyclerView.setAdapter(adapter);
 
-        presenter.getInboxData();
-
         adapter.setOnItemClickListener((view1, position) -> {
             getCallingIntent(position);
         });

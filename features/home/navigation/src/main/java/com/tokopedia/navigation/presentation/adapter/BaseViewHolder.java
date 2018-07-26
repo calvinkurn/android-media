@@ -1,4 +1,4 @@
-package com.tokopedia.notification.presentation.adapter;
+package com.tokopedia.navigation.presentation.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -57,7 +57,7 @@ public class NotificationAdapter extends BaseListAdapter<Notification, BaseViewH
         private TextView badge;
         private ImageView arrow;
 
-        public NotificationSingleHolder(View itemView, BaseListAdapter.OnItemClickListener onItemClickListener) {
+        NotificationSingleHolder(View itemView, BaseListAdapter.OnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
             title = itemView.findViewById(R.id.title);
             badge = itemView.findViewById(R.id.text_badge);
@@ -88,7 +88,7 @@ public class NotificationAdapter extends BaseListAdapter<Notification, BaseViewH
         private RecyclerView recyclerView;
         private TextView textView;
 
-        public NotificationHolder(View itemView) {
+        NotificationHolder(View itemView) {
             super(itemView);
             recyclerView = itemView.findViewById(R.id.recyclerview);
             textView = itemView.findViewById(R.id.title);
