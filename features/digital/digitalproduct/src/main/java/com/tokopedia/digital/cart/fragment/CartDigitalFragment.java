@@ -709,7 +709,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 }
             } else {
                 intent = LoyaltyActivity.newInstanceCouponNotActive(
-                        context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                        context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
+                        passData.getCategoryId(), null, null
                 );
             }
             navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);

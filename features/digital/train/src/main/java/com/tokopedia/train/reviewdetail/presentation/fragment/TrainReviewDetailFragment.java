@@ -231,7 +231,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     public void onClickUseVoucher() {
         if (getActivity().getApplication() instanceof TrainRouter) {
             Intent intent = ((TrainRouter) getActivity().getApplication()).getIntentOfLoyaltyActivityWithoutCoupon(
-                    getActivity(), HACHIKO_TRAIN_KEY);
+                    getActivity(), HACHIKO_TRAIN_KEY, trainSoftbook.getReservationId(), trainSoftbook.getTokpedBookCode());
             startActivityForResult(intent, REQUEST_CODE_LOYALTY);
         }
     }

@@ -52,6 +52,8 @@ import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.E
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
@@ -532,12 +534,15 @@ public class LoyaltyActivity extends BasePresenterActivity
         return intent;
     }
 
-    public static Intent newInstanceCouponNotActive(Context context, String platform, String category) {
+    public static Intent newInstanceCouponNotActive(Context context, String platform, String category,
+                                                    String trainReservationId, String trainReservationCode) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, category);
+        bundle.putString(EXTRA_TRAIN_RESERVATION_ID, trainReservationId);
+        bundle.putString(EXTRA_TRAIN_RESERVATION_CODE, trainReservationCode);
         intent.putExtras(bundle);
         return intent;
     }

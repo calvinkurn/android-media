@@ -23,7 +23,8 @@ public interface TrainRouter {
 
     void goToTrainOrderList(Context context);
 
-    Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform);
+    Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
+                                                   String reservationId, String tokpedBookCode);
 
     Intent getLoginIntent();
 

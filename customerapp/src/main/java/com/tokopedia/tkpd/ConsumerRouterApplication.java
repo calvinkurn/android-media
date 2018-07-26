@@ -858,8 +858,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform) {
-        return LoyaltyActivity.newInstanceCouponNotActive(activity, platform, "");
+    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
+                                                          String reservationId, String tokpedBookCode) {
+        return LoyaltyActivity.newInstanceCouponNotActive(activity, platform, "",
+                reservationId, tokpedBookCode);
     }
 
     @Override
