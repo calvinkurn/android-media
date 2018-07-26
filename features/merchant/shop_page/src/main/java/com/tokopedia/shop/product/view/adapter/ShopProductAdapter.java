@@ -46,6 +46,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
     private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
 
+    // this view holder is to hold the state between the sticky and non-sticky etalase view holder.
     private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListViewHolderWeakReference;
     private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListStickyWeakReference;
 
@@ -233,6 +234,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        // mechanism to transfer the state from sticky etalase state to non-sticky view holder
         if (holder instanceof ShopProductEtalaseListViewHolder) {
             Parcelable recyclerViewState = null;
             try {
@@ -262,6 +264,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     @Override
     public void bindSticky(RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof ShopProductEtalaseListViewHolder) {
+            // mechanism to transfer the state from the current etalase state to sticky view holder
             Parcelable recyclerViewState = null;
             try {
                 if (shopProductEtalaseListViewHolderWeakReference != null &&
