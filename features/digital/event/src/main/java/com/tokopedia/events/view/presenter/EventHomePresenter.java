@@ -39,7 +39,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -47,7 +46,6 @@ import rx.schedulers.Schedulers;
 import static com.tokopedia.events.view.utils.Utils.Constants.EXTRA_EVENT_CALENDAR;
 import static com.tokopedia.events.view.utils.Utils.Constants.FAQURL;
 import static com.tokopedia.events.view.utils.Utils.Constants.PROMOURL;
-import static com.tokopedia.events.view.utils.Utils.Constants.TRANSATIONSURL;
 
 /**
  * Created by ashwanityagi on 06/11/17.
@@ -67,6 +65,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private int currentPage, totalPages;
     private List<AdapterCallbacks> adapterCallbacks;
     private boolean showFavAfterLogin = false;
+    private boolean showOMS = false;
 
 
     @Inject
@@ -156,7 +155,12 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");
             return true;
         } else if (id == R.id.action_booked_history) {
-            RouteManager.route(getView().getActivity(), ApplinkConst.EVENTS_ORDER);
+            if (SessionHandler.isV4Login(getView().getActivity()))
+                RouteManager.route(getView().getActivity(), ApplinkConst.EVENTS_ORDER);
+            else {
+                showOMS = true;
+                getView().showLoginSnackbar(getView().getActivity().getResources().getString(R.string.login_daftar_transaksi));
+            }
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
             return true;
         } else if (id == R.id.action_faq) {
@@ -226,11 +230,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         if (requestCode == 1099) {
             if (SessionHandler.isV4Login(getView().getActivity())) {
                 getView().hideProgressBar();
-                getView().showMessage(getView().getActivity().getResources()
-                        .getString(R.string.like_share_events));
                 if (showFavAfterLogin) {
                     showFavAfterLogin = false;
                     getFavouriteItemsAndShow();
+                } else if (showOMS) {
+                    RouteManager.route(getView().getActivity(), ApplinkConst.EVENTS_ORDER);
                 }
             } else {
                 getView().hideProgressBar();

@@ -25,7 +25,6 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
@@ -504,12 +503,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             }
         } else if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
             if (data != null) {
-                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true" ;
+                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true";
                 RouteManager.route(this, url);
+                LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+                manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
+                this.finish();
             }
-            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
-            manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
-            this.finish();
         }
     }
 
