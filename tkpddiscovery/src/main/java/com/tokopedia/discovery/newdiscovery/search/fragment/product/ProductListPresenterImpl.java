@@ -341,6 +341,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 getView().showBottomBarNavigation(true);
                             }
                             getView().storeTotalData(productViewModel.getTotalData());
+                            getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
                         }
                     }
                 });
