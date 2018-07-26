@@ -23,7 +23,9 @@ interface ChangePasswordContract {
 
         fun onErrorLogout(errorMessage: String)
 
-        fun onSuccessLogout()
+        fun onErrorOldPass(errorMessage: String?)
+
+        fun onErrorNewPass(errorMessage: String?)
 
     }
 

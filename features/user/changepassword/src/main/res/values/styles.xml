@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextInputLayout.ChangePassword" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="android:theme">@style/TextInputLayoutColorLine.ChangePasword</item>
+    </style>
+
+    <style name="TextInputLayoutColorLine.ChangePasword" parent="TextInputLayoutColorLine">
+        <item name="android:textColorHint">@color/black_38</item>
+    </style>
+</resources>

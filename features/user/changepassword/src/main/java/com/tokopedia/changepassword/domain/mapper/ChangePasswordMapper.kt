@@ -1,15 +1,15 @@
 package com.tokopedia.changepassword.domain.mapper
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.changepassword.domain.model.ChangePasswordDomain
 import com.tokopedia.changepassword.domain.pojo.ChangePasswordPojo
-import com.tokopedia.network.exception.MessageErrorException
 import retrofit2.Response
 import rx.functions.Func1
 
 /**
  * @author by nisie on 7/25/18.
  */
-class ChangePasswordMapper() : Func1<Response<ChangePasswordPojo>,
+class ChangePasswordMapper : Func1<Response<ChangePasswordPojo>,
         ChangePasswordDomain> {
 
     private val IS_SUCCESS: Int = 1

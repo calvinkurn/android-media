@@ -227,7 +227,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionUrl.CHANGE_PHONE_DOMAIN = ConsumerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
-        ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_DOMAIN);
+        ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();

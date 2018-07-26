@@ -8,8 +8,8 @@ class ChangePasswordUrl {
 
     companion object {
 
-        var BASE_URL: String = "https://ws.tokopedia.com/"
-        const val PATH_EDIT_PASSWORD: String = "v4/action/people/edit_password.pl"
+        var BASE_URL: String = "https://accounts.tokopedia.com/"
+        const val PATH_CHANGE_PASSWORD: String = "api/v1/change-password"
     }
 
 }

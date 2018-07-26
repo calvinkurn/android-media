@@ -1,6 +1,7 @@
 package com.tokopedia.changepassword.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.changepassword.domain.ChangePasswordUseCase
 import com.tokopedia.changepassword.domain.model.ChangePasswordDomain
 import com.tokopedia.changepassword.view.listener.ChangePasswordContract
@@ -10,7 +11,7 @@ import rx.Subscriber
 /**
  * @author by nisie on 7/25/18.
  */
-class ChangePasswordPresenter(val changePasswordUseCase: ChangePasswordUseCase,
+class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordUseCase,
                               val userSession: UserSession) :
         ChangePasswordContract.Presenter,
         BaseDaggerPresenter<ChangePasswordContract.View>() {
@@ -23,16 +24,23 @@ class ChangePasswordPresenter(val changePasswordUseCase: ChangePasswordUseCase,
         changePasswordUseCase.execute(ChangePasswordUseCase.getParam(
                 oldPassword,
                 newPassword,
-                confirmPassword,
-                userSession.userId,
-                userSession.deviceId
+                confirmPassword
         ), object : Subscriber<ChangePasswordDomain>() {
             override fun onCompleted() {
 
             }
 
             override fun onError(e: Throwable) {
-                view.onErrorChangePassword(e.toString())
+                val errorMessage = ErrorHandler.getErrorMessage(view.getContext(), e)
+
+                when {
+                    errorMessage.toLowerCase().contains("kata sandi baru") -> view
+                            .onErrorNewPass(errorMessage)
+                    errorMessage.toLowerCase().contains("kata sandi lama") -> view
+                            .onErrorOldPass(errorMessage)
+                    else -> view.onErrorChangePassword(errorMessage)
+
+                }
             }
 
             override fun onNext(changePasswordDomain: ChangePasswordDomain) {
@@ -58,7 +66,7 @@ class ChangePasswordPresenter(val changePasswordUseCase: ChangePasswordUseCase,
             isValid = false
         }
 
-        if (confirmPassword.isBlank() || !confirmPassword.equals(newPassword)) {
+        if (confirmPassword.isBlank() || confirmPassword != newPassword) {
             isValid = false
         }
 
@@ -68,9 +76,5 @@ class ChangePasswordPresenter(val changePasswordUseCase: ChangePasswordUseCase,
     override fun detachView() {
         super.detachView()
         changePasswordUseCase.unsubscribe()
-    }
-
-    fun logoutToHomePage() {
-
     }
 }

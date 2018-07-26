@@ -9,4 +9,6 @@ import android.content.Intent
 interface ChangePasswordRouter {
 
     fun getHomeIntent(context: Context): Intent
+
+    fun getForgotPasswordIntent(context: Context, userEmail : String): Intent
 }

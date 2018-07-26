@@ -14,8 +14,8 @@ import java.util.*
 interface ChangePasswordApi {
 
     @FormUrlEncoded
-    @POST(ChangePasswordUrl.PATH_EDIT_PASSWORD)
-    fun editPassword(@FieldMap params: HashMap<String, Any>):
+    @POST(ChangePasswordUrl.PATH_CHANGE_PASSWORD)
+    fun changePassword(@FieldMap params: HashMap<String, Any>):
             Observable<Response<ChangePasswordPojo>>
 
 }

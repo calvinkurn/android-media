@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
@@ -370,7 +371,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpModuleRouter,
         UnifiedOrderRouter,
         DealsModuleRouter,
-        OmsModuleRouter {
+        OmsModuleRouter,
+        ChangePasswordRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
