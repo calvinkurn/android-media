@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author okasurya on 7/16/18.
  */
-public class SellerAccountFragment extends TkpdBaseV4Fragment implements AccountTypeFactory.Listener, SellerAccount.View {
+public class SellerAccountFragment extends BaseAccountFragment implements AccountTypeFactory.Listener, SellerAccount.View {
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
 
@@ -87,21 +87,21 @@ public class SellerAccountFragment extends TkpdBaseV4Fragment implements Account
 
     @Override
     public void onMenuGridItemClicked(MenuGridItemViewModel item) {
-
+        openApplink(item.getApplink());
     }
 
     @Override
     public void onMenuGridLinkClicked(MenuGridViewModel item) {
-
+        openApplink(item.getApplinkUrl());
     }
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
-
+        openApplink(item.getApplink());
     }
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
-
+        openApplink(item.getApplink());
     }
 }

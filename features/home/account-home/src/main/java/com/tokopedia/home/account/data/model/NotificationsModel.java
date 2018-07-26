@@ -7,26 +7,59 @@ import com.google.gson.annotations.SerializedName;
  * @author okasurya on 7/21/18.
  */
 public class NotificationsModel {
-    @SerializedName("purchase")
+    @SerializedName("resolutionAs")
     @Expose
-    private NotificationPurchaseModel purchase;
-    @SerializedName("sales")
+    private NotificationResolutionModel resolution;
+    @SerializedName("buyerOrderStatus")
     @Expose
-    private NotificationSalesModel sales;
+    private NotificationBuyerOrderModel buyerOrder;
+    @SerializedName("sellerOrderStatus")
+    @Expose
+    private NotificationSellerOrderModel sellerOrder;
+    @SerializedName("sellerInfo")
+    @Expose
+    private NotificationSellerInfoModel sellerInfo;
+    @SerializedName("userSatisfactionSurvey")
+    @Expose
+    private Integer userSatisfaction;
 
-    public NotificationPurchaseModel getPurchase() {
-        return purchase;
+    public NotificationResolutionModel getResolution() {
+        return resolution;
     }
 
-    public void setPurchase(NotificationPurchaseModel purchase) {
-        this.purchase = purchase;
+    public void setResolution(NotificationResolutionModel resolution) {
+        this.resolution = resolution;
     }
 
-    public NotificationSalesModel getSales() {
-        return sales;
+    public NotificationBuyerOrderModel getBuyerOrder() {
+        return buyerOrder;
     }
 
-    public void setSales(NotificationSalesModel sales) {
-        this.sales = sales;
+    public void setBuyerOrder(NotificationBuyerOrderModel buyerOrder) {
+        this.buyerOrder = buyerOrder;
+    }
+
+    public NotificationSellerOrderModel getSellerOrder() {
+        return sellerOrder;
+    }
+
+    public void setSellerOrder(NotificationSellerOrderModel sellerOrder) {
+        this.sellerOrder = sellerOrder;
+    }
+
+    public NotificationSellerInfoModel getSellerInfo() {
+        return sellerInfo;
+    }
+
+    public void setSellerInfo(NotificationSellerInfoModel sellerInfo) {
+        this.sellerInfo = sellerInfo;
+    }
+
+    public Integer getUserSatisfaction() {
+        return userSatisfaction;
+    }
+
+    public void setUserSatisfaction(Integer userSatisfaction) {
+        this.userSatisfaction = userSatisfaction;
     }
 }

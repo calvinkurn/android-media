@@ -54,7 +54,7 @@ query {
       newOrder
       shippingConfirm
       shippingStatus
-		}
+	}
     resolutionAs {
       buyer
       seller
@@ -73,7 +73,7 @@ query {
       newOrder
       readyToShip
       shipped
-    	arriveAtDestination
+      arriveAtDestination
     }
   }
 }
