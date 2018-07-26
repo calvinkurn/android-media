@@ -271,11 +271,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderSingleTripView(TrainHomepageViewModel trainHomepageViewModel) {
-        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.white));
-        buttonRoundTrip.setTextColor(getResources().getColor(R.color.grey_400));
-
         buttonOneWayTrip.setSelected(true);
         buttonRoundTrip.setSelected(false);
+
         textInputViewDateReturn.setVisibility(View.GONE);
         separatorDateReturn.setVisibility(View.GONE);
 
@@ -297,10 +295,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderRoundTripView(TrainHomepageViewModel trainHomepageViewModel) {
-        buttonRoundTrip.setTextColor(getResources().getColor(R.color.white));
-        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.grey_400));
         buttonOneWayTrip.setSelected(false);
         buttonRoundTrip.setSelected(true);
+
         textInputViewDateReturn.setVisibility(View.VISIBLE);
         separatorDateReturn.setVisibility(View.VISIBLE);
 
