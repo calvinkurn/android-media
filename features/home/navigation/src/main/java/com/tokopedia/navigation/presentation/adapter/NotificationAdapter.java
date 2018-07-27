@@ -35,6 +35,16 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
     private static final int TYPE_ITEM = 2;
     private static final int TYPE_SINGLE = 3;
 
+    public interface OnNotifClickListener {
+        void onNotifClick(int parent, int child);
+    }
+
+    private OnNotifClickListener onNotifClickListener;
+
+    public void setOnNotifClickListener(OnNotifClickListener onNotifClickListener) {
+        this.onNotifClickListener = onNotifClickListener;
+    }
+
     public NotificationAdapter(Context context) {
         super(context);
     }
@@ -122,6 +132,13 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
 
             NotificationChildAdapter adapter = new NotificationChildAdapter(context);
             adapter.addAll(item.getChilds());
+            adapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    if (onNotifClickListener != null)
+                        onNotifClickListener.onNotifClick(getAdapterPosition(), position);
+                }
+            });
             recyclerView.setAdapter(adapter);
         }
     }

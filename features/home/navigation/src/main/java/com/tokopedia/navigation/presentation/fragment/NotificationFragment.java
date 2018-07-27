@@ -78,10 +78,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             }
         });
 
-        adapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
+        adapter.setOnNotifClickListener(new NotificationAdapter.OnNotifClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = getCallingIntent(position);
+            public void onNotifClick(int parent, int child) {
+                Intent intent = getCallingIntent(parent, child);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -89,9 +89,9 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         });
     }
 
-    private Intent getCallingIntent(int position) {
+    private Intent getCallingIntent(int parentPosition, int childPosition) {
         Intent intent = null;
-        switch (position) {
+        switch (parentPosition) {
             case SELLER_INFO:
                 intent = ((GlobalNavRouter)getActivity().getApplication())
                         .getSellerInfoCallingIntent(getActivity());
@@ -101,6 +101,13 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             case PENJUALAN:
                 break;
             case KOMPLAIN:
+                if (childPosition == BUYER) {
+                    intent = ((GlobalNavRouter)getActivity().getApplication())
+                            .getResolutionCenterIntentBuyer(getActivity());
+                } else if (childPosition == SELLER) {
+                    intent = ((GlobalNavRouter)getActivity().getApplication())
+                            .getResolutionCenterIntentSeller(getActivity());
+                }
                 break;
         }
         return intent;
