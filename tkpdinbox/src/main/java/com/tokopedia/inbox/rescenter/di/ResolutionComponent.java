@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndProblemFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.CreateResolutionCenterFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionDetailFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragment;
 
 import dagger.Component;
 
@@ -22,4 +24,8 @@ public interface ResolutionComponent {
     void inject(CreateResolutionCenterFragment createResolutionCenterFragment);
 
     void inject(ChooseProductAndProblemFragment chooseProductAndProblemFragment);
+
+    void inject(SolutionListFragment solutionListFragment);
+
+    void inject(SolutionDetailFragment solutionDetailFragment);
 }

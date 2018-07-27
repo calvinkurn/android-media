@@ -1,9 +1,10 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditAppealSolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -13,28 +14,21 @@ import rx.functions.Func1;
  */
 
 public class EditAppealResolutionResponseMapper
-        implements Func1<Response<TkpdResponse>, EditAppealResolutionSolutionDomain> {
+        implements Func1<Response<DataResponse<EditAppealSolutionResponse>>, EditAppealResolutionSolutionDomain> {
+
+    @Inject
+    public EditAppealResolutionResponseMapper() {
+    }
 
     @Override
-    public EditAppealResolutionSolutionDomain call(Response<TkpdResponse> response) {
+    public EditAppealResolutionSolutionDomain call(Response<DataResponse<EditAppealSolutionResponse>> response) {
         return mappingResponse(response);
     }
 
+    private EditAppealResolutionSolutionDomain mappingResponse(Response<DataResponse<EditAppealSolutionResponse>> response) {
 
-    private EditAppealResolutionSolutionDomain mappingResponse(Response<TkpdResponse> response) {
-        if (response.isSuccessful()) {
-            if (response.body().isNullData()) {
-                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
-            }
-        } else {
-            throw new RuntimeException(String.valueOf(response.code()));
-        }
         EditAppealSolutionResponse editAppealSolutionResponse =
-                response.body().convertDataObj(EditAppealSolutionResponse.class);
+                response.body().getData();
         EditAppealResolutionSolutionDomain model =
                 new EditAppealResolutionSolutionDomain(response.isSuccessful(),
                         editAppealSolutionResponse != null ?

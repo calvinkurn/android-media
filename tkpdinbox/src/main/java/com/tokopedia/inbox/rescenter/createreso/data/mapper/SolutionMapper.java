@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.FreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.RequireResponse;
@@ -16,6 +15,8 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionRe
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -23,28 +24,20 @@ import rx.functions.Func1;
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionResponseDomain> {
+public class SolutionMapper implements Func1<Response<DataResponse<SolutionResponseResponse>>, SolutionResponseDomain> {
 
-    @Override
-    public SolutionResponseDomain call(Response<TkpdResponse> response) {
-        return mappingResponse(response);
+    @Inject
+    public SolutionMapper() {
     }
 
+    @Override
+    public SolutionResponseDomain call(Response<DataResponse<SolutionResponseResponse>> dataResponseResponse) {
+        return mappingResponse(dataResponseResponse);
+    }
 
-    private SolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
-        if (response.isSuccessful()) {
-            if (response.body().isNullData()) {
-                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException("");
-                }
-            }
-        } else {
-            throw new RuntimeException(String.valueOf(response.code()));
-        }
+    private SolutionResponseDomain mappingResponse(Response<DataResponse<SolutionResponseResponse>> response) {
         SolutionResponseResponse solutionResponseResponse =
-                response.body().convertDataObj(SolutionResponseResponse.class);
+                response.body().getData();
         return new SolutionResponseDomain(
                 solutionResponseResponse.getSolution().size() != 0 ?
                         mappingSolutionDomain(solutionResponseResponse.getSolution()) :

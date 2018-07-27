@@ -46,11 +46,6 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> getInboxSingleItem(@Path(PATH_RESOLUTION_ID) int resolutionId,
                                                                @QueryMap HashMap<String, Object> params);
 
-    @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_STEP_2_3)
-    Observable<Response<TkpdResponse>> getSolution(@Path(PATH_ORDER_ID) String orderId,
-                                                   @Body String object);
-
-
     @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_VALIDATE)
     Observable<Response<TkpdResponse>> postCreateValidateResolution(@Path(PATH_ORDER_ID) String orderId,
                                                             @Body String object);
@@ -62,22 +57,6 @@ public interface ResolutionApi {
     @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_CREATE)
     Observable<Response<TkpdResponse>> postCreateResolutionCache(@Path(PATH_ORDER_ID) String orderId,
                                                             @Body String object);
-
-    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_EDIT)
-    Observable<Response<TkpdResponse>> getEditSolution(@Path(PATH_RESOLUTION_ID) String resoId);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_EDIT)
-    Observable<Response<TkpdResponse>> postEditSolution(@Path(PATH_RESOLUTION_ID) String resoId,
-                                                        @FieldMap TKPDMapParam<String, Object> params);
-
-    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_APPEAL)
-    Observable<Response<TkpdResponse>> getAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_APPEAL)
-    Observable<Response<TkpdResponse>> postAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId,
-                                                        @FieldMap TKPDMapParam<String, Object> params);
 
     @Multipart
     @POST("")
