@@ -10,9 +10,9 @@ import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
 import com.tokopedia.kol.feature.comment.data.pojo.get.Tag;
-import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 
@@ -54,8 +54,8 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
 
         List<KolCommentViewModel> kolCommentViewModels
                 = converToKolCommentViewModelList(postComment.getComments());
-        if (postComment.getPostKol().getCommentCount() > GetKolCommentsUseCase.DEFAULT_LIMIT) {
-            list.add(addSeeAll(postComment));
+        if (postComment.getPostKol().getCommentCount() > GetKolPostDetailUseCase.DEFAULT_LIMIT) {
+            list.add(addSeeAll(postComment.getPostKol()));
         }
         Collections.reverse(kolCommentViewModels);
         list.addAll(kolCommentViewModels);
@@ -175,10 +175,10 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         );
     }
 
-    private SeeAllCommentsViewModel addSeeAll(GetUserPostComment postComment) {
+    private SeeAllCommentsViewModel addSeeAll(PostKol postKol) {
         return new SeeAllCommentsViewModel(
-                postComment.getPostKol().getId(),
-                postComment.getComments().size()
+                postKol.getId(),
+                postKol.getCommentCount()
         );
     }
 }
