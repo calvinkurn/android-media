@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.data.model;
+package com.tokopedia.navigation;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 /**
  * @author okasurya on 7/26/18.
  */
-public class NotificationBuyerOrderModel {
-    @SerializedName("confirmed")
+public class NotificationSellerOrderModel {
+    @SerializedName("newOrder")
     @Expose
-    private Integer confirmed;
-    @SerializedName("processed")
+    private Integer newOrder;
+    @SerializedName("readyToShip")
     @Expose
-    private Integer processed;
+    private Integer readyToShip;
     @SerializedName("shipped")
     @Expose
     private Integer shipped;
@@ -20,20 +20,20 @@ public class NotificationBuyerOrderModel {
     @Expose
     private Integer arriveAtDestination;
 
-    public Integer getConfirmed() {
-        return confirmed;
+    public Integer getNewOrder() {
+        return newOrder;
     }
 
-    public void setConfirmed(Integer confirmed) {
-        this.confirmed = confirmed;
+    public void setNewOrder(Integer newOrder) {
+        this.newOrder = newOrder;
     }
 
-    public Integer getProcessed() {
-        return processed;
+    public Integer getReadyToShip() {
+        return readyToShip;
     }
 
-    public void setProcessed(Integer processed) {
-        this.processed = processed;
+    public void setReadyToShip(Integer readyToShip) {
+        this.readyToShip = readyToShip;
     }
 
     public Integer getShipped() {

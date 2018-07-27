@@ -1,14 +1,7 @@
-package com.tokopedia.home.account.data.model;
+package com.tokopedia.navigation;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import com.tokopedia.navigation.DepositModel;
-import com.tokopedia.navigation.WalletModel;
-import com.tokopedia.navigation.ProfileModel;
-import com.tokopedia.navigation.UserShopInfoModel;
-import com.tokopedia.navigation.TokopointsModel;
-import com.tokopedia.navigation.NotificationsModel;
 
 /**
  * @author okasurya on 7/20/18.

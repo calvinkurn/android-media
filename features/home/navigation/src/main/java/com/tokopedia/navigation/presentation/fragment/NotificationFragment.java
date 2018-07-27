@@ -1,19 +1,13 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.BaseListAdapter;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
