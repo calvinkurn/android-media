@@ -343,9 +343,9 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public String getString(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable())
-            if (GTMContainer.getContainer() != null)
-                return GTMContainer.getContainer().getString(key);
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
+            return GTMContainer.getContainer().getString(key);
+        }
         return "";
     }
 
@@ -459,24 +459,25 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public boolean getBoolean(String key) {
-        boolean containerBoolean = false;
-        if (GTMContainer.getContainer() != null) {
-            containerBoolean = GTMContainer.getContainer().getBoolean(key);
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
+            return GTMContainer.getContainer().getBoolean(key);
         }
-        return ContainerHolderSingleton.isContainerHolderAvailable() && containerBoolean;
+        return false;
     }
 
     @Override
     public long getLong(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable())
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
             return GTMContainer.getContainer().getLong(key);
+        }
         return -1;
     }
 
     @Override
     public double getDouble(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable())
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
             return GTMContainer.getContainer().getDouble(key);
+        }
         return -1;
     }
 
