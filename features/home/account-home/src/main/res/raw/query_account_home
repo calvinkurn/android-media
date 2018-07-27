@@ -76,5 +76,6 @@ query {
       shipped
       arriveAtDestination
     }
+    total_notif
   }
 }

@@ -14,4 +14,6 @@ public interface GlobalNavRouter {
     Fragment getFeedPlusFragment();
 
     Fragment getCartFragment();
+
+    Intent getSellerInfoCallingIntent(Context context);
 }
