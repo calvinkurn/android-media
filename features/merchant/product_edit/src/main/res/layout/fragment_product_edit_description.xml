@@ -14,6 +14,7 @@
         android:layout_marginLeft="@dimen/dp_12">
 
         <EditText
+            android:id="@+id/editTextDescription"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:imeOptions="actionDone"
@@ -30,6 +31,7 @@
         android:layout_marginLeft="@dimen/dp_12">
 
         <EditText
+            android:id="@+id/editTextFeature"
             style="@style/EditText"
             android:hint="@string/product_hint_feature_product"
             android:layout_width="match_parent"
@@ -39,6 +41,7 @@
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <com.tokopedia.product.edit.price.LabelSwitch
+        android:id="@+id/labelSwitchNewCondition"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:clickable="true"
@@ -53,7 +56,7 @@
         android:layout_marginLeft="@dimen/dp_16" />
 
     <com.tokopedia.design.label.LabelView
-        android:id="@+id/label_view_video_product"
+        android:id="@+id/labelViewVideoProduct"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:clickable="true"
