@@ -7,19 +7,18 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostDetailFragment;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
  * @author by yfsx on 23/07/18.
  */
 public class KolPostDetailActivity extends BaseSimpleActivity {
 
-    public static final String PARAM_KOLPOST = "param_kolpost";
+    public static final String PARAM_POST_ID = "param_post_id";
 
-    public static Intent getInstance(Context context, KolPostViewModel model) {
+    public static Intent getInstance(Context context, String id) {
         Intent intent = new Intent(context, KolPostDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PARAM_KOLPOST, model);
+        bundle.putString(PARAM_POST_ID, id);
         intent.putExtras(bundle);
         return intent;
     }

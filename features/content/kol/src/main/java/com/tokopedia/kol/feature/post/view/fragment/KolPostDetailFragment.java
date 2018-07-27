@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
@@ -62,6 +62,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int DEFAULT_VALUE = -1;
 
+    private String postId;
     private RecyclerView recyclerView;
     private ImageView userAvatar;
     private EditText replyEditText;
@@ -123,24 +124,35 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     + KolRouter.class.getSimpleName());
         }
 
-        ImageHandler.loadImageCircle2(getContext(), userAvatar, userSession.getProfilePicture());
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
         adapter = new KolPostAdapter(typeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        populateData();
+
+        initVar();
 
         replyEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //TODO send comment
-
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    private void initVar() {
+        if (getArguments() != null) {
+            postId = getArguments().getString(KolPostDetailActivity.PARAM_POST_ID);
+
+            if (TextUtils.isEmpty(postId)) {
+                throw new IllegalStateException(KolPostDetailActivity.PARAM_POST_ID
+                        + " can not be empty/null!");
+            }
+        }
     }
 
     @Override
@@ -252,10 +264,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void populateData() {
         if (getArguments() != null &&
-                getArguments().get(KolPostDetailActivity.PARAM_KOLPOST) != null) {
+                getArguments().get(KolPostDetailActivity.PARAM_POST_ID) != null) {
 
             KolPostViewModel kolPostViewModel = (KolPostViewModel)
-                    getArguments().get(KolPostDetailActivity.PARAM_KOLPOST);
+                    getArguments().get(KolPostDetailActivity.PARAM_POST_ID);
             List<Visitable> itemList = new ArrayList<>();
             itemList.add(kolPostViewModel);
             adapter.addList(itemList);

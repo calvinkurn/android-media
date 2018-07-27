@@ -1,13 +1,16 @@
 package com.tokopedia.kol.feature.post.di;
 
 import com.tokopedia.kol.common.data.source.api.KolApi;
+import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
 import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
 import com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase;
 import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
+import com.tokopedia.kol.feature.post.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
 
 import dagger.Module;
@@ -46,4 +49,10 @@ public class KolProfileModule {
     }
 
 
+    @KolProfileScope
+    @Provides
+    KolPostDetailContract.Presenter provideKolPostDetailPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
+                                                                  LikeKolPostUseCase likeKolPostUseCase) {
+        return new KolPostDetailPresenter(getKolCommentsUseCase, likeKolPostUseCase);
+    }
 }

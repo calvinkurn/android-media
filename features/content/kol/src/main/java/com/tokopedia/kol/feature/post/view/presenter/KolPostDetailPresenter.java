@@ -1,7 +1,6 @@
 package com.tokopedia.kol.feature.post.view.presenter;
 
 import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
-import com.tokopedia.kol.feature.comment.domain.interactor.SendKolCommentUseCase;
 import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -16,15 +15,12 @@ import javax.inject.Inject;
 public class KolPostDetailPresenter implements KolPostDetailContract.Presenter {
 
     private final GetKolCommentsUseCase getKolCommentsUseCase;
-    private final SendKolCommentUseCase sendKolCommentUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
 
     @Inject
-    KolPostDetailPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
-                           SendKolCommentUseCase sendKolCommentUseCase,
+    public KolPostDetailPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
                            LikeKolPostUseCase likeKolPostUseCase) {
         this.getKolCommentsUseCase = getKolCommentsUseCase;
-        this.sendKolCommentUseCase = sendKolCommentUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
     }
 
@@ -40,12 +36,10 @@ public class KolPostDetailPresenter implements KolPostDetailContract.Presenter {
 
     @Override
     public void getCommentFirstTime(int id) {
-
-    }
-
-    @Override
-    public void sendComment(int id, String comment) {
-
+//        getKolCommentsUseCase.execute(
+//                GetKolCommentsUseCase.getFirstTimeParam(id),
+//                new GetKolCommentFirstTimeSubscriber()
+//        );
     }
 
     @Override

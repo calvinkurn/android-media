@@ -15,8 +15,6 @@ public interface KolPostDetailContract {
     interface Presenter extends CustomerPresenter<View> {
         void getCommentFirstTime(int id);
 
-        void sendComment(int id, String comment);
-
         void followKol(int id, int rowNumber, KolPostListener.View kolListener);
 
         void unfollowKol(int id, int rowNumber, KolPostListener.View kolListener);
