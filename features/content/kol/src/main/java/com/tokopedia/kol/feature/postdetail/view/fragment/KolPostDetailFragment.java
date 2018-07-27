@@ -55,7 +55,7 @@ import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM
 
 public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostDetailContract.View, KolPostListener.View.Like,
-        KolPostListener.View.ViewHolder, KolComment.View.ViewHolder {
+        KolPostListener.View.ViewHolder, KolComment.View.ViewHolder, KolComment.View.SeeAll {
 
     private static final String EXTRA_IS_FOLLOWING = "is_following";
     private static final int IS_FOLLOWING_TRUE = 1;
@@ -132,7 +132,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
-        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this));
+        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 

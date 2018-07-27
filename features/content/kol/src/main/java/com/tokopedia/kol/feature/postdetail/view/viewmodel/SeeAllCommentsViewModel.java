@@ -9,10 +9,20 @@ import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDeta
 
 public class SeeAllCommentsViewModel implements Visitable<KolPostDetailTypeFactory> {
 
+    private int postId;
     private int totalComments;
 
-    public SeeAllCommentsViewModel(int totalComments) {
+    public SeeAllCommentsViewModel(int postId, int totalComments) {
+        this.postId = postId;
         this.totalComments = totalComments;
+    }
+
+    public int getPostId() {
+        return postId;
+    }
+
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
 
     public int getTotalComments() {

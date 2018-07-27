@@ -22,11 +22,14 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
 
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final KolComment.View.ViewHolder kolCommentListener;
+    private final KolComment.View.SeeAll seeAll;
 
     public KolPostDetailTypeFactoryImpl(KolPostListener.View.ViewHolder kolPostListener,
-                                        KolComment.View.ViewHolder kolCommentListener) {
+                                        KolComment.View.ViewHolder kolCommentListener,
+                                        KolComment.View.SeeAll seeAll) {
         this.kolPostListener = kolPostListener;
         this.kolCommentListener = kolCommentListener;
+        this.seeAll = seeAll;
     }
 
     @Override
@@ -54,6 +57,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         }
         else if (viewType == KolCommentViewHolder.LAYOUT)
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
+        else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
+            abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
         else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;

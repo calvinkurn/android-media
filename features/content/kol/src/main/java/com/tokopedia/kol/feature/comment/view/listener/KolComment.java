@@ -54,6 +54,10 @@ public interface KolComment {
 
             boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
         }
+
+        interface SeeAll {
+            void onGoToKolComment(int rowNumber, int id);
+        }
     }
 
     interface Presenter extends CustomerPresenter<View> {
