@@ -43,11 +43,4 @@ public class TrainHomepageActivity extends TrainBaseActivity implements HasCompo
         return component;
     }
 
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        ((TrainHomepageFragment) getFragment()).showBottomMenus();
-
-        return false;
-    }
-
 }

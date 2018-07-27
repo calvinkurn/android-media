@@ -82,7 +82,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private TrainHomepageViewModel viewModel;
 
-    private Menus menus;
+
 
     private AbstractionRouter abstractionRouter;
 
@@ -494,46 +494,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         super.onStop();
 
         trainHomepagePresenterImpl.saveHomepageViewModelToCache(viewModel);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_train_homepage, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_overflow_menu) {
-            showBottomMenus();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void showBottomMenus() {
-        menus = new Menus(getActivity());
-        String[] menuItem = new String[]{
-                getResources().getString(R.string.train_homepage_bottom_menu_order_list),
-                getResources().getString(R.string.train_homepage_bottom_menu_check_orders)
-        };
-        menus.setItemMenuList(menuItem);
-
-        menus.setOnActionClickListener(view -> menus.dismiss());
-
-        menus.setOnItemMenuClickListener((itemMenus, pos) -> {
-            if (pos == 0) {
-                if (getActivity().getApplication() instanceof TrainRouter) {
-                    ((TrainRouter) getActivity().getApplication()).goToTrainOrderList(getActivity());
-                }
-            }
-            menus.dismiss();
-        });
-
-        menus.setActionText(getResources().getString(R.string.train_homepage_bottom_menu_action_text));
-
-        menus.show();
     }
 
     @Override
