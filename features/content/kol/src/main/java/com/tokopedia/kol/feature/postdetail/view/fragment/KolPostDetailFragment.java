@@ -26,17 +26,19 @@ import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
-import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
-import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostDetailViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
+import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
+import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 
 import javax.inject.Inject;
 
@@ -50,7 +52,8 @@ import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM
  */
 
 public class KolPostDetailFragment extends BaseDaggerFragment
-        implements KolPostDetailContract.View, KolPostListener.View.Like, KolPostListener.View.ViewHolder {
+        implements KolPostDetailContract.View, KolPostListener.View.Like,
+        KolPostListener.View.ViewHolder, KolComment.View.ViewHolder {
 
     private static final String EXTRA_IS_FOLLOWING = "is_following";
     private static final int IS_FOLLOWING_TRUE = 1;
@@ -63,7 +66,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private RecyclerView recyclerView;
     private ImageView userAvatar;
     private EditText replyEditText;
-    private KolPostAdapter adapter;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
 
@@ -71,6 +73,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     KolPostDetailContract.Presenter presenter;
     @Inject
     UserSession userSession;
+    @Inject
+    KolPostDetailAdapter adapter;
 
     public static KolPostDetailFragment getInstance(Bundle bundle) {
         KolPostDetailFragment fragment = new KolPostDetailFragment();
@@ -126,7 +130,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
-        adapter = new KolPostAdapter(typeFactory);
+        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -242,6 +246,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onGoToKolComment(int rowNumber, int id) {
         Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
+    }
+
+    @Override
+    public void onGoToProfile(String url) {
+        kolRouter.openRedirectUrl(getActivity(), url);
+    }
+
+    @Override
+    public boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition) {
+        return false;
     }
 
     @Override

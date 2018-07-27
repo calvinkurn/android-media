@@ -19,10 +19,10 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         implements KolPostDetailTypeFactory {
 
     private final KolPostListener.View.ViewHolder kolPostListener;
-    private final KolComment.View kolCommentListener;
+    private final KolComment.View.ViewHolder kolCommentListener;
 
     public KolPostDetailTypeFactoryImpl(KolPostListener.View.ViewHolder kolPostListener,
-                                        KolComment.View kolCommentListener) {
+                                        KolComment.View.ViewHolder kolCommentListener) {
         this.kolPostListener = kolPostListener;
         this.kolCommentListener = kolCommentListener;
     }

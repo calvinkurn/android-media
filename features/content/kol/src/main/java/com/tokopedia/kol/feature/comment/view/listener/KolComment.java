@@ -45,11 +45,15 @@ public interface KolComment {
 
         void showProgressDialog();
 
-        boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
-
         void onErrorDeleteComment(String errorMessage);
 
         void onSuccessDeleteComment(int adapterPosition);
+
+        interface ViewHolder {
+            void onGoToProfile(String url);
+
+            boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
+        }
     }
 
     interface Presenter extends CustomerPresenter<View> {

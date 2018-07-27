@@ -47,7 +47,8 @@ import javax.inject.Inject;
  * @author by nisie on 10/27/17.
  */
 
-public class KolCommentFragment extends BaseDaggerFragment implements KolComment.View {
+public class KolCommentFragment extends BaseDaggerFragment
+        implements KolComment.View, KolComment.View.ViewHolder {
 
     public static final String ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT";
 
@@ -89,7 +90,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     protected void initInjector() {
         DaggerKolCommentComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolCommentModule(new KolCommentModule(this))
+                .kolCommentModule(new KolCommentModule(this, this))
                 .build()
                 .inject(this);
     }
