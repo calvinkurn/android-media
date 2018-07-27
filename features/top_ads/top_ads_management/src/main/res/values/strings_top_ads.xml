@@ -278,7 +278,7 @@
     <string name="label_top_ads_choose_group_desc">Pilih Grup Iklan yang akan Anda tambahkan kata kunci.</string>
     <string name="label_top_ads_choose_group_info">Kata kunci dalam grup</string>
     <string name="label_top_ads_choose_type">Pilih Tipe</string>
-    <string name="top_ads_title_keyword_add_keyword_desc">Biaya maksimum yang akan diterapkan adalah Rp 1.000 perklik.</string>
+    <string name="top_ads_title_keyword_add_keyword_desc">Biaya maksimum yang akan diterapkan adalah Rp 750 perklik.</string>
     <string name="keyword_group_label_view">Grup: %1s</string>
     <string name="top_ads_keyword_total_keyword_in_group_2">%1$d Kata Kunci</string>
     <string name="keyword_enter_product_description"><i>Contoh Penulisan:\nPakaian Wanita\nSepatu Bola</i></string>

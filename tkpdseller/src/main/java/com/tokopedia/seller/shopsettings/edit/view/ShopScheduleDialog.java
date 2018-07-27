@@ -150,7 +150,7 @@ public class ShopScheduleDialog extends DialogFragment {
                         posButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (validateForm()) {
+                                if (validateForm() && shopEditorPresenter != null) {
                                     if (closeCheckbox.isChecked()) {
                                         shopScheduleModel = new ShopScheduleModel(noteText.getText().toString(),
                                                 startDate.getText().toString(), endDate.getText().toString(), 2); // close shop
