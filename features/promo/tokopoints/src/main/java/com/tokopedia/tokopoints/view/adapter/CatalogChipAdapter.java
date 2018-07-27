@@ -71,6 +71,7 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
             holder.timer = new CountDownTimer(item.getTimeRemainingSeconds() * 1000, TICK_MS) {
                 @Override
                 public void onTick(long l) {
+                    item.setTimeRemainingSeconds(l / 1000);
                     int seconds = (int) (l / 1000) % 60;
                     int minutes = (int) ((l / (1000 * 60)) % 60);
                     int hours = (int) ((l / (1000 * 60 * 60)) % 24);
