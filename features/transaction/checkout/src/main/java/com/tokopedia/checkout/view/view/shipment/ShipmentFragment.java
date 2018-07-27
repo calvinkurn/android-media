@@ -227,43 +227,35 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (shipmentPresenter.getPromoCodeAppliedData() != null) {
-            outState.putParcelable(PromoCodeAppliedData.class.getSimpleName(), shipmentPresenter.getPromoCodeAppliedData());
-        }
-        if (shipmentPresenter.getCartPromoSuggestion() != null) {
-            outState.putParcelable(CartPromoSuggestion.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestion());
-        }
-        if (shipmentPresenter.getRecipientAddressModel() != null) {
-            outState.putParcelable(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
-        }
         if (shipmentPresenter.getShipmentCartItemModelList() != null) {
+            outState.putParcelable(PromoCodeAppliedData.class.getSimpleName(), shipmentPresenter.getPromoCodeAppliedData());
+            outState.putParcelable(CartPromoSuggestion.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestion());
+            outState.putParcelable(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
             outState.putParcelableArrayList(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
-        }
-        if (shipmentPresenter.getShipmentDonationModel() != null) {
             outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
-        }
-        if (shipmentPresenter.getShipmentCostModel() != null) {
             outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
-        }
-        if (shipmentPresenter.getShipmentCheckoutButtonModel() != null) {
             outState.putParcelable(ShipmentCheckoutButtonModel.class.getSimpleName(), shipmentPresenter.getShipmentCheckoutButtonModel());
+            outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
         }
-        outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            shipmentPresenter.setPromoCodeAppliedData(savedInstanceState.getParcelable(PromoCodeAppliedData.class.getSimpleName()));
-            shipmentPresenter.setCartPromoSuggestion(savedInstanceState.getParcelable(CartPromoSuggestion.class.getSimpleName()));
-            shipmentPresenter.setRecipientAddressModel(savedInstanceState.getParcelable(RecipientAddressModel.class.getSimpleName()));
-            shipmentPresenter.setShipmentCartItemModelList(savedInstanceState.getParcelableArrayList(ShipmentCartItemModel.class.getSimpleName()));
-            shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
-            shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
-            shipmentPresenter.setShipmentCheckoutButtonModel(savedInstanceState.getParcelable(ShipmentCheckoutButtonModel.class.getSimpleName()));
-            shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
-            renderCheckoutPage(true);
+            if (savedInstanceState.getParcelableArrayList(ShipmentCartItemModel.class.getSimpleName()) != null) {
+                shipmentPresenter.setPromoCodeAppliedData(savedInstanceState.getParcelable(PromoCodeAppliedData.class.getSimpleName()));
+                shipmentPresenter.setCartPromoSuggestion(savedInstanceState.getParcelable(CartPromoSuggestion.class.getSimpleName()));
+                shipmentPresenter.setRecipientAddressModel(savedInstanceState.getParcelable(RecipientAddressModel.class.getSimpleName()));
+                shipmentPresenter.setShipmentCartItemModelList(savedInstanceState.getParcelableArrayList(ShipmentCartItemModel.class.getSimpleName()));
+                shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
+                shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
+                shipmentPresenter.setShipmentCheckoutButtonModel(savedInstanceState.getParcelable(ShipmentCheckoutButtonModel.class.getSimpleName()));
+                shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
+                renderCheckoutPage(true);
+            } else {
+                shipmentPresenter.processInitialLoadCheckoutPage(false);
+            }
         }
     }
 
@@ -821,6 +813,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null).getChangeAddressRequestData());
                         shipmentPresenter.changeShippingAddress(newAddress);
                     }
+                }
+                break;
+
+            case CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS:
+                shipmentPresenter.processInitialLoadCheckoutPage(false);
+                break;
+
+            case Activity.RESULT_CANCELED:
+                if (getActivity() != null && data == null && shipmentPresenter.getShipmentCartItemModelList() == null) {
+                    getActivity().finish();
                 }
                 break;
 
