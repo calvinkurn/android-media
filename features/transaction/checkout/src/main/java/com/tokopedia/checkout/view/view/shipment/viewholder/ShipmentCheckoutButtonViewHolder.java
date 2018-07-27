@@ -37,7 +37,7 @@ public class ShipmentCheckoutButtonViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCheckoutButtonModel.isHideBottomShadow()) {
             llContainer.setBackgroundResource(R.drawable.bg_shadow_top);
         } else {
-            llContainer.setBackgroundResource(R.drawable.bg_shadow);
+            llContainer.setBackgroundResource(R.drawable.bg_checkout_shadow);
         }
         tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_orange_enabled);
         tvSelectPaymentMethod.setTextColor(tvSelectPaymentMethod.getContext().getResources().getColor(R.color.white));

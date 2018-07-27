@@ -276,8 +276,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvShipment.setAdapter(shipmentAdapter);
         if (isInitialRender) {
-            rvShipment.addItemDecoration(
-                    new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+            rvShipment.addItemDecoration(new CartItemDecoration());
         }
         CartItemPromoHolderData cartItemPromoHolderData =
                 CartItemPromoHolderData.createInstanceFromAppliedPromo(promoCodeAppliedData);
