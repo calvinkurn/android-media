@@ -1,0 +1,36 @@
+query {
+  notifications{
+    purchase {
+      deliveryConfirm
+      orderStatus
+      paymentConfirm
+      reorder
+    }
+    sales {
+      newOrder
+      shippingConfirm
+      shippingStatus
+	}
+    resolutionAs {
+      buyer
+      seller
+    }
+    sellerInfo {
+      notification
+    }
+    userSatisfactionSurvey
+    buyerOrderStatus {
+      confirmed
+      processed
+      shipped
+      arriveAtDestination
+    }
+    sellerOrderStatus {
+      newOrder
+      readyToShip
+      shipped
+      arriveAtDestination
+    }
+    total_notif
+  }
+}

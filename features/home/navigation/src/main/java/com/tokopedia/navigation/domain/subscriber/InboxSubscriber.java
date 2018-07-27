@@ -31,8 +31,6 @@ public class InboxSubscriber extends Subscriber<NotificationEntity> {
     @Override
     public void onNext(NotificationEntity notificationEntity) {
         if (notificationEntity != null)
-            this.inboxView.onRenderInboxList(
-                NotificationMapper.inboxMapper(notificationEntity.getNotifications().getInbox(),
-                        notificationEntity.getNotifications().getChat()));
+            this.inboxView.onRenderNotifINbox(notificationEntity.getNotifications());
     }
 }

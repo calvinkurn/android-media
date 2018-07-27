@@ -1,101 +1,82 @@
 package com.tokopedia.navigation.presentation.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tokopedia.navigation.R;
 
+import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
+import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by meta on 15/07/18.
  */
-public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHolder> {
+public class InboxAdapter extends BaseListAdapter<Inbox, InboxAdapter.InboxViewHolder> {
 
-    private OnItemClickListener onItemClickListener;
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+    public InboxAdapter(Context context) {
+        super(context);
     }
 
-    private List<Inbox> items = new ArrayList<>();
+    public void updateValue(NotificationEntity.Notification entity) {
+        if (items != null && items.size() > 0) {
+            items.get(InboxFragment.CHAT_MENU)
+                    .setTotalBadge(entity.getChat().getUnreads());
 
-    public InboxAdapter() {
-    }
+            items.get(InboxFragment.DISCUSSION_MENU)
+                    .setTotalBadge(entity.getInbox().getTalk());
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
+            items.get(InboxFragment.REVIEW_MENU)
+                    .setTotalBadge(entity.getInbox().getReview());
 
-    public void add(Inbox item) {
-        items.add(item);
-    }
-
-    public void add(Inbox item, int position) {
-        items.add(position, item);
-        notifyItemInserted(position);
-    }
-
-    public void addAll(List<Inbox> items) {
-        for (Inbox item : items) {
-            add(item);
+            items.get(InboxFragment.HELP_MENU)
+                    .setTotalBadge(entity.getInbox().getTicket());
         }
-    }
-
-    public void clear() {
-        if (items != null && !items.isEmpty()) {
-            notifyItemRangeRemoved(0, getItemCount());
-            items.clear();
-        }
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public InboxViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new InboxViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_inbox, parent, false));
+        return new InboxViewHolder(getView(parent, viewType), onItemClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InboxViewHolder holder, int position) {
-        Inbox item = items.get(position);
-        holder.icon.setImageResource(item.getIcon());
-        holder.title.setText(item.getTitle());
-        holder.subtitle.setText(item.getSubtitle());
-        if (!item.getTotalBadge().isEmpty()) {
-            holder.badge.setVisibility(View.VISIBLE);
-            holder.badge.setText(item.getTotalBadge());
-        } else {
-            holder.badge.setVisibility(View.GONE);
-        }
-        holder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener != null)
-                onItemClickListener.onItemClick(v, position);
-        });
+    protected int getItemResourceLayout(int viewType) {
+        return R.layout.item_common_subtitle;
     }
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    class InboxViewHolder extends RecyclerView.ViewHolder {
+    class InboxViewHolder extends BaseViewHolder<Inbox> {
 
         private ImageView icon;
         private TextView title, subtitle, badge;
 
-        public InboxViewHolder(View itemView) {
-            super(itemView);
+        public InboxViewHolder(View itemView, OnItemClickListener onItemClickListener) {
+            super(itemView, onItemClickListener);
             icon = itemView.findViewById(R.id.icon);
             title = itemView.findViewById(R.id.title);
             subtitle = itemView.findViewById(R.id.subtitle);
             badge = itemView.findViewById(R.id.badge);
+        }
+
+
+        @Override
+        public void bind(Inbox item) {
+            icon.setImageResource(item.getIcon());
+            title.setText(item.getTitle());
+            subtitle.setText(item.getSubtitle());
+            if (item.getTotalBadge() != null
+                    && !item.getTotalBadge().isEmpty()
+                    && !item.getTotalBadge().equalsIgnoreCase("0")) {
+                badge.setVisibility(View.VISIBLE);
+                badge.setText(item.getTotalBadge());
+            } else {
+                badge.setVisibility(View.GONE);
+            }
         }
     }
 }

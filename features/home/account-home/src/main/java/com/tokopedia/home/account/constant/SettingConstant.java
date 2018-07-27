@@ -25,6 +25,8 @@ public class SettingConstant {
     public static final int SETTING_APP_NOTIF_ID = 41;
     public static final int SETTING_EMAIL_NOTIF_ID = 42;
 
+    public static final int SETTING_DEV_OPTIONS = 0;
+
     public static class Url {
         public static final String BASE_MOBILE = "https://m.tokopedia.com/";
         public static final String PATH_TERM_CONDITION = "terms.pl";

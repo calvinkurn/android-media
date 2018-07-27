@@ -2,6 +2,9 @@
     package="com.tokopedia.navigation">
 
     <application>
-        <!--<activity android:name=".presentation.activity.MainParentActivity" />-->
+        <activity
+            android:name=".presentation.activity.NotificationActivity"
+            android:label="@string/notifications"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

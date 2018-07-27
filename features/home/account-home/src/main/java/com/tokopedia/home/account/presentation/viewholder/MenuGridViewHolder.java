@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.MenuGridAdapter;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.MenuGridSpacingDecoration;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 
@@ -26,15 +26,16 @@ public class MenuGridViewHolder extends AbstractViewHolder<MenuGridViewModel> {
     private TextView textLink;
     private RecyclerView recyclerCategory;
     private MenuGridAdapter adapter;
-    private AccountTypeFactory.Listener listener;
+    private AccountItemListener listener;
     private RecyclerView.RecycledViewPool viewPool;
 
-    public MenuGridViewHolder(View itemView) {
+    public MenuGridViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
+        this.listener = listener;
         textTitle = itemView.findViewById(R.id.text_title);
         textLink = itemView.findViewById(R.id.text_link);
         recyclerCategory = itemView.findViewById(R.id.recycler_category);
-        adapter = new MenuGridAdapter();
+        adapter = new MenuGridAdapter(listener);
         recyclerCategory.setAdapter(adapter);
         recyclerCategory.setLayoutManager(new GridLayoutManager(itemView.getContext(), 4, LinearLayoutManager.VERTICAL, false));
         recyclerCategory.addItemDecoration(new MenuGridSpacingDecoration(4, 0, false));
@@ -48,10 +49,9 @@ public class MenuGridViewHolder extends AbstractViewHolder<MenuGridViewModel> {
 
         if (!TextUtils.isEmpty(element.getLinkText())) {
             textLink.setText(element.getLinkText());
-//            textLink.setOnClickListener(v -> listener.onLinkClicked(categoryGrid.getApplinkUrl()));
+            textLink.setOnClickListener(v -> listener.onMenuGridLinkClicked(element));
         }
 
-//        adapter.setListener(listener);
         adapter.setNewData(element.getItems());
     }
 }

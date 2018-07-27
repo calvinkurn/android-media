@@ -22,7 +22,21 @@
             android:lineSpacingExtra="3dp"
             android:fontFamily="sans-serif"/>
 
+        <TextView
+            android:id="@+id/badge"
+            android:visibility="gone"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:textSize="@dimen/sp_12"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:background="@drawable/circle_red"/>
+
         <ImageView
+            android:id="@+id/arrow"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_arrow_right_default"
             android:tint="@color/grey_400"
@@ -32,6 +46,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/border"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_width="match_parent"
