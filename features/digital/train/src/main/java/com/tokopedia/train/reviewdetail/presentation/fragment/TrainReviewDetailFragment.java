@@ -252,11 +252,9 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     public void navigateToTopPayActivity(TrainCheckoutViewModel trainCheckoutViewModel) {
-//        if (getActivity().getApplication() instanceof TrainRouter) {
         Intent intent = trainRouter.getTopPayIntent(
                 getActivity(), trainCheckoutViewModel);
         startActivityForResult(intent, REQUEST_CODE_TOPPAY);
-//        }
     }
 
     @Override
@@ -271,20 +269,14 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     public void navigateToOrderList() {
-//        if (getActivity().getApplication() instanceof TrainRouter) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
-//            if (getActivity().getApplication() instanceof TrainRouter
-//                    && ((TrainRouter) getActivity().getApplication())
-//                    .getHomeIntent(getActivity()) != null) {
         Intent intent = trainRouter.getHomeIntent(getActivity());
         taskStackBuilder.addNextIntent(intent);
-//            }
         Intent trainHomepage = TrainHomepageActivity.getCallingIntent(getActivity());
         Intent trainOrders = trainRouter.getTrainOrderListIntent(getActivity());
         taskStackBuilder.addNextIntent(trainHomepage);
         taskStackBuilder.addNextIntent(trainOrders);
         taskStackBuilder.startActivities();
-//        }
     }
 
     @Override
@@ -300,11 +292,9 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     public void onClickUseVoucher() {
-//        if (getActivity().getApplication() instanceof TrainRouter) {
         Intent intent = trainRouter.getIntentOfLoyaltyActivityWithoutCoupon(
                 getActivity(), HACHIKO_TRAIN_KEY, trainSoftbook.getReservationId(), trainSoftbook.getReservationCode());
         startActivityForResult(intent, REQUEST_CODE_LOYALTY);
-//        }
     }
 
     @Override
@@ -335,7 +325,6 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
             case REQUEST_CODE_TOPPAY:
                 hideCheckoutLoading();
 //                reviewTime.start();
-//                if (getActivity().getApplication() instanceof TrainRouter) {
                 int paymentSuccess = trainRouter.getTopPayPaymentSuccessCode();
                 int paymentFailed = trainRouter.getTopPayPaymentFailedCode();
                 int paymentCancel = trainRouter.getTopPayPaymentCancelCode();
@@ -346,7 +335,6 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                 } else if (resultCode == paymentCancel) {
                     trainReviewDetailPresenter.onPaymentCancelled();
                 }
-//                }
                 break;
             case REQUEST_CODE_LOYALTY:
                 if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
