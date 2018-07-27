@@ -143,6 +143,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         });
     }
 
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
     private void initVar() {
         if (getArguments() != null) {
             postId = getArguments().getInt(KolPostDetailActivity.PARAM_POST_ID);
@@ -213,7 +219,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onUnlikeKolClicked(int adapterPosition, int id) {
-        presenter.likeKol(id, adapterPosition, this);
+        presenter.unlikeKol(id, adapterPosition, this);
     }
 
     @Override
