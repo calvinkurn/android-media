@@ -1,5 +1,5 @@
-mutation kaiCheckout(reservationId: String!, reservationCode: String!, galaCode: String!, client: String!, version: String!) {
-  kaiCheckout(reservationId: $reservationId, reservationCode: $reservationCode, galaCode: $galaCode, client: $client, version: $version) {
+mutation kaiCheckout($reservationId: String!, $reservationCode: String!, $galaCode: String!, $client: String!, $version: String!) {
+  kaiCheckout(input: {reservationId: $reservationId, reservationCode: $reservationCode, galaCode: $galaCode, client: $client, version: $version}) {
     redirectURL
     thanksURL
     callbackURLSuccess

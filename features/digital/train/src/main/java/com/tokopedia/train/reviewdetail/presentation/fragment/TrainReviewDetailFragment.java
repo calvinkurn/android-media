@@ -1,5 +1,6 @@
 package com.tokopedia.train.reviewdetail.presentation.fragment;
 
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -17,9 +21,11 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.di.DaggerTrainReviewDetailComponent;
 import com.tokopedia.train.reviewdetail.di.TrainReviewDetailComponent;
@@ -52,12 +58,17 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     @Inject
     TrainReviewDetailPresenter trainReviewDetailPresenter;
 
+    @Inject
+    TrainRouter trainRouter;
+
     private CountdownTimeView countdownTimeView;
     private CardWithAction cardDepartureTrip;
     private CardWithAction cardReturnTrip;
     private ViewTrainReviewDetailPriceSection viewTrainReviewDetailPriceSection;
     private VoucherCartHachikoView voucherCartHachikoView;
     private AppCompatButton buttonSubmit;
+    private LinearLayout containerTrainReview;
+    private ProgressBar progressBar;
 
     private static final String ARGS_TRAIN_SOFTBOOK = "ARGS_TRAIN_SOFTBOOK";
     private static final String ARGS_TRAIN_SCHEDULE_BOOKING = "ARGS_TRAIN_SCHEDULE_BOOKING";
@@ -116,6 +127,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         viewTrainReviewDetailPriceSection = rootview.findViewById(R.id.view_train_review_detail_price_section);
         voucherCartHachikoView = rootview.findViewById(R.id.voucher_cart_hachiko_view);
         buttonSubmit = rootview.findViewById(R.id.button_train_review_submit);
+        containerTrainReview = rootview.findViewById(R.id.container_train_review);
+        progressBar = rootview.findViewById(R.id.train_review_progress_bar);
 
         voucherCartHachikoView.setActionListener(this);
         voucherCartHachikoView.setPromoLabelOnly();
@@ -238,17 +251,60 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
+    public void navigateToTopPayActivity(TrainCheckoutViewModel trainCheckoutViewModel) {
+//        if (getActivity().getApplication() instanceof TrainRouter) {
+        Intent intent = trainRouter.getTopPayIntent(
+                getActivity(), trainCheckoutViewModel);
+        startActivityForResult(intent, REQUEST_CODE_TOPPAY);
+//        }
+    }
+
+    @Override
+    public void showPaymentFailedErrorMessage(int resId) {
+        Toast.makeText(getActivity(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setNeedToRefreshOnPassengerInfo() {
+
+    }
+
+    @Override
+    public void navigateToOrderList() {
+//        if (getActivity().getApplication() instanceof TrainRouter) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+//            if (getActivity().getApplication() instanceof TrainRouter
+//                    && ((TrainRouter) getActivity().getApplication())
+//                    .getHomeIntent(getActivity()) != null) {
+        Intent intent = trainRouter.getHomeIntent(getActivity());
+        taskStackBuilder.addNextIntent(intent);
+//            }
+        Intent trainHomepage = TrainHomepageActivity.getCallingIntent(getActivity());
+        Intent trainOrders = trainRouter.getTrainOrderListIntent(getActivity());
+        taskStackBuilder.addNextIntent(trainHomepage);
+        taskStackBuilder.addNextIntent(trainOrders);
+        taskStackBuilder.startActivities();
+//        }
+    }
+
+    @Override
+    public void showCheckoutLoading() {
+        containerTrainReview.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
         viewTrainReviewDetailPriceSection.showScheduleTripsPrice(departureTrip, returnTrip);
     }
 
     @Override
     public void onClickUseVoucher() {
-        if (getActivity().getApplication() instanceof TrainRouter) {
-            Intent intent = ((TrainRouter) getActivity().getApplication()).getIntentOfLoyaltyActivityWithoutCoupon(
-                    getActivity(), HACHIKO_TRAIN_KEY, trainSoftbook.getReservationId(), trainSoftbook.getReservationCode());
-            startActivityForResult(intent, REQUEST_CODE_LOYALTY);
-        }
+//        if (getActivity().getApplication() instanceof TrainRouter) {
+        Intent intent = trainRouter.getIntentOfLoyaltyActivityWithoutCoupon(
+                getActivity(), HACHIKO_TRAIN_KEY, trainSoftbook.getReservationId(), trainSoftbook.getReservationCode());
+        startActivityForResult(intent, REQUEST_CODE_LOYALTY);
+//        }
     }
 
     @Override
@@ -276,30 +332,22 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-//            case REQUEST_CODE_NEW_PRICE_DIALOG:
-//                if (resultCode != Activity.RESULT_OK) {
-//                    FlightFlowUtil.actionSetResultAndClose(getActivity(),
-//                            getActivity().getIntent(),
-//                            FlightFlowConstant.PRICE_CHANGE
-//                    );
-//                }
-//                break;
-//            case REQUEST_CODE_TOPPAY:
-//                hideCheckoutLoading();
+            case REQUEST_CODE_TOPPAY:
+                hideCheckoutLoading();
 //                reviewTime.start();
 //                if (getActivity().getApplication() instanceof TrainRouter) {
-//                    int paymentSuccess = ((TrainRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
-//                    int paymentFailed = ((TrainRouter) getActivity().getApplication()).getTopPayPaymentFailedCode();
-//                    int paymentCancel = ((TrainRouter) getActivity().getApplication()).getTopPayPaymentCancelCode();
-//                    if (resultCode == paymentSuccess) {
-//                        trainReviewDetailPresenter.onPaymentSuccess();
-//                    } else if (resultCode == paymentFailed) {
-//                        trainReviewDetailPresenter.onPaymentFailed();
-//                    } else if (resultCode == paymentCancel) {
-//                        trainReviewDetailPresenter.onPaymentCancelled();
-//                    }
+                int paymentSuccess = trainRouter.getTopPayPaymentSuccessCode();
+                int paymentFailed = trainRouter.getTopPayPaymentFailedCode();
+                int paymentCancel = trainRouter.getTopPayPaymentCancelCode();
+                if (resultCode == paymentSuccess) {
+                    trainReviewDetailPresenter.onPaymentSuccess();
+                } else if (resultCode == paymentFailed) {
+                    trainReviewDetailPresenter.onPaymentFailed();
+                } else if (resultCode == paymentCancel) {
+                    trainReviewDetailPresenter.onPaymentCancelled();
+                }
 //                }
-//                break;
+                break;
             case REQUEST_CODE_LOYALTY:
                 if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                     Bundle bundle = data.getExtras();
@@ -315,9 +363,13 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                         }
                     }
                 }
-
                 break;
         }
+    }
+
+    private void hideCheckoutLoading() {
+        progressBar.setVisibility(View.GONE);
+        containerTrainReview.setVisibility(View.VISIBLE);
     }
 
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.checkout.domain.TrainCheckoutUseCase;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
@@ -215,6 +216,8 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
     @Override
     public void checkout(String reservationId, String reservationCode, String galaCode, String client, String version) {
+        getView().showCheckoutLoading();
+
         trainCheckoutUseCase.execute(
                 trainCheckoutUseCase.createRequestParams(reservationId, reservationCode, galaCode, client, version),
                 new Subscriber<TrainCheckoutViewModel>() {
@@ -225,15 +228,32 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d("TrainReviewDetailPresenter", e.getMessage());
                     }
 
                     @Override
                     public void onNext(TrainCheckoutViewModel trainCheckoutViewModel) {
                         Log.d("TrainReviewDetailPresenter", trainCheckoutViewModel.toString());
+                        getView().navigateToTopPayActivity(trainCheckoutViewModel);
                     }
                 }
         );
+    }
+
+    @Override
+    public void onPaymentSuccess() {
+        getView().navigateToOrderList();
+    }
+
+    @Override
+    public void onPaymentFailed() {
+        getView().showPaymentFailedErrorMessage(R.string.train_review_failed_checkout_message);
+    }
+
+    @Override
+    public void onPaymentCancelled() {
+        getView().setNeedToRefreshOnPassengerInfo();
+        getView().showPaymentFailedErrorMessage(R.string.train_review_cancel_checkout_message);
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Rizky on 26/07/18.
  */
-class TrainCheckoutParameterEntity {
+public class TrainCheckoutParameterEntity {
 
     @SerializedName("merchantCode")
     @Expose

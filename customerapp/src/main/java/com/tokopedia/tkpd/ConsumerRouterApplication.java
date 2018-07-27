@@ -290,6 +290,7 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.DaggerTrainComponent;
 import com.tokopedia.train.common.domain.TrainRepository;
@@ -855,6 +856,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
                 + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + TkpdBaseURL.DigitalWebsite.PARAM_DIGITAL_ISPULSA);
         context.startActivity(intent);
+    }
+
+    @Override
+    public Intent getTrainOrderListIntent(Context context) {
+        return DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
+                + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + TkpdBaseURL.DigitalWebsite.PARAM_DIGITAL_ISPULSA);
     }
 
     @Override
@@ -1588,6 +1595,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         paymentPassData.setCallbackFailedUrl(flightCheckoutViewModel.getCallbackFailedUrl());
         paymentPassData.setCallbackSuccessUrl(flightCheckoutViewModel.getCallbackSuccessUrl());
         paymentPassData.setQueryString(flightCheckoutViewModel.getQueryString());
+        return TopPayActivity.createInstance(activity, paymentPassData);
+    }
+
+    @Override
+    public Intent getTopPayIntent(Activity activity, TrainCheckoutViewModel trainCheckoutViewModel) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setPaymentId(trainCheckoutViewModel.getTransactionId());
+        paymentPassData.setTransactionId(trainCheckoutViewModel.getTransactionId());
+        paymentPassData.setRedirectUrl(trainCheckoutViewModel.getRedirectURL());
+        paymentPassData.setCallbackFailedUrl(trainCheckoutViewModel.getCallbackURLFailed());
+        paymentPassData.setCallbackSuccessUrl(trainCheckoutViewModel.getCallbackURLSuccess());
+        paymentPassData.setQueryString(trainCheckoutViewModel.getQueryString());
         return TopPayActivity.createInstance(activity, paymentPassData);
     }
 

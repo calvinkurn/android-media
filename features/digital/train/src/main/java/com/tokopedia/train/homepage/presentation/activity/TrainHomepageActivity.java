@@ -1,10 +1,12 @@
 package com.tokopedia.train.homepage.presentation.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -26,6 +28,10 @@ public class TrainHomepageActivity extends TrainBaseActivity implements HasCompo
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         Intent intent = new Intent(context, TrainHomepageActivity.class);
         return intent.setData(uri.build()).putExtras(extras);
+    }
+
+    public static Intent getCallingIntent(Activity activity) {
+        return new Intent(activity, TrainHomepageActivity.class);
     }
 
     @Override

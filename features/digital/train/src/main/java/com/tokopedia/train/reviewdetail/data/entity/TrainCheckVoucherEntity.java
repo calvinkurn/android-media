@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public class TrainCheckVoucherEntity {
 
-    @SerializedName("promoCode")
+    @SerializedName("galaCode")
     @Expose
-    private String promoCode;
+    private String galaCode;
     @SerializedName("discountAmount")
     @Expose
     private double discountAmount;
@@ -33,8 +33,8 @@ public class TrainCheckVoucherEntity {
     @Expose
     private String galaCodeStatus;
 
-    public String getPromoCode() {
-        return promoCode;
+    public String getGalaCode() {
+        return galaCode;
     }
 
     public double getDiscountAmount() {

@@ -5,90 +5,105 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.train.seat.presentation.widget.CountdownTimeView
-            android:id="@+id/ct_countdown"
+        <LinearLayout
+            android:id="@+id/container_train_review"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:ctv_hour_title="Jam"
-            app:ctv_minute_title="Detik"
-            app:ctv_second_title="Menit" />
+            android:layout_height="wrap_content">
 
-        <com.tokopedia.design.component.CardWithAction
-            android:id="@+id/train_departure_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_card_with_action_main"
-            android:visibility="visible"
-            app:cmw_action="Detail"
-            tools:visibility="visible" />
+            <com.tokopedia.train.seat.presentation.widget.CountdownTimeView
+                android:id="@+id/ct_countdown"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:ctv_hour_title="Jam"
+                app:ctv_minute_title="Detik"
+                app:ctv_second_title="Menit" />
 
-        <com.tokopedia.design.component.CardWithAction
-            android:id="@+id/train_return_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_card_with_action_main"
-            android:visibility="visible"
-            app:cmw_action="Detail"
-            tools:visibility="visible" />
+            <com.tokopedia.design.component.CardWithAction
+                android:id="@+id/train_departure_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_with_action_main"
+                android:visibility="visible"
+                app:cmw_action="Detail"
+                tools:visibility="visible" />
 
-        <TextView
+            <com.tokopedia.design.component.CardWithAction
+                android:id="@+id/train_return_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_with_action_main"
+                android:visibility="visible"
+                app:cmw_action="Detail"
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="@string/train_review_label_passengers_data"/>
+
+            <android.support.v7.widget.RecyclerView
+                tools:visibility="gone"
+                android:id="@+id/recycler_view"
+                tools:listitem="@layout/item_train_passenger_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:background="@color/grey_400"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1" />
+
+            <com.tokopedia.design.voucher.VoucherCartHachikoView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/voucher_cart_hachiko_view"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_20"/>
+
+            <View
+                android:background="@color/grey_400"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1" />
+
+            <com.tokopedia.train.reviewdetail.presentation.view.ViewTrainReviewDetailPriceSection
+                android:id="@+id/view_train_review_detail_price_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/grey_300" />
+
+            <Button
+                style="@style/Button.Submit.Orange"
+                android:text="@string/train_review_button_text_choose_payment_method"
+                android:id="@+id/button_train_review_submit"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/train_review_progress_bar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            android:textSize="@dimen/sp_16"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="@string/train_review_label_passengers_data"/>
-
-        <android.support.v7.widget.RecyclerView
-            tools:visibility="gone"
-            android:id="@+id/recycler_view"
-            tools:listitem="@layout/item_train_passenger_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:background="@color/grey_400"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1" />
-
-        <com.tokopedia.design.voucher.VoucherCartHachikoView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/voucher_cart_hachiko_view"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"/>
-
-        <View
-            android:background="@color/grey_400"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1" />
-
-        <com.tokopedia.train.reviewdetail.presentation.view.ViewTrainReviewDetailPriceSection
-            android:id="@+id/view_train_review_detail_price_section"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@color/grey_300" />
-        
-        <Button
-            style="@style/Button.Submit.Orange"
-            android:text="@string/train_review_button_text_choose_payment_method"
-            android:id="@+id/button_train_review_submit"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </ScrollView>

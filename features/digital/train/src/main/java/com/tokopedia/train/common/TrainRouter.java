@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 
+import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
 import okhttp3.Interceptor;
@@ -39,5 +40,17 @@ public interface TrainRouter {
     Intent getPromoDetailIntent(Context context, String slug);
 
     Intent getBannerWebViewIntent(Activity activity, String url);
+
+    Intent getTopPayIntent(Activity activity, TrainCheckoutViewModel trainCheckoutViewModel);
+
+    int getTopPayPaymentSuccessCode();
+
+    int getTopPayPaymentFailedCode();
+
+    int getTopPayPaymentCancelCode();
+
+    Intent getHomeIntent(Context context);
+
+    Intent getTrainOrderListIntent(Context activity);
 
 }

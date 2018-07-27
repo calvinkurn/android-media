@@ -25,7 +25,8 @@ public class TrainCheckVoucherUseCase extends UseCase<TrainCheckVoucherModel> {
     @Override
     public Observable<TrainCheckVoucherModel> createObservable(RequestParams requestParams) {
         return trainRepository.checkVoucher(requestParams.getParameters())
-                .map(trainCheckVoucherEntity -> new TrainCheckVoucherModel(trainCheckVoucherEntity.getPromoCode(),
+                .map(trainCheckVoucherEntity -> new TrainCheckVoucherModel(
+                        trainCheckVoucherEntity.getGalaCode(),
                         trainCheckVoucherEntity.getSuccessMessage(), trainCheckVoucherEntity.getDiscountAmount(),
                         trainCheckVoucherEntity.getCashbackAmount(),
                         trainCheckVoucherEntity.getGalaCodeStatus().equalsIgnoreCase("success")));

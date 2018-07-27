@@ -88,6 +88,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
 
+    @Inject
+    TrainRouter trainRouter;
+
     public TrainHomepageFragment() {
         // Required empty public constructor
     }
@@ -216,10 +219,10 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
             @Override
             public void navigateToPromoPage() {
-                if (getActivity().getApplication() instanceof TrainRouter) {
-                    Intent intentToPromoList = ((TrainRouter) getActivity().getApplication()).getPromoListIntent(getActivity());
+//                if (getActivity().getApplication() instanceof TrainRouter) {
+                    Intent intentToPromoList = trainRouter.getPromoListIntent(getActivity());
                     startActivity(intentToPromoList);
-                }
+//                }
             }
 
             @Override
@@ -233,19 +236,17 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                             && uri.getPathSegments().size() == 2
                             && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
                         String slug = uri.getPathSegments().get(1);
-                        if (getActivity().getApplication() instanceof TrainRouter
-                                && ((TrainRouter) getActivity().getApplication())
-                                .getPromoDetailIntent(getActivity(), slug) != null) {
-                            startActivity(((TrainRouter) getActivity().getApplication())
-                                    .getPromoDetailIntent(getActivity(), slug));
-                        }
+//                        if (getActivity().getApplication() instanceof TrainRouter
+//                                && ((TrainRouter) getActivity().getApplication())
+//                                .getPromoDetailIntent(getActivity(), slug) != null) {
+                            startActivity(trainRouter.getPromoDetailIntent(getActivity(), slug));
+//                        }
                     } else {
-                        if (getActivity().getApplication() instanceof TrainRouter
-                                && ((TrainRouter) getActivity().getApplication())
-                                .getBannerWebViewIntent(getActivity(), url) != null) {
-                            startActivity(((TrainRouter) getActivity().getApplication())
-                                    .getBannerWebViewIntent(getActivity(), url));
-                        }
+//                        if (getActivity().getApplication() instanceof TrainRouter
+//                                && ((TrainRouter) getActivity().getApplication())
+//                                .getBannerWebViewIntent(getActivity(), url) != null) {
+                            startActivity(trainRouter.getBannerWebViewIntent(getActivity(), url));
+//                        }
                     }
                 }
             }
@@ -453,10 +454,10 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void navigateToLoginPage() {
-        if (getActivity().getApplication() instanceof TrainRouter
-                && ((TrainRouter) getActivity().getApplication()).getLoginIntent() != null) {
-            startActivityForResult(((TrainRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
-        }
+//        if (getActivity().getApplication() instanceof TrainRouter
+//                && ((TrainRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            startActivityForResult(trainRouter.getLoginIntent(), REQUEST_CODE_LOGIN);
+//        }
     }
 
     @Override

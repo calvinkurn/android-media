@@ -163,6 +163,8 @@
     <string name="train_review_item_passenger_seat">%s</string>
     <string name="train_review_item_passenger_info_seat">Kursi (%1$s -  %2$s): </string>
     <string name="train_review_trip_passenger_count">%1$s - %2$s (Dewasa) x %3$d</string>
+    <string name="train_review_failed_checkout_message">Pembayaran gagal</string>
+    <string name="train_review_cancel_checkout_message">Pembayaran dibatalkan</string>
 
     <!-- seat -->
     <string name="train_seat_prefix_toolbar_title">Perjalanan Pergi</string>

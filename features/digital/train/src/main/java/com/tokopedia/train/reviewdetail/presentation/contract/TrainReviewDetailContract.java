@@ -1,6 +1,7 @@
 package com.tokopedia.train.reviewdetail.presentation.contract;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
+import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerInfoViewModel;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
@@ -23,6 +24,16 @@ public class TrainReviewDetailContract {
 
         void startCountdown();
 
+        void navigateToTopPayActivity(TrainCheckoutViewModel trainCheckoutViewModel);
+
+        void showPaymentFailedErrorMessage(int resId);
+
+        void setNeedToRefreshOnPassengerInfo();
+
+        void navigateToOrderList();
+
+        void showCheckoutLoading();
+
     }
 
     public interface Presenter {
@@ -34,6 +45,13 @@ public class TrainReviewDetailContract {
         void getScheduleTripsPrice(String departureScheduleId, String returnScheduleId, int adultPassenger, int infantPassenger);
 
         void checkout(String reservationId, String tokpedBookCode, String galaCode, String client, String version);
+
+        void onPaymentSuccess();
+
+        void onPaymentFailed();
+
+        void onPaymentCancelled();
+
     }
 
 }
