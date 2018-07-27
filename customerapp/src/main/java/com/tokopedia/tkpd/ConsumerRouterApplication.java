@@ -70,9 +70,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -121,6 +118,9 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
@@ -188,9 +188,9 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
+import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -270,8 +270,8 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
-import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
+import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -290,8 +290,12 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
+import com.tokopedia.train.common.di.DaggerTrainComponent;
+import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -812,6 +816,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         AccountsService accountsService = new AccountsService(bundle);
 
+
         ProfileSourceFactory profileSourceFactory =
                 new ProfileSourceFactory(
                         this,
@@ -854,8 +859,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform) {
-        return LoyaltyActivity.newInstanceCouponNotActive(activity, platform, "");
+    public Intent getTrainOrderListIntent(Context context) {
+        return DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
+                + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + TkpdBaseURL.DigitalWebsite.PARAM_DIGITAL_ISPULSA);
+    }
+
+    @Override
+    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
+                                                          String reservationId, String reservationCode) {
+        return LoyaltyActivity.newInstanceTrainCouponNotActive(activity, platform, "",
+                reservationId, reservationCode);
     }
 
     @Override
@@ -1586,6 +1599,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getTopPayIntent(Activity activity, TrainCheckoutViewModel trainCheckoutViewModel) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setPaymentId(trainCheckoutViewModel.getTransactionId());
+        paymentPassData.setTransactionId(trainCheckoutViewModel.getTransactionId());
+        paymentPassData.setRedirectUrl(trainCheckoutViewModel.getRedirectURL());
+        paymentPassData.setCallbackFailedUrl(trainCheckoutViewModel.getCallbackURLFailed());
+        paymentPassData.setCallbackSuccessUrl(trainCheckoutViewModel.getCallbackURLSuccess());
+        paymentPassData.setQueryString(trainCheckoutViewModel.getQueryString());
+        return TopPayActivity.createInstance(activity, paymentPassData);
+    }
+
+    @Override
     public int getTopPayPaymentSuccessCode() {
         return TopPayActivity.PAYMENT_SUCCESS;
     }
@@ -2294,6 +2319,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return voucherViewModel;
                     }
                 });
+    }
+
+    @Override
+    public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
+                                                          String trainReservationCode,
+                                                          String galaCode) {
+        TrainRepository trainRepository = DaggerTrainComponent.builder().baseAppComponent(
+                this.getBaseAppComponent()).build().trainRepository();
+        TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
+        return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
+                trainReservationId, trainReservationCode, galaCode
+        )).map(trainCheckVoucherModel -> new VoucherViewModel(
+                trainCheckVoucherModel.isSuccess(),
+                trainCheckVoucherModel.getMessage(),
+                null,
+                trainCheckVoucherModel.getVoucherCode(),
+                ((long) trainCheckVoucherModel.getDiscountAmountPlain()),
+                ((long) trainCheckVoucherModel.getCashbackAmountPlain())
+        ));
     }
 
     @Override

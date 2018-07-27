@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

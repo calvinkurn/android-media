@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.train.checkout.data.TrainCheckoutCloudDataStore;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
@@ -17,8 +18,9 @@ import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
 import com.tokopedia.train.common.data.interceptor.model.TrainErrorResponse;
 import com.tokopedia.train.common.domain.TrainRepository;
-import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
 import com.tokopedia.train.common.util.TrainFlowUtil;
+import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
+import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
@@ -135,9 +137,11 @@ public class TrainModule {
     public TrainRepository provideTrainRepository(TrainSeatCloudDataStore trainSeatCloudDataStore,
                                                   TrainStationDataStoreFactory trainStationDataStoreFactory,
                                                   TrainScheduleDataStoreFactory scheduleDataStoreFactory,
-                                                  TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore) {
+                                                  TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore,
+                                                  TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore,
+                                                  TrainCheckoutCloudDataStore trainCheckoutCloudDataStore) {
         return new TrainRepositoryImpl(trainSeatCloudDataStore, trainStationDataStoreFactory, scheduleDataStoreFactory,
-                trainSoftBookingCloudDataStore);
+                trainSoftBookingCloudDataStore, trainCheckVoucherCloudDataStore, trainCheckoutCloudDataStore);
     }
 
     @TrainScope
@@ -162,6 +166,18 @@ public class TrainModule {
     @Provides
     public TrainScheduleCloudDataStore provideTrainScheduleCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
         return new TrainScheduleCloudDataStore(trainApi, context);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainCheckVoucherCloudDataStore provideTrainCheckVoucherCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
+        return new TrainCheckVoucherCloudDataStore(trainApi, context);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainCheckoutCloudDataStore provideTrainCheckoutCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
+        return new TrainCheckoutCloudDataStore(trainApi, context);
     }
 
     @TrainScope

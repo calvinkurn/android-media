@@ -30,15 +30,6 @@
             android:paddingBottom="@dimen/dp_10"
             android:paddingTop="@dimen/dp_16">
 
-            <ImageView
-                android:id="@+id/departure_time_circle"
-                android:layout_width="@dimen/dp_8"
-                android:layout_height="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                app:srcCompat="@drawable/selector_train_detail"/>
-
             <TextView
                 android:id="@+id/departure_time"
                 style="@style/TextView.Micro.Green"
@@ -50,21 +41,30 @@
 
             <View
                 android:layout_width="1dp"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_alignTop="@+id/departure_time_circle"
-                android:layout_alignStart="@+id/departure_time_circle"
-                android:layout_alignLeft="@+id/departure_time_circle"
-                android:layout_alignBottom="@+id/arrival_time_circle"
                 android:layout_height="wrap_content"
+                android:layout_alignTop="@id/departure_time_circle"
+                android:layout_alignBottom="@id/arrival_time_circle"
+                android:layout_alignLeft="@id/departure_time_circle"
+                android:layout_alignStart="@id/departure_time_circle"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_4"
                 android:layout_below="@+id/departure_time_circle"
                 android:layout_above="@+id/arrival_time_circle"
                 android:background="@color/grey_300"/>
 
             <ImageView
+                android:id="@+id/departure_time_circle"
+                android:layout_alignTop="@+id/departure_time"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                app:srcCompat="@drawable/selector_train_detail"/>
+
+            <ImageView
                 android:id="@+id/arrival_time_circle"
-                android:layout_alignTop="@+id/arrival_info"
+                android:layout_alignBottom="@id/arrival_time"
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_4"

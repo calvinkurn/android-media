@@ -92,6 +92,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
 
+    @Inject
+    TrainRouter trainRouter;
+
     public TrainHomepageFragment() {
         // Required empty public constructor
     }
@@ -220,10 +223,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
             @Override
             public void navigateToPromoPage() {
-                if (getActivity().getApplication() instanceof TrainRouter) {
-                    Intent intentToPromoList = ((TrainRouter) getActivity().getApplication()).getPromoListIntent(getActivity());
-                    startActivity(intentToPromoList);
-                }
+                Intent intentToPromoList = trainRouter.getPromoListIntent(getActivity());
+                startActivity(intentToPromoList);
             }
 
             @Override
@@ -237,26 +238,16 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                             && uri.getPathSegments().size() == 2
                             && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
                         String slug = uri.getPathSegments().get(1);
-                        if (getActivity().getApplication() instanceof TrainRouter
-                                && ((TrainRouter) getActivity().getApplication())
-                                .getPromoDetailIntent(getActivity(), slug) != null) {
-                            startActivity(((TrainRouter) getActivity().getApplication())
-                                    .getPromoDetailIntent(getActivity(), slug));
-                        }
+                        startActivity(trainRouter.getPromoDetailIntent(getActivity(), slug));
                     } else {
-                        if (getActivity().getApplication() instanceof TrainRouter
-                                && ((TrainRouter) getActivity().getApplication())
-                                .getBannerWebViewIntent(getActivity(), url) != null) {
-                            startActivity(((TrainRouter) getActivity().getApplication())
-                                    .getBannerWebViewIntent(getActivity(), url));
-                        }
+                        startActivity(trainRouter.getBannerWebViewIntent(getActivity(), url));
                     }
                 }
             }
 
             private boolean isPromoNativeActive() {
                 if (getActivity() != null && getActivity().getApplication() instanceof TrainRouter) {
-                    return ((TrainRouter) getActivity().getApplication()).isPromoNativeEnable();
+                    return trainRouter.isPromoNativeEnable();
                 } else {
                     return false;
                 }
@@ -270,17 +261,14 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-//        onCloseBottomMenusListener = (OnCloseBottomMenusListener) activity;
         setHasOptionsMenu(true);
     }
 
     @Override
     public void renderSingleTripView(TrainHomepageViewModel trainHomepageViewModel) {
-        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.white));
-        buttonRoundTrip.setTextColor(getResources().getColor(R.color.grey_400));
-
         buttonOneWayTrip.setSelected(true);
         buttonRoundTrip.setSelected(false);
+
         textInputViewDateReturn.setVisibility(View.GONE);
         separatorDateReturn.setVisibility(View.GONE);
 
@@ -302,10 +290,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderRoundTripView(TrainHomepageViewModel trainHomepageViewModel) {
-        buttonRoundTrip.setTextColor(getResources().getColor(R.color.white));
-        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.grey_400));
         buttonOneWayTrip.setSelected(false);
         buttonRoundTrip.setSelected(true);
+
         textInputViewDateReturn.setVisibility(View.VISIBLE);
         separatorDateReturn.setVisibility(View.VISIBLE);
 
@@ -461,10 +448,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void navigateToLoginPage() {
-        if (getActivity().getApplication() instanceof TrainRouter
-                && ((TrainRouter) getActivity().getApplication()).getLoginIntent() != null) {
-            startActivityForResult(((TrainRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
-        }
+        startActivityForResult(trainRouter.getLoginIntent(), REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -496,7 +480,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         trainHomepagePresenterImpl.saveHomepageViewModelToCache(viewModel);
     }
 
-    @Override
     public void onDestroy() {
         super.onDestroy();
         trainHomepagePresenterImpl.onDestroy();

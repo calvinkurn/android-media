@@ -12,6 +12,7 @@ import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 
 import dagger.Component;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * @author by alvarisi on 2/19/18.
@@ -24,6 +25,8 @@ public interface TrainComponent {
     Context getContext();
 
     UserSession userSession();
+
+    TrainRouter trainRouter();
 
     TrainRepository trainRepository();
 

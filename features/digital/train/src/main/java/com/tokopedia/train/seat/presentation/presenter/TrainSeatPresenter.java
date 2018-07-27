@@ -113,7 +113,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     public void onChangePassengerConfirmDialogAccepted() {
         getView().hidePage();
         getView().showLoading();
-        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getTokpedBookCode(),
+        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getReservationCode(),
                 getView().getOriginalPassenger(),
                 getView().getPassengers());
         trainChangeSeatUseCase.execute(
@@ -149,7 +149,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     public void onSubmitButtonClicked() {
         getView().hidePage();
         getView().showLoading();
-        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getTokpedBookCode(),
+        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getReservationCode(),
                 getView().getOriginalPassenger(),
                 getView().getPassengers());
         if (requests.size() > 0) {
