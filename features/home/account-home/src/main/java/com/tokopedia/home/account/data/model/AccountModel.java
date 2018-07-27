@@ -3,12 +3,12 @@ package com.tokopedia.home.account.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import com.tokopedia.navigation.DepositModel;
-import com.tokopedia.navigation.WalletModel;
-import com.tokopedia.navigation.ProfileModel;
-import com.tokopedia.navigation.UserShopInfoModel;
-import com.tokopedia.navigation.TokopointsModel;
-import com.tokopedia.navigation.NotificationsModel;
+import com.tokopedia.navigation_common.DepositModel;
+import com.tokopedia.navigation_common.WalletModel;
+import com.tokopedia.navigation_common.ProfileModel;
+import com.tokopedia.navigation_common.UserShopInfoModel;
+import com.tokopedia.navigation_common.TokopointsModel;
+import com.tokopedia.navigation_common.NotificationsModel;
 
 /**
  * @author okasurya on 7/20/18.

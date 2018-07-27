@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.NotificationsModel;
+import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 
 /**
