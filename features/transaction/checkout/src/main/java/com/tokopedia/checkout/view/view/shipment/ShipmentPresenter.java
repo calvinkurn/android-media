@@ -439,7 +439,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                     @Override
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                        prepareDataAfterReloadCheckoutPage(cartShipmentAddressFormData);
+                                        if (cartShipmentAddressFormData.getGroupAddress() == null ||
+                                                cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                            getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                        } else {
+                                            prepareDataAfterReloadCheckoutPage(cartShipmentAddressFormData);
+                                        }
                                     }
                                 }
                         )
@@ -543,30 +548,35 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                         @Override
                                         public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                            boolean isEnableCheckout = true;
-                                            for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                                                if (groupAddress.isError() || groupAddress.isWarning()) {
-                                                    isEnableCheckout = false;
-                                                    break;
-                                                }
-                                                for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                                                    if (groupShop.isError() || groupShop.isWarning()) {
+                                            if (cartShipmentAddressFormData.getGroupAddress() == null ||
+                                                    cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                                getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                            } else {
+                                                boolean isEnableCheckout = true;
+                                                for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+                                                    if (groupAddress.isError() || groupAddress.isWarning()) {
                                                         isEnableCheckout = false;
                                                         break;
                                                     }
-                                                    for (Product product : groupShop.getProducts()) {
-                                                        if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                    for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                                                        if (groupShop.isError() || groupShop.isWarning()) {
                                                             isEnableCheckout = false;
                                                             break;
                                                         }
+                                                        for (Product product : groupShop.getProducts()) {
+                                                            if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                                isEnableCheckout = false;
+                                                                break;
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            if (isEnableCheckout) {
-                                                getView().renderCheckShipmentPrepareCheckoutSuccess();
-                                            } else {
-                                                prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
+                                                if (isEnableCheckout) {
+                                                    getView().renderCheckShipmentPrepareCheckoutSuccess();
+                                                } else {
+                                                    prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
+                                                }
                                             }
                                         }
                                     }
