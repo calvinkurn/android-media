@@ -153,6 +153,11 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     @Override
     public void onMethodSelected(MethodItem methodItem) {
 
+        if(analytics != null
+                && methodItem != null
+                && passModel != null){
+            analytics.eventClickMethodOtp(passModel.getOtpType(), methodItem.getModeName());
+        }
         if (methodItem.isUsingPopUp()
                 && !TextUtils.isEmpty(methodItem.getPopUpHeader())
                 && !TextUtils.isEmpty(methodItem.getPopUpBody())) {

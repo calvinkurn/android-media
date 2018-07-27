@@ -34,6 +34,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.analytics.SessionTrackingUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -44,7 +45,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -73,8 +73,7 @@ import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.customview.PartialRegisterInputView;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
-import com.tokopedia.session.register.view.subscriber.registerinitial
-        .GetFacebookCredentialSubscriber;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
@@ -122,6 +121,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private TextView loginButton;
     private ScrollView container;
     private RelativeLayout progressBar;
+    private RegisterAnalytics analytics;
 
     private String socmedMethod = "";
     private String email = "";
@@ -129,9 +129,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Inject
     RegisterInitialPresenter presenter;
-
-    @Inject
-    GlobalCacheManager cacheManager;
 
     @Inject
     SessionHandler sessionHandler;
@@ -171,8 +168,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
+        analytics = RegisterAnalytics.initAnalytics(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if(savedInstanceState != null && savedInstanceState.containsKey(PHONE_NUMBER)) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(PHONE_NUMBER)) {
             phoneNumber = savedInstanceState.getString(PHONE_NUMBER);
         }
     }
@@ -315,9 +313,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     protected void setViewListener() {
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        loginButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
                 getActivity().finish();
                 goToLoginPage();
             }
@@ -326,6 +323,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void goToLoginPage() {
+        analytics.eventClickOnLogin();
+
         Intent intent = LoginActivity.getCallingIntent(getActivity());
         startActivity(intent);
     }
@@ -674,6 +673,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventProceedEmailAlreadyRegistered();
                 dialog.dismiss();
                 startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email));
                 getActivity().finish();
@@ -683,6 +683,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventCancelEmailAlreadyRegistered();
                 dialog.dismiss();
             }
         });
@@ -718,9 +719,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private void goToVerifyAccountPage(String phoneNumber) {
         startActivityForResult(com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity
                         .getLoginTokoCashVerificationIntent(
-                getActivity(),
-                phoneNumber,
-                getListVerificationMethod(phoneNumber)),
+                                getActivity(),
+                                phoneNumber,
+                                getListVerificationMethod(phoneNumber)),
                 REQUEST_VERIFY_PHONE_TOKOCASH);
     }
 
@@ -763,19 +764,15 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         dialog.setTitle(phone);
         dialog.setDesc(getResources().getString(R.string.phone_number_not_registered_info));
         dialog.setBtnOk(getString(R.string.proceed_with_phone_number));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                goToVerificationPhoneRegister(phone);
-            }
+        dialog.setOnOkClickListener(v -> {
+            analytics.eventProceedRegisterWithPhoneNumber();
+            dialog.dismiss();
+            goToVerificationPhoneRegister(phone);
         });
         dialog.setBtnCancel(getString(R.string.already_registered_no));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        dialog.setOnCancelClickListener(v -> {
+            analytics.eventCancelRegisterWithPhoneNumber();
+            dialog.dismiss();
         });
         dialog.show();
     }
@@ -829,7 +826,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString(PHONE_NUMBER,phoneNumber);
+        outState.putString(PHONE_NUMBER, phoneNumber);
         super.onSaveInstanceState(outState);
     }
 }
