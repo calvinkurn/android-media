@@ -227,13 +227,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(PromoCodeAppliedData.class.getSimpleName(), shipmentPresenter.getPromoCodeAppliedData());
-        outState.putParcelable(CartPromoSuggestion.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestion());
-        outState.putParcelable(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
-        outState.putParcelableArrayList(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
-        outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
-        outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
-        outState.putParcelable(ShipmentCheckoutButtonModel.class.getSimpleName(), shipmentPresenter.getShipmentCheckoutButtonModel());
+        if (shipmentPresenter.getPromoCodeAppliedData() != null) {
+            outState.putParcelable(PromoCodeAppliedData.class.getSimpleName(), shipmentPresenter.getPromoCodeAppliedData());
+        }
+        if (shipmentPresenter.getCartPromoSuggestion() != null) {
+            outState.putParcelable(CartPromoSuggestion.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestion());
+        }
+        if (shipmentPresenter.getRecipientAddressModel() != null) {
+            outState.putParcelable(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
+        }
+        if (shipmentPresenter.getShipmentCartItemModelList() != null) {
+            outState.putParcelableArrayList(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
+        }
+        if (shipmentPresenter.getShipmentDonationModel() != null) {
+            outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
+        }
+        if (shipmentPresenter.getShipmentCostModel() != null) {
+            outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
+        }
+        if (shipmentPresenter.getShipmentCheckoutButtonModel() != null) {
+            outState.putParcelable(ShipmentCheckoutButtonModel.class.getSimpleName(), shipmentPresenter.getShipmentCheckoutButtonModel());
+        }
         outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
     }
 
