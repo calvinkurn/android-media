@@ -84,6 +84,7 @@
         <Button
             style="@style/Button.Submit.Orange"
             android:text="@string/train_review_button_text_choose_payment_method"
+            android:id="@+id/button_train_review_submit"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

@@ -9,14 +9,15 @@ import java.util.List;
 public class TrainSoftbook implements Parcelable {
 
     private String reservationId;
-    private String tokpedBookCode;
+    private String reservationCode;
     private String expiryTimestamp;
     private List<TrainTrip> departureTrips;
     private List<TrainTrip> returnTrips;
 
-    public TrainSoftbook(String reservationId, String tokpedBookCode, String expiryTimestamp, List<TrainTrip> departureTrips, List<TrainTrip> returnTrips) {
+    public TrainSoftbook(String reservationId, String reservationCode, String expiryTimestamp,
+                         List<TrainTrip> departureTrips, List<TrainTrip> returnTrips) {
         this.reservationId = reservationId;
-        this.tokpedBookCode = tokpedBookCode;
+        this.reservationCode = reservationCode;
         this.expiryTimestamp = expiryTimestamp;
         this.departureTrips = departureTrips;
         this.returnTrips = returnTrips;
@@ -27,7 +28,7 @@ public class TrainSoftbook implements Parcelable {
 
     protected TrainSoftbook(Parcel in) {
         reservationId = in.readString();
-        tokpedBookCode = in.readString();
+        reservationCode = in.readString();
         expiryTimestamp = in.readString();
         departureTrips = in.createTypedArrayList(TrainTrip.CREATOR);
         returnTrips = in.createTypedArrayList(TrainTrip.CREATOR);
@@ -49,8 +50,8 @@ public class TrainSoftbook implements Parcelable {
         return reservationId;
     }
 
-    public String getTokpedBookCode() {
-        return tokpedBookCode;
+    public String getReservationCode() {
+        return reservationCode;
     }
 
     public String getExpiryTimestamp() {
@@ -73,7 +74,7 @@ public class TrainSoftbook implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(reservationId);
-        parcel.writeString(tokpedBookCode);
+        parcel.writeString(reservationCode);
         parcel.writeString(expiryTimestamp);
         parcel.writeTypedList(departureTrips);
         parcel.writeTypedList(returnTrips);
@@ -83,8 +84,8 @@ public class TrainSoftbook implements Parcelable {
         this.reservationId = reservationId;
     }
 
-    public void setTokpedBookCode(String tokpedBookCode) {
-        this.tokpedBookCode = tokpedBookCode;
+    public void setReservationCode(String reservationCode) {
+        this.reservationCode = reservationCode;
     }
 
     public void setExpiryTimestamp(String expiryTimestamp) {
@@ -102,7 +103,7 @@ public class TrainSoftbook implements Parcelable {
     public static TrainSoftbook dummy() {
         TrainSoftbook softbook = new TrainSoftbook();
         softbook.setReservationId("12345");
-        softbook.setTokpedBookCode("TKP12345");
+        softbook.setReservationCode("TKP12345");
         softbook.setExpiryTimestamp("2018-07-25T14:35:00Z");
         List<TrainTrip> trainTrips = new ArrayList<>();
         TrainTrip trainTrip = new TrainTrip();

@@ -5,6 +5,8 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.train.checkout.domain.TrainCheckoutUseCase;
+import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.presentation.contract.TrainReviewDetailContract;
@@ -36,12 +38,15 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
     private GetScheduleDetailUseCase getScheduleDetailUseCase;
+    private TrainCheckoutUseCase trainCheckoutUseCase;
 
     @Inject
     public TrainReviewDetailPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase,
-                                      GetScheduleDetailUseCase getScheduleDetailUseCase) {
+                                      GetScheduleDetailUseCase getScheduleDetailUseCase,
+                                      TrainCheckoutUseCase trainCheckoutUseCase) {
         this.getDetailScheduleUseCase = getDetailScheduleUseCase;
         this.getScheduleDetailUseCase = getScheduleDetailUseCase;
+        this.trainCheckoutUseCase = trainCheckoutUseCase;
     }
 
     @Override
@@ -203,8 +208,32 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     @Override
                     public void onNext(Pair<TrainScheduleDetailViewModel, TrainScheduleDetailViewModel> pairScheduleDetail) {
                         getView().showScheduleTripsPrice(pairScheduleDetail.first, pairScheduleDetail.second);
+                        getView().startCountdown();
                     }
                 });
+    }
+
+    @Override
+    public void checkout(String reservationId, String reservationCode, String galaCode, String client, String version) {
+        trainCheckoutUseCase.execute(
+                trainCheckoutUseCase.createRequestParams(reservationId, reservationCode, galaCode, client, version),
+                new Subscriber<TrainCheckoutViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TrainCheckoutViewModel trainCheckoutViewModel) {
+                        Log.d("TrainReviewDetailPresenter", trainCheckoutViewModel.toString());
+                    }
+                }
+        );
     }
 
 }

@@ -12,9 +12,9 @@ import rx.Observable;
  */
 public class TrainCheckVoucherUseCase extends UseCase<TrainCheckVoucherModel> {
 
-    private final String PARAM_TRAIN_RESERVATION_ID = "PARAM_TRAIN_RESERVATION_ID";
-    private final String PARAM_TRAIN_RESERVATION_CODE = "PARAM_RESERVATION_CODE";
-    private final String PARAM_GALA_CODE = "PARAM_GALA_CODE";
+    private final String PARAM_TRAIN_RESERVATION_ID = "reservationId";
+    private final String PARAM_TRAIN_RESERVATION_CODE = "reservationCode";
+    private final String PARAM_GALA_CODE = "galaCode";
 
     private TrainRepository trainRepository;
 
@@ -26,9 +26,9 @@ public class TrainCheckVoucherUseCase extends UseCase<TrainCheckVoucherModel> {
     public Observable<TrainCheckVoucherModel> createObservable(RequestParams requestParams) {
         return trainRepository.checkVoucher(requestParams.getParameters())
                 .map(trainCheckVoucherEntity -> new TrainCheckVoucherModel(trainCheckVoucherEntity.getPromoCode(),
-                        trainCheckVoucherEntity.getFailureMessage(), trainCheckVoucherEntity.getDiscountAmount(),
+                        trainCheckVoucherEntity.getSuccessMessage(), trainCheckVoucherEntity.getDiscountAmount(),
                         trainCheckVoucherEntity.getCashbackAmount(),
-                        trainCheckVoucherEntity.getPromoCodeStatus().equalsIgnoreCase("success")));
+                        trainCheckVoucherEntity.getGalaCodeStatus().equalsIgnoreCase("success")));
     }
 
     public RequestParams createRequestParams(String reservationId, String reservationCode, String galaCode) {

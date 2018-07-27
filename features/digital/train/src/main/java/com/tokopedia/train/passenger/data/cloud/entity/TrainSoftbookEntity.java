@@ -10,7 +10,7 @@ public class TrainSoftbookEntity {
     @SerializedName("reservationId")
     @Expose
     private String reservationId;
-    @SerializedName("tokpedBookCode")
+    @SerializedName("reservationCode")
     @Expose
     private String tokpedBookCode;
     @SerializedName("expiryTimestamp")
@@ -28,7 +28,7 @@ public class TrainSoftbookEntity {
         return reservationId;
     }
 
-    public String getTokpedBookCode() {
+    public String getReservationCode() {
         return tokpedBookCode;
     }
 

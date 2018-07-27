@@ -23,7 +23,7 @@ public interface IPromoCodePresenter {
 
     void processCheckDealPromoCode(String voucherId,JsonObject requestBody, boolean flag);
 
-    void processCheckTrainPromoCode(Activity activity, String voucherCode, String trainReservationId,
-                                    String trainReservationCode);
+    void processCheckTrainPromoCode(Activity activity, String trainReservationId,
+                                    String trainReservationCode, String voucherCode);
 
 }

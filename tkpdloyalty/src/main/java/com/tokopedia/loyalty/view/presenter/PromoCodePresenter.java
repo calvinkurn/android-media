@@ -245,7 +245,8 @@ public class PromoCodePresenter implements IPromoCodePresenter {
     }
 
     @Override
-    public void processCheckTrainPromoCode(Activity activity, String voucherCode, String trainReservationId, String trainReservationCode) {
+    public void processCheckTrainPromoCode(Activity activity, String trainReservationId,
+                                           String trainReservationCode, String voucherCode) {
         view.showProgressLoading();
         trainCheckVoucherUseCase.execute(
                 trainCheckVoucherUseCase.createVoucherRequest(trainReservationId, trainReservationCode, voucherCode),

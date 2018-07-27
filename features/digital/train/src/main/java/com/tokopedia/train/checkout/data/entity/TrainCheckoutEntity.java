@@ -1,4 +1,4 @@
-package com.tokopedia.train.checkout;
+package com.tokopedia.train.checkout.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -32,4 +32,27 @@ public class TrainCheckoutEntity {
     @Expose
     private TrainCheckoutParameterEntity parameter;
 
+    public String getRedirectURL() {
+        return redirectURL;
+    }
+
+    public String getCallbackURLSuccess() {
+        return callbackURLSuccess;
+    }
+
+    public String getCallbackURLFailed() {
+        return callbackURLFailed;
+    }
+
+    public String getThanksURL() {
+        return thanksURL;
+    }
+
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public TrainCheckoutParameterEntity getParameter() {
+        return parameter;
+    }
 }

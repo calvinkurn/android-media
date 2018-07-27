@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail.data;
+package com.tokopedia.train.reviewdetail.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -29,9 +29,9 @@ public class TrainCheckVoucherEntity {
     @SerializedName("invoiceDescription")
     @Expose
     private String invoiceDescription;
-    @SerializedName("promoCodeStatus")
+    @SerializedName("galaCodeStatus")
     @Expose
-    private String promoCodeStatus;
+    private String galaCodeStatus;
 
     public String getPromoCode() {
         return promoCode;
@@ -61,8 +61,8 @@ public class TrainCheckVoucherEntity {
         return invoiceDescription;
     }
 
-    public String getPromoCodeStatus() {
-        return promoCodeStatus;
+    public String getGalaCodeStatus() {
+        return galaCodeStatus;
     }
 
 }

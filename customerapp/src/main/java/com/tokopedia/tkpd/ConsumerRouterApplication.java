@@ -859,9 +859,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
-                                                          String reservationId, String tokpedBookCode) {
+                                                          String reservationId, String reservationCode) {
         return LoyaltyActivity.newInstanceTrainCouponNotActive(activity, platform, "",
-                reservationId, tokpedBookCode);
+                reservationId, reservationCode);
     }
 
     @Override
@@ -2298,13 +2298,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<VoucherViewModel> checkTrainVoucher(String voucherCode, String trainReservationId,
-                                                          String trainReservationCode) {
+    public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
+                                                          String trainReservationCode,
+                                                          String galaCode) {
         TrainRepository trainRepository = DaggerTrainComponent.builder().baseAppComponent(
                 this.getBaseAppComponent()).build().trainRepository();
         TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
         return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
-                trainReservationId, trainReservationCode, voucherCode
+                trainReservationId, trainReservationCode, galaCode
         )).map(trainCheckVoucherModel -> new VoucherViewModel(
                 trainCheckVoucherModel.isSuccess(),
                 trainCheckVoucherModel.getMessage(),

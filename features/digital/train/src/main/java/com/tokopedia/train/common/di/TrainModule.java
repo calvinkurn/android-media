@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.train.checkout.TrainCheckoutCloudDataStore;
+import com.tokopedia.train.checkout.data.TrainCheckoutCloudDataStore;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;

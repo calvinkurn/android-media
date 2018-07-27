@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail.data;
+package com.tokopedia.train.reviewdetail.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

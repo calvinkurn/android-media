@@ -1,4 +1,4 @@
-package com.tokopedia.train.checkout;
+package com.tokopedia.train.checkout.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -66,4 +66,59 @@ class TrainCheckoutParameterEntity {
     @Expose
     private String userDefinedValue;
 
+    public String getMerchantCode() {
+        return merchantCode;
+    }
+
+    public String getProfileCode() {
+        return profileCode;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public String getTransactionCode() {
+        return transactionCode;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public String getCustomerMsisdn() {
+        return customerMsisdn;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public List<String> getItemsName() {
+        return itemsName;
+    }
+
+    public List<String> getItemsQuantity() {
+        return itemsQuantity;
+    }
+
+    public List<String> getItemsPrice() {
+        return itemsPrice;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public String getUserDefinedValue() {
+        return userDefinedValue;
+    }
 }

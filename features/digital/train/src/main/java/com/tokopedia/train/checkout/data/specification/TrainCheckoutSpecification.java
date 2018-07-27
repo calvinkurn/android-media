@@ -1,4 +1,4 @@
-package com.tokopedia.train.checkout;
+package com.tokopedia.train.checkout.data.specification;
 
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.specification.GqlNetworkSpecification;

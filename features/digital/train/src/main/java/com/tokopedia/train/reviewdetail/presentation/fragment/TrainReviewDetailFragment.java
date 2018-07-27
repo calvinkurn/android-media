@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private CardWithAction cardReturnTrip;
     private ViewTrainReviewDetailPriceSection viewTrainReviewDetailPriceSection;
     private VoucherCartHachikoView voucherCartHachikoView;
+    private AppCompatButton buttonSubmit;
 
     private static final String ARGS_TRAIN_SOFTBOOK = "ARGS_TRAIN_SOFTBOOK";
     private static final String ARGS_TRAIN_SCHEDULE_BOOKING = "ARGS_TRAIN_SCHEDULE_BOOKING";
@@ -97,6 +99,10 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                 trainScheduleBookingPassData.getReturnScheduleId(),
                 trainScheduleBookingPassData.getAdultPassenger(),
                 trainScheduleBookingPassData.getInfantPassenger());
+
+        countdownTimeView.setListener(() -> {
+            // TODO: navigate back to booking passenger page using setResult
+        });
     }
 
     @Nullable
@@ -109,10 +115,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         cardReturnTrip = rootview.findViewById(R.id.train_return_info);
         viewTrainReviewDetailPriceSection = rootview.findViewById(R.id.view_train_review_detail_price_section);
         voucherCartHachikoView = rootview.findViewById(R.id.voucher_cart_hachiko_view);
-
-        countdownTimeView.setListener(() -> {
-            // TODO: navigate back to booking passenger page using setResult
-        });
+        buttonSubmit = rootview.findViewById(R.id.button_train_review_submit);
 
         voucherCartHachikoView.setActionListener(this);
         voucherCartHachikoView.setPromoLabelOnly();
@@ -133,6 +136,14 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+        });
+
+        buttonSubmit.setOnClickListener(v -> {
+            trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
+                    trainSoftbook.getReservationCode(),
+                    "",
+                    "web",
+                    "7");
         });
 
         return rootview;
@@ -220,18 +231,22 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
-    public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
-        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(departureTrip, returnTrip);
+    public void startCountdown() {
         countdownTimeView.setExpiredDate(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_DETAIL,
                 trainSoftbook.getExpiryTimestamp()));
         countdownTimeView.start();
     }
 
     @Override
+    public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
+        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(departureTrip, returnTrip);
+    }
+
+    @Override
     public void onClickUseVoucher() {
         if (getActivity().getApplication() instanceof TrainRouter) {
             Intent intent = ((TrainRouter) getActivity().getApplication()).getIntentOfLoyaltyActivityWithoutCoupon(
-                    getActivity(), HACHIKO_TRAIN_KEY, trainSoftbook.getReservationId(), trainSoftbook.getTokpedBookCode());
+                    getActivity(), HACHIKO_TRAIN_KEY, trainSoftbook.getReservationId(), trainSoftbook.getReservationCode());
             startActivityForResult(intent, REQUEST_CODE_LOYALTY);
         }
     }
@@ -286,15 +301,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 //                }
 //                break;
             case REQUEST_CODE_LOYALTY:
-//                FlightVoucherCodeWrapper codeWrapper = trainRouter.getFlightVoucherCodeWrapper();
                 if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                     Bundle bundle = data.getExtras();
                     if (bundle != null) {
-//                        String voucherCode = bundle.getString(codeWrapper.voucherCode(), "");
                         String voucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
-//                        String voucherMessage = bundle.getString(codeWrapper.voucherMessage(), "");
                         String voucherMessage = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
-//                        long voucherDiscountAmount = bundle.getLong(codeWrapper.voucherDiscountAmount());
                         long voucherDiscountAmount = bundle.getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
 
                         voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
@@ -302,12 +313,6 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                         if (voucherDiscountAmount > 0) {
                             viewTrainReviewDetailPriceSection.showNewPriceAfterDiscount(voucherDiscountAmount);
                         }
-
-//                        AttributesVoucher attributesVoucher = new AttributesVoucher();
-//                        attributesVoucher.setVoucherCode(voucherCode);
-//                        attributesVoucher.setMessage(voucherMessage);
-//                        attributesVoucher.setDiscountAmountPlain(voucherDiscountAmount);
-//                        updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
                     }
                 }
 

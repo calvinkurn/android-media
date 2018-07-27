@@ -1,9 +1,9 @@
 package com.tokopedia.train.common.constant;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.train.checkout.TrainCheckoutWrapperEntity;
+import com.tokopedia.train.checkout.data.entity.TrainCheckoutWrapperEntity;
 import com.tokopedia.train.passenger.data.cloud.entity.TrainSoftbookWrapperEntity;
-import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherWrapperEntity;
+import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherWrapperEntity;
 import com.tokopedia.train.search.data.entity.ScheduleAvailabilityResponse;
 import com.tokopedia.train.search.data.entity.SearchDataResponse;
 import com.tokopedia.train.seat.data.entity.TrainKaiSeatMapEntity;

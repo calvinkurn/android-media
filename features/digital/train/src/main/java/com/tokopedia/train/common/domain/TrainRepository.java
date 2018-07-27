@@ -1,8 +1,8 @@
 package com.tokopedia.train.common.domain;
 
-import com.tokopedia.train.checkout.TrainCheckoutEntity;
+import com.tokopedia.train.checkout.data.entity.TrainCheckoutEntity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherEntity;
+import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherEntity;
 import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;

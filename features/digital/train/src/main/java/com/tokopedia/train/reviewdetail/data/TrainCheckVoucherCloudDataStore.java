@@ -7,6 +7,7 @@ import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.specification.GqlNetworkSpecification;
 import com.tokopedia.train.common.specification.Specification;
+import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherEntity;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
@@ -33,7 +34,7 @@ public class TrainCheckVoucherCloudDataStore {
         }
 
         return trainApi.checkVoucher(requestParams.getParameters())
-                .map(trainKaiSeatMapEntityDataResponse -> trainKaiSeatMapEntityDataResponse
+                .map(trainCheckVoucherWrapperEntityDataResponse -> trainCheckVoucherWrapperEntityDataResponse
                         .getData().getTrainCheckVoucherEntity());
     }
 

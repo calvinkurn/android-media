@@ -1,4 +1,4 @@
-package com.tokopedia.train.checkout;
+package com.tokopedia.train.checkout.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

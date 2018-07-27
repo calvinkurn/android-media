@@ -30,7 +30,7 @@ public class TrainSoftBookingMapper implements Func1<TrainSoftbookEntity, TrainS
         trainSoftbook.setDepartureTrips(getTrainTrips(trainSoftbookEntity.getDepartureTrips()));
         trainSoftbook.setExpiryTimestamp(trainSoftbookEntity.getExpiryTimestamp());
         trainSoftbook.setReservationId(trainSoftbookEntity.getReservationId());
-        trainSoftbook.setTokpedBookCode(trainSoftbookEntity.getTokpedBookCode());
+        trainSoftbook.setReservationCode(trainSoftbookEntity.getReservationCode());
         return trainSoftbook;
     }
 

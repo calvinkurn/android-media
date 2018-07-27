@@ -184,9 +184,9 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                 } else
                     dPresenter.processCheckTrainPromoCode(
                             getActivity(),
-                            voucherCodeField.getText().toString(),
                             getArguments().getString(TRAIN_RESERVATION_ID),
-                            getArguments().getString(TRAIN_RESERVATION_CODE)
+                            getArguments().getString(TRAIN_RESERVATION_CODE),
+                            voucherCodeField.getText().toString()
                     );
             }
         };

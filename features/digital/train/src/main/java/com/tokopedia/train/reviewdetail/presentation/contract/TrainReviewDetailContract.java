@@ -21,6 +21,8 @@ public class TrainReviewDetailContract {
 
         void hideReturnTrip();
 
+        void startCountdown();
+
     }
 
     public interface Presenter {
@@ -31,6 +33,7 @@ public class TrainReviewDetailContract {
 
         void getScheduleTripsPrice(String departureScheduleId, String returnScheduleId, int adultPassenger, int infantPassenger);
 
+        void checkout(String reservationId, String tokpedBookCode, String galaCode, String client, String version);
     }
 
 }

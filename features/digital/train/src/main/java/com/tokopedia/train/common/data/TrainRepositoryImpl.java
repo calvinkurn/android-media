@@ -1,15 +1,15 @@
 package com.tokopedia.train.common.data;
 
 
-import com.tokopedia.train.checkout.TrainCheckoutCloudDataStore;
-import com.tokopedia.train.checkout.TrainCheckoutEntity;
-import com.tokopedia.train.checkout.TrainCheckoutSpecification;
+import com.tokopedia.train.checkout.data.TrainCheckoutCloudDataStore;
+import com.tokopedia.train.checkout.data.entity.TrainCheckoutEntity;
+import com.tokopedia.train.checkout.data.specification.TrainCheckoutSpecification;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.passenger.data.TrainDoSoftBookingSpecification;
 import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
-import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherEntity;
+import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherEntity;
 import com.tokopedia.train.reviewdetail.data.specification.TrainCheckVoucherSpecification;
 import com.tokopedia.train.scheduledetail.data.specification.TrainStationByStationCodeSpecification;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;

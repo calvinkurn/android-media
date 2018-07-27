@@ -1,9 +1,11 @@
-package com.tokopedia.train.checkout;
+package com.tokopedia.train.checkout.data;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.train.checkout.data.entity.TrainCheckoutEntity;
+import com.tokopedia.train.checkout.data.entity.TrainCheckoutWrapperEntity;
 import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.specification.GqlNetworkSpecification;
