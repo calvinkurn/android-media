@@ -31,7 +31,7 @@ fun ShopNote.transformToVisitable():ShopNoteViewModel {
 
 fun Double.formatToSimpleNumber():String {
     return when(this) {
-        in THOUSAND until MILLION-1 -> "${df.format(this/THOUSAND)}rb"
+        in THOUSAND until MILLION -> "${df.format(this/THOUSAND)}rb"
         in MILLION..Long.MAX_VALUE -> "${df.format(this/ MILLION)}jt"
         else -> df.format(this)
     }.replace(".",",")

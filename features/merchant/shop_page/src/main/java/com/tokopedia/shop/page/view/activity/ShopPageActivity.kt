@@ -52,8 +52,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
-    var isTabHidden: Boolean = false
-    var isTabFullyVisible: Boolean = true
 
     @Inject
     lateinit var presenter: ShopPagePresenter
@@ -350,7 +348,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODER_USER_LOGIN) {
-            refreshData()
+            if (resultCode == Activity.RESULT_OK) {
+                refreshData()
+            }
         }
     }
 

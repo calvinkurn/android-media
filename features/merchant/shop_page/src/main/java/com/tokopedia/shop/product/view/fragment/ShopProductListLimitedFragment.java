@@ -83,7 +83,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     private static final String SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION";
 
-    public static final String SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list";
     public static final String SAVED_SELECTED_ETALASE_ID = "saved_etalase_id";
     public static final String SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name";
 
@@ -106,9 +105,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private RecyclerView recyclerView;
     //    protected boolean hideSearch = false;
 
-    // selected is list, because we want to keep the history.
-    private ArrayList<ShopEtalaseViewModel> selectedEtalaseList;
-    // selected id of etalase, might not in selectedEtalaseList.
     private String selectedEtalaseId;
     private String selectedEtalaseName;
 
@@ -136,11 +132,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            selectedEtalaseList = new ArrayList<>();
             selectedEtalaseId = null;
             selectedEtalaseName = "";
         } else {
-            selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST);
             selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID);
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME);
         }
@@ -179,7 +173,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int totalDy;
 
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -243,7 +236,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     shopInfo.getInfo().getShopId(),
                     shopInfo.getInfo().isShopOfficial());
 
-            shopProductLimitedListPresenter.getShopEtalase(shopInfo.getInfo().getShopId(), selectedEtalaseList,
+            shopProductLimitedListPresenter.getShopEtalase(shopInfo.getInfo().getShopId(),
                     ShopPageConstant.ETALASE_TO_SHOW);
         }
     }
@@ -647,7 +640,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     } else {
                         Intent intent = ShopProductListActivity.createIntent(getActivity(),
                                 shopInfo.getInfo().getShopId(), "",
-                                etalaseId, attribution, sortName, selectedEtalaseList);
+                                etalaseId, attribution, sortName);
                         startActivity(intent);
                     }
                     shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
@@ -706,7 +699,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(SAVED_SELECTED_ETALASE_LIST, selectedEtalaseList);
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId);
         outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName);
     }

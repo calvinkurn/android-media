@@ -5,6 +5,8 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -19,6 +21,7 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
     private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final DeleteShopInfoUseCase deleteShopInfoUseCase;
 
+    @Inject
     public ToggleFavouriteShopAndDeleteCacheUseCase(ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
                                                     DeleteShopInfoUseCase deleteShopInfoUseCase) {
         this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
@@ -44,5 +47,12 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SHOP_ID, shopId);
         return requestParams;
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        deleteShopInfoUseCase.unsubscribe();
+        toggleFavouriteShopUseCase.unsubscribe();
     }
 }

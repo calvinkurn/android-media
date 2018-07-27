@@ -202,7 +202,7 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
         });
     }
 
-    public void getShopEtalase(String shopId, final ArrayList<ShopEtalaseViewModel> selectedEtalaseIdList, final int limit) {
+    public void getShopEtalase(String shopId, final int limit) {
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(
                 shopId, userSession.getUserId(), userSession.getDeviceId());
         RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
@@ -223,7 +223,7 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
             public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
                 if (isViewAttached()) {
                     getView().onSuccessGetEtalaseList(
-                            ShopProductMapper.mergeEtalaseList(pagingListOther, selectedEtalaseIdList, limit));
+                            ShopProductMapper.mergeEtalaseList(pagingListOther, null, limit));
                 }
             }
         });

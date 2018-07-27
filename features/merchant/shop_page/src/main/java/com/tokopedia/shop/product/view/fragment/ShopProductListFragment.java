@@ -117,8 +117,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                                                          String keyword,
                                                          String etalaseId,
                                                          String sort,
-                                                         String attribution,
-                                                         ArrayList<ShopEtalaseViewModel> selectedEtalaseChipList) {
+                                                         String attribution) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
@@ -126,7 +125,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         bundle.putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId);
         bundle.putString(ShopParamConstant.EXTRA_SORT_ID, sort);
         bundle.putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution);
-        bundle.putParcelableArrayList(ShopParamConstant.EXTRA_SELECTED_ETALASE_CHIP, selectedEtalaseChipList);
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
@@ -179,7 +177,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         setHasOptionsMenu(true);
 
         if (savedInstanceState == null) {
-            selectedEtalaseList = getArguments().getParcelableArrayList(ShopParamConstant.EXTRA_SELECTED_ETALASE_CHIP);
+            selectedEtalaseList = new ArrayList<>();
             selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
             selectedEtalaseName = "";
             keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");

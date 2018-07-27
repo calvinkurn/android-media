@@ -28,6 +28,7 @@ public class ShopPageTrackingConstant {
     public static final String TOP_SECTION_GENERAL_CLICK = "- top section - general - click";
     public static final String TOP_SECTION_SOCIAL_MEDIA_CLICK = "- top section - social media - click";
     public static final String TOP_SECTION_LIST_FAVOURITE_CLICK = "- top section - list of favourites - click";
+    public static final String TOP_SECTION_LIST_FAVOURITE_IMPRESSION = "- top section - list of favourites - impression";
     public static final String TOP_SECTION_SHOP_SPEED_CLICK = "- top section - shop speed - click";
     public static final String TOP_SECTION_SHOP_INFORMATION_CLICK = "- top section - shop information - click";
     public static final String TOP_SECTION_IMPRESSION = "- top section - impression";
@@ -45,6 +46,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SHARE_SHOP = "click share button";
     public static final String CLICK_MESSAGE_BRAND = "click message brand";
     public static final String CLICK_FAVOURITE_SHOP = "click favourite shop - ";
+    public static final String CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower";
+    public static final String IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower";
     public static final String FAVOURITE = "favourite";
     public static final String UNFAVOURITE = "unfavourite";
     public static final String CLICK_LIST_OF_FAVOURITE = "click list of favourites";
