@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.post.view.fragment;
+package com.tokopedia.kol.feature.postdetail.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -28,11 +28,11 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
-import com.tokopedia.kol.feature.post.view.activity.KolPostDetailActivity;
+import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
-import com.tokopedia.kol.feature.post.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostDetailViewModel;

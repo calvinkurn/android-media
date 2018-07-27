@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.post.domain.interactor;
+package com.tokopedia.kol.feature.postdetail.domain.interactor;
 
 import android.content.Context;
 

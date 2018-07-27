@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.post.view.activity;
+package com.tokopedia.kol.feature.postdetail.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostDetailFragment;
+import com.tokopedia.kol.feature.postdetail.view.fragment.KolPostDetailFragment;
 
 /**
  * @author by yfsx on 23/07/18.

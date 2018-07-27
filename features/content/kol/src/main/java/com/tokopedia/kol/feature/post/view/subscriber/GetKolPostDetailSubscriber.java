@@ -10,7 +10,7 @@ import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
 import com.tokopedia.kol.feature.comment.data.pojo.get.Tag;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
-import com.tokopedia.kol.feature.post.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostDetailViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
