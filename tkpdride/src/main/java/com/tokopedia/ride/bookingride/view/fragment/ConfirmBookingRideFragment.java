@@ -195,7 +195,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                 .asBitmap()
                 .fitCenter()
                 .dontAnimate()
-                .error(R.mipmap.ic_launcher)
+//                .error(R.mipmap.ic_launcher)
                 .into(productIconImageView);
 
         headerTextView.setText(confirmBookingPassData.getHeaderTitle());

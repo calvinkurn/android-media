@@ -3,8 +3,10 @@ package com.tokopedia.home.beranda.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
@@ -40,8 +42,16 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    HomePresenter homePresenter(@ApplicationContext Context context) {
-        return new HomePresenter(context);
+    HomePresenter homePresenter(@ApplicationContext Context context,
+                                PagingHandler pagingHandler,
+                                UserSession userSession) {
+        return new HomePresenter(context, pagingHandler, userSession);
+    }
+
+    @HomeScope
+    @Provides
+    PagingHandler pagingHandler(){
+        return new PagingHandler();
     }
 
     @HomeScope

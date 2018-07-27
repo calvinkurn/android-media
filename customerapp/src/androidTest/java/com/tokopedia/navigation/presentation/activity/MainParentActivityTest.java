@@ -108,6 +108,21 @@ public class MainParentActivityTest {
         // TODO check checked nav bar
     }
 
+    @Test
+    public void testSluggishTap(){
+        // TODO iterate 1000 times, and randomly tap navbar
+    }
+
+    @Test
+    public void testSearchGoToDiscovery(){
+
+    }
+
+    @Test
+    public void testTapGoToBarCode(){
+
+    }
+
     private void prepareForFullSmartLockBundle() {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
