@@ -13,14 +13,20 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.BaseListAdapter;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
+import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavModule;
+import com.tokopedia.navigation.presentation.presenter.NotificationPresenter;
 import com.tokopedia.navigation.presentation.view.NotificationView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by meta on 24/07/18.
@@ -31,13 +37,25 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private NotificationAdapter adapter;
 
+    @Inject NotificationPresenter presenter;
+
     @Override
     public int resLayout() {
         return R.layout.fragment_notification;
     }
 
+    private void initInjector() {
+        DaggerGlobalNavComponent.builder()
+                .globalNavModule(new GlobalNavModule())
+                .build()
+                .inject(this);
+    }
+
     @Override
     public void initView(View view) {
+        this.initInjector();
+        presenter.setView(this);
+
         swipeRefreshLayout = parentView.findViewById(R.id.swipe);
         RecyclerView recyclerView = parentView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -49,7 +67,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                presenter.getDrawerNotification();
             }
         });
 
@@ -81,6 +99,28 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     @Override
     public void onError(String message) {
         CommonUtils.dumper(message);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getString(R.string.notifications);
+    }
+
+    @Override
+    public void renderNotification(NotificationsModel data) {
+        adapter.updateValue(data);
     }
 
     private List<DrawerNotification> getData() {
@@ -117,15 +157,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         complain.setTitle(getString(R.string.komplain_saya));
 
         List<DrawerNotification.ChildDrawerNotification> childComplain = new ArrayList<>();
-        childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_penjual)));
         childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_pembeli)));
+        childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_penjual)));
         complain.setChilds(childComplain);
         notifications.add(complain);
         return notifications;
-    }
-
-    @Override
-    protected String getScreenName() {
-        return getString(R.string.notifications);
     }
 }

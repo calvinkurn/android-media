@@ -21,6 +21,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
 
+    implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.core)
 
     implementation rootProject.ext.miscDependencies.multiDex
