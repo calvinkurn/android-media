@@ -31,4 +31,5 @@
     <!--Kol Post Detail-->
     <string name="title_kol_post_detail">Post Detail</string>
     <string name="add_your_comment">Masukan komen kamu</string>
+    <string name="see_all_comment">Lihat Semua Comments (%d)</string>
 </resources>
