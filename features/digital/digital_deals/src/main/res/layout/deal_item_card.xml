@@ -29,37 +29,30 @@
 
         <TextView
             android:id="@+id/tv_hot_deal"
+            style="@style/TextView.Micro11.FontMedium.White"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/details_header_background"
-            android:fontFamily="sans-serif-medium"
             android:paddingBottom="@dimen/dp_3"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_3"
-
             android:text="@string/hot_deal"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_11"
-            android:textStyle="normal"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_deal_intro"
+            style="@style/TextView.Small.FontMedium.BlackPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
             android:maxLines="2"
-            android:textColor="@color/black_39"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="normal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_product"
@@ -72,9 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            android:orientation="vertical"
             android:background="@drawable/background_brand_logo"
-
+            android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro">
 
@@ -88,8 +80,8 @@
 
                 <ImageView
                     android:id="@+id/iv_brand"
-                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:scaleType="fitCenter" />
 
             </android.support.v7.widget.CardView>
@@ -97,6 +89,7 @@
 
         <TextView
             android:id="@+id/tv_brand_name"
+            style="@style/TextView.Micro.Black40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
@@ -104,11 +97,7 @@
             android:layout_marginRight="@dimen/dp_4"
             android:layout_marginTop="14dp"
             android:ellipsize="end"
-            android:fontFamily="sans-serif"
             android:maxLines="1"
-            android:textColor="@color/black_40"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
             app:layout_constraintLeft_toRightOf="@+id/ll_brand"
             app:layout_constraintTop_toTopOf="@+id/ll_brand"
             tools:text="Bakerzin" />
@@ -116,18 +105,15 @@
 
         <TextView
             android:id="@+id/tv_available_locations"
+            style="@style/TextView.Micro.Black40"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_4"
             android:ellipsize="end"
-            android:fontFamily="sans-serif"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/black_40"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
             app:layout_constraintLeft_toRightOf="@+id/ll_brand"
             app:layout_constraintRight_toLeftOf="@+id/tv_off"
             app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
@@ -135,19 +121,16 @@
 
         <TextView
             android:id="@+id/tv_off"
+            style="@style/TextView.Micro11.Bold.Red"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginRight="@dimen/dp_8"
             android:background="@drawable/background_lightgreen_oval"
-            android:fontFamily="sans-serif"
             android:gravity="center"
             android:paddingBottom="@dimen/dp_2"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_2"
-            android:textColor="@color/colorRed"
-            android:textSize="@dimen/sp_11"
-            android:textStyle="bold"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_available_locations"
             tools:text="20% OFF" />
@@ -167,29 +150,25 @@
 
         <TextView
             android:id="@+id/tv_mrp"
+            style="@style/TextView.Micro.Black40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            android:fontFamily="sans-serif"
             android:gravity="end"
-            android:textColor="@color/black_40"
             android:textSize="@dimen/sp_10"
-            android:textStyle="normal"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
             tools:text="Rp50.000.000" />
 
         <TextView
             android:id="@+id/tv_sales_price"
+            style="@style/TextView.Medium.FontMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_8"
-            android:fontFamily="sans-serif-medium"
             android:includeFontPadding="false"
             android:textColor="@color/red_800"
-            android:textSize="@dimen/sp_17"
-            android:textStyle="normal"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_mrp"
             tools:text="Rp40.000.000" />
@@ -206,12 +185,9 @@
 
         <TextView
             android:id="@+id/tv_wish_list"
+            style="@style/TextView.Micro.FontMedium.Black40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/black_40"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/iv_wish_list"
             app:layout_constraintLeft_toRightOf="@+id/iv_wish_list"
             app:layout_constraintTop_toTopOf="@+id/iv_wish_list"

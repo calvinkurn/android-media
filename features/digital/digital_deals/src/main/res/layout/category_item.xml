@@ -37,8 +37,7 @@
         android:gravity="center"
         android:singleLine="true"
         tools:text="Makanan"
-        android:textColor="@color/black_39"
-        android:textSize="@dimen/sp_12"
+        style="@style/TextView.Micro.BlackPrimary"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_card" />

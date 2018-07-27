@@ -5,7 +5,10 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
+import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
+import com.tokopedia.flight.common.data.model.FlightError;
+import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -321,6 +324,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
+                    if (e instanceof FlightException) {
+                        List<FlightError> errors = ((FlightException) e).getErrorList();
+                        if (errors.contains(new FlightError(FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND))) {
+                            getView().showNoRouteFlightEmptyState(e.getMessage());
+                            return;
+                        }
+                    }
                     getView().showGetListError(e);
                 }
             }
