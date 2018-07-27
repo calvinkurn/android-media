@@ -16,16 +16,6 @@ buildscript {
     }
 }
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdSeller']
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'seller'
     groupId = 'com.tokopedia.seller'
@@ -49,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.productEdit)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.productDraftDatabase)
 
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.features.districtRecommendation)

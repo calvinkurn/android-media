@@ -1,6 +1,6 @@
 package com.tokopedia.product.edit.common.data.source;
 
-import com.tokopedia.product.edit.common.data.source.database.ProductDraftDataBase;
+import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
 
 import java.util.List;
 

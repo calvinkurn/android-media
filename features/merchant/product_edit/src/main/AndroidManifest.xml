@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".view.activity.BaseProductAddActivity"
+            android:name=".view.activity.ProductAddNameCategoryActivity"
             android:label=""
             android:theme="@style/Theme.White"/>
 

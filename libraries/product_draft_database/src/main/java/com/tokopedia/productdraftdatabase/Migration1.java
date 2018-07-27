@@ -1,9 +1,8 @@
-package com.tokopedia.product.edit.common.database;
+package com.tokopedia.productdraftdatabase;
 
 import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.SQLiteType;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
-import com.tokopedia.product.edit.common.data.source.database.ProductDraftDataBase;
 
 /**
  * Created by User on 6/22/2017.

@@ -260,6 +260,7 @@ ext {
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            productDraftDatabase  : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -347,6 +348,7 @@ ext {
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
-            commonNetwork     : ":libraries:common_network"
+            commonNetwork     : ":libraries:common_network",
+            productDraftDatabase : ":libraries:product_draft_database"
     ]
 }

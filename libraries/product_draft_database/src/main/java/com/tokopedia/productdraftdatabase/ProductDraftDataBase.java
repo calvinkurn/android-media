@@ -1,12 +1,10 @@
-package com.tokopedia.product.edit.common.data.source.database;
-
+package com.tokopedia.productdraftdatabase;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.product.edit.common.database.TkpdSellerDatabase;
 
 /**
  * @author sebastianuskh on 4/13/17.

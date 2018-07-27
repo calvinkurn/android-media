@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.database;
+package com.tokopedia.productdraftdatabase;
 
 import com.raizlabs.android.dbflow.annotation.Database;
 

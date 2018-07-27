@@ -32,7 +32,7 @@ import com.tokopedia.product.edit.view.activity.BaseProductEditActivity
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
 import kotlinx.android.synthetic.main.fragment_product_add_new.*
 
-class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
+class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
@@ -137,6 +137,6 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
-        fun createInstance() = BaseProductAddFragment()
+        fun createInstance() = ProductAddNameCategoryFragment()
     }
 }

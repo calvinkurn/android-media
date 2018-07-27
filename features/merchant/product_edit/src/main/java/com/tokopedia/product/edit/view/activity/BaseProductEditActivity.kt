@@ -8,8 +8,9 @@ import com.tokopedia.product.edit.price.BaseProductEditFragment
 
 class BaseProductEditActivity : BaseSimpleActivity(){
 
-    override fun getNewFragment(): Fragment{
-        return BaseProductEditFragment.createInstance()
+    override fun getNewFragment(): Fragment? {
+        return null
+//        return BaseProductEditFragment.createInstance()
     }
 
     override fun getLayoutRes(): Int {
