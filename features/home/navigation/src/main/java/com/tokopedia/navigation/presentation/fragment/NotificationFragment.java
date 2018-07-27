@@ -1,11 +1,13 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
@@ -21,6 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.navigation.data.GlobalNavConstant.BELUM_DIBAYAR;
+import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
 
 /**
  * Created by meta on 24/07/18.
@@ -68,9 +81,29 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         adapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                Intent intent = getCallingIntent(position);
+                if (intent != null) {
+                    startActivity(intent);
+                }
             }
         });
+    }
+
+    private Intent getCallingIntent(int position) {
+        Intent intent = null;
+        switch (position) {
+            case SELLER_INFO:
+                intent = ((GlobalNavRouter)getActivity().getApplication())
+                        .getSellerInfoCallingIntent(getActivity());
+                break;
+            case PEMBELIAN:
+                break;
+            case PENJUALAN:
+                break;
+            case KOMPLAIN:
+                break;
+        }
+        return intent;
     }
 
     @Override

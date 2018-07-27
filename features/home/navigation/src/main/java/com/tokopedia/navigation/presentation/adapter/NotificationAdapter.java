@@ -10,27 +10,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.data.GlobalNavConstant;
 import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
+
+import com.tokopedia.navigation.data.GlobalNavConstant.*;
+
+import static com.tokopedia.navigation.data.GlobalNavConstant.BELUM_DIBAYAR;
+import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
 
 /**
  * Created by meta on 03/07/18.
  */
 public class NotificationAdapter extends BaseListAdapter<DrawerNotification, BaseViewHolder> {
-
-    private int SELLER_INFO = 0;
-    private int PEMBELIAN = 1;
-    private int PENJUALAN = 2;
-    private int KOMPLAIN = 3;
-
-    private int BELUM_DIBAYAR = 0;
-    private int SIAP_DIKIRIM = 1;
-    private int SAMPAI_TUJUAN = 2;
-
-    private int PESANAN_BARU = 0;
-
-    private int BUYER = 0;
-    private int SELLER = 1;
 
     private static final int TYPE_ITEM = 2;
     private static final int TYPE_SINGLE = 3;
