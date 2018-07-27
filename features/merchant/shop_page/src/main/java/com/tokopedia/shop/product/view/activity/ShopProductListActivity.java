@@ -20,13 +20,8 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
-
-import java.util.ArrayList;
-
-import static com.tokopedia.shop.common.constant.ShopParamConstant.EXTRA_SELECTED_ETALASE_CHIP;
 
 /**
  * Created by nathan on 2/15/18.
@@ -48,14 +43,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
     private String attribution;
 
     private SearchInputView searchInputView;
-    private ArrayList<ShopEtalaseViewModel> selectedEtalaseChipList;
-
-    public static Intent createIntent(Context context, String shopId, String keyword,
-                                      String etalaseId, String attribution, String sortId, ArrayList<ShopEtalaseViewModel> selectedEtalaseViewModel ) {
-        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution, sortId);
-        intent.putParcelableArrayListExtra(EXTRA_SELECTED_ETALASE_CHIP, selectedEtalaseViewModel);
-        return intent;
-    }
 
     public static Intent createIntent(Context context, String shopId, String keyword,
                                       String etalaseId, String attribution, String sortId) {
@@ -115,11 +102,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
         } else {
             keyword = savedInstanceState.getString(SAVED_KEYWORD);
         }
-        if (getIntent().hasExtra(EXTRA_SELECTED_ETALASE_CHIP)) {
-            selectedEtalaseChipList = getIntent().getParcelableArrayListExtra(EXTRA_SELECTED_ETALASE_CHIP);
-        } else {
-            selectedEtalaseChipList = new ArrayList<>();
-        }
 
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -149,8 +131,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution,
-                selectedEtalaseChipList);
+        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution);
     }
 
     @Override

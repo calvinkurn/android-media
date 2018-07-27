@@ -52,8 +52,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
-    var isTabHidden: Boolean = false
-    var isTabFullyVisible: Boolean = true
 
     @Inject
     lateinit var presenter: ShopPagePresenter
@@ -89,6 +87,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_INFO = 1
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         private const val REQUEST_CODER_USER_LOGIN = 100
+        private const val REQUEST_CODE_FOLLOW = 101
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
@@ -350,7 +349,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODER_USER_LOGIN) {
-            refreshData()
+            if (resultCode == Activity.RESULT_OK) {
+                refreshData()
+            }
+        } else if (requestCode == REQUEST_CODE_FOLLOW) {
+            if (resultCode == Activity.RESULT_OK) {
+                refreshData()
+            }
         }
     }
 
@@ -367,7 +372,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.eventClickListFavourite(titles[viewPager.currentItem], shopId,
                     presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
         }
-        startActivity(ShopFavouriteListActivity.createIntent(this, shopId))
+        startActivityForResult(ShopFavouriteListActivity.createIntent(this, shopId), REQUEST_CODE_FOLLOW)
     }
 
     override fun goToChatSeller() {

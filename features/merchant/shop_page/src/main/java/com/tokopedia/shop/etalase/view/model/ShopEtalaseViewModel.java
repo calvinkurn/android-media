@@ -11,7 +11,7 @@ import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
  * Created by normansyahputa on 2/28/18.
  */
 
-public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFactory>,Parcelable{
+public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFactory>, Parcelable{
 
     private long useAce;
     private String etalaseId;

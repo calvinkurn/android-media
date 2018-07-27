@@ -1,8 +1,17 @@
 package com.tokopedia.shop.favourite.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
@@ -15,15 +24,19 @@ import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
  * Created by nathan on 2/5/18.
  */
 
-public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteViewModel, ShopFavouriteAdapterTypeFactory> implements ShopFavouriteListView {
+public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteViewModel, ShopFavouriteAdapterTypeFactory> implements ShopFavouriteListView, BaseEmptyViewHolder.Callback {
 
     private static final int DEFAULT_INITIAL_PAGE = 1;
+    private static final int REQUEST_CODE_USER_LOGIN = 100;
 
     public static ShopFavouriteListFragment createInstance(String shopId) {
         ShopFavouriteListFragment shopFavouriteListFragment = new ShopFavouriteListFragment();
@@ -49,16 +62,16 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void loadData(int page) {
-        if (page == DEFAULT_INITIAL_PAGE) {
+        if (this.shopInfo == null) {
             shopFavouriteListPresenter.getShopInfo(shopId);
         } else {
-            shopFavouriteListPresenter.getshopFavouriteList(shopId, page);
+            shopFavouriteListPresenter.getShopFavouriteList(shopId, page);
         }
     }
 
     @Override
     protected ShopFavouriteAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopFavouriteAdapterTypeFactory();
+        return new ShopFavouriteAdapterTypeFactory(this);
     }
 
     @Override
@@ -82,7 +95,64 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onSuccessGetShopInfo(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
-        shopFavouriteListPresenter.getshopFavouriteList(shopId, getCurrentPage());
+        shopFavouriteListPresenter.getShopFavouriteList(shopId, getCurrentPage());
+    }
+
+    @Override
+    public void onErrorToggleFavourite(Throwable throwable) {
+        if (!shopFavouriteListPresenter.isLoggedIn()) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
+        NetworkErrorHelper.showRedCloseSnackbar(getView(), ErrorHandler.getErrorMessage(getContext(), throwable));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_USER_LOGIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                shopFavouriteListPresenter.toggleFavouriteShop(shopId);
+            }
+        }
+    }
+
+    @Override
+    public void onSuccessToggleFavourite(boolean successValue) {
+        loadInitialData();
+        getActivity().setResult(Activity.RESULT_OK);
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopFavouriteViewModel> list) {
+        super.renderList(new ArrayList<>());
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopFavouriteViewModel> list, boolean hasNextPage) {
+        super.renderList(new ArrayList<>(), hasNextPage);
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setIconRes(R.drawable.ic_empty_state);
+        if (shopFavouriteListPresenter.isMyShop(shopId)) {
+            emptyModel.setTitle(getString(R.string.shop_product_my_empty_follower_title));
+            emptyModel.setContent("");
+            emptyModel.setButtonTitle("");
+        } else{
+            emptyModel.setTitle(getString(R.string.shop_product_empty_follower_title));
+            emptyModel.setContent(getString(R.string.shop_product_empty_product_title_desc, shopInfo.getInfo().getShopName()));
+            emptyModel.setButtonTitle(getString(R.string.shop_page_label_follow));
+            if (shopInfo != null) {
+                shopPageTracking.eventImpressionFavouriteShopFromZero(shopId,
+                        shopFavouriteListPresenter.isMyShop(shopId),
+                        ShopPageTracking.getShopType(shopInfo.getInfo()));
+            }
+        }
+        return emptyModel;
     }
 
     @Override
@@ -103,6 +173,21 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
         }
         if (shopFavouriteListPresenter != null) {
             shopFavouriteListPresenter.detachView();
+        }
+    }
+
+    @Override
+    public void onEmptyContentItemTextClicked() {
+        // no-op
+    }
+
+    @Override
+    public void onEmptyButtonClicked() {
+        if (shopInfo != null) {
+            shopPageTracking.eventClickFavouriteShopFromZero(shopId,
+                    shopFavouriteListPresenter.isMyShop(shopId),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()));
+            shopFavouriteListPresenter.toggleFavouriteShop(shopId);
         }
     }
 

@@ -24,8 +24,13 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
         isShopFavourited = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())
         view.shopName.text = MethodChecker.fromHtml(shopInfo.info.shopName).toString()
-        view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
-                shopInfo.info.shopTotalFavorit.toDouble().formatToSimpleNumber()))
+        if (shopInfo.info.shopTotalFavorit > 1) {
+            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
+                    shopInfo.info.shopTotalFavorit.toDouble().formatToSimpleNumber()))
+        } else { // if 0 or 1, only print as follower (without s)
+            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
+                    shopInfo.info.shopTotalFavorit.toDouble().formatToSimpleNumber()))
+        }
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.info.shopAvatar)
         when {

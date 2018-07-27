@@ -16,6 +16,6 @@ public class TextApiUtils {
     }
 
     public static boolean isTextEmpty(String text) {
-        return BOOLEAN_VALUE_FALSE.equalsIgnoreCase(text);
+        return TextUtils.isEmpty(text) || BOOLEAN_VALUE_FALSE.equalsIgnoreCase(text);
     }
 }

@@ -14,9 +14,6 @@ public class ShopParamConstant {
     public static final String EXTRA_ETALASE_ID = "EXTRA_ETALASE_ID";
     public static final String EXTRA_SORT_ID = "EXTRA_SORT_ID";
 
-    //history for selected etalase chip list in shop page.
-    public static final String EXTRA_SELECTED_ETALASE_CHIP = "EXTRA_SELECTED_ETALASE_CHIP";
-
     public static final String EXTRA_PAGE = "EXTRA_PAGE";
     public static final String EXTRA_SHOP_NOTE_ID = "EXTRA_SHOP_NOTE_ID";
     public static final String EXTRA_ETALASE_NAME = "EXTRA_ETALASE_NAME";
