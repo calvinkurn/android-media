@@ -13,6 +13,7 @@ public class DrawerNotification {
 
     public static class ChildDrawerNotification {
 
+        private String id;
         private String title;
         private Integer badge;
 
@@ -34,6 +35,14 @@ public class DrawerNotification {
 
         public void setBadge(Integer badge) {
             this.badge = badge;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
         }
     }
 

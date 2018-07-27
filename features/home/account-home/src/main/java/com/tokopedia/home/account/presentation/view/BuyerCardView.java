@@ -68,4 +68,24 @@ public class BuyerCardView extends BaseCustomView {
             textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
         }
     }
+
+    public void setOnClickName(View.OnClickListener listener) {
+        textUsername.setOnClickListener(listener);
+    }
+
+    public void setOnClickAvatar(View.OnClickListener listener) {
+        imageProfile.setOnClickListener(listener);
+    }
+
+    public void setOnClickProfileCompletion(View.OnClickListener listener) {
+        textProfileCompletion.setOnClickListener(listener);
+    }
+
+    public void setOnClickTokoPoint(View.OnClickListener listener) {
+        textTokopointAmount.setOnClickListener(listener);
+    }
+
+    public void setOnClickVoucher(View.OnClickListener listener) {
+        textVoucherAmount.setOnClickListener(listener);
+    }
 }

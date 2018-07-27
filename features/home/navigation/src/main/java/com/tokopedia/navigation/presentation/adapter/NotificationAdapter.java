@@ -10,7 +10,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.data.GlobalNavConstant;
+import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
+
+import com.tokopedia.navigation.data.GlobalNavConstant.*;
+
+import static com.tokopedia.navigation.data.GlobalNavConstant.BELUM_DIBAYAR;
+import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
 
 /**
  * Created by meta on 03/07/18.
@@ -109,5 +124,39 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
             adapter.addAll(item.getChilds());
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    public void updateValue(NotificationsModel notificationsModel) {
+        if (this.items == null)
+            return;
+
+        DrawerNotification.ChildDrawerNotification sellerInfo = items.get(SELLER_INFO).getChilds().get(SELLER_INFO);
+        sellerInfo.setBadge(notificationsModel.getSellerInfo().getNotification());
+
+        DrawerNotification.ChildDrawerNotification belumDibayar = items.get(PEMBELIAN).getChilds().get(BELUM_DIBAYAR);
+        belumDibayar.setBadge(notificationsModel.getBuyerOrder().getConfirmed());
+
+        DrawerNotification.ChildDrawerNotification siapDikirim = items.get(PEMBELIAN).getChilds().get(SIAP_DIKIRIM);
+        siapDikirim.setBadge(notificationsModel.getBuyerOrder().getShipped());
+
+        DrawerNotification.ChildDrawerNotification sampaiTujuan = items.get(PEMBELIAN).getChilds().get(SAMPAI_TUJUAN);
+        sampaiTujuan.setBadge(notificationsModel.getBuyerOrder().getArriveAtDestination());
+
+        DrawerNotification.ChildDrawerNotification pesananBaru = items.get(PENJUALAN).getChilds().get(PESANAN_BARU);
+        pesananBaru.setBadge(notificationsModel.getSellerOrder().getNewOrder());
+
+        DrawerNotification.ChildDrawerNotification penjualanSiapDikirim = items.get(PENJUALAN).getChilds().get(SIAP_DIKIRIM);
+        penjualanSiapDikirim.setBadge(notificationsModel.getSellerOrder().getShipped());
+
+        DrawerNotification.ChildDrawerNotification penjualanSampaiTujuan = items.get(PENJUALAN).getChilds().get(SAMPAI_TUJUAN);
+        penjualanSampaiTujuan.setBadge(notificationsModel.getSellerOrder().getArriveAtDestination());
+
+        DrawerNotification.ChildDrawerNotification pembeli = items.get(KOMPLAIN).getChilds().get(BUYER);
+        pembeli.setBadge(notificationsModel.getResolution().getBuyer());
+
+        DrawerNotification.ChildDrawerNotification penjual = items.get(KOMPLAIN).getChilds().get(SELLER);
+        penjual.setBadge(notificationsModel.getResolution().getSeller());
+
+        notifyDataSetChanged();
     }
 }

@@ -23,6 +23,7 @@ public class SettingConstant {
     public static final int SETTING_SALDO_ID = 32;
     public static final int SETTING_BANK_ACCOUNT_ID = 33;
     public static final int SETTING_CREDIT_CARD_ID = 34;
+    public static final int SETTING_DEV_OPTIONS = 0;
 
     public static class Url {
         public static final String BASE_MOBILE = "https://m.tokopedia.com/";

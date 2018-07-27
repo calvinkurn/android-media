@@ -62,6 +62,7 @@ query {
     sellerInfo {
       notification
     }
+    total_notif
     userSatisfactionSurvey
     buyerOrderStatus {
       confirmed
@@ -75,5 +76,6 @@ query {
       shipped
       arriveAtDestination
     }
+    total_notif
   }
 }

@@ -337,7 +337,7 @@ ext {
             digitalDeals          : ":features:digital:digital_deals",
             navigation            : ":features:home:navigation",
             searchbar             : ":features:home:searchbar",
-            notification          : ":features:home:notification",
+            navigationCommon      : ":features:home:navigation-common",
             accountHome           : ":features:home:account-home"
     ]
 

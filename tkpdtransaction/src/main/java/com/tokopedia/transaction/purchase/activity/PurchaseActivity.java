@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -60,6 +59,14 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     private String stateTxFilterID;
 
     private PurchaseTabAdapter adapter;
+
+    @DeepLink(TransactionAppLink.ORDER_LIST)
+    public static Intent getIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, PurchaseActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @DeepLink(TransactionAppLink.PURCHASE_VERIFICATION)
     public static Intent getCallingIntentPurchaseVerification(Context context, Bundle extras) {
