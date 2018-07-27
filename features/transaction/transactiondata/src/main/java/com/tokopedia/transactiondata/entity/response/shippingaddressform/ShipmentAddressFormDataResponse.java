@@ -32,6 +32,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("kero_unix_time")
     @Expose
     private int keroUnixTime;
+    @SerializedName("donation")
+    @Expose
+    private Donation donation;
 
     public List<String> getErrors() {
         return errors;
@@ -59,5 +62,9 @@ public class ShipmentAddressFormDataResponse {
 
     public int getKeroUnixTime() {
         return keroUnixTime;
+    }
+
+    public Donation getDonation() {
+        return donation;
     }
 }

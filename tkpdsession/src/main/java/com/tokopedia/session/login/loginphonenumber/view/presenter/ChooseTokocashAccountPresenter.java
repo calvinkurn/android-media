@@ -7,6 +7,8 @@ import com.tokopedia.session.login.loginphonenumber.view.subscriber.LoginTokoCas
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 /**
@@ -16,6 +18,7 @@ import javax.inject.Inject;
 public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTokocashAccount.View>
         implements ChooseTokocashAccount.Presenter {
 
+    private static final int ONLY_ONE = 1;
     private final LoginPhoneNumberUseCase loginTokoCashUseCase;
     private final SessionHandler sessionHandler;
 
@@ -42,4 +45,13 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
         ), new LoginTokoCashSubscriber
                 (getView(), accountTokocash));
     }
+
+    @Override
+    public void checkAutoLogin(String key, int itemCount, ArrayList<AccountTokocash> list) {
+        if(itemCount == ONLY_ONE){
+            AccountTokocash accountTokocash = list.get(0);
+            loginWithTokocash(key, accountTokocash);
+        }
+    }
+
 }

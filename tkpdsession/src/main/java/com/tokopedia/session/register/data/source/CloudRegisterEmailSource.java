@@ -6,8 +6,11 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.data.model.RegisterEmailModel;
 import com.tokopedia.session.register.data.mapper.RegisterEmailMapper;
+
+import java.util.HashMap;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -33,8 +36,8 @@ public class CloudRegisterEmailSource {
         this.sessionHandler = sessionHandler;
     }
 
-    public Observable<RegisterEmailModel> registerEmail(TKPDMapParam<String, Object> params) {
-        return accountsService.getApi().registerEmail(AuthUtil.generateParamsNetwork2(context, params))
+    public Observable<RegisterEmailModel> registerEmail(HashMap<String, Object> params) {
+        return accountsService.getApi().registerEmail(AuthUtil.generateParamsNetwork2(context, MakeLoginUseCase.oldConvert(params)))
                 .map(registerEmailMapper)
                 .doOnNext(saveUserId());
     }

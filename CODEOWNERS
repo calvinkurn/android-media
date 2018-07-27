@@ -28,7 +28,6 @@
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
-/features/top_ads/top_ads_management_source_tagging/    @tokopedia/minion-stuart
 
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/payment/payment/              @tokopedia/minion-bob
@@ -53,3 +52,4 @@
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
 /features/promo/tokopoints              @lavekush-t
+/libraries/common_network/              @ricoharisin

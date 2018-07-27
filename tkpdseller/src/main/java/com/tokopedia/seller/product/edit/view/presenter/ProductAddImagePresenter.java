@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.util.ArrayList;
