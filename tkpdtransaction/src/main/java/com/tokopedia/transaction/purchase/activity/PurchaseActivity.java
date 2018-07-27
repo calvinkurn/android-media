@@ -50,7 +50,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
-    @BindView(R2.id.tabs)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     public List<String> tabContents;

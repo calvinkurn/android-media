@@ -24,5 +24,6 @@ dependencies {
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.searchbar)
 
+    implementation rootProject.ext.miscDependencies.badge
     implementation rootProject.ext.miscDependencies.multiDex
 }

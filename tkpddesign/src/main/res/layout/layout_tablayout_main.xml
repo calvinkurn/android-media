@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.design.component.Tabs
-        android:id="@+id/tab"
+        android:id="@+id/indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabType="main"
