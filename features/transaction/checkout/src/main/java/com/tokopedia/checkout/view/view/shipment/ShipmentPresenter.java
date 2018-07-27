@@ -144,12 +144,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
-//        if (shipmentCartItemModelList != null) {
-//            this.shipmentCartItemModelList.clear();
-//            this.shipmentCartItemModelList.addAll(recipientCartItemList);
-//        } else {
         this.shipmentCartItemModelList = recipientCartItemList;
-//        }
     }
 
     @Override
@@ -255,9 +250,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<CartShipmentAddressFormData>() {
                             @Override
                             public void onCompleted() {
@@ -290,7 +285,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
                                     } else {
                                         initializePresenterData(cartShipmentAddressFormData);
-                                        getView().renderCheckoutPage();
+                                        getView().renderCheckoutPage(!isFromMultipleAddress);
                                     }
                                 }
                             }
@@ -334,9 +329,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<CartShipmentAddressFormData>() {
                             @Override
                             public void onCompleted() {
@@ -426,9 +421,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(
                                 new Subscriber<CartShipmentAddressFormData>() {
                                     @Override
@@ -444,7 +439,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                     @Override
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                        prepareDataAfterReloadCheckoutPage(cartShipmentAddressFormData);
+                                        if (cartShipmentAddressFormData.getGroupAddress() == null ||
+                                                cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                            getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                        } else {
+                                            prepareDataAfterReloadCheckoutPage(cartShipmentAddressFormData);
+                                        }
                                     }
                                 }
                         )
@@ -529,9 +529,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             compositeSubscription.add(
                     getShipmentAddressFormUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.newThread())
+                            .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.newThread())
+                            .unsubscribeOn(Schedulers.io())
                             .subscribe(
                                     new Subscriber<CartShipmentAddressFormData>() {
                                         @Override
@@ -548,30 +548,35 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                         @Override
                                         public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                            boolean isEnableCheckout = true;
-                                            for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                                                if (groupAddress.isError() || groupAddress.isWarning()) {
-                                                    isEnableCheckout = false;
-                                                    break;
-                                                }
-                                                for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                                                    if (groupShop.isError() || groupShop.isWarning()) {
+                                            if (cartShipmentAddressFormData.getGroupAddress() == null ||
+                                                    cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                                getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                            } else {
+                                                boolean isEnableCheckout = true;
+                                                for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+                                                    if (groupAddress.isError() || groupAddress.isWarning()) {
                                                         isEnableCheckout = false;
                                                         break;
                                                     }
-                                                    for (Product product : groupShop.getProducts()) {
-                                                        if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                    for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                                                        if (groupShop.isError() || groupShop.isWarning()) {
                                                             isEnableCheckout = false;
                                                             break;
                                                         }
+                                                        for (Product product : groupShop.getProducts()) {
+                                                            if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                                isEnableCheckout = false;
+                                                                break;
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            if (isEnableCheckout) {
-                                                getView().renderCheckShipmentPrepareCheckoutSuccess();
-                                            } else {
-                                                prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
+                                                if (isEnableCheckout) {
+                                                    getView().renderCheckShipmentPrepareCheckoutSuccess();
+                                                } else {
+                                                    prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
+                                                }
                                             }
                                         }
                                     }
@@ -645,9 +650,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
             compositeSubscription.add(
                     checkoutUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.newThread())
+                            .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.newThread())
+                            .unsubscribeOn(Schedulers.io())
                             .subscribe(getSubscriberCheckoutCart())
             );
         } else {
@@ -739,9 +744,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putAllString(param);
         compositeSubscription.add(
                 getThanksToppayUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberThanksTopPay())
         );
     }
@@ -768,9 +773,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 checkPromoCodeCartShipmentUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<PromoCodeCartShipmentData>() {
                             @Override
                             public void onCompleted() {
@@ -861,9 +866,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getGeneratedAuthParamNetwork(param));
         compositeSubscription.add(
                 checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<PromoCodeCartListData>() {
                             @Override
                             public void onCompleted() {
@@ -910,9 +915,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
         compositeSubscription.add(
                 editAddressUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<String>() {
                             @Override
                             public void onCompleted() {
@@ -944,6 +949,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
 
                                 if (response != null && statusSuccess) {
+                                    if (recipientAddressModel != null) {
+                                        recipientAddressModel.setLatitude(Double.parseDouble(latitude));
+                                        recipientAddressModel.setLongitude(Double.parseDouble(longitude));
+                                    } else {
+                                        shipmentCartItemModel.getRecipientAddressModel().setLatitude(Double.parseDouble(latitude));
+                                        shipmentCartItemModel.getRecipientAddressModel().setLongitude(Double.parseDouble(longitude));
+                                    }
                                     getView().renderEditAddressSuccess(latitude, longitude);
                                 } else {
                                     if (TextUtils.isEmpty(messageError)) {
@@ -1020,9 +1032,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void cancelAutoApplyCoupon() {
         compositeSubscription.add(
                 cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<String>() {
                             @Override
                             public void onCompleted() {
@@ -1075,9 +1087,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 changeShippingAddressUseCase.createObservable(requestParam)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<SetShippingAddressData>() {
                             @Override
                             public void onCompleted() {
