@@ -83,8 +83,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         }
 
         if (type == Type.EXPLORE) {
-            containerView.setBackground(
-                    MethodChecker.getDrawable(context, R.drawable.shadow_bottom)
+            containerView.setBackgroundColor(
+                    MethodChecker.getColor(context, R.color.white)
             );
         } else {
             containerView.setBackground(
