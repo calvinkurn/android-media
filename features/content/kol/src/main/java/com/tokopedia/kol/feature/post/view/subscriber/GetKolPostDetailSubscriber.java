@@ -2,8 +2,20 @@ package com.tokopedia.kol.feature.post.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kol.feature.comment.data.pojo.get.Comment;
+import com.tokopedia.kol.feature.comment.data.pojo.get.Content;
+import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
+import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
+import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
+import com.tokopedia.kol.feature.comment.data.pojo.get.Tag;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostDetailViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -31,10 +43,127 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
-        view.onSuccessGetKolPostDetail(convertToViewModel());
+        GetKolCommentData data = graphqlResponse.getData(GetKolCommentData.class);
+        GetUserPostComment postComment = data.getGetUserPostComment();
+
+        view.onSuccessGetKolPostDetail(convertToViewModel(postComment));
     }
 
-    private KolPostDetailViewModel convertToViewModel() {
-        return null;
+    private KolPostDetailViewModel convertToViewModel(GetUserPostComment postComment) {
+        return new KolPostDetailViewModel(
+                convertToKolPostViewModel(postComment.getPostKol()),
+                converToKolCommentViewModelList(postComment.getComments())
+        );
+    }
+
+    private KolPostViewModel convertToKolPostViewModel(PostKol postKol) {
+        Content content = getContent(postKol);
+        Tag tag = getKolTag(content);
+        return new KolPostViewModel(
+                postKol.getUserId(),
+                "",
+                "",
+                postKol.getUserName() == null ? "" : postKol.getUserName(),
+                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
+                postKol.getUserInfo() == null ? "" : postKol.getUserInfo(),
+                postKol.getUserUrl() == null ? "" : postKol.getUserUrl(),
+                postKol.isFollowed(),
+                postKol.getDescription() == null ? "" : postKol.getDescription(),
+                postKol.isLiked(),
+                postKol.getLikeCount(),
+                postKol.getCommentCount(),
+                0,
+                postKol.getId(),
+                postKol.getCreateTime() == null ? "" : generateTime(postKol.getCreateTime()),
+                true,
+                true,
+                getImageUrl(content),
+                getTagId(tag),
+                "",
+                getTagType(tag),
+                getTagCaption(tag),
+                getTagLink(tag)
+        );
+    }
+
+    private List<KolCommentViewModel> converToKolCommentViewModelList(List<Comment> commentList) {
+        List<KolCommentViewModel> kolPostDetailViewModelList = new ArrayList<>();
+        for (Comment comment : commentList) {
+            kolPostDetailViewModelList.add(converToKolCommentViewModel(comment));
+        }
+        return kolPostDetailViewModelList;
+    }
+
+    private KolCommentViewModel converToKolCommentViewModel(Comment comment) {
+        return new KolCommentViewModel(
+                String.valueOf(comment.getId()),
+                String.valueOf(comment.getUserID()),
+                comment.getUserPhoto(),
+                comment.getUserName(),
+                comment.getComment(),
+                generateTime(comment.getCreateTime()),
+                comment.isKol(),
+                comment.isCommentOwner()
+        );
+    }
+
+    private String generateTime(String rawTime) {
+        return TimeConverter.generateTime(view.getContext(), rawTime);
+    }
+
+    private Content getContent(PostKol postKol) {
+        try {
+            return postKol.getContent().get(0);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    private Tag getKolTag(Content content) {
+        try {
+            return content.getTags().get(0);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    private String getImageUrl(Content content) {
+        if (content != null && content.getImageurl() != null) {
+            return content.getImageurl();
+        } else {
+            return "";
+        }
+    }
+
+    private String getTagCaption(Tag tag) {
+        if (tag != null && tag.getCaption() != null) {
+            return tag.getCaption();
+        } else {
+            return "";
+        }
+    }
+
+    private int getTagId(Tag tag) {
+        if (tag != null) {
+            return tag.getId();
+        } else {
+            return 0;
+        }
+    }
+
+    private String getTagType(Tag tag) {
+        if (tag != null && tag.getType() != null) {
+            return tag.getType();
+        } else {
+            return "";
+        }
+    }
+
+    private String getTagLink(Tag tag) {
+        if (tag != null && tag.getLink() != null) {
+            return tag.getLink();
+        } else {
+            return "";
+        }
     }
 }
