@@ -61,8 +61,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment {
                 getString(R.string.title_tkpd_pay_setting), getString(R.string.subtitle_tkpd_pay_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOUCH_ID,
-                getString(R.string.title_touch_id_setting)));
+
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_PRIVACY_ID,
@@ -107,6 +106,12 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment {
                 Application application = getActivity().getApplication();
                 if (application instanceof AccountHomeRouter){
                     ((AccountHomeRouter) application).goToHelpCenter(getActivity());
+                }
+                break;
+            case SettingConstant.SETTING_OUT_ID:
+                application = getActivity().getApplication();
+                if (application instanceof AccountHomeRouter){
+                    ((AccountHomeRouter) application).doLogoutAccount(getActivity());
                 }
                 break;
             default: break;

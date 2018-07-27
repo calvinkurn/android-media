@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 
 public interface AccountHomeRouter {
+    void doLogoutAccount(Context context);
     void goToHelpCenter(Context context);
-
     Intent getManageProfileIntent(Context context);
     Intent getManagePasswordIntent(Context context);
     Intent getManageAddressIntent(Context context);

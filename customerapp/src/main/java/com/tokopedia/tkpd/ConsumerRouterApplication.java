@@ -2526,8 +2526,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(intent);
         UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DEPOSIT);
         AnalyticsEventTrackingHelper.homepageSaldoClick(DepositActivity.class.getName());
+    }
 
-    @Override
     public Intent getInboxChatIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);
     }
@@ -2554,5 +2554,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void setStringRemoteConfigLocal(String key, String value) {
         remoteConfig.setString(key, value);
+    }
+
+    @Override
+    public void doLogoutAccount(Context context) {
+        SessionHandler session = new SessionHandler(context);
+        session.Logout(context);
+        UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.SIGN_OUT);
+        AnalyticsEventTrackingHelper.hamburgerOptionClicked("Home", "Logout");
     }
 }
