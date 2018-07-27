@@ -63,7 +63,9 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                 getView().showPage();
                 getView().hideLoading();
                 getView().renderWagon(trainWagonViewModels);
-                getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, getView().getExpireDate()));
+                if (getView().getExpireDate() != null && !getView().getExpireDate().isEmpty()) {
+                    getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, getView().getExpireDate()));
+                }
             }
         });
     }
@@ -73,7 +75,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
             if (trainSoftbook.getDepartureTrips().size() > 0) {
                 TrainTrip trainTrip = trainSoftbook.getDepartureTrips().get(0);
 
-                String departureTime = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, "yyyyMMdd", trainTrip.getDepartureTimestamp());
+                String departureTime = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API_SOFTBOOK, "yyyyMMdd", trainTrip.getDepartureTimestamp());
                 return trainGetSeatsUseCase.createRequestParam(
                         departureTime,
                         trainTrip.getOrg(),
@@ -86,7 +88,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
             if (trainSoftbook.getReturnTrips().size() > 0) {
                 TrainTrip trainTrip = trainSoftbook.getReturnTrips().get(0);
 
-                String departureTime = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, "yyyyMMdd", trainTrip.getDepartureTimestamp());
+                String departureTime = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API_SOFTBOOK, "yyyyMMdd", trainTrip.getDepartureTimestamp());
                 return trainGetSeatsUseCase.createRequestParam(
                         departureTime,
                         trainTrip.getOrg(),

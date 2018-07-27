@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -86,7 +87,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private AppCompatButton submitButton, chooseSeatButton;
     private AppCompatCheckBox sameAsBuyerCheckbox;
     private LinearLayout containerLayout;
-    private ProgressBar progressBar;
+    private RelativeLayout progressBar;
 
     private TrainPassengerViewModel buyerViewModel;
     private List<TrainPassengerRequest> trainPassengerRequestList;

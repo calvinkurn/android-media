@@ -10,7 +10,8 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,8 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:visibility="visible">
 
 
                 <LinearLayout
@@ -78,12 +78,22 @@
                     android:text="@string/train_booking_passenger_btn_choose_seat" />
             </LinearLayout>
 
-            <ProgressBar
+            <RelativeLayout
                 android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                tools:visibility="gone" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:visibility="visible"
+                    tools:visibility="visible" />
+            </RelativeLayout>
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

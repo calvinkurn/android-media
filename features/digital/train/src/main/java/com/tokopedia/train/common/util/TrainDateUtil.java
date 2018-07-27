@@ -26,6 +26,7 @@ public class TrainDateUtil {
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     public static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("GMT+7");
     public static final String FORMAT_DATE_API_DETAIL = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String FORMAT_DATE_API_SOFTBOOK = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final String FORMAT_TIME_DETAIL = "HH:mm";
     public static final String FORMAT_DATE_LOCAL_DETAIL = "EEEE, dd LLLL yyyy";
     public static final String FORMAT_DATE_LOCAL_DETAIL_ORDER = "dd MMM yyyy, HH:mm";

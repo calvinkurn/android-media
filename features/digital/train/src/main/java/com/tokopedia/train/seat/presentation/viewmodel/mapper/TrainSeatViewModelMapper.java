@@ -2,6 +2,7 @@ package com.tokopedia.train.seat.presentation.viewmodel.mapper;
 
 import com.tokopedia.train.seat.data.entity.TrainSeatEntity;
 import com.tokopedia.train.seat.data.entity.TrainWagonEntity;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatRowColumnViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 
@@ -15,8 +16,7 @@ import javax.inject.Inject;
 public class TrainSeatViewModelMapper {
     String[] seating = new String[]{"A", "B", "C", "D", "E"};
     private Map<String, Integer> seatAlphabet = new HashMap<>();
-    private int maxColumn = 0;
-    private int maxRow = 0;
+
 
     @Inject
     public TrainSeatViewModelMapper() {
@@ -38,8 +38,9 @@ public class TrainSeatViewModelMapper {
         return viewModel;
     }
 
-    public List<TrainSeatViewModel> transform(List<TrainSeatEntity> entities) {
-
+    public TrainSeatRowColumnViewModel transform(List<TrainSeatEntity> entities) {
+        int maxColumn = 0;
+        int maxRow = 0;
         for (int i = 0; i < entities.size(); i++) {
             TrainSeatEntity seat = entities.get(i);
             if (seat.getRow() > maxRow) {
@@ -59,7 +60,7 @@ public class TrainSeatViewModelMapper {
                 int currentIndexSeat = seatAlphabet.get(entities.get(j).getColumn());
                 if (i < currentIndexSeat) {
                     int beforeItem = 0;
-                    if (newViewModels.size() > 0){
+                    if (newViewModels.size() > 0) {
                         int newBeforeItem = currentIndexSeat - seatAlphabet.get(newViewModels.get(newViewModels.size() - 1).getColumn());
                         if (newBeforeItem >= 0) {
                             beforeItem = newBeforeItem;
@@ -78,7 +79,7 @@ public class TrainSeatViewModelMapper {
                 }
             }
         }
-        return newViewModels;
+        return new TrainSeatRowColumnViewModel(newViewModels, maxColumn, maxRow);
     }
 
     private List<TrainSeatViewModel> buildPreAlphabet(int row, int pos, int beforeitem) {
@@ -112,9 +113,10 @@ public class TrainSeatViewModelMapper {
     public TrainWagonViewModel transform(TrainWagonEntity entity) {
         TrainWagonViewModel viewModel = new TrainWagonViewModel();
         viewModel.setWagonCode(entity.getWagonCode());
-        viewModel.setSeats(transform(entity.getSeatDetailEntities()));
-        viewModel.setMaxColumn(maxColumn);
-        viewModel.setMaxRow(maxRow);
+        TrainSeatRowColumnViewModel trainSeatRowColumnViewModel = transform(entity.getSeatDetailEntities());
+        viewModel.setSeats(trainSeatRowColumnViewModel.getSeats());
+        viewModel.setMaxColumn(trainSeatRowColumnViewModel.getMaxColumn());
+        viewModel.setMaxRow(trainSeatRowColumnViewModel.getMaxRow());
         return viewModel;
     }
 }

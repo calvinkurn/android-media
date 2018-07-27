@@ -5,9 +5,11 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 
 import java.io.IOException;
@@ -45,13 +47,18 @@ public class TrainErrorResponse extends BaseResponseError {
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = null;
         for (TrainNetworkError error : errorList) {
-            jsonObject = jsonParser.parse(error.getMessage()).getAsJsonObject();
-            if (jsonObject != null) {
-                if (jsonObject.has("title")) {
-                    results.add(jsonObject.get("title").getAsString());
-                    continue;
+            try {
+                jsonObject = jsonParser.parse(error.getMessage()).getAsJsonObject();
+                if (jsonObject != null) {
+                    if (jsonObject.has("title")) {
+                        results.add(jsonObject.get("title").getAsString());
+                        continue;
+                    }
                 }
+            } catch (JsonSyntaxException e) {
+                CommonUtils.dumper(error.getMessage());
             }
+
             results.add(error.getMessage());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
