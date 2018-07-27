@@ -93,7 +93,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.d("ProfileUseCase", "ON ERROR");
                     throwable.printStackTrace();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
                             getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -192,7 +191,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.d("ReviewTicketPresenter", "onError");
                     throwable.printStackTrace();
                     getView().hideProgressBar();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
@@ -206,8 +204,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
                 @Override
                 public void onNext(VerifyMyCartResponse verifyCartResponse) {
-                    Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
-
 
                     Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
                     mSelectedSeatViewModel.setQuantity(quantity);
@@ -236,7 +232,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.d("Naveen", " On Error" + throwable.getMessage());
                     getView().hideProgressBar();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
                             getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -249,7 +244,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
                 @Override
                 public void onNext(VerifyCartResponse verifyCartResponse) {
-                    Log.d("Naveen", "on Next" + verifyCartResponse.getStatus().getMessage().getMessage());
                 }
             });
         }

@@ -47,6 +47,7 @@ import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.payment.model.PaymentPassData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +159,6 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("ProfileUseCase", "ON ERROR");
                 throwable.printStackTrace();
                 Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
                         getLoginIntent(getView().getActivity());
@@ -348,7 +348,6 @@ public class EventReviewTicketPresenter
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.d("ReviewTicketPresenter", "onError");
                     throwable.printStackTrace();
                     getView().hideProgressBar();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
@@ -362,7 +361,6 @@ public class EventReviewTicketPresenter
 
                 @Override
                 public void onNext(VerifyMyCartResponse verifyCartResponse) {
-                    Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
                     Gson gson = new Gson();
                     Cart cart = gson.fromJson(String.valueOf(verifyCartResponse.getCart()), Cart.class);
                     cartData = verifyCartResponse.getCart();
@@ -414,7 +412,6 @@ public class EventReviewTicketPresenter
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.d("ReviewTicketPresenter", "onError");
                     throwable.printStackTrace();
                     getView().hideProgressBar();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
@@ -428,7 +425,6 @@ public class EventReviewTicketPresenter
 
                 @Override
                 public void onNext(VerifyCartResponse verifyCartResponse) {
-                    Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
 
                     if (!isPromoCodeCase) {
                         if ("failure" .equals(verifyCartResponse.getStatus().getResult())) {
@@ -564,7 +560,7 @@ public class EventReviewTicketPresenter
                 @Override
                 public void onNext(CheckoutResponse checkoutResponse) {
 
-                    com.tokopedia.payment.model.PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
+                    PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
                     paymentPassData.setQueryString(checkoutResponse.getQueryString());
                     paymentPassData.setRedirectUrl(checkoutResponse.getRedirectUrl());
                     paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
