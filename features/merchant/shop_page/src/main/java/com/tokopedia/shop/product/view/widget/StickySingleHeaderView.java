@@ -97,7 +97,6 @@ public class StickySingleHeaderView extends FrameLayout
         if (firstCompletelyVisiblePosition > -1) {
             if (firstCompletelyVisiblePosition > (stickyPosition - 1)) {
                 // make the etalase label always visible
-                Log.i("TESTABCD", "show etalase label");
                 if (!isStickyShowed()) {
                     showSticky();
                     mHeaderContainer.setVisibility(View.VISIBLE);
@@ -108,7 +107,6 @@ public class StickySingleHeaderView extends FrameLayout
                     clearHeaderView();
                     mHeaderContainer.setVisibility(View.GONE);
                 }
-                Log.i("TESTABCD", "hide etalase label");
             }
         }
     }

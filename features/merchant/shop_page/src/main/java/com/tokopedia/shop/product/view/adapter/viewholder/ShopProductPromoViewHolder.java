@@ -15,7 +15,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
@@ -53,7 +52,7 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(false);
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
     }
@@ -82,10 +81,8 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
             shopPagePromoWebView.loadAuthUrl(shopProductPromoViewModel.getUrl(),
                     shopProductPromoViewModel.getUserId(),
                     shopProductPromoViewModel.getAccessToken());
-            Log.i("PromoViewHolder", "loadURL : " + shopProductPromoViewModel.getUrl() + shopProductPromoViewModel.getUserId());
         } else {
             shopPagePromoWebView.loadUrl(shopProductPromoViewModel.getUrl());
-            Log.i("PromoViewHolder", "loadURL : " + shopProductPromoViewModel.getUrl());
         }
 
         isLogin = shopProductPromoViewModel.isLogin();
@@ -95,13 +92,11 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
     private void showLoading() {
         loadingLayout.setVisibility(View.VISIBLE);
         shopPagePromoWebView.setVisibility(View.GONE);
-        Log.i("PromoViewHolder", "showLoading");
     }
 
     private void finishLoading() {
         loadingLayout.setVisibility(View.GONE);
         shopPagePromoWebView.setVisibility(View.VISIBLE);
-        Log.i("PromoViewHolder", "hideLoading");
     }
 
     private class OfficialStoreWebChromeClient extends WebChromeClient {
@@ -156,6 +151,7 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
             }
             return true;
         }
+
     }
 
     public interface PromoViewHolderListener {
