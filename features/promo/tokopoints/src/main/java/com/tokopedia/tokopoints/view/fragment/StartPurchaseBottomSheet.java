@@ -46,10 +46,8 @@ public class StartPurchaseBottomSheet extends BottomSheets {
 
         for (LobItem item : mLobDetails.getLobs()) {
             View itemView = inflater.inflate(R.layout.tp_bottomsheet_lob_item, null, false);
-            ImageView icon = itemView.findViewById(R.id.img_lob);
             TextView title = itemView.findViewById(R.id.text_title);
             title.setText(item.getText());
-            ImageHandler.loadImageFit2(icon.getContext(), icon, item.getIcon());
             linearLayout.addView(itemView);
 
             itemView.setOnClickListener(view1 -> {
@@ -60,6 +58,17 @@ public class StartPurchaseBottomSheet extends BottomSheets {
                     ((TokopointRouter) itemView.getContext().getApplicationContext()).openTokoPoint(itemView.getContext(), uri);
                 }
             });
+
+            ImageView icon = itemView.findViewById(R.id.img_lob);
+            if (item.getText().equalsIgnoreCase("Beli")) {
+                icon.setImageResource(R.drawable.ic_tp_buy);
+            } else if (item.getText().equalsIgnoreCase("Kereta")) {
+                icon.setImageResource(R.drawable.ic_tp_train);
+            } else if (item.getText().equalsIgnoreCase("Pesawat")) {
+                icon.setImageResource(R.drawable.ic_tp_pesawat);
+            } else if (item.getText().equalsIgnoreCase("Bayar")) {
+                icon.setImageResource(R.drawable.ic_tp_bayar);
+            }
         }
     }
 
