@@ -1,7 +1,7 @@
 package com.tokopedia.navigation.data.entity;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.navigation.data.NotificationsModel;
+import com.tokopedia.navigation_common.NotificationsModel;
 
 /**
  * Created by meta on 26/07/18.
