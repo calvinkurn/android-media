@@ -6,14 +6,16 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.domain.entity.GetExploreData;
-import com.tokopedia.explore.view.subscriber.GetExploreDataSubscriber;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * @author by milhamj on 23/07/18.
@@ -37,7 +39,7 @@ public class GetExploreDataUseCase {
     }
 
     public void execute(Map<String, Object> variables,
-                        GetExploreDataSubscriber getExploreDataSubscriber) {
+                        Subscriber<GraphqlResponse> getExploreDataSubscriber) {
         graphqlUseCase.clearRequest();
 
         String query = GraphqlHelper.loadRawString(context.getResources(),
