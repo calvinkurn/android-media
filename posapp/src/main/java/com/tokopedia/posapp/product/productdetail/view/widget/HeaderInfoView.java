@@ -95,6 +95,9 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             tvPrice.setText(data.getInfo().getProductPrice());
             textOriginalPrice.setVisibility(View.VISIBLE);
             textOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(data.getInfo().getProductOriginalPrice(), true));
+            textOriginalPrice.setPaintFlags(
+                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
         } else {
             tvPrice.setText(data.getInfo().getProductPrice());
         }
