@@ -159,7 +159,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 RouteManager.route(getView().getActivity(), ApplinkConst.EVENTS_ORDER);
             else {
                 showOMS = true;
-                getView().showLoginSnackbar(getView().getActivity().getResources().getString(R.string.login_daftar_transaksi));
+                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                        getLoginIntent(getView().getActivity());
+                getView().navigateToActivityRequest(intent, 1099);
             }
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
             return true;
@@ -235,6 +237,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     getFavouriteItemsAndShow();
                 } else if (showOMS) {
                     RouteManager.route(getView().getActivity(), ApplinkConst.EVENTS_ORDER);
+                    showOMS = false;
                 }
             } else {
                 getView().hideProgressBar();
