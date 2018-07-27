@@ -4,12 +4,12 @@ import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductAddFragment
+import com.tokopedia.product.edit.price.ProductAddNameCategoryFragment
 
-class BaseProductAddActivity : BaseSimpleActivity(){
+class ProductAddNameCategoryActivity : BaseSimpleActivity(){
 
     override fun getNewFragment(): Fragment{
-        return BaseProductAddFragment.createInstance()
+        return ProductAddNameCategoryFragment.createInstance()
     }
 
     override fun getLayoutRes(): Int {

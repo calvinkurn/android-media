@@ -30,9 +30,9 @@ import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogVie
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.BaseProductEditActivity
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
-import kotlinx.android.synthetic.main.fragment_product_add_new.*
+import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
-class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
+class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
@@ -46,7 +46,7 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_product_add_new, container, false)
+        return inflater.inflate(R.layout.fragment_product_add_name_category, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -137,6 +137,6 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
-        fun createInstance() = BaseProductAddFragment()
+        fun createInstance() = ProductAddNameCategoryFragment()
     }
 }
