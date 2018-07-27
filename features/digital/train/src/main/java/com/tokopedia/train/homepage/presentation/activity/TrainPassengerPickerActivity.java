@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.homepage.presentation.fragment.TrainPassengerPickerFragment;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
@@ -12,7 +13,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
  * @author Rizky on 13/03/18.
  */
 
-public class TrainPassengerPickerActivity extends TrainBaseActivity implements TrainPassengerPickerFragment.OnFragmentInteractionListener {
+public class TrainPassengerPickerActivity extends BaseSimpleActivity implements TrainPassengerPickerFragment.OnFragmentInteractionListener {
 
     public static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
