@@ -26,8 +26,9 @@ public class GetKolPostDetailUseCase {
     private static final String PARAM_ID = "idPost";
     private static final String PARAM_CURSOR = "cursor";
     private static final String PARAM_LIMIT = "limit";
-    private static final int DEFAULT_LIMIT = 3;
     private static final String FIRST_CURSOR = "";
+
+    public static final int DEFAULT_LIMIT = 3;
 
     private final Context context;
     private final GraphqlUseCase graphqlUseCase;

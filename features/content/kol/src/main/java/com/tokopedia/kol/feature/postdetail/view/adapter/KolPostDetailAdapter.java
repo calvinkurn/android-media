@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
 
     @Inject
     KolPostDetailAdapter() {
+        list = new ArrayList<>();
     }
 
     @NonNull

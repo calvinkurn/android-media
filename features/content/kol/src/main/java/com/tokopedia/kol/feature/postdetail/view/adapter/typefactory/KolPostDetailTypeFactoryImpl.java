@@ -4,11 +4,16 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentViewHolder;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
@@ -18,7 +23,7 @@ import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewMod
  */
 
 public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
-        implements KolPostDetailTypeFactory {
+        implements KolPostDetailTypeFactory, KolPostTypeFactory, KolCommentTypeFactory {
 
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final KolComment.View.ViewHolder kolCommentListener;
@@ -45,6 +50,24 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(SeeAllCommentsViewModel seeAllCommentsViewModel) {
         return SeeAllCommentsViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(KolCommentHeaderViewModel viewModel) {
+        throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
+                + KolCommentHeaderViewModel.class.getSimpleName());
+    }
+
+    @Override
+    public int type(EmptyKolPostViewModel emptyKolPostViewModel) {
+        throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
+                + EmptyKolPostViewModel.class.getSimpleName());
+    }
+
+    @Override
+    public int type(ExploreViewModel exploreViewModel) {
+        throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
+                + ExploreViewModel.class.getSimpleName());
     }
 
     @Override

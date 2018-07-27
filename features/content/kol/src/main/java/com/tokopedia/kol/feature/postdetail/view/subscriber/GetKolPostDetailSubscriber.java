@@ -10,11 +10,14 @@ import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
 import com.tokopedia.kol.feature.comment.data.pojo.get.Tag;
+import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Subscriber;
@@ -51,9 +54,11 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
 
         List<KolCommentViewModel> kolCommentViewModels
                 = converToKolCommentViewModelList(postComment.getComments());
-        if (!kolCommentViewModels.isEmpty()) {
-            list.addAll(kolCommentViewModels);
+        if (postComment.getPostKol().getCommentCount() > GetKolCommentsUseCase.DEFAULT_LIMIT) {
+            list.add(addSeeAll(postComment));
         }
+        Collections.reverse(kolCommentViewModels);
+        list.addAll(kolCommentViewModels);
 
 
         view.onSuccessGetKolPostDetail(list);
@@ -86,27 +91,6 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
                 getTagType(tag),
                 getTagCaption(tag),
                 getTagLink(tag)
-        );
-    }
-
-    private List<KolCommentViewModel> converToKolCommentViewModelList(List<Comment> commentList) {
-        List<KolCommentViewModel> kolPostDetailViewModelList = new ArrayList<>();
-        for (Comment comment : commentList) {
-            kolPostDetailViewModelList.add(converToKolCommentViewModel(comment));
-        }
-        return kolPostDetailViewModelList;
-    }
-
-    private KolCommentViewModel converToKolCommentViewModel(Comment comment) {
-        return new KolCommentViewModel(
-                String.valueOf(comment.getId()),
-                String.valueOf(comment.getUserID()),
-                comment.getUserPhoto(),
-                comment.getUserName(),
-                comment.getComment(),
-                generateTime(comment.getCreateTime()),
-                comment.isKol(),
-                comment.isCommentOwner()
         );
     }
 
@@ -168,5 +152,33 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         } else {
             return "";
         }
+    }
+
+    private List<KolCommentViewModel> converToKolCommentViewModelList(List<Comment> commentList) {
+        List<KolCommentViewModel> kolPostDetailViewModelList = new ArrayList<>();
+        for (Comment comment : commentList) {
+            kolPostDetailViewModelList.add(converToKolCommentViewModel(comment));
+        }
+        return kolPostDetailViewModelList;
+    }
+
+    private KolCommentViewModel converToKolCommentViewModel(Comment comment) {
+        return new KolCommentViewModel(
+                String.valueOf(comment.getId()),
+                String.valueOf(comment.getUserID()),
+                comment.getUserPhoto(),
+                comment.getUserName(),
+                comment.getComment(),
+                generateTime(comment.getCreateTime()),
+                comment.isKol(),
+                comment.isCommentOwner()
+        );
+    }
+
+    private SeeAllCommentsViewModel addSeeAll(GetUserPostComment postComment) {
+        return new SeeAllCommentsViewModel(
+                postComment.getPostKol().getId(),
+                postComment.getComments().size()
+        );
     }
 }
