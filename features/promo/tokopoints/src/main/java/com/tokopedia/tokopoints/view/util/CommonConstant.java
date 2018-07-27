@@ -16,6 +16,8 @@ public interface CommonConstant {
     int DEFAULT_CATEGORY_TYPE = 0;
     int DEFAULT_AUTO_REFRESH_S = 10000;
     int CATALOG_TYPE_FLASH_SALE = 3;
+    int MY_COUPON_TAB = 1;
+    int MAX_COUPON_TO_SHOW_COUNT = 9;
     String TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s";
 
     interface CouponRedemptionCode {

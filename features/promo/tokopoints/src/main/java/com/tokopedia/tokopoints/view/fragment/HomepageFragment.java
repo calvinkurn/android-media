@@ -201,13 +201,17 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
         if (data.getCoupon() != null && data.getCoupon().getCoupons() != null) {
             TextView counterCoupon = getView().findViewById(R.id.text_count);
-            if (data.getCoupon().getCoupons().size() > 9) {
+            if (data.getCoupon().getCoupons().size() > CommonConstant.MAX_COUPON_TO_SHOW_COUNT) {
                 counterCoupon.setVisibility(View.VISIBLE);
-                counterCoupon.setText("9+");
+                counterCoupon.setText(CommonConstant.MAX_COUPON_TO_SHOW_COUNT + "+");
             } else if (data.getCoupon().getCoupons().size() > 0) {
                 counterCoupon.setVisibility(View.VISIBLE);
                 counterCoupon.setText(String.valueOf(data.getCoupon().getCoupons().size()));
             }
+
+            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon_space);
+        } else {
+            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon);
         }
     }
 
