@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +57,14 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
         }
 
         holder.outer.setOnClickListener(v -> {
-            mPresenter.getView().updateSelectedCategoryId(item.getId());
-            mPresenter.getView().refreshTab(item.getId());
+            if (mPresenter.getSelectedCategoryId() == item.getId()) {
+                mPresenter.getView().updateSelectedCategoryId(CommonConstant.DEFAULT_CATEGORY_TYPE);
+                mPresenter.getView().refreshTab(CommonConstant.DEFAULT_CATEGORY_TYPE);
+            } else {
+                mPresenter.getView().updateSelectedCategoryId(item.getId());
+                mPresenter.getView().refreshTab(item.getId());
+            }
+
             notifyDataSetChanged();
         });
 
