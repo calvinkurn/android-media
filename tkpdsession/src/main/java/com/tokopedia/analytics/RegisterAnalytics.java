@@ -164,7 +164,7 @@ public class RegisterAnalytics {
 
     public void eventClickResendActivationEmail() {
         tracker.sendEventTracking(
-                Event.CLICK_CONFIRM,
+                Event.CLICK_REGISTER,
                 Action.ACTIVATION_PAGE,
                 "click on kirim ulang",
                 ""
