@@ -35,6 +35,4 @@ public interface TrainComponent {
     GetScheduleDetailUseCase getScheduleDetailUseCase();
 
     TrainFlowUtil trainFlowUtil();
-
-    TrainRouter trainRouter();
 }

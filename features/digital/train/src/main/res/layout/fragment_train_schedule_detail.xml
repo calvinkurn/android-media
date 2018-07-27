@@ -42,10 +42,10 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/departure_time_circle"
-                android:layout_alignBottom="@id/arrival_time_circle"
-                android:layout_alignLeft="@id/departure_time_circle"
-                android:layout_alignStart="@id/departure_time_circle"
+                android:layout_alignTop="@+id/departure_time_circle"
+                android:layout_alignBottom="@+id/arrival_time_circle"
+                android:layout_alignLeft="@+id/departure_time_circle"
+                android:layout_alignStart="@+id/departure_time_circle"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_below="@+id/departure_time_circle"
@@ -64,7 +64,7 @@
 
             <ImageView
                 android:id="@+id/arrival_time_circle"
-                android:layout_alignBottom="@id/arrival_time"
+                android:layout_alignBottom="@+id/arrival_time"
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_4"
@@ -139,7 +139,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/arrival_time"
+                android:layout_toEndOf="@+id/arrival_time"
                 android:layout_toRightOf="@+id/arrival_time"
                 android:layout_below="@+id/train_duration"
                 android:id="@+id/arrival_info"

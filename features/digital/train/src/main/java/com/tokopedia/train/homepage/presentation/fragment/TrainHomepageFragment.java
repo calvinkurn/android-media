@@ -92,8 +92,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
 
-    @Inject
-    TrainRouter trainRouter;
 
     public TrainHomepageFragment() {
         // Required empty public constructor
