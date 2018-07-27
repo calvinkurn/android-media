@@ -30,7 +30,9 @@ import java.util.Random;
 
 /**
  * Created by m.normansyah on 12/8/15.
+ * Use ImageUtils instead
  */
+@Deprecated
 public class FileUtils {
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
     public static final String FILE_IMAGE_EXT = ".png"; //to handle transparent issues.
@@ -189,83 +191,6 @@ public class FileUtils {
         }
     }
 
-    // URI starts with "content://gmail-ls/"
-    public static String getPathFromGmail(Context context, Uri contentUri) {
-        File attach;
-        try {
-            InputStream attachment = context.getContentResolver().openInputStream(contentUri);
-            attach = FileUtils.writeImageToTkpdPath(attachment);
-            if (attach == null) {
-                return null;
-            }
-            return attach.getAbsolutePath();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static String getTkpdPathFromURI(Context context, Uri uri) {
-        InputStream is = null;
-        if (!isImageMimeType(context, uri)) {
-            return null;
-        }
-        if (uri.getAuthority() != null) {
-            try {
-                Bitmap bmp = null;
-                int inSampleSize = 1;
-                boolean oomError;
-                do {
-                    try {
-                        is = context.getContentResolver().openInputStream(uri);
-                        if (is == null) {
-                            return null;
-                        }
-                        // estimate sample size
-                        if (inSampleSize == 1 && is.available() >
-                                (1.5 * ImageHandler.IMAGE_WIDTH_HD *  ImageHandler.IMAGE_WIDTH_HD)) {
-                            inSampleSize = 2;
-                        }
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                        options.inSampleSize = inSampleSize;
-                        bmp = BitmapFactory.decodeStream(is, null, options);
-                        if (bmp == null) {
-                            return null;
-                        }
-                        oomError = false;
-                    } catch (OutOfMemoryError outOfMemoryError) {
-                        inSampleSize *= 2;
-                        oomError = true;
-                        if (inSampleSize > 16) {
-                            break;
-                        }
-                    }
-                } while (oomError);
-                if (bmp == null) {
-                    return null;
-                }
-                File file = writeImageToTkpdPath(bmp);
-                bmp.recycle();
-                if (file != null) {
-                    return file.getAbsolutePath();
-                } else {
-                    return null;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (is != null) {
-                        is.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
     private static String getMimeType(Context context, Uri uri) {
         String mimeType = null;
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
@@ -278,34 +203,6 @@ public class FileUtils {
                     fileExtension.toLowerCase());
         }
         return mimeType;
-    }
-
-    private static boolean isImageMimeType(Context context, Uri uri) {
-        String mimeType = getMimeType(context, uri);
-        return !TextUtils.isEmpty(mimeType) && mimeType.startsWith("image");
-    }
-
-    public static String getPathFromMediaUri(Context context, Uri contentUri) {
-
-        String res = "";
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    res = cursor.getString(column_index);
-                    return res;
-                }
-            } catch (Exception e) {
-                return null;
-            } finally {
-                cursor.close();
-            }
-        } else {
-            return contentUri.getPath();
-        }
-        return res;
     }
 
     /**
