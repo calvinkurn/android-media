@@ -41,6 +41,7 @@
                 android:id="@+id/text_link_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tp_margin_small"
                 android:gravity="center"
                 android:padding="@dimen/tp_margin_large"
                 android:text="@string/tp_label_help_with_storepoints"
