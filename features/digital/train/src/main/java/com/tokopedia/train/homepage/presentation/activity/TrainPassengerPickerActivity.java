@@ -13,7 +13,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
  * @author Rizky on 13/03/18.
  */
 
-public class TrainPassengerPickerActivity extends BaseSimpleActivity implements TrainPassengerPickerFragment.OnFragmentInteractionListener {
+public class TrainPassengerPickerActivity extends TrainBaseActivity implements TrainPassengerPickerFragment.OnFragmentInteractionListener {
 
     public static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
@@ -36,4 +36,8 @@ public class TrainPassengerPickerActivity extends BaseSimpleActivity implements 
         finish();
     }
 
+    @Override
+    protected boolean isOverflowMenuVisible() {
+        return false;
+    }
 }

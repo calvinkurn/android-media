@@ -79,6 +79,13 @@ public interface TrainBookingPassengerContract {
 
         void showErrorSoftBooking(Throwable e);
 
+        void hidePage();
+
+        void showLoading();
+
+        void showPage();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

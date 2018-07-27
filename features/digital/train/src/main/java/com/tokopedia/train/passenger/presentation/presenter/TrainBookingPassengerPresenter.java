@@ -154,6 +154,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     @Override
     public void onSubmitButtonClicked() {
         if (isAllDataValid()) {
+            getView().hidePage();
+            getView().showLoading();
             trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(
                     getView().getTrainSoftBookingRequestParam()), new Subscriber<TrainSoftbook>() {
                 @Override
@@ -163,11 +165,17 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().showErrorSoftBooking(e);
+                    if (isViewAttached()) {
+                        getView().showPage();
+                        getView().hideLoading();
+                        getView().showErrorSoftBooking(e);
+                    }
                 }
 
                 @Override
                 public void onNext(TrainSoftbook trainSoftbook) {
+                    getView().showPage();
+                    getView().hideLoading();
                     getView().navigateToReview(trainSoftbook);
                 }
             });
@@ -177,6 +185,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     @Override
     public void onChooseSeatButtonClicked() {
         if (isAllDataValid()) {
+            getView().hidePage();
+            getView().showLoading();
             trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(
                     getView().getTrainSoftBookingRequestParam()), new Subscriber<TrainSoftbook>() {
                 @Override
@@ -186,11 +196,17 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().showErrorSoftBooking(e);
+                    if (isViewAttached()) {
+                        getView().showPage();
+                        getView().hideLoading();
+                        getView().showErrorSoftBooking(e);
+                    }
                 }
 
                 @Override
                 public void onNext(TrainSoftbook trainSoftbook) {
+                    getView().showPage();
+                    getView().hideLoading();
                     getView().navigateToChooseSeat(trainSoftbook);
                 }
             });

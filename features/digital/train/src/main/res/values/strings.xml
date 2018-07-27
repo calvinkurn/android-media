@@ -104,7 +104,7 @@
     <string name="train_passenger_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
     <string name="train_dialog_booking_passanger_title">Batalkan Pengisian Data</string>
     <string name="train_dialog_booking_passanger_desc">Anda akan kembali ke halaman awal. Anda yakin?</string>
-    <string name="train_dialog_booking_passanger_no">Ya,batalkan</string>
+    <string name="train_dialog_booking_passanger_no">Ya, batalkan</string>
     <string name="train_dialog_booking_passanger_yes">Lanjut Isi</string>
     <string name="train_btn_fill_passenger_data">Isi Data</string>
     <string name="train_btn_change_passenger_data">Ubah</string>

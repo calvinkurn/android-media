@@ -53,4 +53,9 @@ public class TrainBookingAddPassengerActivity extends TrainBaseActivity implemen
         KeyboardHandler.hideSoftKeyboard(this);
         super.onBackPressed();
     }
+
+    @Override
+    protected boolean isOverflowMenuVisible() {
+        return false;
+    }
 }

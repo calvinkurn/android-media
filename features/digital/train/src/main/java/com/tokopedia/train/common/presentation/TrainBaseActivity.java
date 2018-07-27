@@ -27,16 +27,20 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
-        getMenuInflater().inflate(R.menu.menu_train_homepage, menu);
-        updateOptionMenuColorWhite(menu);
+        if (isOverflowMenuVisible()) {
+            getMenuInflater().inflate(R.menu.menu_train_homepage, menu);
+            updateOptionMenuColorWhite(menu);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_overflow_menu) {
-            showBottomMenus();
-            return true;
+        if (isOverflowMenuVisible()) {
+            if (item.getItemId() == R.id.action_overflow_menu) {
+                showBottomMenus();
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -70,5 +74,9 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
         menus.setActionText(getResources().getString(R.string.train_homepage_bottom_menu_action_text));
 
         menus.show();
+    }
+
+    protected boolean isOverflowMenuVisible() {
+        return true;
     }
 }

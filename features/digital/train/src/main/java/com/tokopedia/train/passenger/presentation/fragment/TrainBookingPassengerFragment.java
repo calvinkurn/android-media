@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -83,6 +85,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private TkpdHintTextInputLayout tilEmailBuyer;
     private AppCompatButton submitButton, chooseSeatButton;
     private AppCompatCheckBox sameAsBuyerCheckbox;
+    private LinearLayout containerLayout;
+    private ProgressBar progressBar;
+
     private TrainPassengerViewModel buyerViewModel;
     private List<TrainPassengerRequest> trainPassengerRequestList;
     private TrainBuyerRequest trainBuyerRequest;
@@ -120,6 +125,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         submitButton = view.findViewById(R.id.button_submit);
         chooseSeatButton = view.findViewById(R.id.button_choose_seat);
         sameAsBuyerCheckbox = view.findViewById(R.id.checkbox);
+        containerLayout = view.findViewById(R.id.container);
+        progressBar = view.findViewById(R.id.progress_bar);
         trainBuyerRequest = new TrainBuyerRequest();
         trainPassengerRequestList = new ArrayList<>();
         return view;
@@ -476,5 +483,25 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void showErrorSoftBooking(Throwable e) {
         String message = ErrorHandler.getErrorMessage(getActivity(), e);
         NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void hidePage() {
+        containerLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showPage() {
+        containerLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(View.GONE);
     }
 }
