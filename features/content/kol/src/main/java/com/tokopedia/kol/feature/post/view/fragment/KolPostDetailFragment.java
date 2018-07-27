@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +61,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int DEFAULT_VALUE = -1;
 
-    private String postId;
+    private Integer postId;
     private RecyclerView recyclerView;
     private ImageView userAvatar;
     private EditText replyEditText;
@@ -146,12 +145,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void initVar() {
         if (getArguments() != null) {
-            postId = getArguments().getString(KolPostDetailActivity.PARAM_POST_ID);
-
-            if (TextUtils.isEmpty(postId)) {
-                throw new IllegalStateException(KolPostDetailActivity.PARAM_POST_ID
-                        + " can not be empty/null!");
-            }
+            postId = getArguments().getInt(KolPostDetailActivity.PARAM_POST_ID);
         }
     }
 

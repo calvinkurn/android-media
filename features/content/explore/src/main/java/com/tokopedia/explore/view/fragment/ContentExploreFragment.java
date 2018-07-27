@@ -196,7 +196,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public void goToKolPostDetail(KolPostViewModel kolPostViewModel) {
         Intent intent = KolPostDetailActivity.getInstance(
                 getContext(),
-                String.valueOf(kolPostViewModel.getKolId())
+                kolPostViewModel.getKolId()
         );
         startActivity(intent);
     }

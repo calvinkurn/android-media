@@ -15,10 +15,10 @@ public class KolPostDetailActivity extends BaseSimpleActivity {
 
     public static final String PARAM_POST_ID = "param_post_id";
 
-    public static Intent getInstance(Context context, String id) {
+    public static Intent getInstance(Context context, int id) {
         Intent intent = new Intent(context, KolPostDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_POST_ID, id);
+        bundle.putInt(PARAM_POST_ID, id);
         intent.putExtras(bundle);
         return intent;
     }

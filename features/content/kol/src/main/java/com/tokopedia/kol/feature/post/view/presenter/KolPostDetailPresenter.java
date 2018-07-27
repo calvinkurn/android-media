@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.post.view.presenter;
 
 import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
+import com.tokopedia.kol.feature.comment.view.subscriber.GetKolCommentFirstTimeSubscriber;
 import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -36,10 +37,10 @@ public class KolPostDetailPresenter implements KolPostDetailContract.Presenter {
 
     @Override
     public void getCommentFirstTime(int id) {
-//        getKolCommentsUseCase.execute(
-//                GetKolCommentsUseCase.getFirstTimeParam(id),
-//                new GetKolCommentFirstTimeSubscriber()
-//        );
+        getKolCommentsUseCase.execute(
+                GetKolCommentsUseCase.getFirstTimeParam(id),
+                new GetKolCommentFirstTimeSubscriber()
+        );
     }
 
     @Override
