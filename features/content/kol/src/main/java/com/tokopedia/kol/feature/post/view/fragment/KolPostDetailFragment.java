@@ -17,10 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
@@ -35,10 +35,8 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostDetailViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -52,7 +50,7 @@ import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM
  */
 
 public class KolPostDetailFragment extends BaseDaggerFragment
-        implements KolPostListener.View.Like, KolPostListener.View.ViewHolder {
+        implements KolPostDetailContract.View, KolPostListener.View.Like, KolPostListener.View.ViewHolder {
 
     private static final String EXTRA_IS_FOLLOWING = "is_following";
     private static final int IS_FOLLOWING_TRUE = 1;
@@ -123,14 +121,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     + KolRouter.class.getSimpleName());
         }
 
+        GraphqlClient.init(getContext());
+        initVar();
+
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
         adapter = new KolPostAdapter(typeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        populateData();
-
-        initVar();
 
         replyEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
@@ -141,6 +139,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 return false;
             }
         });
+
+        presenter.attachView(this);
+        presenter.getCommentFirstTime(postId);
     }
 
     @Override
@@ -153,6 +154,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             postId = getArguments().getInt(KolPostDetailActivity.PARAM_POST_ID);
         }
+    }
+
+    @Override
+    public void onSuccessGetKolPostDetail(KolPostDetailViewModel kolPostDetailViewModel) {
+
+    }
+
+    @Override
+    public void onErrorGetKolPotDetail(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getContext(),
+                getView(),
+                message,
+                () -> presenter.getCommentFirstTime(postId)
+        );
     }
 
     @Override
@@ -259,18 +275,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 }
             default:
                 break;
-        }
-    }
-
-    private void populateData() {
-        if (getArguments() != null &&
-                getArguments().get(KolPostDetailActivity.PARAM_POST_ID) != null) {
-
-            KolPostViewModel kolPostViewModel = (KolPostViewModel)
-                    getArguments().get(KolPostDetailActivity.PARAM_POST_ID);
-            List<Visitable> itemList = new ArrayList<>();
-            itemList.add(kolPostViewModel);
-            adapter.addList(itemList);
         }
     }
 

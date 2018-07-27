@@ -29,11 +29,12 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
     @Override
     public void attachView(KolPostDetailContract.View view) {
-
+        super.attachView(view);
     }
 
     @Override
     public void detachView() {
+        super.detachView();
         getKolPostDetailUseCase.unsubsribe();
     }
 

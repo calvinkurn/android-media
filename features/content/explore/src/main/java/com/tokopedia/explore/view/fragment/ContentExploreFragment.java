@@ -48,7 +48,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private static final int IMAGE_SPAN_SINGLE = 1;
     private static final int LOAD_MORE_THRESHOLD = 2;
 
-    private View view;
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
@@ -93,7 +92,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_content_explore, container, false);
+        View view = inflater.inflate(R.layout.fragment_content_explore, container, false);
+        searchInspiration = view.findViewById(R.id.search_inspiration);
+        exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
+        exploreImageRv = view.findViewById(R.id.explore_image_rv);
+        tabFeed = view.findViewById(R.id.tab_feed);
         return view;
     }
 
@@ -214,11 +217,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     private void initView() {
-        searchInspiration = view.findViewById(R.id.search_inspiration);
-        exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
-        exploreImageRv = view.findViewById(R.id.explore_image_rv);
-        tabFeed = view.findViewById(R.id.tab_feed);
-
         searchInspiration.setListener(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
