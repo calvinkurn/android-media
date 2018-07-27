@@ -173,8 +173,8 @@ public class ReactCartCacheSource extends ReactDataSource {
         cartResponse.setId(cartDomain.getId());
         cartResponse.setProductId(cartDomain.getProductId());
         cartResponse.setProductName(cartDomain.getProductName());
-        cartResponse.setUnitPrice(cartDomain.getProductPriceUnformatted());
         cartResponse.setQuantity(cartDomain.getQuantity());
+        cartResponse.setUnitPrice(cartDomain.getProductPriceUnformatted());
         cartResponse.setTotalPrice(cartDomain.getProductPriceUnformatted()*cartDomain.getQuantity());
 
         ProductDetail product = new ProductDetail();

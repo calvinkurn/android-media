@@ -56,8 +56,15 @@ public class GetProductListMapper implements Func1<Response<PosSimpleResponse<Li
                     productDomain.setId(item.getId());
                     productDomain.setName(item.getName());
                     productDomain.setDescription(item.getProductDescription());
-                    productDomain.setPriceUnformatted(item.getLocalPrice().getPrice());
-                    productDomain.setPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getLocalPrice().getPrice(), true));
+                    if(item.getPrice() < item.getLocalPrice().getPrice()){
+                        productDomain.setPriceUnformatted(item.getPrice());
+                        productDomain.setPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getPrice(), true));
+                        productDomain.setOriginalPriceUnformatted(item.getLocalPrice().getPrice());
+                    } else {
+                        productDomain.setPriceUnformatted(item.getLocalPrice().getPrice());
+                        productDomain.setPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getLocalPrice().getPrice(), true));
+                        productDomain.setOriginalPriceUnformatted(item.getPrice());
+                    }
                     productDomain.setUrl(item.getUrl());
                     productDomain.setPictures(item.getPictures());
                     if(item.getPictures() != null && item.getPictures().size() > 0) {

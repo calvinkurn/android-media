@@ -112,6 +112,9 @@ public class ProductDetail {
     @SerializedName("product_picture")
     @Expose
     private List<ProductPicture> pictures;
+    @SerializedName("product_price_original")
+    @Expose
+    private double productPriceOriginal;
 
     private ProductCampaign productCampaign;
 
@@ -401,5 +404,13 @@ public class ProductDetail {
 
     public void setPictures(List<ProductPicture> pictures) {
         this.pictures = pictures;
+    }
+
+    public double getProductPriceOriginal() {
+        return productPriceOriginal;
+    }
+
+    public void setProductPriceOriginal(double productPriceOriginal) {
+        this.productPriceOriginal = productPriceOriginal;
     }
 }
