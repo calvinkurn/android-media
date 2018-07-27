@@ -313,7 +313,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 (long) cartItemModel.getPrice(), true));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(cartItemModel.getQuantity()), cartItemModel.getWeightFmt()));
+                String.valueOf(cartItemModel.getQuantity()),
+                getWeightFormatted(cartItemModel.getWeight(), cartItemModel.getQuantity())));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
@@ -332,6 +333,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             llProductPoliciesLayout.setVisibility(View.GONE);
         }
+    }
+
+    private String getWeightFormatted(double weight, int qty) {
+        String weighTotalFormatted;
+        double weightTotal = weight * qty;
+        if (weightTotal >= 1000) {
+            weighTotalFormatted = String.valueOf(weightTotal / 1000.0f) + " kg";
+        } else {
+            weighTotalFormatted = ((int) weightTotal) + " gr";
+        }
+
+        return weighTotalFormatted.replace(".0", "");
     }
 
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
