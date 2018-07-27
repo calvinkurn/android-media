@@ -57,10 +57,12 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
     }
 
 
-    public void getBrandDetails() {
+    public void getBrandDetails(boolean showProgress) {
 
-        getView().showProgressBar();
-        getView().hideCollapsingHeader();
+        if (showProgress) {
+            getView().showProgressBar();
+            getView().hideCollapsingHeader();
+        }
         searchNextParams = getView().getParams();
         getBrandDetailsUseCase.setRequestParams(getView().getParams());
         getBrandDetailsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -78,7 +80,7 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        getBrandDetails();
+                        getBrandDetails(showProgress);
                     }
                 });
             }
@@ -148,7 +150,7 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
     }
 
     private void getNextPageUrl() {
-        if(page!=null) {
+        if (page != null) {
             String nexturl = page.getUriNext();
             if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
                 searchNextParams.putString(TAG, nexturl);

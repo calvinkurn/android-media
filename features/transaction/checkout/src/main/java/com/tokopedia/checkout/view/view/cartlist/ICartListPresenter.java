@@ -22,19 +22,19 @@ public interface ICartListPresenter {
 
     void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList);
 
-    void processToShipmentSingleAddress();
+    void processToUpdateCartData();
 
-    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
+//    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
 
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
 
-    void processToShipmentForm(boolean toAddressChoice);
+//    void processToShipmentForm(boolean toAddressChoice);
 
     void processResetAndRefreshCartData();
 
-    void processResetThenToShipmentForm();
+    void processResetCart();
 
     void processCancelAutoApply();
 
