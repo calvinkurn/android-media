@@ -229,15 +229,22 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mStartPurchaseBottomSheet.setData(lobDetails);
 
         if (getView() != null) {
-            getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mSumToken <= 0) {
-                        showStartPurchaseBottomSheet(lobDetails.getTitle());
-                    } else {
-                        if (getActivity() != null) {
-                            RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
-                        }
+            getView().findViewById(R.id.img_token).setOnClickListener(view -> {
+                if (mSumToken <= 0) {
+                    showStartPurchaseBottomSheet(lobDetails.getTitle());
+                } else {
+                    if (getActivity() != null) {
+                        RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                    }
+                }
+            });
+
+            getView().findViewById(R.id.text_token_title).setOnClickListener(view -> {
+                if (mSumToken <= 0) {
+                    showStartPurchaseBottomSheet(lobDetails.getTitle());
+                } else {
+                    if (getActivity() != null) {
+                        RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
                 }
             });
