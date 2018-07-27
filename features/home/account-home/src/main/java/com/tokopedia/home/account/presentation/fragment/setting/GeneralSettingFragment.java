@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
@@ -69,6 +71,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment {
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_HELP_CENTER_ID,
                 getString(R.string.title_help_center_setting)));
 
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
+                    getString(R.string.title_dev_options)));
+        }
+
         SettingItemViewModel itemOut = new SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.logout));
         itemOut.setIconResource(R.drawable.ic_setting_out);
         itemOut.setHideArrow(true);
@@ -105,6 +112,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment {
             case SettingConstant.SETTING_HELP_CENTER_ID:
                 if (getActivity().getApplication() instanceof TkpdInboxRouter){
                     startActivity(((TkpdInboxRouter) getActivity().getApplication()).getHelpUsIntent(getActivity()));
+                }
+                break;
+            case SettingConstant.SETTING_DEV_OPTIONS:
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    RouteManager.route(getActivity(), ApplinkConst.DEVELOPER_OPTIONS);
                 }
                 break;
             default: break;

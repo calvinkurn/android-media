@@ -9,18 +9,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
  * @author okasurya on 7/17/18.
  */
 public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactory> {
-
-    public static final Creator<BuyerCardViewModel> CREATOR = new Creator<BuyerCardViewModel>() {
-        @Override
-        public BuyerCardViewModel createFromParcel(Parcel source) {
-            return new BuyerCardViewModel(source);
-        }
-
-        @Override
-        public BuyerCardViewModel[] newArray(int size) {
-            return new BuyerCardViewModel[size];
-        }
-    };
+    private String userId;
     private String name;
     private String imageUrl;
     private String tokopoint;
@@ -41,6 +30,14 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -87,6 +84,18 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     public int describeContents() {
         return 0;
     }
+
+    public static final Creator<BuyerCardViewModel> CREATOR = new Creator<BuyerCardViewModel>() {
+        @Override
+        public BuyerCardViewModel createFromParcel(Parcel source) {
+            return new BuyerCardViewModel(source);
+        }
+
+        @Override
+        public BuyerCardViewModel[] newArray(int size) {
+            return new BuyerCardViewModel[size];
+        }
+    };
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
