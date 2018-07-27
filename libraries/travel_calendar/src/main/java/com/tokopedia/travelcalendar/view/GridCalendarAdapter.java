@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +24,11 @@ import java.util.Locale;
 /**
  * Created by nabillasabbaha on 10/05/18.
  */
-public class GridCalendarAdapter extends ArrayAdapter {
+public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapter.ViewHolder> {
 
     private static final String DAY_DATE_FORMAT = "EEEE";
     private static final String SUNDAY = "Sunday";
 
-    private LayoutInflater mInflater;
     private List<CellDate> monthlyDates;
     private Calendar currentDate;
     private ActionListener actionListener;
@@ -39,87 +39,14 @@ public class GridCalendarAdapter extends ArrayAdapter {
 
     public GridCalendarAdapter(Context context, List<CellDate> monthlyDates, Calendar currentDate,
                                Calendar maxDate, List<HolidayResult> holidayResultList) {
-        super(context, R.layout.view_calendar_picker_day);
         this.monthlyDates = monthlyDates;
         this.currentDate = currentDate;
         this.holidayResultList = holidayResultList;
         this.maxDateCal = maxDate.getTime();
-        mInflater = LayoutInflater.from(context);
     }
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
-    }
-
-    @NonNull
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        Date mDate = monthlyDates.get(position).getDate();
-        Calendar dateCal = Calendar.getInstance();
-        dateCal.setTime(mDate);
-        int dayValue = dateCal.get(Calendar.DAY_OF_MONTH);
-        dateCalMonth = dateCal.get(Calendar.MONTH);
-
-        //current date
-        Calendar calendarCurrent = Calendar.getInstance();
-        currentCalendar = calendarCurrent.getTime();
-
-        View view = convertView;
-        ViewHolder viewHolder;
-        if (view == null) {
-            view = mInflater.inflate(R.layout.view_calendar_picker_day, parent, false);
-            viewHolder = new ViewHolder();
-            viewHolder.cellNumber = view.findViewById(R.id.date);
-            viewHolder.container = view.findViewById(R.id.container);
-
-            //hide date in current month
-            if (dateCalMonth == getDisplayMonthInt()) {
-                viewHolder.cellNumber.setVisibility(View.VISIBLE);
-                viewHolder.cellNumber.setText(String.valueOf(dayValue));
-            } else {
-                viewHolder.cellNumber.setVisibility(View.GONE);
-            }
-
-            if (monthlyDates.get(position).isSelected()) {
-                viewHolder.cellNumber.setBackground(getContext().getResources().getDrawable(R.drawable.bg_calendar_picker_today_selected));
-                viewHolder.cellNumber.setTextColor(getContext().getResources().getColor(R.color.white));
-            } else {
-                if (DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(currentCalendar)) < 0 ||
-                        DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) > 0) {
-                    viewHolder.cellNumber.setTextColor(getContext().getResources().getColor(R.color.grey_300));
-                } else {
-                    viewHolder.cellNumber.setBackground(getContext().getResources().getDrawable(R.drawable.bg_calendar_picker_default));
-                    viewHolder.cellNumber.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-
-                    //set holiday in sunday as red color
-                    String dayAtDate = new SimpleDateFormat(DAY_DATE_FORMAT, Locale.ENGLISH).format(dateCal.getTime());
-                    if (dayAtDate.equalsIgnoreCase(SUNDAY)) {
-                        viewHolder.cellNumber.setTextColor(getContext().getResources().getColor(R.color.red_a700));
-                    }
-                    for (int i = 0; i < holidayResultList.size(); i++) {
-                        if (dayValue == holidayResultList.get(i).getAttributes().getDateHoliday().getDate()) {
-                            viewHolder.cellNumber.setTextColor(getContext().getResources().getColor(R.color.red_a700));
-                        }
-                    }
-                }
-            }
-
-            calendarCurrent.add(Calendar.DATE, -1);
-
-            viewHolder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Date dateSelected = monthlyDates.get(position).getDate();
-                    if (dateSelected.getMonth() == getDisplayMonthInt() &&
-                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(calendarCurrent.getTime())) > 0
-                            && DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) <= 0)
-                        actionListener.onClickDate(monthlyDates.get(position));
-                }
-            });
-        } else {
-            viewHolder = (ViewHolder) view.getTag();
-        }
-        return view;
     }
 
     private int getDisplayMonthInt() {
@@ -130,25 +57,90 @@ public class GridCalendarAdapter extends ArrayAdapter {
         return displayMonthInt;
     }
 
+
+    @NonNull
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_calendar_picker_day, null);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.bind(monthlyDates.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
         return monthlyDates.size();
     }
 
-    @Nullable
-    @Override
-    public Object getItem(int position) {
-        return monthlyDates.get(position);
-    }
-
-    @Override
-    public int getPosition(Object item) {
-        return monthlyDates.indexOf(item);
-    }
-
-    static class ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         AppCompatTextView cellNumber;
         FrameLayout container;
+
+        public ViewHolder(View view) {
+            super(view);
+            cellNumber = view.findViewById(R.id.date);
+            container = view.findViewById(R.id.container);
+        }
+
+        public void bind(CellDate cellDate){
+            Date mDate = cellDate.getDate();
+            Calendar dateCal = Calendar.getInstance();
+            dateCal.setTime(mDate);
+            int dayValue = dateCal.get(Calendar.DAY_OF_MONTH);
+            dateCalMonth = dateCal.get(Calendar.MONTH);
+
+            //current date
+            Calendar calendarCurrent = Calendar.getInstance();
+            currentCalendar = calendarCurrent.getTime();
+            if (dateCalMonth == getDisplayMonthInt()) {
+                cellNumber.setVisibility(View.VISIBLE);
+                cellNumber.setText(String.valueOf(dayValue));
+            } else {
+                cellNumber.setVisibility(View.GONE);
+            }
+
+            if (cellDate.isSelected()) {
+                cellNumber.setBackground(itemView.getResources().getDrawable(R.drawable.bg_calendar_picker_today_selected));
+                cellNumber.setTextColor(itemView.getResources().getColor(R.color.white));
+            } else {
+                if (DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(currentCalendar)) < 0 ||
+                        DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) > 0) {
+                    cellNumber.setTextColor(itemView.getResources().getColor(R.color.grey_300));
+                } else {
+                    cellNumber.setBackground(itemView.getResources().getDrawable(R.drawable.bg_calendar_picker_default));
+                    cellNumber.setTextColor(itemView.getResources().getColor(R.color.font_black_primary_70));
+
+                    //set holiday in sunday as red color
+                    String dayAtDate = new SimpleDateFormat(DAY_DATE_FORMAT, Locale.ENGLISH).format(dateCal.getTime());
+                    if (dayAtDate.equalsIgnoreCase(SUNDAY)) {
+                        cellNumber.setTextColor(itemView.getResources().getColor(R.color.red_a700));
+                    }
+                    for (int i = 0; i < holidayResultList.size(); i++) {
+                        if (dayValue == holidayResultList.get(i).getAttributes().getDateHoliday().getDate()) {
+                            cellNumber.setTextColor(itemView.getResources().getColor(R.color.red_a700));
+                        }
+                    }
+                }
+            }
+
+            calendarCurrent.add(Calendar.DATE, -1);
+
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Date dateSelected = cellDate.getDate();
+                    if (dateSelected.getMonth() == getDisplayMonthInt() &&
+                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(calendarCurrent.getTime())) > 0
+                            && DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) <= 0)
+                        actionListener.onClickDate(cellDate);
+                }
+            });
+        }
+
+
     }
 
     public interface ActionListener {

@@ -1,6 +1,8 @@
 package com.tokopedia.travelcalendar.view;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,7 +22,7 @@ import java.util.List;
  * Created by nabillasabbaha on 07/05/18.
  */
 public class CalendarPickerView extends LinearLayout {
-    private GridView calendarGrid;
+    private RecyclerView calendarGrid;
     private static final int DAYS_COUNT = 42;
     private Calendar currentDate = Calendar.getInstance();
     private Calendar calendarDateUser;
@@ -100,6 +102,7 @@ public class CalendarPickerView extends LinearLayout {
                 actionListener.onDateClicked(cellDate);
             }
         });
+        calendarGrid.setLayoutManager(new GridLayoutManager(getContext(), 7));
         calendarGrid.setAdapter(adapter);
     }
 
