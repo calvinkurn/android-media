@@ -30,7 +30,7 @@ import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogVie
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.BaseProductEditActivity
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
-import kotlinx.android.synthetic.main.fragment_product_add_new.*
+import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
 class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
 
@@ -46,7 +46,7 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_product_add_new, container, false)
+        return inflater.inflate(R.layout.fragment_product_add_name_category, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

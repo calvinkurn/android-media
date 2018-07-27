@@ -15,7 +15,7 @@ import android.widget.TextView
 
 class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
 
-    private lateinit var productName: ProductName
+    private var productName = ProductName()
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {

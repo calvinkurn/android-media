@@ -3,6 +3,7 @@
     <string name="title_activity_video">Video Produk</string>
     <string name="title_activity_video_recommendation">Rekomendasi Video Produk</string>
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
+    <string name="product_count_video">%d Video</string>
     <string name="label_video_add">Tambah Video Produk</string>
     <string name="label_product_add">Tambah Produk</string>
     <string name="label_save">Simpan</string>

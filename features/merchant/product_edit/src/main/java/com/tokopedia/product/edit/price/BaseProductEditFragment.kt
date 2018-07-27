@@ -12,16 +12,18 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.*
 import com.tokopedia.product.edit.view.activity.*
+import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 
 abstract class BaseProductEditFragment : Fragment() {
 
-    private var productCatalog = ProductCatalog()
+    private var productImages = ArrayList<String>()
     private var productName = ProductName()
     private var productCategory = ProductCategory()
-    private var productImages = ArrayList<String>()
-    private var productLogistic = ProductLogistic()
+    private var productCatalog = ProductCatalog()
+    private var productDescription = ProductDescription()
     private var productStock = ProductStock()
+    private var productLogistic = ProductLogistic()
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +60,10 @@ abstract class BaseProductEditFragment : Fragment() {
                     .putExtra(EXTRA_NAME, productName), REQUEST_CODE_GET_NAME)
         }
         labelViewPriceProduct.setOnClickListener { startActivity(Intent(activity, ProductEditPriceActivity::class.java)) }
-        labelViewDescriptionProduct.setOnClickListener { startActivity(Intent(activity, ProductEditDescriptionActivity::class.java)) }
+        labelViewDescriptionProduct.setOnClickListener {
+            startActivityForResult(Intent(activity, ProductEditDescriptionActivity::class.java)
+                    .putExtra(EXTRA_DESCRIPTION, productDescription)
+                    .putExtra(EXTRA_KEYWORD, productName.name), REQUEST_CODE_GET_DESCRIPTION) }
         labelViewStockProduct.setOnClickListener {
             startActivityForResult(Intent(activity, ProductEditStockActivity::class.java)
                     .putExtra(EXTRA_STOCK, productStock), REQUEST_CODE_GET_STOCK) }
@@ -68,6 +73,35 @@ abstract class BaseProductEditFragment : Fragment() {
 
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {  }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_GET_CATALOG_CATEGORY -> {
+                    productCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
+                    productCategory = data.getParcelableExtra(EXTRA_CATEGORY)
+                    setCategoryCatalogSection(productCategory, productCatalog)
+                }
+                REQUEST_CODE_GET_NAME -> {
+                    productName = data!!.getParcelableExtra(EXTRA_NAME)
+                    setNameSectionData(productName)
+                }
+                REQUEST_CODE_GET_LOGISTIC -> {
+                    productLogistic = data!!.getParcelableExtra(EXTRA_LOGISTIC)
+                    setLogisticSectionData(productLogistic)
+                }
+                REQUEST_CODE_GET_STOCK -> {
+                    productStock = data!!.getParcelableExtra(EXTRA_STOCK)
+                    setStockSectionData(productStock)
+                }
+                REQUEST_CODE_GET_DESCRIPTION -> {
+                    productDescription = data!!.getParcelableExtra(EXTRA_DESCRIPTION)
+                    setDescriptionSectionData(productDescription)
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setImagesSectionData(productImages: ArrayList<String>){
@@ -93,6 +127,13 @@ abstract class BaseProductEditFragment : Fragment() {
         labelViewNameProduct.setContent(productName.name)
     }
 
+    private fun setDescriptionSectionData(productDescription: ProductDescription){
+        if(productDescription.description!=null) {
+            labelViewDescriptionProduct.setContent(productDescription.description)
+            labelViewDescriptionProduct.setSubTitle(productDescription.videoIDs.size.toString())
+        }
+    }
+
     private fun setStockSectionData(productStock: ProductStock){
         if(productStock.stockLimited)
             labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
@@ -101,39 +142,17 @@ abstract class BaseProductEditFragment : Fragment() {
     }
 
     private fun setLogisticSectionData(productLogistic: ProductLogistic){
-        if(productLogistic.weight > 0)
+        if(productLogistic.weight > 0) {
             labelViewWeightLogisticProduct.setContent("${productLogistic.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(productLogistic.weightType))}")
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_GET_CATALOG_CATEGORY -> {
-                    productCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
-                    productCategory = data.getParcelableExtra(EXTRA_CATEGORY)
-                    setCategoryCatalogSection(productCategory, productCatalog)
-                }
-                REQUEST_CODE_GET_NAME -> {
-                    productName = data!!.getParcelableExtra(EXTRA_NAME)
-                    setNameSectionData(productName)
-                }
-                REQUEST_CODE_GET_LOGISTIC -> {
-                    productLogistic = data!!.getParcelableExtra(EXTRA_LOGISTIC)
-                    setLogisticSectionData(productLogistic)
-                }
-                REQUEST_CODE_GET_STOCK -> {
-                    productStock = data!!.getParcelableExtra(EXTRA_STOCK)
-                    setStockSectionData(productStock)
-                }
-            }
+            labelViewWeightLogisticProduct.setSubTitle("")
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {
         const val REQUEST_CODE_GET_IMAGES = 1
         const val REQUEST_CODE_GET_CATALOG_CATEGORY = 2
         const val REQUEST_CODE_GET_NAME = 3
+        const val REQUEST_CODE_GET_DESCRIPTION = 5
         const val REQUEST_CODE_GET_STOCK = 6
         const val REQUEST_CODE_GET_LOGISTIC = 7
 
@@ -141,6 +160,7 @@ abstract class BaseProductEditFragment : Fragment() {
         const val EXTRA_CATALOG = "EXTRA_CATALOG"
         const val EXTRA_CATEGORY = "EXTRA_CATEGORY"
         const val EXTRA_IMAGES = "EXTRA_IMAGES"
+        const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
 
