@@ -390,7 +390,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     @Override
-    public void showRedeemFullError(CatalogsValueEntity item, String title) {
+    public void showRedeemFullError(CatalogsValueEntity item, String title, String desc) {
         if (getActivity() == null || !isAdded()) {
             return;
         }
@@ -402,16 +402,17 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         ImageView img = view.findViewById(R.id.img_error);
         img.setImageResource(R.drawable.ic_tp_error_redeem_full);
         TextView titleText = view.findViewById(R.id.text_title_error);
-        titleText.setText(R.string.tp_label_too_many_access);
-        TextView label = view.findViewById(R.id.text_label_error);
-        label.setText(R.string.tp_label_wait);
 
-        view.findViewById(R.id.text_failed_action).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.startSaveCoupon(item);
-            }
-        });
+        if (title == null || title.isEmpty()) {
+            titleText.setText(R.string.tp_label_too_many_access);
+        } else {
+            titleText.setText(title);
+        }
+
+        TextView label = view.findViewById(R.id.text_label_error);
+        label.setText(desc);
+
+        view.findViewById(R.id.text_failed_action).setOnClickListener(view1 -> mPresenter.startSaveCoupon(item));
 
         adb.setView(view);
         AlertDialog dialog = adb.create();

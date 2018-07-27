@@ -47,7 +47,7 @@ public interface CatalogListItemContract {
 
         void refreshCatalog(List<CatalogStatusItem> items);
 
-        void showRedeemFullError(CatalogsValueEntity item, String title);
+        void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
     }
 
     interface Presenter extends CustomerPresenter<View> {

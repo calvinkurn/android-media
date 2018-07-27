@@ -98,7 +98,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             public void onNext(GraphqlResponse graphqlResponse) {
                 //Handling for main data
                 TokoPointDetailEntity data = graphqlResponse.getData(TokoPointDetailEntity.class);
-                getView().onSuccess(data.getTokoPoints().getStatus().getTier(), data.getTokoPoints().getStatus().getPoints(),data.getTokoPoints().getLobs());
+                getView().onSuccess(data.getTokoPoints().getStatus().getTier(), data.getTokoPoints().getStatus().getPoints(), data.getTokoPoints().getLobs());
 
                 //handling for lucky egg data
                 TokenDetailOuter tokenDetail = graphqlResponse.getData(TokenDetailOuter.class);
@@ -258,7 +258,13 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                     String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
                     if (errorsMessage != null && errorsMessage.length > 0) {
                         String title = errorsMessage[0];
-                        getView().showRedeemFullError(item, title);
+
+                        if (errorsMessage.length <= 2) {
+                            getView().showRedeemFullError(item, null, title);
+                        } else {
+                            String desc = errorsMessage[1];
+                            getView().showRedeemFullError(item, title, desc);
+                        }
                     }
                 }
             }

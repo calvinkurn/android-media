@@ -217,7 +217,12 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                     String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
                     if (errorsMessage != null && errorsMessage.length > 0) {
                         String title = errorsMessage[0];
-                        getView().showRedeemFullError(item, title);
+                        if (errorsMessage.length <= 2) {
+                            getView().showRedeemFullError(item, null, title);
+                        } else {
+                            String desc = errorsMessage[1];
+                            getView().showRedeemFullError(item, title, desc);
+                        }
                     }
                 }
             }
