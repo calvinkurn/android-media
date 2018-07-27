@@ -86,6 +86,8 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
 
                 }
             }.start();
+        } else {
+            holder.time.setText("");
         }
     }
 
