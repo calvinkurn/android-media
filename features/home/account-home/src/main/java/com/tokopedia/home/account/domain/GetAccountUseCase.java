@@ -25,6 +25,7 @@ import static com.tokopedia.home.account.AccountConstants.VARIABLES;
  * @author okasurya on 7/20/18.
  */
 public class GetAccountUseCase extends UseCase<AccountViewModel> {
+
     private GraphqlUseCase graphqlUseCase;
     private AccountMapper mapper;
 

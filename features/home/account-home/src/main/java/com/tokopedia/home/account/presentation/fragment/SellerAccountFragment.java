@@ -17,6 +17,8 @@ import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
@@ -30,7 +32,7 @@ import java.util.List;
 /**
  * @author okasurya on 7/16/18.
  */
-public class SellerAccountFragment extends BaseAccountFragment implements AccountTypeFactory.Listener, SellerAccount.View {
+public class SellerAccountFragment extends BaseAccountFragment implements AccountItemListener, SellerAccount.View {
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
 
@@ -78,30 +80,5 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     protected String getScreenName() {
         return TAG;
-    }
-
-    @Override
-    public void onTokopediaPayLinkClicked() {
-
-    }
-
-    @Override
-    public void onMenuGridItemClicked(MenuGridItemViewModel item) {
-        openApplink(item.getApplink());
-    }
-
-    @Override
-    public void onMenuGridLinkClicked(MenuGridViewModel item) {
-        openApplink(item.getApplinkUrl());
-    }
-
-    @Override
-    public void onInfoCardClicked(InfoCardViewModel item) {
-        openApplink(item.getApplink());
-    }
-
-    @Override
-    public void onMenuListClicked(MenuListViewModel item) {
-        openApplink(item.getApplink());
     }
 }

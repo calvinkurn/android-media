@@ -1,26 +1,39 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.BaseListAdapter;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
+import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavModule;
+import com.tokopedia.navigation.presentation.presenter.NotificationPresenter;
 import com.tokopedia.navigation.presentation.view.NotificationView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.navigation.data.GlobalNavConstant.BELUM_DIBAYAR;
+import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
 
 /**
  * Created by meta on 24/07/18.
@@ -31,13 +44,25 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private NotificationAdapter adapter;
 
+    @Inject NotificationPresenter presenter;
+
     @Override
     public int resLayout() {
         return R.layout.fragment_notification;
     }
 
+    private void initInjector() {
+        DaggerGlobalNavComponent.builder()
+                .globalNavModule(new GlobalNavModule())
+                .build()
+                .inject(this);
+    }
+
     @Override
     public void initView(View view) {
+        this.initInjector();
+        presenter.setView(this);
+
         swipeRefreshLayout = parentView.findViewById(R.id.swipe);
         RecyclerView recyclerView = parentView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -49,16 +74,36 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                presenter.getDrawerNotification();
             }
         });
 
         adapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                Intent intent = getCallingIntent(position);
+                if (intent != null) {
+                    startActivity(intent);
+                }
             }
         });
+    }
+
+    private Intent getCallingIntent(int position) {
+        Intent intent = null;
+        switch (position) {
+            case SELLER_INFO:
+                intent = ((GlobalNavRouter)getActivity().getApplication())
+                        .getSellerInfoCallingIntent(getActivity());
+                break;
+            case PEMBELIAN:
+                break;
+            case PENJUALAN:
+                break;
+            case KOMPLAIN:
+                break;
+        }
+        return intent;
     }
 
     @Override
@@ -81,6 +126,28 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     @Override
     public void onError(String message) {
         CommonUtils.dumper(message);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getString(R.string.notifications);
+    }
+
+    @Override
+    public void renderNotification(NotificationsModel data) {
+        adapter.updateValue(data);
     }
 
     private List<DrawerNotification> getData() {
@@ -117,15 +184,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         complain.setTitle(getString(R.string.komplain_saya));
 
         List<DrawerNotification.ChildDrawerNotification> childComplain = new ArrayList<>();
-        childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_penjual)));
         childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_pembeli)));
+        childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_penjual)));
         complain.setChilds(childComplain);
         notifications.add(complain);
         return notifications;
-    }
-
-    @Override
-    protected String getScreenName() {
-        return getString(R.string.notifications);
     }
 }

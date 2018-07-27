@@ -147,8 +147,9 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         saveStateToArguments();
-        if (unbinder != null)
+        if(unbinder != null) {
             unbinder.unbind();
+        }
     }
 
     private void injectView(View view) {

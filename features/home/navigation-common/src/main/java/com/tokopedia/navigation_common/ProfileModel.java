@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.data.model;
+package com.tokopedia.navigation_common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

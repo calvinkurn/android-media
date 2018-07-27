@@ -7,6 +7,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.TokopediaPayCardView;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 
@@ -18,9 +19,9 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
     public static int LAYOUT = R.layout.item_tokopedia_pay;
 
     private TokopediaPayCardView tokopediaPayCardView;
-    private AccountTypeFactory.Listener listener;
+    private AccountItemListener listener;
 
-    public TokopediaPayViewHolder(View itemView, @NonNull AccountTypeFactory.Listener listener) {
+    public TokopediaPayViewHolder(View itemView, @NonNull AccountItemListener listener) {
         super(itemView);
         tokopediaPayCardView = itemView.findViewById(R.id.view_tokopedia_pay);
         this.listener = listener;
