@@ -78,7 +78,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
-        ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
+        ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
 
         //setting points info if exist in response
         if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
