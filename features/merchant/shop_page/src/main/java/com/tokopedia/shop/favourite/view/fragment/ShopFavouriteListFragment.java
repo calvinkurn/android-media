@@ -3,6 +3,7 @@ package com.tokopedia.shop.favourite.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -22,6 +23,9 @@ import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -117,13 +121,23 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onSuccessToggleFavourite(boolean successValue) {
         loadInitialData();
+        getActivity().setResult(Activity.RESULT_OK);
     }
 
+    @Override
+    public void renderList(@NonNull List<ShopFavouriteViewModel> list) {
+        super.renderList(new ArrayList<>());
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopFavouriteViewModel> list, boolean hasNextPage) {
+        super.renderList(new ArrayList<>(), hasNextPage);
+    }
 
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.ic_empty_search);
+        emptyModel.setIconRes(R.drawable.ic_empty_state);
         if (shopFavouriteListPresenter.isMyShop(shopId)) {
             emptyModel.setTitle(getString(R.string.shop_product_my_empty_follower_title));
             emptyModel.setContent("");
