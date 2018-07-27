@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.ProductProblemDetailFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
@@ -29,10 +30,9 @@ public class ProductProblemDetailActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-//        return ProductProblemDetailFragment.newInstance(
-//                (ProductProblemViewModel) getIntent().getExtras().getParcelable(PRODUCT_PROBLEM_DATA),
-//                (ProblemResult) getIntent().getExtras().getParcelable(PROBLEM_RESULT_DATA));
-        return null;
+        return ProductProblemDetailFragment.newInstance(
+                (ProductProblemViewModel) getIntent().getExtras().getParcelable(PRODUCT_PROBLEM_DATA),
+                (ProblemResult) getIntent().getExtras().getParcelable(PROBLEM_RESULT_DATA));
     }
 
 

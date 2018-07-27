@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionDetailFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragmentListener;
 
 import dagger.Component;
 
@@ -17,7 +17,7 @@ import dagger.Component;
 public interface CreateResoComponent {
 
 
-    void inject(ProductProblemDetailFragment productProblemDetailFragment);
+    void inject(ProductProblemDetailFragmentListener productProblemDetailFragment);
 
     void inject(SolutionListFragment solutionListFragment);
 

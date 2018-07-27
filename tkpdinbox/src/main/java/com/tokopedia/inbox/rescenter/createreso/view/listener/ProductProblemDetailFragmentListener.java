@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by yoasfs on 14/08/17.
  */
 
-public interface ProductProblemDetailFragment {
+public interface ProductProblemDetailFragmentListener {
 
     interface View extends CustomerView {
         void populateDataToScreen(ProductProblemViewModel productProblemViewModel);
