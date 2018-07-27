@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/img_banner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="102dp" />
 
         <TextView
             android:id="@+id/text_quota_count"
