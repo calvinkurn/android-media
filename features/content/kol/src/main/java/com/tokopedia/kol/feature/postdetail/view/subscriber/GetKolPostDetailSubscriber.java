@@ -1,5 +1,6 @@
-package com.tokopedia.kol.feature.post.view.subscriber;
+package com.tokopedia.kol.feature.postdetail.view.subscriber;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kol.common.util.TimeConverter;
@@ -10,9 +11,8 @@ import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
 import com.tokopedia.kol.feature.comment.data.pojo.get.Tag;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
-import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostDetailViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +46,17 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         GetKolCommentData data = graphqlResponse.getData(GetKolCommentData.class);
         GetUserPostComment postComment = data.getGetUserPostComment();
 
-        view.onSuccessGetKolPostDetail(convertToViewModel(postComment));
-    }
+        List<Visitable> list = new ArrayList<>();
+        list.add(convertToKolPostViewModel(postComment.getPostKol()));
 
-    private KolPostDetailViewModel convertToViewModel(GetUserPostComment postComment) {
-        return new KolPostDetailViewModel(
-                convertToKolPostViewModel(postComment.getPostKol()),
-                converToKolCommentViewModelList(postComment.getComments())
-        );
+        List<KolCommentViewModel> kolCommentViewModels
+                = converToKolCommentViewModelList(postComment.getComments());
+        if (!kolCommentViewModels.isEmpty()) {
+            list.addAll(kolCommentViewModels);
+        }
+
+
+        view.onSuccessGetKolPostDetail(list);
     }
 
     private KolPostViewModel convertToKolPostViewModel(PostKol postKol) {

@@ -25,7 +25,7 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
     private KolPostDetailTypeFactory typeFactory;
 
     @Inject
-    public KolPostDetailAdapter() {
+    KolPostDetailAdapter() {
     }
 
     @NonNull
@@ -58,5 +58,10 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
 
     public List<Visitable> getList() {
         return list;
+    }
+
+    public void setList(List<Visitable> list) {
+        this.list = list;
+        notifyDataSetChanged();
     }
 }

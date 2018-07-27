@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -33,12 +34,13 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostDetailViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -161,8 +163,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetKolPostDetail(KolPostDetailViewModel kolPostDetailViewModel) {
-
+    public void onSuccessGetKolPostDetail(List<Visitable> list) {
+        adapter.setList(list);
     }
 
     @Override

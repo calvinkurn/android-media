@@ -5,7 +5,7 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUs
 import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.subscriber.GetKolPostDetailSubscriber;
+import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 
 import javax.inject.Inject;

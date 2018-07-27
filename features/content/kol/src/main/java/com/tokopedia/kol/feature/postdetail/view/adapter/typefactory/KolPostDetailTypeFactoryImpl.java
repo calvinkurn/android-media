@@ -10,6 +10,8 @@ import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 
 /**
  * @author by milhamj on 27/07/18.
@@ -35,6 +37,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(KolCommentViewModel kolCommentViewModel) {
         return KolCommentViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(SeeAllCommentsViewModel seeAllCommentsViewModel) {
+        return SeeAllCommentsViewHolder.LAYOUT;
     }
 
     @Override
