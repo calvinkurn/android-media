@@ -13,10 +13,6 @@
             android:id="@+id/layout_departure_detail"
             layout="@layout/view_train_summary_departure" />
 
-        <include
-            android:id="@+id/layout_trip_info"
-            layout="@layout/view_train_header_search_result" />
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

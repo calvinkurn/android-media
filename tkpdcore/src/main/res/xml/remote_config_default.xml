@@ -219,4 +219,8 @@
         <key>mainapp_digital_smartcard</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>mainapp_kai_native_enable</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

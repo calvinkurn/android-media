@@ -18,6 +18,8 @@ import rx.Observable;
  */
 public interface TrainRouter {
 
+    String TRAIN_ENABLE_REMOTE_CONFIG = "mainapp_kai_native_enable";
+
     Observable<ProfileBuyerInfo> getProfileInfo();
 
     Interceptor getChuckInterceptor();
@@ -53,4 +55,7 @@ public interface TrainRouter {
 
     Intent getTrainOrderListIntent(Context activity);
 
+    Intent getWebviewActivity(Activity activity, String url);
+
+    boolean isTrainNativeEnable();
 }

@@ -89,11 +89,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected String originCity;
     protected String destinationCode;
     protected String destinationCity;
-    private TextView originCodeTv;
-    private TextView originCityTv;
-    private TextView destinationCodeTv;
-    private TextView destinationCityTv;
-    private LinearLayout tripInfoLinearLayout;
     protected TrainSearchComponent trainSearchComponent;
     private int selectedSortOption;
     private FilterSearchData filterSearchData;
@@ -125,11 +120,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                              Bundle savedInstanceState) {
         presenter.attachView(this);
         View view = inflater.inflate(getLayoutView(), container, false);
-        originCodeTv = view.findViewById(R.id.origin_code);
-        originCityTv = view.findViewById(R.id.origin_city);
-        destinationCodeTv = view.findViewById(R.id.destination_code);
-        destinationCityTv = view.findViewById(R.id.destination_city);
-        tripInfoLinearLayout = view.findViewById(R.id.layout_trip_info);
         return view;
     }
 
@@ -162,7 +152,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
         presenter.getTrainSchedules();
         setUpButtonActionView(view);
-        initializeTripInfo();
     }
 
     @Override
@@ -198,30 +187,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     protected abstract void getDataFromFragment();
 
-    private void initializeTripInfo() {
-        setVisibilityTripInfo(originCode, originCodeTv, originCityTv);
-        setVisibilityTripInfo(destinationCode, destinationCodeTv, destinationCityTv);
-        originCodeTv.setText(originCode);
-        originCityTv.setText(originCity);
-        destinationCodeTv.setText(destinationCode);
-        destinationCityTv.setText(destinationCity);
-    }
-
-    private void setVisibilityTripInfo(String codeString, TextView codeTextView, TextView cityTextView) {
-        RelativeLayout.LayoutParams layoutParams =
-                (RelativeLayout.LayoutParams) codeTextView.getLayoutParams();
-        if (TextUtils.isEmpty(codeString)) {
-            setCenterTextView(layoutParams, codeTextView);
-            codeTextView.setVisibility(View.INVISIBLE);
-            cityTextView.setTypeface(cityTextView.getTypeface(), Typeface.BOLD);
-            cityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        } else {
-            removeCenterTextView(layoutParams, codeTextView);
-            codeTextView.setVisibility(View.VISIBLE);
-            cityTextView.setTypeface(cityTextView.getTypeface(), Typeface.NORMAL);
-            cityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        }
-    }
 
     private void setCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -333,16 +298,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         }
         requestParams.putString(GetScheduleUseCase.DEST_CITY, destinationCity);
         return requestParams;
-    }
-
-    @Override
-    public void hideLayoutTripInfo() {
-        tripInfoLinearLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showLayoutTripInfo() {
-        tripInfoLinearLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

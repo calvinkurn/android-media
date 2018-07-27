@@ -1631,6 +1631,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isTrainNativeEnable() {
+        return remoteConfig.getBoolean(TrainRouter.TRAIN_ENABLE_REMOTE_CONFIG);
+    }
+
+    @Override
     public Intent getWebviewActivity(Activity activity, String url) {
         return AppLinkWebsiteActivity.newInstance(activity, url);
     }

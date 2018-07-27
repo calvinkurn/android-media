@@ -17,6 +17,7 @@
     <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>
     <string name="train_homepage_bottom_menu_order_list">Daftar Transaksi</string>
     <string name="train_homepage_bottom_menu_check_orders">Cek Pesanan</string>
+    <string name="train_homepage_bottom_menu_promo">Promo</string>
     <string name="train_homepage_bottom_menu_action_text">Tutup</string>
 
     <string name="train_station_popular_label">Populer</string>
@@ -50,8 +51,8 @@
     <string name="train_search_passenger_infant" formatted="false">%d Infant</string>
     <string name="train_search_departure_title">Perjalanan Pergi</string>
     <string name="train_search_return_title">Perjalanan Pulang</string>
-    <string name="train_search_cheapest_label">TERMURAH</string>
-    <string name="train_search_fastest_label">TERCEPAT</string>
+    <string name="train_search_cheapest_label">Termurah</string>
+    <string name="train_search_fastest_label">Tercepat</string>
     <string name="train_search_seat_full_label">Penuh</string>
     <string name="train_search_remains_seat_label" formatted="false">Sisa %d kursi</string>
 

@@ -91,6 +91,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
     private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
+    private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -218,6 +219,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null) {
             shipmentPresenter.processInitialLoadCheckoutPage(false);
+        } else {
+            swipeToRefresh.setEnabled(false);
         }
     }
 
@@ -231,6 +234,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
         outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
         outState.putParcelable(ShipmentCheckoutButtonModel.class.getSimpleName(), shipmentPresenter.getShipmentCheckoutButtonModel());
+        outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
     }
 
     @Override
@@ -244,6 +248,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
             shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
             shipmentPresenter.setShipmentCheckoutButtonModel(savedInstanceState.getParcelable(ShipmentCheckoutButtonModel.class.getSimpleName()));
+            shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             renderCheckoutPage(true);
         }
     }
@@ -697,9 +702,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
             LocationPass locationPass = data.getExtras().getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
             if (locationPass != null) {
+                int index = shipmentAdapter.getLastChooseCourierItemPosition();
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);
                 shipmentPresenter.editAddressPinpoint(locationPass.getLatitude(), locationPass.getLongitude(),
-                        shipmentAdapter.getShipmentCartItemModelByIndex(shipmentAdapter.getLastChooseCourierItemPosition()),
-                        locationPass);
+                        shipmentCartItemModel, locationPass);
             }
         }
     }
@@ -842,15 +848,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                  RecipientAddressModel recipientAddressModel) {
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourier();
         ShipmentDetailData shipmentDetailData;
+        ShipmentDetailData oldShipmentDetailData = null;
+        if (recipientAddressModel == null) {
+            recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+        }
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-            shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-        } else {
-            if (recipientAddressModel == null) {
-                recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-            }
-            shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentCartItemModel,
-                    recipientAddressModel);
+            oldShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+        }
+        shipmentDetailData = ratesDataConverter.getShipmentDetailData(shipmentCartItemModel,
+                recipientAddressModel);
+        if (oldShipmentDetailData != null && oldShipmentDetailData.getSelectedCourier() != null) {
+            shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
         }
         if (shipmentDetailData != null) {
             showCourierChoiceBottomSheet(shipmentDetailData, shipmentCartItemModel.getShopShipmentList(),
@@ -1010,7 +1019,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onShipmentItemClick(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition) {
+    public void onShipmentItemClick(CourierItemData courierItemData,
+                                    RecipientAddressModel recipientAddressModel,
+                                    int cartItemPosition) {
         checkoutAnalyticsCourierSelection.eventViewCourierSelectionClickCourierOption(
                 courierItemData.getName(),
                 courierItemData.getShipmentItemDataType()

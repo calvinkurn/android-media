@@ -40,9 +40,8 @@ public class TrainSearchReturnActivity extends TrainSearchActivity {
 
     @Override
     protected String getTitleTrainToolbar() {
-        return getString(R.string.train_search_return_title);
+        return trainSearchPassDataViewModel.getDestinationCityName() + " ➝ " + trainSearchPassDataViewModel.getOriginCityName();
     }
-
     @Override
     protected String getDepartureDate() {
         return trainSearchPassDataViewModel.getReturnDate();

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.train.checkout.data.TrainCheckoutCloudDataStore;
 import com.tokopedia.train.common.TrainRouter;
@@ -15,6 +16,7 @@ import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
+import com.tokopedia.train.common.data.interceptor.model.TrainErrorResponse;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
@@ -67,6 +69,7 @@ public class TrainModule {
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
         builder.addInterceptor(trainInterceptor);
+        builder.addInterceptor(new ErrorResponseInterceptor(TrainErrorResponse.class));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
                     .addInterceptor(trainRouter.getChuckInterceptor());

@@ -28,6 +28,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainAppScreen;
 import com.tokopedia.train.common.constant.TrainEventTracking;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.presentation.TextInputView;
 import com.tokopedia.train.homepage.di.TrainHomepageComponent;
 import com.tokopedia.train.homepage.presentation.activity.TrainPassengerPickerActivity;
@@ -81,9 +82,12 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private TrainHomepageViewModel viewModel;
 
-    private Menus menus;
+
 
     private AbstractionRouter abstractionRouter;
+
+    @Inject
+    TrainRouter trainRouter;
 
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
@@ -459,6 +463,12 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     }
 
     @Override
+    public void navigateToKaiWebView() {
+        startActivity(trainRouter.getWebviewActivity(getActivity(), TrainUrl.KAI_WEBVIEW));
+        getActivity().finish();
+    }
+
+    @Override
     public void closePage() {
         getActivity().finish();
     }
@@ -470,45 +480,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         trainHomepagePresenterImpl.saveHomepageViewModelToCache(viewModel);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_train_homepage, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_overflow_menu) {
-            showBottomMenus();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void showBottomMenus() {
-        menus = new Menus(getActivity());
-        String[] menuItem = new String[]{
-                getResources().getString(R.string.train_homepage_bottom_menu_order_list),
-                getResources().getString(R.string.train_homepage_bottom_menu_check_orders)
-        };
-        menus.setItemMenuList(menuItem);
-
-        menus.setOnActionClickListener(view -> menus.dismiss());
-
-        menus.setOnItemMenuClickListener((itemMenus, pos) -> {
-            if (pos == 0) {
-                trainRouter.goToTrainOrderList(getActivity());
-            }
-            menus.dismiss();
-        });
-
-        menus.setActionText(getResources().getString(R.string.train_homepage_bottom_menu_action_text));
-
-        menus.show();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         trainHomepagePresenterImpl.onDestroy();

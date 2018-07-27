@@ -33,9 +33,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
     private TextView trainNameTv;
     private TextView classNameTv;
     private TextView originCodeTv;
-    private TextView departureTimeTv;
     private TextView destinationCodeTv;
-    private TextView arrivalTimeTv;
     private TextView durationTv;
     private TextView availabilitySeatTv;
     private TextView priceTv;
@@ -52,15 +50,13 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         trainNameTv = itemView.findViewById(R.id.train_name);
         classNameTv = itemView.findViewById(R.id.class_name);
         originCodeTv = itemView.findViewById(R.id.origin_code);
-        departureTimeTv = itemView.findViewById(R.id.departure_time);
         destinationCodeTv = itemView.findViewById(R.id.destination_code);
-        arrivalTimeTv = itemView.findViewById(R.id.arrival_time);
         durationTv = itemView.findViewById(R.id.duration);
         availabilitySeatTv = itemView.findViewById(R.id.availability_seat);
         priceTv = itemView.findViewById(R.id.price);
         detailScheduleTv = itemView.findViewById(R.id.tap_for_details);
-        imageRound1 = itemView.findViewById(R.id.image1);
-        imageRound3 = itemView.findViewById(R.id.image3);
+        imageRound1 = itemView.findViewById(R.id.departure_time_circle);
+        imageRound3 = itemView.findViewById(R.id.arrival_time_circle);
         this.listener = listener;
     }
 
@@ -77,11 +73,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                 R.color.font_black_disabled_38 : R.color.font_black_primary_70));
         originCodeTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
                 R.color.font_black_disabled_38 : R.color.font_black_primary_70));
-        departureTimeTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
-                R.color.font_black_disabled_38 : R.color.font_black_primary_70));
         destinationCodeTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
-                R.color.font_black_disabled_38 : R.color.font_black_primary_70));
-        arrivalTimeTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
                 R.color.font_black_disabled_38 : R.color.font_black_primary_70));
         priceTv.setTextColor(ContextCompat.getColor(context, isScheduleOutOfStock ?
                 R.color.font_black_disabled_38 : R.color.font_black_primary_70));
@@ -97,15 +89,12 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         setFlagTrainSchedule(trainScheduleViewModel.getAvailableSeat() == OUT_OF_STOCK,
                 trainScheduleViewModel.isFastestFlag(),
                 trainScheduleViewModel.isCheapestFlag());
-        trainNameTv.setText(trainScheduleViewModel.getTrainName() + " " + trainScheduleViewModel.getTrainNumber());
-        classNameTv.setText(trainScheduleViewModel.getDisplayClass() + " (" +
-                trainScheduleViewModel.getClassTrain() + ")");
-        originCodeTv.setText(trainScheduleViewModel.getOrigin());
-        departureTimeTv.setText(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()));
-        destinationCodeTv.setText(trainScheduleViewModel.getDestination());
-        arrivalTimeTv.setText(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()));
+        trainNameTv.setText(String.format("%s %s", trainScheduleViewModel.getTrainName(), trainScheduleViewModel.getTrainNumber()));
+        classNameTv.setText(String.format("%s (%s)", trainScheduleViewModel.getDisplayClass(), trainScheduleViewModel.getClassTrain()));
+        originCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()), trainScheduleViewModel.getOrigin()));
+        destinationCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()), trainScheduleViewModel.getDestination()));
         durationTv.setText(trainScheduleViewModel.getDisplayDuration());
 
         setAvailabilitySeat(trainScheduleViewModel.getAvailableSeat());
@@ -128,12 +117,12 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                     R.color.font_black_disabled_38, R.color.font_black_disabled_38);
         } else {
             if (isCheapestFlag) {
-                setContentFlag(getString(R.string.train_search_cheapest_label), R.color.light_green, R.color.tkpd_main_green,
-                        R.color.tkpd_main_green);
+                setContentFlag(getString(R.string.train_search_cheapest_label), R.color.train_search_cheapest_background, R.color.train_search_cheapest_background,
+                        R.color.medium_green);
             }
             if (isFastestFlag) {
-                setContentFlag(getString(R.string.train_search_fastest_label), R.color.light_orange, R.color.orange,
-                        R.color.deep_orange);
+                setContentFlag(getString(R.string.train_search_fastest_label), R.color.train_search_fastest_background, R.color.train_search_fastest_background,
+                        R.color.train_search_fastest_text_color);
             }
         }
     }
