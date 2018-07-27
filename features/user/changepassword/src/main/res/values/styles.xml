@@ -2,13 +2,13 @@
 <resources>
 
     <style name="TextInputLayout.ChangePassword" parent="TextInputLayout">
-        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="android:theme">@style/TextInputLayoutColorLine.ChangePasword</item>
+        <item name="defaultTextColorLabel">@color/black_55</item>
+        <item name="focusedTextColorLabel">@color/black_55</item>
+        <item name="disabledTextColorLabel">@color/black_55</item>
     </style>
 
-    <style name="TextInputLayoutColorLine.ChangePasword" parent="TextInputLayoutColorLine">
-        <item name="android:textColorHint">@color/black_38</item>
+    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
     </style>
 </resources>

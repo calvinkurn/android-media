@@ -29,7 +29,9 @@ import java.util.ArrayList;
 
 public class ManagePeople extends TkpdActivity {
 
-    private static int REQUEST_CHANGE_PASSWORD = 1234;
+    private static int REQUEST_ADD_PASSWORD = 1234;
+    private static final int REQUEST_CHANGE_PASSWORD = 123;
+
 
     private TextView ManageProfile;
     private TextView ManageAddress;
@@ -115,6 +117,11 @@ public class ManagePeople extends TkpdActivity {
                     datas.putExtras(bundles);
                     setResult(resultCode, datas);
                     break;
+                case REQUEST_CHANGE_PASSWORD:
+                    com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+                            .showGreenCloseSnackbar(getActivity(), getString(R.string
+                                    .message_success_change_password));
+                    break;
                 default:
                     break;
             }
@@ -162,9 +169,10 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter)getActivity().getApplication())
+                            intent = ((TkpdCoreRouter) getActivity().getApplication())
                                     .getChangePasswordIntent(getActivity());
-                            startActivity(intent);
+                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
+
                         } else {
                             intentToAddPassword();
                         }
@@ -209,9 +217,9 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter)getActivity().getApplication())
+                            intent = ((TkpdCoreRouter) getActivity().getApplication())
                                     .getChangePasswordIntent(getActivity());
-                            startActivity(intent);
+                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();
                         }
@@ -225,7 +233,7 @@ public class ManagePeople extends TkpdActivity {
     private void intentToAddPassword() {
         startActivityForResult(
                 ((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+                        .getAddPasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
     }
 
     private void showNoPasswordDialog() {

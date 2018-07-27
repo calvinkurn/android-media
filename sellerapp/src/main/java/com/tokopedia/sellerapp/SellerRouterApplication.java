@@ -1461,7 +1461,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-//        if(remoteConfig.getBoolean("is_new_change_password_enabled")){
+//        if(remoteConfig.getBoolean("sellerapp_new_change_password_enabled")){
 //            return ChangePasswordActivity.Companion.createIntent(context);
 //        }else{
 //            return  new Intent(context, ManagePasswordActivity.class);

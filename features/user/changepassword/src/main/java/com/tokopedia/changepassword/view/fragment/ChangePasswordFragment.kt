@@ -1,5 +1,6 @@
 package com.tokopedia.changepassword.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -77,9 +78,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun setViewListener() {
-        old_password.addTextChangedListener(watcher(wrapper_old))
-        new_password.addTextChangedListener(watcher(wrapper_new))
-        new_password_confirmation.addTextChangedListener(watcher(wrapper_conf))
+        old_password_et.addTextChangedListener(watcher(wrapper_old))
+        new_password_et.addTextChangedListener(watcher(wrapper_new))
+        new_password_confirmation_et.addTextChangedListener(watcher(wrapper_conf))
     }
 
     private fun prepareHint() {
@@ -129,9 +130,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun checkIsValidForm() {
-        val oldPassword = old_password.text.toString().trim()
-        val newPassword = new_password.text.toString().trim()
-        val confirmPassword = new_password_confirmation.text.toString().trim()
+        val oldPassword = old_password_et.text.toString().trim()
+        val newPassword = new_password_et.text.toString().trim()
+        val confirmPassword = new_password_confirmation_et.text.toString().trim()
 
         if (presenter.isValidForm(oldPassword, newPassword, confirmPassword)) {
             enableSubmitButton()
@@ -142,14 +143,14 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     private fun disableSubmitButton() {
         MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
-                .grey_button_rounded))
+                .bg_button_disabled))
         submit_button.setTextColor(MethodChecker.getColor(context, R.color.grey_500))
         submit_button.isEnabled = false
     }
 
     private fun enableSubmitButton() {
         MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
-                .green_button_rounded_unify))
+                .button_curvy_green))
         submit_button.setTextColor(MethodChecker.getColor(context, R.color.white))
         submit_button.isEnabled = true
     }
@@ -180,9 +181,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         resetError()
 
         presenter.submitChangePasswordForm(
-                old_password.text.toString(),
-                new_password.text.toString(),
-                new_password_confirmation.text.toString())
+                old_password_et.text.toString(),
+                new_password_et.text.toString(),
+                new_password_confirmation_et.text.toString())
 
     }
 
@@ -199,13 +200,8 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onSuccessChangePassword() {
         hideLoading()
-        if (activity != null
-                && context != null
-                && context!!.applicationContext is ChangePasswordRouter) {
-            val intent: Intent = (context!!.applicationContext as ChangePasswordRouter)
-                    .getHomeIntent(activity!!)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
+        if (activity != null) {
+            activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
         }
     }

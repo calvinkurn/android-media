@@ -33,7 +33,8 @@ import java.util.ArrayList;
 
 public class FragmentSettingPeople extends TkpdFragment implements ManageConstant {
 
-    private static int REQUEST_CHANGE_PASSWORD = 1234;
+    private static final int REQUEST_CHANGE_PASSWORD = 123;
+    private static int REQUEST_ADD_PASSWORD = 1234;
 
     private SimpleListTabViewAdapter lvAdapter;
     private ListView lvManage;
@@ -67,7 +68,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
         lvManage = (ListView) mainView.findViewById(R.id.list_manage);
         lvAdapter = new SimpleListTabViewAdapter(getActivity(), Name, ResID);
         lvManage.setAdapter(lvAdapter);
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             Name.add(getString(R.string.title_personal_profile));
             Name.add(getString(R.string.title_address));
             Name.add(getString(R.string.title_bank));
@@ -101,7 +102,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded() && getActivity() !=null) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
@@ -110,8 +111,12 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==0 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.message_success_change_profile));
+        } else if (requestCode == REQUEST_CHANGE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+                    .showGreenCloseSnackbar(getActivity(), getString(R.string
+                            .message_success_change_password));
         }
     }
 
@@ -154,9 +159,9 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 					break;*/
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter)getActivity().getApplication())
+                            intent = ((TkpdCoreRouter) getActivity().getApplication())
                                     .getChangePasswordIntent(getActivity());
-                            startActivity(intent);
+                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();
                         }
@@ -205,9 +210,9 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 					break;*/
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter)getActivity().getApplication())
+                            intent = ((TkpdCoreRouter) getActivity().getApplication())
                                     .getChangePasswordIntent(getActivity());
-                            startActivity(intent);
+                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();
                         }
@@ -219,8 +224,8 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 
     private void intentToAddPassword() {
         startActivityForResult(
-                ((TkpdCoreRouter)getActivity().getApplicationContext())
-                        .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getAddPasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
     }
 
     private void showNoPasswordDialog() {
