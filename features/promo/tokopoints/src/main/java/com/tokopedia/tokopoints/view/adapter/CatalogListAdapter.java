@@ -138,10 +138,8 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         }
 
         if (item.isDisabledButton()) {
-            holder.btnContinue.setBackgroundResource(R.drawable.bg_button_disabled);
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
         } else {
-            holder.btnContinue.setBackgroundResource(R.drawable.bg_button_primary);
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
         }
 
