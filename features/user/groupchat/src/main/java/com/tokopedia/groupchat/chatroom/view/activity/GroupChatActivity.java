@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,9 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
@@ -65,6 +69,7 @@ import com.tokopedia.groupchat.chatroom.view.adapter.tab.GroupChatTabAdapter;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
@@ -202,6 +207,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     private CloseableBottomSheetDialog channelInfoDialog;
     private View sponsorLayout;
     private ImageView sponsorImage;
+    private GroupChatVideoFragment videoFragment;
+    private YouTubePlayer youTubePlayer;
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
@@ -261,6 +268,34 @@ public class GroupChatActivity extends BaseSimpleActivity
         initInjector();
         initData();
         initPreference();
+        initVideoFragment();
+    }
+
+    private void initVideoFragment() {
+        videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
+
+        if (videoFragment == null)
+            return;
+
+        videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+                if (!wasRestored) {
+                    youTubePlayer = player;
+
+                    //set the player style default
+                    youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+
+                    //cue the 1st video by default
+                    youTubePlayer.cueVideo(viewModel.getVideoUrl());
+                }
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                Log.e(GroupChatActivity.class.getSimpleName(), "Youtube Player View initialization failed");
+            }
+        });
     }
 
     private boolean isEnabledGroupChatRoom() {
