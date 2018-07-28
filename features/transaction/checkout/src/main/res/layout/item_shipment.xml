@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <include
             layout="@layout/item_recipient_address"
@@ -187,7 +187,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -280,7 +280,7 @@
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_9"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8">
 
@@ -288,14 +288,12 @@
                 android:id="@+id/cb_insurance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckbox" />
 
             <CheckBox
                 android:id="@+id/cb_insurance_disabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckboxDisabled" />
 
             <TextView
@@ -320,7 +318,7 @@
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_4"
             tools:visibility="visible">
@@ -329,7 +327,6 @@
                 android:id="@+id/cb_dropshipper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-5dp"
                 android:theme="@style/TransactionCheckbox" />
 
             <TextView
@@ -350,8 +347,8 @@
             android:id="@+id/ll_dropshipper_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/new_margin_med"
-            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
             android:layout_marginTop="@dimen/margin_ms"
             android:orientation="vertical"
             android:visibility="gone"

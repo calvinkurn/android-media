@@ -1469,7 +1469,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             int defaultChild = productVariant.getParentId() == productData.getInfo().getProductId()
                     ? productVariant.getDefaultChild() : productData.getInfo().getProductId();
             if (productVariant.getChildFromProductId(defaultChild).isEnabled()) {
-                productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+                productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWordingHtml());
                 productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
                 headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                         productData.getInfo());
@@ -1490,7 +1490,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void addProductStock(Child productStock) {
         productStockNonVariant = productStock;
         if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
-            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
+            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWordingHtml());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                     productData.getInfo());
