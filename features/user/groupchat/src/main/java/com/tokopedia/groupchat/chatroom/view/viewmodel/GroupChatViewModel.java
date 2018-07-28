@@ -107,7 +107,7 @@ public class GroupChatViewModel implements Parcelable {
     }
 
     public String getVideoUrl() {
-        return "woYyJJhaNFY";
+        return "ZxOJkeDUWRw";
     }
 
     public void setVideoUrl(String videoUrl) {
