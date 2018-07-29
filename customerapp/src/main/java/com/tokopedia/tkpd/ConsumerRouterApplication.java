@@ -124,6 +124,7 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
@@ -193,6 +194,7 @@ import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -2398,7 +2400,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
-          
+    /**
+     * Global Nav Router
+     */
+
     @Override
     public Intent gotoWishlistPage(Context context) {
         Intent intent = new Intent(context, SimpleHomeActivity.class);
@@ -2408,7 +2413,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoNotificationPage(Context context) {
-        return null;
+        return new Intent(context, NotificationActivity.class);
+    }
+
+    @Override
+    public Intent gotoSearchPage(Context context) {
+        return new Intent(context, SearchActivity.class);
     }
 
     @Override
@@ -2416,9 +2426,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return QrScannerActivity.newInstance(this);
     }
 
-    /**
-     * Global Nav Router
-     */
+
     @Override
     public Fragment getHomeFragment() {
         return new HomeFragment();
@@ -2432,6 +2440,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getCartFragment() {
         return CartFragment.newInstance(CartFragment.class.getSimpleName());
+    }
+
+    @Override
+    public Intent getInboxTalkCallingIntent(Context context) {
+        return new Intent(context, InboxTalkActivity.class);
+    }
+
+    @Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return new Intent(context, InboxTicketActivity.class);
     }
 
     @Override

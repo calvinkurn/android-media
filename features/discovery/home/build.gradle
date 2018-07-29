@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tokoCash)
+    implementation project(rootProject.ext.features.searchbar)
 
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)

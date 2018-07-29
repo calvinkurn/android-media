@@ -13,6 +13,7 @@ public class GlobalNavConstant {
     public static final int KOMPLAIN = 3;
 
     public static final int BELUM_DIBAYAR = 0;
+    public static final int SEDANG_DIKIRIM = 1;
     public static final int SIAP_DIKIRIM = 1;
     public static final int SAMPAI_TUJUAN = 2;
 
