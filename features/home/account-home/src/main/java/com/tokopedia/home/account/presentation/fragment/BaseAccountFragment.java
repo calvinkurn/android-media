@@ -1,10 +1,12 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -53,7 +55,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onTokopediaPayLinkClicked() {
-        openApplink(ApplinkConst.WALLET_HOME);
+        if(getActivity() != null) {
+            getActivity().startActivity(new Intent(getContext(), TkpdPaySettingActivity.class));
+        }
     }
 
     @Override
