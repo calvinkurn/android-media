@@ -8,6 +8,6 @@
         android:icon="@drawable/ic_notif"
         android:title="@string/notifications"
         app:showAsAction="ifRoom"
-        android:actionLayout="@layout/menu_notification"/>
+        android:actionLayout="@layout/toolbar_account"/>
 
 </menu>

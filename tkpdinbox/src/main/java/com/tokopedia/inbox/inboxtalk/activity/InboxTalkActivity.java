@@ -59,7 +59,7 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
 
     @BindView(R2.id.pager)
     ViewPager mViewPager;
-    @BindView(R2.id.tabs)
+    @BindView(R2.id.indicator)
     Tabs indicator;
 
 

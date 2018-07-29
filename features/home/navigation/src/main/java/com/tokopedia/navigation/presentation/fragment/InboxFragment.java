@@ -3,16 +3,21 @@ package com.tokopedia.navigation.presentation.fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
@@ -37,7 +42,8 @@ import q.rorbin.badgeview.QBadgeView;
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends BaseParentFragment implements InboxView, MainParentActivity.NotificationListener{
+public class InboxFragment extends BaseParentFragment implements
+        InboxView, NotificationListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -52,6 +58,9 @@ public class InboxFragment extends BaseParentFragment implements InboxView, Main
 
     @Inject InboxPresenter presenter;
     private InboxAdapter adapter;
+
+    private ImageButton menuItemNotification;
+    private TextView toolbarTitle;
 
     @Override
     public int resLayout() {
@@ -80,34 +89,6 @@ public class InboxFragment extends BaseParentFragment implements InboxView, Main
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_notification, menu);
-    }
-
-    ImageView menuNotification;
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        MenuItem menuItem = menu.findItem(R.id.action_notification);
-
-        FrameLayout rootView = (FrameLayout) menuItem.getActionView();
-
-        LinearLayout linearLayout = rootView.findViewById(R.id.layout_notification);
-        menuNotification = linearLayout.findViewById(R.id.act_notif);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_notification) {
-            startActivity(NotificationActivity.start(getActivity()));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private List<Inbox> getData() {
         List<Inbox> inboxList = new ArrayList<>();
         inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
@@ -130,13 +111,21 @@ public class InboxFragment extends BaseParentFragment implements InboxView, Main
                 RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
                 break;
             case DISCUSSION_MENU:
-                RouteManager.route(getActivity(), ApplinkConst.TALK);
+//                RouteManager.route(getActivity(), ApplinkConst.TALK);
+                if (getActivity().getApplication() instanceof GlobalNavRouter) {
+                    startActivity(((GlobalNavRouter) getActivity().getApplication())
+                            .getInboxTalkCallingIntent(getActivity()));
+                }
                 break;
             case REVIEW_MENU:
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+//                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+                if (getActivity().getApplication() instanceof GlobalNavRouter) {
+                    startActivity(((GlobalNavRouter) getActivity().getApplication())
+                            .getInboxTicketCallingIntent(getActivity()));
+                }
                 break;
         }
     }
@@ -155,8 +144,21 @@ public class InboxFragment extends BaseParentFragment implements InboxView, Main
 
     @Override
     public void loadData() {
-        if (toolbar != null)
-            toolbar.setTitle(getString(R.string.inbox));
+        setTitle(getString(R.string.inbox));
+    }
+
+    @Override
+    public void setupToolbar(View view) {
+        super.setupToolbar(view);
+        toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        menuItemNotification = toolbar.findViewById(R.id.action_notification);
+        menuItemNotification.setOnClickListener(v -> startActivity(NotificationActivity.start(getActivity())));
+    }
+
+    @Override
+    public void setTitle(String title) {
+        if (toolbarTitle != null)
+            toolbarTitle.setText(title);
     }
 
     @Override
@@ -185,15 +187,18 @@ public class InboxFragment extends BaseParentFragment implements InboxView, Main
         return getString(R.string.inbox);
     }
 
-    QBadgeView badgeView;
+    private QBadgeView badgeView;
 
     @Override
-    public void onNotificationRender(Notification data) {
-        if (menuNotification != null) {
-            if (badgeView == null)
-                badgeView = new QBadgeView(getActivity());
-            badgeView.setBadgeNumber(data.getTotalNotif());
-            badgeView.bindTarget(menuNotification);
-        }
+    public void onNotifyBadgeNotification(int number) {
+        if (menuItemNotification == null)
+            return;
+
+        if (badgeView == null)
+            badgeView = new QBadgeView(getActivity());
+
+        badgeView.bindTarget(menuItemNotification);
+        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
+        badgeView.setBadgeNumber(number);
     }
 }

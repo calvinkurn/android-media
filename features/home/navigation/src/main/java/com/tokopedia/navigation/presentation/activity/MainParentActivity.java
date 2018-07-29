@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -58,12 +59,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private boolean isUserFirstTimeLogin = false;
 
+    private Fragment currentFragment;
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class);
-    }
-
-    public interface NotificationListener {
-        void onNotificationRender(Notification data);
     }
 
     @Override
@@ -90,7 +89,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             }
 
             public void onPageSelected(int position) {
+                currentFragment = adapterViewPager.getFragmentList().get(position);
                 bottomNavigation.getMenu().getItem(position).setChecked(true);
+                setBadgeNotifCounter(currentFragment);
             }
         });
 
@@ -102,8 +103,18 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
         }
+
+        currentFragment = adapterViewPager.getFragmentList().get(HOME_MENU);
     }
 
+    private void setBadgeNotifCounter(Fragment fragment) {
+        if (fragment == null)
+            return;
+
+        if (fragment instanceof NotificationListener) {
+            ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
+        }
+    }
     private void intiInjector() {
         DaggerGlobalNavComponent.builder()
                 .globalNavModule(new GlobalNavModule())
@@ -127,11 +138,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         } else if (i == R.id.menu_account) {
             if (isUserLogin())
                 viewPager.setCurrentItem(ACCOUNT_MENU, false);
-        }
-
-        Fragment fragment = adapterViewPager.getFragmentList().get(viewPager.getCurrentItem());
-        if (fragment instanceof NotificationListener) {
-            ((NotificationListener) fragment).onNotificationRender(notification);
         }
         return true;
     }
@@ -190,6 +196,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         this.notification = notification;
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
+
+        setBadgeNotifCounter(currentFragment);
     }
 
     @Override
