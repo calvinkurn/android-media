@@ -62,6 +62,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return new Intent(context, MainParentActivity.class);
     }
 
+    public interface NotificationListener {
+        void onNotificationRender(Notification data);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +79,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
 
-        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
+        adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -124,6 +128,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             if (isUserLogin())
                 viewPager.setCurrentItem(ACCOUNT_MENU, false);
         }
+
+        Fragment fragment = adapterViewPager.getFragmentList().get(viewPager.getCurrentItem());
+        if (fragment instanceof NotificationListener) {
+            ((NotificationListener) fragment).onNotificationRender(notification);
+        }
         return true;
     }
 
@@ -154,8 +163,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         presenter.onDestroy();
     }
 
+    FragmentAdapter adapterViewPager;
+
     private void reloadPage() {
-        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
+        adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
@@ -172,8 +183,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return fragmentList;
     }
 
+    Notification notification;
+
     @Override
     public void renderNotification(Notification notification) {
+        this.notification = notification;
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
     }
@@ -199,6 +213,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
             this.fragmentList = fragmentList;
+        }
+
+        public List<Fragment> getFragmentList() {
+            return fragmentList;
         }
 
         @Override

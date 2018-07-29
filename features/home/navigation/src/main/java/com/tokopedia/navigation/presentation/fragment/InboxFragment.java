@@ -7,12 +7,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
+import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
@@ -28,10 +32,12 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import q.rorbin.badgeview.QBadgeView;
+
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends BaseParentFragment implements InboxView {
+public class InboxFragment extends BaseParentFragment implements InboxView, MainParentActivity.NotificationListener{
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -77,6 +83,20 @@ public class InboxFragment extends BaseParentFragment implements InboxView {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_notification, menu);
+    }
+
+    ImageView menuNotification;
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_notification);
+
+        FrameLayout rootView = (FrameLayout) menuItem.getActionView();
+
+        LinearLayout linearLayout = rootView.findViewById(R.id.layout_notification);
+        menuNotification = linearLayout.findViewById(R.id.act_notif);
     }
 
     @Override
@@ -163,5 +183,17 @@ public class InboxFragment extends BaseParentFragment implements InboxView {
     @Override
     protected String getScreenName() {
         return getString(R.string.inbox);
+    }
+
+    QBadgeView badgeView;
+
+    @Override
+    public void onNotificationRender(Notification data) {
+        if (menuNotification != null) {
+            if (badgeView == null)
+                badgeView = new QBadgeView(getActivity());
+            badgeView.setBadgeNumber(data.getTotalNotif());
+            badgeView.bindTarget(menuNotification);
+        }
     }
 }
