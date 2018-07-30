@@ -28,6 +28,7 @@ import com.tokopedia.product.edit.common.util.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
+import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordAddModule;

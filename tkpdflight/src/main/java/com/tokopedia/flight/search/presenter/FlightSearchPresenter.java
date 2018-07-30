@@ -169,7 +169,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     @NonNull
-    private Subscriber<Boolean> getDeleteFlightReturnSubscriber() {
+    private Subscriber<Boolean> getDeleteFlightReturnSubscriber(String selectedId) {
         return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -185,7 +185,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onNext(Boolean aBoolean) {
-                getView().actionFetchFlightSearchData();
+                getView().navigateToNextPage(selectedId);
             }
         };
     }
@@ -380,6 +380,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void onSearchItemClicked(FlightSearchViewModel flightSearchViewModel) {
         flightAnalytics.eventSearchProductClick(flightSearchViewModel);
+        deleteReturnFlightCache(flightSearchViewModel.getId());
     }
 
     public void onSeeDetailItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
@@ -389,6 +390,15 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void onSearchItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
         flightAnalytics.eventSearchProductClick(flightSearchViewModel, adapterPosition);
+        deleteReturnFlightCache(flightSearchViewModel.getId());
+    }
+
+    public void onSearchItemClicked(String selectedId) {
+        deleteReturnFlightCache(selectedId);
+    }
+
+    private void deleteReturnFlightCache(String selectedId){
+        deleteFlightCache(true, getDeleteFlightReturnSubscriber(selectedId));
     }
 
     public void initialize() {
@@ -414,7 +424,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 }
             });
         } else {
-            deleteFlightCache(getView().isReturning(), getDeleteFlightReturnSubscriber());
+            getView().actionFetchFlightSearchData();
         }
 
     }
