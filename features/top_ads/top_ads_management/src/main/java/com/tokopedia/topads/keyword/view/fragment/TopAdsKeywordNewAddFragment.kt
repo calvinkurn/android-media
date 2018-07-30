@@ -96,11 +96,11 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_top_ads_keyword_new_add, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_top_ads_keyword_new_add, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         stepperModel?.run {bidInfoTextView.visibility = if (isPositive) View.VISIBLE else View.GONE}
         buttonSave.setOnClickListener { gotoNextPage() }
@@ -124,7 +124,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
     }
 
     private fun initEmptyStateView() {
-        no_result_image.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.icon_empty_local_keyword))
+        activity?.let { no_result_image.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.icon_empty_local_keyword)) }
         text_view_empty_title_text.setText(R.string.topads_keyword_local_empty_title)
         text_view_empty_content_text.visibility = View.GONE
         button_add_promo.visibility = View.GONE
@@ -161,14 +161,14 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     private fun gotoKeywordCurrentList() {
         stepperModel?.run {
-            TopAdsKeywordCurrentListActivity.start(activity, isPositive, groupId!!,
-                    this@TopAdsKeywordNewAddFragment)
+            activity?.let { TopAdsKeywordCurrentListActivity.start(it, isPositive, groupId!!,
+                    this@TopAdsKeywordNewAddFragment) }
         }
     }
 
     private fun gotoAddKeywordItem(){
-        TopAdsKeywordNewItemActivity.startForResult(activity, REQUEST_ADD_ITEM_CODE,
-                localKeywordAdapter.localKeywords, maxKeyword, stepperModel, this)
+        activity?.let { TopAdsKeywordNewItemActivity.startForResult(it, REQUEST_ADD_ITEM_CODE,
+                localKeywordAdapter.localKeywords, maxKeyword, stepperModel, this)}
     }
 
     private fun setCurrentMaxKeyword(){
@@ -263,7 +263,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState?.let { it.putParcelableArrayList(EXTRA_LOCAL_WORDS, ArrayList(localKeywordAdapter.localKeywords)) }
     }
