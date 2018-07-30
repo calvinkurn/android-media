@@ -2,13 +2,11 @@ package com.tokopedia.home.account.presentation.adapter.setting;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 
@@ -17,10 +15,6 @@ import java.util.List;
 public class GeneralSettingAdapter extends RecyclerView.Adapter<GeneralSettingAdapter.GeneralSettingViewHolder> {
     private List<SettingItemViewModel> settingItems;
     private OnSettingItemClicked listener;
-
-    public GeneralSettingAdapter(List<SettingItemViewModel> settingItems) {
-        this.settingItems = settingItems;
-    }
 
     public GeneralSettingAdapter(List<SettingItemViewModel> settingItems, OnSettingItemClicked listener) {
         this.settingItems = settingItems;
@@ -49,17 +43,13 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<GeneralSettingAd
     }
 
     class GeneralSettingViewHolder extends RecyclerView.ViewHolder{
-        private TextView titleTextView;
-        private TextView subtitleTextView;
-        private ImageView iconSetting;
-        private ImageView rightArrow;
+        private LabelView labelView;
+
 
         public GeneralSettingViewHolder(View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.title);
-            subtitleTextView = itemView.findViewById(R.id.subtitle);
-            iconSetting = itemView.findViewById(R.id.icon_setting);
-            rightArrow = itemView.findViewById(R.id.image_arrow);
+            labelView = itemView.findViewById(R.id.labelview);
+
             itemView.setOnClickListener(view -> {
                 if (listener != null){
                     listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
@@ -68,20 +58,17 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<GeneralSettingAd
         }
 
         public void bind(SettingItemViewModel item){
-            titleTextView.setText(item.getTitle());
-            if (!TextUtils.isEmpty(item.getSubtitle())){
-                subtitleTextView.setText(item.getSubtitle());
-                subtitleTextView.setVisibility(View.VISIBLE);
-            } else {
-                subtitleTextView.setVisibility(View.GONE);
-            }
+            labelView.setTitle(item.getTitle());
+            labelView.setSubTitle(item.getSubtitle());
+            labelView.setImageResource(item.getIconResource());
+
             if (item.getIconResource() > 0){
-                iconSetting.setVisibility(View.VISIBLE);
-                iconSetting.setImageResource(item.getIconResource());
+                labelView.getImageView().setVisibility(View.VISIBLE);
+                labelView.getImageView().setImageResource(item.getIconResource());
             } else {
-                iconSetting.setVisibility(View.GONE);
+                labelView.getImageView().setVisibility(View.GONE);
             }
-            rightArrow.setVisibility(item.isHideArrow()? View.GONE : View.VISIBLE);
+            labelView.showRightArrow(item.isHideArrow());
         }
     }
 

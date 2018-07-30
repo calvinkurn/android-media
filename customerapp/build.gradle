@@ -299,6 +299,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
+    implementation project(rootProject.ext.features.accountHome)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)

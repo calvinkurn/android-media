@@ -22,7 +22,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;

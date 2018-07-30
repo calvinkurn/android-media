@@ -5,14 +5,16 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.home.account.presentation.fragment.setting.NotificationSettingFragment;
+import com.tokopedia.home.account.presentation.fragment.setting.AppNotificationSettingFragment;
 
-public class NotificationSettingActivity extends BaseSimpleActivity {
+public class AppNotificationSettingActivity extends BaseSimpleActivity {
+
     public static Intent createIntent(Context context) {
-        return new Intent(context, NotificationSettingActivity.class);
+        return new Intent(context, AppNotificationSettingActivity.class);
     }
+
     @Override
     protected Fragment getNewFragment() {
-        return NotificationSettingFragment.createInstance();
+        return AppNotificationSettingFragment.createInstance();
     }
 }
