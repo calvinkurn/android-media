@@ -15,7 +15,11 @@ import com.tokopedia.inbox.rescenter.network.ResolutionErrorResponse;
 import com.tokopedia.inbox.rescenter.network.ResolutionInterceptor;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.converter.TokopediaApiResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,6 +32,9 @@ import retrofit2.Retrofit;
  */
 @Module
 public class ResolutionModule {
+
+    public static final String RESOLUTION_SERVICE = "Resolution_Service";
+    public static final String RESOLUTION_IMAGE_SERVICE = "Resolution_Image_Service";
 
     @ResolutionScope
     @Provides
@@ -58,10 +65,42 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    @ResolutionQualifier
-    public Retrofit provideResolutionRetrofit(Retrofit.Builder retrofitBuilder,
-                                            OkHttpClient okHttpClient) {
-        return retrofitBuilder.baseUrl(ResolutionUrl.BASE_URL).client(okHttpClient).build();
+    @Named(RESOLUTION_SERVICE)
+    public Retrofit provideResolutionServiceRetrofit(Retrofit.Builder retrofitBuilder,
+                                              OkHttpClient okHttpClient,
+                                              TokopediaApiResponseConverter tokopediaApiResponseConverter,
+                                              StringResponseConverter stringResponseConverter) {
+        return retrofitBuilder.baseUrl(ResolutionUrl.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(tokopediaApiResponseConverter)
+                .addConverterFactory(stringResponseConverter)
+                .build();
+    }
+
+    @ResolutionScope
+    @Provides
+    @Named(RESOLUTION_IMAGE_SERVICE)
+    public Retrofit provideResolutionImageServiceRetrofit(Retrofit.Builder retrofitBuilder,
+                                              OkHttpClient okHttpClient,
+                                              TokopediaApiResponseConverter tokopediaApiResponseConverter,
+                                              StringResponseConverter stringResponseConverter) {
+        return retrofitBuilder.baseUrl(ResolutionUrl.BASE_URL_IMAGE_SERVICE)
+                .client(okHttpClient)
+                .addConverterFactory(tokopediaApiResponseConverter)
+                .addConverterFactory(stringResponseConverter)
+                .build();
+    }
+
+    @ResolutionScope
+    @Provides
+    public StringResponseConverter provideStringResponseConverter() {
+        return new StringResponseConverter();
+    }
+
+    @ResolutionScope
+    @Provides
+    public TokopediaApiResponseConverter provideTokopediaApiResponseConverter() {
+        return new TokopediaApiResponseConverter();
     }
 
 
@@ -87,7 +126,15 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    public ResolutionApi provideResolutionApi(@ResolutionQualifier Retrofit retrofit) {
+    @Named(RESOLUTION_SERVICE)
+    public ResolutionApi provideResolutionApi(@Named(RESOLUTION_SERVICE) Retrofit retrofit) {
+        return retrofit.create(ResolutionApi.class);
+    }
+
+    @ResolutionScope
+    @Provides
+    @Named(RESOLUTION_IMAGE_SERVICE)
+    public ResolutionApi provideResolutionImageServiceApi(@Named(RESOLUTION_IMAGE_SERVICE) Retrofit retrofit) {
         return retrofit.create(ResolutionApi.class);
     }
 }

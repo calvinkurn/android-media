@@ -1,7 +1,12 @@
 package com.tokopedia.inbox.rescenter.network;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.inbox.common.data.pojo.GenerateHostResponse;
+import com.tokopedia.inbox.common.data.pojo.UploadResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoWithoutAttachmentResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateSubmitResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateValidateResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ProductProblemListResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealSolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditAppealSolutionResponse;
@@ -9,15 +14,22 @@ import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionR
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponseResponse;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -30,21 +42,43 @@ public interface ResolutionApi {
     String PATH_TROUBLE_ID = "trouble_id";
     String PATH_CONVERSATION_ID = "conversation_id";
 
+    //common section
+    @FormUrlEncoded
+    @POST(ResolutionUrl.PATH_GENERATE_TOKEN_HOST)
+    Observable<Response<DataResponse<GenerateHostResponse>>>
+    generateTokenHostWithoutHeader(@FieldMap TKPDMapParam<String, Object> params);
+
+    @Multipart
+    @POST("")
+    Observable<Response<DataResponse<UploadResponse>>> uploadImage(@Url String url,
+                                                                   @PartMap Map<String, RequestBody> params,
+                                                                   @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
+
+    @Multipart
+    @POST("")
+    Observable<Response<DataResponse<UploadResponse>>> uploadVideo(@Url String url,
+                                                                   @PartMap Map<String, RequestBody> params,
+                                                                   @Part MultipartBody.Part file);
+
+    //END of common section
+
+
+
+    //create section
     @GET(ResolutionUrl.GET_RESOLUTION_STEP_1)
     Observable<Response<DataResponse<ProductProblemListResponse>>>
     getProductProblemList(@Path(PATH_ORDER_ID) String orderId,
                           @QueryMap HashMap<String, Object> params);
 
-    @FormUrlEncoded
     @POST(ResolutionUrl.POST_RESOLUTION_STEP_2_3)
     Observable<Response<DataResponse<SolutionResponseResponse>>>
     getSolution(@Path(PATH_ORDER_ID) String orderId,
-                @FieldMap HashMap<String, Object> params);
+                @Body Object object);
 
     @POST(ResolutionUrl.BASE_RESOLUTION_CREATE)
     Observable<Response<DataResponse<CreateResoWithoutAttachmentResponse>>>
     postCreateResolution(@Path(PATH_ORDER_ID) String orderId,
-                         @Body String object);
+                         @Body Object object);
 
     @GET(ResolutionUrl.GET_RESOLUTION_EDIT)
     Observable<Response<DataResponse<EditSolutionResponseResponse>>>
@@ -69,4 +103,16 @@ public interface ResolutionApi {
     postAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId,
                        @FieldMap HashMap<String, Object> params);
 
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_VALIDATE)
+    Observable<Response<DataResponse<CreateValidateResponse>>>
+    postCreateValidateResolution(@Path(PATH_ORDER_ID) String orderId,
+                                 @Body Object object);
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_SUBMIT)
+    Observable<Response<DataResponse<CreateSubmitResponse>>>
+    postCreateSubmitResolution(@Path(PATH_ORDER_ID) String orderId,
+                               @Body Object object);
+
+    //END of create section
 }

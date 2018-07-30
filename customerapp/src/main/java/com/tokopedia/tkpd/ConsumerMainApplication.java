@@ -228,6 +228,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         ResolutionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
+        ResolutionUrl.BASE_URL_IMAGE_SERVICE = ConsumerAppBaseUrl.BASE_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();

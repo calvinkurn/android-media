@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.inbox.rescenter.createreso.data.source.CreateResolutionSource;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
@@ -32,10 +33,20 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
     }
 
     public RequestParams getSolutionUseCaseParams(ResultViewModel resultViewModel) {
-        RequestParams params = RequestParams.create();
-        params.putString(ORDER_ID, resultViewModel.orderId);
-        params.putObject(PARAM_PROBLEM, resultViewModel.getProblemArray());
-        return params;
-    }
+        JsonObject problemObject = new JsonObject();
+        try {
+            problemObject.add(PARAM_PROBLEM, resultViewModel.getProblemArray());
+            if (resultViewModel.resolutionId != null) {
+                problemObject.addProperty(PARAM_RESOLUTION_ID, Integer.valueOf(resultViewModel.resolutionId));
+            }
+            RequestParams params = RequestParams.create();
+            params.putString(ORDER_ID, resultViewModel.orderId);
+            params.putObject(PARAM_PROBLEM, problemObject);
 
+            return params;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

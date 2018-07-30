@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.rescenter.createreso.domain.model.createreso;
+package com.tokopedia.inbox.common.domain.model;
 
 import javax.annotation.Nullable;
 
 /**
- * Created by yoasfs on 05/09/17.
+ * @author by yfsx on 30/07/18.
  */
 
 public class UploadDomain {

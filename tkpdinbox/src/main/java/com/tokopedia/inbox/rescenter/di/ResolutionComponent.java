@@ -8,6 +8,9 @@ import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndPr
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.CreateResolutionCenterFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionDetailFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragment;
+import com.tokopedia.inbox.rescenter.network.ResolutionApi;
+
+import javax.inject.Named;
 
 import dagger.Component;
 
@@ -28,4 +31,10 @@ public interface ResolutionComponent {
     void inject(SolutionListFragment solutionListFragment);
 
     void inject(SolutionDetailFragment solutionDetailFragment);
+
+    @Named(ResolutionModule.RESOLUTION_IMAGE_SERVICE)
+    ResolutionApi provideResolutionImageServiceApi();
+
+    @Named(ResolutionModule.RESOLUTION_SERVICE)
+    ResolutionApi provideResolutionApi();
 }

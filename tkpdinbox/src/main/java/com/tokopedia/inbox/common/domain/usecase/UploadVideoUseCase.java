@@ -1,13 +1,13 @@
-package com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach;
+package com.tokopedia.inbox.common.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.GenerateHostUploadRepository;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.UploadDomain;
+import com.tokopedia.inbox.common.data.source.ResolutionCommonSource;
+import com.tokopedia.inbox.common.domain.model.UploadDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
+
+import javax.inject.Inject;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -15,20 +15,19 @@ import okhttp3.RequestBody;
 import rx.Observable;
 
 /**
- * Created by yoasfs on 12/09/17.
+ * @author by yfsx on 30/07/18.
  */
 
-public class UploadVideoUseCase extends UploadUseCase {
+public class UploadVideoUseCase extends UploadImageUseCase {
 
-    public UploadVideoUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              GenerateHostUploadRepository generateHostUploadRepository) {
-        super(threadExecutor, postExecutionThread, generateHostUploadRepository);
+    @Inject
+    public UploadVideoUseCase(ResolutionCommonSource resolutionCommonSource) {
+        super(resolutionCommonSource);
     }
 
     @Override
     public Observable<UploadDomain> createObservable(RequestParams requestParams) {
-        return generateHostUploadRepository.uploadVideo(generateUrl(requestParams),
+        return resolutionCommonSource.uploadVideo(generateUrl(requestParams),
                 generateRequestBody(requestParams),
                 getVideoFile(requestParams)
         );

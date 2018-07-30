@@ -2,11 +2,15 @@ package com.tokopedia.inbox.rescenter.createreso.data.source;
 
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.AppealSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoWithoutAttachmentMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
+import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditAppealResolutionResponseMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
@@ -17,10 +21,13 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUs
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateSubmitUseCase;
+import com.tokopedia.inbox.rescenter.di.ResolutionModule;
 import com.tokopedia.inbox.rescenter.network.ResolutionApi;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 
@@ -30,37 +37,23 @@ import rx.Observable;
 
 public class CreateResolutionSource {
 
-//    private final UploadVideoMapper uploadVideoMapper;
     private GetProductProblemMapper productProblemMapper;
     private SolutionMapper solutionMapper;
     private CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper;
-//    private CreateValidateMapper createValidateMapper;
-//    private GenerateHostMapper generateHostMapper;
-//    private UploadMapper uploadMapper;
-//    private CreateSubmitMapper createSubmitMapper;
+    private CreateValidateMapper createValidateMapper;
+    private CreateSubmitMapper createSubmitMapper;
     private ResolutionApi resolutionApi;
-//    private ResCenterActService resCenterActService;
     private EditSolutionMapper editSolutionMapper;
     private AppealSolutionMapper appealSolutionMapper;
     private EditAppealResolutionResponseMapper editAppealResolutionResponseMapper;
 
-//    @Inject
-//    public CreateResolutionSource(GetProductProblemMapper productProblemMapper,
-//                                  ResolutionApi resolutionApi) {
-//        this.productProblemMapper = productProblemMapper;
-//        this.resolutionApi = resolutionApi;
-//    }
     @Inject
     public CreateResolutionSource(GetProductProblemMapper productProblemMapper,
                                   SolutionMapper solutionMapper,
                                   CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper,
-//                                  CreateValidateMapper createValidateMapper,
-//                                  GenerateHostMapper generateHostMapper,
-//                                  UploadMapper uploadMapper,
-//                                  CreateSubmitMapper createSubmitMapper,
-                                  ResolutionApi resolutionApi,
-//                                  ResCenterActService resCenterActService,
-//                                  UploadVideoMapper uploadVideoMapper,
+                                  CreateValidateMapper createValidateMapper,
+                                  CreateSubmitMapper createSubmitMapper,
+                                  @Named(ResolutionModule.RESOLUTION_SERVICE) ResolutionApi resolutionApi,
                                   EditSolutionMapper editSolutionMapper,
                                   AppealSolutionMapper appealSolutionMapper,
                                   EditAppealResolutionResponseMapper editAppealResolutionResponseMapper
@@ -68,13 +61,9 @@ public class CreateResolutionSource {
         this.productProblemMapper = productProblemMapper;
         this.solutionMapper = solutionMapper;
         this.createResoWithoutAttachmentMapper = createResoWithoutAttachmentMapper;
-//        this.createValidateMapper = createValidateMapper;
-//        this.generateHostMapper = generateHostMapper;
-//        this.uploadMapper = uploadMapper;
-//        this.createSubmitMapper = createSubmitMapper;
+        this.createValidateMapper = createValidateMapper;
+        this.createSubmitMapper = createSubmitMapper;
         this.resolutionApi = resolutionApi;
-//        this.resCenterActService = resCenterActService;
-//        this.uploadVideoMapper = uploadVideoMapper;
         this.editSolutionMapper = editSolutionMapper;
         this.appealSolutionMapper = appealSolutionMapper;
         this.editAppealResolutionResponseMapper = editAppealResolutionResponseMapper;
@@ -88,20 +77,15 @@ public class CreateResolutionSource {
     }
 
     public Observable<CreateResoWithoutAttachmentDomain> createResoWithoutAttachmentResponse(RequestParams requestParams) {
-        try {
-            return resolutionApi.postCreateResolution(requestParams.getString(
-                    CreateResoWithoutAttachmentUseCase.ORDER_ID, ""),
-                    requestParams.getString(CreateResoWithoutAttachmentUseCase.PARAM_RESULT, ""))
-                    .map(createResoWithoutAttachmentMapper);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return resolutionApi.postCreateResolution(requestParams.getString(
+                CreateResoWithoutAttachmentUseCase.ORDER_ID, ""),
+                requestParams.getObject(CreateResoWithoutAttachmentUseCase.PARAM_RESULT))
+                .map(createResoWithoutAttachmentMapper);
     }
 
     public Observable<SolutionResponseDomain> getSolution(RequestParams requestParams) {
         return resolutionApi.getSolution(requestParams.getString(GetSolutionUseCase.ORDER_ID, ""),
-                requestParams.getParameters())
+                requestParams.getObject(GetSolutionUseCase.PARAM_PROBLEM))
                 .map(solutionMapper);
     }
 
@@ -117,27 +101,31 @@ public class CreateResolutionSource {
 
     public Observable<EditAppealResolutionSolutionDomain>
     postEditSolution(RequestParams requestParams) {
-        try {
-            return resolutionApi.postEditSolution(
-                    requestParams.getString(PostEditSolutionUseCase.RESO_ID, ""),
-                    requestParams.getParameters())
-                    .map(editAppealResolutionResponseMapper);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return resolutionApi.postEditSolution(
+                requestParams.getString(PostEditSolutionUseCase.RESO_ID, ""),
+                requestParams.getParameters())
+                .map(editAppealResolutionResponseMapper);
     }
 
     public Observable<EditAppealResolutionSolutionDomain>
     postAppealSolution(RequestParams requestParams) {
-        try {
-            return resolutionApi.postAppealSolution(
-                    requestParams.getString(PostEditSolutionUseCase.RESO_ID, ""),
-                    requestParams.getParameters())
-                    .map(editAppealResolutionResponseMapper);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return resolutionApi.postAppealSolution(
+                requestParams.getString(PostEditSolutionUseCase.RESO_ID, ""),
+                requestParams.getParameters())
+                .map(editAppealResolutionResponseMapper);
+    }
+
+    public Observable<CreateValidateDomain> createValidate(RequestParams requestParams) {
+        return resolutionApi.postCreateValidateResolution(requestParams.getString(
+                CreateResoWithoutAttachmentUseCase.ORDER_ID, ""),
+                requestParams.getObject(CreateResoWithoutAttachmentUseCase.PARAM_RESULT))
+                .map(createValidateMapper);
+    }
+
+    public Observable<CreateSubmitDomain> createSubmit(RequestParams requestParams) {
+        return resolutionApi.postCreateSubmitResolution(requestParams.getString(
+                GetSolutionUseCase.ORDER_ID, ""),
+                requestParams.getObject(CreateSubmitUseCase.PARAM_JSON))
+                .map(createSubmitMapper);
     }
 }

@@ -6,6 +6,8 @@ package com.tokopedia.inbox.rescenter.network;
 public class ResolutionUrl {
 
     public static String BASE_URL = "https://api.tokopedia.com/";
+    public static String BASE_URL_IMAGE_SERVICE = "https://ws.tokopedia.com/";
+
 
     public static final String BASE_RESOLUTION = BASE_URL + "resolution/";
     public static final String BASE_RESOLUTION_VERSION_1 = "resolution/v1/";
@@ -25,5 +27,9 @@ public class ResolutionUrl {
     public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/edit";
     public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL_V1 + "/appeal";
     public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL_V1 + "/appeal";
+
+
+    public static final String PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER = "generate_token_host.pl";
+    public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/" + PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER;
 }
 
