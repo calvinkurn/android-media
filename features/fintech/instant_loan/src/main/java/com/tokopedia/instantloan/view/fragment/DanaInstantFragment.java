@@ -227,10 +227,12 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
                 if (mCurrentPagePosition == 0 && right) {
                     sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
-                } else if (mCurrentPagePosition == 0) {
+                } else if (mCurrentPagePosition == 1 && !right) {
                     sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_PREVIOUS);
-                } else if (mCurrentPagePosition == 1 && right) {
+                } else if (mCurrentPagePosition == 1) {
                     sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
+                } else if (mCurrentPagePosition == 2 && !right) {
+                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_THIRD_PREVIOUS);
                 }
 
                 mCurrentPagePosition = position;

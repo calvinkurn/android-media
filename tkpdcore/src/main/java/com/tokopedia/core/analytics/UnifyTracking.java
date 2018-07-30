@@ -3281,4 +3281,13 @@ public class UnifyTracking extends TrackingUtils {
                 eventLabel
         ).setUserId().getEvent());
     }
+
+    public static void eventInstantLoanPermissionStatus(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_FINTECH_MICROSITE,
+                AppEventTracking.Category.FINTECH_HOMEPAGE,
+                AppEventTracking.Action.PL_POP_UP_CLICK,
+                eventLabel
+        ).setUserId().getEvent());
+    }
 }

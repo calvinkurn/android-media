@@ -895,6 +895,8 @@ public interface AppEventTracking {
         String PL_INTRO_SLIDER_FIRST_PREVIOUS = "first - previous";
         String PL_INTRO_SLIDER_SECOND_NEXT = "second - next";
         String PL_INTRO_SLIDER_SECOND_PREVIOUS = "second - previous";
+        String PL_INTRO_SLIDER_THIRD_PREVIOUS = "third - previous";
+        String PL_PERMISSION_DENIED = "forth - permission denied - ";
     }
 
     interface SOCIAL_MEDIA {

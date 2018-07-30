@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -258,6 +259,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        sendPermissionDEniedGTMEvent(permissions, grantResults);
         DDCollectorManager.getsInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -322,6 +324,16 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     public void openWebView(String url) {
         Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, PINJAMAN_TITLE);
         startActivity(intent);
+    }
+
+    private void sendPermissionDEniedGTMEvent(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        StringBuilder eventLabel = new StringBuilder(AppEventTracking.EventLabel.PL_PERMISSION_DENIED);
+        for (int i = 0; i < permissions.length; i++) {
+            if (grantResults[i] == -1) {
+                eventLabel.append(permissions[i]).append(", ");
+            }
+        }
+        UnifyTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
     }
 }
 
