@@ -44,22 +44,8 @@ public class TrainErrorResponse extends BaseResponseError {
 
     private String getConcattedMessage() {
         List<String> results = new ArrayList<>();
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jsonObject = null;
         for (TrainNetworkError error : errorList) {
-            try {
-                jsonObject = jsonParser.parse(error.getMessage()).getAsJsonObject();
-                if (jsonObject != null) {
-                    if (jsonObject.has("title")) {
-                        results.add(jsonObject.get("title").getAsString());
-                        continue;
-                    }
-                }
-            } catch (JsonSyntaxException e) {
-                CommonUtils.dumper(error.getMessage());
-            }
-
-            results.add(error.getMessage());
+            results.add(error.getTitle());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return String.join(", ", results);

@@ -6,18 +6,18 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class TrainNetworkError {
-    @SerializedName("message")
+    @SerializedName("title")
     @Expose
-    private String message;
-    @SerializedName("path")
+    private String title;
+    @SerializedName("code")
     @Expose
-    private List<String> paths;
+    private String code;
 
-    public String getMessage() {
-        return message;
+    public String getTitle() {
+        return title;
     }
 
-    public List<String> getPaths() {
-        return paths;
+    public String getCode() {
+        return code;
     }
 }
