@@ -11,7 +11,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +25,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -49,6 +49,7 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.EmptyKeywordModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
@@ -146,7 +147,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     protected Visitable getEmptyDataViewModel() {
-        EmptyModel emptyModel = new EmptyModel();
+        EmptyKeywordModel emptyModel = new EmptyKeywordModel();
         emptyModel.setIconRes(R.drawable.ic_empty_list_search);
         if (TextUtils.isEmpty(keyword)) {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
@@ -154,11 +155,15 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             } else {
                 emptyModel.setTitle(getString(R.string.shop_product_empty_title_etalase_desc));
             }
+            emptyModel.setKeyword(null);
         } else {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
-                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_no_etalase, keyword));
+                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_no_etalase));
             } else {
-                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_etalase, keyword));
+                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_etalase));
+            }
+            if (!GlobalConfig.isSellerApp()) {
+                emptyModel.setKeyword(keyword);
             }
         }
         if (TextUtils.isEmpty(selectedEtalaseId)) {
@@ -259,7 +264,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
+                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT) {
                     return LIST_SPAN_COUNT;
                 } else {
                     return GRID_SPAN_COUNT;

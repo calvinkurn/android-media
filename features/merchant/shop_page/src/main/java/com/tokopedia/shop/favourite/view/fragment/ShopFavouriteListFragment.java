@@ -3,7 +3,6 @@ package com.tokopedia.shop.favourite.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -122,16 +121,6 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     public void onSuccessToggleFavourite(boolean successValue) {
         loadInitialData();
         getActivity().setResult(Activity.RESULT_OK);
-    }
-
-    @Override
-    public void renderList(@NonNull List<ShopFavouriteViewModel> list) {
-        super.renderList(new ArrayList<>());
-    }
-
-    @Override
-    public void renderList(@NonNull List<ShopFavouriteViewModel> list, boolean hasNextPage) {
-        super.renderList(new ArrayList<>(), hasNextPage);
     }
 
     @Override

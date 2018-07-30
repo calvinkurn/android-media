@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.EmptyWrapViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.EmptyProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.HideViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
@@ -19,6 +19,7 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedVie
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.model.EmptyKeywordModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
@@ -30,8 +31,10 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final ShopProductClickedNewListener shopProductClickedListener;
-    private final EmptyWrapViewHolder.Callback emptyProductOnClickListener;
+    private final EmptyProductViewHolder.Callback emptyProductOnClickListener;
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
+
+    // horizontal layout is for featured products.
     private final boolean isHorizontalLayout;
     private final boolean isFeaturedOnly;
     private final int deviceWidth;
@@ -39,11 +42,12 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener;
     public interface OnShopProductAdapterTypeFactoryListener{
         boolean needToShowEtalase();
+        int getFeaturedDataSize();
     }
 
     public ShopProductAdapterTypeFactory(ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                          ShopProductClickedNewListener shopProductClickedListener,
-                                         EmptyWrapViewHolder.Callback emptyProductOnClickListener,
+                                         EmptyProductViewHolder.Callback emptyProductOnClickListener,
                                          ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener
                                                  onShopProductEtalaseListViewHolderListener,
                                          @Nullable OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener,
@@ -65,9 +69,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         return LoadingShimmeringGridViewHolder.LAYOUT;
     }
 
-    @Override
-    public int type(EmptyModel viewModel) {
-        return EmptyWrapViewHolder.LAYOUT;
+    public int type(EmptyKeywordModel viewModel) {
+        return EmptyProductViewHolder.LAYOUT;
     }
 
     public int type(ShopProductPromoViewModel shopProductPromoViewModel) {
@@ -87,7 +90,23 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(ShopProductViewModel shopProductViewModel) {
-        return ShopProductViewHolder.LAYOUT;
+        if (isHorizontalLayout) {
+            if (isDataSizeSmall()) {
+                return ShopProductViewHolder.LIST_LAYOUT;
+            }
+            return ShopProductViewHolder.GRID_LAYOUT;
+        } else {
+            return ShopProductViewHolder.GRID_LAYOUT;
+        }
+    }
+
+    private boolean isDataSizeSmall(){
+        if (onShopProductAdapterTypeFactoryListener!= null) {
+            if (onShopProductAdapterTypeFactoryListener.getFeaturedDataSize() <= 2) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int type(ErrorNetworkModel errorNetworkModel) {
@@ -126,8 +145,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
             return new LoadingShimmeringGridViewHolder(parent);
-        } else if (type == EmptyWrapViewHolder.LAYOUT) {
-            return new EmptyWrapViewHolder(parent, emptyProductOnClickListener);
+        } else if (type == EmptyProductViewHolder.LAYOUT) {
+            return new EmptyProductViewHolder(parent, emptyProductOnClickListener);
         } else if (type == ErrorNetworkWrapViewHolder.LAYOUT){
             return new ErrorNetworkWrapViewHolder(parent);
         } else if (type == ShopProductEtalaseTitleViewHolder.LAYOUT) {
@@ -136,10 +155,11 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new ShopProductEtalaseListViewHolder(parent, onShopProductEtalaseListViewHolderListener);
         } else if (type == ShopProductPromoViewHolder.LAYOUT) {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
-        } else if(type == ShopProductFeaturedViewHolder .LAYOUT){
-            return new ShopProductFeaturedViewHolder(parent, deviceWidth, shopProductClickedListener);
-        } else if(type == ShopProductViewHolder.LAYOUT){
-            return new ShopProductViewHolder(parent, shopProductClickedListener, isHorizontalLayout, deviceWidth, isFeaturedOnly);
+        } else if(type == ShopProductFeaturedViewHolder.LAYOUT){
+            return new ShopProductFeaturedViewHolder(parent, deviceWidth, shopProductClickedListener, isDataSizeSmall());
+        } else if(type == ShopProductViewHolder.GRID_LAYOUT ||
+                type == ShopProductViewHolder.LIST_LAYOUT){
+            return new ShopProductViewHolder(parent, shopProductClickedListener, isHorizontalLayout, deviceWidth, isFeaturedOnly, type);
         } if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);
         } else {

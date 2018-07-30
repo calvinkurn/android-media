@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout android:id="@+id/container"
+<LinearLayout android:id="@+id/container"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingTop="@dimen/dp_4"
     android:paddingBottom="@dimen/dp_4"
     android:clipToPadding="false"
+    android:orientation="horizontal"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"/>
 
     <android.support.v7.widget.CardView
         android:id="@+id/v_etalase_more"
@@ -23,12 +31,4 @@
             android:src="@drawable/ic_see_list" />
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:layout_marginRight="@dimen/dp_40" />
-
-</FrameLayout>
+</LinearLayout>
