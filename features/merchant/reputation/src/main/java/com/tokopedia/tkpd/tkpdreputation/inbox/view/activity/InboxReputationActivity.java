@@ -97,7 +97,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
         super.initView();
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        indicator = (TabLayout) findViewById(R.id.tabs);
+        indicator = (TabLayout) findViewById(R.id.indicator);
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {

@@ -213,7 +213,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         sellerTickerView = findViewById(R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = findViewById(R.id.pager);
-        indicator = findViewById(R.id.tabs);
+        indicator = findViewById(R.id.indicator);
     }
 
     private void initSellerTicker() {

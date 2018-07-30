@@ -70,8 +70,4 @@ public class InfoCardView extends BaseCustomView {
     public void setImage(@DrawableRes int res) {
         icon.setImageResource(res);
     }
-
-    public void setOnClickListener(View.OnClickListener onClickListener) {
-        layout.setOnClickListener(onClickListener);
-    }
 }

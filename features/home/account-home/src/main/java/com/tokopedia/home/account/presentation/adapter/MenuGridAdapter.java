@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridItemViewHolder;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 
@@ -18,16 +19,19 @@ import java.util.List;
  */
 public class MenuGridAdapter extends RecyclerView.Adapter<MenuGridItemViewHolder> {
     private List<MenuGridItemViewModel> categories;
+    private AccountItemListener listener;
 
-    public MenuGridAdapter() {
+    public MenuGridAdapter(AccountItemListener listener) {
         this.categories = new ArrayList<>();
+        this.listener = listener;
+
     }
 
     @NonNull
     @Override
     public MenuGridItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_menu_grid_item, parent, false);
-        return new MenuGridItemViewHolder(parent.getContext(), view);
+        return new MenuGridItemViewHolder(parent.getContext(), view, listener);
     }
 
     @Override

@@ -130,6 +130,7 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
@@ -200,13 +201,13 @@ import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.notification.presentation.activity.NotificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -242,6 +243,7 @@ import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
+import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -2411,7 +2413,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
-          
+    /**
+     * Global Nav Router
+     */
+
     @Override
     public Intent gotoWishlistPage(Context context) {
         Intent intent = new Intent(context, SimpleHomeActivity.class);
@@ -2421,7 +2426,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoNotificationPage(Context context) {
-        return NotificationActivity.start(context);
+        return new Intent(context, NotificationActivity.class);
+    }
+
+    @Override
+    public Intent gotoSearchPage(Context context) {
+        return new Intent(context, SearchActivity.class);
     }
 
     @Override
@@ -2429,9 +2439,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return QrScannerActivity.newInstance(this);
     }
 
-    /**
-     * Global Nav Router
-     */
+
     @Override
     public Fragment getHomeFragment() {
         return new HomeFragment();
@@ -2544,6 +2552,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getInboxHelpIntent(Context context) {
         return InboxTicketActivity.getCallingIntent(context);
+    }
+          
+    @Override
+    public Intent getInboxTalkCallingIntent(Context context) {
+        return new Intent(context, InboxTalkActivity.class);
+    }
+
+    @Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return new Intent(context, InboxTicketActivity.class);
+    }
+
+    @Override
+    public Intent getSellerInfoCallingIntent(Context context) {
+        return new Intent(context, SellerInfoActivity.class);
     }
 
     @Override

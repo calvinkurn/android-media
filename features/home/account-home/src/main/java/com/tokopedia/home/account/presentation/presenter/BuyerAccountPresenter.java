@@ -18,13 +18,9 @@ import javax.inject.Inject;
 public class BuyerAccountPresenter implements BuyerAccount.Presenter {
     private BuyerAccount.View view;
 
-    @Inject
-    GraphqlUseCase useCase;
-
     @Override
     public void getData() {
-        Log.d("okasurya", "BuyerAccountPresenter.getData");
-        view.loadData(mock());
+
     }
 
     @Override
@@ -35,18 +31,5 @@ public class BuyerAccountPresenter implements BuyerAccount.Presenter {
     @Override
     public void detachView() {
 
-    }
-
-    private List<Visitable> mock() {
-        List<Visitable> datas = new ArrayList<>();
-        BuyerCardViewModel buyerCardViewModel = new BuyerCardViewModel();
-        buyerCardViewModel.setImageUrl("https://ecs7.tokopedia.net/img/cache/100-square/user-1/2017/12/2/3388428/3388428_ac98fbbf-7993-4fff-8392-29cb5ee3a19e.jpg");
-        buyerCardViewModel.setName("Brilliant Oka Suryanegara");
-        buyerCardViewModel.setProgress(10);
-        buyerCardViewModel.setTokopoint("100.000");
-        buyerCardViewModel.setVoucher("3");
-        datas.add(buyerCardViewModel);
-
-        return datas;
     }
 }

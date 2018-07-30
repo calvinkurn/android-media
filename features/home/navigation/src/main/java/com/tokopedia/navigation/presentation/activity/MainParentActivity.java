@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -58,6 +59,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private boolean isUserFirstTimeLogin = false;
 
+    private Fragment currentFragment;
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class);
     }
@@ -75,7 +78,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
 
-        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
+        adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -86,7 +89,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             }
 
             public void onPageSelected(int position) {
+                currentFragment = adapterViewPager.getFragmentList().get(position);
                 bottomNavigation.getMenu().getItem(position).setChecked(true);
+                setBadgeNotifCounter(currentFragment);
             }
         });
 
@@ -98,8 +103,18 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
         }
+
+        currentFragment = adapterViewPager.getFragmentList().get(HOME_MENU);
     }
 
+    private void setBadgeNotifCounter(Fragment fragment) {
+        if (fragment == null)
+            return;
+
+        if (fragment instanceof NotificationListener) {
+            ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
+        }
+    }
     private void intiInjector() {
         DaggerGlobalNavComponent.builder()
                 .globalNavModule(new GlobalNavModule())
@@ -154,8 +169,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         presenter.onDestroy();
     }
 
+    FragmentAdapter adapterViewPager;
+
     private void reloadPage() {
-        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
+        adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
@@ -172,10 +189,15 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return fragmentList;
     }
 
+    Notification notification;
+
     @Override
     public void renderNotification(Notification notification) {
+        this.notification = notification;
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
+
+        setBadgeNotifCounter(currentFragment);
     }
 
     @Override
@@ -199,6 +221,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
             this.fragmentList = fragmentList;
+        }
+
+        public List<Fragment> getFragmentList() {
+            return fragmentList;
         }
 
         @Override

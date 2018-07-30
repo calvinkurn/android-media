@@ -77,6 +77,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_HELP_CENTER_ID,
                 getString(R.string.title_help_center_setting)));
 
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
+                    getString(R.string.title_dev_options)));
+        }
+
         SettingItemViewModel itemOut = new SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.logout));
         itemOut.setIconResource(R.drawable.ic_setting_out);
         itemOut.setHideArrow(true);
@@ -120,6 +125,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 application = getActivity().getApplication();
                 if (application instanceof AccountHomeRouter){
                     ((AccountHomeRouter) application).doLogoutAccount(getActivity());
+                }
+                break;
+            case SettingConstant.SETTING_DEV_OPTIONS:
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    RouteManager.route(getActivity(), ApplinkConst.DEVELOPER_OPTIONS);
                 }
                 break;
             default: break;

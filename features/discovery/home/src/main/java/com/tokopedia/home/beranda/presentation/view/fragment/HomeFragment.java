@@ -20,6 +20,7 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -79,6 +80,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -97,7 +99,8 @@ import rx.Observable;
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        TokoCashUpdateListener, HomeFeedListener, CountDownView.CountDownListener {
+        TokoCashUpdateListener, HomeFeedListener, CountDownView.CountDownListener,
+        NotificationListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
@@ -121,6 +124,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private RecyclerView.OnScrollListener onEggScrollListener;
 
     private HeaderHomeView headerHomeView;
+    private MainToolbar mainToolbar;
 
     public static HomeFragment newInstance() {
 
@@ -170,6 +174,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        mainToolbar = view.findViewById(R.id.toolbar);
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.sw_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
@@ -828,7 +833,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     /**
      * Tokocash & Tokopoint
      */
-
     @Override
     public Observable<TokoCashData> getTokocashBalance() {
         if (getActivity() != null && getActivity().getApplication() instanceof TkpdCoreRouter) {
@@ -851,5 +855,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             return ((LoyaltyRouter) getActivity().getApplication()).getTokopointUseCase();
         }
         return null;
+    }
+
+    @Override
+    public void onNotifyBadgeNotification(int number) {
+        mainToolbar.setNotificationNumber(number);
     }
 }

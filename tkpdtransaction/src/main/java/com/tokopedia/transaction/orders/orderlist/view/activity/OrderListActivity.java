@@ -127,7 +127,7 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
 
     @Override
     protected void initVar() {
-        tabLayout = findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.indicator);
         viewPager = findViewById(R.id.pager);
     }
 
