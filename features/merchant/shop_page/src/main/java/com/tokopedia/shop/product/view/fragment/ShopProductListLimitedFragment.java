@@ -50,7 +50,6 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
-import com.tokopedia.shop.product.view.model.EmptyKeywordModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
@@ -331,8 +330,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     protected Visitable getEmptyDataViewModel() {
-        EmptyKeywordModel emptyModel = new EmptyKeywordModel();
-        emptyModel.setKeyword(null);
+        EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.ic_empty_list_product);
         if (shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
             if (isCurrentlyShowAllEtalase()) {

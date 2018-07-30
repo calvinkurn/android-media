@@ -49,7 +49,6 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
-import com.tokopedia.shop.product.view.model.EmptyKeywordModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
@@ -147,7 +146,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     protected Visitable getEmptyDataViewModel() {
-        EmptyKeywordModel emptyModel = new EmptyKeywordModel();
+        EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.ic_empty_list_search);
         if (TextUtils.isEmpty(keyword)) {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
@@ -155,15 +154,11 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             } else {
                 emptyModel.setTitle(getString(R.string.shop_product_empty_title_etalase_desc));
             }
-            emptyModel.setKeyword(null);
         } else {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_no_etalase));
             } else {
                 emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_etalase));
-            }
-            if (!GlobalConfig.isSellerApp()) {
-                emptyModel.setKeyword(keyword);
             }
         }
         if (TextUtils.isEmpty(selectedEtalaseId)) {

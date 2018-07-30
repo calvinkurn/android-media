@@ -19,7 +19,6 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedVie
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
-import com.tokopedia.shop.product.view.model.EmptyKeywordModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
@@ -69,7 +68,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         return LoadingShimmeringGridViewHolder.LAYOUT;
     }
 
-    public int type(EmptyKeywordModel viewModel) {
+    public int type(EmptyModel viewModel) {
         return EmptyProductViewHolder.LAYOUT;
     }
 
