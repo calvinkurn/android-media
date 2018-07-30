@@ -10,23 +10,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
-import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
@@ -128,10 +127,12 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     private void initInjector() {
-        AccountHomeComponent component = DaggerAccountHomeComponent.builder()
-                .baseAppComponent(
-                        ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
-                ).build();
+        AccountHomeComponent component =
+            ((AccountHomeRouter) getActivity().getApplicationContext())
+            .getAccountHomeInjection()
+            .getAccountHomeComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()
+            );
 
         component.inject(this);
         presenter.attachView(this);
@@ -154,9 +155,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
         menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent(getActivity())));
-        menuNotification.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Notification Page", Toast.LENGTH_SHORT).show();
-        });
+        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION));
 
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);

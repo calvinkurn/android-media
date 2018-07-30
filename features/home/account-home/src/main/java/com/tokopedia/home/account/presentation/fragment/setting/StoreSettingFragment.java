@@ -2,10 +2,9 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 
 import java.util.ArrayList;
@@ -44,23 +43,32 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
 
     @Override
     public void onItemClicked(int settingId) {
-        switch (settingId){
-            case SettingConstant.SETTING_SHOP_ETALASE_ID:
-            case SettingConstant.SETTING_SHOP_LOCATION_ID:
-            case SettingConstant.SETTING_SHOP_SHIPMENT_ID:
-            case SettingConstant.SETTING_SHOP_NOTE_ID:
-            case SettingConstant.SETTING_SHOP_INFO_ID:
-                if (getActivity().getApplication() instanceof TkpdCoreRouter){
-                    UnifyTracking.eventManageShopInfo();
-                    startActivity(((TkpdCoreRouter) getActivity().getApplication()).getIntentManageShop(getActivity()));
-                }
-                break;
-            case SettingConstant.SETTING_SHOP_PRODUCT_ID:
-                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).goToManageProduct(getActivity());
-                }
-                break;
-            default:break;
+        if (getActivity().getApplication() instanceof AccountHomeRouter) {
+            AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
+            switch (settingId) {
+                case SettingConstant.SETTING_SHOP_ETALASE_ID:
+                    if (getActivity().getApplication() instanceof AccountHomeRouter) {
+                        router.goToManageShopEtalase(getActivity());
+                    }
+                    break;
+                case SettingConstant.SETTING_SHOP_LOCATION_ID:
+                    router.goToManageShopLocation(getActivity());
+                    break;
+                case SettingConstant.SETTING_SHOP_SHIPMENT_ID:
+                    router.goToManageShopShipping(getActivity());
+                    break;
+                case SettingConstant.SETTING_SHOP_NOTE_ID:
+                    router.goTotManageShopNotes(getActivity());
+                    break;
+                case SettingConstant.SETTING_SHOP_INFO_ID:
+                    router.goToShopEditor(getActivity());
+                    break;
+                case SettingConstant.SETTING_SHOP_PRODUCT_ID:
+                    router.goToManageShopProduct(getActivity());
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

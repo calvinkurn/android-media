@@ -1,56 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/dp_64"
-    android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="@dimen/dp_16"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:id="@+id/icon_setting"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:visibility="gone"/>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:layout_marginRight="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_32">
-
-            <TextView
-                style="@style/TextView.Small"
-                android:id="@+id/title"
-                tools:text="@string/app_name"/>
-
-            <TextView
-                style="@style/TextView.Small.BlackDisabled"
-                android:id="@+id/subtitle"
-                tools:text="@string/app_name"/>
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/image_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_setting_arrow_right_grey" />
-
-    </LinearLayout>
+    <com.tokopedia.design.label.LabelView
+        android:id="@+id/labelview"
+        style="@style/LabelLayout"
+        android:minHeight="@dimen/dp_64"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        app:lv_image_width="@dimen/dp_24"
+        app:lv_image_margin_right="@dimen/dp_16"
+        app:lv_title="@string/app_name"
+        app:lv_title_text_size="@dimen/sp_14"
+        app:lv_sub_title_text_size="@dimen/sp_14"/>
 
     <View
         android:id="@+id/separator"
