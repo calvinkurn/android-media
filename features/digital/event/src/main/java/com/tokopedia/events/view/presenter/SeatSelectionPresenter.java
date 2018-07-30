@@ -330,7 +330,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
         cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-        cartItem.setProductId(packageViewModel.getProductId());
+        cartItem.setProductId(packageViewModel.getDigitalProductID());
 
 
         cartItems.add(cartItem);
