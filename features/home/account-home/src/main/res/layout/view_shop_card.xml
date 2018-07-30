@@ -21,7 +21,7 @@
             tools:src="@drawable/ic_big_notif_customerapp" />
 
         <ImageView
-            android:id="@+id/badge"
+            android:id="@+id/image_badge"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="@+id/image_shop"
