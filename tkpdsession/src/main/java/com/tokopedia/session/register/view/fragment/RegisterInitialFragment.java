@@ -69,6 +69,7 @@ import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTo
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
 import com.tokopedia.session.register.registerphonenumber.view.activity.RegisterPhoneNumberActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomePageActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.customview.PartialRegisterInputView;
@@ -399,6 +400,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode == Activity.RESULT_OK) {
             startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber),
                     REQUEST_ADD_NAME);
+        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+            startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                    REQUEST_WELCOME_PAGE);
         } else if (requestCode == REQUEST_WELCOME_PAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 goToProfileCompletionPage();
