@@ -594,6 +594,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartItemPromoHolderData.setDefaultSelectedTabString(cartListData.getDefaultPromoDialogTab());
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
 
+        if (cartListData.getCartPromoSuggestion().isVisible()) {
+            cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
+        }
+
         if (cartListData.isError()) {
             cartListAdapter.addCartTickerError(
                     new CartItemTickerErrorHolderData.Builder()
@@ -601,9 +605,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                             .build()
             );
         }
-        if (cartListData.getCartPromoSuggestion().isVisible()) {
-            cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
-        }
+
         cartListAdapter.addDataList(cartListData.getCartItemDataList());
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
 
