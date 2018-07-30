@@ -14,6 +14,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 public interface ItemClickListener extends EmptyStateClickListener {
     void onItemClicked(ProductItem item, int adapterPosition);
 
+    void onLongClick(ProductItem item, int adapterPosition);
+
+
     void onWishlistButtonClicked(ProductItem productItem);
 
     void onSuggestionClicked(String suggestedQuery);
@@ -23,4 +26,6 @@ public interface ItemClickListener extends EmptyStateClickListener {
     void onSearchGuideClicked(String keyword);
 
     void onQuickFilterSelected(Option option);
+
+    void onSelectedFilterRemoved(String uniqueId);
 }

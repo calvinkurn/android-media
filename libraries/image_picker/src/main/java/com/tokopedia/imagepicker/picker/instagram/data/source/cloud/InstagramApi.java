@@ -1,8 +1,8 @@
 package com.tokopedia.imagepicker.picker.instagram.data.source.cloud;
 
-import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseGetAccessToken;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseListMediaInstagram;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 
 import java.util.Map;
 

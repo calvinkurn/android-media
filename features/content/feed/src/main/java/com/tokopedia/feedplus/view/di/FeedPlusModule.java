@@ -262,6 +262,7 @@ public class FeedPlusModule {
     @Provides
     WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
         return new WishlistRepositoryImpl(wishlistFactory);
+    }
     }*/
 
 }

@@ -28,11 +28,10 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
-import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
@@ -57,12 +56,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final int IMAGE_ALPHA_DISABLED = 128;
     private static final int IMAGE_ALPHA_ENABLED = 255;
 
-    private static final float CHECKBOX_DISABLED_ALPHA = 0.4f;
-
-    private static final int GRAM = 0;
-    private static final int KILOGRAM = 1;
-    private static final int KILOGRAM_TO_GRAM_MULTIPLIER = 1000;
-
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
     private static final int DROPSHIPPER_MAX_NAME_LENGTH = 100;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
@@ -70,7 +63,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final String PHONE_NUMBER_REGEX_PATTERN = "[0-9]+";
 
     private ShipmentAdapterActionListener mActionListener;
-    private ShipmentAdapter shipmentAdapter;
 
     private TextViewCompat tvError;
     private FrameLayout layoutError;
@@ -147,17 +139,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvAdditionalFee;
     private TextView tvAdditionalFeePrice;
     private TextView tvLabelInsurance;
+    private ImageView imgShopBadge;
     private TextView tvDash;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
 
-    public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener,
-                                  ShipmentAdapter shipmentAdapter) {
+    public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener) {
         super(itemView);
         this.mActionListener = actionListener;
-        this.shipmentAdapter = shipmentAdapter;
         bindViewIds(itemView);
     }
 
@@ -237,26 +228,30 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvAdditionalFee = itemView.findViewById(R.id.tv_additional_fee);
         tvAdditionalFeePrice = itemView.findViewById(R.id.tv_additional_fee_price);
         tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
+        imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         tvDash = itemView.findViewById(R.id.tv_dash);
 
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
-        BottomSheetView bottomSheetView = new BottomSheetView(context);
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(title)
-                .setBody(message)
-                .setImg(image)
-                .build());
-
-        bottomSheetView.show();
+        Tooltip tooltip = new Tooltip(context);
+        tooltip.setTitle(title);
+        tooltip.setDesc(message);
+        tooltip.setTextButton(context.getString(R.string.label_button_bottomsheet_close));
+        tooltip.setIcon(image);
+        tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tooltip.dismiss();
+            }
+        });
+        tooltip.show();
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
                                RecipientAddressModel recipientAddressModel,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
-        tvShopName.setText(shipmentCartItemModel.getShopName());
+        renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
         renderError(shipmentCartItemModel);
@@ -264,7 +259,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         renderInsurance(shipmentCartItemModel);
         renderDropshipper(shipmentCartItemModel);
         renderCostDetail(shipmentCartItemModel);
+        renderCartItem(shipmentCartItemModel);
 
+        if (showCaseObjectList.size() == 1) {
+            setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+        }
+    }
+
+    private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
         if (cartItemModelList.size() > 0) {
             renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
@@ -279,11 +281,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             vSeparatorAboveCourier.setVisibility(View.GONE);
         }
+    }
 
-        if (showCaseObjectList.size() == 1) {
-            setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+    private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isOfficialStore()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else if (shipmentCartItemModel.isGoldMerchant()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else {
+            imgShopBadge.setVisibility(View.GONE);
         }
-
+        tvShopName.setText(shipmentCartItemModel.getShopName());
     }
 
     private void renderFirstCartItem(CartItemModel cartItemModel) {
@@ -305,13 +315,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
         tvNoteToSellerLabel.setVisibility(View.GONE);
 
-        llProductPoliciesLayout.setVisibility(View.GONE);
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        tvFreeReturnLabel.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
         tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
-        String cashback = tvCashback.getContext().getString(R.string.label_cashback) + " " + cartItemModel.getCashback();
+        String cashback = "    " + tvCashback.getContext().getString(R.string.label_cashback) + " " +
+                cartItemModel.getCashback() + "    ";
         tvCashback.setText(cashback);
+
+        if (cartItemModel.isFreeReturn() || cartItemModel.isPreOrder() || cartItemModel.isCashback()) {
+            llProductPoliciesLayout.setVisibility(View.VISIBLE);
+        } else {
+            llProductPoliciesLayout.setVisibility(View.GONE);
+        }
     }
 
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
@@ -659,9 +674,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderAddress(RecipientAddressModel recipientAddressModel) {
         if (recipientAddressModel != null) {
-            String fullAddress = recipientAddressModel.getAddressStreet()
-                    + ", " + recipientAddressModel.getAddressCityName()
-                    + ", " + recipientAddressModel.getAddressProvinceName();
+            String fullAddress = recipientAddressModel.getStreet()
+                    + ", " + recipientAddressModel.getCityName()
+                    + ", " + recipientAddressModel.getProvinceName();
             tvAddressName.setText(recipientAddressModel.getAddressName());
             tvRecipientName.setText(recipientAddressModel.getRecipientName());
             tvRecipientAddress.setText(fullAddress);
