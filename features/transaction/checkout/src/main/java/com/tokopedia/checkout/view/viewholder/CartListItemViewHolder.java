@@ -245,6 +245,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 etRemark.setVisibility(View.VISIBLE);
                 tvLabelRemarkOption.setVisibility(View.GONE);
                 data.setStateRemarkExpanded(true);
+                tvNoteCharCounter.setVisibility(View.VISIBLE);
             }
         });
 
@@ -265,6 +266,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (data.isStateRemarkExpanded()) {
             this.etRemark.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
+            this.tvNoteCharCounter.setVisibility(View.VISIBLE);
+        } else {
+            this.tvNoteCharCounter.setVisibility(View.GONE);
         }
 
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
