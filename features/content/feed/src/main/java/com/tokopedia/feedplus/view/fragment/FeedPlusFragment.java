@@ -953,7 +953,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
             url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
         }
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
