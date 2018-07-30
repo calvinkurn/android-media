@@ -295,6 +295,7 @@ dependencies {
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
+    implementation project(rootProject.ext.features.accountHome)
 
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
@@ -431,7 +432,6 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
-
 }
 
 

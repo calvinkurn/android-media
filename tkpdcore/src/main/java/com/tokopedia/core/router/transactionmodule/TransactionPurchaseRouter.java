@@ -32,12 +32,12 @@ public class TransactionPurchaseRouter {
     public final static int TAB_POSITION_PURCHASE_VERIFICATION = 1;
     public final static int TAB_POSITION_PURCHASE_STATUS_ORDER = 2;
     public final static int TAB_POSITION_PURCHASE_DELIVER_ORDER = 3;
-    public final static int TAB_POSITION_PURCHASE_ALL_ORDER = 5;
 
     public final static int TAB_POSITION_PURCHASE_CONFIRMED = 1;
     public final static int TAB_POSITION_PURCHASE_PROCESSED = 2;
     public final static int TAB_POSITION_PURCHASE_SHIPPED = 3;
     public final static int TAB_POSITION_PURCHASE_DELIVERED = 4;
+    public final static int TAB_POSITION_PURCHASE_ALL_ORDER = 5;
 
     public static final String ALL_STATUS_FILTER_ID = "";
     public static final String PAYMENT_CONFIRMATION_FILTER_ID = "1";

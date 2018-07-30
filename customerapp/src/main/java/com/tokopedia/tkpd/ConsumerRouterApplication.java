@@ -162,6 +162,9 @@ import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.di.AccountHomeInjection;
+import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -388,7 +391,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpModuleRouter,
         UnifiedOrderRouter,
         DealsModuleRouter,
-        OmsModuleRouter {
+        OmsModuleRouter,
+        AccountHomeRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2465,5 +2469,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void setStringRemoteConfigLocal(String key, String value) {
         remoteConfig.setString(key, value);
+    }
+
+    @Override
+    public AccountHomeInjection getAccountHomeInjection() {
+        return new AccountHomeInjectionImpl();
     }
 }
