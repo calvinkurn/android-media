@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,17 +26,13 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
-import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
@@ -150,6 +147,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getActivity().getApplication()).getBaseAppComponent()).build();
         component.inject(this);
         component.inject(presenter);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(BerandaComponent component){
+        component.inject(this);
+        component.inject(presenter);
+        presenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public HomePresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void clearAll(){
+        adapter.clearItems();
+        adapter.notifyDataSetChanged();
     }
 
     private void fetchRemoteConfig() {

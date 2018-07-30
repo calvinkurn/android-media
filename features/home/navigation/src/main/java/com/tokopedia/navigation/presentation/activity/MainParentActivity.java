@@ -178,6 +178,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return fragmentList;
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public Fragment getFragment(int index){ return ((FragmentAdapter)viewPager.getAdapter()).getItem(index); }
+
     @Override
     public void renderNotification(Notification notification) {
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
