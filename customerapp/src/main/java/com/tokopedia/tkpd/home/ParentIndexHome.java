@@ -853,7 +853,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                         newIntent.removeExtra(DeepLink.REFERRER_URI);
                         newIntent.removeExtra(DeepLink.URI);
                         newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
-                        applinkIntent.putExtras(newIntent.getExtras());
+                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
                     }
                     deepLinkDelegate.dispatchFrom(this, applinkIntent);
                 } catch (ActivityNotFoundException ex) {
