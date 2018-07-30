@@ -14,9 +14,7 @@
         <ImageView
             android:id="@+id/img_banner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="180dp"
-            app:srcCompat="@drawable/ic_loading_image" />
+            android:layout_height="104dp" />
 
         <TextView
             android:id="@+id/text_quota_count"
