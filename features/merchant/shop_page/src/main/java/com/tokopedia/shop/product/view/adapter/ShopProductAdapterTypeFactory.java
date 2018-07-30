@@ -9,8 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.EmptyProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.HideViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
@@ -30,7 +30,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final ShopProductClickedNewListener shopProductClickedListener;
-    private final EmptyProductViewHolder.Callback emptyProductOnClickListener;
+    private final EmptyResultViewHolder.Callback emptyProductOnClickListener;
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
 
     // horizontal layout is for featured products.
@@ -46,7 +46,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     public ShopProductAdapterTypeFactory(ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                          ShopProductClickedNewListener shopProductClickedListener,
-                                         EmptyProductViewHolder.Callback emptyProductOnClickListener,
+                                         EmptyResultViewHolder.Callback emptyProductOnClickListener,
                                          ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener
                                                  onShopProductEtalaseListViewHolderListener,
                                          @Nullable OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener,
@@ -69,7 +69,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(EmptyModel viewModel) {
-        return EmptyProductViewHolder.LAYOUT;
+        return EmptyResultViewHolder.LAYOUT;
     }
 
     public int type(ShopProductPromoViewModel shopProductPromoViewModel) {
@@ -144,8 +144,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
             return new LoadingShimmeringGridViewHolder(parent);
-        } else if (type == EmptyProductViewHolder.LAYOUT) {
-            return new EmptyProductViewHolder(parent, emptyProductOnClickListener);
+        } else if (type == EmptyResultViewHolder.LAYOUT) {
+            return new EmptyResultViewHolder(parent, emptyProductOnClickListener);
         } else if (type == ErrorNetworkWrapViewHolder.LAYOUT){
             return new ErrorNetworkWrapViewHolder(parent);
         } else if (type == ShopProductEtalaseTitleViewHolder.LAYOUT) {
