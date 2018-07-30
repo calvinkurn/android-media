@@ -136,7 +136,7 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
             shopInfo.ratings.quality.ratingStar
         }
         totalReview.text = getString(R.string.shop_info_content_total_review, shopInfo.ratings.quality.countTotal)
-        textSeeRating.setOnClickListener { goToReviewQualityDetail() }
+        labelViewReview.setOnClickListener { goToReviewQualityDetail() }
         labelViewDiscussion.setOnClickListener { gotoShopDiscussion() }
     }
 
