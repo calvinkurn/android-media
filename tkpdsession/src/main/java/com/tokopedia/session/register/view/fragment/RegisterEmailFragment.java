@@ -503,6 +503,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventRegisterWithEmail();
                 presenter.onRegisterClicked();
             }
         });
