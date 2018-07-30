@@ -4,12 +4,8 @@ package com.tokopedia.contact_us.createticket.fragment;
  * Created by nisie on 8/12/16.
  */
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -20,25 +16,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.contact_us.createticket.ContactUsConstant;
 import com.tokopedia.contact_us.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contact_us.createticket.adapter.ImageUploadAdapter;
@@ -47,18 +30,20 @@ import com.tokopedia.contact_us.createticket.model.ImageUpload;
 import com.tokopedia.contact_us.createticket.model.solution.SolutionResult;
 import com.tokopedia.contact_us.createticket.presenter.CreateTicketFormFragmentPresenter;
 import com.tokopedia.contact_us.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
+import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;

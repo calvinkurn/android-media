@@ -12,7 +12,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.MethodChecker;
 
@@ -26,6 +25,8 @@ public class UploadImageDialog {
 
     public static final int REQUEST_CAMERA = 1;
     public static final int REQUEST_GALLERY = 2;
+    private static final int RESULT_CODE = 323;
+
     private final Context context;
     private Activity activity;
     private Fragment fragment;
@@ -45,11 +46,6 @@ public class UploadImageDialog {
     public UploadImageDialog(Activity activity) {
         this.activity = activity;
         this.context = activity;
-    }
-
-    public void openImagePicker() {
-        Intent imageGallery = new Intent(context, GalleryBrowser.class);
-        startActivity(imageGallery, REQUEST_GALLERY);
     }
 
     public void openCamera() {
@@ -101,7 +97,7 @@ public class UploadImageDialog {
     public void onResult(int requestCode, int resultCode, Intent intent, UploadImageDialogListener listener) {
         if (requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) {
             switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
+                case RESULT_CODE:
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
                     BitmapFactory.Options checksize = new BitmapFactory.Options();
