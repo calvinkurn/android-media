@@ -70,4 +70,24 @@ public class TrainPassengerRequest implements Parcelable {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPaxType() {
+        return paxType;
+    }
+
+    public int getSalutationId() {
+        return salutationId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 }

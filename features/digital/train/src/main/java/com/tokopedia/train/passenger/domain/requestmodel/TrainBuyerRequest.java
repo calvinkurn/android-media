@@ -56,4 +56,16 @@ public class TrainBuyerRequest implements Parcelable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

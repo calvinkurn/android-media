@@ -84,4 +84,32 @@ public class TrainScheduleRequest implements Parcelable {
     public void setDepartureTimestamp(String departureTimestamp) {
         this.departureTimestamp = departureTimestamp;
     }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public String getTrainName() {
+        return trainName;
+    }
+
+    public String getTrainNo() {
+        return trainNo;
+    }
+
+    public String getTrainClass() {
+        return trainClass;
+    }
+
+    public String getSubclass() {
+        return subclass;
+    }
+
+    public String getDepartureTimestamp() {
+        return departureTimestamp;
+    }
 }
