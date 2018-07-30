@@ -3,6 +3,7 @@ package com.tokopedia.train.seat.di;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.seat.domain.TrainChangeSeatUseCase;
 import com.tokopedia.train.seat.domain.TrainGetSeatsUseCase;
+import com.tokopedia.train.seat.domain.model.TrainPassengerSeatMapper;
 import com.tokopedia.train.seat.presentation.viewmodel.mapper.TrainWagonViewModelMapper;
 
 import dagger.Module;
@@ -17,7 +18,7 @@ public class TrainSeatModule {
     }
 
     @Provides
-    public TrainChangeSeatUseCase provideTrainChangeSeatUseCase(TrainRepository trainRepository) {
+    public TrainChangeSeatUseCase provideTrainChangeSeatUseCase(TrainRepository trainRepository, TrainPassengerSeatMapper trainPassengerSeatMapper) {
         return new TrainChangeSeatUseCase(trainRepository, trainPassengerSeatMapper);
     }
 
