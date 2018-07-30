@@ -26,6 +26,7 @@ dependencies {
     }
 
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.badge
 }
 
 apply from: '../publish_local.gradle'

@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -76,6 +77,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -104,7 +106,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
-        KolPostListener.View.ViewHolder {
+        KolPostListener.View.ViewHolder,
+        NotificationListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -132,6 +135,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
+    private MainToolbar mainToolbar;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -142,8 +146,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TopAdsInfoBottomSheet infoBottomSheet;
     private String firstCursor = "";
     private int loginIdInt;
-
-    boolean hasLoadedOnce = false;
 
     @Override
     protected String getScreenName() {
@@ -223,6 +225,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        mainToolbar = parentView.findViewById(R.id.toolbar);
 
         prepareView();
         presenter.attachView(this);
@@ -681,7 +684,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void forceLoadFirstPage() {
-        hasLoadedOnce = false;
         loadData(true);
     }
 
@@ -767,19 +769,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private boolean isLoadedOnce = false;
+
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
-                && getActivity()!= null && presenter != null) {
+                && getActivity()!= null && presenter != null
+                && !isLoadedOnce) {
 
-            if (!hasLoadedOnce) {
-                presenter.fetchFirstPage();
-                if (trace != null)
-                    trace.stop();
-                hasLoadedOnce = true;
-            }
+            presenter.fetchFirstPage();
+            if (trace != null)
+                trace.stop();
 
             presenter.checkNewFeed(firstCursor);
             ScreenTracking.screen(getScreenName());
+
+            isLoadedOnce = !isLoadedOnce;
         }
     }
 
@@ -1146,5 +1150,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public AbstractionRouter getAbstractionRouter() {
         return abstractionRouter;
+    }
+
+    @Override
+    public void onNotifyBadgeNotification(int number) {
+        if (mainToolbar == null)
+            return;
+        mainToolbar.setNotificationNumber(number);
     }
 }

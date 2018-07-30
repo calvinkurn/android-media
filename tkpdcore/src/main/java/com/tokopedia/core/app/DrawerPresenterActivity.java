@@ -63,6 +63,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         super.onCreate(savedInstanceState);
         sessionHandler = new SessionHandler(MainApplication.getAppContext());
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        initialize();
+    }
+
+    public void initialize() {
+        initializeDrawer();
+    }
+
+    public void initializeDrawer() {
         setupDrawer();
         if (GlobalConfig.isCustomerApp()) {
             registerBroadcastReceiverHeaderTokoCash();
@@ -129,9 +137,9 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         getSupportActionBar().setHomeButtonEnabled(false);
     }
 
-    private void initTitle(Toolbar toolbar) {
+    public void initTitle(Toolbar toolbar) {
         View title = getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
-        TextView titleTextView = (TextView) title.findViewById(R.id.actionbar_title);
+        TextView titleTextView = title.findViewById(R.id.actionbar_title);
         titleTextView.setText(getTitle());
         toolbar.addView(title);
     }
@@ -244,7 +252,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     public void setDrawerEnabled(boolean isEnabled) {
-        drawerHelper.setEnabled(isEnabled);
+        if (drawerHelper != null)
+            drawerHelper.setEnabled(isEnabled);
     }
 
     @Override
@@ -296,9 +305,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     private void setDataDrawer() {
-        drawerHelper.getAdapter().getData().clear();
-        drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
-        drawerHelper.setExpand();
+        if (drawerHelper != null) {
+            drawerHelper.getAdapter().getData().clear();
+            drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
+            drawerHelper.setExpand();
+        }
     }
 
     @Override
@@ -396,22 +407,19 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onBackPressed() {
-        if (drawerHelper.isOpened()) {
-            drawerHelper.closeDrawer();
-        } else {
-            super.onBackPressed();
+        if (drawerHelper != null)  {
+            if (drawerHelper.isOpened()) {
+                drawerHelper.closeDrawer();
+            }
         }
+        super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        drawerDataManager.unsubscribe();
-        if (GlobalConfig.isCustomerApp()) {
-            unregisterBroadcastReceiverHeaderTokoCash();
-            unregisterBroadcastReceiverHeaderTokoCashPending();
-            unregisterBroadcastReceiverHeaderTokoPoint();
-        }
+        if (drawerDataManager != null)
+            drawerDataManager.unsubscribe();
     }
 
     @Override

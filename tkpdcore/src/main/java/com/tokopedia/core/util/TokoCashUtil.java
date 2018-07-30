@@ -32,7 +32,7 @@ public class TokoCashUtil {
         return drawerTokoCash;
     }
 
-    private static HomeHeaderWalletAction convertToActionHomeHeader(TokoCashData tokoCashData) {
+    public static HomeHeaderWalletAction convertToActionHomeHeader(TokoCashData tokoCashData) {
         HomeHeaderWalletAction data = new HomeHeaderWalletAction();
         String appLinkBalance = tokoCashData.getmAppLinks();
         if (appLinkBalance != null) {

@@ -61,6 +61,8 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
+    String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
+    String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
@@ -97,6 +99,7 @@ public interface ApplinkConst {
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
 
+    String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
@@ -110,6 +113,23 @@ public interface ApplinkConst {
 
     String ORDER_TRACKING = "tokopedia://order/tracking";
 
+    String FLIGHT = "tokopedia://pesawat";
+
+    String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
+    String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
+    String SELLER_CENTER = "tokopedia://seller/seller-center";
+    String TOPADS = "tokopedia://topads";
+    String FAVORITE_SHOPS = "tokopedia://favorite-shops";
+    String CONTACT_US = "tokopedia://contact-us";
+
+    String ORDER_LIST = "tokopedia://order";
+    String PAYMENT_UNPAID = "tokopedia://payment/unpaid";
+    String TOKOPOINTS = "tokopedia://tokopoints";
+
+    String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
+    String SETTING_PAYMENT = "tokopedia://setting/payment";
+    String NOTIFICATION = "tokopedia://notification";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

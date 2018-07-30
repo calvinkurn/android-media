@@ -13,6 +13,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -33,7 +34,7 @@ import java.util.List;
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends DrawerPresenterActivity implements HasComponent {
+public class InboxReputationActivity extends BaseTemporaryDrawerActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
 
@@ -86,7 +87,9 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_inbox_reputation;
+        if (GlobalConfig.isSellerApp())
+            return R.layout.activity_inbox_reputation;
+        return R.layout.layout_tablayout_secondary;
     }
 
     @Override

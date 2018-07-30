@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
@@ -29,6 +30,7 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
@@ -44,7 +46,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class InboxTalkActivity extends DrawerPresenterActivity implements
+public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
         InboxTalkActivityView,
         NotificationReceivedListener, InboxTalkResultReceiver.Receiver {
 
@@ -58,7 +60,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     @BindView(R2.id.pager)
     ViewPager mViewPager;
     @BindView(R2.id.indicator)
-    TabLayout indicator;
+    Tabs indicator;
 
 
     private Boolean ContextualStats = false;
@@ -87,6 +89,10 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxTalkActivity.class);
     }
 
     @Override
@@ -183,7 +189,9 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_inbox_talk;
+        if (GlobalConfig.isSellerApp())
+            return R.layout.activity_inbox_talk;
+        return R.layout.layout_tablayout_secondary;
     }
 
     @Override
