@@ -167,4 +167,12 @@ public class TrainAnalytics {
         );
     }
 
+    public void eventClickDetail(String origin, String destination, String trainClass, String trainName) {
+        analyticTracker.sendEventTracking(
+                "",
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.VIEW_ROUTE_NOT_AVAILABLE_PAGE,
+                origin + " - " + destination + " - " + trainClass + " - " + trainName
+        );
+    }
 }

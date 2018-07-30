@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
@@ -85,6 +84,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     private TrainScheduleDetailViewModel departureTripViewModel;
     private TrainScheduleDetailViewModel returnTripViewModel;
+
+    private String appliedVoucherCode;
 
     public static Fragment newInstance(TrainSoftbook trainSoftbook,
                                        TrainScheduleBookingPassData trainScheduleBookingPassData) {
@@ -174,7 +175,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
                     trainSoftbook.getReservationCode(),
-                    "",
+                    appliedVoucherCode,
                     "web",
                     "7");
         });
@@ -362,11 +363,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                 if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                     Bundle bundle = data.getExtras();
                     if (bundle != null) {
-                        String voucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                        appliedVoucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
                         String voucherMessage = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
                         long voucherDiscountAmount = bundle.getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
 
-                        voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
+                        voucherCartHachikoView.setVoucher(appliedVoucherCode, voucherMessage);
 
                         if (voucherDiscountAmount > 0) {
                             viewTrainReviewDetailPriceSection.showNewPriceAfterDiscount(voucherDiscountAmount);

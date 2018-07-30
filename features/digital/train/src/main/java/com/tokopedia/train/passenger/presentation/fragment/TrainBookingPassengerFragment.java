@@ -26,9 +26,11 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
+import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainFlowExtraConstant;
 import com.tokopedia.train.common.util.TrainFlowUtil;
@@ -94,6 +96,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private TrainBuyerRequest trainBuyerRequest;
     private TrainScheduleRequest departureTripRequest;
     private TrainScheduleRequest returnTripRequest;
+
+    @Inject
+    TrainAnalytics trainAnalytics;
 
     @Inject
     TrainFlowUtil trainFlowUtil;
@@ -205,6 +210,16 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         presenter.getDetailSchedule(trainScheduleBookingPassData.getReturnScheduleId(), cardActionReturn);
 
         cardActionDeparture.setActionListener(() -> {
+            String trainClass = trainScheduleDetailViewModel.getTrainClass();
+            String trainName = trainScheduleDetailViewModel.getTrainName();
+            String totalPrice = getString(R.string.train_label_currency,
+                    CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
+                            false, 0).getFormattedString());
+            int numOfTotalPassenger = trainScheduleDetailViewModel.getNumOfAdultPassenger()
+                    + trainScheduleDetailViewModel.getNumOfInfantPassenger();
+
+            trainAnalytics.eventClickDetail();
+
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                     trainScheduleBookingPassData.getDepartureScheduleId(),
                     trainScheduleBookingPassData.getAdultPassenger(),
