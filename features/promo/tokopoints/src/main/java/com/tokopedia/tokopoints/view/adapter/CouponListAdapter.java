@@ -12,6 +12,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.ImageUtil;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     public void onBindViewHolder(CouponListAdapter.ViewHolder holder, int position) {
         final CouponValueEntity item = mItems.get(position);
         holder.description.setText(item.getTitle());
-        ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        ImageUtil.loadImage(holder.imgBanner, item.getThumbnailUrlMobile());
 
         if (item.getUsage() != null) {
             holder.imgLabel.setImageResource(R.drawable.ic_tp_time);
