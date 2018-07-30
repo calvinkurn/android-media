@@ -147,9 +147,7 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
             initialPresenter();
         }
         if (isVisibleToUser && getActivity() != null) {
-            // TODO: 7/30/18 fix cache
-            presenter.getNotificationFromNetwork(getActivity());
-//            presenter.getNotificationPurcase(getActivity());
+            presenter.getNotificationPurcase(getActivity());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -166,19 +164,19 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED:
                 listener.OnMenuClick(
                         TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED,
-                        TransactionPurchaseRouter.PAYMENT_VERIFICATION_FILTER_ID
+                        TransactionPurchaseRouter.TRANSACTION_CONFIRMED_FILTER_ID
                 );
                 break;
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED:
                 listener.OnMenuClick(
                         TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED,
-                        TransactionPurchaseRouter.PROCESSING_TRANSACTION_FILTER_ID
+                        TransactionPurchaseRouter.TRANSACTION_PROCESSED_FILTER_ID
                 );
                 break;
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED:
                 listener.OnMenuClick(
                         TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED,
-                        TransactionPurchaseRouter.ONGOING_DELIVERY_FILTER_ID
+                        TransactionPurchaseRouter.TRANSACTION_SHIPPED_FILTER_ID
                 );
                 break;
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVERED:
