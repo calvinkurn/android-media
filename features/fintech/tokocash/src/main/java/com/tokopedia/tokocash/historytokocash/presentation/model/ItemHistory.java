@@ -39,6 +39,8 @@ public class ItemHistory implements Parcelable {
 
     private List<ActionHistory> actionHistoryList;
 
+    private String helpRedirect;
+
     public ItemHistory() {
     }
 
@@ -58,6 +60,7 @@ public class ItemHistory implements Parcelable {
         notes = in.readString();
         amountPending = in.readString();
         actionHistoryList = in.createTypedArrayList(ActionHistory.CREATOR);
+        helpRedirect = in.readString();
     }
 
     @Override
@@ -76,6 +79,7 @@ public class ItemHistory implements Parcelable {
         dest.writeString(notes);
         dest.writeString(amountPending);
         dest.writeTypedList(actionHistoryList);
+        dest.writeString(helpRedirect);
     }
 
     @Override
@@ -205,5 +209,13 @@ public class ItemHistory implements Parcelable {
 
     public void setAmountPending(String amountPending) {
         this.amountPending = amountPending;
+    }
+
+    public String getHelpRedirect() {
+        return helpRedirect;
+    }
+
+    public void setHelpRedirect(String helpRedirect) {
+        this.helpRedirect = helpRedirect;
     }
 }

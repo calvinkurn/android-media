@@ -3,6 +3,7 @@ package com.tokopedia.contactus.home.view.customview;
 import android.content.Context;
 
 import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.customview.CustomTextView;
 import com.tokopedia.contactus.home.data.ContactUsArticleResponse;
@@ -28,6 +29,7 @@ public class ArticleTextView extends CustomTextView {
 
     @Override
     public void onViewClick() {
+        ContactUsTracking.eventPopularArticleClick(contactUsArticle.getTitle());
         getContext().startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext()))
                 .getWebviewActivityWithIntent(getContext(),
                         TkpdBaseURL.MOBILE_DOMAIN + ContactUsURL.CONTENT_BASE_URL

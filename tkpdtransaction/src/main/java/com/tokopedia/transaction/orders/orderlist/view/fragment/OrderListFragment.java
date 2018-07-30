@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,19 +11,20 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
-import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 
 import java.util.ArrayList;
@@ -32,10 +34,10 @@ import javax.inject.Inject;
 
 
 
-public class OrderListFragment extends BasePresenterFragment<OrderListContract.Presenter> implements
+public class OrderListFragment extends BaseDaggerFragment implements
         RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
 
-    private static final java.lang.String ORDER_CATEGORY = "orderCategory";
+    private static final String ORDER_CATEGORY = "orderCategory";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -47,6 +49,8 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     int totalItemCount;
     private int visibleThreshold = 2;
     private int lastVisibleItem;
+    private Bundle savedState;
+    private int orderId = 1;
 
     @Inject
     OrderListPresenterImpl presenter;
@@ -54,91 +58,144 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private boolean hasRecyclerListener = false;
 
     private ArrayList<Order> mOrderDataList;
-    private OrderCategory mOrderCategory;
+    private String mOrderCategory;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        initInjector();
-        presenter.attachView(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-    }
-
-    protected void initInjector() {
-        orderListComponent = DaggerOrderListComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
-        orderListComponent.inject(this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        int category = arguments.getInt(ORDER_CATEGORY);
-        switch (category) {
-            case 0:
-                mOrderCategory = OrderCategory.ALL;
-                break;
-            case 1:
-                mOrderCategory = OrderCategory.GOLD;
-                break;
-            case 2:
-                mOrderCategory = OrderCategory.DIGITAL;
-                break;
-            case 3:
-                mOrderCategory = OrderCategory.MARKETPLACE;
-                break;
-            case 4:
-                mOrderCategory = OrderCategory.RIDE;
-                break;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(isRetainInstance());
+        if (getArguments() != null) {
+            setupArguments(getArguments());
         }
+        initialPresenter();
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(getFragmentLayout(), container, false);
+    }
+
     protected int getFragmentLayout() {
         return R.layout.fragment_transaction_list_order_module;
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initialVar();
+        setViewListener();
+        setActionVar();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        setHasOptionsMenu(getOptionsMenuEnable());
+        initialListener(activity);
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (!restoreStateFromArguments()) {
+            onFirstTimeLaunched();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveStateToArguments();
+    }
+
+    private void saveStateToArguments() {
+        if (getView() != null)
+            savedState = saveState();
+        if (savedState != null) {
+            Bundle b = getArguments();
+            if (b == null) b = new Bundle();
+            b.putBundle("internalSavedViewState8954201239547", savedState);
+        }
+    }
+
+    private Bundle saveState() {
+        Bundle state = new Bundle();
+        onSaveState(state);
+        return state;
+    }
+
+    private boolean restoreStateFromArguments() {
+        Bundle b = getArguments();
+        if (b == null) b = new Bundle();
+        savedState = b.getBundle("internalSavedViewState8954201239547");
+        if (savedState != null) {
+            restoreState();
+            return true;
+        }
+        return false;
+    }
+
+    private void restoreState() {
+        if (savedState != null) {
+            onRestoreState(savedState);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        saveStateToArguments();
+    }
+
+    protected boolean isRetainInstance() {
+        return false;
+    }
+
+
+    protected void onFirstTimeLaunched() {
+
+    }
+
+
+    public void onSaveState(Bundle state) {
+
+    }
+
+
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+
+    protected void initialPresenter() {
+    }
+
+    protected void initInjector() {
+        getComponent(OrderListComponent.class).inject(this);
+    }
+
+
+    protected void initialListener(Activity activity) {
+    }
+
+
+    protected void setupArguments(Bundle arguments) {
+        mOrderCategory = arguments.getString(ORDER_CATEGORY);
+    }
+
+
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         emptyLayout = view.findViewById(R.id.empty_view);
     }
 
-    @Override
+
     protected void setViewListener() {
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
         refreshHandler.setPullEnabled(true);
@@ -176,7 +233,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             mOrderDataList.clear();
 
         }
-        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num);
+        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
 
     void onLoadMore() {
@@ -185,7 +242,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         orderListAdapter.addItemAtLast(null);
         if (!isLoading) {
             isLoading = true;
-            presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num);
+            presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
         }
     }
 
@@ -224,21 +281,31 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         }
     }
 
+    @Override
+    public Context getAppContext() {
+        return getActivity().getApplicationContext();
+    }
+
+    @Override
+    public void setLastOrderId(int orderid) {
+        this.orderId = orderid;
+    }
+
     private NetworkErrorHelper.RetryClickedListener getEditShipmentRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num);
+                presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
             }
         };
     }
 
-    @Override
+
     protected void initialVar() {
         orderListAdapter = new OrderListAdapter(getActivity(), this);
     }
 
-    @Override
+
     protected void setActionVar() {
         initialData();
     }
@@ -252,17 +319,9 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     }
 
     @Override
-    public void showProcessGetData(OrderCategory orderCategory) {
+    public void showProcessGetData(String orderCategory) {
         switch (orderCategory) {
-            case DIGITAL:
-                if (!refreshHandler.isRefreshing()) {
-                    refreshHandler.setRefreshing(true);
-                    refreshHandler.setPullEnabled(false);
-                }
-                break;
-            case ALL:
-                break;
-            case MARKETPLACE:
+            case OrderCategory.DIGITAL:
                 if (!refreshHandler.isRefreshing()) {
                     refreshHandler.setRefreshing(true);
                     refreshHandler.setPullEnabled(false);
@@ -317,6 +376,11 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     public void startUri(String uri) {
         if (!uri.equals(""))
             TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }
 

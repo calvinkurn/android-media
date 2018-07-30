@@ -122,8 +122,9 @@
                 android:layout_margin="@dimen/dp_16"
                 android:text="@string/lihat_detail"
                 android:textSize="@dimen/font_medium"
+                android:visibility="gone"
                 android:textColor="@color/green_250"
-                android:visibility="gone"/>
+                />
 
             <LinearLayout
                 android:id="@+id/additional_info"

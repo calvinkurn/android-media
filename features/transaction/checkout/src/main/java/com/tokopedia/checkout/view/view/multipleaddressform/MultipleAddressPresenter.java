@@ -8,16 +8,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
+import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -31,13 +34,56 @@ import rx.Subscriber;
 
 public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
-    private ChangeShippingAddressUseCase changeShippingAddressUseCase;
+    private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
+    private final GetCartListUseCase getCartListUseCase;
+    private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
 
     private IMultipleAddressView view;
 
-    public MultipleAddressPresenter(IMultipleAddressView view, ChangeShippingAddressUseCase changeShippingAddressUseCase) {
+    public MultipleAddressPresenter(IMultipleAddressView view,
+                                    GetCartListUseCase getCartListUseCase,
+                                    ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                                    CartApiRequestParamGenerator cartApiRequestParamGenerator) {
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
+        this.getCartListUseCase = getCartListUseCase;
+        this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.view = view;
+    }
+
+    @Override
+    public void processGetCartList() {
+        view.showInitialLoading();
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(
+                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
+                getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
+        );
+
+        getCartListUseCase.execute(requestParams, new Subscriber<CartListData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideInitialLoading();
+                e.printStackTrace();
+                view.showError(ErrorHandler.getErrorMessage(view.getActivityContext(), e));
+            }
+
+            @Override
+            public void onNext(CartListData cartListData) {
+                view.hideInitialLoading();
+                if (cartListData != null && cartListData.getCartItemDataList().size() > 0) {
+                    view.renderCartData(cartListData);
+                } else {
+                    view.navigateToCartList();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -50,7 +96,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 MultipleAddressItemData itemData = dataList.get(i).getItemListData().get(j);
                 request.setCartId(Integer.parseInt(itemData.getCartId()));
                 request.setProductId(Integer.parseInt(itemData.getProductId()));
-                request.setAddressId(Integer.parseInt(itemData.getAddressId()));
+                request.setAddressId(Integer.parseInt(itemData.getRecipientAddressModel().getId()));
                 request.setNotes(itemData.getProductNotes());
                 request.setQuantity(Integer.parseInt(itemData.getProductQty()));
                 JsonElement cartData = new JsonParser().parse(new Gson().toJson(request));
@@ -63,9 +109,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         RequestParams requestParam = RequestParams.create();
 
         TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
-                view.getActivity(), param,
-                SessionHandler.getLoginID(view.getActivity()),
-                GCMHandler.getRegistrationId(view.getActivity()));
+                view.getActivityContext(), param,
+                SessionHandler.getLoginID(view.getActivityContext()),
+                GCMHandler.getRegistrationId(view.getActivityContext()));
 
         requestParam.putAllString(authParam);
 
@@ -104,6 +150,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             addressAdapterData.setCashBack(cartItemDataList.get(i).getOriginData().isCashBack());
             addressAdapterData.setCashBackInfo(cartItemDataList.get(i).getOriginData().getCashBackInfo());
             addressAdapterData.setSenderName(cartItemDataList.get(i).getOriginData().getShopName());
+            addressAdapterData.setOfficialStore(cartItemDataList.get(i).getOriginData().isOfficialStore());
+            addressAdapterData.setGoldMerchant(cartItemDataList.get(i).getOriginData().isGoldMerchant());
             adapterModels.add(addressAdapterData);
         }
         return adapterModels;
@@ -118,6 +166,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
         List<MultipleAddressItemData> initialItemData = new ArrayList<>();
         MultipleAddressItemData addressData = new MultipleAddressItemData();
+        addressData.setRecipientAddressModel(shipmentRecipientModel);
         addressData.setCartPosition(cartPosition);
         addressData.setAddressPosition(0);
         addressData.setCartId(String.valueOf(originData.getCartId()));
@@ -126,18 +175,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setProductQty(String.valueOf(updatedData.getQuantity()));
         addressData.setProductWeightFmt(String.valueOf(originData.getWeightFormatted()));
         addressData.setProductNotes(updatedData.getRemark());
-        addressData.setAddressId(shipmentRecipientModel.getId());
-        addressData.setAddressTitle(shipmentRecipientModel.getAddressName());
-        addressData.setAddressReceiverName(shipmentRecipientModel.getRecipientName());
-        addressData.setAddressProvinceName(shipmentRecipientModel.getAddressProvinceName());
-        addressData.setAddressPostalCode(shipmentRecipientModel.getAddressPostalCode());
-        addressData.setAddressCityName(shipmentRecipientModel.getAddressCityName());
-        addressData.setAddressStreet(shipmentRecipientModel.getAddressStreet());
-        addressData.setAddressCountryName(shipmentRecipientModel.getAddressCountryName());
-        addressData.setRecipientPhoneNumber(shipmentRecipientModel.getRecipientPhoneNumber());
-        addressData.setDestinationDistrictId(shipmentRecipientModel.getDestinationDistrictId());
-        addressData.setDestinationDistrictName(shipmentRecipientModel.getDestinationDistrictName());
-        addressData.setMaxQuantity(updatedData.getMaxQuantity());
+        addressData.setMaxQuantity(originData.getInvenageValue() != 0 ? originData.getInvenageValue() : updatedData.getMaxQuantity());
         addressData.setMinQuantity(originData.getMinimalQtyOrder());
         addressData.setErrorCheckoutPriceLimit(messageErrorData.getErrorCheckoutPriceLimit());
         addressData.setErrorFieldBetween(messageErrorData.getErrorFieldBetween());
@@ -167,7 +205,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideLoading();
-                view.showError();
+                view.showError(ErrorHandler.getErrorMessage(view.getActivityContext(), e));
             }
 
             @Override
@@ -176,10 +214,33 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 if (setShippingAddressData.isSuccess()) {
                     view.successMakeShipmentData();
                 } else {
-                    view.showError();
+                    if (setShippingAddressData.getMessages() != null && setShippingAddressData.getMessages().size() > 0) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (String errorMessage : setShippingAddressData.getMessages()) {
+                            stringBuilder.append(errorMessage).append(" ");
+                        }
+                        view.showError(stringBuilder.toString());
+                    } else {
+                        view.showError(null);
+                    }
                 }
             }
         };
+    }
+
+    private TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+        return originParams == null
+                ?
+                AuthUtil.generateParamsNetwork(
+                        view.getActivityContext(), SessionHandler.getLoginID(view.getActivityContext()),
+                        GCMHandler.getRegistrationId(view.getActivityContext())
+                )
+                :
+                AuthUtil.generateParamsNetwork(
+                        view.getActivityContext(), originParams,
+                        SessionHandler.getLoginID(view.getActivityContext()),
+                        GCMHandler.getRegistrationId(view.getActivityContext())
+                );
     }
 
 }

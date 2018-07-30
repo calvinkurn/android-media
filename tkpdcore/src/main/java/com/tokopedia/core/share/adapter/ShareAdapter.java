@@ -68,7 +68,7 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareViewHol
             type = ShareBottomSheet.KEY_COPY;
         } else if (isPositionOther(position)) {
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_btn_more);
-            title = holder.labelView.getContext().getString(R.string.fb_cat_etc);
+            title = holder.labelView.getContext().getString(R.string.other);
             type = ShareBottomSheet.KEY_OTHER;
         } else {
             final ResolveInfo activity = mActivities.get(position);

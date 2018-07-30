@@ -127,7 +127,7 @@ public class EntityAddress implements Parcelable {
 		this.longitude = in.readString();
 	}
 
-	public static final Parcelable.Creator<EntityAddress> CREATOR = new Parcelable.Creator<EntityAddress>() {
+	public static final Creator<EntityAddress> CREATOR = new Creator<EntityAddress>() {
 		@Override
 		public EntityAddress createFromParcel(Parcel source) {
 			return new EntityAddress(source);

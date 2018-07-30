@@ -34,7 +34,12 @@ public class ShipmentAddressListAdapter
     }
 
     public void setAddressList(List<RecipientAddressModel> addressModelList) {
-        mAddressModelList = new ArrayList<>(addressModelList);
+        mAddressModelList.clear();
+        mAddressModelList.addAll(addressModelList);
+    }
+
+    public void updateAddressList(List<RecipientAddressModel> addressModelList) {
+        mAddressModelList.addAll(addressModelList);
     }
 
     @Override
@@ -79,10 +84,10 @@ public class ShipmentAddressListAdapter
     }
 
     private String getFullAddress(RecipientAddressModel recipientAddress) {
-        return recipientAddress.getAddressStreet() + ", "
+        return recipientAddress.getStreet() + ", "
                 + recipientAddress.getDestinationDistrictName() + ", "
-                + recipientAddress.getAddressCityName() + ", "
-                + recipientAddress.getAddressProvinceName();
+                + recipientAddress.getCityName() + ", "
+                + recipientAddress.getProvinceName();
     }
 
     private View.OnClickListener getItemClickListener(final RecipientAddressModel recipientAddressModel,

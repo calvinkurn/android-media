@@ -1,5 +1,8 @@
 package com.tokopedia.checkout.view.holderitemdata;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
@@ -8,7 +11,7 @@ import com.tokopedia.checkout.view.view.shipment.ShipmentData;
  * @author anggaprasetiyo on 20/02/18.
  */
 
-public class CartItemPromoHolderData implements ShipmentData {
+public class CartItemPromoHolderData implements ShipmentData, Parcelable {
 
     public static final int TYPE_PROMO_NOT_ACTIVE = 0;
     public static final int TYPE_PROMO_VOUCHER = 1;
@@ -26,9 +29,57 @@ public class CartItemPromoHolderData implements ShipmentData {
     private long couponDiscountAmount;
 
     private String defaultSelectedTabString;
-
-
     private boolean fromAutoApply;
+    private boolean visible;
+
+    public CartItemPromoHolderData() {
+    }
+
+    protected CartItemPromoHolderData(Parcel in) {
+        typePromo = in.readInt();
+        voucherCode = in.readString();
+        voucherMessage = in.readString();
+        voucherDiscountAmount = in.readLong();
+        couponTitle = in.readString();
+        couponMessage = in.readString();
+        couponCode = in.readString();
+        couponDiscountAmount = in.readLong();
+        defaultSelectedTabString = in.readString();
+        fromAutoApply = in.readByte() != 0;
+        visible = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(typePromo);
+        dest.writeString(voucherCode);
+        dest.writeString(voucherMessage);
+        dest.writeLong(voucherDiscountAmount);
+        dest.writeString(couponTitle);
+        dest.writeString(couponMessage);
+        dest.writeString(couponCode);
+        dest.writeLong(couponDiscountAmount);
+        dest.writeString(defaultSelectedTabString);
+        dest.writeByte((byte) (fromAutoApply ? 1 : 0));
+        dest.writeByte((byte) (visible ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CartItemPromoHolderData> CREATOR = new Creator<CartItemPromoHolderData>() {
+        @Override
+        public CartItemPromoHolderData createFromParcel(Parcel in) {
+            return new CartItemPromoHolderData(in);
+        }
+
+        @Override
+        public CartItemPromoHolderData[] newArray(int size) {
+            return new CartItemPromoHolderData[size];
+        }
+    };
 
     public int getTypePromo() {
         return typePromo;
@@ -74,6 +125,14 @@ public class CartItemPromoHolderData implements ShipmentData {
         return fromAutoApply;
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public void setPromoVoucherType(
             String voucherCode, String voucherMessage, long voucherDiscountAmount
     ) {
@@ -81,6 +140,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.voucherMessage = voucherMessage;
         this.voucherCode = voucherCode;
         this.voucherDiscountAmount = voucherDiscountAmount;
+        this.visible = true;
     }
 
     public void setPromoVoucherTypeFromAutoApply(
@@ -91,6 +151,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.voucherCode = voucherCode;
         this.voucherDiscountAmount = voucherDiscountAmount;
         this.fromAutoApply = true;
+        this.visible = true;
     }
 
     public void setPromoCouponType(
@@ -101,6 +162,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponCode = couponCode;
         this.couponDiscountAmount = couponDiscountAmount;
         this.couponTitle = couponTitle;
+        this.visible = true;
     }
 
     public void setPromoCouponTypeFromAutoApply(
@@ -112,6 +174,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponDiscountAmount = couponDiscountAmount;
         this.couponTitle = couponTitle;
         this.fromAutoApply = true;
+        this.visible = true;
     }
 
     public void setPromoNotActive() {
@@ -124,6 +187,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponDiscountAmount = 0;
         this.couponTitle = "";
         this.defaultSelectedTabString = "";
+        this.visible = true;
     }
 
     public static CartItemPromoHolderData createInstanceFromAppliedPromo(

@@ -6,6 +6,7 @@ import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
+import java.util.List;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -23,13 +24,8 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     }
 
     @Override
-    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> domainList, final String versionName) {
+    public Observable<Boolean> insertWhiteList(final List<CacheApiWhiteListDomain> domainList, final String versionName) {
         return cacheApiDataSource.bulkInsert(domainList, versionName);
-    }
-
-    @Override
-    public Observable<Boolean> deleteWhiteList(String host, String path) {
-        return cacheApiDataSource.deleteWhiteList(host, path);
     }
 
     @Override
@@ -40,11 +36,6 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     @Override
     public Observable<Boolean> isInWhiteList(String host, String path) {
         return cacheApiDataSource.isInWhiteList(host, path);
-    }
-
-    @Override
-    public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
-        return cacheApiDataSource.getWhiteList(host, path);
     }
 
     @Override
@@ -63,7 +54,7 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     }
 
     @Override
-    public Observable<Boolean> updateResponse(Response response, int expiredTime) {
-        return cacheApiDataSource.updateResponse(response, expiredTime);
+    public Observable<Boolean> saveResponse(String host, String path, Response response) {
+        return cacheApiDataSource.saveResponse(host, path, response);
     }
 }

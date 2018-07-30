@@ -14,6 +14,8 @@ import com.tokopedia.user.session.UserSession;
 
 import retrofit2.Retrofit;
 
+import static com.tokopedia.network.constant.TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL;
+
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
     private static GraphqlApi sGraphqlApi = null;

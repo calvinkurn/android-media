@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.view.cartlist.removecartitem;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -9,11 +11,14 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductHeaderViewModel;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductItemViewModel;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -33,6 +38,7 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
     private List<CartProductItemViewModel> cartProductItemViewModelList = new ArrayList<>();
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartUseCase deleteCartUseCase;
+    private List<CartItemData> cartItemDataList;
 
     @Inject
     public RemoveCartItemPresenter(CompositeSubscription compositeSubscription,
@@ -49,6 +55,7 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
 
     @Override
     public void setCartProductItemViewModelList(List<CartItemData> cartItemDataList) {
+        this.cartItemDataList = cartItemDataList;
         for (CartItemData cartItemData : cartItemDataList) {
             CartProductItemViewModel cartProductItemViewModel = new CartProductItemViewModel();
             cartProductItemViewModel.setCartItemData(cartItemData);
@@ -73,7 +80,9 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
 
     @Override
     public void processRemoveCartItem(List<String> cartIdStringList, boolean addToWishlist) {
-        getView().showLoading();
+        if (isViewAttached()) {
+            getView().showLoading();
+        }
         List<Integer> cartIdIntList = new ArrayList<>();
         for (String cartIdString : cartIdStringList) {
             cartIdIntList.add(Integer.parseInt(cartIdString));
@@ -102,26 +111,91 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
 
                             @Override
                             public void onError(Throwable throwable) {
-                                getView().hideLoading();
                                 throwable.printStackTrace();
-                                getView().showError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                if (isViewAttached()) {
+                                    getView().hideLoading();
+                                    getView().showError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                }
                             }
 
                             @Override
                             public void onNext(DeleteCartData deleteCartData) {
-                                getView().hideLoading();
-                                if (deleteCartData.isSuccess()) {
-                                    String messageSuccess = getView().getActivity()
-                                            .getString(R.string.label_delete_cart_item_success);
-                                    getView().renderSuccessDeleteAllCart(messageSuccess);
-                                } else {
-                                    String messageFailed = getView().getActivity().
-                                            getString(R.string.label_delete_cart_item_failed);
-                                    getView().renderOnFailureDeleteCart(messageFailed);
+                                if (isViewAttached()) {
+                                    getView().hideLoading();
+                                    if (deleteCartData.isSuccess()) {
+                                        String messageSuccess = getView().getActivity()
+                                                .getString(R.string.label_delete_cart_item_success);
+                                        getView().renderSuccessDeleteAllCart(messageSuccess);
+                                    } else {
+                                        String messageFailed = getView().getActivity().
+                                                getString(R.string.label_delete_cart_item_failed);
+                                        getView().renderOnFailureDeleteCart(messageFailed);
+                                    }
                                 }
                             }
                         })
         );
     }
+
+    @Override
+    public Map<String, Object> generateCartDataAnalytics(List<String> selectedCartItemIds,
+                                                         String enhancedECommerceAction) {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        for (String cartItemId : selectedCartItemIds) {
+            for (CartItemData cartItemData : this.cartItemDataList) {
+                if (cartItemId.equals(String.valueOf(cartItemData.getOriginData().getCartId()))) {
+                    cartItemDataList.add(cartItemData);
+                }
+            }
+        }
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
+
+        for (CartItemData cartItemData : cartItemDataList) {
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                    new EnhancedECommerceProductCartMapData();
+            enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
+            enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
+            enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+            enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
+            enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                    ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                    : cartItemData.getOriginData().getCategoryForAnalytics());
+            enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
+            enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
+            enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
+            enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
+            enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
+            enhancedECommerceProductCartMapData.setDimension38(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
+            enhancedECommerceProductCartMapData.setAttribution(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
+            enhancedECommerceProductCartMapData.setDimension40(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
+            enhancedECommerceProductCartMapData.setListName(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
+            enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
+        }
+
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
+
+        return enhancedECommerceCartMapData.getCartMap();
+
+    }
+
 
 }

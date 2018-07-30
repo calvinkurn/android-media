@@ -19,12 +19,12 @@
 
     <TextView
         android:id="@+id/tv_price"
-        style="@style/TextSmall"
+        style="@style/TextMidNormalBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier_name"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
         android:layout_toEndOf="@+id/tv_courier_name"
         android:layout_toRightOf="@+id/tv_courier_name"
         tools:ignore="RelativeOverlap"
@@ -32,7 +32,7 @@
 
     <TextView
         android:id="@+id/tv_delivery_time_range"
-        style="@style/TextSmall"
+        style="@style/TextSmallNormalBlack54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier_name"

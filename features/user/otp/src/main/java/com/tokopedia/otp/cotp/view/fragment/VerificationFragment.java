@@ -171,12 +171,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @TargetApi(Build.VERSION_CODES.M)
     private void showCheckSMSPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
-                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+                Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED
+                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
             new android.support.v7.app.AlertDialog.Builder(getActivity())
                     .setMessage(
                             RequestPermissionUtil
-                                    .getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                                    .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
                     )
                     .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
@@ -191,11 +191,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             RequestPermissionUtil.onPermissionDenied(getActivity(),
-                                    Manifest.permission.READ_SMS);
+                                    Manifest.permission.RECEIVE_SMS);
                         }
                     })
                     .show();
-        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
             VerificationFragmentPermissionsDispatcher
                     .checkSmsPermissionWithCheck(VerificationFragment.this);
         }
@@ -345,9 +345,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onSuccessGetOTP() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
-                .verification_code_sent));
+    public void onSuccessGetOTP(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
         startTimer();
     }
 
@@ -571,7 +570,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         processOTPSMS(otpCode);
     }
 
-    @NeedsPermission(Manifest.permission.READ_SMS)
+    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
     public void processOTPSMS(String otpCode) {
         if (inputOtp != null)
             inputOtp.setText(otpCode);
@@ -579,7 +578,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 otpCode);
     }
 
-    @NeedsPermission(Manifest.permission.READ_SMS)
+    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
     public void checkSmsPermission() {
 
     }
@@ -591,18 +590,18 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 VerificationFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale(Manifest.permission.READ_SMS)
+    @OnShowRationale(Manifest.permission.RECEIVE_SMS)
     void showRationaleForReadSms(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.RECEIVE_SMS);
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    @OnPermissionDenied(Manifest.permission.RECEIVE_SMS)
     void showDeniedForReadSms() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.RECEIVE_SMS);
     }
 
-    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    @OnNeverAskAgain(Manifest.permission.RECEIVE_SMS)
     void showNeverAskForReadSms() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.RECEIVE_SMS);
     }
 }
