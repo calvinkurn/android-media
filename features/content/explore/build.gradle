@@ -19,7 +19,7 @@ buildscript {
 project.ext {
     artifactId = 'explore'
     groupId = 'com.tokopedia.explore'
-    versionName = "${tkpdFeedVersion}"
+    versionName = "${tkpdExploreVersion}"
     artifactName = "explore-release"
 }
 
