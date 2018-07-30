@@ -21,6 +21,7 @@ import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.seat.data.TrainSeatCloudDataStore;
+import com.tokopedia.train.seat.data.entity.TrainChangeSeatEntity;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
 import com.tokopedia.train.seat.data.specification.TrainChangeSeatSpecification;
 import com.tokopedia.train.seat.data.specification.TrainSeatSpecification;
@@ -77,7 +78,7 @@ public class TrainRepositoryImpl implements TrainRepository {
     }
 
     @Override
-    public Observable<List<TrainPassengerSeat>> changeSeats(List<ChangeSeatMapRequest> requests) {
+    public Observable<List<TrainChangeSeatEntity>> changeSeats(List<ChangeSeatMapRequest> requests) {
         return trainSeatCloudDataStore.changeSeats(new TrainChangeSeatSpecification(requests));
     }
 

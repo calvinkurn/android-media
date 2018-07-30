@@ -6,6 +6,7 @@ import com.tokopedia.train.passenger.data.cloud.entity.TrainSoftbookWrapperEntit
 import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherWrapperEntity;
 import com.tokopedia.train.search.data.entity.ScheduleAvailabilityResponse;
 import com.tokopedia.train.search.data.entity.SearchDataResponse;
+import com.tokopedia.train.seat.data.entity.TrainChangeSeatsDataEntity;
 import com.tokopedia.train.seat.data.entity.TrainKaiSeatMapEntity;
 import com.tokopedia.train.station.data.entity.StationDataEntity;
 
@@ -41,7 +42,7 @@ public interface TrainApi {
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<DataResponse<String>> changeSeats(@Body HashMap<String, Object> parameters);
+    Observable<DataResponse<TrainChangeSeatsDataEntity>> changeSeats(@Body HashMap<String, Object> parameters);
 
     @POST("./")
     @Headers({"Content-Type: application/json"})

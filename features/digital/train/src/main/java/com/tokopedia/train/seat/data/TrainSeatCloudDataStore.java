@@ -9,6 +9,8 @@ import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.specification.GqlNetworkSpecification;
 import com.tokopedia.train.common.specification.Specification;
+import com.tokopedia.train.seat.data.entity.TrainChangeSeatEntity;
+import com.tokopedia.train.seat.data.entity.TrainChangeSeatsDataEntity;
 import com.tokopedia.train.seat.data.entity.TrainKaiSeatMapEntity;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
 import com.tokopedia.train.seat.data.specification.TrainChangeSeatSpecification;
@@ -52,7 +54,7 @@ public class TrainSeatCloudDataStore {
         return GraphqlHelper.loadRawString(context.getResources(), rawFile);
     }
 
-    public Observable<List<TrainPassengerSeat>> changeSeats(TrainChangeSeatSpecification specification) {
+    public Observable<List<TrainChangeSeatEntity>> changeSeats(TrainChangeSeatSpecification specification) {
         String jsonQuery = getRequestStationPayload(((GqlNetworkSpecification) specification).rawFileNameQuery());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(TrainUrl.QUERY_GQL, jsonQuery);
@@ -62,10 +64,10 @@ public class TrainSeatCloudDataStore {
 
         return trainApi
                 .changeSeats(requestParams.getParameters())
-                .map(new Func1<DataResponse<String>, List<TrainPassengerSeat>>() {
+                .map(new Func1<DataResponse<TrainChangeSeatsDataEntity>, List<TrainChangeSeatEntity>>() {
                     @Override
-                    public List<TrainPassengerSeat> call(DataResponse<String> stringDataResponse) {
-                        return null;
+                    public List<TrainChangeSeatEntity> call(DataResponse<TrainChangeSeatsDataEntity> stringDataResponse) {
+                        return stringDataResponse.getData().getSeats().getSeats();
                     }
                 });
     }

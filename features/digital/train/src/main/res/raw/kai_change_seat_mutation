@@ -1,0 +1,10 @@
+mutation kaiChangeSeatmap($input: KaiChangeSeat!) {
+  kaiGantiKursi(input: $input) {
+    changeSeatmap{
+      bookCode
+      name
+      wagonCode
+      seat
+    }
+  }
+}

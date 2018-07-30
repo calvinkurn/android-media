@@ -97,8 +97,8 @@ public class TrainDoSoftBookingSpecification implements GqlNetworkSpecification 
             jsonArray.add(passenger);
         }
         result.put(TrainSoftBookingUseCase.PASSENGERS, jsonArray);
-        Map<String, Object> resultMAp = new HashMap<>();
-        resultMAp.put(TrainUrl.INPUT_GQL, result);
-        return resultMAp;
+        Map<String, Object> newResult = new HashMap<>();
+        newResult.put(TrainUrl.INPUT_GQL, result);
+        return newResult;
     }
 }

@@ -18,7 +18,7 @@ public class TrainSeatModule {
 
     @Provides
     public TrainChangeSeatUseCase provideTrainChangeSeatUseCase(TrainRepository trainRepository) {
-        return new TrainChangeSeatUseCase(trainRepository);
+        return new TrainChangeSeatUseCase(trainRepository, trainPassengerSeatMapper);
     }
 
 }
