@@ -3,6 +3,7 @@ package com.tokopedia.product.edit.di.component;
 import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.product.edit.di.module.ProductAddModule;
 import com.tokopedia.product.edit.di.scope.ProductAddScope;
+import com.tokopedia.product.edit.price.ProductAddNameCategoryFragment;
 
 import dagger.Component;
 
@@ -12,5 +13,5 @@ import dagger.Component;
 @ProductAddScope
 @Component(modules = ProductAddModule.class, dependencies = ProductComponent.class)
 public interface ProductAddComponent {
-//    void inject(ProductAddFragment productAddFragment);
+    void inject(ProductAddNameCategoryFragment productAddFragment);
 }

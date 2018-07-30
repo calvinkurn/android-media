@@ -8,12 +8,7 @@ import com.tokopedia.product.edit.common.data.source.ProductDraftDataSource;
 import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
 import com.tokopedia.product.edit.common.data.mapper.ProductDraftListMapper;
 import com.tokopedia.product.edit.common.model.ProductDraftViewModel;
-import com.tokopedia.product.edit.common.data.source.database.ProductDraftDataBase;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.common.data.mapper.ProductDraftListMapper;
-import com.tokopedia.product.edit.common.data.source.ProductDraftDataSource;
-import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
-import com.tokopedia.product.edit.common.model.ProductDraftViewModel;
+import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 
 import java.util.List;

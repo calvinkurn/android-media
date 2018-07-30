@@ -15,7 +15,7 @@ import com.tokopedia.product.edit.view.activity.*
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 
-class BaseProductEditFragment : Fragment() {
+abstract class BaseProductEditFragment : Fragment() {
 
     private var productImages = ArrayList<String>()
     private var productName = ProductName()
@@ -164,6 +164,6 @@ class BaseProductEditFragment : Fragment() {
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
 
-        fun createInstance() = BaseProductEditFragment()
+//        fun createInstance() = BaseProductEditFragment()
     }
 }

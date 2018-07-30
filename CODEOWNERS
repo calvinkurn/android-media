@@ -29,6 +29,7 @@
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
+/libraries/product_draft_database/     @tokopedia/minion-stuart
 
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/payment/payment/              @tokopedia/minion-bob

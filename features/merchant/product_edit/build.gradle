@@ -11,16 +11,6 @@ project.ext {
     artifactName ="product_edit-release"
 }
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'ProductEdit']
-            }
-        }
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -41,6 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.productDraftDatabase)
 
     annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
