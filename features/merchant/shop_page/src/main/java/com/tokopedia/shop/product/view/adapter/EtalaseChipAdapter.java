@@ -20,7 +20,8 @@ public class EtalaseChipAdapter extends RecyclerView.Adapter<EtalaseChipAdapter.
     private String selectedEtalaseId;
 
     private OnEtalaseChipAdapterListener onEtalaseChipAdapterListener;
-    public interface OnEtalaseChipAdapterListener{
+
+    public interface OnEtalaseChipAdapterListener {
         void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel);
     }
 
@@ -47,8 +48,8 @@ public class EtalaseChipAdapter extends RecyclerView.Adapter<EtalaseChipAdapter.
         }
     }
 
-    public int getSelectedPosition(){
-        for (int i = 0, sizei = etalaseViewModelList.size(); i<sizei; i++) {
+    public int getSelectedPosition() {
+        for (int i = 0, sizei = etalaseViewModelList.size(); i < sizei; i++) {
             ShopEtalaseViewModel shopEtalaseViewModel = etalaseViewModelList.get(i);
             if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
                 return i;
@@ -70,11 +71,15 @@ public class EtalaseChipAdapter extends RecyclerView.Adapter<EtalaseChipAdapter.
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            // fix java.lang.ArrayIndexOutOfBoundsException when click parallelly
+            if (position < 0 || position >= etalaseViewModelList.size()) {
+                return;
+            }
             String clickedEtalaseId = etalaseViewModelList.get(position).getEtalaseId();
             if (!clickedEtalaseId.equalsIgnoreCase(selectedEtalaseId)) {
                 selectedEtalaseId = clickedEtalaseId;
                 notifyDataSetChanged();
-                if (onEtalaseChipAdapterListener!= null) {
+                if (onEtalaseChipAdapterListener != null) {
                     onEtalaseChipAdapterListener.onEtalaseChipClicked(etalaseViewModelList.get(position));
                 }
             }

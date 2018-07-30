@@ -272,7 +272,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onSwipeRefresh() {
-        //TODO need clear etalase?
         shopProductListPresenter.clearProductCache();
         super.onSwipeRefresh();
     }
@@ -298,6 +297,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
         if (shopPageTracking != null) {
             shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
                     false, selectedEtalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
@@ -516,6 +516,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             }
         }
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
     }
 
     @Override
@@ -552,6 +553,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     public void onErrorGetEtalaseList(Throwable e) {
         shopProductAdapter.setShopEtalase(null);
+        shopProductAdapter.setShopEtalaseTitle(null);
     }
 
     @Override
@@ -571,6 +573,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         // update the adapter
         shopProductAdapter.setShopEtalase(
                 new ShopProductEtalaseListViewModel(shopEtalaseViewModelList, selectedEtalaseId));
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
     }
 
     @Override

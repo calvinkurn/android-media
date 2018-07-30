@@ -613,8 +613,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), false, ShopPageTrackingConstant.PRODUCT_ETALASE));
     }
 
-    // TODO onActivityResult from ShopProductList will move the cursor to the top
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -624,16 +622,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
 
                     // if etalase id is on the list, refresh this page; if etalase id is in other list, go to new page.
-//                    boolean isAddedToCurrentEtalaseList = shopProductAdapter.addEtalaseFromListMore(selectedEtalaseId, selectedEtalaseName);
-//                    if (isAddedToCurrentEtalaseList) {
-//                        selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName));
-//                        if (selectedEtalaseList.size() > ShopPageConstant.MAXIMUM_SELECTED_ETALASE_LIST) {
-//                            selectedEtalaseList.remove(selectedEtalaseList.size());
-//                        }
-//                        Intent intent = ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "",
-//                                selectedEtalaseId, attribution, sortName, selectedEtalaseList);
-//                        startActivity(intent);
-//                    }
                     if (shopProductAdapter.isEtalaseInChip(etalaseId)) {
                         this.selectedEtalaseId = etalaseId;
                         this.selectedEtalaseName = etalaseName;
@@ -663,7 +651,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 if (resultCode == Activity.RESULT_OK) {
                     String sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
                     startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(),
-                            "", "", "", sortName));
+                            "", selectedEtalaseId, "", sortName));
                 }
                 break;
             default:
