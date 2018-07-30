@@ -61,7 +61,7 @@ public class GetFeedsDetailUseCase {
 
     public static RequestParams getFeedDetailParam(String loginID, String detailId, int page) {
         RequestParams params = RequestParams.create();
-        params.putString(GetFeedsDetailUseCase.PARAM_USER_ID, loginID);
+        params.putInt(GetFeedsDetailUseCase.PARAM_USER_ID, Integer.valueOf(loginID));
         params.putString(GetFeedsDetailUseCase.PARAM_DETAIL_ID, detailId);
         params.putInt(GetFeedsDetailUseCase.PARAM_PAGE, page);
         params.putInt(GetFeedsDetailUseCase.PARAM_LIMIT_DETAIL, LIMIT_DETAIL);

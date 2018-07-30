@@ -108,12 +108,8 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
                 productFeed.getPreorder(),
                 productFeed.getFreereturns(),
                 productFeed.getWishlist(),
-                getRating(productFeed.getRating())
+                (double) productFeed.getRating()
         );
-    }
-
-    private Double getRating(Float rating) {
-        return (double) rating / MAX_RATING * NUM_STARS;
     }
 
     private boolean hasFeed(FeedQuery feedQuery) {
@@ -158,7 +154,7 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
                 productFeed.getPreorder(),
                 productFeed.getFreereturns(),
                 productFeed.getWishlist(),
-                getRating(productFeed.getRating())
+                (double) productFeed.getRating()
         );
     }
 
