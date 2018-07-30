@@ -27,13 +27,13 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_feature_new;
 
-    public ShopProductFeaturedViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedNewListener) {
+    public ShopProductFeaturedViewHolder(View itemView, int deviceWidth, ShopProductClickedNewListener shopProductClickedNewListener) {
         super(itemView);
         shopProductAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
                 null,
                 shopProductClickedNewListener, null,
                 null, null,
-                true , true));
+                true , deviceWidth, true));
         findViews(itemView);
     }
 

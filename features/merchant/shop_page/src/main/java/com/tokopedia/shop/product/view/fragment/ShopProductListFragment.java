@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,8 +74,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     private ShopProductAdapter shopProductAdapter;
 
-    private GridLayoutManager gridLayoutManager;
-
     private static final int LIST_SPAN_COUNT = 1;
     private static final int GRID_SPAN_COUNT = 2;
 
@@ -134,7 +133,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         return new ShopProductAdapterTypeFactory(null,
                 this, this,
                 this, null,
-                false, false
+                false, 0,false
         );
     }
 
@@ -256,7 +255,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        gridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -376,7 +375,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     list, attribution,
                     true, shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()),
-                    false);
+                    false,
+                    ShopPageTrackingConstant.SEARCH,
+                    selectedEtalaseName);
         }
 
         hideLoading();
@@ -448,11 +449,12 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
                     attribution, shopProductViewModel.getPositionTracking(), true,
                     shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), false,
+                    ShopPageTrackingConstant.SEARCH, selectedEtalaseName);
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
                 shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
-                shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), false, ShopPageTrackingConstant.PRODUCT_ETALASE));
+                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName));
     }
 
     @Override

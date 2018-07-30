@@ -45,12 +45,14 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private boolean isFixWidth;
     private boolean isFeatured;
+    private int deviceWidth;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
-                                 boolean isFixWidth, boolean isFeatured) {
+                                 boolean isFixWidth, int deviceWidth, boolean isFeatured) {
         super(itemView);
         this.isFixWidth = isFixWidth;
         this.isFeatured = isFeatured;
+        this.deviceWidth = deviceWidth;
         this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView);
     }
@@ -75,10 +77,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
-        if (isFixWidth) {
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            ((Activity) productImageView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            itemView.getLayoutParams().width = (int) (displaymetrics.widthPixels / RATIO_WITH_RELATIVE_TO_SCREEN);
+        if (isFixWidth && deviceWidth > 0) {
+            itemView.getLayoutParams().width = (int) (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN);
         }
 
         updateDisplayGeneralView(shopProductViewModel);

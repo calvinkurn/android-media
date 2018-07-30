@@ -12,6 +12,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -315,10 +316,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @NonNull
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int deviceWidth = displaymetrics.widthPixels;
         return new ShopProductAdapterTypeFactory(this,
                 this, this,
                 this, this,
-                false, false
+                false, deviceWidth, false
         );
     }
 
@@ -421,7 +425,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     list, attribution,
                     true, shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     ShopPageTracking.getShopType(shopInfo.getInfo()),
-                    false);
+                    false,
+                    ShopPageTrackingConstant.PRODUCT, selectedEtalaseName);
         }
 
         hideLoading();
@@ -477,7 +482,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
                     list, attribution,
                     shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), false,
+                    ShopPageTrackingConstant.PRODUCT, selectedEtalaseName);
         }
     }
 
@@ -599,18 +605,20 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
                         attribution, shopProductViewModel.getPositionTracking(), true,
                         shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-                        ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+                        ShopPageTracking.getShopType(shopInfo.getInfo()), false,
+                        ShopPageTrackingConstant.PRODUCT, selectedEtalaseName);
             } else {
                 shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                         shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
                         attribution, shopProductViewModel.getPositionTracking(), true,
                         shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-                        ShopPageTracking.getShopType(shopInfo.getInfo()), false);
+                        ShopPageTracking.getShopType(shopInfo.getInfo()), false,
+                        ShopPageTrackingConstant.PRODUCT, selectedEtalaseName);
             }
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
                 shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
-                shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), false, ShopPageTrackingConstant.PRODUCT_ETALASE));
+                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName));
     }
 
     @Override
