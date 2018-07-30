@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
+import com.tokopedia.checkout.view.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -75,7 +76,7 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItem.getQuantity()),
-                getWeightFormatted(cartItem.getWeight(), cartItem.getQuantity())));
+                WeightFormatterUtil.getFormattedWeight(cartItem.getWeight(), cartItem.getQuantity())));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItem.getNoteToSeller());
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
@@ -94,18 +95,6 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         } else {
             mllProductPoliciesLayout.setVisibility(View.GONE);
         }
-    }
-
-    private String getWeightFormatted(double weight, int qty) {
-        String weighTotalFormatted;
-        double weightTotal = weight * qty;
-        if (weightTotal >= 1000) {
-            weighTotalFormatted = String.valueOf(weightTotal / 1000.0f) + " kg";
-        } else {
-            weighTotalFormatted = ((int) weightTotal) + " gr";
-        }
-
-        return weighTotalFormatted.replace(".0", "");
     }
 
     private void showShipmentWarning(String message) {

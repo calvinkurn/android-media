@@ -33,6 +33,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
+import com.tokopedia.checkout.view.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.component.TextViewCompat;
@@ -43,6 +44,7 @@ import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -315,7 +317,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()),
-                getWeightFormatted(cartItemModel.getWeight(), cartItemModel.getQuantity())));
+                WeightFormatterUtil.getFormattedWeight(cartItemModel.getWeight(), cartItemModel.getQuantity())));
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
@@ -334,18 +336,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             llProductPoliciesLayout.setVisibility(View.GONE);
         }
-    }
-
-    private String getWeightFormatted(double weight, int qty) {
-        String weighTotalFormatted;
-        double weightTotal = weight * qty;
-        if (weightTotal >= 1000) {
-            weighTotalFormatted = String.valueOf(weightTotal / 1000.0f) + " kg";
-        } else {
-            weighTotalFormatted = ((int) weightTotal) + " gr";
-        }
-
-        return weighTotalFormatted.replace(".0", "");
     }
 
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
