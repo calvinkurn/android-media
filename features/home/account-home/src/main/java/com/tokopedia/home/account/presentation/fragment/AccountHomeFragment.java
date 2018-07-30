@@ -23,6 +23,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
@@ -154,9 +156,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
         menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent(getActivity())));
-        menuNotification.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Notification Page", Toast.LENGTH_SHORT).show();
-        });
+        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION));
 
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);

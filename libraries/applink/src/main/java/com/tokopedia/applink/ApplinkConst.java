@@ -129,6 +129,7 @@ public interface ApplinkConst {
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
+    String NOTIFICATION = "tokopedia://notification";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
