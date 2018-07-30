@@ -16,6 +16,7 @@
         style="@style/LabelLayout"
         android:minHeight="@dimen/dp_64"
         android:orientation="horizontal"
+        android:id="@+id/labelViewReview"
         android:gravity="center_vertical">
 
         <LinearLayout
