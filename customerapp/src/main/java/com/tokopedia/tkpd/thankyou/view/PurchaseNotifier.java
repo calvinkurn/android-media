@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.bca.xco.widget.XCOEnum;
 import com.beloo.widget.chipslayoutmanager.util.log.Log;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.paymentmanagementsystem.common.Constant;
+import com.tokopedia.pms.common.Constant;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.transaction.applink.TransactionAppLink;

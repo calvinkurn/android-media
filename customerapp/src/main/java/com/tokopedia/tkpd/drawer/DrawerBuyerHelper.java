@@ -20,7 +20,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.paymentmanagementsystem.payment.view.activity.PaymentListActivity;
+import com.tokopedia.pms.payment.view.activity.PaymentListActivity;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;

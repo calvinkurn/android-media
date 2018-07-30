@@ -269,7 +269,7 @@ ext {
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
-            paymentManagementSystem: "com.tokopedia.payment_management_system:payment_management_system:${tkpdPaymentManagementSystem}"
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
     ]
 
     tkpdLibDependencies = [
@@ -334,7 +334,7 @@ ext {
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
-            paymentManagementSystem     : ":features:payment:paymentmanagementsystem"
+            paymentManagementSystem     : ":features:payment:pms"
     ]
 
     libraries = [
