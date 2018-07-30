@@ -135,7 +135,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     protected void initView() {
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                startActivityForResult(AddAddressActivity.createInstance(this, token),
+                startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(this, token),
                         REQUEST_CODE_PARAM_CREATE);
                 break;
 
@@ -236,7 +236,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public void onBackPressed() {
         if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
             ((ShipmentAddressListFragment) getCurrentFragment())
-                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
+                    .checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
             super.onBackPressed();
         }
     }

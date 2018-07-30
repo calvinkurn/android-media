@@ -29,8 +29,8 @@ import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -298,7 +298,7 @@ public class CartListPresenter implements ICartListPresenter {
                         if (data.getCartItemData().getOriginData().isCashBack()) {
                             String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                             double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                             cashback = cashback + itemCashback;
                         }
                         subtotalPrice = subtotalPrice + itemPrice;
@@ -311,7 +311,7 @@ public class CartListPresenter implements ICartListPresenter {
                             if (data.getCartItemData().getOriginData().isCashBack()) {
                                 String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                                 double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                                 cashback = cashback + itemCashback;
                             }
                             subtotalPrice = subtotalPrice + itemPrice;

@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -35,7 +36,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.checkout.view.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME;
 import static com.tokopedia.checkout.view.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME;
 
 /**
@@ -48,6 +48,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private static final int SINGLE_DATA_SIZE = 1;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
+    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 500;
 
     private TextView shippingIndex;
     private TextViewCompat pseudoEditButton;
@@ -93,6 +94,21 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
         phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
+
+        etNotesForSeller.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (view.getId() == R.id.et_notes_for_seller) {
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
 
         initTextWatcherDebouncer(compositeSubscription);
     }
@@ -172,8 +188,11 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
-        data.setProductNotes(editable.toString());
-        validateNote(data);
+        if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
+            data.setProductNotes(editable.toString());
+            validateNote(data);
+            multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
+        }
     }
 
     private void validateNote(MultipleAddressItemData data) {

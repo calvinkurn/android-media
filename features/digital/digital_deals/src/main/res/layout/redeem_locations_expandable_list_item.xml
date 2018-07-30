@@ -13,13 +13,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:fontFamily="sans-serif"
         tools:text="Pacific Place"
         android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:textColor="@color/black_39"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
+        style="@style/TextView.Small.BlackPrimary"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -27,14 +24,12 @@
         android:id="@+id/tv_location_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
         android:lineSpacingExtra="2sp"
         android:layout_marginLeft="@dimen/dp_16"
         tools:text="PACIFIC PLACE MALL, 4th Floor…"
+        style="@style/TextView.Small"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:textStyle="normal"
         android:layout_marginRight="50dp"
         app:layout_constraintRight_toLeftOf="@+id/iv_map"
         app:layout_constraintTop_toBottomOf="@id/tv_location_name" />
