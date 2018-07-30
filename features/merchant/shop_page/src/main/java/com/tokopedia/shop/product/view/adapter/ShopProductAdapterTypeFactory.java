@@ -34,6 +34,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
     private final boolean isHorizontalLayout;
     private final boolean isFeaturedOnly;
+    private final int deviceWidth;
 
     private OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener;
     public interface OnShopProductAdapterTypeFactoryListener{
@@ -47,6 +48,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                                                  onShopProductEtalaseListViewHolderListener,
                                          @Nullable OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener,
                                          boolean isHorizontalLayout,
+                                         int deviceWidth,
                                          boolean isFeaturedOnly) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
@@ -55,6 +57,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.onShopProductAdapterTypeFactoryListener = onShopProductAdapterTypeFactoryListener;
         this.isHorizontalLayout = isHorizontalLayout;
         this.isFeaturedOnly = isFeaturedOnly;
+        this.deviceWidth = deviceWidth;
     }
 
     @Override
@@ -134,9 +137,9 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == ShopProductPromoViewHolder.LAYOUT) {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
         } else if(type == ShopProductFeaturedViewHolder .LAYOUT){
-            return new ShopProductFeaturedViewHolder(parent, shopProductClickedListener);
+            return new ShopProductFeaturedViewHolder(parent, deviceWidth, shopProductClickedListener);
         } else if(type == ShopProductViewHolder.LAYOUT){
-            return new ShopProductViewHolder(parent, shopProductClickedListener, isHorizontalLayout, isFeaturedOnly);
+            return new ShopProductViewHolder(parent, shopProductClickedListener, isHorizontalLayout, deviceWidth, isFeaturedOnly);
         } if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);
         } else {
