@@ -32,9 +32,11 @@ public class TrainHomepageCache {
     private final boolean DEFAULT_IS_ONE_WAY = true;
 
     private static final String ORIGIN_STATION_CODE = "ORIGIN_STATION_CODE";
+    private static final String ORIGIN_STATION_NAME = "ORIGIN_STATION_NAME";
     private static final String ORIGIN_CITY_NAME = "ORIGIN_CITY_NAME";
     private static final String ORIGIN_ISLAND_NAME = "ORIGIN_ISLAND_NAME";
     private static final String DESTINATION_STATION_CODE = "DESTINATION_STATION_CODE";
+    private static final String DESTINATION_STATION_NAME = "DESTINATION_STATION_NAME";
     private static final String DESTINATION_CITY_NAME = "DESTINATION_CITY_NAME";
     private static final String DESTINATION_ISLAND_NAME = "DESTINATION_ISLAND_NAME";
     private static final String DEPARTURE_DATE = "DEPARTURE_DATE";
@@ -61,6 +63,8 @@ public class TrainHomepageCache {
         if (trainHomepageViewModel != null) {
             editor.putString(ORIGIN_STATION_CODE, trainHomepageViewModel.getOriginStation()
                     .getStationCode()).apply();
+            editor.putString(ORIGIN_STATION_NAME, trainHomepageViewModel.getOriginStation()
+                    .getStationName()).apply();
             editor.putString(ORIGIN_CITY_NAME, trainHomepageViewModel.getOriginStation()
                     .getCityName()).apply();
             editor.putString(ORIGIN_ISLAND_NAME, trainHomepageViewModel.getOriginStation()
@@ -68,6 +72,8 @@ public class TrainHomepageCache {
 
             editor.putString(DESTINATION_STATION_CODE, trainHomepageViewModel.getDestinationStation()
                     .getStationCode()).apply();
+            editor.putString(DESTINATION_STATION_NAME, trainHomepageViewModel.getDestinationStation()
+                    .getStationName()).apply();
             editor.putString(DESTINATION_CITY_NAME, trainHomepageViewModel.getDestinationStation()
                     .getCityName()).apply();
             editor.putString(DESTINATION_ISLAND_NAME, trainHomepageViewModel.getDestinationStation()
@@ -90,30 +96,32 @@ public class TrainHomepageCache {
 
     public TrainHomepageViewModel buildTrainHomepageViewModelFromCache() {
         String originStationCode = sharedPrefs.getString(ORIGIN_STATION_CODE, "");
+        String originStationName = sharedPrefs.getString(ORIGIN_STATION_NAME, "");
         String originCityName = sharedPrefs.getString(ORIGIN_CITY_NAME, DEFAULT_ORIGIN_CITY_NAME);
         String originIslandName = sharedPrefs.getString(ORIGIN_ISLAND_NAME, DEFAULT_ORIGIN_ISLAND_NAME);
         TrainStationAndCityViewModel originTrainStationAndCityViewModel;
         if (!TextUtils.isEmpty(originStationCode)) {
             originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                    originStationCode, originCityName, originIslandName
+                    originStationCode, originStationName, originCityName, originIslandName
             );
         } else {
             originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                    null, originCityName, originIslandName
+                    null, null, originCityName, originIslandName
             );
         }
 
         String destinationStationCode = sharedPrefs.getString(DESTINATION_STATION_CODE, "");
+        String destinationStationName = sharedPrefs.getString(DESTINATION_STATION_NAME, "");
         String destinationCityName = sharedPrefs.getString(DESTINATION_CITY_NAME, DEFAULT_DESTINATION_CITY_NAME);
         String destinationIslandName = sharedPrefs.getString(DESTINATION_ISLAND_NAME, DEFAULT_DESTINATION_ISLAND_NAME);
         TrainStationAndCityViewModel destinationTrainStationAndCityViewModel;
         if (!TextUtils.isEmpty(destinationStationCode)) {
             destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                    destinationStationCode, destinationCityName, destinationIslandName
+                    destinationStationCode, destinationStationName, destinationCityName, destinationIslandName
             );
         } else {
             destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                    null, destinationCityName, destinationIslandName
+                    null, null, destinationCityName, destinationIslandName
             );
         }
 

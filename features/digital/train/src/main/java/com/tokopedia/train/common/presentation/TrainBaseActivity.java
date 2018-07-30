@@ -15,6 +15,7 @@ import com.tokopedia.train.homepage.presentation.fragment.TrainHomepageFragment;
  */
 
 public abstract class TrainBaseActivity extends BaseSimpleActivity {
+
     private Menus menus;
 
     @Override
@@ -22,7 +23,6 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
         showBottomMenus();
         return false;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,6 +59,8 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
             switch (pos) {
                 case 0:
                     if (getApplication() instanceof TrainRouter) {
+
+
                         ((TrainRouter) getApplication()).goToTrainOrderList(this);
                     }
                     break;
