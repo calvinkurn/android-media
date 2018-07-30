@@ -6,6 +6,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -132,8 +133,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private CheckBox cbDropshipper;
     private ImageView imgDropshipperInfo;
     private LinearLayout llDropshipperInfo;
-    private EditText etShipperName;
-    private EditText etShipperPhone;
+    private AppCompatEditText etShipperName;
+    private AppCompatEditText etShipperPhone;
     private TextInputLayout textInputLayoutShipperName;
     private TextInputLayout textInputLayoutShipperPhone;
     private View vSeparatorMultipleProductSameStore;

@@ -57,7 +57,7 @@
             <TextView
                 android:id="@+id/tv_select_payment_method"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/btn_height"
+                android:layout_height="@dimen/dp_40"
                 android:layout_margin="@dimen/margin_small"
                 android:layout_weight="1"
                 android:background="@drawable/orange_button_rounded"

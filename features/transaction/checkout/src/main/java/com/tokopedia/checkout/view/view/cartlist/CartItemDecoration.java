@@ -45,7 +45,7 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
         } else if (viewHolder instanceof CartTickerErrorViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
         } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_16);
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
         } else {
             outRect.bottom = verticalSpaceHeight;
         }
