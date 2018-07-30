@@ -22,6 +22,8 @@ public interface TrainStationsContract {
         void showLoading();
 
         void hideLoading();
+
+        void renderSearchHint();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -29,5 +31,7 @@ public interface TrainStationsContract {
         void actionOnInitialLoad();
 
         void onKeywordChange(String keyword);
+
+        void onViewCreated();
     }
 }

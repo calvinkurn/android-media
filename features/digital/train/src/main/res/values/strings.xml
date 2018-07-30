@@ -177,5 +177,7 @@
     <string name="train_seat_confirm_change_seat_title">Apakah Anda yakin dengan pilihan kursi berikut?</string>
     <string name="train_seat_confirm_dialog_accept">Lanjut</string>
     <string name="train_seat_confirm_dialog_cancel">Ubah Kursi</string>
+    <string name="train_station_origin_hint">Ketik Kota atau Stasiun Asal</string>
+    <string name="train_station_destination_hint">Ketik Kota atau Stasiun Tujuan</string>
 
 </resources>

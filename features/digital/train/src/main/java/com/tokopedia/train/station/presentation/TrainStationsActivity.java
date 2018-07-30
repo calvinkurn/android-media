@@ -19,11 +19,13 @@ import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAn
 public class TrainStationsActivity extends BaseSimpleActivity implements HasComponent<TrainStationsComponent>, TrainStationsFragment.OnFragmentInteractionListener {
     public static final String EXTRA_SELECTED_STATION = "EXTRA_SELECTED_STATION";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_HINT = "EXTRA_HINT";
     private TrainStationsComponent trainStationsComponent;
 
-    public static Intent getCallingIntent(Activity activity, String title) {
+    public static Intent getCallingIntent(Activity activity, String title, String hint) {
         Intent intent = new Intent(activity, TrainStationsActivity.class);
         intent.putExtra(EXTRA_TITLE, title);
+        intent.putExtra(EXTRA_HINT, hint);
         return intent;
     }
 
@@ -35,7 +37,7 @@ public class TrainStationsActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     protected Fragment getNewFragment() {
-        return TrainStationsFragment.newInstance();
+        return TrainStationsFragment.newInstance(getIntent().getStringExtra(EXTRA_HINT));
     }
 
     @Override
