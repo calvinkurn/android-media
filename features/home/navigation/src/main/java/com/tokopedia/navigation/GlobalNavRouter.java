@@ -15,5 +15,13 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment();
 
+    Intent getInboxTalkCallingIntent(Context context);
+
+    Intent getInboxTicketCallingIntent(Context context);
+
     Intent getSellerInfoCallingIntent(Context context);
+
+    Intent getResolutionCenterIntentBuyer(Context context);
+
+    Intent getResolutionCenterIntentSeller(Context context);
 }

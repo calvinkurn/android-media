@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -20,10 +21,7 @@ import q.rorbin.badgeview.QBadgeView;
  */
 public class MainToolbar extends Toolbar {
 
-    private ImageButton btnQrCode;
     private ImageButton btnNotification;
-    private ImageButton btnWishlist;
-    private EditText editTextSearch;
 
     private QBadgeView badgeView;
 
@@ -44,20 +42,26 @@ public class MainToolbar extends Toolbar {
         init();
     }
 
+    public void setNotificationNumber(int badgeNumber) {
+        if (btnNotification != null) {
+            if (badgeView == null)
+                badgeView = new QBadgeView(getContext());
+
+            badgeView.bindTarget(btnNotification);
+            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeView.setBadgeNumber(badgeNumber);
+        }
+    }
+
     private void init() {
 
         userSession = ((AbstractionRouter) this.getContext().getApplicationContext()).getSession();
 
         inflate(getContext(), R.layout.main_toolbar, this);
-        btnQrCode = findViewById(R.id.btn_qrcode);
+        ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
-        btnWishlist = findViewById(R.id.btn_wishlist);
-        editTextSearch = findViewById(R.id.et_search);
-
-        badgeView = new QBadgeView(getContext());
-        badgeView.bindTarget(btnNotification);
-        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-        badgeView.setBadgeNumber(2);
+        ImageButton btnWishlist = findViewById(R.id.btn_wishlist);
+        EditText editTextSearch = findViewById(R.id.et_search);
 
         btnQrCode.setOnClickListener(v ->
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
@@ -70,6 +74,11 @@ public class MainToolbar extends Toolbar {
             } else {
                 RouteManager.route(this.getContext(), ApplinkConst.LOGIN);
             }
+        });
+
+        editTextSearch.setOnClickListener(v -> {
+            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                    .gotoSearchPage(getContext()));
         });
 
         btnNotification.setOnClickListener(v -> {

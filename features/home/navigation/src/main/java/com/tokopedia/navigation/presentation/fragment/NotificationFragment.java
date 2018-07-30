@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.NotificationsModel;
@@ -34,6 +35,7 @@ import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SEDANG_DIKIRIM;
 
 /**
  * Created by meta on 24/07/18.
@@ -71,45 +73,56 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         adapter = new NotificationAdapter(getActivity());
         recyclerView.setAdapter(adapter);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                presenter.getDrawerNotification();
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.getDrawerNotification());
+
+        adapter.setOnNotifClickListener((parent, child) -> {
+            Intent intent = getCallingIntent(parent, child);
+            if (intent != null) {
+                startActivity(intent);
             }
         });
 
-        adapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = getCallingIntent(position);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            }
-        });
+        adapter.addAll(getData());
     }
 
-    private Intent getCallingIntent(int position) {
+    private Intent getCallingIntent(int parentPosition, int childPosition) {
         Intent intent = null;
-        switch (position) {
+        switch (parentPosition) {
             case SELLER_INFO:
                 intent = ((GlobalNavRouter)getActivity().getApplication())
                         .getSellerInfoCallingIntent(getActivity());
                 break;
             case PEMBELIAN:
+                if (childPosition == SEDANG_DIKIRIM) {
+                    RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                } else if (childPosition == SAMPAI_TUJUAN){
+                    RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                }
                 break;
             case PENJUALAN:
+                if (childPosition == PESANAN_BARU) {
+                    RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                } else if (childPosition == SIAP_DIKIRIM){
+                    RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                } else if (childPosition == SAMPAI_TUJUAN){
+                    RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                }
                 break;
             case KOMPLAIN:
+                if (childPosition == BUYER) {
+                    intent = ((GlobalNavRouter)getActivity().getApplication())
+                            .getResolutionCenterIntentBuyer(getActivity());
+                } else if (childPosition == SELLER) {
+                    intent = ((GlobalNavRouter)getActivity().getApplication())
+                            .getResolutionCenterIntentSeller(getActivity());
+                }
                 break;
         }
         return intent;
     }
 
     @Override
-    public void loadData() {
-        adapter.addAll(getData());
-    }
+    public void loadData() { }
 
     @Override
     public void onStartLoading() {

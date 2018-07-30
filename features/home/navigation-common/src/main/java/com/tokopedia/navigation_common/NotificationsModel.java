@@ -22,6 +22,9 @@ public class NotificationsModel {
     @SerializedName("userSatisfactionSurvey")
     @Expose
     private Integer userSatisfaction;
+    @SerializedName("total_notif")
+    @Expose
+    private String totalNotification;
 
     public NotificationResolutionModel getResolution() {
         return resolution;
@@ -61,5 +64,13 @@ public class NotificationsModel {
 
     public void setUserSatisfaction(Integer userSatisfaction) {
         this.userSatisfaction = userSatisfaction;
+    }
+
+    public String getTotalNotification() {
+        return totalNotification;
+    }
+
+    public void setTotalNotification(String totalNotification) {
+        this.totalNotification = totalNotification;
     }
 }
