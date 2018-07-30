@@ -88,11 +88,11 @@
     <string name="shop_product_limited_empty_product_title_owner">Toko Anda belum memiliki produk</string>
     <string name="shop_product_limited_empty_product_title_owner_at_etalase">Toko Anda belum memiliki produk di etalase ini</string>
     <string name="shop_product_limited_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
-    <string name="shop_product_empty_product_title_etalase">Tidak ada \"%1$s\" di etalase ini</string>
-    <string name="shop_product_empty_product_title_owner_etalase">Ubah kata pencarian Anda atau pilih etalase lain</string>
+    <string name="shop_product_empty_product_title_etalase">Oops… Hasil pencarian Anda tidak ditemukan di etalase ini</string>
+    <string name="shop_product_empty_product_title_owner_etalase">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
 
-    <string name="shop_product_empty_product_title_no_etalase">Tidak ada hasil pencarian untuk \"%1$s\"</string>
-    <string name="shop_product_empty_product_title_owner_no_etalase">Ubah kata pencarian Anda</string>
+    <string name="shop_product_empty_product_title_no_etalase">Oops… Hasil pencarian Anda tidak ditemukan.</string>
+    <string name="shop_product_empty_product_title_owner_no_etalase">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
@@ -139,5 +139,6 @@
     <string name="shop_product_empty_follower_title">Toko ini belum memiliki follower</string>
     <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
     <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
+    <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
 
 </resources>

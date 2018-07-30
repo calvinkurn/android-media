@@ -57,7 +57,6 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -98,13 +97,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private ShopInfo shopInfo;
     private ShopModuleRouter shopModuleRouter;
     private BottomActionView bottomActionView;
-    //    private SearchInputView searchInputView;
-//    private RecyclerView.ItemDecoration itemDecoration;
-//    private LinearLayout linearHeaderSticky;
-//    private LabelView etalaseButton;
+
     private String sortName = Integer.toString(Integer.MIN_VALUE);
     private RecyclerView recyclerView;
-    //    protected boolean hideSearch = false;
 
     private String selectedEtalaseId;
     private String selectedEtalaseName;
@@ -286,7 +281,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
+                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT) {
                     return LIST_SPAN_COUNT;
                 } else {
                     return GRID_SPAN_COUNT;
@@ -337,7 +332,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.ic_empty_list_product);
-
         if (shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
             if (isCurrentlyShowAllEtalase()) {
                 emptyModel.setTitle(getString(R.string.shop_product_limited_empty_product_title_owner));
@@ -712,6 +706,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         return needToShowEtalase;
     }
 
+    @Override
+    public int getFeaturedDataSize() {
+        return shopProductAdapter.getShopProductFeaturedViewModel().getShopProductFeaturedViewModelList().size();
+    }
 
     @Override
     protected void onAttachActivity(Context context) {

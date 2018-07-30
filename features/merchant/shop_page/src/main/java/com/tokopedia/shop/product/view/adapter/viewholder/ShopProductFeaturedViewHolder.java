@@ -18,22 +18,26 @@ import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
  * Created by normansyahputa on 2/22/18.
  */
 
-public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProductFeaturedViewModel> {
+public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProductFeaturedViewModel> implements ShopProductAdapterTypeFactory.OnShopProductAdapterTypeFactoryListener {
 
     private RecyclerView recyclerView;
     private ShopProductAdapter shopProductAdapter;
     private Parcelable recyclerViewState;
+    private boolean isDataSizeSmall;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_feature_new;
+    public static final int LAYOUT = R.layout.item_shop_product_feature;
 
-    public ShopProductFeaturedViewHolder(View itemView, int deviceWidth, ShopProductClickedNewListener shopProductClickedNewListener) {
+    public ShopProductFeaturedViewHolder(View itemView, int deviceWidth,
+                                         ShopProductClickedNewListener shopProductClickedNewListener,
+                                         boolean isDataSizeSmall) {
         super(itemView);
+        this.isDataSizeSmall = isDataSizeSmall;
         shopProductAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
                 null,
                 shopProductClickedNewListener, null,
-                null, null,
-                true , deviceWidth, true));
+                null, this,
+                true, deviceWidth, true));
         findViews(itemView);
     }
 
@@ -52,7 +56,8 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
 
     private void findViews(View view) {
         recyclerView = view.findViewById(R.id.recyclerViewFeature);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
+                isDataSizeSmall ? LinearLayoutManager.VERTICAL : LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
@@ -61,4 +66,13 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
         recyclerView.setAdapter(shopProductAdapter);
     }
 
+    @Override
+    public boolean needToShowEtalase() {
+        return true;
+    }
+
+    @Override
+    public int getFeaturedDataSize() {
+        return shopProductAdapter.getShopProductViewModelList().size();
+    }
 }

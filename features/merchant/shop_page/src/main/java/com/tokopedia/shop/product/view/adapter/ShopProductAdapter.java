@@ -105,6 +105,10 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         notifyItemChanged(DEFAULT_ETALASE_POSITION);
     }
 
+    public ShopProductFeaturedViewModel getShopProductFeaturedViewModel() {
+        return shopProductFeaturedViewModel;
+    }
+
     /**
      * @return true, if add etalase to current list; false if no add needed.
      */

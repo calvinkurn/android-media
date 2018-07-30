@@ -555,7 +555,7 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private void onGoToShop() {
-        Intent intent = ShopPageActivity.Companion.createIntent(context, sessionHandler.getShopID());
+        Intent intent = ShopPageActivity.createIntent(context, sessionHandler.getShopID());
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }

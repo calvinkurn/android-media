@@ -11,7 +11,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +25,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -156,9 +156,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             }
         } else {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
-                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_no_etalase, keyword));
+                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_no_etalase));
             } else {
-                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_etalase, keyword));
+                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_etalase));
             }
         }
         if (TextUtils.isEmpty(selectedEtalaseId)) {
@@ -259,7 +259,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
+                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT) {
                     return LIST_SPAN_COUNT;
                 } else {
                     return GRID_SPAN_COUNT;
