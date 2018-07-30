@@ -69,6 +69,7 @@
     <string name="pref_receive_promo" translatable="false">notification_receive_promo</string>
     <string name="pref_receive_seller_info" translatable="false">notification_seller_info</string>
     <string name="pref_receive_group_chat" translatable="false">notification_group_chat</string>
+    <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
 
     <string name="application_version_fmt">Versi %1$s</string>
     <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
@@ -134,6 +135,8 @@
     <string name="label_tokopoint_see_voucher">Lihat Kupon</string>
     <string name="title_app_notif_setting">Notifikasi Aplikasi</string>
     <string name="title_email_notif_setting">Notifikasi Email</string>
+    <string name="title_shake_setting">Shake Shake</string>
+    <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
 
 
 </resources>
