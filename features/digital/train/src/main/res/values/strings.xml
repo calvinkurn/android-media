@@ -15,9 +15,9 @@
     <string name="train_homepage_toolbar_title">Tiket Kereta</string>
     <string name="train_homepage_origin_station_hint">Kota/Stasiun Asal</string>
     <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>
-    <string name="train_homepage_bottom_menu_order_list">Daftar Transaksi</string>
-    <string name="train_homepage_bottom_menu_check_orders">Cek Pesanan</string>
+    <string name="train_homepage_bottom_menu_transaction_list">Daftar Transaksi</string>
     <string name="train_homepage_bottom_menu_promo">Promo</string>
+    <string name="train_homepage_bottom_menu_help">Help</string>
     <string name="train_homepage_bottom_menu_action_text">Tutup</string>
 
     <string name="train_station_popular_label">Populer</string>

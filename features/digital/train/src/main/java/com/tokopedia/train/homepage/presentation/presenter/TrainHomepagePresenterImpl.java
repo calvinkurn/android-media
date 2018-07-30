@@ -206,16 +206,19 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
             String returnDate = viewModel.getReturnDate().replace("-", "");
             String departureDate = viewModel.getDepartureDate().replace("-", "");
 
-            TrainSearchPassDataViewModel passDataViewModel = new TrainSearchPassDataViewModel();
-            passDataViewModel.setAdult(viewModel.getTrainPassengerViewModel().getAdult());
-            passDataViewModel.setInfant(viewModel.getTrainPassengerViewModel().getInfant());
-            passDataViewModel.setDepartureDate(departureDate);
-            passDataViewModel.setReturnDate(returnDate);
-            passDataViewModel.setDestinationStationCode(viewModel.getDestinationStation().getStationCode());
-            passDataViewModel.setDestinationCityName(viewModel.getDestinationStation().getCityName());
-            passDataViewModel.setOriginStationCode(viewModel.getOriginStation().getStationCode());
-            passDataViewModel.setOriginCityName(viewModel.getOriginStation().getCityName());
-            passDataViewModel.setOneWay(viewModel.isOneWay());
+            TrainSearchPassDataViewModel passDataViewModel = new TrainSearchPassDataViewModel(
+                    viewModel.getTrainPassengerViewModel().getAdult(),
+                    viewModel.getTrainPassengerViewModel().getInfant(),
+                    departureDate,
+                    returnDate,
+                    viewModel.getOriginStation().getStationCode(),
+                    viewModel.getOriginStation().getStationName(),
+                    viewModel.getOriginStation().getCityName(),
+                    viewModel.getDestinationStation().getStationCode(),
+                    viewModel.getDestinationStation().getStationName(),
+                    viewModel.getDestinationStation().getCityName(),
+                    viewModel.isOneWay()
+            );
             getView().navigateToSearchPage(passDataViewModel);
         }
     }

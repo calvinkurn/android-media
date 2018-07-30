@@ -62,6 +62,8 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
 
     @Override
     public void bind(TrainScheduleViewModel trainScheduleViewModel) {
+        // send product impression
+
         setDataSchedule(trainScheduleViewModel);
         setColorTextItem(trainScheduleViewModel.getAvailableSeat() == OUT_OF_STOCK);
     }

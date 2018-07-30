@@ -7,6 +7,7 @@ public interface TrainEventTracking {
 
     interface Event {
         String GENERIC_TRAIN_EVENT = "genericTrainEvent";
+        String PROMO_CLICK = "promoCLick";
     }
 
     interface Category {

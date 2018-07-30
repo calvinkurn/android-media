@@ -19,11 +19,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
+import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -56,6 +58,9 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private static final int REQUEST_CODE_LOYALTY = 200;
 
     @Inject
+    TrainAnalytics trainAnalytics;
+
+    @Inject
     TrainReviewDetailPresenter trainReviewDetailPresenter;
 
     @Inject
@@ -77,6 +82,9 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
 
     private TrainReviewDetailComponent trainReviewDetailComponent;
+
+    private TrainScheduleDetailViewModel departureTripViewModel;
+    private TrainScheduleDetailViewModel returnTripViewModel;
 
     public static Fragment newInstance(TrainSoftbook trainSoftbook,
                                        TrainScheduleBookingPassData trainScheduleBookingPassData) {
@@ -152,6 +160,18 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         });
 
         buttonSubmit.setOnClickListener(v -> {
+//            String trainClass = trainScheduleDetailViewModel.getTrainClass();
+//            String trainName = trainScheduleDetailViewModel.getTrainName();
+//            String totalPrice = getString(R.string.train_label_currency,
+//                    CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
+//                            false, 0).getFormattedString());
+//            int numOfTotalPassenger = trainScheduleDetailViewModel.getNumOfAdultPassenger()
+//                    + trainScheduleDetailViewModel.getNumOfInfantPassenger();
+//
+//            trainAnalytics.eventAddToCart(
+//
+//            );
+
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
                     trainSoftbook.getReservationCode(),
                     "",
@@ -287,6 +307,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
+        this.departureTripViewModel = departureTrip;
+        this.returnTripViewModel = returnTrip;
         viewTrainReviewDetailPriceSection.showScheduleTripsPrice(departureTrip, returnTrip);
     }
 

@@ -10,9 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
+import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.scheduledetail.di.DaggerTrainScheduleDetailComponent;
 import com.tokopedia.train.scheduledetail.di.TrainScheduleDetailComponent;
 import com.tokopedia.train.scheduledetail.presentation.contract.TrainScheduleContract;
@@ -21,6 +24,9 @@ import com.tokopedia.train.scheduledetail.presentation.fragment.TrainSchedulePri
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.scheduledetail.presentation.presenter.TrainSchedulePresenter;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,6 +49,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Inject
     TrainSchedulePresenter trainSchedulePresenter;
+
+    @Inject
+    TrainAnalytics trainAnalytics;
 
     private TrainScheduleDetailComponent trainScheduleDetailComponent;
 
@@ -161,6 +170,22 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         textHeaderOriginCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
         textHeaderDestinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
         textHeaderDestinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
+
+        String trainClass = trainScheduleDetailViewModel.getTrainClass();
+        String trainName = trainScheduleDetailViewModel.getTrainName();
+        String totalPrice = getString(R.string.train_label_currency,
+                CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
+                        false, 0).getFormattedString());
+        int numOfTotalPassenger = trainScheduleDetailViewModel.getNumOfAdultPassenger()
+                + trainScheduleDetailViewModel.getNumOfInfantPassenger();
+
+        trainAnalytics.eventProductDetailImpressions(
+                trainScheduleDetailViewModel.getOriginStationName(),
+                trainScheduleDetailViewModel.getDestinationStationName(),
+                trainClass,
+                trainName,
+                totalPrice,
+                numOfTotalPassenger);
     }
 
     protected void initInjector() {
