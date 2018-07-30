@@ -150,8 +150,8 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
 
         protected boolean onOverrideUrl(Uri url) {
             try {
-                if (url.toString().contains(APPLINK_SCHEME)
-                        && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+                if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
+                        && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
                     ((TkpdInboxRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
                                     Bundle());
