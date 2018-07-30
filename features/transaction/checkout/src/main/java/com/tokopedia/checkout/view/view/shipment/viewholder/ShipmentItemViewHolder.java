@@ -826,16 +826,20 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvPreOrder.setTextColor(nonActiveTextColor);
         tvNoteToSellerLabel.setTextColor(nonActiveTextColor);
         tvOptionalNoteToSeller.setTextColor(nonActiveTextColor);
-        tvCashback.setBackgroundColor(nonActiveTextColor);
+        tvItemCountAndWeight.setTextColor(nonActiveTextColor);
+        tvCashback.setTextColor(nonActiveTextColor);
+        tvCashback.setBackground(ContextCompat.getDrawable(tvCashback.getContext(), R.drawable.bg_cashback_disabled));
         setImageFilterGrayScale();
     }
 
     private void setImageFilterGrayScale() {
         ColorMatrix matrix = new ColorMatrix();
         matrix.setSaturation(0);
-        ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
-        ivProductImage.setColorFilter(cf);
+        ColorMatrixColorFilter disabledColorFilter = new ColorMatrixColorFilter(matrix);
+        ivProductImage.setColorFilter(disabledColorFilter);
         ivProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
+        ivFreeReturnIcon.setColorFilter(disabledColorFilter);
+        ivFreeReturnIcon.setImageAlpha(IMAGE_ALPHA_DISABLED);
     }
 
     private void enableItemView() {
@@ -844,7 +848,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
         tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
+        tvItemCountAndWeight.setTextColor(ContextCompat.getColor(tvItemCountAndWeight.getContext(), R.color.black_38));
         tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.black_38));
+        tvCashback.setTextColor(ContextCompat.getColor(tvCashback.getContext(), R.color.cashback_text_color));
         tvCashback.setBackground(ContextCompat.getDrawable(tvCashback.getContext(), R.drawable.bg_cashback));
         setImageFilterNormal();
     }

@@ -468,7 +468,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             public void onClick(View view) {
                 if (addressLayout.getVisibility() == View.VISIBLE) {
                     addAddressErrorTextView.setVisibility(View.GONE);
-                    checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickSimpanFromUbahFromKirimKeBeberapaAlamat();
+                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickSimpanFromUbahFromKirimKeBeberapaAlamat();
                     if (formMode == ADD_MODE) {
                         addNewAddressItem();
                     } else {
@@ -487,7 +487,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             public void onClick(View view) {
                 ((EditText) view).selectAll();
                 String qtyString = ((EditText) view).getText().toString();
-                checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickInputQuantityFromUbahFromKirimKeBeberapaAlamat(
+                checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickInputQuantityFromUbahFromKirimKeBeberapaAlamat(
                         !TextUtils.isEmpty(qtyString) ? qtyString : ""
                 );
             }
@@ -539,7 +539,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                 try {
                     int quantity = Integer.parseInt(quantityField.getText().toString());
                     quantityField.setText(String.valueOf(quantity - 1));
-                    checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat();
+                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -554,7 +554,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                 try {
                     int quantity = Integer.parseInt(quantityField.getText().toString());
                     quantityField.setText(String.valueOf(quantity + 1));
-                    checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickPlusFromUbahFromKirimKeBeberapaAlamat();
+                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickPlusFromUbahFromKirimKeBeberapaAlamat();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -606,13 +606,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             public void onClick(View view) {
                 emptyNotesLayout.setVisibility(View.GONE);
                 notesLayout.setVisibility(View.VISIBLE);
-                checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTulisCatatanFromUbahFromKirimKeBeberapaAlamat();
+                checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickTulisCatatanFromUbahFromKirimKeBeberapaAlamat();
             }
         };
     }
 
     public void onCloseButtonPressed() {
-        checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickXFromUbahFromKirimKeBeberapaAlamat();
+        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickXFromUbahFromKirimKeBeberapaAlamat();
     }
 
     @Override
