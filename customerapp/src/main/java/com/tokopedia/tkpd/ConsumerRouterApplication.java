@@ -2553,7 +2553,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getInboxHelpIntent(Context context) {
         return InboxTicketActivity.getCallingIntent(context);
     }
-          
+
     @Override
     public Intent getInboxTalkCallingIntent(Context context) {
         return new Intent(context, InboxTalkActivity.class);
