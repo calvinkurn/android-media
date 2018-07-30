@@ -130,6 +130,10 @@ public interface ApplinkConst {
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String NOTIFICATION = "tokopedia://notification";
+    String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
+    String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
+    String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
+    String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

@@ -1,7 +1,8 @@
-package com.tokopedia.home.account.presentation.adapter;
+package com.tokopedia.home.account.presentation.adapter.seller;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
