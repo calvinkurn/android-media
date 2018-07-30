@@ -16,7 +16,6 @@ import android.widget.ImageView;
 
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.product.edit.common.util.ViewUtils;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;

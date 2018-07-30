@@ -1,14 +1,13 @@
 package com.tokopedia.shop.open.data.source.cloud.api;
 
 import com.tokopedia.shop.open.constant.ShopOpenNetworkConstant;
-import com.tokopedia.product.edit.common.util.ShopOpenNetworkConstant;
+import com.tokopedia.shop.open.data.model.response.DataResponse;
 import com.tokopedia.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.shop.open.data.model.response.ResponseCheckShopName;
 import com.tokopedia.shop.open.data.model.response.ResponseCreateShop;
-import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseSaveShopDesc;
-import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.data.model.response.ResponseReserveDomain;
-import com.tokopedia.shop.open.data.model.response.DataResponse;
+import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseSaveShopDesc;
 
 import java.util.Map;
 

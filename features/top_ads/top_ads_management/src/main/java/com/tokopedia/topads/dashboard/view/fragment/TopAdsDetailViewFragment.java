@@ -16,7 +16,6 @@ import android.widget.CompoundButton;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.product.edit.common.util.ViewUtils;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;

@@ -24,17 +24,18 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
+import com.tokopedia.product.edit.common.util.TomeException;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.product.edit.common.util.TomeException;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.Shipment;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
+import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.holder.LocationHeaderViewHolder;
 import com.tokopedia.shop.open.view.holder.LocationMapViewHolder;
 import com.tokopedia.shop.open.view.holder.LocationShippingViewHolder;
@@ -43,7 +44,6 @@ import com.tokopedia.shop.open.view.model.DestinationViewModel;
 import com.tokopedia.shop.open.view.model.GoogleLocationViewModel;
 import com.tokopedia.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.shop.open.view.presenter.ShopOpenLocPresenterImpl;
-import com.tokopedia.shop.open.util.ShopErrorHandler;
 
 import java.util.HashMap;
 

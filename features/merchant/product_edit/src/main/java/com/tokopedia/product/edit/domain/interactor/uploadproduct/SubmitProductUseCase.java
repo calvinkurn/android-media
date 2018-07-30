@@ -3,10 +3,10 @@ package com.tokopedia.product.edit.domain.interactor.uploadproduct;
 import android.text.TextUtils;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.edit.data.exception.ImageUploadErrorException;
 import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.edit.common.model.edit.BasePictureViewModel;
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.edit.data.exception.ImageUploadErrorException;
 import com.tokopedia.product.edit.domain.interactor.GetProductDetailUseCase;
 import com.tokopedia.product.edit.domain.listener.ProductSubmitNotificationListener;
 import com.tokopedia.product.edit.domain.mapper.ProductUploadMapper;

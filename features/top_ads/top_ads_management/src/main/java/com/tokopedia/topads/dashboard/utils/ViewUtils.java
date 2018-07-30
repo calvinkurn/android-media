@@ -5,10 +5,11 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
-import com.tokopedia.seller.common.exception.TomeException;
+import com.tokopedia.product.edit.common.util.TomeException;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.common.data.exception.ResponseErrorException;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
