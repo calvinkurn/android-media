@@ -57,7 +57,6 @@ import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
-import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
@@ -131,7 +130,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
-    private FeedPlusContainerListener containerListener;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -213,13 +211,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     FeedModuleRouter.class.getSimpleName());
         }
 
-        if (getParentFragment() instanceof FeedPlusContainerListener) {
-            containerListener = (FeedPlusContainerListener) getParentFragment();
-        } else {
-            throw new IllegalStateException("getParentFragment() must be an instance of "
-                    + FeedPlusContainerListener.class.getSimpleName());
-        }
-
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
     }
@@ -284,9 +275,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             }
 
-        });
-        tabExplore.setOnClickListener(v -> {
-            containerListener.showContentExplore();
         });
     }
 
