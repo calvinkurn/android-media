@@ -2,6 +2,7 @@ package com.tokopedia.train.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -23,6 +24,8 @@ public interface TrainComponent {
 
     @ApplicationContext
     Context getContext();
+
+    AnalyticTracker analyticTracker();
 
     UserSession userSession();
 

@@ -30,6 +30,7 @@ import com.tokopedia.train.common.constant.TrainAppScreen;
 import com.tokopedia.train.common.constant.TrainEventTracking;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.presentation.TextInputView;
+import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.homepage.di.TrainHomepageComponent;
 import com.tokopedia.train.homepage.presentation.activity.TrainPassengerPickerActivity;
 import com.tokopedia.train.homepage.presentation.listener.TrainHomepageView;
@@ -82,16 +83,16 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private TrainHomepageViewModel viewModel;
 
-
-
     private AbstractionRouter abstractionRouter;
+
+    @Inject
+    TrainAnalytics trainAnalytics;
 
     @Inject
     TrainRouter trainRouter;
 
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
-
 
     public TrainHomepageFragment() {
         // Required empty public constructor
@@ -132,23 +133,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonOneWayTrip.setOnClickListener(v -> {
             trainHomepagePresenterImpl.singleTrip();
 
-            abstractionRouter.getAnalyticTracker().sendEventTracking(
-                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
-                    TrainEventTracking.Category.DIGITAL_TRAIN,
-                    TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
-                    ""
-            );
+            trainAnalytics.eventChooseSingleTrip();
         });
 
         buttonRoundTrip.setOnClickListener(v -> {
             trainHomepagePresenterImpl.roundTrip();
 
-            abstractionRouter.getAnalyticTracker().sendEventTracking(
-                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
-                    TrainEventTracking.Category.DIGITAL_TRAIN,
-                    TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
-                    ""
-            );
+            trainAnalytics.eventChooseRoundTrip();
         });
 
         imageReverseOriginDestitation.setOnClickListener(v -> {
@@ -184,17 +175,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonSearchTicket.setOnClickListener(view1 -> {
             trainHomepagePresenterImpl.onSubmitButtonClicked();
 
-//            String trip = viewModel.isOneWay() ? "single trip" : "round trip";
-//            String origin = viewModel.getOriginStation().getStationCode();
-//            String destination = viewModel.getDestinationStation().getStationCode();
-//            String numOfPassenger = viewModel.getPassengerFmt();
-//
-//            abstractionRouter.getAnalyticTracker().sendEventTracking(
-//                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
-//                    TrainEventTracking.Category.DIGITAL_TRAIN,
-//                    TrainEventTracking.Action.CLICK_FIND_TICKET,
-//
-//            );
+            String trip = viewModel.isOneWay() ? "single trip" : "round trip";
+            String origin = viewModel.getOriginStation().getStationName();
+            String destination = viewModel.getDestinationStation().getStationName();
+            int numOfPassenger = viewModel.getTrainPassengerViewModel().getAdult() +
+                    viewModel.getTrainPassengerViewModel().getInfant();
+
+            trainAnalytics.eventClickFindTicket(trip, origin, destination, numOfPassenger);
         });
 
         return view;
@@ -482,4 +469,5 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         super.onDestroy();
         trainHomepagePresenterImpl.onDestroy();
     }
+
 }
