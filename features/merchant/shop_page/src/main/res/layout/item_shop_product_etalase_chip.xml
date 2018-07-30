@@ -11,4 +11,7 @@
     android:paddingBottom="@dimen/dp_8"
     android:layout_margin="@dimen/dp_4"
     android:background="@drawable/selector_chip"
-    tools:text="Semua Produk" />
+    android:ellipsize="end"
+    android:singleLine="true"
+    android:maxWidth="@dimen/max_width_etalase_chip"
+    tools:text="Produk Kesehatan Wajah" />
