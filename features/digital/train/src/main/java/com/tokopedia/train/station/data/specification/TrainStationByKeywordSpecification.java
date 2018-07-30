@@ -18,7 +18,7 @@ public class TrainStationByKeywordSpecification extends TrainStationSpecificatio
 
     @Override
     public ConditionGroup getCondition() {
-        String query = "%" + keyword + "%";
+        String query = keyword + "%";
         ConditionGroup conditions = ConditionGroup.clause();
         conditions.or(TrainStationDb_Table.station_code.like(query));
         conditions.or(TrainStationDb_Table.station_name.like(query));

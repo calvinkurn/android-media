@@ -20,7 +20,7 @@ public class TrainStationCityByKeywordSpecification extends TrainStationSpecific
 
     @Override
     public ConditionGroup getCondition() {
-        String query = "%" + keyword + "%";
+        String query = keyword + "%";
         ConditionGroup conditions = ConditionGroup.clause();
         conditions.or(TrainStationDb_Table.city_name.like(query));
         return conditions;
