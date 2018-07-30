@@ -299,6 +299,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public void setSelectedSeatModel() {
         seatIds.clear();
         physicalRowIds.clear();
+        areacodes.clear();
         if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
             for (int i = 0; i < selectedSeats.size(); i++) {
                 int k = 0;
