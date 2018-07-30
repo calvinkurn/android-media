@@ -1,4 +1,4 @@
-package com.tokopedia.transactionanalytics;
+package com.tokopedia.transactionanalytics.data;
 
 import java.util.HashMap;
 import java.util.Map;

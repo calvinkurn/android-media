@@ -8,14 +8,15 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
-import com.tokopedia.checkout.domain.datamodel.ResetAndShipmentFormCartData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -26,13 +27,13 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
-import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
+import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -72,10 +73,9 @@ public class CartListPresenter implements ICartListPresenter {
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartUseCase deleteCartUseCase;
     private final DeleteCartGetCartListUseCase deleteCartGetCartListUseCase;
-    private final UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase;
-    private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
+    private final UpdateCartUseCase updateCartUseCase;
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
-    private final ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase;
+    private final ResetCartUseCase resetCartUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
@@ -85,10 +85,9 @@ public class CartListPresenter implements ICartListPresenter {
                              GetCartListUseCase getCartListUseCase,
                              DeleteCartUseCase deleteCartUseCase,
                              DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
-                             UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase,
-                             GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                             UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                             ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
+                             ResetCartUseCase resetCartUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -98,10 +97,9 @@ public class CartListPresenter implements ICartListPresenter {
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
         this.deleteCartGetCartListUseCase = deleteCartGetCartListUseCase;
-        this.updateCartGetShipmentAddressFormUseCase = updateCartGetShipmentAddressFormUseCase;
-        this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
+        this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
-        this.resetCartGetShipmentFormUseCase = resetCartGetShipmentFormUseCase;
+        this.resetCartUseCase = resetCartUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
@@ -185,7 +183,7 @@ public class CartListPresenter implements ICartListPresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
-        requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
                 view.getGeneratedAuthParamNetwork(paramUpdate));
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
                 view.getGeneratedAuthParamNetwork(paramGetList));
@@ -201,7 +199,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void processToShipmentSingleAddress() {
+    public void processToUpdateCartData() {
         view.showProgressLoading();
         List<CartItemData> cartItemDataList = view.getCartDataList();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
@@ -215,17 +213,12 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
-        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put(PARAM_LANG, "id");
-
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
                 view.getGeneratedAuthParamNetwork(paramUpdate));
-        requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                view.getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
         compositeSubscription.add(
-                updateCartGetShipmentAddressFormUseCase.createObservable(requestParams)
+                updateCartUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
@@ -234,46 +227,46 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
-        view.showProgressLoading();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(PARAM_LANG, "id");
-        param.put(PARAM_IS_RESET, "false");
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(
-                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING, view.getGeneratedAuthParamNetwork(param)
-        );
-        compositeSubscription.add(
-                getCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(new Subscriber<CartListData>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                view.hideProgressLoading();
-                                e.printStackTrace();
-                                handleErrorCheckoutToMultipleAddress(e);
-                            }
-
-                            @Override
-                            public void onNext(CartListData cartListData) {
-                                view.hideProgressLoading();
-                                if (!cartListData.isError())
-                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
-                                else
-                                    view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
-                            }
-                        })
-        );
-    }
+//    @SuppressWarnings("deprecation")
+//    @Override
+//    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
+//        view.showProgressLoading();
+//        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+//        param.put(PARAM_LANG, "id");
+//        param.put(PARAM_IS_RESET, "false");
+//        RequestParams requestParams = RequestParams.create();
+//        requestParams.putObject(
+//                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING, view.getGeneratedAuthParamNetwork(param)
+//        );
+//        compositeSubscription.add(
+//                getCartListUseCase.createObservable(requestParams)
+//                        .subscribeOn(Schedulers.newThread())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .unsubscribeOn(Schedulers.newThread())
+//                        .subscribe(new Subscriber<CartListData>() {
+//                            @Override
+//                            public void onCompleted() {
+//
+//                            }
+//
+//                            @Override
+//                            public void onError(Throwable e) {
+//                                view.hideProgressLoading();
+//                                e.printStackTrace();
+//                                handleErrorCheckoutToMultipleAddress(e);
+//                            }
+//
+//                            @Override
+//                            public void onNext(CartListData cartListData) {
+//                                view.hideProgressLoading();
+//                                if (!cartListData.isError())
+//                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
+//                                else
+//                                    view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
+//                            }
+//                        })
+//        );
+//    }
 
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
@@ -289,7 +282,7 @@ public class CartListPresenter implements ICartListPresenter {
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
         Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
-        Map<String, CartItemHolderData> cartItemParentIdMap = new HashMap<>();
+        List<String> parentIds = new ArrayList<>();
         for (CartItemHolderData data : dataList) {
             if (data.getCartItemData() != null && data.getCartItemData().getOriginData() != null) {
                 String parentId = data.getCartItemData().getOriginData().getParentId();
@@ -306,43 +299,36 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-                totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
-                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
-                boolean hasCalculateWholesalePrice = false;
-                if (wholesalePrices != null && wholesalePrices.size() > 0) {
-                    double subTotalWholesalePrice = 0;
-                    for (WholesalePrice wholesalePrice : wholesalePrices) {
-                        if (itemQty >= wholesalePrice.getQtyMin()) {
-                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
-                            hasCalculateWholesalePrice = true;
-                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
-                            break;
-                        }
+            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
+            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+            boolean hasCalculateWholesalePrice = false;
+            if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                double subTotalWholesalePrice = 0;
+                for (WholesalePrice wholesalePrice : wholesalePrices) {
+                    if (itemQty >= wholesalePrice.getQtyMin() && itemQty <= wholesalePrice.getQtyMax()) {
+                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                        hasCalculateWholesalePrice = true;
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                        break;
                     }
-                    if (!hasCalculateWholesalePrice) {
-                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
-                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
-                        } else {
-                            subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                        }
-                    }
-                    if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                        subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
-                    }
-                } else {
-                    if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
-                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                        cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
+                }
+                if (!hasCalculateWholesalePrice) {
+                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
                     } else {
-                        CartItemHolderData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
-                        if (calculatedHolderData.getCartItemData().getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
-                            subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
-                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                        }
+                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                     }
+                }
+                if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
+                }
+            } else {
+                if (!parentIds.contains(data.getCartItemData().getOriginData().getParentId())) {
+                    subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                    data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                    parentIds.add(data.getCartItemData().getOriginData().getParentId());
                 }
             }
         }
@@ -396,26 +382,6 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processToShipmentForm(boolean toAddressChoice) {
-        view.showProgressLoading();
-        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put(PARAM_LANG, "id");
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                view.getGeneratedAuthParamNetwork(paramGetShipmentForm));
-
-        compositeSubscription.add(
-                getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberToShipmentForm(toAddressChoice))
-        );
-    }
-
-
-    @Override
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
         view.showProgressLoading();
@@ -441,36 +407,29 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-
     @Override
-    public void processResetThenToShipmentForm() {
+    public void processResetCart() {
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
         paramResetCart.put(PARAM_LANG, "id");
         paramResetCart.put(PARAM_STEP, "4");
 
-        TKPDMapParam<String, String> paramShipmentForm = new TKPDMapParam<>();
-        paramShipmentForm.put(PARAM_LANG, "id");
-
-
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(ResetCartGetShipmentFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_RESET_CART,
+        requestParams.putObject(ResetCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_RESET_CART,
                 view.getGeneratedAuthParamNetwork(paramResetCart));
-        requestParams.putObject(ResetCartGetShipmentFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_FORM,
-                view.getGeneratedAuthParamNetwork(paramShipmentForm));
 
         compositeSubscription.add(
-                resetCartGetShipmentFormUseCase.createObservable(requestParams)
+                resetCartUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberResetCartToShipmentForm())
+                        .subscribe(getSubscriberResetCart())
         );
     }
 
     @NonNull
-    private Subscriber<ResetAndShipmentFormCartData> getSubscriberResetCartToShipmentForm() {
-        return new Subscriber<ResetAndShipmentFormCartData>() {
+    private Subscriber<ResetCartData> getSubscriberResetCart() {
+        return new Subscriber<ResetCartData>() {
             @Override
             public void onCompleted() {
 
@@ -484,16 +443,16 @@ public class CartListPresenter implements ICartListPresenter {
             }
 
             @Override
-            public void onNext(ResetAndShipmentFormCartData data) {
+            public void onNext(ResetCartData data) {
                 view.hideProgressLoading();
-                if (data.getResetCartData().isSuccess() && !data.getCartShipmentAddressFormData().isError()) {
-                    view.renderToShipmentFormSuccess(data.getCartShipmentAddressFormData());
-                } else {
-                    String messageError = !data.getCartShipmentAddressFormData().getErrorMessage().isEmpty()
-                            ? data.getCartShipmentAddressFormData().getErrorMessage()
-                            : data.getResetCartData().getMessage();
-                    view.renderErrorToShipmentForm(messageError);
-                }
+//                if (data.isSuccess()) {
+//                    view.renderToShipmentFormSuccess(data.getCartShipmentAddressFormData());
+//                } else {
+//                    String messageError = !data.getCartShipmentAddressFormData().getErrorMessage().isEmpty()
+//                            ? data.getCartShipmentAddressFormData().getErrorMessage()
+//                            : data.getResetCartData().getMessage();
+//                    view.renderErrorToShipmentForm(messageError);
+//                }
             }
         };
     }
@@ -709,8 +668,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<UpdateToSingleAddressShipmentData> getSubscriberToShipmentSingleAddress() {
-        return new Subscriber<UpdateToSingleAddressShipmentData>() {
+    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress() {
+        return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
 
@@ -720,56 +679,17 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                handleErrorGetShipmentForm(e);
+                view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e));
                 processInitialGetCartData();
             }
 
             @Override
-            public void onNext(UpdateToSingleAddressShipmentData data) {
+            public void onNext(UpdateCartData data) {
                 view.hideProgressLoading();
-                if (data.getUpdateCartData().isSuccess() && !data.getShipmentAddressFormData().isError()) {
-                    if (data.getShipmentAddressFormData().getGroupAddress() == null
-                            || data.getShipmentAddressFormData().getGroupAddress().isEmpty()) {
-                        view.renderNoRecipientAddressShipmentForm(data.getShipmentAddressFormData());
-                    } else {
-                        view.renderToShipmentFormSuccess(data.getShipmentAddressFormData());
-                    }
+                if (!data.isSuccess()) {
+                    view.renderErrorToShipmentForm(data.getMessage());
                 } else {
-                    String messageError = !data.getShipmentAddressFormData().getErrorMessage().isEmpty()
-                            ? data.getShipmentAddressFormData().getErrorMessage()
-                            : data.getUpdateCartData().getMessage();
-                    view.renderErrorToShipmentForm(messageError);
-                }
-            }
-        };
-    }
-
-    @NonNull
-    private Subscriber<CartShipmentAddressFormData> getSubscriberToShipmentForm(boolean toAddressChoice) {
-        return new Subscriber<CartShipmentAddressFormData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.hideProgressLoading();
-                handleErrorGetShipmentForm(e);
-            }
-
-            @Override
-            public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                view.hideProgressLoading();
-                if (cartShipmentAddressFormData.isError()) {
-                    view.renderErrorToShipmentForm(cartShipmentAddressFormData.getErrorMessage());
-                } else {
-                    if (toAddressChoice) {
-                        view.renderToAddressChoice(cartShipmentAddressFormData);
-                    } else {
-                        view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
-                    }
+                    view.renderToShipmentFormSuccess();
                 }
             }
         };
