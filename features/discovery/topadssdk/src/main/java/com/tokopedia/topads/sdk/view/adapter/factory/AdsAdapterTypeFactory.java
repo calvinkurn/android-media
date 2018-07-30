@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductCarouselListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridViewHolder;
@@ -33,6 +34,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     private int clickPosition;
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
+    private TopAdsItemImpressionListener itemImpressionListener;
 
     public AdsAdapterTypeFactory(Context context) {
         this(context, 0);
@@ -109,11 +111,15 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ProductCarouselListViewHolder.LAYOUT) {
-            holder = new ProductCarouselListViewHolder(view, imageLoader, itemClickListener, clickPosition);
+            holder = new ProductCarouselListViewHolder(view, imageLoader, itemClickListener, clickPosition,
+                    itemImpressionListener);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }
         return holder;
     }
 
+    public void setItemImpressionListener(TopAdsItemImpressionListener itemImpressionListener) {
+        this.itemImpressionListener = itemImpressionListener;
+    }
 }

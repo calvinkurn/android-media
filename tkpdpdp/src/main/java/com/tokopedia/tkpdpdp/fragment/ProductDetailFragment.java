@@ -129,6 +129,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
@@ -178,7 +179,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener {
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -1953,6 +1954,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
             topAds.setAdsItemClickListener(this);
             topAds.setAdsListener(this);
+            topAds.setAdsItemImpressionListener(this);
             topAds.setConfig(config);
             topAds.loadTopAds();
         } catch (Exception e) {
@@ -1982,6 +1984,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
+        ProductPageTracking.eventTopAdsClicked(getActivity(), position, product);
+    }
+
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
     }
 
     @Override

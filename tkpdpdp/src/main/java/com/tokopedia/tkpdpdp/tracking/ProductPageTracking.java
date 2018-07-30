@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -205,5 +206,64 @@ public class ProductPageTracking {
         values.put(AFInAppEventParameterName.QUANTITY, quantity);
 
         PaymentTracking.atcAF(values);
+    }
+
+    public static void eventTopAdsClicked(Context context, int position, Product product) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "product detail page",
+                        "eventAction", "click - top ads",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf("click",
+                                "actionField",DataLayer.mapOf("list", "/productdetail - top ads'"),
+                                DataLayer.mapOf("products",
+                                        DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", product.getName(),
+                                                        "id", product.getId(),
+                                                        "price", product.getPriceFormat(),
+                                                        "brand", "none / other",
+                                                        "category", product.getCategory().getId(),
+                                                        "variant", "none / other",
+                                                        "position", (position + 1)
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void eventTopAdsImpression(Context context, int position, Product product) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "product detail page",
+                        "eventAction", "impression - top ads",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
+                                DataLayer.mapOf("impressions",
+                                        DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", product.getName(),
+                                                        "id", product.getId(),
+                                                        "price", product.getPriceFormat(),
+                                                        "brand", "none / other",
+                                                        "category", product.getCategory().getId(),
+                                                        "variant", "none / other",
+                                                        "position", (position + 1)
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 }

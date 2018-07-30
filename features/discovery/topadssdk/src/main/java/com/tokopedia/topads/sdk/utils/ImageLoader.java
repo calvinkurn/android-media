@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -16,6 +15,8 @@ import com.tokopedia.topads.sdk.imageutils.ImageWorker;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+
 import android.graphics.Bitmap;
 
 import java.util.List;
@@ -47,7 +48,12 @@ public class ImageLoader {
         loadImage(ecs, null, imageView);
     }
 
-    public void loadImage(Product product, final ImageView imageView) {
+    public void loadImage(Product product, final ImageView imageView, int pos) {
+        loadImage(product, imageView, pos,null);
+    }
+
+    public void loadImage(Product product, final ImageView imageView, int pos,
+                          TopAdsItemImpressionListener impressionListener) {
         Glide.with(context)
                 .load(product.getImage().getS_ecs())
                 .asBitmap()
@@ -59,6 +65,9 @@ public class ImageLoader {
                         if (!product.isLoaded()) {
                             product.setLoaded(true);
                             new ImpresionTask().execute(product.getImage().getXs_url());
+                            if(impressionListener!=null){
+                                impressionListener.onImpressionProductAdsItem(pos, product);
+                            }
                         }
                     }
                 });

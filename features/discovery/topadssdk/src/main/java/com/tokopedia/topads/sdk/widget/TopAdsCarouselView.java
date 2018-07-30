@@ -19,6 +19,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.view.AdsView;
@@ -39,6 +40,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private AdsItemAdapter adapter;
     private TopAdsListener adsListener;
     private TopAdsItemClickListener adsItemClickListener;
+    private TopAdsItemImpressionListener adsItemImpressionListener;
 
     public TopAdsCarouselView(Context context) {
         super(context);
@@ -164,4 +166,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         }
     }
 
+    public void setAdsItemImpressionListener(TopAdsItemImpressionListener adsItemImpressionListener) {
+        this.adapter.setAdsItemImpressionListener(adsItemImpressionListener);
+    }
 }

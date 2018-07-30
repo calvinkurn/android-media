@@ -16,6 +16,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
@@ -34,6 +35,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     private static final String TAG = ProductCarouselListViewHolder.class.getSimpleName();
 
     private LocalAdsClickListener itemClickListener;
+    private TopAdsItemImpressionListener impressionListener;
     private Data data;
     private Context context;
     public LinearLayout badgeContainer;
@@ -45,12 +47,15 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     private int clickPosition;
 
 
-    public ProductCarouselListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
+    public ProductCarouselListViewHolder(View itemView, ImageLoader imageLoader,
+                                         LocalAdsClickListener itemClickListener, int clickPositio,
+                                         TopAdsItemImpressionListener impressionListener) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         this.clickPosition = clickPosition;
+        this.impressionListener = impressionListener;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
@@ -67,7 +72,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     }
 
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product, productImage);
+        imageLoader.loadImage(product, productImage, getAdapterPosition(), impressionListener);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
