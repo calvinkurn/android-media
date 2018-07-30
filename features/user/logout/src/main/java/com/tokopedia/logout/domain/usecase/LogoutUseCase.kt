@@ -13,13 +13,19 @@ import java.util.*
 /**
  * @author by nisie on 5/30/18.
  */
-class LogoutUseCase(val api: LogoutApi,
-                    val mapper: LogoutMapper) : UseCase<LogoutDomain>() {
+class LogoutUseCase(private val api: LogoutApi,
+                    private val mapper: LogoutMapper,
+                    private val userSession: UserSession) : UseCase<LogoutDomain>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<LogoutDomain> {
 
         return api.logout(requestParams.parameters)
                 .map(mapper)
+                .doOnNext { removeSession() }
+    }
+
+    private fun removeSession() {
+        userSession.logoutSession()
     }
 
     companion object {
