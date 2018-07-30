@@ -152,8 +152,6 @@ public class PromoResponseMapper implements IPromoResponseMapper {
         Locale localeId = new Locale("id", "ID");
         if (mStart == mEnd) {
             result = cStart.get(Calendar.DAY_OF_MONTH)
-                    + " - "
-                    + cEnd.get(Calendar.DAY_OF_MONTH)
                     + " "
                     + cEnd.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
                     + " "
