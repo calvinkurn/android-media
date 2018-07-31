@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.homepage.presentation.fragment.TrainHomepageFragment;
 
 /**
@@ -49,7 +50,9 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
         menus = new Menus(this);
         String[] menuItem = new String[]{
                 getResources().getString(R.string.train_homepage_bottom_menu_order_list),
-                getResources().getString(R.string.train_homepage_bottom_menu_promo)
+                getResources().getString(R.string.train_homepage_bottom_menu_promo),
+                getResources().getString(R.string.train_homepage_bottom_menu_help)
+
         };
         menus.setItemMenuList(menuItem);
 
@@ -65,6 +68,11 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
                 case 1:
                     if (getApplication() instanceof TrainRouter) {
                         startActivity(((TrainRouter) getApplication()).getPromoListIntent(this));
+                    }
+                    break;
+                case 2:
+                    if (getApplication() instanceof TrainRouter) {
+                        startActivity(((TrainRouter) getApplication()).getWebviewActivity(this, TrainUrl.HELP_PAGE));
                     }
                     break;
             }
