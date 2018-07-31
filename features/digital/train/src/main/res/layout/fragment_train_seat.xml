@@ -45,9 +45,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
-                    app:ctv_hour_title="Jam"
-                    app:ctv_minute_title="Detik"
-                    app:ctv_second_title="Menit" />
+                    app:ctv_hour_title="@string/train_countdown_hour_label"
+                    app:ctv_minute_title="@string/train_countdown_minute_label"
+                    app:ctv_second_title="@string/train_countdown_second_label" />
             </LinearLayout>
 
             <com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView

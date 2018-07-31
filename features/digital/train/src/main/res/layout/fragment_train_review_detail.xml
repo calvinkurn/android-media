@@ -19,9 +19,9 @@
                 android:id="@+id/ct_countdown"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:ctv_hour_title="Jam"
-                app:ctv_minute_title="Detik"
-                app:ctv_second_title="Menit" />
+                app:ctv_hour_title="@string/train_countdown_hour_label"
+                app:ctv_minute_title="@string/train_countdown_minute_label"
+                app:ctv_second_title="@string/train_countdown_second_label"/>
 
             <com.tokopedia.design.component.CardWithAction
                 android:id="@+id/train_departure_info"

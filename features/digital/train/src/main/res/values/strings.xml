@@ -179,5 +179,8 @@
     <string name="train_seat_confirm_dialog_cancel">Ubah Kursi</string>
     <string name="train_station_origin_hint">Ketik Kota atau Stasiun Asal</string>
     <string name="train_station_destination_hint">Ketik Kota atau Stasiun Tujuan</string>
+    <string name="train_countdown_minute_label">Menit</string>
+    <string name="train_countdown_second_label">Detik</string>
+    <string name="train_countdown_hour_label">Jam</string>
 
 </resources>
