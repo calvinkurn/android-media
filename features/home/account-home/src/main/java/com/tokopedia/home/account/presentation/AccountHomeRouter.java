@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.home.account.di.AccountHomeInjection;
 
@@ -37,4 +38,6 @@ public interface AccountHomeRouter {
     void goToSaldo(Context context);
 
     AccountHomeInjection getAccountHomeInjection();
+
+    Fragment getFavoriteFragment();
 }

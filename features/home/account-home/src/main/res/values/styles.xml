@@ -4,4 +4,8 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:listPreferredItemHeight">@dimen/dp_64</item>
     </style>
+
+    <style name="ProgressBar.Tokopedia" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_tokopedia</item>
+    </style>
 </resources>
