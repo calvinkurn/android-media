@@ -581,16 +581,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         templateAdapter = new TemplateChatAdapter(templateChatFactory);
 
-        String userRole = getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE,"");
-        String userId = getArguments().getString(ChatRoomActivity.PARAM_SENDER_ID,"");
-        if(TextUtils.isEmpty(userId)) {
-            userId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID,"");
-        }
-
-        if(!isChatBot && !TextUtils.isEmpty(userRole) && !TextUtils.isEmpty(userId)) {
-            presenter.getUserStatus(userId, userRole);
-        }
-
         if (needCreateWebSocket()) {
             presenter.getReply(mode);
         } else {

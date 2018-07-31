@@ -41,5 +41,6 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
         if(model.getChatList().size()>0) view.setResult(model);
         else view.hideMainLoading();
         presenter.finishRequest();
+        presenter.getUserStatus(model.getInterlocutorId(),model.getInterlocutorRole());
     }
 }

@@ -289,14 +289,22 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
             if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
                     && contact.isInterlocutor()) {
-
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
                 }
-
                 if (!TextUtils.isEmpty(contact.getAttributes().getThumbnail())) {
                     chatRoomViewModel.setImageHeader(contact.getAttributes().getThumbnail());
                 }
+                if(!TextUtils.isEmpty(contact.getRole())){
+                    chatRoomViewModel.setInterlocutorRole(contact.getRole());
+                    if(chatRoomViewModel.getInterlocutorRole().equalsIgnoreCase(USER_ROLE)){
+                        chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getUserId()));
+                    } else if(chatRoomViewModel.getInterlocutorRole().equalsIgnoreCase(SHOP_ADMIN_ROLE) ||
+                            chatRoomViewModel.getInterlocutorRole().equalsIgnoreCase(SHOP_OWNER_ROLE)) {
+                        chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getShopId()));
+                    }
+                }
+
 
             }
         }
