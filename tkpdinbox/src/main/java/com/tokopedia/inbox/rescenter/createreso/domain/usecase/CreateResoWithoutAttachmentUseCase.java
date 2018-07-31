@@ -32,15 +32,10 @@ public class CreateResoWithoutAttachmentUseCase extends UseCase<CreateResoWithou
     }
 
     public RequestParams createResoStep1Params(ResultViewModel resultViewModel) {
-        try {
-            RequestParams params = RequestParams.create();
-            params.putString(ORDER_ID, resultViewModel.orderId);
-            params.putObject(PARAM_RESULT, resultViewModel.writeToJson());
-            return params;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        RequestParams params = RequestParams.create();
+        params.putString(ORDER_ID, resultViewModel.orderId);
+        params.putObject(PARAM_RESULT, resultViewModel.writeToJson());
+        return params;
     }
 
 }

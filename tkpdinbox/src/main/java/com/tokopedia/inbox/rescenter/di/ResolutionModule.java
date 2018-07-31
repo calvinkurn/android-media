@@ -137,4 +137,5 @@ public class ResolutionModule {
     public ResolutionApi provideResolutionImageServiceApi(@Named(RESOLUTION_IMAGE_SERVICE) Retrofit retrofit) {
         return retrofit.create(ResolutionApi.class);
     }
+
 }

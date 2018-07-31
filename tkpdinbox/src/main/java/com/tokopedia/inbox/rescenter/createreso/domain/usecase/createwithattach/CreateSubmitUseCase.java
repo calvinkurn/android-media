@@ -60,7 +60,7 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
         }
         RequestParams params = RequestParams.create();
         params.putString(ORDER_ID, createResoRequestDomain.getOrderId());
-        params.putObject(PARAM_JSON, submitObject.toString());
+        params.putObject(PARAM_JSON, submitObject);
         return params;
     }
 }

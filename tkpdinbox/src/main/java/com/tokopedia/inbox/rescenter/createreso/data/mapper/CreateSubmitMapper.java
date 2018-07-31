@@ -24,8 +24,8 @@ public class CreateSubmitMapper implements Func1<Response<DataResponse<CreateSub
     }
 
     @Override
-    public CreateSubmitDomain call(Response<DataResponse<CreateSubmitResponse>> dataResponseResponse) {
-        return null;
+    public CreateSubmitDomain call(Response<DataResponse<CreateSubmitResponse>> response) {
+        return mappingResponse(response);
     }
 
     private CreateSubmitDomain mappingResponse(Response<DataResponse<CreateSubmitResponse>> response) {

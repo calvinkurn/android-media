@@ -1,8 +1,7 @@
 package com.tokopedia.inbox.rescenter.network;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.inbox.common.data.pojo.GenerateHostResponse;
+import com.tokopedia.inbox.common.data.pojo.GenerateHostDataResponse;
 import com.tokopedia.inbox.common.data.pojo.UploadResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoWithoutAttachmentResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateSubmitResponse;
@@ -43,10 +42,9 @@ public interface ResolutionApi {
     String PATH_CONVERSATION_ID = "conversation_id";
 
     //common section
-    @FormUrlEncoded
-    @POST(ResolutionUrl.PATH_GENERATE_TOKEN_HOST)
-    Observable<Response<DataResponse<GenerateHostResponse>>>
-    generateTokenHostWithoutHeader(@FieldMap TKPDMapParam<String, Object> params);
+    @GET(ResolutionUrl.PATH_GENERATE_TOKEN_HOST)
+    Observable<Response<DataResponse<GenerateHostDataResponse>>>
+    generateHost(@QueryMap HashMap<String, Object> params);
 
     @Multipart
     @POST("")

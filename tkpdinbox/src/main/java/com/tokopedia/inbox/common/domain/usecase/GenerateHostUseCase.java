@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.common.domain.usecase;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.inbox.common.data.source.ResolutionCommonSource;
 import com.tokopedia.inbox.common.domain.model.GenerateHostDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -27,6 +26,6 @@ public class GenerateHostUseCase extends UseCase<GenerateHostDomain> {
 
     @Override
     public Observable<GenerateHostDomain> createObservable(RequestParams requestParams) {
-        return resolutionCommonSource.generateHost(new TKPDMapParam<>());
+        return resolutionCommonSource.generateHost(requestParams);
     }
 }
