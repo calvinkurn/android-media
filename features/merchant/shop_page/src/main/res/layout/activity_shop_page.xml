@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:theme="?toolbarTheme"
+        android:background="@color/white"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -26,7 +26,7 @@
             android:id="@+id/searchInputView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:siv_search_hint="@string/shop_product_search_hint" />
+            app:siv_search_hint="@string/shop_product_search_hint"/>
 
     </android.support.v7.widget.Toolbar>
 
