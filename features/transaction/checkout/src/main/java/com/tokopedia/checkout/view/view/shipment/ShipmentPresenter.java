@@ -368,6 +368,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             List<ShipmentCartItemModel> equalShipmentCartItemModelList = new ArrayList<>();
             for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
+                boolean foundItem = false;
                 for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
                     if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel) &&
                             oldShipmentCartItemModel.equals(newShipmentCartItemModel) &&
@@ -379,9 +380,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         oldShopShipment.getShipProds().size() == newShopShipment.getShipProds().size() &&
                                         !equalShipmentCartItemModelList.contains(oldShipmentCartItemModel)) {
                                     equalShipmentCartItemModelList.add(oldShipmentCartItemModel);
+                                    foundItem = true;
                                     break;
                                 }
                             }
+                            if(foundItem) {
+                                break;
+                            }
+                        }
+                        if(foundItem) {
+                            break;
                         }
                     }
                 }
@@ -542,8 +550,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                     List<ShipmentCartItemModel> shipmentCartItemModelList =
                                                             getView().getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData);
 
-                                                    if (checkAddressHasChanged(recipientAddressModel, newRecipientAddressModel) ||
-                                                            checkShipmentItemHasChanged(ShipmentPresenter.this.shipmentCartItemModelList, shipmentCartItemModelList)) {
+                                                    if (!cartShipmentAddressFormData.isMultiple() && checkAddressHasChanged(recipientAddressModel, newRecipientAddressModel)) {
+                                                        getView().hideLoading();
+                                                        getView().showToastError(getView().getActivityContext().getString(R.string.error_message_checkout_failed));
+                                                        initializePresenterData(cartShipmentAddressFormData);
+                                                        getView().renderDataChanged(cartShipmentAddressFormData);
+                                                    } else if (checkShipmentItemHasChanged(ShipmentPresenter.this.shipmentCartItemModelList, shipmentCartItemModelList)) {
                                                         getView().hideLoading();
                                                         getView().showToastError(getView().getActivityContext().getString(R.string.error_message_checkout_failed));
                                                         initializePresenterData(cartShipmentAddressFormData);
@@ -721,8 +733,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (oldShipmentCartItemModel.getRecipientAddressModel() != null && newShipmentCartItemModel.getRecipientAddressModel() != null) {
             if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId()) ||
-                    oldShipmentCartItemModel.getRecipientAddressModel().getLatitude() != newShipmentCartItemModel.getRecipientAddressModel().getLatitude() ||
-                    oldShipmentCartItemModel.getRecipientAddressModel().getLongitude() != newShipmentCartItemModel.getRecipientAddressModel().getLongitude() ||
+                    !oldShipmentCartItemModel.getRecipientAddressModel().getLatitude().equals(newShipmentCartItemModel.getRecipientAddressModel().getLatitude()) ||
+                    !oldShipmentCartItemModel.getRecipientAddressModel().getLongitude().equals(newShipmentCartItemModel.getRecipientAddressModel().getLongitude()) ||
                     !oldShipmentCartItemModel.getRecipientAddressModel().getPostalCode().equalsIgnoreCase(newShipmentCartItemModel.getRecipientAddressModel().getPostalCode()) ||
                     !oldShipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId().equals(newShipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId())) {
                 return false;
