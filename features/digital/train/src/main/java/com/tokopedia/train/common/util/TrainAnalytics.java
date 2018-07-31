@@ -57,15 +57,6 @@ public class TrainAnalytics {
         );
     }
 
-    public void eventCheckOrder() {
-        analyticTracker.sendEventTracking(
-                TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
-                TrainEventTracking.Category.DIGITAL_TRAIN,
-                TrainEventTracking.Action.CHECK_ORDER,
-                ""
-        );
-    }
-
     public void eventClickPromoList() {
         analyticTracker.sendEventTracking(
                 TrainEventTracking.Event.PROMO_CLICK,
