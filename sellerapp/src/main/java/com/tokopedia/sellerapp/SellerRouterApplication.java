@@ -1207,12 +1207,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageActivity.Companion.createIntent(context, shopId);
+        return ShopPageActivity.createIntent(context, shopId);
     }
 
     @Override
     public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageActivity.Companion.createIntentWithDomain(context, domain);
+        return ShopPageActivity.createIntentWithDomain(context, domain);
     }
 
     @Override

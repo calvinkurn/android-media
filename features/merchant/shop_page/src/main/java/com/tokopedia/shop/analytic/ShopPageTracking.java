@@ -242,7 +242,7 @@ public class ShopPageTracking {
         eventMap.put(ShopPageTrackingConstant.SHOP_ID, shopId);
         eventMap.put(ShopPageTrackingConstant.PAGE_TYPE, ShopPageTrackingConstant.SHOP_PAGE_TYPE);
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
-        sendScreenName("/shoppage - "+shopId);
+        sendScreenName("/shoppage - " + shopId);
     }
 
     public void eventClickWishlistShop(String titlePage, boolean wishList, boolean isFromHomeShop, String productId, boolean myShop, int shopType) {
@@ -339,49 +339,58 @@ public class ShopPageTracking {
     }
 
     public void eventViewProductFeaturedImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, String attribution,
-                                                   boolean myShop, int shopType, boolean isGrid) {
+                                                   boolean myShop, int shopType, boolean isGrid, String tabName, String etalaseName) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
                 getEventCategory(myShop, shopType),
                 titlePage + ShopPageTrackingConstant.TOP_PRODUCTS_CLICK,
                 ShopPageTrackingConstant.IMPRESSION_OF_TOP_PRODUCT_LIST, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, attribution, isGrid,ShopPageTrackingConstant.PRODUCT_FEATURED));
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, attribution,
+                isGrid, ShopPageTrackingConstant.PRODUCT_FEATURED, tabName, etalaseName));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
-    public void eventClickProductFeaturedImpression(String titlePage, String name, String id, String price, String attribution, int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
+    public void eventClickProductFeaturedImpression(String titlePage, String name, String id, String price, String attribution,
+                                                    int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType,
+                                                    boolean isGrid, String tabName, String etalaseName) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
                 getEventCategory(myShop, shopType),
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
                         + " - " + ShopPageTrackingConstant.CLICK,
                 ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, attribution, adapterPosition, isGrid, ShopPageTrackingConstant.PRODUCT_FEATURED));
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, attribution, adapterPosition,
+                isGrid, ShopPageTrackingConstant.PRODUCT_FEATURED, tabName, etalaseName));
         sendClearEvent();
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
-    public void eventViewProductImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, String attribution, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
+    public void eventViewProductImpression(String titlePage, List<ShopProductViewModel> shopProductViewModelList, String attribution,
+                                           boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid, String tabName, String etalaseName) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_VIEW,
                 getEventCategory(myShop, shopType),
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
                         + " - " + ShopPageTrackingConstant.IMPRESSION,
                 ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_PICTURES, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, "");
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(shopProductViewModelList, attribution, isGrid, ShopPageTrackingConstant.PRODUCT_ETALASE));
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductViewImpression(
+                shopProductViewModelList, attribution, isGrid, ShopPageTrackingConstant.PRODUCT_ETALASE,
+                tabName, etalaseName));
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
 
 
     public void eventClickProductImpression(String titlePage, String name, String id, String price, String attribution,
-                                            int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid) {
+                                            int adapterPosition, boolean isFromHomeShop, boolean myShop, int shopType, boolean isGrid,
+                                            String tabName, String etalaseName) {
         HashMap<String, Object> eventMap = createEventMap(ShopPageTrackingConstant.PRODUCT_CLICK,
                 getEventCategory(myShop, shopType),
                 titlePage + " - " + (isFromHomeShop ? ShopPageTrackingConstant.PRODUCT_LIST : ShopPageTrackingConstant.PRODUCT_PAGE)
                         + " - " + ShopPageTrackingConstant.CLICK,
                 ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE, shopType);
         eventMap.put(ShopPageTrackingConstant.PRODUCT_ID, id);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, attribution, adapterPosition, isGrid, ShopPageTrackingConstant.PRODUCT_ETALASE));
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, createMapProductClickImpression(name, id, price, attribution, adapterPosition,
+                isGrid, ShopPageTrackingConstant.PRODUCT_ETALASE, tabName, etalaseName));
         sendClearEvent();
         shopModuleRouter.sendEventTrackingShopPage(eventMap);
     }
@@ -444,8 +453,9 @@ public class ShopPageTracking {
         );
     }
 
-    private Map<String, Object> createMapProductViewImpression(List<ShopProductViewModel> shopProductViewModelList, String attribution, boolean isGrid, String productType) {
-        List<Object> list = getListProductAsObjectDataLayer(shopProductViewModelList, attribution, isGrid, productType);
+    private Map<String, Object> createMapProductViewImpression(List<ShopProductViewModel> shopProductViewModelList, String attribution, boolean isGrid, String productType,
+                                                               String tabName, String etalaseName) {
+        List<Object> list = getListProductAsObjectDataLayer(shopProductViewModelList, attribution, isGrid, productType, tabName, etalaseName);
         return DataLayer.mapOf(
                 ShopPageTrackingConstant.CURRENCY_CODE, ShopPageTrackingConstant.IDR,
                 ShopPageTrackingConstant.IMPRESSIONS, DataLayer.listOf(
@@ -453,7 +463,8 @@ public class ShopPageTracking {
                 ));
     }
 
-    private List<Object> getListProductAsObjectDataLayer(List<ShopProductViewModel> shopProductViewModelList, String attribution, boolean isGrid, String productType) {
+    private List<Object> getListProductAsObjectDataLayer(List<ShopProductViewModel> shopProductViewModelList, String attribution, boolean isGrid, String productType,
+                                                         String tabName, String etalaseName) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < shopProductViewModelList.size(); i++) {
             ShopProductViewModel viewModel = shopProductViewModelList.get(i);
@@ -465,7 +476,7 @@ public class ShopPageTracking {
                             ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                             ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                            ShopPageTrackingConstant.LIST, getListNameOfProduct(viewModel.getPositionTracking(), isGrid, productType),
+                            ShopPageTrackingConstant.LIST, getListNameOfProduct(tabName, etalaseName),
                             ShopPageTrackingConstant.POSITION, getProductPosition(viewModel.getPositionTracking(), isGrid),
                             ShopPageTrackingConstant.ATTRIBUTION, attribution
                     )
@@ -484,10 +495,11 @@ public class ShopPageTracking {
         }
     }
 
-    private Map<String, Object> createMapProductClickImpression(String name, String id, String price, String attribution, int adapterPosition, boolean isGrid, String productType) {
+    private Map<String, Object> createMapProductClickImpression(String name, String id, String price, String attribution, int adapterPosition,
+                                                                boolean isGrid, String productType, String tabName, String etalaseName) {
         return DataLayer.mapOf(
                 ShopPageTrackingConstant.CLICK, DataLayer.mapOf(
-                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, getListNameOfProduct(adapterPosition, isGrid, productType)),
+                        ShopPageTrackingConstant.ACTION_FIELD, DataLayer.mapOf(ShopPageTrackingConstant.LIST, getListNameOfProduct(tabName, etalaseName)),
                         ShopPageTrackingConstant.PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(
                                         ShopPageTrackingConstant.NAME, name,
@@ -496,7 +508,7 @@ public class ShopPageTracking {
                                         ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE_OTHER,
                                         ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE_OTHER,
-                                        ShopPageTrackingConstant.LIST, getListNameOfProduct(adapterPosition, isGrid, productType),
+                                        ShopPageTrackingConstant.LIST, getListNameOfProduct(tabName, etalaseName),
                                         ShopPageTrackingConstant.POSITION, getProductPosition(adapterPosition, isGrid),
                                         ShopPageTrackingConstant.ATTRIBUTION, attribution
                                 )
@@ -505,13 +517,22 @@ public class ShopPageTracking {
         );
     }
 
+    @Deprecated
     @NonNull
     public String getListNameOfProduct(int adapterPosition, boolean isGrid, String productType) {
         return ShopPageTrackingConstant.SHOPPAGE_PRODUCT + getProductPosition(adapterPosition, isGrid) + productType;
     }
 
+    @NonNull
+    public String getListNameOfProduct(String tabName, String etalaseName) {
+        etalaseName = TextUtils.isEmpty(etalaseName) ? ShopPageTrackingConstant.ALL_ETALASE : etalaseName;
+        return ShopPageTrackingConstant.SHOPPAGE + " - " +
+                tabName + " - " +
+                etalaseName;
+    }
+
     private String getProductPosition(int adapterPosition, boolean isGrid) {
-        return String.valueOf(isGrid ? (int) Math.ceil((float)adapterPosition / 2) : adapterPosition);
+        return String.valueOf(isGrid ? (int) Math.ceil((float) adapterPosition / 2) : adapterPosition);
     }
 
     public static int getShopType(ShopInfoDetail info) {

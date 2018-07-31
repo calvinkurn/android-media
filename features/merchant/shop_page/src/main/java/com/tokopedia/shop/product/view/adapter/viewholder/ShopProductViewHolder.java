@@ -24,7 +24,8 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_grid;
+    public static final int GRID_LAYOUT = R.layout.item_shop_product_grid;
+    public static final int LIST_LAYOUT = R.layout.item_shop_product_list;
     public static final double RATIO_WITH_RELATIVE_TO_SCREEN = 2.3;
 
     private final ShopProductClickedNewListener shopProductClickedListener;
@@ -45,12 +46,16 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private boolean isFixWidth;
     private boolean isFeatured;
+    private int deviceWidth;
+    private int layoutType;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
-                                 boolean isFixWidth, boolean isFeatured) {
+                                 boolean isFixWidth, int deviceWidth, boolean isFeatured, int layoutType) {
         super(itemView);
         this.isFixWidth = isFixWidth;
         this.isFeatured = isFeatured;
+        this.deviceWidth = deviceWidth;
+        this.layoutType = layoutType;
         this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView);
     }
@@ -75,10 +80,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
-        if (isFixWidth) {
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            ((Activity) productImageView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            itemView.getLayoutParams().width = (int) (displaymetrics.widthPixels / RATIO_WITH_RELATIVE_TO_SCREEN);
+        if (isFixWidth && deviceWidth > 0 && layoutType == ShopProductViewHolder.GRID_LAYOUT) {
+            itemView.getLayoutParams().width = (int) (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN);
         }
 
         updateDisplayGeneralView(shopProductViewModel);
