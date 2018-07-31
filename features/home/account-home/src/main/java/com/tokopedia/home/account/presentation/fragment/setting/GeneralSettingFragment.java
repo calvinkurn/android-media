@@ -27,6 +27,7 @@ import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter;
+import com.tokopedia.home.account.presentation.fragment.DialogLogoutFragment;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 
@@ -124,10 +125,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 }
                 break;
             case SettingConstant.SETTING_OUT_ID:
-                application = getActivity().getApplication();
+                doLogout();
+                /*application = getActivity().getApplication();
                 if (application instanceof AccountHomeRouter){
                     ((AccountHomeRouter) application).doLogoutAccount(getActivity());
-                }
+                }*/
                 break;
             case SettingConstant.SETTING_DEV_OPTIONS:
                 if(GlobalConfig.isAllowDebuggingTools()) {
@@ -135,6 +137,13 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 }
                 break;
             default: break;
+        }
+    }
+
+    private void doLogout() {
+        if (getFragmentManager().findFragmentByTag(DialogLogoutFragment.FRAGMENT_TAG) == null){
+            DialogLogoutFragment dialogLogoutFragment = new DialogLogoutFragment();
+            dialogLogoutFragment.show(getFragmentManager(), DialogLogoutFragment.FRAGMENT_TAG);
         }
     }
 

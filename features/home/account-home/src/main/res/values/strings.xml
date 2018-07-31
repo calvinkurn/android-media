@@ -141,6 +141,8 @@
     <string name="title_dev_options">Developer Options</string>
     <string name="title_shake_setting">Shake Shake</string>
     <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
+    <string name="logout_confirmation">Apakah Anda ingin keluar?</string>
+    <string name="cancel">Batal</string>
 
 
 </resources>
