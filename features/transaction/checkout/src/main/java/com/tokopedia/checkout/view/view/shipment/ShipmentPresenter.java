@@ -348,7 +348,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         if (checkAddressHasChanged(oldRecipientAddressModel, newRecipientAddressModel) ||
                                                 checkShipmentItemHasChanged(oldShipmentCartItemModels, shipmentCartItemModelList)) {
                                             initializePresenterData(cartShipmentAddressFormData);
-                                            getView().renderDataChangedFromMultipleAddress(cartShipmentAddressFormData);
+                                            getView().renderDataChanged(cartShipmentAddressFormData);
                                         }
                                     }
                                 }
@@ -387,11 +387,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
 
-            if (equalShipmentCartItemModelList.size() != newShipmentCartItemModelList.size()) {
-                return true;
-            } else {
-                return false;
-            }
+            return equalShipmentCartItemModelList.size() != newShipmentCartItemModelList.size();
         }
     }
 
@@ -538,30 +534,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                     cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
                                                 getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
                                             } else {
-                                                boolean isEnableCheckout = true;
-                                                for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                                                    if (groupAddress.isError() || groupAddress.isWarning()) {
-                                                        isEnableCheckout = false;
-                                                        break;
-                                                    }
-                                                    for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                                                        if (groupShop.isError() || groupShop.isWarning()) {
-                                                            isEnableCheckout = false;
-                                                            break;
-                                                        }
-                                                        for (Product product : groupShop.getProducts()) {
-                                                            if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
-                                                                isEnableCheckout = false;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                if (isEnableCheckout) {
-                                                    getView().renderCheckShipmentPrepareCheckoutSuccess();
-                                                } else {
+                                                if (checkCartHasError(cartShipmentAddressFormData)) {
                                                     prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
+                                                } else {
+                                                    RecipientAddressModel newRecipientAddressModel =
+                                                            getView().getShipmentDataConverter().getRecipientAddressModel(cartShipmentAddressFormData);
+                                                    List<ShipmentCartItemModel> shipmentCartItemModelList =
+                                                            getView().getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData);
+
+                                                    if (checkAddressHasChanged(recipientAddressModel, newRecipientAddressModel) ||
+                                                            checkShipmentItemHasChanged(ShipmentPresenter.this.shipmentCartItemModelList, shipmentCartItemModelList)) {
+                                                        getView().hideLoading();
+                                                        getView().showToastError(getView().getActivityContext().getString(R.string.error_message_checkout_failed));
+                                                        initializePresenterData(cartShipmentAddressFormData);
+                                                        getView().renderDataChanged(cartShipmentAddressFormData);
+                                                    } else {
+                                                        getView().renderCheckShipmentPrepareCheckoutSuccess();
+                                                    }
                                                 }
                                             }
                                         }
@@ -569,6 +558,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             )
             );
         }
+    }
+
+    private boolean checkCartHasError(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        boolean hasError = false;
+        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+            if (groupAddress.isError() || groupAddress.isWarning()) {
+                hasError = true;
+                break;
+            }
+            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                if (groupShop.isError() || groupShop.isWarning()) {
+                    hasError = true;
+                    break;
+                }
+                for (Product product : groupShop.getProducts()) {
+                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                        hasError = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return hasError;
     }
 
     private void prepareDataAfterProcessShipmentPrepareCheckout(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -622,13 +635,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckout() {
-
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
                         promoCodeAppliedData.getPromoCode() : "",
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
-
 
         if (checkoutRequest != null) {
             getView().showLoading();

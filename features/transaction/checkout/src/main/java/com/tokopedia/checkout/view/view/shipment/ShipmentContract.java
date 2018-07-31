@@ -55,7 +55,7 @@ public interface ShipmentContract {
 
         void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void renderDataChangedFromMultipleAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderDataChanged(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void renderErrorDataHasChangedAfterCheckout(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
@@ -148,10 +148,6 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
-
-//        ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel();
-
-//        void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 

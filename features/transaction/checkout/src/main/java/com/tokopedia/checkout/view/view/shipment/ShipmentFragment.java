@@ -458,7 +458,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderDataChangedFromMultipleAddress(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public void renderDataChanged(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (getArguments() != null) {
             initializePresenterData(getArguments());
         }
