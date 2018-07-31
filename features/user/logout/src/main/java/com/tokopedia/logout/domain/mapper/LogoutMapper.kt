@@ -12,8 +12,6 @@ import rx.functions.Func1
 class LogoutMapper : Func1<Response<LogoutPojo>,
         LogoutDomain> {
 
-    private val IS_SUCCESS: Int = 1
-
     override fun call(response: Response<LogoutPojo>): LogoutDomain {
         var messageError: String = ""
 
@@ -25,7 +23,7 @@ class LogoutMapper : Func1<Response<LogoutPojo>,
                     && pojo.message_error?.isEmpty()!!) {
 
                 return LogoutDomain(
-                        pojo.data.is_success == IS_SUCCESS)
+                        pojo.data.is_logout)
 
             } else if (pojo.message_error?.isNotEmpty()!!) {
                 messageError = response.body().message_error!![0]

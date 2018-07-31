@@ -10,5 +10,5 @@ data class LogoutPojo(
 )
 
 data class Data(
-        val is_success: Int? = 0
+        val is_logout: Boolean = false
 )
