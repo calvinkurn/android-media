@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.graphqlGeneratedDatabaseHolder;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;
@@ -28,7 +29,7 @@ public class GraphqlClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
             sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
-                    DEFAULT_TOKOPEDIA_GQL_URL, (NetworkRouter) context.getApplicationContext(),
+                    GraphqlUrl.BASE_URL, (NetworkRouter) context.getApplicationContext(),
                     userSession);
             sFingerprintManager = new FingerprintManager(userSession);
 

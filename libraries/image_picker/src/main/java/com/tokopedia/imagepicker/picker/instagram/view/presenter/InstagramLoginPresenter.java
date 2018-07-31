@@ -3,8 +3,6 @@ package com.tokopedia.imagepicker.picker.instagram.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
 
-import rx.Subscriber;
-
 /**
  * Created by zulfikarrahman on 6/8/18.
  */
