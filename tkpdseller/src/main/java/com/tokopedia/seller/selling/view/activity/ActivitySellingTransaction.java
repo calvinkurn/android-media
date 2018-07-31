@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -86,11 +85,6 @@ public class ActivitySellingTransaction extends TkpdActivity
     DownloadResultReceiver mReceiver;
 
     FragmentManager fragmentManager;
-
-    @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
-    public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras){
-        return ActivitySellingTransaction.createIntent(context, TAB_POSITION_SELLING_OPPORTUNITY);
-    }
 
     @DeepLink(Constants.Applinks.SELLER_NEW_ORDER)
     public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {

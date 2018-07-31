@@ -68,7 +68,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
 
-    private static final String EXTRA_QUERY = "EXTRA_QUERY";
+    public static final String EXTRA_QUERY = "EXTRA_QUERY";
 
     private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
     private static final String ARGS_PARAM = "ARGS_PARAM";
