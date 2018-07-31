@@ -13,4 +13,5 @@ import static com.tokopedia.product.edit.util.ProductEditPreOrderTimeType.WEEK;
 public @interface ProductEditPreOrderTimeType {
     int DAY = 1;
     int WEEK = 2;
+    int MONTH = 3;
 }

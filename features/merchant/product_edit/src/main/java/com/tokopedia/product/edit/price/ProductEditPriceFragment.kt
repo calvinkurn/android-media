@@ -60,6 +60,11 @@ class ProductEditPriceFragment : Fragment() {
             textAddMaksimumBuy.visibility = View.GONE
         })
 
+        imageViewEdit.setOnClickListener {
+            wholesalePrice.clear()
+            setLabelViewWholesale(wholesalePrice)
+        }
+
         labelViewWholesale.setOnClickListener {
             startActivityForResult(ProductAddWholesaleActivity.getIntent(context, wholesalePrice, selectedCurrencyType, spinnerCounterInputViewPrice.counterEditText.text.toString().replace(",", "").toDouble(), true, true), REQUEST_CODE_GET_WHOLESALE) }
     }
@@ -114,8 +119,12 @@ class ProductEditPriceFragment : Fragment() {
         textAddMaksimumBuy.visibility = View.GONE
     }
 
-    private fun setDisablePriceForm(){
-
+    private fun setEnablePriceForm(isEnabled : Boolean){
+        spinnerCounterInputViewPrice.isEnabled = isEnabled
+        if(isEnabled)
+            imageViewEdit.visibility = View.GONE
+        else
+            imageViewEdit.visibility = View.VISIBLE
     }
 
     private fun showDataPrice(productPrice: ProductPrice){
@@ -134,10 +143,13 @@ class ProductEditPriceFragment : Fragment() {
     }
 
     private fun setLabelViewWholesale(wholesaleList: ArrayList<ProductWholesaleViewModel>){
-        if (wholesaleList.size == 0)
+        if (wholesaleList.size == 0) {
             labelViewWholesale.setContent(getString(R.string.label_add))
-        else
+            setEnablePriceForm(true)
+        } else {
             labelViewWholesale.setContent(getString(R.string.product_count_wholesale, wholesaleList.size))
+            setEnablePriceForm(false)
+        }
     }
 
     private fun saveData(productPrice: ProductPrice): ProductPrice{

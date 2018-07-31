@@ -61,7 +61,7 @@ abstract class BaseProductEditFragment : Fragment() {
             startActivityForResult(ProductEditNameActivity.createIntent(activity!!, productName), REQUEST_CODE_GET_NAME)
         }
         labelViewPriceProduct.setOnClickListener {
-            startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, productPrice), REQUEST_CODE_GET_PRICE)
+            startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, productPrice, true, true), REQUEST_CODE_GET_PRICE)
         }
         labelViewDescriptionProduct.setOnClickListener {
             startActivityForResult(ProductEditDescriptionActivity.createIntent(activity!!, productDescription, productName.name!!), REQUEST_CODE_GET_DESCRIPTION) }
@@ -146,10 +146,13 @@ abstract class BaseProductEditFragment : Fragment() {
     }
 
     private fun setStockSectionData(productStock: ProductStock){
-        if(productStock.stockLimited)
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
-        else
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
+        if(productStock.isActive) {
+            if(productStock.stockCount > 0)
+                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
+            else
+                labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
+        } else
+            labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
     }
 
     private fun setLogisticSectionData(productLogistic: ProductLogistic){
@@ -176,6 +179,9 @@ abstract class BaseProductEditFragment : Fragment() {
         const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
+
+        const val EXTRA_OFFICIAL_STORE = "EXTRA_OFFICIAL_STORE"
+        const val EXTRA_HAS_VARIANT = "EXTRA_HAS_VARIANT"
 
 //        fun createInstance() = BaseProductEditFragment()
     }

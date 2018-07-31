@@ -55,6 +55,7 @@
     <string name="product_label_kilogram">Kilogram</string>
     <string name="product_label_day">Hari</string>
     <string name="product_label_week">Minggu</string>
+    <string name="product_label_month">Bulan</string>
     <string name="product_label_what_do_you_sell">Apa yang Anda jual?</string>
     <string name="product_label_choose_product_category_catalog">Pilih produk yang sesuai dengan yang Anda jual</string>
     <string name="product_label_choose_category_catalog_information">Sesuaikan produk Anda dengan katalog yang tersedia untuk mempercepat pengisian informasi produk</string>
@@ -77,6 +78,7 @@
     <string name="product_label_stock_count">Jumlah Stock</string>
     <string name="product_label_stock_always_available">Stock Selalu Tersedia</string>
     <string name="product_label_stock_limited">Stock Terbatas</string>
+    <string name="product_label_stock_empty">Stock Kosong</string>
     <string name="product_label_insurance">Asuransi Pengiriman</string>
     <string name="product_label_free_return">Free Returns</string>
     <string name="product_label_pre_order">Pre order</string>

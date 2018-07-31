@@ -102,6 +102,7 @@ class ProductEditWeightLogisticFragment : Fragment() {
         when (type) {
             ProductEditPreOrderTimeType.DAY -> resString = R.string.product_label_day
             ProductEditPreOrderTimeType.WEEK -> resString = R.string.product_label_week
+            ProductEditPreOrderTimeType.MONTH -> resString = R.string.product_label_month
         }
         return getString(resString)
     }
@@ -150,6 +151,8 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 selectedPreOrderTimeType == ProductEditPreOrderTimeType.DAY)
         checkedBottomSheetMenu.addItem(ProductEditPreOrderTimeType.WEEK, getPreOrderTimeTypeTitle(ProductEditPreOrderTimeType.WEEK),
                 selectedPreOrderTimeType == ProductEditPreOrderTimeType.WEEK)
+        checkedBottomSheetMenu.addItem(ProductEditPreOrderTimeType.MONTH, getPreOrderTimeTypeTitle(ProductEditPreOrderTimeType.MONTH),
+                selectedPreOrderTimeType == ProductEditPreOrderTimeType.MONTH)
 
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }

@@ -33,25 +33,30 @@ class ProductEditStockFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setDataStock(productStock)
         labelRadioButtonStockLimited.setOnClickListener {
-            if(!labelRadioButtonStockLimited.isChecked){
-                labelRadioButtonStockLimited.isChecked = !labelRadioButtonStockLimited.isChecked
-                labelRadioButtonStockAvailable.isChecked = !labelRadioButtonStockLimited.isChecked
-            }
+            setRadioButtonChosen(labelRadioButtonStockLimited)
             setVisibleStockTextInputLayout()
         }
 
         labelRadioButtonStockAvailable.setOnClickListener {
-            if(!labelRadioButtonStockAvailable.isChecked){
-                labelRadioButtonStockAvailable.isChecked = !labelRadioButtonStockAvailable.isChecked
-                labelRadioButtonStockLimited.isChecked = !labelRadioButtonStockAvailable.isChecked
-            }
+            setRadioButtonChosen(labelRadioButtonStockAvailable)
             setVisibleStockTextInputLayout()
         }
 
+        labelRadioButtonStockEmpty.setOnClickListener {
+            setRadioButtonChosen(labelRadioButtonStockEmpty)
+            setVisibleStockTextInputLayout()
+        }
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
             setResult()
         }
+    }
+
+    private fun setRadioButtonChosen(labelRadioButton: LabelRadioButton){
+        labelRadioButtonStockAvailable.isChecked = false
+        labelRadioButtonStockLimited.isChecked = false
+        labelRadioButtonStockEmpty.isChecked = false
+        labelRadioButton.isChecked = true
     }
 
     private fun setVisibleStockTextInputLayout(){
@@ -65,18 +70,25 @@ class ProductEditStockFragment : Fragment() {
     }
 
     private fun setDataStock(productStock: ProductStock){
-        labelRadioButtonStockLimited.isChecked = productStock.stockLimited
-        labelRadioButtonStockAvailable.isChecked = !productStock.stockLimited
+        if(productStock.stockCount > 0){
+            labelRadioButtonStockLimited.isChecked = productStock.isActive
+        } else {
+            labelRadioButtonStockAvailable.isChecked = productStock.isActive
+        }
+        labelRadioButtonStockEmpty.isChecked = !productStock.isActive
         setVisibleStockTextInputLayout()
         decimalInputViewStock.text = productStock.stockCount.toString()
         editTextSku.setText(productStock.sku)
     }
 
     private fun saveData(productStock: ProductStock): ProductStock{
-        productStock.stockLimited = labelRadioButtonStockLimited.isChecked
-        if(productStock.stockLimited) {
-            productStock.stockCount = decimalInputViewStock.text.toString().replace(",", "").toInt()
-        }else {
+        productStock.isActive = !labelRadioButtonStockEmpty.isChecked
+        if(labelRadioButtonStockLimited.isChecked) {
+            if(decimalInputViewStock.text.toString().replace(",", "").toInt() > 0)
+                productStock.stockCount = decimalInputViewStock.text.toString().replace(",", "").toInt()
+            else
+                decimalInputViewStock.setError("Jumlah Stok harus lebih dari 0, atau pilih Stock Kosong")
+        } else {
             productStock.stockCount = 0
         }
         productStock.sku = editTextSku.text.toString()
