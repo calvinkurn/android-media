@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
@@ -168,8 +169,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     TabLayout promoTabLayout;
     @BindView(R2.id.pager)
     DigitalWrapContentViewPager promoViewPager;
-    @BindView(R2.id.guide_separator)
-    View guideSeparator;
+    @BindView(R2.id.container_promo)
+    LinearLayout containerPromo;
 
     private ProductDigitalPresenter presenter;
 
@@ -235,6 +236,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        renderViewShadow();
     }
 
     @Override
@@ -1268,13 +1276,30 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void hidePromoGuideTab() {
         promoTabLayout.setVisibility(View.GONE);
         promoViewPager.setVisibility(View.GONE);
-        guideSeparator.setVisibility(View.GONE);
     }
 
     @Override
     public void showPromoGuideTab() {
         promoTabLayout.setVisibility(View.VISIBLE);
         promoViewPager.setVisibility(View.VISIBLE);
-        guideSeparator.setVisibility(View.VISIBLE);
+    }
+
+    private void renderViewShadow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holderCheckBalance.setElevation(10);
+            holderProductDetail.setElevation(10);
+            checkETollBalanceView.setElevation(10);
+            containerPromo.setElevation(10);
+
+            holderCheckBalance.setBackgroundResource(R.color.white);
+            holderProductDetail.setBackgroundResource(R.color.white);
+            checkETollBalanceView.setBackgroundResource(R.color.white);
+            containerPromo.setBackgroundResource(R.color.white);
+        } else {
+            holderCheckBalance.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            holderProductDetail.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            checkETollBalanceView.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            containerPromo.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        }
     }
 }
