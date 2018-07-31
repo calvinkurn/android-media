@@ -634,7 +634,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) ) {
             if ( isUserFirstTimeLogin) {
-
             adapter.notifyDataSetChanged();}
             updateCartNotification();
         }
