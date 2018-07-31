@@ -9,6 +9,7 @@
     app:elevation="@dimen/dp_6">
 
     <android.support.constraint.ConstraintLayout
+        android:background="@drawable/bg_tokopedia_pay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16">
