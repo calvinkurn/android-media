@@ -13,6 +13,8 @@
     <string name="label_subscribe">Berlangganan</string>
 
     <string name="price_format_text">%1$s %2$s</string>
+    <string name="rupiah_format">Rp %s</string>
+    <string name="usd_format">US$ %s</string>
 
     <string name="title_date_setting">Atur Tanggal</string>
     <string name="next">Selanjutnya</string>
@@ -163,6 +165,8 @@
     <string name="import_from_instagram_text_description">Ambil gambar dari Instagram</string>
     <string name="added_from_gallery_text_description">Tambah gambar dari Galeri</string>
     <string name="added_from_camera_text_description">Tambah gambar dari Kamera</string>
+    <string name="add_product_text_description">Tambah Produk</string>
+    <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
 
     <string name="product_manage_label_add_product_to_sell">Tambah produk Anda untuk dapat mulai berjualan.</string>
     <string name="product_manage_label_add_product">+ Tambah Produk</string>
@@ -182,6 +186,7 @@
     <string name="edit_from_instagram_text_description">Ubah gambar dari Instagram</string>
     <string name="edit_from_gallery_text_description">Ubah gambar dari Galeri</string>
     <string name="edit_from_camera_text_description">Ubah gambar dari Kamera</string>
+    <string name="change_image">Ubah gambar</string>
     <string name="hint_city_or_district">Tulis kota / kecamatan tujuan pengiriman</string>
     <string name="hint_post_code">Tulis 5 digit kode pos</string>
     <string name="hint_choose_city">Pilih kota/kecamatan</string>
@@ -207,7 +212,7 @@
     <string name="test_strike"><strike>TextView</strike></string>
     <string name="item_price_label">Harga Barang</string>
     <string name="shipping_fee_label">Ongkos Kirim</string>
-	<string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
+    <string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
     <string name="shipping_location_pinpoint_detail">Isi pinpoint lokasi toko Anda untuk mengaktifkan Layanan Pengiriman Ekspress.</string>
 
     <!-- Opportunity -->
@@ -240,5 +245,12 @@
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
+    <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
+    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan Gold Merchant.</string>
+    <string name="choose_shop_picture">Pilih Gambar Toko</string>
 
+    <string name="sticker_shop_link">https://tokopedia.com/%s</string>
+    <string name="sticker_cashback">Cashback %1$d%%</string>
+    <string name="catalog">Katalog</string>
+    <string name="primary">Utama</string>
 </resources>

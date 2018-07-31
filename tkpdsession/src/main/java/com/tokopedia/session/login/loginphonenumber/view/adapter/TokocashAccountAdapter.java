@@ -27,10 +27,10 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView avatar;
+
         TextView name;
         TextView email;
         View mainView;
-
         public ViewHolder(View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.avatar);
@@ -45,8 +45,8 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
                 }
             });
         }
-    }
 
+    }
     public static TokocashAccountAdapter createInstance(ChooseTokocashAccount.View
                                                                 viewListener, ArrayList<AccountTokocash> listAccount) {
         return new TokocashAccountAdapter(viewListener, listAccount);
@@ -73,6 +73,10 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public ArrayList<AccountTokocash> getList() {
+        return list;
     }
 
 }

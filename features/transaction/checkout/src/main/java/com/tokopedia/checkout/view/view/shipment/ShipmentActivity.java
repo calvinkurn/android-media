@@ -28,29 +28,23 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
     public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
 
-    public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
     public static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "EXTRA_DISTRICT_RECOMMENDATION_TOKEN";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
-    public static final String EXTRA_NAVIGATE_TO_ADDRESS_CHOICE = "EXTRA_NAVIGATE_TO_ADDRESS_CHOICE";
 
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
 
 
     public static Intent createInstance(Context context,
-                                        CartShipmentAddressFormData cartShipmentAddressFormData,
                                         PromoCodeAppliedData promoCodeCartListData,
                                         CartPromoSuggestion cartPromoSuggestion,
-                                        String defaultSelectedTabPromo,
-                                        boolean navigateToAddressChoice) {
+                                        String defaultSelectedTabPromo) {
         Intent intent = new Intent(context, ShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
-        intent.putExtra(EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
-        intent.putExtra(EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, navigateToAddressChoice);
         return intent;
     }
 
@@ -99,17 +93,15 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     @Override
     protected Fragment getNewFragment() {
         return ShipmentFragment.newInstance(
-                getIntent().getParcelableExtra(EXTRA_SHIPMENT_FORM_DATA),
                 getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
                 getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION),
-                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
-                getIntent().getBooleanExtra(EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, false)
+                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB)
         );
     }
 
     @Override
     public void onBackPressed() {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectiontClickBackArrow();
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
         showResetDialog();
     }
 
@@ -123,7 +115,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
             @Override
             public void onClick(View view) {
                 checkoutAnalyticsCourierSelection
-                        .eventClickCourierSelectionClickKembaliDanHapusPerubahanFromBackArrow();
+                        .eventClickAtcCourierSelectionClickKembaliDanHapusPerubahanFromBackArrow();
                 setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
                 finish();
             }
@@ -132,7 +124,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
             @Override
             public void onClick(View view) {
                 checkoutAnalyticsCourierSelection
-                        .eventClickCourierSelectionClickTetapDiHalamanIniFromBackArrow();
+                        .eventClickAtcCourierSelectionClickTetapDiHalamanIniFromBackArrow();
                 dialog.dismiss();
             }
         });
