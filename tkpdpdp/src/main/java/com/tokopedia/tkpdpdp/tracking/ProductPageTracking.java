@@ -219,8 +219,8 @@ public class ProductPageTracking {
                         "eventAction", "click - top ads",
                         "eventLabel", "",
                         "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/productdetail - top ads'")),
-                                "products", DataLayer.listOf(
+                                DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/productdetail - top ads'"),
+                                        "products", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "name", product.getName(),
                                                 "id", product.getId(),
@@ -230,7 +230,7 @@ public class ProductPageTracking {
                                                 "variant", "none / other",
                                                 "position", (position + 1)
                                         )
-                                )
+                                ))
                         )
                 )
         );
@@ -246,7 +246,7 @@ public class ProductPageTracking {
                         "eventCategory", "product detail page",
                         "eventAction", "impression - top ads",
                         "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf("promoView", "IDR",
+                        "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
                                 "impression", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "name", product.getName(),
