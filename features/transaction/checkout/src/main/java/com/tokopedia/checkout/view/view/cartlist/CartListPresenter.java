@@ -64,8 +64,6 @@ public class CartListPresenter implements ICartListPresenter {
 
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
-    private static final String PARAM_CARTS = "carts";
-    private static final String PARAM_IS_RESET = "isReset";
     private static final String PARAM_STEP = "step";
     private final ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
@@ -74,7 +72,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final DeleteCartGetCartListUseCase deleteCartGetCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
-    private final ResetCartUseCase resetCartUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
@@ -86,7 +83,6 @@ public class CartListPresenter implements ICartListPresenter {
                              DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                             ResetCartUseCase resetCartUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -98,7 +94,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.deleteCartGetCartListUseCase = deleteCartGetCartListUseCase;
         this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
-        this.resetCartUseCase = resetCartUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
@@ -177,7 +172,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
@@ -210,7 +205,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,

@@ -136,6 +136,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onDetach() {
+        if (getActivity() != null && getCartDataList() != null && getCartDataList().size() > 0) {
+            Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
+            service.putParcelableArrayListExtra(UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getCartDataList()));
+            getActivity().startService(service);
+        }
+        super.onDetach();
+    }
+
+    @Override
     public void onDestroy() {
         cartListAdapter.unsubscribeSubscription();
         dPresenter.detachView();

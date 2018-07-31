@@ -8,6 +8,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.module.CartUseCaseModule;
 import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
@@ -24,6 +25,8 @@ import javax.inject.Inject;
 public class CartComponentInjector {
     private static CartComponentInjector instance;
 
+    @Inject
+    UpdateCartUseCase updateCartUseCase;
     @Inject
     AddToCartUseCase addToCartUseCase;
     @Inject
@@ -72,6 +75,10 @@ public class CartComponentInjector {
 
     public AddToCartUseCase getAddToCartUseCase() {
         return addToCartUseCase;
+    }
+
+    public UpdateCartUseCase getUpdateCartUseCase() {
+        return updateCartUseCase;
     }
 
     public CheckPromoCodeCartListUseCase getCheckPromoCodeCartListUseCase() {
