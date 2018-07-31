@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -46,6 +47,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     lateinit var adapter: BankAccountAdapter
     lateinit var alertDialog: Dialog
     lateinit var linearLayoutManager: LinearLayoutManager
+    lateinit var analyticTracker: SettingBankAnalytics
 
     private var enableAddButton = false
     private var reason = ""
@@ -67,6 +69,20 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         presenter.attachView(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (activity != null && activity!!.applicationContext != null) {
+            analyticTracker = SettingBankAnalytics.createInstance(
+                    (activity!!.applicationContext as BankRouter).getAnalyticTracker())
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (activity != null) {
+            analyticTracker.sendScreen(activity!!, screenName)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -145,6 +161,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun makeMainAccount(adapterPosition: Int, element: BankAccountViewModel?) {
+        analyticTracker.trackSetDefaultAccount()
+
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -155,6 +173,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         alertDialog.setBtnOk(getString(R.string.yes))
         alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
         alertDialog.setOnOkClickListener({
+            analyticTracker.trackConfirmYesSetDefaultAccount()
+
             presenter.setMainAccount(adapterPosition, element)
             alertDialog.dismiss()
         })
@@ -196,6 +216,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun editBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
         if (element != null) {
+            analyticTracker.trackEditBankAccount()
             startActivityForResult(AddEditBankActivity.createIntentEditBank(
                     activity!!
                     , BankFormModel(
@@ -212,6 +233,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun deleteBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
+        analyticTracker.trackDeleteBankAccount()
+
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -222,6 +245,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         alertDialog.setBtnOk(getString(R.string.yes_delete))
         alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
         alertDialog.setOnOkClickListener({
+            analyticTracker.trackConfirmYesDeleteBankAccount()
             presenter.deleteAccount(adapterPosition, element)
             alertDialog.dismiss()
         })
@@ -266,6 +290,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
 
     override fun addNewAccount() {
+        analyticTracker.trackAddNewBankAccount()
         if (presenter.isMsisdnVerified() && enableAddButton) {
             val intentBankForm = AddEditBankActivity.createIntentAddBank(activity!!)
             startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
@@ -308,7 +333,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
             when (requestCode) {
                 REQUEST_ADD_BANK -> NetworkErrorHelper.showSnackbar(activity!!,
                         getString(R.string.success_add_bank_account))
-                REQUEST_EDIT_BANK ->  NetworkErrorHelper.showSnackbar(activity!!,
+                REQUEST_EDIT_BANK -> NetworkErrorHelper.showSnackbar(activity!!,
                         getString(R.string.success_edit_bank_account))
             }
             getBankList()

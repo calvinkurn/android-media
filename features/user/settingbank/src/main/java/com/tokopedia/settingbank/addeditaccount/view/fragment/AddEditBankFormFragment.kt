@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
+import com.tokopedia.settingbank.BankRouter
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics
 import com.tokopedia.settingbank.addeditaccount.di.AddEditBankDependencyInjector
@@ -21,6 +22,7 @@ import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivit
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
+import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
@@ -42,6 +44,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     lateinit var presenter: AddEditBankPresenter
     lateinit var bottomInfoDialog: BottomSheetDialog
     lateinit var alertDialog: Dialog
+    lateinit var analyticTracker: SettingBankAnalytics
 
     private var bankFormModel = BankFormModel()
 
@@ -57,6 +60,21 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     override fun initInjector() {
         presenter = AddEditBankDependencyInjector.Companion.inject(activity!!.applicationContext)
         presenter.attachView(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (activity != null && activity!!.applicationContext != null) {
+            analyticTracker = SettingBankAnalytics.createInstance(
+                    (activity!!.applicationContext as BankRouter).getAnalyticTracker())
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (activity != null) {
+            analyticTracker.sendScreen(activity!!, screenName)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,8 +105,16 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         alertDialog.setDesc(composeMakeMainDescription())
         alertDialog.setBtnCancel(getString(R.string.edit))
         alertDialog.setBtnOk(getString(R.string.yes_correct))
-        alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
+        alertDialog.setOnCancelClickListener({
+            alertDialog.dismiss()
+        })
         alertDialog.setOnOkClickListener({
+            if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
+                analyticTracker.trackConfirmYesAddBankAccount()
+            }else{
+                analyticTracker.trackConfirmYesEditBankAccount()
+
+            }
             setupBankFormModel()
             if (!bankFormModel.status.isBlank()) {
                 presenter.validateBank(bankFormModel)
