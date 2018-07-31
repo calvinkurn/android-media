@@ -4,12 +4,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.TextureView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,18 +16,13 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.adapter.ImagePagerAdapter;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_ACTIVE;
-import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
-import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
 import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_STATUS_ACTIVE;
 
 /**
@@ -67,7 +60,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     protected void parseAttribute(Context context, AttributeSet attrs) {
-        imagePagerAdapter = new ImagePagerAdapter(context, new ArrayList<ProductImage>());
+        imagePagerAdapter = new ImagePagerAdapter(context);
     }
 
     @Override
@@ -89,7 +82,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>(), urlTemporary);
+        imagePagerAdapter = new ImagePagerAdapter(getContext(), urlTemporary);
         vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
