@@ -210,15 +210,15 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         presenter.getDetailSchedule(trainScheduleBookingPassData.getReturnScheduleId(), cardActionReturn);
 
         cardActionDeparture.setActionListener(() -> {
-            String trainClass = trainScheduleDetailViewModel.getTrainClass();
-            String trainName = trainScheduleDetailViewModel.getTrainName();
-            String totalPrice = getString(R.string.train_label_currency,
-                    CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
-                            false, 0).getFormattedString());
-            int numOfTotalPassenger = trainScheduleDetailViewModel.getNumOfAdultPassenger()
-                    + trainScheduleDetailViewModel.getNumOfInfantPassenger();
-
-            trainAnalytics.eventClickDetail();
+//            String trainClass = trainScheduleDetailViewModel.getTrainClass();
+//            String trainName = trainScheduleDetailViewModel.getTrainName();
+//            String totalPrice = getString(R.string.train_label_currency,
+//                    CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
+//                            false, 0).getFormattedString());
+//            int numOfTotalPassenger = trainScheduleDetailViewModel.getNumOfAdultPassenger()
+//                    + trainScheduleDetailViewModel.getNumOfInfantPassenger();
+//
+//            trainAnalytics.eventClickDetail();
 
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                     trainScheduleBookingPassData.getDepartureScheduleId(),

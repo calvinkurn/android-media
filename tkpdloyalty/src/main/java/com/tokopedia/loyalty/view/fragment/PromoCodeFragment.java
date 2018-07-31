@@ -25,6 +25,7 @@ import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
 import com.tokopedia.loyalty.di.module.PromoCodeViewModule;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
@@ -178,6 +179,10 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (getActivity() instanceof LoyaltyModuleRouter) {
+                    ((LoyaltyModuleRouter) getActivity())
+                            .trainSendTrackingOnClickUseVoucherCode(voucherCodeField.getText().toString());
+                }
                 voucherCodeFieldHolder.setError(null);
                 if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));

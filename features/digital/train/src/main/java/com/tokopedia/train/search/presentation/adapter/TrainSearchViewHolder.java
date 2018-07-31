@@ -14,8 +14,12 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nabillasabbaha on 3/15/18.
@@ -29,6 +33,10 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
     @LayoutRes
     public static int LAYOUT = R.layout.item_train_schedule;
 
+    private Context context;
+    private TrainSearchAdapterTypeFactory.OnTrainSearchListener listener;
+    private TrainAnalytics trainAnalytics;
+
     private LinearLayout flagItemLayout;
     private TextView trainNameTv;
     private TextView classNameTv;
@@ -38,14 +46,18 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
     private TextView availabilitySeatTv;
     private TextView priceTv;
     private TextView detailScheduleTv;
-    private TrainSearchAdapterTypeFactory.OnTrainSearchListener listener;
-    private Context context;
     private AppCompatImageView imageRound1;
     private AppCompatImageView imageRound3;
 
-    public TrainSearchViewHolder(View itemView, TrainSearchAdapterTypeFactory.OnTrainSearchListener listener) {
+    private List<Integer> index = new ArrayList<>();
+
+    public TrainSearchViewHolder(View itemView, TrainSearchAdapterTypeFactory.OnTrainSearchListener listener,
+                                 TrainAnalytics trainAnalytics) {
         super(itemView);
         this.context = itemView.getContext();
+        this.listener = listener;
+        this.trainAnalytics = trainAnalytics;
+
         flagItemLayout = itemView.findViewById(R.id.flag_item);
         trainNameTv = itemView.findViewById(R.id.train_name);
         classNameTv = itemView.findViewById(R.id.class_name);
@@ -57,7 +69,6 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         detailScheduleTv = itemView.findViewById(R.id.tap_for_details);
         imageRound1 = itemView.findViewById(R.id.departure_time_circle);
         imageRound3 = itemView.findViewById(R.id.arrival_time_circle);
-        this.listener = listener;
     }
 
     @Override
@@ -66,6 +77,17 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
 
         setDataSchedule(trainScheduleViewModel);
         setColorTextItem(trainScheduleViewModel.getAvailableSeat() == OUT_OF_STOCK);
+
+        if (!index.contains(getAdapterPosition())) {
+            trainAnalytics.eventProductImpression(
+                    trainScheduleViewModel.getIdSchedule(),
+                    trainScheduleViewModel.getOrigin(),
+                    trainScheduleViewModel.getDestination(),
+                    trainScheduleViewModel.getClassTrain(),
+                    trainScheduleViewModel.getTrainName()
+            );
+            index.add(getAdapterPosition());
+        }
     }
 
     private void setColorTextItem(boolean isScheduleOutOfStock) {
@@ -182,4 +204,5 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
             linearLayout.removeAllViews();
         }
     }
+
 }

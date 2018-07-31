@@ -367,7 +367,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     protected TrainSearchAdapterTypeFactory getAdapterTypeFactory() {
-        return new TrainSearchAdapterTypeFactory(this);
+        return new TrainSearchAdapterTypeFactory(this, trainAnalytics);
     }
 
     @Override
@@ -378,6 +378,22 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
+        String specialTagging = "";
+        if (trainScheduleViewModel.isCheapestFlag()) {
+            specialTagging = "Termurah";
+        } else if (trainScheduleViewModel.isFastestFlag()) {
+            specialTagging = "Tercepat";
+        }
+
+        trainAnalytics.eventProductClick(
+                trainScheduleViewModel.getIdSchedule(),
+                trainScheduleViewModel.getOrigin(),
+                trainScheduleViewModel.getDestination(),
+                trainScheduleViewModel.getClassTrain(),
+                trainScheduleViewModel.getTrainName(),
+                specialTagging
+        );
+
         Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                 trainScheduleViewModel.getIdSchedule(),
                 trainSearchPassDataViewModel.getAdult(),

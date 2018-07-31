@@ -118,7 +118,6 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                             view.hideProgressLoading();
                             view.checkVoucherSuccessfull(voucherViewModel);
                         }
-
                     }
                 }
 
