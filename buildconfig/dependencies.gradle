@@ -331,7 +331,8 @@ ext {
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
-            digitalDeals          : ":features:digital:digital_deals"
+            digitalDeals          : ":features:digital:digital_deals",
+            updateinactivephone   : ":features:user:updateinactivephone"
     ]
 
     libraries = [
