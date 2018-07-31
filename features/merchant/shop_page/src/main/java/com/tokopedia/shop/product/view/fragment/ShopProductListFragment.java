@@ -133,7 +133,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         return new ShopProductAdapterTypeFactory(null,
                 this, this,
                 this, null,
-                false, 0,false
+                false, 0, false
         );
     }
 
@@ -272,6 +272,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     public void onSwipeRefresh() {
         shopProductListPresenter.clearProductCache();
+        if (stickySingleHeaderView != null) {
+            stickySingleHeaderView.clearHeaderView();
+        }
         super.onSwipeRefresh();
     }
 
@@ -283,7 +286,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             selectedEtalaseId = null;
             selectedEtalaseName = null;
             shopProductAdapter.setShopEtalase(null);
-            stickySingleHeaderView.disable();
+            if (stickySingleHeaderView != null) {
+                stickySingleHeaderView.disable();
+            }
             loadInitialData();
         }
     }
@@ -401,6 +406,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             isLoadingInitialData = false;
         }
         shopProductAdapter.notifyDataSetChanged();
+        if (stickySingleHeaderView != null) {
+            stickySingleHeaderView.refreshSticky();
+        }
     }
 
     @Override
@@ -527,7 +535,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public List<ShopEtalaseViewModel> getShopEtalaseViewModelList(){
+    public List<ShopEtalaseViewModel> getShopEtalaseViewModelList() {
         return shopProductAdapter.getShopProductEtalaseListViewModel().getEtalaseModelList();
     }
 
