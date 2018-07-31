@@ -8,12 +8,18 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.home.beranda.data.mapper.HomeMapper;
+import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
@@ -29,8 +35,6 @@ import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,21 +44,33 @@ import javax.inject.Inject;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.openLinkWithText;
+import static android.support.test.espresso.action.ViewActions.swipeDown;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.tkpd.Utils.nthChildOf;
 import static com.tokopedia.tkpd.Utils.setField;
+import static com.tokopedia.tkpd.Utils.withCustomConstraints;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static rx.Observable.just;
+
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+
+import retrofit2.Response;
 
 
 /**
@@ -73,6 +89,10 @@ public class MainParentActivityTest {
             MainParentActivity.class, true, false, 3
     );
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     public void testInitialUI() throws Exception {
         prepareForFullSmartLockBundle();
@@ -96,7 +116,7 @@ public class MainParentActivityTest {
     }
 
     @Test
-    public void testHomeFragment() throws Exception{
+    public void testHomeFragment() throws Exception {
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -105,13 +125,13 @@ public class MainParentActivityTest {
 
         TestBerandaComponent berandaComponent
                 = DaggerTestBerandaComponent.builder()
-                .baseAppComponent(((BaseMainApplication)mIntentsRule.getActivity().getApplication()).getBaseAppComponent())
+                .baseAppComponent(((BaseMainApplication) mIntentsRule.getActivity().getApplication()).getBaseAppComponent())
                 .build();
 
         berandaComponent.inject(this);
 
         HomeFragment fragment = (HomeFragment) mIntentsRule.getActivity().getFragment(0);
-        if(fragment != null && fragment.isMainViewVisible()){
+        if (fragment != null && fragment.isMainViewVisible()) {
             fragment.reInitInjector(berandaComponent);
 
             when(homePresenter.hasNextPageFeed()).thenReturn(true);
@@ -123,18 +143,85 @@ public class MainParentActivityTest {
 
                 doReturn(fragment).when(fragment.getPresenter()).getView();
 
-                doAnswer(invocation -> {
-                    fragment.getPresenter().getView().setItems(new ArrayList<Visitable>(){
-                        {
-                            add(test());
-                        }
-                    });
-                    return null;
-                }).when(fragment.getPresenter()).fetchNextPageFeed();
+//                doAnswer(invocation -> {
+//                    fragment.getPresenter().getView().setItems(new ArrayList<Visitable>() {
+//                        {
+//                            add(test());
+//                        }
+//                    });
+//                    return null;
+//                }).when(fragment.getPresenter()).fetchNextPageFeed();
 
-                fragment.getPresenter().fetchNextPageFeed();
+                doAnswer(invocation -> {
+                    fragment.getPresenter().getView().setItems(test2());
+                    return null;
+                }).when(fragment.getPresenter()).getHomeData();
+
+//                fragment.getPresenter().fetchNextPageFeed();
+
+                onView(withId(R.id.sw_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
             });
         }
+    }
+
+    @Test
+    public void testHomeFragment2() throws Exception {
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        HomeFragment fragment = (HomeFragment) mIntentsRule.getActivity().getFragment(0);
+        if (fragment != null && fragment.isMainViewVisible()) {
+            homePresenter = spy(fragment.getPresenter());
+            fragment.setPresenter(homePresenter);
+
+            when(homePresenter.hasNextPageFeed()).thenReturn(true);
+
+            Thread.sleep(5_000);
+
+            mIntentsRule.getActivity().runOnUiThread(() -> {
+                fragment.clearAll();
+
+                doAnswer(invocation -> {
+                    homePresenter.getView().setItems(test2());
+                    return null;
+                }).when(homePresenter).getHomeData();
+
+            });
+
+            Thread.sleep(1_000);
+
+            onView(withId(R.id.sw_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+            // Get total item of myRecyclerView
+            RecyclerView recyclerView =fragment.getView().findViewById(R.id.list);
+            int itemCount = recyclerView.getAdapter().getItemCount();
+
+            Log.d("Item count is ", String.valueOf(itemCount));
+            onView(withTagValue(is((Object) "home_list")));
+
+            // Scroll to end of page with position
+            onView(allOf(withId(R.id.list), withTagValue(is("home_list")), isCompletelyDisplayed()))
+                    .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
+        }
+    }
+
+    private List<Visitable> test2() {
+        HomeData homeData = CacheUtil.convertStringToModel(
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource("home_header.json")
+                , HomeData.class);
+        GraphqlResponse<HomeData> homeDataGraphqlResponse = new GraphqlResponse<>();
+        homeDataGraphqlResponse.setData(homeData);
+
+        Response<GraphqlResponse<HomeData>> response =
+                Response.success(homeDataGraphqlResponse);
+
+        return just(response)
+                .map(new HomeMapper())
+                .defaultIfEmpty(null).toBlocking().first();
+
     }
 
     private BannerViewModel test(){

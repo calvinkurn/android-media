@@ -160,6 +160,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public HomePresenter getPresenter(){ return presenter; }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(HomePresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
     public void clearAll(){
         adapter.clearItems();
         adapter.notifyDataSetChanged();
