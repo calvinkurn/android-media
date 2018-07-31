@@ -79,6 +79,8 @@ public interface ICartListView extends IBaseView {
 
     void renderDetailInfoSubTotal(String qty, String subtotalPrice);
 
+    void updateCashback(double cashback);
+
     void renderPromoVoucher();
 
     void showToastMessageRed(String message);

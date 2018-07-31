@@ -174,7 +174,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(
                 TkpdCache.RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
-                false) && (this instanceof ProductListFragment);
+                true) && (this instanceof ProductListFragment);
     }
 
     @Override
