@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -45,7 +46,7 @@ public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
         mrRegisteredFragments.put(position, fragment);
         return fragment;

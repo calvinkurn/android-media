@@ -760,13 +760,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         showToastMessageRed(message);
     }
 
-//    @Override
-//    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress) {
-//        startActivityForResult(MultipleAddressFormActivity.createInstance(
-//                getActivity(), cartListData, selectedAddress),
-//                MultipleAddressFormActivity.REQUEST_CODE);
-//    }
-
     @Override
     public void renderErrorToShipmentMultipleAddress(String message) {
         showToastMessageRed(message);
@@ -910,6 +903,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void updateCashback(double cashback) {
+        cartListAdapter.updateShipmentSellerCashback(cashback);
+    }
+
+    @Override
     public void renderPromoVoucher() {
         CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
         cartItemPromoHolderData.setPromoNotActive();
@@ -1025,10 +1023,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             onResultFromRequestCodeLoyalty(resultCode, data);
         } else if (requestCode == ShipmentActivity.REQUEST_CODE) {
             onResultFromRequestCodeCartShipment(resultCode, data);
-        } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
-//            onResultFromRequestCodeMultipleAddressForm(resultCode);
-        } else if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
-//            onResultFromRequestCodeAddressChoiceActivity(resultCode);
         }
     }
 
@@ -1036,21 +1030,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         return cartPageAnalytics;
     }
 
-//    private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
-//        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
-//            dPresenter.processToShipmentForm(false);
-//        } else if (resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
-//            dPresenter.processToShipmentForm(true);
-//        }
-//    }
-
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
-        if (resultCode == ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
-//            RecipientAddressModel selectedAddress = data.getParcelableExtra(
-//                    ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
-//            );
-//            dPresenter.processToShipmentMultipleAddress(selectedAddress);
-        } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
+        if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
                 resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
             dPresenter.processResetAndRefreshCartData();
         } else if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
@@ -1117,12 +1098,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             }
         }
     }
-
-//    private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
-//        if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-//            dPresenter.processToShipmentForm(false);
-//        }
-//    }
 
     public interface ActionListener {
 
