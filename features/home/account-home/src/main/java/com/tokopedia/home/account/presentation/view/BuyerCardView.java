@@ -69,13 +69,13 @@ public class BuyerCardView extends BaseCustomView {
     }
 
     public void setProfileCompletion(int progress) {
+        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar,
+                "progress", 0, progress);
+        animation.setDuration(2000);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.start();
         if(progress > 0 && progress < 100) {
             textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
-            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar,
-                    "progress", 0, progress);
-            animation.setDuration(2000);
-            animation.setInterpolator(new DecelerateInterpolator());
-            animation.start();
         }
     }
 
