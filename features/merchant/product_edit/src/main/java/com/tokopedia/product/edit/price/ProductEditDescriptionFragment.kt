@@ -67,15 +67,15 @@ class ProductEditDescriptionFragment : Fragment() {
         if(productDescription.description!= null) editTextDescription.setText(productDescription.description)
         if(productDescription.feature!= null) editTextFeature.setText(productDescription.feature)
         labelSwitchNewCondition.isChecked = productDescription.isNew
-        setLabelViewVideo(productDescription.videoIDs)
         videoIDsTemp = productDescription.videoIDs
+        setLabelViewVideo(productDescription.videoIDs)
     }
 
     private fun setLabelViewVideo(videoList: ArrayList<String>){
         if (videoList.size == 0)
             labelViewVideoProduct.setContent(getString(R.string.label_add))
         else
-            labelViewVideoProduct.setContent(getString(R.string.product_count_video, videoIDsTemp.size))
+            labelViewVideoProduct.setContent(getString(R.string.product_count_video, videoList.size))
     }
 
     private fun saveData(productDescription: ProductDescription): ProductDescription{

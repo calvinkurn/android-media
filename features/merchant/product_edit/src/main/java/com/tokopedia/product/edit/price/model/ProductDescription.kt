@@ -14,12 +14,16 @@ class ProductDescription(): Parcelable{
         description = parcel.readString()
         feature = parcel.readString()
         isNew = parcel.readByte() != 0.toByte()
+        videoIDs = arrayListOf<String>().apply {
+                        parcel.readList(this, String::class.java.classLoader)
+                    }
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(description)
         parcel.writeString(feature)
         parcel.writeByte(if (isNew) 1 else 0)
+        parcel.writeList(videoIDs)
     }
 
     override fun describeContents(): Int {

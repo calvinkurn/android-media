@@ -1,13 +1,22 @@
 package com.tokopedia.product.edit.view.activity
 
+import android.content.Context
+import android.content.Intent
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_PRICE
 import com.tokopedia.product.edit.price.ProductEditPriceFragment
+import com.tokopedia.product.edit.price.model.ProductPrice
 
 class ProductEditPriceActivity : BaseSimpleActivity(){
 
+    companion object {
+        fun createIntent(context: Context, productPrice: ProductPrice): Intent {
+            return Intent(context, ProductAddWholesaleActivity::class.java).putExtra(EXTRA_PRICE, productPrice)
+        }
+    }
 
     override fun getNewFragment(): Fragment{
         return ProductEditPriceFragment.createInstance()

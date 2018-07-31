@@ -119,6 +119,7 @@
     <string name="product_draft_save_as_draft">Simpan Draft</string>
     <string name="product_draft_dialog_cancel_message">Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?</string>
     <string name="product_wholesale_range_format">≥ %1$s buah</string>
+    <string name="product_count_wholesale">%d Harga</string>
     <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_fix_previous_wholesale">Perbaiki error sebelumnya terlebih dahulu.</string>
     <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>

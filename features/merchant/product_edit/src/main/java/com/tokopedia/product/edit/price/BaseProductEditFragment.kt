@@ -21,6 +21,7 @@ abstract class BaseProductEditFragment : Fragment() {
     private var productName = ProductName()
     private var productCategory = ProductCategory()
     private var productCatalog = ProductCatalog()
+    private var productPrice = ProductPrice()
     private var productDescription = ProductDescription()
     private var productStock = ProductStock()
     private var productLogistic = ProductLogistic()
@@ -48,28 +49,28 @@ abstract class BaseProductEditFragment : Fragment() {
         setImagesSectionData(productImages)
         setCategoryCatalogSection(productCategory,productCatalog)
         setNameSectionData(productName)
+        setPriceSectionData(productPrice)
+        setDescriptionSectionData(productDescription)
         setLogisticSectionData(productLogistic)
         setStockSectionData(productStock)
 
         llCategoryCatalog.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditCategoryActivity::class.java)
-                    .putExtra(EXTRA_CATALOG, productCatalog)
-                    .putExtra(EXTRA_CATEGORY, productCategory), REQUEST_CODE_GET_CATALOG_CATEGORY) }
-        labelViewNameProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditNameActivity::class.java)
-                    .putExtra(EXTRA_NAME, productName), REQUEST_CODE_GET_NAME)
+            startActivityForResult(ProductEditCategoryActivity.createIntent(activity!!, productCategory, productCatalog), REQUEST_CODE_GET_CATALOG_CATEGORY)
         }
-        labelViewPriceProduct.setOnClickListener { startActivity(Intent(activity, ProductEditPriceActivity::class.java)) }
+        labelViewNameProduct.setOnClickListener {
+            startActivityForResult(ProductEditNameActivity.createIntent(activity!!, productName), REQUEST_CODE_GET_NAME)
+        }
+        labelViewPriceProduct.setOnClickListener {
+            startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, productPrice), REQUEST_CODE_GET_PRICE)
+        }
         labelViewDescriptionProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditDescriptionActivity::class.java)
-                    .putExtra(EXTRA_DESCRIPTION, productDescription)
-                    .putExtra(EXTRA_KEYWORD, productName.name), REQUEST_CODE_GET_DESCRIPTION) }
+            startActivityForResult(ProductEditDescriptionActivity.createIntent(activity!!, productDescription, productName.name!!), REQUEST_CODE_GET_DESCRIPTION) }
         labelViewStockProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditStockActivity::class.java)
-                    .putExtra(EXTRA_STOCK, productStock), REQUEST_CODE_GET_STOCK) }
+            startActivityForResult(ProductEditStockActivity.createIntent(activity!!, productStock), REQUEST_CODE_GET_STOCK)
+        }
         labelViewWeightLogisticProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditWeightLogisticActivity::class.java)
-                    .putExtra(EXTRA_LOGISTIC, productLogistic), REQUEST_CODE_GET_LOGISTIC) }
+            startActivityForResult(ProductEditWeightLogisticActivity.createIntent(activity!!, productLogistic), REQUEST_CODE_GET_LOGISTIC)
+        }
 
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {  }
@@ -99,6 +100,10 @@ abstract class BaseProductEditFragment : Fragment() {
                     productDescription = data!!.getParcelableExtra(EXTRA_DESCRIPTION)
                     setDescriptionSectionData(productDescription)
                 }
+                REQUEST_CODE_GET_PRICE -> {
+                    productPrice = data!!.getParcelableExtra(EXTRA_PRICE)
+                    setPriceSectionData(productPrice)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -127,6 +132,12 @@ abstract class BaseProductEditFragment : Fragment() {
         labelViewNameProduct.setContent(productName.name)
     }
 
+    private fun setPriceSectionData(productPrice: ProductPrice){
+        if(productPrice.price>0) {
+            labelViewPriceProduct.setContent(productPrice.price.toString())
+        }
+    }
+
     private fun setDescriptionSectionData(productDescription: ProductDescription){
         if(productDescription.description!=null) {
             labelViewDescriptionProduct.setContent(productDescription.description)
@@ -152,6 +163,7 @@ abstract class BaseProductEditFragment : Fragment() {
         const val REQUEST_CODE_GET_IMAGES = 1
         const val REQUEST_CODE_GET_CATALOG_CATEGORY = 2
         const val REQUEST_CODE_GET_NAME = 3
+        const val REQUEST_CODE_GET_PRICE = 4
         const val REQUEST_CODE_GET_DESCRIPTION = 5
         const val REQUEST_CODE_GET_STOCK = 6
         const val REQUEST_CODE_GET_LOGISTIC = 7
@@ -160,6 +172,7 @@ abstract class BaseProductEditFragment : Fragment() {
         const val EXTRA_CATALOG = "EXTRA_CATALOG"
         const val EXTRA_CATEGORY = "EXTRA_CATEGORY"
         const val EXTRA_IMAGES = "EXTRA_IMAGES"
+        const val EXTRA_PRICE = "EXTRA_PRICE"
         const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
