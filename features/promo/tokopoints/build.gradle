@@ -6,7 +6,7 @@ project.ext {
     artifactId = 'tokopoints'
     groupId = 'com.tokopedia.tokopoints'
     versionName = "${tkpdTokopointVersion}"
-    artifactName ="tokopoints-release"
+    artifactName = "tokopoints-release"
 }
 
 repositories {
@@ -37,7 +37,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
 
@@ -46,3 +46,4 @@ dependencies {
 }
 
 apply from: '../../../publish_local.gradle'
+
