@@ -15,7 +15,5 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopV
 public interface ShopListTypeFactory extends SearchSectionTypeFactory {
     int type(ShopViewModel.ShopItem shopItem);
 
-    int type(EmptySearchModel emptySearchModel);
-
     AbstractViewHolder createViewHolder(View view, int type);
 }

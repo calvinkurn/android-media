@@ -14,6 +14,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.Catalo
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.topads.sdk.base.Config;
 
 /**
@@ -46,6 +47,11 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
             default:
                 return GridCatalogViewHolder.LAYOUT;
         }
+    }
+
+    @Override
+    public int type(EmptySearchModel emptySearchModel) {
+        return EmptySearchViewHolder.LAYOUT;
     }
 
     @Override
