@@ -1,36 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_8"
     app:elevation="@dimen/dp_6">
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16">
 
-        <ImageView
-            android:id="@+id/image_profile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <RelativeLayout
+            android:id="@+id/holder_image_profile"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             app:layout_constraintBottom_toBottomOf="@+id/text_profile_completion"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_username"
-            tools:src="@drawable/ic_big_notif_customerapp" />
+            app:layout_constraintTop_toTopOf="@+id/text_username">
+
+            <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/circular_progress_bar"
+                style="@style/ProgressBar.Tokopedia"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                android:rotation="-90"
+                tools:progress="55"
+                tools:visibility="visible"/>
+
+            <ImageView
+                android:id="@+id/image_profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/ic_big_notif_customerapp"
+                tools:visibility="visible"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/text_username"
             style="@style/TextView.TitleBig.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxLines="1"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_profile"
+            app:layout_constraintStart_toEndOf="@+id/holder_image_profile"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
 
@@ -44,7 +65,7 @@
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.025"
-            app:layout_constraintStart_toEndOf="@+id/image_profile"
+            app:layout_constraintStart_toEndOf="@+id/holder_image_profile"
             app:layout_constraintTop_toBottomOf="@+id/text_username"
             tools:text="Kelengkapan Profile 75%" />
 
@@ -61,6 +82,7 @@
 
         <TextView
             android:id="@+id/label_tokopoint"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -71,8 +93,7 @@
             android:text="@string/label_user_tokopoint"
             app:layout_constraintEnd_toStartOf="@+id/divider"
             app:layout_constraintStart_toEndOf="@+id/image_tokopoint"
-            app:layout_constraintTop_toBottomOf="@+id/text_profile_completion"
-            style="@style/TextView.Micro.BlackDisabled"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_profile_completion" />
 
         <TextView
             android:id="@+id/text_tokopoint_amount"
@@ -118,6 +139,7 @@
 
         <TextView
             android:id="@+id/label_voucher"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -125,8 +147,7 @@
             android:text="@string/label_user_voucher"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_voucher"
-            app:layout_constraintTop_toTopOf="@+id/label_tokopoint"
-            style="@style/TextView.Micro.BlackDisabled"/>
+            app:layout_constraintTop_toTopOf="@+id/label_tokopoint" />
 
         <TextView
             android:id="@+id/text_voucher_amount"
@@ -136,9 +157,9 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
+            android:text="@string/label_tokopoint_see_voucher"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_voucher"
-            app:layout_constraintTop_toBottomOf="@+id/label_voucher"
-            android:text="@string/label_tokopoint_see_voucher" />
+            app:layout_constraintTop_toBottomOf="@+id/label_voucher" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
