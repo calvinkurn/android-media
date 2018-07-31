@@ -1,44 +1,28 @@
 package com.tokopedia.navigation.data.entity;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.UserShopInfoModel;
 
 /**
- * Created by meta on 25/07/18.
+ * Created by meta on 26/07/18.
  */
 public class NotificationEntity {
 
-    private Notification notifications;
+    @SerializedName("userShopInfo")
+    @Expose
+    private UserShopInfoModel shopInfo;
 
-    public Notification getNotifications() {
+    @SerializedName("notifications")
+    @Expose
+    private NotificationsModel notifications;
+
+    public NotificationsModel getNotifications() {
         return notifications;
     }
 
-    public class Notification {
-
-        @SerializedName("total_cart")
-        private String totalCart;
-
-        @SerializedName("total_notif")
-        private String totalNotif;
-
-        private InboxEntity inbox;
-
-        private ChatEntity chat;
-
-        public String getTotalCart() {
-            return totalCart;
-        }
-
-        public String getTotalNotif() {
-            return totalNotif;
-        }
-
-        public InboxEntity getInbox() {
-            return inbox;
-        }
-
-        public ChatEntity getChat() {
-            return chat;
-        }
+    public UserShopInfoModel getShopInfo() {
+        return shopInfo;
     }
 }

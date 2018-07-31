@@ -8,7 +8,6 @@ public class Notification {
     private Integer totalInbox;
     private Integer totalNotif;
     private Integer totalCart;
-    private Integer totalWishlist;
 
     public Integer getTotalInbox() {
         return totalInbox;
@@ -32,13 +31,5 @@ public class Notification {
 
     public void setTotalCart(Integer totalCart) {
         this.totalCart = totalCart;
-    }
-
-    public Integer getTotalWishlist() {
-        return totalWishlist;
-    }
-
-    public void setTotalWishlist(Integer totalWishlist) {
-        this.totalWishlist = totalWishlist;
     }
 }
