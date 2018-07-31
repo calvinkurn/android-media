@@ -59,9 +59,7 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
             switch (pos) {
                 case 0:
                     if (getApplication() instanceof TrainRouter) {
-
-
-                        ((TrainRouter) getApplication()).goToTrainOrderList(this);
+                        startActivity(((TrainRouter) getApplication()).getTrainOrderListIntent(this));
                     }
                     break;
                 case 1:

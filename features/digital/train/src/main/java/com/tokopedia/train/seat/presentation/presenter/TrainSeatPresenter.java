@@ -142,6 +142,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                         if (isViewAttached()) {
                             getView().hideLoading();
                             getView().showPage();
+                            getView().showErrorChangeSeat(e.getMessage());
                             onViewCreated();
                             getView().clearSeatMaps();
                             getSeatMaps();

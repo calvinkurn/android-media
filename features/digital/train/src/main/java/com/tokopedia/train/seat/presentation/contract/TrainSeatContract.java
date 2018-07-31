@@ -58,6 +58,8 @@ public interface TrainSeatContract {
         void showConfirmChangePassengersDialog(List<TrainSeatPassengerViewModel> passengers);
 
         void clearSeatMaps();
+
+        void showErrorChangeSeat(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

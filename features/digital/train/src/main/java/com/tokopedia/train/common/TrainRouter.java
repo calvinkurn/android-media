@@ -24,8 +24,6 @@ public interface TrainRouter {
 
     Interceptor getChuckInterceptor();
 
-    void goToTrainOrderList(Context context);
-
     Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
                                                    String reservationId, String reservationCode);
 

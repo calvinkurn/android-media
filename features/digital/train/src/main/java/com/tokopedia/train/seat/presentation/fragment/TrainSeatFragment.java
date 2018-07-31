@@ -259,6 +259,11 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
+    public void showErrorChangeSeat(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
     public String getExpireDate() {
         return trainSoftbook.getExpiryTimestamp();
     }
