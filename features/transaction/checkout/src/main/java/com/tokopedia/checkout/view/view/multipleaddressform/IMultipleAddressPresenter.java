@@ -25,4 +25,8 @@ public interface IMultipleAddressPresenter {
 
     void onUnsubscribe();
 
+    CartListData getCartListData();
+
+    void setCartListData(CartListData cartListData);
+
 }
