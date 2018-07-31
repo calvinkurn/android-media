@@ -1,4 +1,4 @@
-package com.tokopedia.core.instoped.model;
+package com.tokopedia.seller.product.draft.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,9 +12,7 @@ import com.tokopedia.core.var.TkpdState;
  * TODO : MOVE IT TO THE SELLER MODULE AFTER MYPRODUCT MOVED TO SELLER MODULE
  */
 public class InstagramMediaModel extends RecyclerViewItem implements Parcelable{
-    public InstagramMediaModel(){
-        setType(TkpdState.RecyclerView.VIEW_INSTOPED);
-    }
+
     public String filter;
     public String link;
     public String thumbnail;

@@ -12,8 +12,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -57,30 +55,11 @@ public class ImageUploadHandler {
     private Context context;
     private Model model = new Model();
 
-    public void actionImagePicker() {
-        Intent imageGallery = new Intent(context, GalleryBrowser.class);
-        startActivity(imageGallery, ImageGallery.TOKOPEDIA_GALLERY);
-    }
-
     public void actionCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
         startActivity(intent, REQUEST_CODE);
     }
-
-    public String actionCamera2() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
-        startActivity(intent, REQUEST_CODE);
-        return model.cameraFileLoc;
-    }
-
-    public Intent getCameraIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
-        return intent;
-    }
-
 
     private void startActivity(Intent intent, int code) {
         if (activity != null)

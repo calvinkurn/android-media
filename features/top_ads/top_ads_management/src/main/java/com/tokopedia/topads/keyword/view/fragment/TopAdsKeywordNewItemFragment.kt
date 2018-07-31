@@ -1,7 +1,6 @@
 package com.tokopedia.topads.keyword.view.fragment
 
 import android.animation.ObjectAnimator
-import android.animation.TimeInterpolator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -30,7 +29,9 @@ import java.util.*
 class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
     val localKeywords: MutableList<AddKeywordDomainModelDatum> = mutableListOf()
     var maxCount = 50
-    lateinit var stepperModel: TopAdsKeywordNewStepperModel
+
+    private var positiveKeyword = true
+    private var groupId = ""
     private var selectedType = 0
     private var isValid = false
     val userSession: UserSession by lazy {
@@ -38,16 +39,18 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        val ADDED_KEYWORDS_PARAM = "added_keywords"
+        val PARAM_ADDED_KEYWORDS = "PARAM_ADDED_KEYWORDS"
+        val PARAM_POSITIVE_KEYWORD = "PARAM_POSITIVE_KEYWORD"
+        val PARAM_GROUP_ID = "PARAM_GROUP_ID"
         private const val MIN_WORDS = 5
 
-        fun newInstance(localKeywords:List<AddKeywordDomainModelDatum>, maxCount: Int,
-                        stepperModel: TopAdsKeywordNewStepperModel): Fragment {
+        fun newInstance(localKeywords:List<AddKeywordDomainModelDatum>, maxCount: Int, positiveKeyword: Boolean, groupId: String): Fragment {
             return TopAdsKeywordNewItemFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM, ArrayList(localKeywords))
                     putInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, maxCount)
-                    putParcelable(TopAdsKeywordNewItemActivity.STEPPERMODEL_PARAM, stepperModel)
+                    putBoolean(PARAM_POSITIVE_KEYWORD, positiveKeyword)
+                    putString(PARAM_GROUP_ID, groupId)
                 }
             }
         }
@@ -63,11 +66,12 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null && arguments != null){
+        if (arguments != null){
             localKeywords.clear()
             localKeywords.addAll(arguments.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM))
             maxCount = arguments.getInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, 50)
-            stepperModel = arguments.getParcelable(TopAdsKeywordNewItemActivity.STEPPERMODEL_PARAM)
+            positiveKeyword = arguments.getBoolean(PARAM_POSITIVE_KEYWORD)
+            groupId = arguments.getString(PARAM_GROUP_ID, "")
         }
     }
 
@@ -95,7 +99,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
             }
 
             val intent = Intent().apply {
-                putParcelableArrayListExtra(ADDED_KEYWORDS_PARAM, ArrayList(keywordAdded))
+                putParcelableArrayListExtra(PARAM_ADDED_KEYWORDS, ArrayList(keywordAdded))
             }
             activity.setResult(Activity.RESULT_OK, intent)
             activity.finish()
@@ -103,8 +107,8 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
     }
 
     private fun convertToAddKeywordDomainModelDatum(keyword: String): AddKeywordDomainModelDatum{
-        return AddKeywordDomainModelDatum(keyword, KeywordTypeMapper.mapToDef(stepperModel.isPositive, selectedType),
-                stepperModel.groupId, userSession.shopId)
+        return AddKeywordDomainModelDatum(keyword, KeywordTypeMapper.mapToDef(positiveKeyword, selectedType),
+                groupId, userSession.shopId)
     }
 
     private fun setupTextArea(){
@@ -157,7 +161,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
 
     private fun isDuplicateExists(keywords: List<String>): Boolean {
         val filteredLocal = localKeywords
-                .filter { it.keyWordTypeId ==  KeywordTypeMapper.mapToDef(stepperModel.isPositive, selectedType)}
+                .filter { it.keyWordTypeId ==  KeywordTypeMapper.mapToDef(positiveKeyword, selectedType)}
                 .map { it.keywordTag }
         val tmpSet = keywords.toSet()
 

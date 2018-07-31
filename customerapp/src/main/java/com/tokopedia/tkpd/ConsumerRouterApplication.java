@@ -55,9 +55,6 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.GallerySelectedFragment;
-import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -66,7 +63,6 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -203,10 +199,7 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
-import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
@@ -585,12 +578,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goMultipleInstagramAddProduct(Context context,
-                                              ArrayList<InstagramMediaModel> instagramMediaModelList) {
-        ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
-    }
-
-    @Override
     public void goToProductDetailForResult(Fragment fragment, String productId,
                                            int adapterPosition,
                                            int requestCode) {
@@ -691,21 +678,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                   LocalCacheHandler drawerCache,
                                   GlobalCacheManager globalCacheManager) {
         return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache, globalCacheManager);
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
-        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
-    }
-
-    @Override
-    public void removeInstopedToken() {
-        InstagramMediaPresenterImpl.removeToken();
     }
 
     @Override
@@ -813,25 +785,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
-    }
-
-    @Override
-    public Intent getGalleryIntent(Activity activity) {
-        return GalleryActivity.createIntent(activity, GalleryType.ofImageOnly(), 1, true);
-    }
-
-    @Override
-    public String getGalleryExtraSelectionPathResultKey() {
-        return GallerySelectedFragment.EXTRA_RESULT_SELECTION_PATH;
-    }
-
-    @Override
-    public FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity) {
-        FlightCancellationCameraPassData passData = new FlightCancellationCameraPassData();
-        ImageUploadHandler imageUploadHandler = ImageUploadHandler.createInstance(activity);
-        passData.setDestinationIntent(imageUploadHandler.getCameraIntent());
-        passData.setImagePathLoc(imageUploadHandler.getCameraFileloc());
-        return passData;
     }
 
     @Override
@@ -1325,11 +1278,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxMessageIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropWatermarkActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override

@@ -18,9 +18,6 @@ public interface InboxTicketDetailFragmentPresenter {
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
-    void actionImagePicker();
-
-    void actionCamera();
 
     void onDestroyView();
 
