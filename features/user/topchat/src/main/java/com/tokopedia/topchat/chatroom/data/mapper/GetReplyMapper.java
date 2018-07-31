@@ -300,7 +300,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                     if(contact.getRole().equalsIgnoreCase(USER_ROLE)){
                         chatRoomViewModel.setInterlocutorRole(contact.getRole());
                         chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getUserId()));
-                    } else if(contact.getRole().equalsIgnoreCase(SHOP_ADMIN_ROLE) || chatRoomViewModel.getInterlocutorRole().equalsIgnoreCase(SHOP_OWNER_ROLE)) {
+                    } else if(contact.getRole().equalsIgnoreCase(SHOP_ADMIN_ROLE) || contact.getRole().equalsIgnoreCase(SHOP_OWNER_ROLE)) {
                         chatRoomViewModel.setInterlocutorRole(CLIENT_SHOP_ROLE);
                         chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getShopId()));
                     }
