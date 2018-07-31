@@ -31,20 +31,17 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
     private final ShopFavouriteViewModelMapper shopFavouriteViewModelMapper;
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final UserSession userSession;
-    private final DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase;
 
     @Inject
     public ShopFavouriteListPresenter(GetShopFavouriteUserUseCase getShopFavouriteUserUseCase,
                                       ShopFavouriteViewModelMapper shopFavouriteViewModelMapper,
                                       GetShopInfoUseCase getShopInfoUseCase, UserSession userSession,
-                                      ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase,
-                                      DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase) {
+                                      ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase) {
         this.getShopFavouriteUserUseCase = getShopFavouriteUserUseCase;
         this.toggleFavouriteShopAndDeleteCacheUseCase = toggleFavouriteShopAndDeleteCacheUseCase;
         this.shopFavouriteViewModelMapper = shopFavouriteViewModelMapper;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.userSession = userSession;
-        this.deleteFavoriteListCacheUseCase = deleteFavoriteListCacheUseCase;
     }
 
     public void getShopFavouriteList(String shopId, int page) {
@@ -73,10 +70,6 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
                         shopFavouriteUserPagingList.getPage() < shopFavouriteUserPagingList.getTotalPage());
             }
         });
-    }
-
-    public void clearFavoriteListCache(){
-        deleteFavoriteListCacheUseCase.executeSync();
     }
 
     public void toggleFavouriteShop(String shopId) {
