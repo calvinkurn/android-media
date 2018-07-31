@@ -77,8 +77,6 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
             recyclerViewState = null;
         }
-
-        goToSelectedPositionIfNeeded();
     }
 
     public void setRecyclerViewState(Parcelable recyclerViewState) {
