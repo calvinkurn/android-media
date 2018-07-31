@@ -36,6 +36,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -1085,8 +1086,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLogin() {
-        Intent intent = feedModuleRouter.getLoginIntent(getContext());
-        startActivity(intent);
+        Intent intent = feedModuleRouter.getLoginIntent(getActivity());
+        getActivity().startActivityForResult(intent, DrawerHelper.REQUEST_LOGIN);
     }
 
     @Override
