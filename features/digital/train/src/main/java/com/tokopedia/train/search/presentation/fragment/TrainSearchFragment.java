@@ -233,8 +233,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     protected Visitable getEmptyDataViewModel() {
         trainAnalytics.eventViewRouteNotAvailablePage(
-                trainSearchPassDataViewModel.getOriginStationName(),
-                trainSearchPassDataViewModel.getDestinationStationName(),
+                trainSearchPassDataViewModel.getOriginStationCode(),
+                trainSearchPassDataViewModel.getOriginStationCode(),
                 trainSearchPassDataViewModel.getDepartureDate());
 
         clearAdapterData();

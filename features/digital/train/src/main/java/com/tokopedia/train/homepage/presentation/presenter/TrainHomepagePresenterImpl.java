@@ -212,10 +212,8 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
                     departureDate,
                     returnDate,
                     viewModel.getOriginStation().getStationCode(),
-                    viewModel.getOriginStation().getStationName(),
                     viewModel.getOriginStation().getCityName(),
                     viewModel.getDestinationStation().getStationCode(),
-                    viewModel.getDestinationStation().getStationName(),
                     viewModel.getDestinationStation().getCityName(),
                     viewModel.isOneWay()
             );

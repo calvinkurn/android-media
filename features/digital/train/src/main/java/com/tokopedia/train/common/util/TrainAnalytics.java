@@ -102,14 +102,15 @@ public class TrainAnalytics {
         );
     }
 
-    public void eventProductDetailImpressions(String origin, String destination,
-                                              String trainClass, String trainName, String price,
-                                              int numOfTotalPassenger) {
+    public void eventProductDetailImpressions(String scheduleId, String origin, String destination,
+                                              String trainClass, String trainName, double price) {
         Object productItem = DataLayer.mapOf(
                 "name", trainName,
+                "id", scheduleId,
+                "category", "train ticket",
                 "variant", trainClass,
                 "price", price,
-                "quantity", numOfTotalPassenger
+                "list", "/kereta-api"
         );
 
         List<Object> dataLayerList = new ArrayList<>();
@@ -133,24 +134,45 @@ public class TrainAnalytics {
         );
     }
 
-    public void eventAddToCart(String origin, String destination,
-                               String trainClass, String trainName, String price,
+    public void eventAddToCart(String trip,
+                               String origin, String destination,
+                               String departureScheduleId,
+                               String departureTrainClass, String departureTrainName,
+                               double departurePrice,
+                               String returnScheduleId,
+                               String returnTrainClass, String returnTrainName,
+                               double returnPrice,
                                int numOfTotalPassenger) {
-        Object productItem = DataLayer.mapOf(
-                "name", trainName,
-                "variant", trainClass,
-                "price", price,
+        Object departureItem = DataLayer.mapOf(
+                "name", departureTrainName,
+                "id", departureScheduleId,
+                "category", "train ticket",
+                "variant", departureTrainClass,
+                "price", departurePrice,
+                "list", "/kereta-api",
+                "quantity", numOfTotalPassenger
+        );
+
+        Object returnItem = DataLayer.mapOf(
+                "name", returnTrainName,
+                "id", returnScheduleId,
+                "category", "train ticket",
+                "variant", returnTrainClass,
+                "price", returnPrice,
+                "list", "/kereta-api",
                 "quantity", numOfTotalPassenger
         );
 
         List<Object> dataLayerList = new ArrayList<>();
-        dataLayerList.add(productItem);
+        dataLayerList.add(departureItem);
+        dataLayerList.add(returnItem);
 
         analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", "",
+                DataLayer.mapOf("event", TrainEventTracking.Event.ADD_TO_CART,
                         "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
                         "eventAction", TrainEventTracking.Action.ADD_TO_CART,
-                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " + trainName + " - " + price,
+                        "eventLabel", origin + " - " + destination + " - " +
+                                departureTrainClass + " - " + departureTrainName + " - " + trip,
                         "ecommerce", DataLayer.mapOf(
                                 "add", DataLayer.mapOf(
                                         "products", DataLayer.listOf(
@@ -173,7 +195,7 @@ public class TrainAnalytics {
     public void eventProductClick(String scheduleId, String origin, String destination, String trainClass,
                                   String trainName, String specialTagging) {
         Object productItem = DataLayer.mapOf(
-                "name", trainName + " - " + trainClass,
+                "name", trainName,
                 "id", scheduleId,
                 "category", "train ticket",
                 "variant", trainClass,
@@ -187,8 +209,9 @@ public class TrainAnalytics {
                         "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
                                 trainName + " - " + specialTagging,
                         "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", "/kereta-api"),
+                                DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf(
+                                                "list", "/kereta-api"),
                                         "products", DataLayer.listOf(productItem)
                                 )
                         )
@@ -198,7 +221,7 @@ public class TrainAnalytics {
 
     public void eventProductImpression(String scheduleId, String origin, String destination, String trainClass, String trainName) {
         Object productItem = DataLayer.mapOf(
-                "name", trainName + " - " + trainClass,
+                "name", trainName,
                 "id", scheduleId,
                 "category", "train ticket",
                 "variant", trainClass,
@@ -212,9 +235,8 @@ public class TrainAnalytics {
                         "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
                                 trainName,
                         "ecommerce", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf(
-                                        "list", "/kereta-api"),
-                                "products", DataLayer.listOf(productItem)
+                                "impression", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(productItem))
                         )
                 )
         );

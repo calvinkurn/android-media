@@ -23,27 +23,23 @@ public class TrainSearchPassDataViewModel implements Parcelable {
     private String departureDate;
     private String returnDate;
     private String originStationCode;
-    private String originStationName;
     private String originCityName;
     private String destinationStationCode;
-    private String destinationStationName;
     private String destinationCityName;
     private boolean isOneWay;
 
     public TrainSearchPassDataViewModel(int adult, int infant,
                                         String departureDate, String returnDate,
-                                        String originStationCode, String originStationName, String originCityName,
-                                        String destinationStationCode, String destinationStationName, String destinationCityName,
+                                        String originStationCode, String originCityName,
+                                        String destinationStationCode, String destinationCityName,
                                         boolean isOneWay) {
         this.adult = adult;
         this.infant = infant;
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.originStationCode = originStationCode;
-        this.originStationName = originStationName;
         this.originCityName = originCityName;
         this.destinationStationCode = destinationStationCode;
-        this.destinationStationName = destinationStationName;
         this.destinationCityName = destinationCityName;
         this.isOneWay = isOneWay;
     }
@@ -54,10 +50,8 @@ public class TrainSearchPassDataViewModel implements Parcelable {
         departureDate = in.readString();
         returnDate = in.readString();
         originStationCode = in.readString();
-        originStationName = in.readString();
         originCityName = in.readString();
         destinationStationCode = in.readString();
-        destinationStationName = in.readString();
         destinationCityName = in.readString();
         isOneWay = in.readByte() != 0;
     }
@@ -69,10 +63,8 @@ public class TrainSearchPassDataViewModel implements Parcelable {
         dest.writeString(departureDate);
         dest.writeString(returnDate);
         dest.writeString(originStationCode);
-        dest.writeString(originStationName);
         dest.writeString(originCityName);
         dest.writeString(destinationStationCode);
-        dest.writeString(destinationStationName);
         dest.writeString(destinationCityName);
         dest.writeByte((byte) (isOneWay ? 1 : 0));
     }
@@ -109,20 +101,12 @@ public class TrainSearchPassDataViewModel implements Parcelable {
         return originStationCode;
     }
 
-    public String getOriginStationName() {
-        return originStationName;
-    }
-
     public String getOriginCityName() {
         return originCityName;
     }
 
     public String getDestinationStationCode() {
         return destinationStationCode;
-    }
-
-    public String getDestinationStationName() {
-        return destinationStationName;
     }
 
     public String getDestinationCityName() {

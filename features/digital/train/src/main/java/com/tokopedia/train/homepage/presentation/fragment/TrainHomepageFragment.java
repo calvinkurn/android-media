@@ -176,8 +176,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
             trainHomepagePresenterImpl.onSubmitButtonClicked();
 
             String trip = viewModel.isOneWay() ? "single trip" : "round trip";
-            String origin = viewModel.getOriginStation().getStationName();
-            String destination = viewModel.getDestinationStation().getStationName();
+            String origin = viewModel.getOriginStation().getStationCode();
+            String destination = viewModel.getDestinationStation().getStationCode();
             int numOfPassenger = viewModel.getTrainPassengerViewModel().getAdult() +
                     viewModel.getTrainPassengerViewModel().getInfant();
 

@@ -171,21 +171,13 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         textHeaderDestinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
         textHeaderDestinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
 
-        String trainClass = trainScheduleDetailViewModel.getTrainClass();
-        String trainName = trainScheduleDetailViewModel.getTrainName();
-        String totalPrice = getString(R.string.train_label_currency,
-                CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
-                        false, 0).getFormattedString());
-        int numOfTotalPassenger = trainScheduleDetailViewModel.getNumOfAdultPassenger()
-                + trainScheduleDetailViewModel.getNumOfInfantPassenger();
-
         trainAnalytics.eventProductDetailImpressions(
-                trainScheduleDetailViewModel.getOriginStationName(),
-                trainScheduleDetailViewModel.getDestinationStationName(),
-                trainClass,
-                trainName,
-                totalPrice,
-                numOfTotalPassenger);
+                trainScheduleViewModel.getIdSchedule(),
+                trainScheduleDetailViewModel.getOriginStationCode(),
+                trainScheduleDetailViewModel.getDestinationStationCode(),
+                trainScheduleDetailViewModel.getTrainClass(),
+                trainScheduleDetailViewModel.getTrainName(),
+                trainScheduleDetailViewModel.getTotalPrice());
     }
 
     protected void initInjector() {
