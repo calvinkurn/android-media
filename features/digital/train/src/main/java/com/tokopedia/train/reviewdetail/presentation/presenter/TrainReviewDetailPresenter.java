@@ -256,4 +256,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
         getView().showPaymentFailedErrorMessage(R.string.train_review_cancel_checkout_message);
     }
 
+    @Override
+    public void onRunningOutOfTime() {
+        getView().showExpiredPaymentDialog();
+    }
+
 }

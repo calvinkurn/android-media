@@ -28,8 +28,8 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/top_seat_arrow"
-            android:layout_width="24dp"
-            android:layout_height="16dp"
+            android:layout_width="18dp"
+            android:layout_height="12dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginStart="@dimen/dp_6"
@@ -76,8 +76,8 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/bottom_seat_arrow"
-            android:layout_width="24dp"
-            android:layout_height="16dp"
+            android:layout_width="18dp"
+            android:layout_height="12dp"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginStart="@dimen/dp_6"
             app:srcCompat="@drawable/ic_train_down_arrow" />

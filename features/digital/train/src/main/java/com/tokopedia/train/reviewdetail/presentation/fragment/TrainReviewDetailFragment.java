@@ -19,12 +19,15 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.common.util.TrainFlowConstant;
+import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.di.DaggerTrainReviewDetailComponent;
@@ -57,9 +60,10 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Inject
     TrainReviewDetailPresenter trainReviewDetailPresenter;
-
     @Inject
     TrainRouter trainRouter;
+    @Inject
+    TrainFlowUtil trainFlowUtil;
 
     private CountdownTimeView countdownTimeView;
     private CardWithAction cardDepartureTrip;
@@ -111,8 +115,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                 trainScheduleBookingPassData.getAdultPassenger(),
                 trainScheduleBookingPassData.getInfantPassenger());
 
-        countdownTimeView.setListener(() -> {
-            // TODO: navigate back to booking passenger page using setResult
+        countdownTimeView.setListener(new CountdownTimeView.OnActionListener() {
+            @Override
+            public void onFinished() {
+                trainReviewDetailPresenter.onRunningOutOfTime();
+            }
         });
     }
 
@@ -245,7 +252,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     public void startCountdown() {
-        countdownTimeView.setExpiredDate(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_DETAIL,
+        countdownTimeView.setExpiredDate(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_SOFTBOOK,
                 trainSoftbook.getExpiryTimestamp()));
         countdownTimeView.start();
     }
@@ -283,6 +290,26 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     public void showCheckoutLoading() {
         containerTrainReview.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showExpiredPaymentDialog() {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.train_seat_expired_payment_time));
+        dialog.setDesc(getString(R.string.train_seat_expired_payment_time_desc));
+        dialog.setBtnOk(getString(R.string.train_seat_expired_payment_time_cta));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                trainFlowUtil.actionSetResultAndClose(
+                        getActivity(),
+                        getActivity().getIntent(),
+                        TrainFlowConstant.RESEARCH
+                );
+            }
+        });
+        dialog.show();
     }
 
     @Override

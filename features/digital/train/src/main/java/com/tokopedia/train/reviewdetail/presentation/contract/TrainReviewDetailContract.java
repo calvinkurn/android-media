@@ -34,6 +34,7 @@ public class TrainReviewDetailContract {
 
         void showCheckoutLoading();
 
+        void showExpiredPaymentDialog();
     }
 
     public interface Presenter {
@@ -52,6 +53,7 @@ public class TrainReviewDetailContract {
 
         void onPaymentCancelled();
 
+        void onRunningOutOfTime();
     }
 
 }

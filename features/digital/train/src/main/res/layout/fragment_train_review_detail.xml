@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -11,17 +12,36 @@
 
         <LinearLayout
             android:id="@+id/container_train_review"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <com.tokopedia.train.seat.presentation.widget.CountdownTimeView
-                android:id="@+id/ct_countdown"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:ctv_hour_title="@string/train_countdown_hour_label"
-                app:ctv_minute_title="@string/train_countdown_minute_label"
-                app:ctv_second_title="@string/train_countdown_second_label"/>
+                android:layout_height="wrap_content"
+                android:background="@color/light_orange"
+                android:orientation="horizontal"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_8">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="@string/train_countdown_label" />
+
+                <com.tokopedia.train.seat.presentation.widget.CountdownTimeView
+                    android:id="@+id/ct_countdown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    app:ctv_hour_title="@string/train_countdown_hour_label"
+                    app:ctv_minute_title="@string/train_countdown_minute_label"
+                    app:ctv_second_title="@string/train_countdown_second_label" />
+            </LinearLayout>
 
             <com.tokopedia.design.component.CardWithAction
                 android:id="@+id/train_departure_info"
@@ -44,37 +64,37 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                android:textSize="@dimen/sp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/train_review_label_passengers_data"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="@string/train_review_label_passengers_data"/>
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
 
             <android.support.v7.widget.RecyclerView
-                tools:visibility="gone"
                 android:id="@+id/recycler_view"
-                tools:listitem="@layout/item_train_passenger_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <View
-                android:background="@color/grey_400"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1" />
-
-            <com.tokopedia.design.voucher.VoucherCartHachikoView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/voucher_cart_hachiko_view"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_20"/>
+                tools:listitem="@layout/item_train_passenger_info"
+                tools:visibility="gone" />
 
             <View
-                android:background="@color/grey_400"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1" />
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/grey_400" />
+
+            <com.tokopedia.design.voucher.VoucherCartHachikoView
+                android:id="@+id/voucher_cart_hachiko_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/grey_400" />
 
             <com.tokopedia.train.reviewdetail.presentation.view.ViewTrainReviewDetailPriceSection
                 android:id="@+id/view_train_review_detail_price_section"
@@ -87,23 +107,23 @@
                 android:background="@color/grey_300" />
 
             <Button
-                style="@style/Button.Submit.Orange"
-                android:text="@string/train_review_button_text_choose_payment_method"
                 android:id="@+id/button_train_review_submit"
-                android:layout_marginTop="@dimen/dp_16"
+                style="@style/Button.Submit.Orange"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/train_review_button_text_choose_payment_method" />
 
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/train_review_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            tools:visibility="visible" />
 
     </FrameLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>
