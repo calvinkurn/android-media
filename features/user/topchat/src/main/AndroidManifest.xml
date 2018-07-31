@@ -11,6 +11,7 @@
             android:name=".chatlist.activity.InboxChatActivity"
             android:label="@string/title_inbox_chat"
             android:screenOrientation="portrait"
+            android:theme="@style/ChatListMenuTextAppearance"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".chatroom.view.activity.ChatRoomActivity"
