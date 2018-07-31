@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
@@ -201,13 +202,17 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
         menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
-        menuList.setApplink("https://pulsa.tokopedia.com/subscribe/");
+        menuList.setApplink(String.format("%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
         menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
-        menuList.setApplink("https://pulsa.tokopedia.com/favorite-list/");
+        menuList.setApplink(String.format("%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
         items.add(menuList);
 
         InfoCardViewModel infoCard = new InfoCardViewModel();
