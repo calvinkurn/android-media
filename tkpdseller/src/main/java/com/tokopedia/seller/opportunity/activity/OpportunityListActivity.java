@@ -41,6 +41,11 @@ public class OpportunityListActivity extends BasePresenterActivity {
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_simple_fragment;
     }
@@ -49,7 +54,7 @@ public class OpportunityListActivity extends BasePresenterActivity {
     protected void initView() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
