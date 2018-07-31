@@ -248,6 +248,11 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
+    }
+
+    @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
     }
@@ -354,7 +359,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
             String message = String.format(getString(R.string.empty_search_content_template), query);
-            catalogAdapter.showEmptyState(message);
+            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper());
             SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }

@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 
 /**
@@ -14,7 +15,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopV
 public interface ShopListTypeFactory extends SearchSectionTypeFactory {
     int type(ShopViewModel.ShopItem shopItem);
 
-    int type(EmptyModel emptyModel);
+    int type(EmptySearchModel emptySearchModel);
 
     AbstractViewHolder createViewHolder(View view, int type);
 }
