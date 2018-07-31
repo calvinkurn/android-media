@@ -143,6 +143,20 @@ public interface ConstantTransactionAnalytics {
         String CLICK_RADIO_BUTTON_FROM_PILIH_ALAMAT_LAINNYA = "click radio button from pilih alamat lainnya";
         String IMPRESSION_BUTTON_LIVE_TRACKING = "impression button live tracking";
         String CLICK_BUTTON_LIVE_TRACKING = "click button live tracking";
+        String CLICK_TAMBAH_FROM_ALAMAT_PENGIRIMAN = "click + from alamat pengiriman";
+        String CLICK_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "click alamat sebagai pada + address";
+        String CLICK_CHECKLIST_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "click checklist alamat sebagai pada + address";
+        String CLICK_NAMA_PADA_TAMBAH_ADDRESS = "click nama pada + address";
+        String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
+        String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
+
+        String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS ="validation error alamat sebagai pada + address";
+        String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS ="validation error nama pada + address";
+        String VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS ="validation error telepon pada + address";
+        String VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS ="validation error kota / kecamatan pada + address";
+        String VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS ="validation error kode pos pada + address";
+        String VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS ="validation error alamat pada + address";
+
     }
 
     interface EventLabel {

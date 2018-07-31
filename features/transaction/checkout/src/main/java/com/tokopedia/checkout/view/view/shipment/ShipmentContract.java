@@ -48,7 +48,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage();
+        void renderCheckoutPage(boolean isInitialRender);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 

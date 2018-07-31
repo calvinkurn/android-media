@@ -44,6 +44,7 @@ import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -845,8 +846,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                     Intent applinkIntent = new Intent(this, ParentIndexHome.class);
                     applinkIntent.setData(Uri.parse(applink));
-                    if (getIntent() != null && getIntent().getExtras() != null)
-                        applinkIntent.putExtras(getIntent().getExtras());
+                    if (getIntent() != null && getIntent().getExtras() != null) {
+                        Intent newIntent = getIntent();
+                        newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+                        newIntent.removeExtra(DeepLink.REFERRER_URI);
+                        newIntent.removeExtra(DeepLink.URI);
+                        newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
+                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
+                    }
                     deepLinkDelegate.dispatchFrom(this, applinkIntent);
                 } catch (ActivityNotFoundException ex) {
                     ex.printStackTrace();
