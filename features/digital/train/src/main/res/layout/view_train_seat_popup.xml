@@ -47,22 +47,20 @@
         android:background="@drawable/bg_train_seat_popup"
         android:orientation="vertical">
 
-        <FrameLayout
+
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_5"
             android:paddingBottom="@dimen/dp_4"
             android:paddingEnd="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_5"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:paddingStart="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/train_seat_popup_choose_passenger" />
-        </FrameLayout>
+            android:paddingTop="@dimen/dp_8"
+            android:background="@drawable/bg_train_popup_shadow"
+            android:text="@string/train_seat_popup_choose_passenger" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_passenger"
