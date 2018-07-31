@@ -30,6 +30,6 @@ public class ResolutionUrl {
 
 
     public static final String PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER = "generate_token_host.pl";
-    public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/" + PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER;
+    public static final String PATH_GENERATE_TOKEN_HOST = BASE_RESOLUTION_VERSION_1 + "generate_host";
 }
 

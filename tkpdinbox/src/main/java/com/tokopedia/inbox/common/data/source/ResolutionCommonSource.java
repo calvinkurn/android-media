@@ -54,7 +54,7 @@ public class ResolutionCommonSource {
     }
 
     public Observable<GenerateHostDomain> generateHost(TKPDMapParam<String, Object> params) {
-        return resolutionImageServiceApi.generateTokenHostWithoutHeader(
+        return resolutionApi.generateTokenHostWithoutHeader(
                 AuthUtil.generateParamsNetwork2(context, params, userSession.getDeviceId(), userSession.getUserId()))
                 .map(generateHostMapper);
     }
