@@ -11,6 +11,7 @@ import com.tokopedia.shop.favourite.domain.interactor.GetShopFavouriteUserUseCas
 import com.tokopedia.shop.favourite.domain.model.ShopFavouriteRequestModel;
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.mapper.ShopFavouriteViewModelMapper;
+import com.tokopedia.shop.page.domain.interactor.DeleteFavoriteListCacheUseCase;
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
 
 import javax.inject.Inject;
@@ -30,17 +31,20 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
     private final ShopFavouriteViewModelMapper shopFavouriteViewModelMapper;
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final UserSession userSession;
+    private final DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase;
 
     @Inject
     public ShopFavouriteListPresenter(GetShopFavouriteUserUseCase getShopFavouriteUserUseCase,
                                       ShopFavouriteViewModelMapper shopFavouriteViewModelMapper,
                                       GetShopInfoUseCase getShopInfoUseCase, UserSession userSession,
-                                      ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase) {
+                                      ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase,
+                                      DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase) {
         this.getShopFavouriteUserUseCase = getShopFavouriteUserUseCase;
         this.toggleFavouriteShopAndDeleteCacheUseCase = toggleFavouriteShopAndDeleteCacheUseCase;
         this.shopFavouriteViewModelMapper = shopFavouriteViewModelMapper;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.userSession = userSession;
+        this.deleteFavoriteListCacheUseCase = deleteFavoriteListCacheUseCase;
     }
 
     public void getShopFavouriteList(String shopId, int page) {
@@ -69,6 +73,10 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
                         shopFavouriteUserPagingList.getPage() < shopFavouriteUserPagingList.getTotalPage());
             }
         });
+    }
+
+    public void clearFavoriteListCache(){
+        deleteFavoriteListCacheUseCase.executeSync();
     }
 
     public void toggleFavouriteShop(String shopId) {

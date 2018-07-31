@@ -119,6 +119,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void onSuccessToggleFavourite(boolean successValue) {
+        shopFavouriteListPresenter.clearFavoriteListCache();
         loadInitialData();
         getActivity().setResult(Activity.RESULT_OK);
     }
