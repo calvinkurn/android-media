@@ -57,7 +57,7 @@ public class ChatRoomContract {
 
         void hideMainLoading();
 
-        void setOnlineDesc(String s);
+        void setOnlineDesc(String s, boolean isOnline);
 
         WebSocketInterface getInterface();
 
@@ -163,6 +163,8 @@ public class ChatRoomContract {
         void enableWebSocket();
 
         void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons);
+
+        void setUserStatus(String status, boolean isOnline);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -194,5 +196,7 @@ public class ChatRoomContract {
         void getExistingChat();
 
         void sendReasonRating(String messageId, long replyTimeNano, String reason);
+
+        void getUserStatus(String userId, String role);
     }
 }
