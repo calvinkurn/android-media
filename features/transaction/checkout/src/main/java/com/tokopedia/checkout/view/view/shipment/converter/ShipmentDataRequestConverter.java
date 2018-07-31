@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 /**
  * @author Irfan Khoirul on 07/03/18
- *         Originally Authored by Kris, Aghny
+ * Originally Authored by Kris, Aghny
  */
 
 public class ShipmentDataRequestConverter {
@@ -176,6 +176,9 @@ public class ShipmentDataRequestConverter {
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
         return new ProductDataCheckoutRequest.Builder()
                 .productId(cartItem.getProductId())
+                .productName(cartItem.getName())
+                .productQty(String.valueOf(cartItem.getQuantity()))
+                .productPrice(String.valueOf((int) cartItem.getPrice()))
                 .build();
     }
 
