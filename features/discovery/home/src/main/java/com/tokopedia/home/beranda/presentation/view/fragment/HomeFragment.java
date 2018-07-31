@@ -859,6 +859,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        mainToolbar.setNotificationNumber(number);
+        if (mainToolbar != null)
+            mainToolbar.setNotificationNumber(number);
     }
 }
