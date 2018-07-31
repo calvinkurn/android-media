@@ -37,7 +37,7 @@ import com.tokopedia.product.edit.common.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
 //import com.tokopedia.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.edit.view.service.UploadProductService;
 
 import java.util.ArrayList;

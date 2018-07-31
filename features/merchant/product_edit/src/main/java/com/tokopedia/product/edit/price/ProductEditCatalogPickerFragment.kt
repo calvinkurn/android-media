@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
 

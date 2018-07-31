@@ -9,7 +9,7 @@
             android:theme="@style/Theme.White"/>
 
         <activity
-            android:name=".view.activity.BaseProductEditActivity"
+            android:name=".view.activity.ProductAddActivity"
             android:label="@string/label_product_add"
             android:theme="@style/Theme.White"/>
 

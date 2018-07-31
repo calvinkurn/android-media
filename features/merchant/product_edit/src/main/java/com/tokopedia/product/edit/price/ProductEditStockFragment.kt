@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_STOCK
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.edit.price.model.ProductStock
 import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
 
@@ -65,16 +65,16 @@ class ProductEditStockFragment : Fragment() {
     }
 
     private fun setDataStock(productStock: ProductStock){
-        labelRadioButtonStockLimited.isChecked = productStock.stockLimited
-        labelRadioButtonStockAvailable.isChecked = !productStock.stockLimited
+        labelRadioButtonStockLimited.isChecked = productStock.isActive
+        labelRadioButtonStockAvailable.isChecked = !productStock.isActive
         setVisibleStockTextInputLayout()
         decimalInputViewStock.text = productStock.stockCount.toString()
         editTextSku.setText(productStock.sku)
     }
 
     private fun saveData(productStock: ProductStock): ProductStock{
-        productStock.stockLimited = labelRadioButtonStockLimited.isChecked
-        if(productStock.stockLimited) {
+        productStock.isActive = labelRadioButtonStockLimited.isChecked
+        if(productStock.isActive) {
             productStock.stockCount = decimalInputViewStock.text.toString().replace(",", "").toInt()
         }else {
             productStock.stockCount = 0

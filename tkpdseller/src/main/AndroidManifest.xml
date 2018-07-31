@@ -304,7 +304,7 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".product.imagepicker.view.activity.ImagePickerAddProductActivity"
+        <activity android:name="com.tokopedia.product.edit.imagepicker.view.activity.ImagePickerAddProductActivity"
             android:theme="@style/Theme.White"
             android:label="@string/choose_image"
             android:screenOrientation="portrait"

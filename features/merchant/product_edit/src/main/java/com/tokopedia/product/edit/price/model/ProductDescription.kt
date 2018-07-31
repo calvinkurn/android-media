@@ -4,16 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.ArrayList
 
-class ProductDescription(): Parcelable{
-    var description: String? = null
-    var feature: String? = null
-    var isNew: Boolean = true
-    var videoIDs: ArrayList<String> = ArrayList()
-
-    constructor(parcel: Parcel) : this() {
-        description = parcel.readString()
-        feature = parcel.readString()
-        isNew = parcel.readByte() != 0.toByte()
+data class ProductDescription(var description: String = "", var feature : String = "", var isNew : Boolean = true, var videoIDs : ArrayList<String> = ArrayList()): Parcelable{
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            TODO("videoIDs")) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -35,4 +31,5 @@ class ProductDescription(): Parcelable{
             return arrayOfNulls(size)
         }
     }
+
 }

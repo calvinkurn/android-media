@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.*
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import android.widget.TextView

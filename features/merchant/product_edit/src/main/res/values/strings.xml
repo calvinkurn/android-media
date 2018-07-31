@@ -154,4 +154,7 @@
     <string name="usd_format">US$ %s</string>
     <string name="product_currency_value_idr">1</string>
     <string name="product_currency_value_usd">2</string>
+    <string name="product_label_try_again">Coba Lagi</string>
+    <string name="product_draft_error_cannot_load_draft">Tidak bisa membuka draft product</string>
+    <string name="primary">Utama</string>
 </resources>
