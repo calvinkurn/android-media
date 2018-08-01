@@ -2348,6 +2348,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void trainSendTrackingOnCheckVoucherCodeSuccessful(String successMessage) {
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        trainAnalytics.eventVoucherSuccess(successMessage);
+    }
+
+    @Override
+    public void trainSendTrackingOnCheckVoucherCodeError(String errorMessage) {
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        trainAnalytics.eventVoucherError(errorMessage);
+    }
+
+    @Override
     public Intent getPromoListIntent(Activity activity) {
         return PromoListActivity.newInstance(activity);
     }

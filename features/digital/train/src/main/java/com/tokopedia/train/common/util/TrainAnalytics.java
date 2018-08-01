@@ -251,4 +251,22 @@ public class TrainAnalytics {
         );
     }
 
+    public void eventVoucherSuccess(String successMessage) {
+        analyticTracker.sendEventTracking(
+                "",
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.VOUCHER_SUCCESS,
+                successMessage
+        );
+    }
+
+    public void eventVoucherError(String errorMessage) {
+        analyticTracker.sendEventTracking(
+                "",
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.VOUCHER_ERROR,
+                errorMessage
+        );
+    }
+
 }

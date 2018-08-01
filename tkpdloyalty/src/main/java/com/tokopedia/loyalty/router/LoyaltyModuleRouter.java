@@ -18,4 +18,8 @@ public interface LoyaltyModuleRouter {
 
     void trainSendTrackingOnClickUseVoucherCode(String voucherCode);
 
+    void trainSendTrackingOnCheckVoucherCodeSuccessful(String successMessage);
+
+    void trainSendTrackingOnCheckVoucherCodeError(String errorMessage);
+
 }

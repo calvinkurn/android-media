@@ -38,7 +38,6 @@ import javax.inject.Inject;
 
 public class PromoCodeFragment extends BasePresenterFragment implements IPromoCodeView {
 
-
     @Inject
     IPromoCodePresenter dPresenter;
 
@@ -144,11 +143,10 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
 
-        }else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitDealVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
-
         } else {
             submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
                     voucherCodeField,
@@ -382,6 +380,22 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     @Override
     public Context getContext() {
         return getActivity();
+    }
+
+    @Override
+    public void sendTrackingOnCheckTrainVoucherSuccessful(String successMessage) {
+        if (getActivity() instanceof LoyaltyModuleRouter) {
+            ((LoyaltyModuleRouter) getActivity())
+                    .trainSendTrackingOnCheckVoucherCodeSuccessful(successMessage);
+        }
+    }
+
+    @Override
+    public void sendTrackingOnCheckTrainVoucherError(String errorMessage) {
+        if (getActivity() instanceof LoyaltyModuleRouter) {
+            ((LoyaltyModuleRouter) getActivity())
+                    .trainSendTrackingOnCheckVoucherCodeError(errorMessage);
+        }
     }
 
     @Override
