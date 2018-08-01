@@ -80,6 +80,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
         adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
+        viewPager.setOffscreenPageLimit(5);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {

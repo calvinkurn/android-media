@@ -2,12 +2,10 @@ package com.tokopedia.home.account.presentation.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.label.LabelView;
+import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 
@@ -17,21 +15,16 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_common_subtitle;
+    public static final int LAYOUT = R.layout.item_general_setting;
 
-    private LinearLayout layout;
-    private ImageView icon;
-    private TextView menu;
-    private TextView menuDescription;
+    private View layout;
+    private LabelView labelView;
     private AccountItemListener listener;
 
     public MenuListViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
-        layout = itemView.findViewById(R.id.layout_common_subtitle);
-        icon = itemView.findViewById(R.id.icon);
-        menu = itemView.findViewById(R.id.title);
-        menuDescription = itemView.findViewById(R.id.subtitle);
-        icon.setVisibility(View.GONE);
+        layout = itemView.findViewById(R.id.container);
+        labelView = itemView.findViewById(R.id.labelview);
 
         this.listener = listener;
     }
@@ -39,7 +32,7 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     @Override
     public void bind(MenuListViewModel element) {
         layout.setOnClickListener(v -> listener.onMenuListClicked(element));
-        menu.setText(element.getMenu());
-        menuDescription.setText(element.getMenuDescription());
+        labelView.setTitle(element.getMenu());
+        labelView.setSubTitle(element.getMenuDescription());
     }
 }

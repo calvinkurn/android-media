@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.domain.subscriber;
 
 import com.tokopedia.navigation.data.entity.NotificationEntity;
+import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.presentation.view.NotificationView;
 
 import rx.Subscriber;
@@ -29,7 +30,9 @@ public class DrawerNotificationSubscriber extends Subscriber<NotificationEntity>
 
     @Override
     public void onNext(NotificationEntity entity) {
-        if (entity != null)
-            this.notificationView.renderNotification(entity.getNotifications());
+        if (entity != null) {
+            this.notificationView.renderNotification(entity.getNotifications(),
+                    NotificationMapper.isHasShop(entity));
+        }
     }
 }
