@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -36,27 +34,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/container_ticker_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingBottom="@dimen/dp_3"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_3"
-            android:visibility="visible"
-            tools:visibility="visible">
-
-            <com.tokopedia.design.component.ticker.TickerView
-                android:id="@+id/ticker_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dp_10"
-                app:tckv_indicator_off_color="@color/grey"
-                app:tckv_indicator_on_color="@color/tkpd_main_green" />
-
-        </LinearLayout>
+        <include layout="@layout/include_digital_ticker_coupon_applied_view" />
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"

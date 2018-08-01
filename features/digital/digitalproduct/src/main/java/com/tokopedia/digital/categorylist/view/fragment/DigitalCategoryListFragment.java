@@ -75,8 +75,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String PARAM_IS_COUPON_ACTIVE = "PARAM_IS_COUPON_APPLIED";
 
-    private static final int DEFAULT_COUPON_APPLIED = 1;
-    private static final int DEFAULT_COUPON_NOT_APPLIED = 0;
+    public static final int DEFAULT_COUPON_APPLIED = 1;
+    public static final int DEFAULT_COUPON_NOT_APPLIED = 0;
 
     @BindView(R2.id.rv_digital_category)
     RecyclerView rvDigitalCategoryList;
