@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.train.checkout.data.TrainCheckoutCloudDataStore;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainApi;
@@ -53,8 +54,8 @@ public class TrainModule {
 
     @Provides
     @TrainScope
-    public TrainInterceptor provideTrainInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter, UserSession userSession) {
-        return new TrainInterceptor(context, abstractionRouter, userSession);
+    public TrainInterceptor provideTrainInterceptor(@ApplicationContext Context context, NetworkRouter networkRouter, com.tokopedia.user.session.UserSession userSession) {
+        return new TrainInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
@@ -126,6 +127,21 @@ public class TrainModule {
             return ((TrainRouter) context);
         }
         throw new RuntimeException("Application must implement " + TrainRouter.class.getCanonicalName());
+    }
+
+    @TrainScope
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        if (context instanceof NetworkRouter) {
+            return ((NetworkRouter) context);
+        }
+        throw new RuntimeException("Application must implement " + NetworkRouter.class.getCanonicalName());
+    }
+
+    @TrainScope
+    @Provides
+    public com.tokopedia.user.session.UserSession provideUserSession(@ApplicationContext Context context) {
+        return new com.tokopedia.user.session.UserSession(context);
     }
 
     @TrainScope

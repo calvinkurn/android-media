@@ -5,10 +5,11 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,9 +26,9 @@ public class TrainInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
 
     public TrainInterceptor(@ApplicationContext Context context,
-                            AbstractionRouter abstractionRouter,
+                            NetworkRouter networkRouter,
                             UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+        super(context, networkRouter, userSession);
         this.maxRetryAttempt = 0;
     }
 

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainSeat;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -30,7 +31,6 @@ import rx.Subscriber;
 public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.View> implements TrainSeatContract.Presenter {
     private TrainGetSeatsUseCase trainGetSeatsUseCase;
     private TrainChangeSeatUseCase trainChangeSeatUseCase;
-    private String bookCode;
 
     @Inject
     public TrainSeatPresenter(TrainGetSeatsUseCase trainGetSeatsUseCase, TrainChangeSeatUseCase trainChangeSeatUseCase) {
@@ -197,22 +197,30 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     private void buildNewPaxPassengers(List<TrainSeatPassengerViewModel> passengers, List<TrainPaxPassenger> paxPassengers, List<TrainPaxPassenger> oldPaxPassengers) {
         TrainPaxPassenger paxPassenger;
-        for (TrainPaxPassenger oldPaxPassenger :
-                oldPaxPassengers) {
-            for (TrainSeatPassengerViewModel passenger : passengers) {
-                if (oldPaxPassenger.getName().equalsIgnoreCase(passenger.getName())) {
-                    paxPassenger = new TrainPaxPassenger();
-                    paxPassenger.setIdNumber(oldPaxPassenger.getIdNumber());
-                    paxPassenger.setName(passenger.getName());
-                    paxPassenger.setPaxType(oldPaxPassenger.getPaxType());
-                    TrainSeat trainSeat = new TrainSeat();
-                    trainSeat.setColumn(passenger.getSeatViewModel().getColumn());
-                    trainSeat.setRow(passenger.getSeatViewModel().getRow());
-                    trainSeat.setWagonNo(passenger.getSeatViewModel().getWagonCode());
-                    paxPassenger.setSeat(trainSeat);
-                    paxPassengers.add(paxPassenger);
-                    break;
+        for (TrainPaxPassenger oldPaxPassenger : oldPaxPassengers) {
+            if (oldPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT){
+                for (TrainSeatPassengerViewModel passenger : passengers) {
+                    if (oldPaxPassenger.getName().equalsIgnoreCase(passenger.getName())) {
+                        paxPassenger = new TrainPaxPassenger();
+                        paxPassenger.setIdNumber(oldPaxPassenger.getIdNumber());
+                        paxPassenger.setName(passenger.getName());
+                        paxPassenger.setPaxType(oldPaxPassenger.getPaxType());
+                        TrainSeat trainSeat = new TrainSeat();
+                        trainSeat.setColumn(passenger.getSeatViewModel().getColumn());
+                        trainSeat.setRow(passenger.getSeatViewModel().getRow());
+                        trainSeat.setWagonNo(passenger.getSeatViewModel().getWagonCode());
+                        paxPassenger.setSeat(trainSeat);
+                        paxPassengers.add(paxPassenger);
+                        break;
+                    }
                 }
+            }else {
+                paxPassenger = new TrainPaxPassenger();
+                paxPassenger.setIdNumber(oldPaxPassenger.getIdNumber());
+                paxPassenger.setName(oldPaxPassenger.getName());
+                paxPassenger.setPaxType(oldPaxPassenger.getPaxType());
+                paxPassenger.setSeat(oldPaxPassenger.getSeat());
+                paxPassengers.add(paxPassenger);
             }
         }
     }
@@ -282,10 +290,12 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         TrainSeatPassengerViewModel cloneViewModel;
         for (int i = 0; i < paxPassengers.size(); i++) {
             TrainPaxPassenger trainPaxPassenger = paxPassengers.get(i);
-            viewModel = transformTrainPaxToPassengerWithSeat(i, trainPaxPassenger);
-            cloneViewModel = transformTrainPaxToPassengerWithSeat(i, trainPaxPassenger);
-            originPassengers.add(viewModel);
-            passengers.add(cloneViewModel);
+            if (trainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT){
+                viewModel = transformTrainPaxToPassengerWithSeat(i, trainPaxPassenger);
+                cloneViewModel = transformTrainPaxToPassengerWithSeat(i, trainPaxPassenger);
+                originPassengers.add(viewModel);
+                passengers.add(cloneViewModel);
+            }
         }
     }
 
@@ -343,9 +353,5 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         } else {
             return getView().getTrainSoftbook().getReturnTrips().get(0).getBookCode();
         }
-    }
-
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
     }
 }
