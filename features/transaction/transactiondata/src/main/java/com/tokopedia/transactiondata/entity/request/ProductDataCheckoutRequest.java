@@ -17,10 +17,30 @@ public class ProductDataCheckoutRequest {
     private String productPrice;
     private String productBrand;
     private String productCategory;
-    private String productQty;
-    private String productCategoryId;
-    private String productAttribution;
     private String productVariant;
+    private String productQuantity;
+    private String productShopId;
+    private String productShopType;
+    private String productShopName;
+    private String productCategoryId;
+    private String productListName;
+    private String productAttribution;
+
+    private ProductDataCheckoutRequest(Builder builder) {
+        productId = builder.productId;
+        productName = builder.productName;
+        productPrice = builder.productPrice;
+        productBrand = builder.productBrand;
+        productCategory = builder.productCategory;
+        productVariant = builder.productVariant;
+        productQuantity = builder.productQuantity;
+        productShopId = builder.productShopId;
+        productShopType = builder.productShopType;
+        productShopName = builder.productShopName;
+        productCategoryId = builder.productCategoryId;
+        productListName = builder.productListName;
+        productAttribution = builder.productAttribution;
+    }
 
     public int getProductId() {
         return productId;
@@ -42,10 +62,6 @@ public class ProductDataCheckoutRequest {
         return productCategory;
     }
 
-    public String getProductQty() {
-        return productQty;
-    }
-
     public String getProductCategoryId() {
         return productCategoryId;
     }
@@ -58,17 +74,26 @@ public class ProductDataCheckoutRequest {
         return productVariant;
     }
 
-    private ProductDataCheckoutRequest(Builder builder) {
-        productId = builder.productId;
-        productName = builder.productName;
-        productPrice = builder.productPrice;
-        productBrand = builder.productBrand;
-        productCategory = builder.productCategory;
-        productQty = builder.productQty;
-        productCategoryId = builder.productCategoryId;
-        productAttribution = builder.productAttribution;
-        productVariant = builder.productVariant;
+    public String getProductQuantity() {
+        return productQuantity;
     }
+
+    public String getProductShopId() {
+        return productShopId;
+    }
+
+    public String getProductShopType() {
+        return productShopType;
+    }
+
+    public String getProductShopName() {
+        return productShopName;
+    }
+
+    public String getProductListName() {
+        return productListName;
+    }
+
 
     public static final class Builder {
         private int productId;
@@ -76,10 +101,14 @@ public class ProductDataCheckoutRequest {
         private String productPrice;
         private String productBrand;
         private String productCategory;
-        private String productQty;
-        private String productCategoryId;
-        private String productAttribution;
         private String productVariant;
+        private String productQuantity;
+        private String productShopId;
+        private String productShopType;
+        private String productShopName;
+        private String productCategoryId;
+        private String productListName;
+        private String productAttribution;
 
         public Builder() {
         }
@@ -109,8 +138,28 @@ public class ProductDataCheckoutRequest {
             return this;
         }
 
-        public Builder productQty(String val) {
-            productQty = val;
+        public Builder productVariant(String val) {
+            productVariant = val;
+            return this;
+        }
+
+        public Builder productQuantity(String val) {
+            productQuantity = val;
+            return this;
+        }
+
+        public Builder productShopId(String val) {
+            productShopId = val;
+            return this;
+        }
+
+        public Builder productShopType(String val) {
+            productShopType = val;
+            return this;
+        }
+
+        public Builder productShopName(String val) {
+            productShopName = val;
             return this;
         }
 
@@ -119,13 +168,13 @@ public class ProductDataCheckoutRequest {
             return this;
         }
 
-        public Builder productAttribution(String val) {
-            productAttribution = val;
+        public Builder productListName(String val) {
+            productListName = val;
             return this;
         }
 
-        public Builder productVariant(String val) {
-            productVariant = val;
+        public Builder productAttribution(String val) {
+            productAttribution = val;
             return this;
         }
 

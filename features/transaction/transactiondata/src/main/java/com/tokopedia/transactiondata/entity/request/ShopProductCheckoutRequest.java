@@ -37,21 +37,10 @@ public class ShopProductCheckoutRequest {
     @Expose
     public int fcancelPartial;
 
-    private String shopName;
-    private String shopType;
-
-
     public int getShopId() {
         return shopId;
     }
 
-    public String getShopName() {
-        return shopName;
-    }
-
-    public String getShopType() {
-        return shopType;
-    }
 
     private ShopProductCheckoutRequest(Builder builder) {
         shopId = builder.shopId;
@@ -62,8 +51,6 @@ public class ShopProductCheckoutRequest {
         dropshipData = builder.dropshipData;
         productData = builder.productData;
         fcancelPartial = builder.fcancelPartial;
-        shopName = builder.shopName;
-        shopType = builder.shopType;
     }
 
 
@@ -76,8 +63,6 @@ public class ShopProductCheckoutRequest {
         private DropshipDataCheckoutRequest dropshipData;
         private List<ProductDataCheckoutRequest> productData;
         private int fcancelPartial;
-        private String shopName;
-        private String shopType;
 
         public Builder() {
         }
@@ -122,15 +107,6 @@ public class ShopProductCheckoutRequest {
             return this;
         }
 
-        public Builder shopName(String val) {
-            shopName = val;
-            return this;
-        }
-
-        public Builder shopType(String val) {
-            shopType = val;
-            return this;
-        }
 
         public ShopProductCheckoutRequest build() {
             return new ShopProductCheckoutRequest(this);

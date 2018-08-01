@@ -879,12 +879,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
                     enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
                     enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
-                    enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQty());
-                    enhancedECommerceProductCartMapData.setShopId(String.valueOf(shopProductCheckoutRequest.getShopId()));
-                    enhancedECommerceProductCartMapData.setShopName(shopProductCheckoutRequest.getShopName());
-                    enhancedECommerceProductCartMapData.setShopType(shopProductCheckoutRequest.getShopType());
+                    enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
+                    enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
+                    enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
+                    enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
                     enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
                     enhancedECommerceProductCartMapData.setAttribution(productDataCheckoutRequest.getProductAttribution());
+                    enhancedECommerceProductCartMapData.setListName(productDataCheckoutRequest.getProductListName());
                     enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
                 }
             }
