@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.*
 import com.tokopedia.product.edit.view.activity.*
@@ -61,7 +62,7 @@ abstract class BaseProductEditFragment : Fragment() {
             startActivityForResult(ProductEditNameActivity.createIntent(activity!!, productName), REQUEST_CODE_GET_NAME)
         }
         labelViewPriceProduct.setOnClickListener {
-            startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, productPrice, true, true), REQUEST_CODE_GET_PRICE)
+            startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, productPrice, false, false, true), REQUEST_CODE_GET_PRICE)
         }
         labelViewDescriptionProduct.setOnClickListener {
             startActivityForResult(ProductEditDescriptionActivity.createIntent(activity!!, productDescription, productName.name!!), REQUEST_CODE_GET_DESCRIPTION) }
@@ -134,7 +135,7 @@ abstract class BaseProductEditFragment : Fragment() {
 
     private fun setPriceSectionData(productPrice: ProductPrice){
         if(productPrice.price>0) {
-            labelViewPriceProduct.setContent(productPrice.price.toString())
+            labelViewPriceProduct.setContent(CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice.price, true))
         }
     }
 
@@ -180,8 +181,9 @@ abstract class BaseProductEditFragment : Fragment() {
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
 
-        const val EXTRA_OFFICIAL_STORE = "EXTRA_OFFICIAL_STORE"
+        const val EXTRA_IS_OFFICIAL_STORE = "EXTRA_OFFICIAL_STORE"
         const val EXTRA_HAS_VARIANT = "EXTRA_HAS_VARIANT"
+        const val EXTRA_IS_GOLD_MERCHANT = "EXTRA_GOLD_MERCHANT"
 
 //        fun createInstance() = BaseProductEditFragment()
     }

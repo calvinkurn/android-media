@@ -3,19 +3,31 @@ package com.tokopedia.product.edit.price
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.tokopedia.core.analytics.UnifyTracking
+import com.tokopedia.core.util.GlobalConfig
+import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.model.edit.ProductWholesaleViewModel
+import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef
+import com.tokopedia.product.edit.common.util.CurrencyUsdTextWatcher
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_PRICE
 import com.tokopedia.product.edit.price.model.ProductPrice
-import com.tokopedia.product.edit.util.ProductEditCurrencyType
 import com.tokopedia.product.edit.util.ProductEditOptionMenuAdapter
 import com.tokopedia.product.edit.util.ProductEditOptionMenuBottomSheets
+import com.tokopedia.product.edit.utils.ProductPriceRangeUtils
 import com.tokopedia.product.edit.view.activity.ProductAddWholesaleActivity
 import com.tokopedia.product.edit.view.fragment.ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE
 import kotlinx.android.synthetic.main.fragment_product_edit_price.*
@@ -24,12 +36,18 @@ class ProductEditPriceFragment : Fragment() {
 
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
-    @ProductEditCurrencyType
-    private var selectedCurrencyType: Int = ProductEditCurrencyType.RUPIAH
+    @CurrencyTypeDef
+    private var selectedCurrencyType: Int = CurrencyTypeDef.TYPE_IDR
 
     private var productPrice = ProductPrice()
+    private val isOfficialStore by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false) }
+    private val hasVariant by lazy { activity!!.intent.getBooleanExtra(EXTRA_HAS_VARIANT, false) }
+    private val isGoldMerchant by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_GOLD_MERCHANT, false) }
 
     private var wholesalePrice: ArrayList<ProductWholesaleViewModel> = ArrayList()
+
+    private lateinit var idrTextWatcher: CurrencyIdrTextWatcher
+    private lateinit var usdTextWatcher: CurrencyUsdTextWatcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,35 +63,148 @@ class ProductEditPriceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        idrTextWatcher = object : CurrencyIdrTextWatcher(spinnerCounterInputViewPrice.counterEditText) {
+            override fun onNumberChanged(number: Double) {
+                isPriceValid()
+                validateData()
+            }
+        }
+        usdTextWatcher = object : CurrencyUsdTextWatcher(spinnerCounterInputViewPrice.counterEditText) {
+            override fun onNumberChanged(number: Double) {
+                isPriceValid()
+                validateData()
+            }
+        }
         showDataPrice(productPrice)
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
-            setResult()
+            if(isDataValid()){
+                setResult()
+            }
         }
 
         spinnerCounterInputViewPrice.spinnerTextView.editText.setOnClickListener({
             showBottomSheetsCurrency()
         })
 
+        editTextMinOrder.addTextChangedListener(object : AfterTextWatcher() {
+            override fun afterTextChanged(editable: Editable) {
+                if (isMinOrderValid()) {
+                    editTextMinOrder.setError(null)
+                }
+                validateData()
+            }
+        })
+
+        editTextMaxOrder.addTextChangedListener(object : AfterTextWatcher() {
+            override fun afterTextChanged(editable: Editable) {
+                if (isMaxOrderValid()) {
+                    editTextMaxOrder.setError(null)
+                }
+                validateData()
+            }
+        })
+
         textAddMaksimumBuy.setOnClickListener({
-            textInputLayoutMaksimumBuy.visibility = View.VISIBLE
-            textAddMaksimumBuy.visibility = View.GONE
+            showOrderMaxForm()
         })
 
         imageViewEdit.setOnClickListener {
-            wholesalePrice.clear()
-            setLabelViewWholesale(wholesalePrice)
+            showEditPriceDialog()
         }
 
         labelViewWholesale.setOnClickListener {
             startActivityForResult(ProductAddWholesaleActivity.getIntent(context, wholesalePrice, selectedCurrencyType, spinnerCounterInputViewPrice.counterEditText.text.toString().replace(",", "").toDouble(), true, true), REQUEST_CODE_GET_WHOLESALE) }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_GET_WHOLESALE -> {
+                    wholesalePrice = data!!.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE)
+                    setEditTextPriceState(wholesalePrice)
+                    setLabelViewWholesale(wholesalePrice)
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun showDataPrice(productPrice: ProductPrice){
+        selectedCurrencyType = productPrice.currencyType
+        spinnerCounterInputViewPrice.counterValue = productPrice.price
+        setPriceTextChangedListener()
+        wholesalePrice = productPrice.wholesalePrice
+        setEditTextPriceState(wholesalePrice)
+        setLabelViewWholesale(wholesalePrice)
+        if(productPrice.minOrder > 0)
+            editTextMinOrder.text = productPrice.minOrder.toString()
+        editTextMaxOrder.text = productPrice.maxOrder.toString()
+        if(productPrice.maxOrder > 0) {
+            editTextMaxOrder.text = productPrice.maxOrder.toString()
+            showOrderMaxForm()
+        }
+        validateData()
+    }
+
+    private fun getPriceValue(): Double{
+        return spinnerCounterInputViewPrice.counterValue
+    }
+
+    private fun getMinOrderValue(): Int{
+        return editTextMinOrder.text.removeCommaToInt()
+    }
+
+    private fun getMaxOrderValue(): Int{
+        return editTextMaxOrder.text.removeCommaToInt()
+    }
+
+    private fun String.removeCommaToInt(): Int{
+        return toString().replace(",", "").toInt()
+    }
+
+    private fun isPriceValid(): Boolean {
+        if (!ProductPriceRangeUtils.isPriceValid(getPriceValue(), selectedCurrencyType, isOfficialStore) || getPriceValue() == DEFAULT_PRICE) {
+            spinnerCounterInputViewPrice.setCounterError(
+                            getString(R.string.product_error_product_price_not_valid,
+                            ProductPriceRangeUtils.getMinPriceString(selectedCurrencyType, isOfficialStore),
+                            ProductPriceRangeUtils.getMaxPriceString(selectedCurrencyType, isOfficialStore)))
+            labelViewWholesale.visibility = View.GONE
+            dividerLabelViewWholesale.visibility = View.GONE
+            return false
+        } else {
+            labelViewWholesale.visibility = View.VISIBLE
+            dividerLabelViewWholesale.visibility = View.VISIBLE
+        }
+        spinnerCounterInputViewPrice.setCounterError(null)
+        return true
+    }
+
+    private fun isMinOrderValid(): Boolean {
+        if (MIN_ORDER.removeCommaToInt() > getMinOrderValue() || getMinOrderValue() > MAX_ORDER.removeCommaToInt()) {
+            editTextMinOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid, MIN_ORDER, MAX_ORDER))
+            return false
+        }
+        editTextMinOrder.setError(null)
+        return true
+    }
+
+    private fun isMaxOrderValid(): Boolean {
+        if(getMinOrderValue() > 0) {
+            if (MIN_ORDER.removeCommaToInt() > getMinOrderValue() || getMinOrderValue() > MAX_ORDER.removeCommaToInt()) {
+                editTextMaxOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid, MIN_ORDER, MAX_ORDER))
+                return false
+            }
+        }
+        editTextMaxOrder.setError(null)
+        return true
+    }
+
     private fun getCurrencyTypeTitle(type: Int): String {
         var resString = -1
         when (type) {
-            ProductEditCurrencyType.RUPIAH -> resString = R.string.product_label_rupiah
-            ProductEditCurrencyType.USD -> resString = R.string.product_label_usd
+            CurrencyTypeDef.TYPE_IDR -> resString = R.string.product_label_rupiah
+            CurrencyTypeDef.TYPE_USD -> resString = R.string.product_label_usd
         }
         return getString(resString)
     }
@@ -89,34 +220,90 @@ class ProductEditPriceFragment : Fragment() {
                 if (!isAdded) {
                     return
                 }
-                selectedCurrencyType = itemId
-                spinnerCounterInputViewPrice.spinnerTextView.editText.setText(getCurrencyTypeTitle(selectedCurrencyType))
+                if(itemId != selectedCurrencyType){
+                    selectedCurrencyType = itemId
+                    setPriceTextChangedListener()
+                    spinnerCounterInputViewPrice.counterValue = DEFAULT_PRICE
+                    spinnerCounterInputViewPrice.counterEditText.setSelection(spinnerCounterInputViewPrice.counterEditText.text.length)
+                    spinnerCounterInputViewPrice.setCounterError(null)
+                }
             }
         })
 
-        checkedBottomSheetMenu.addItem(ProductEditCurrencyType.RUPIAH, getCurrencyTypeTitle(ProductEditCurrencyType.RUPIAH),
-                selectedCurrencyType == ProductEditCurrencyType.RUPIAH)
-        checkedBottomSheetMenu.addItem(ProductEditCurrencyType.USD, getCurrencyTypeTitle(ProductEditCurrencyType.USD),
-                selectedCurrencyType == ProductEditCurrencyType.USD)
+        checkedBottomSheetMenu.addItem(CurrencyTypeDef.TYPE_IDR, getCurrencyTypeTitle(CurrencyTypeDef.TYPE_IDR),
+                selectedCurrencyType == CurrencyTypeDef.TYPE_IDR)
+        checkedBottomSheetMenu.addItem(CurrencyTypeDef.TYPE_USD, getCurrencyTypeTitle(CurrencyTypeDef.TYPE_USD),
+                selectedCurrencyType == CurrencyTypeDef.TYPE_USD)
 
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_GET_WHOLESALE -> {
-                    wholesalePrice = data!!.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE)
-                    setLabelViewWholesale(wholesalePrice)
+    private fun showEditPriceDialog() {
+        if (wholesalePrice.size>0) {
+            val builder = AlertDialog.Builder(context!!,
+                    R.style.AppCompatAlertDialogStyle)
+            builder.setTitle(R.string.product_title_confirmation_change_wholesale_price)
+            builder.setMessage(R.string.product_confirmation_change_wholesale_price)
+            builder.setCancelable(true)
+            builder.setPositiveButton(R.string.change) { dialog, id ->
+                wholesalePrice.clear()
+                setEditTextPriceState(wholesalePrice)
+                setLabelViewWholesale(wholesalePrice)
+                dialog.cancel()
+                if (hasVariant) {
+
                 }
             }
+            builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
+            val alert = builder.create()
+            alert.show()
+        } else if (hasVariant) {
+
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showOrderMaxForm(){
-        textInputLayoutMaksimumBuy.visibility = View.VISIBLE
+        editTextMaxOrder.visibility = View.VISIBLE
         textAddMaksimumBuy.visibility = View.GONE
+    }
+
+    private fun setPriceTextChangedListener(){
+        spinnerCounterInputViewPrice.spinnerTextView.editText.setText(getCurrencyTypeTitle(selectedCurrencyType))
+        spinnerCounterInputViewPrice.removeTextChangedListener(idrTextWatcher)
+        spinnerCounterInputViewPrice.removeTextChangedListener(usdTextWatcher)
+        if (selectedCurrencyType == CurrencyTypeDef.TYPE_IDR) {
+            spinnerCounterInputViewPrice.addTextChangedListener(idrTextWatcher)
+        } else {
+            if (!isGoldMerchant && selectedCurrencyType == CurrencyTypeDef.TYPE_USD) {
+                if (GlobalConfig.isSellerApp()) {
+                    UnifyTracking.eventSwitchRpToDollarAddProduct()
+//                    this@ProductPriceViewHolder.listener.showDialogMoveToGM(R.string.product_add_label_alert_dialog_dollar)
+                } else {
+                    Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                            .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
+                            .show()
+                }
+                return
+            }
+            spinnerCounterInputViewPrice.addTextChangedListener(usdTextWatcher)
+        }
+    }
+
+    private fun setLabelViewWholesale(wholesaleList: ArrayList<ProductWholesaleViewModel>){
+        if (wholesaleList.size == 0) {
+            labelViewWholesale.setContent(getString(R.string.label_add))
+        } else {
+            labelViewWholesale.setContent(getString(R.string.product_count_wholesale, wholesaleList.size))
+        }
+    }
+
+    private fun setEditTextPriceState(wholesaleList: ArrayList<ProductWholesaleViewModel>){
+        if (wholesaleList.size == 0 && !hasVariant) {
+            setEnablePriceForm(true)
+            spinnerCounterInputViewPrice.counterEditText.setSelection(spinnerCounterInputViewPrice.counterEditText.text.length)
+        } else {
+            setEnablePriceForm(false)
+        }
     }
 
     private fun setEnablePriceForm(isEnabled : Boolean){
@@ -127,42 +314,23 @@ class ProductEditPriceFragment : Fragment() {
             imageViewEdit.visibility = View.VISIBLE
     }
 
-    private fun showDataPrice(productPrice: ProductPrice){
-        selectedCurrencyType = productPrice.currencyType
-        spinnerCounterInputViewPrice.spinnerTextView.editText.setText(getCurrencyTypeTitle(selectedCurrencyType))
-        spinnerCounterInputViewPrice.counterEditText.setText(productPrice.price.toString())
-        wholesalePrice = productPrice.wholesalePrice
-        setLabelViewWholesale(wholesalePrice)
-        if(productPrice.minOrder > 0)
-            editTextMinOrder.setText(productPrice.minOrder.toString())
-        editTextMaxOrder.setText(productPrice.maxOrder.toString())
-        if(productPrice.maxOrder > 0) {
-            editTextMaxOrder.setText(productPrice.maxOrder.toString())
-            showOrderMaxForm()
-        }
-    }
-
-    private fun setLabelViewWholesale(wholesaleList: ArrayList<ProductWholesaleViewModel>){
-        if (wholesaleList.size == 0) {
-            labelViewWholesale.setContent(getString(R.string.label_add))
-            setEnablePriceForm(true)
-        } else {
-            labelViewWholesale.setContent(getString(R.string.product_count_wholesale, wholesaleList.size))
-            setEnablePriceForm(false)
-        }
-    }
-
     private fun saveData(productPrice: ProductPrice): ProductPrice{
         productPrice.currencyType = selectedCurrencyType
-        productPrice.price = spinnerCounterInputViewPrice.counterEditText.text.toString().replace(",", "").toDouble()
+        productPrice.price = getPriceValue()
         productPrice.wholesalePrice = wholesalePrice
-        productPrice.minOrder = editTextMinOrder.text.toInt()
-        productPrice.maxOrder = editTextMaxOrder.text.toInt()
+        productPrice.minOrder = getMinOrderValue()
+        productPrice.maxOrder = getMaxOrderValue()
         return productPrice
     }
 
-    private fun Editable.toInt(): Int{
-        return toString().toInt()
+    private fun isDataValid() = isPriceValid() && isMinOrderValid() && isMaxOrderValid()
+
+    private fun validateData(){
+        if (isDataValid()) {
+            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.tkpd_main_green))
+        } else {
+            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.font_black_secondary_54))
+        }
     }
 
     private fun setResult(){
@@ -173,6 +341,9 @@ class ProductEditPriceFragment : Fragment() {
     }
 
     companion object {
+        const val DEFAULT_PRICE = 0.0
+        const val MIN_ORDER = "1"
+        const val MAX_ORDER = "10,000"
         const val REQUEST_CODE_GET_WHOLESALE = 1
         fun createInstance() = ProductEditPriceFragment()
     }
