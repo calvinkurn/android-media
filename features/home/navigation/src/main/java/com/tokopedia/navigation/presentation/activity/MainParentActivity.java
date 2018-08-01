@@ -3,14 +3,15 @@ package com.tokopedia.navigation.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -41,6 +42,7 @@ import javax.inject.Inject;
 public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent, MainParentView {
 
+    private final static int EXIT_DELAY_MILLIS = 2000;
     public static int HOME_MENU = 0;
     public static int FEED_MENU = 1;
     public static int INBOX_MENU = 2;
@@ -56,6 +58,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Inject MainParentPresenter presenter;
 
     private boolean isUserFirstTimeLogin = false;
+    private boolean doubleTapExit = false;
 
     private Fragment currentFragment;
 
@@ -174,6 +177,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private void reloadPage() {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (getApplication() instanceof  GlobalNavRouter) {
+            this.currentFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
+        }
         selectFragment(currentFragment);
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
@@ -204,10 +210,24 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            doubleTapExit();
+        }
     }
 
     public BaseAppComponent getApplicationComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    private void doubleTapExit() {
+        if (doubleTapExit) {
+            this.finish();
+        } else {
+            doubleTapExit = true;
+            Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+        }
     }
 }
