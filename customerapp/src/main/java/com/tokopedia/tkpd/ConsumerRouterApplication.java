@@ -924,12 +924,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeHotlistIntent(Context context) {
-        return ParentIndexHome.getHomeHotlistIntent(context);
+//        return ParentIndexHome.getHomeHotlistIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
     public Intent getHomeFeedIntent(Context context) {
-        return ParentIndexHome.getHomeFeedIntent(context);
+//        return ParentIndexHome.getHomeFeedIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
@@ -1059,13 +1061,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeIntent(Context context) {
-        return ParentIndexHome.getHomeIntent(context);
+        //return ParentIndexHome.getHomeIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
     public Intent getHomePageIntent(Context context) {
         // Force navigation to home tab
-        return ParentIndexHome.getHomeIntent(context);
+        //return ParentIndexHome.getHomeIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
