@@ -32,7 +32,7 @@ import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
-import kotlinx.android.synthetic.main.fragment_shop_info_v3.*
+import kotlinx.android.synthetic.main.fragment_shop_info.*
 import kotlinx.android.synthetic.main.partial_shop_info_description.*
 import kotlinx.android.synthetic.main.partial_shop_info_logistic_2.*
 import kotlinx.android.synthetic.main.partial_shop_info_note.*
@@ -56,7 +56,7 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     private var shopDomain: String? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_shop_info_v3, container, false)
+        return inflater?.inflate(R.layout.fragment_shop_info, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {

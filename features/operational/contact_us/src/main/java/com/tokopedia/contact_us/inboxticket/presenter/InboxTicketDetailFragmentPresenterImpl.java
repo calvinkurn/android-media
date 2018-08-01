@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.R;
-import com.tokopedia.core.customadapter.ImageUpload;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.contact_us.createticket.interactor.ContactUsRetrofitInteractor;
 import com.tokopedia.contact_us.createticket.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.contact_us.inboxticket.InboxTicketConstant;
@@ -24,9 +19,12 @@ import com.tokopedia.contact_us.inboxticket.model.inboxticketdetail.InboxTicketD
 import com.tokopedia.contact_us.inboxticket.model.inboxticketdetail.TicketReply;
 import com.tokopedia.contact_us.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.contact_us.inboxticket.model.replyticket.ReplyResult;
+import com.tokopedia.core.R;
+import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -322,17 +320,6 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
             }
             viewListener.addImage(image);
         }
-    }
-
-    @Override
-    public void actionImagePicker() {
-        imageUploadHandler.actionImagePicker();
-    }
-
-    @Override
-    public void actionCamera() {
-        imageUploadHandler.actionCamera();
-
     }
 
     @Override

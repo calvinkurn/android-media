@@ -23,11 +23,11 @@ public class StickySingleHeaderView extends FrameLayout
     private int mHeaderHeight = -1;
     private OnStickySingleHeaderAdapter adapter;
     private LinearLayoutManager layoutManager;
-    private RecyclerView.ViewHolder mViewHolderCache;
 
     private int stickyPosition = 0;
     private RecyclerView.OnScrollListener onScrollListener;
     private boolean isEnable = true;
+    private boolean refreshSticky;
 
     public StickySingleHeaderView(Context context) {
         super(context);
@@ -97,15 +97,17 @@ public class StickySingleHeaderView extends FrameLayout
         if (firstCompletelyVisiblePosition > -1) {
             if (firstCompletelyVisiblePosition > (stickyPosition - 1)) {
                 // make the etalase label always visible
-                if (!isStickyShowed()) {
+                if (!isStickyShowed() || refreshSticky) {
                     showSticky();
                     mHeaderContainer.setVisibility(View.VISIBLE);
+                    refreshSticky = false;
                 }
             } else {
                 // make the etalase label always gone
-                if (isStickyShowed()) {
+                if (isStickyShowed() || refreshSticky) {
                     clearHeaderView();
                     mHeaderContainer.setVisibility(View.GONE);
+                    refreshSticky = false;
                 }
             }
         }
@@ -134,11 +136,7 @@ public class StickySingleHeaderView extends FrameLayout
 
     private void showSticky() {
         clearHeaderView();
-        RecyclerView.ViewHolder viewHolder = mViewHolderCache;
-        if (viewHolder == null) {
-            viewHolder = adapter.createStickyViewHolder(mHeaderContainer);
-            mViewHolderCache = viewHolder;
-        }
+        RecyclerView.ViewHolder viewHolder = adapter.createStickyViewHolder(mHeaderContainer);
         mHeaderContainer.addView(viewHolder.itemView);
         mHeaderHeight = mHeaderContainer.getHeight();
         adapter.bindSticky(viewHolder);
@@ -147,12 +145,13 @@ public class StickySingleHeaderView extends FrameLayout
     @Override
     public void refreshSticky() {
         if (isEnable) {
+            refreshSticky = true;
             onScrolled(mRecyclerView, 0, 0);
         }
     }
 
     // Remove the Header View
-    private void clearHeaderView() {
+    public void clearHeaderView() {
         mHeaderContainer.removeAllViews();
     }
 

@@ -59,7 +59,7 @@ class TopAdsKeywordNewItemActivity : BaseSimpleActivity(), HasComponent<TopAdsCo
     }
 
     override fun getNewFragment(): Fragment {
-        return TopAdsKeywordNewItemFragment.newInstance(localKeywords, maxCount, stepperModel!!)
+        return TopAdsKeywordNewItemFragment.newInstance(localKeywords, maxCount, stepperModel?.isPositive ?: true, stepperModel?.groupId ?: "")
     }
 
     override fun getComponent(): TopAdsComponent {

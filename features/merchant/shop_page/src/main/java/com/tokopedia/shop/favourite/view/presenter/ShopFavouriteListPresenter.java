@@ -11,6 +11,7 @@ import com.tokopedia.shop.favourite.domain.interactor.GetShopFavouriteUserUseCas
 import com.tokopedia.shop.favourite.domain.model.ShopFavouriteRequestModel;
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.mapper.ShopFavouriteViewModelMapper;
+import com.tokopedia.shop.page.domain.interactor.DeleteFavoriteListCacheUseCase;
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
 
 import javax.inject.Inject;

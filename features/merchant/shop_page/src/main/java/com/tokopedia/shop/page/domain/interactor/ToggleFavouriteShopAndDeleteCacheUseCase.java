@@ -20,33 +20,36 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
 
     private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final DeleteShopInfoUseCase deleteShopInfoUseCase;
+    private final DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase;
 
     @Inject
     public ToggleFavouriteShopAndDeleteCacheUseCase(ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
-                                                    DeleteShopInfoUseCase deleteShopInfoUseCase) {
+                                                    DeleteShopInfoUseCase deleteShopInfoUseCase,
+                                                    DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase) {
         this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
         this.deleteShopInfoUseCase = deleteShopInfoUseCase;
+        this.deleteFavoriteListCacheUseCase = deleteFavoriteListCacheUseCase;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         return toggleFavouriteShopUseCase.createObservable(requestParams)
                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                if (aBoolean) {
-                    return deleteShopInfoUseCase.createObservable()
-                            .onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
-                                @Override
-                                public Observable<? extends Boolean> call(Throwable throwable) {
-                                    return Observable.just(aBoolean);
-                                }
-                            });
-                } else {
-                    return Observable.just(aBoolean);
-                }
-            }
-        });
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            try {
+                                deleteFavoriteListCacheUseCase.executeSync();
+                                deleteShopInfoUseCase.executeSync();
+                            } catch (Throwable e) {
+                                // no-op
+                            }
+                            return Observable.just(aBoolean);
+                        } else {
+                            return Observable.just(aBoolean);
+                        }
+                    }
+                });
     }
 
     public static RequestParams createRequestParam(String shopId) {
@@ -60,5 +63,6 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
         super.unsubscribe();
         deleteShopInfoUseCase.unsubscribe();
         toggleFavouriteShopUseCase.unsubscribe();
+        deleteFavoriteListCacheUseCase.unsubscribe();
     }
 }
