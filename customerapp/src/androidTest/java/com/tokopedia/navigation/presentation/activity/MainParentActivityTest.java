@@ -84,6 +84,7 @@ import static org.mockito.Mockito.when;
 import static rx.Observable.just;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.usecase.RequestParams;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -126,10 +127,14 @@ public class MainParentActivityTest {
         if (fragment != null && fragment.isMainViewVisible()) {
             FeedPlusPresenter presenter = spy(fragment.getPresenter());
 
-            setField(FeedPlusPresenter.class, fragment, "presenter", presenter);
+            fragment.setPresenter(presenter);
+//            setField(FeedPlusPresenter.class, fragment, "presenter", presenter);
             fragment.resetToFirstTime();
 
-            FeedPlusAdapter adapter = getField(FeedPlusAdapter.class, fragment, "adapter");
+//            FeedPlusAdapter adapter = getField(FeedPlusAdapter.class, fragment, "adapter");
+            // Get total item of myRecyclerView
+            RecyclerView recyclerView =fragment.getView().findViewById(R.id.recycler_view);
+            FeedPlusAdapter adapter = (FeedPlusAdapter)recyclerView.getAdapter();
             mIntentsRule.getActivity().runOnUiThread(() -> {
                 adapter.clearData();
             });
@@ -137,12 +142,16 @@ public class MainParentActivityTest {
             Thread.sleep(1_000);
 
             // prepare the data
-            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase = mock(GetFirstPageFeedsCloudUseCase.class);
-            setField(GetFirstPageFeedsCloudUseCase.class, presenter, "getFirstPageFeedsCloudUseCase", getFirstPageFeedsCloudUseCase);
+            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase = spy(presenter.getGetFirstPageFeedsCloudUseCase());
 
-            when(getFirstPageFeedsCloudUseCase.createObservable(any())).thenReturn(
-                    Observable.just(test3())
-            );
+            presenter.setGetFirstPageFeedsCloudUseCase(getFirstPageFeedsCloudUseCase);
+//            setField(GetFirstPageFeedsCloudUseCase.class, presenter, "getFirstPageFeedsCloudUseCase", getFirstPageFeedsCloudUseCase);
+
+            doReturn(Observable.just(test3())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
+
+//            when(getFirstPageFeedsCloudUseCase.createObservable(any(RequestParams.class))).thenReturn(
+//                    Observable.just(test3())
+//            );
 
             onView(withId(R.id.swipe_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 

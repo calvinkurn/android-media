@@ -223,6 +223,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         isLoadedOnce = false;
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(FeedPlusPresenter presenter) {
+        this.presenter = presenter;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,

@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import android.support.annotation.RestrictTo;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -75,6 +77,16 @@ public class FeedPlusPresenter
         this.followKolPostUseCase = followKolPostUseCase;
         this.getWhitelistUseCase = whitelistUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setGetFirstPageFeedsCloudUseCase(GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
+        this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public GetFirstPageFeedsCloudUseCase getGetFirstPageFeedsCloudUseCase() {
+        return getFirstPageFeedsCloudUseCase;
     }
 
     @Override
