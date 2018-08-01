@@ -11,15 +11,15 @@ public class ProductTrackerData {
     @SerializedName("attribution")
     @Expose
     private String attribution;
-    @SerializedName("product_list_name")
+    @SerializedName("tracker_list_name")
     @Expose
-    private String productListName;
+    private String trackerListName;
 
     public String getAttribution() {
         return attribution;
     }
 
-    public String getProductListName() {
-        return productListName;
+    public String getTrackerListName() {
+        return trackerListName;
     }
 }
