@@ -59,6 +59,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
             onGoToForgotPass()
         })
         prepareHint()
+        disableSubmitButton()
     }
 
     private fun onGoToForgotPass() {

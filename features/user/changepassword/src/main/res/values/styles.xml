@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TextInputLayout.ChangePassword" parent="TextInputLayout">
-        <item name="defaultTextColorLabel">@color/black_55</item>
-        <item name="focusedTextColorLabel">@color/black_55</item>
-        <item name="disabledTextColorLabel">@color/black_55</item>
-    </style>
-
-    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
-        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
-    </style>
 </resources>
