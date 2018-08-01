@@ -17,27 +17,33 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 public class ContentExploreActivity extends BaseSimpleActivity {
 
     public static String PARAM_CATEGORY_ID = "category_id";
+    public static String DEFAULT_CATEGORY = "0";
 
     @DeepLink({ApplinkConst.CONTENT_EXPLORE})
     public static Intent newInstance(Context context, Bundle bundle) {
-        int categoryId = bundle.getInt(PARAM_CATEGORY_ID, 0);
+        String categoryId = bundle.getString(PARAM_CATEGORY_ID, DEFAULT_CATEGORY);
         return newInstance(context, categoryId);
     }
 
     public static Intent newInstance(Context context) {
-        Intent intent = new Intent(context, ContentExploreActivity.class);
-        intent.putExtra(PARAM_CATEGORY_ID, 0);
-        return intent;
+        return newInstance(context, DEFAULT_CATEGORY);
     }
 
-    public static Intent newInstance(Context context, int categoryId) {
+    public static Intent newInstance(Context context, String categoryId) {
         Intent intent = new Intent(context, ContentExploreActivity.class);
-        intent.putExtra(PARAM_CATEGORY_ID, categoryId);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_CATEGORY_ID, categoryId);
+        intent.putExtras(bundle);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ContentExploreFragment.newInstance();
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        return ContentExploreFragment.newInstance(bundle);
     }
 }

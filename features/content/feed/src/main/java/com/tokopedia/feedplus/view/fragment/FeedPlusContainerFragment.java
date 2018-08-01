@@ -74,7 +74,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public void showContentExplore() {
         if (contentExploreFragment == null) {
-            contentExploreFragment = ContentExploreFragment.newInstance();
+            contentExploreFragment = ContentExploreFragment.newInstance(getArguments());
         }
         feedPlusContainer.setVisibility(View.GONE);
         contentExploreContainer.setVisibility(View.VISIBLE);

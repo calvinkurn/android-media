@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.di.DaggerExploreComponent;
+import com.tokopedia.explore.view.activity.ContentExploreActivity;
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
@@ -63,11 +64,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
     ExploreImageAdapter imageAdapter;
 
     private RecyclerView.OnScrollListener scrollListener;
+    private int categoryId;
     private boolean canLoadMore;
 
-    public static ContentExploreFragment newInstance() {
+    public static ContentExploreFragment newInstance(Bundle bundle) {
         ContentExploreFragment fragment = new ContentExploreFragment();
-        Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -104,8 +105,51 @@ public class ContentExploreFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         GraphqlClient.init(getContext());
         initView();
+        initVar();
         presenter.attachView(this);
         presenter.getExploreData(true);
+    }
+
+    private void initView() {
+        searchInspiration.setListener(this);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+        exploreCategoryRv.setLayoutManager(linearLayoutManager);
+        categoryAdapter.setListener(this);
+        exploreCategoryRv.setAdapter(categoryAdapter);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
+                IMAGE_SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (imageAdapter.getList().get(position) instanceof ExploreImageViewModel) {
+                    return IMAGE_SPAN_SINGLE;
+                } else if (imageAdapter.getList().get(position) instanceof LoadingMoreModel) {
+                    return IMAGE_SPAN_COUNT;
+                }
+                return 0;
+            }
+        });
+        exploreImageRv.setLayoutManager(gridLayoutManager);
+        exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager));
+        ExploreImageTypeFactory typeFactory = new ExploreImageTypeFactoryImpl(this);
+        imageAdapter.setTypeFactory(typeFactory);
+        exploreImageRv.setAdapter(imageAdapter);
+    }
+
+    private void initVar() {
+        if (getArguments() != null) {
+            categoryId = Integer.valueOf(getArguments().getString(
+                    ContentExploreActivity.PARAM_CATEGORY_ID,
+                    ContentExploreActivity.DEFAULT_CATEGORY)
+            );
+            presenter.updateCategoryId(categoryId);
+        }
     }
 
     @Override
@@ -120,6 +164,15 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
         if (categoryAdapter.getList().isEmpty()) {
             loadTagData(exploreViewModel.getTagViewModelList());
+        }
+
+        for (int i = 0; i < categoryAdapter.getList().size(); i++) {
+            ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
+            if (categoryViewModel.getId() == categoryId) {
+                categoryViewModel.setActive(true);
+                categoryAdapter.notifyItemChanged(i);
+                break;
+            }
         }
     }
 
@@ -147,6 +200,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void updateCategoryId(int categoryId) {
+        this.categoryId = categoryId;
         presenter.updateCategoryId(categoryId);
     }
 
@@ -181,8 +235,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
             updateCategoryId(0);
         } else {
             updateCategoryId(categoryId);
-            categoryAdapter.getList().get(position).setActive(true);
-            categoryAdapter.notifyItemChanged(position);
+
+            if (position > 0) {
+                categoryAdapter.getList().get(position).setActive(true);
+                categoryAdapter.notifyItemChanged(position);
+            }
         }
 
         updateCursor("");
@@ -223,38 +280,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Override
     public void onSearchTextChanged(String text) {
 
-    }
-
-    private void initView() {
-        searchInspiration.setListener(this);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-        exploreCategoryRv.setLayoutManager(linearLayoutManager);
-        categoryAdapter.setListener(this);
-        exploreCategoryRv.setAdapter(categoryAdapter);
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
-                IMAGE_SPAN_COUNT,
-                GridLayoutManager.VERTICAL,
-                false);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (imageAdapter.getList().get(position) instanceof ExploreImageViewModel) {
-                    return IMAGE_SPAN_SINGLE;
-                } else if (imageAdapter.getList().get(position) instanceof LoadingMoreModel) {
-                    return IMAGE_SPAN_COUNT;
-                }
-                return 0;
-            }
-        });
-        exploreImageRv.setLayoutManager(gridLayoutManager);
-        exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager));
-        ExploreImageTypeFactory typeFactory = new ExploreImageTypeFactoryImpl(this);
-        imageAdapter.setTypeFactory(typeFactory);
-        exploreImageRv.setAdapter(imageAdapter);
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
