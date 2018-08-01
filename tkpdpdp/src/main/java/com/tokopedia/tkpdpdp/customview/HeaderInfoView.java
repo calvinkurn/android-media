@@ -204,12 +204,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if(!TextUtils.isEmpty(data.getProductStockWording())) {
             if(campaignActive){
                 campaignStockAvailable.setVisibility(VISIBLE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    campaignStockAvailable.setText(Html.fromHtml(data.getProductStockWording(),
-                            Html.FROM_HTML_MODE_LEGACY));
-                } else {
-                    campaignStockAvailable.setText(Html.fromHtml(data.getProductStockWording()));
-                }
+                campaignStockAvailable.setText(MethodChecker.fromHtml(data.getProductStockWording()));
             } else {
                 linearStockAvailable.setVisibility(VISIBLE);
                 if (data.getLimitedStock()) {
@@ -219,12 +214,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     ivStockAvailable.setImageResource(R.drawable.ic_available_stock);
                     textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    textStockAvailable.setText(Html.fromHtml(data.getProductStockWording(),
-                            Html.FROM_HTML_MODE_LEGACY));
-                } else {
-                    textStockAvailable.setText(Html.fromHtml(data.getProductStockWording()));
-                }
+                textStockAvailable.setText(MethodChecker.fromHtml(data.getProductStockWording()));
             }
         }
     }

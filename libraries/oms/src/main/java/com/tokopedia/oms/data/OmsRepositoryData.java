@@ -20,8 +20,8 @@ public class OmsRepositoryData implements OmsRepository {
     }
 
     @Override
-    public Observable<VerifyMyCartResponse> verifyCard(JsonObject requestBody,boolean flag) {
-        return mCloudOmsDataStore.verifyCart(requestBody,flag);
+    public Observable<VerifyMyCartResponse> verifyCard(JsonObject requestBody, boolean flag) {
+        return mCloudOmsDataStore.verifyCart(requestBody, flag);
     }
 
     @Override

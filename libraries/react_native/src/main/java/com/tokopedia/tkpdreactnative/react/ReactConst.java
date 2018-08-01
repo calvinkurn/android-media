@@ -28,6 +28,7 @@ public interface ReactConst {
         String EXPLORE_PAGE = "explore-page";
         String CONTENT_DETAIL = "content-detail";
         String BRANDLIST_PAGE = "brandlist-page";
+        String HOW_TO_PAY = "how-to-pay";
     }
 
     interface EventEmitter{
