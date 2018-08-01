@@ -14,7 +14,8 @@ import java.lang.annotation.RetentionPolicy;
         FlightErrorConstant.CONNECT_REDIS, FlightErrorConstant.MISSING_REQUIRED_PARAM,
         FlightErrorConstant.INVALID_DATE, FlightErrorConstant.ADD_TO_CART,
         FlightErrorConstant.SAVE_CART, FlightErrorConstant.METHOD_NOT_ALLOWED,
-        FlightErrorConstant.FLIGHT_SOLD_OUT, FlightErrorConstant.FLIGHT_EXPIRED})
+        FlightErrorConstant.FLIGHT_SOLD_OUT, FlightErrorConstant.FLIGHT_EXPIRED,
+        FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND})
 @Retention(RetentionPolicy.SOURCE)
 public @interface FlightErrorConstant {
     String INVALID_JSON = "1";
@@ -29,4 +30,5 @@ public @interface FlightErrorConstant {
     String METHOD_NOT_ALLOWED = "10";
     String FLIGHT_SOLD_OUT = "56";
     String FLIGHT_EXPIRED = "83";
+    String FLIGHT_ROUTE_NOT_FOUND = "81";
 }

@@ -3,6 +3,9 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -285,4 +288,65 @@ public class CartItemModel implements Parcelable {
         }
     };
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof CartItemModel)) return false;
+
+        CartItemModel that = (CartItemModel) o;
+
+        return new EqualsBuilder()
+                .append(getCartId(), that.getCartId())
+                .append(getProductId(), that.getProductId())
+                .append(getPrice(), that.getPrice())
+                .append(getCurrency(), that.getCurrency())
+                .append(getWeightUnit(), that.getWeightUnit())
+                .append(getWeight(), that.getWeight())
+                .append(getQuantity(), that.getQuantity())
+                .append(isCashback(), that.isCashback())
+                .append(isPreOrder(), that.isPreOrder())
+                .append(isFreeReturn(), that.isFreeReturn())
+                .append(isfInsurance(), that.isfInsurance())
+                .append(isfCancelPartial(), that.isfCancelPartial())
+                .append(isError(), that.isError())
+                .append(getShopId(), that.getShopId())
+                .append(getShopName(), that.getShopName())
+                .append(getName(), that.getName())
+                .append(getWeightFmt(), that.getWeightFmt())
+                .append(getNoteToSeller(), that.getNoteToSeller())
+                .append(getImageUrl(), that.getImageUrl())
+                .append(isCashback(), that.isCashback())
+                .append(getFreeReturnLogo(), that.getFreeReturnLogo())
+                .append(getErrorMessage(), that.getErrorMessage())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getCartId())
+                .append(getShopId())
+                .append(getShopName())
+                .append(getProductId())
+                .append(getName())
+                .append(getPrice())
+                .append(getCurrency())
+                .append(getWeightUnit())
+                .append(getWeight())
+                .append(getWeightFmt())
+                .append(getQuantity())
+                .append(getNoteToSeller())
+                .append(getImageUrl())
+                .append(isCashback())
+                .append(getFreeReturnLogo())
+                .append(isCashback())
+                .append(isPreOrder())
+                .append(isFreeReturn())
+                .append(isfInsurance())
+                .append(isfCancelPartial())
+                .append(isError())
+                .append(getErrorMessage())
+                .toHashCode();
+    }
 }
