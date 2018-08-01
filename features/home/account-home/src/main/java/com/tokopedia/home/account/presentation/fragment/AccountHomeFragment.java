@@ -120,6 +120,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
                 item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
                 item.setTitle(getContext().getString(R.string.label_account_seller));
                 fragmentItems.add(item);
+            } else {
+                item = new AccountFragmentItem();
+                item.setFragment(SellerEmptyAccountFragment.newInstance());
+                item.setTitle(getContext().getString(R.string.label_account_seller));
+                fragmentItems.add(item);
             }
 
             adapter.setItems(fragmentItems);

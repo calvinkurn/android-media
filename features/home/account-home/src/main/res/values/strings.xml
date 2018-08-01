@@ -140,4 +140,15 @@
     <string name="label_button_add_product">+ Tambah Produk</string>
     <string name="title_dev_options">Developer Options</string>
 
+    <string name="msg_has_no_shop">Anda belum memiliki Toko</string>
+    <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
+        <b>Menguntungkan</b>.</string>
+    <string name="top_features">Top Features</string>
+    <string name="topads_desc">Media iklan Produk dan Toko</string>
+    <string name="gold_merchant">Gold Merchant</string>
+    <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
+    <string name="seller_center">Seller Center</string>
+    <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
+    <string name="open_shop">Buka Toko</string>
+    <string name="learn_more">Pelajari Selengkapnya</string>
 </resources>

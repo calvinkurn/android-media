@@ -51,7 +51,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         accountViewModel.setBuyerViewModel(getBuyerModel(accountModel));
         if (accountModel.getShopInfo() != null
                 && accountModel.getShopInfo().getInfo() != null
-                && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())) {
+                && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
+                && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1")) {
             accountViewModel.setSellerViewModel(getSellerModel(accountModel));
             accountViewModel.setSeller(true);
         } else {
