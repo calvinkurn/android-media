@@ -187,9 +187,9 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetExploreDataMore() {
         canLoadMore = false;
-        NetworkErrorHelper.showDialog(getContext(), () -> {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
             presenter.getExploreData(false);
-        });
+        }).showRetrySnackbar();
     }
 
     @Override
