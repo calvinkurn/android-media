@@ -8,6 +8,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
+import com.tokopedia.navigation_common.WalletModel;
+import com.tokopedia.navigation_common.WalletPref;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -28,11 +30,13 @@ public class GetAccountUseCase extends UseCase<AccountViewModel> {
 
     private GraphqlUseCase graphqlUseCase;
     private AccountMapper mapper;
+    private WalletPref walletPref;
 
     @Inject
-    GetAccountUseCase(GraphqlUseCase graphqlUseCase, AccountMapper mapper){
+    GetAccountUseCase(GraphqlUseCase graphqlUseCase, AccountMapper mapper, WalletPref walletPref){
         this.graphqlUseCase = graphqlUseCase;
         this.mapper = mapper;
+        this.walletPref = walletPref;
     }
 
     @Override
@@ -51,6 +55,19 @@ public class GetAccountUseCase extends UseCase<AccountViewModel> {
 
                     return Observable.error(new Exception("Query and/or variable are empty."));
                 })
+                .doOnNext(graphqlResponse -> saveLocallyWallet(graphqlResponse))
                 .map(mapper);
+    }
+
+    private void saveLocallyWallet(GraphqlResponse graphqlResponse) {
+        AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+        WalletModel walletModel = accountModel.getWallet();
+        if (!walletModel.isLinked()){
+            WalletModel.WalletAction action = walletModel.getAction();
+            action.setText("Aktivasi TokoCash");
+            action.setApplink("tokopedia://wallet/activation");
+            walletModel.setAction(action);
+        }
+        walletPref.saveWallet(accountModel.getWallet());
     }
 }

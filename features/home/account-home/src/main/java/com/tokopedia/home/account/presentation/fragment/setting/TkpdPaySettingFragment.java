@@ -2,25 +2,48 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.di.component.DaggerTkpdPaySettingComponent;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
+import com.tokopedia.navigation_common.WalletModel;
+import com.tokopedia.navigation_common.WalletPref;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
     private static final int REQUEST_CHANGE_PASSWORD = 1234;
+    @Inject WalletPref walletPref;
 
     public static Fragment createInstance() {
         return new TkpdPaySettingFragment();
     }
 
     private static final String TAG = TkpdPaySettingFragment.class.getSimpleName();
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        DaggerTkpdPaySettingComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build().inject(this);
+
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
     @Override
     protected List<SettingItemViewModel> getSettingItems() {
@@ -59,7 +82,12 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                     router.goToManageCreditCard(getActivity());
                     break;
                 case SettingConstant.SETTING_TOKOCASH_ID:
-                    router.goToTokoCash(getActivity());
+                    WalletModel walletModel = walletPref.retrieveWallet();
+                    if (walletModel != null && walletModel.getAction() != null){
+                        router.goToTokoCash(walletModel.getAction().getApplink(),
+                                walletModel.getAction().getRedirectUrl(),
+                                getActivity());
+                    }
                     break;
                 case SettingConstant.SETTING_SALDO_ID:
                     router.goToSaldo(getActivity());

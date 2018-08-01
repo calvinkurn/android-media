@@ -34,7 +34,7 @@ public interface AccountHomeRouter {
 
     void goToManageCreditCard(Context context);
 
-    void goToTokoCash(Context context);
+    void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity);
 
     void goToSaldo(Context context);
 
