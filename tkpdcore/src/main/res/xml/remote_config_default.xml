@@ -219,4 +219,12 @@
         <key>mainapp_digital_smartcard</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>indicator_groupchat</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>indicator_groupchat</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
