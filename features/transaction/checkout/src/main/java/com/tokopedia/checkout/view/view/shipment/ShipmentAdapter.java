@@ -203,7 +203,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         recipientAddressModel = null;
         shipmentCostModel = null;
         shipmentInsuranceTncModel = null;
-//        shipmentCheckoutButtonModel = null;
         shipmentSellerCashbackModel = null;
         shipmentDonationModel = null;
         notifyDataSetChanged();
