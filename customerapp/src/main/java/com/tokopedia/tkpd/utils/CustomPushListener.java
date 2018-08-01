@@ -72,18 +72,18 @@ public class CustomPushListener extends PushMessageListener {
             long when = System.currentTimeMillis();
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
 
-            String title1 = extras.getString("title1");
-            String title2 = extras.getString("title2");
-            String title3 = extras.getString("title3");
-            String title4 = extras.getString("title4");
+            String title1 = extras.getString("name1");
+            String title2 = extras.getString("name2");
+            String title3 = extras.getString("name3");
+            String title4 = extras.getString("name4");
             String deeplink1 = extras.getString("deeplink1");
             String deeplink2 = extras.getString("deeplink2");
             String deeplink3 = extras.getString("deeplink3");
             String deeplink4 = extras.getString("deeplink4");
-            String url1 = extras.getString("url1");
-            String url2 = extras.getString("url2");
-            String url3 = extras.getString("url3");
-            String url4 = extras.getString("url4");
+            String url1 = extras.getString("icon1");
+            String url2 = extras.getString("icon2");
+            String url3 = extras.getString("icon3");
+            String url4 = extras.getString("icon4");
             if (!TextUtils.isEmpty(title1) && !TextUtils.isEmpty(deeplink1) && !TextUtils.isEmpty(url1)) {
                 remoteView.setTextViewText(R.id.title1, title1);
                 Intent intent = RouteManager.getIntent(context, deeplink1);
