@@ -130,14 +130,14 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         }
         Shop shop = data.getShop();
         if (shop != null) {
-            if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
+            if (shop.getBadges() != null && shop.getLocation() != null) {
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
-                if(isBadgesExist(shop.getBadges())) {
+                if (isBadgesExist(shop.getBadges())) {
                     shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
                 } else {
                     shopLocation.setText(shop.getLocation());
                 }
-            } else {
+            } else if (shop.getLocation() != null) {
                 shopLocation.setText(shop.getLocation());
             }
         }
@@ -151,10 +151,10 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     @Override
     public void onClick(View v) {
         if (itemClickListener != null) {
-            if(v.getId() == R.id.container) {
+            if (v.getId() == R.id.container) {
                 itemClickListener.onProductItemClicked(clickPosition, data);
             }
-            if(v.getId() == R.id.wishlist_button_container){
+            if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish(clickPosition, data);
                 data.setWislished(!data.isWislished());
                 renderWishlistButton(data.isWislished());

@@ -36,6 +36,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
     private GridLayoutManager layoutManager;
+    private DisplayMode mode = DisplayMode.GRID;
 
     public TopAdsWidgetView(Context context) {
         super(context);
@@ -73,10 +74,10 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
             Data d = data.get(i);
             if (d.getProduct() != null) {
                 layoutManager.setSpanCount(2);
-                visitables.add(ModelConverter.convertToProductFeedViewModel(d));
+                visitables.add(ModelConverter.convertProductData(d, mode));
             } else if (d.getShop() != null) {
                 layoutManager.setSpanCount(1);
-                visitables.add(ModelConverter.convertToShopFeedViewModel(d, DisplayMode.FEED));
+                visitables.add(ModelConverter.convertShopData(d, mode));
             }
         }
         adapter.setList(visitables);
@@ -126,5 +127,9 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     public void setAdapterPosition(int adapterPosition) {
         adapter.setAdapterPosition(adapterPosition);
+    }
+
+    public void setMode(DisplayMode mode) {
+        this.mode = mode;
     }
 }
