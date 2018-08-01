@@ -56,7 +56,7 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
         } else if (viewType == KolPostYoutubeViewHolder.LAYOUT) {
             abstractViewHolder = new KolPostYoutubeViewHolder(view,
                     viewListener,
-                    type);
+                    KolPostYoutubeViewHolder.Type.PROFILE);
         }
         else if (viewType == EmptyKolPostViewHolder.LAYOUT)
             abstractViewHolder = new EmptyKolPostViewHolder(view);
