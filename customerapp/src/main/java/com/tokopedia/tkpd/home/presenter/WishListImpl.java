@@ -278,7 +278,7 @@ public class WishListImpl implements WishList {
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
 
-        if (mPaging.CheckNextPage()) {
+        if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
             wishListView.displayLoadMore(true);
         } else {
             wishListView.displayLoadMore(false);
@@ -419,7 +419,7 @@ public class WishListImpl implements WishList {
                     wishListView.loadDataChange();
                     wishListView.displayContentList(true);
 
-                    if (mPaging.CheckNextPage()) {
+                    if (mPaging.CheckNextPage() && gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
                         wishListView.displayLoadMore(true);
                     } else {
                         wishListView.displayLoadMore(false);
