@@ -33,7 +33,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
         return o
     }
 
-    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any) {
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         registeredFragments.remove(position)
         super.destroyItem(container, position, `object`)
     }
