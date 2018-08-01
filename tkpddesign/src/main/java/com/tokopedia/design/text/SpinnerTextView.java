@@ -111,10 +111,11 @@ public class SpinnerTextView extends BaseCustomView {
         textAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.edit_text_spinner);
         imageViewChevron = (ImageView) view.findViewById(R.id.image_view_chevron_icon);
         textAutoComplete.setOnKeyListener(null);
+
         textAutoComplete.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((AutoCompleteTextView) view).showDropDown();
+                showDropDown((AutoCompleteTextView) view);
             }
         });
         textAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -127,6 +128,10 @@ public class SpinnerTextView extends BaseCustomView {
                 updateOnItemChanged(position);
             }
         });
+    }
+
+    public void showDropDown(AutoCompleteTextView view) {
+        view.showDropDown();
     }
 
     private void resetPosition() {
