@@ -79,9 +79,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun setViewListener() {
-        old_password_et.addTextChangedListener(watcher(wrapper_old))
-        new_password_et.addTextChangedListener(watcher(wrapper_new))
-        new_password_confirmation_et.addTextChangedListener(watcher(wrapper_conf))
+        old_password_et.addTextChangedListener(watcherOldPassword(wrapper_old))
+        new_password_et.addTextChangedListener(watcherNewPassword(wrapper_new))
+        new_password_confirmation_et.addTextChangedListener(watcherConfPassword(wrapper_conf))
     }
 
     private fun prepareHint() {
@@ -109,7 +109,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         wrapper?.setHelper(hint)
     }
 
-    private fun watcher(wrapper: TkpdHintTextInputLayout): TextWatcher {
+    private fun watcherOldPassword(wrapper: TkpdHintTextInputLayout): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -122,6 +122,52 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
             }
 
             override fun afterTextChanged(text: Editable) {
+                showOldPasswordHint()
+
+                if (text.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+                checkIsValidForm()
+            }
+        }
+    }
+
+    private fun watcherConfPassword(wrapper: TkpdHintTextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                if (text.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+                checkIsValidForm()
+            }
+        }
+    }
+
+    private fun watcherNewPassword(wrapper: TkpdHintTextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                showNewPasswordHint()
+
                 if (text.isNotEmpty()) {
                     setWrapperError(wrapper, null)
                 }
