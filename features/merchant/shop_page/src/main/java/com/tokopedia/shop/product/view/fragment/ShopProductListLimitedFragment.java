@@ -210,8 +210,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         reloadProductData();
     }
 
-    //TODO on refresh, clear cache
-
     // load product list first time
     private void reloadProductData() {
         isLoadingInitialData = true;
