@@ -14,10 +14,23 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.entity.home.ProductItemData;
+import com.tokopedia.feedplus.data.mapper.FeedListMapper;
+import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
+import com.tokopedia.feedplus.data.pojo.FeedQuery;
+import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
+import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
+import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -55,12 +68,14 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtL
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.tokopedia.tkpd.Utils.getField;
 import static com.tokopedia.tkpd.Utils.nthChildOf;
 import static com.tokopedia.tkpd.Utils.setField;
 import static com.tokopedia.tkpd.Utils.withCustomConstraints;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -71,6 +86,7 @@ import static rx.Observable.just;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 
 import retrofit2.Response;
+import rx.Observable;
 
 
 /**
@@ -78,6 +94,9 @@ import retrofit2.Response;
  */
 @RunWith(AndroidJUnit4.class)
 public class MainParentActivityTest {
+
+    private String jsons[] = {"feed_check_whitelist.json", "feed_query.json", "recent_product_views.json"};
+
 
     @Inject
     HomePresenter homePresenter;
@@ -88,6 +107,46 @@ public class MainParentActivityTest {
     public GuessTokopediaTestRule<MainParentActivity> mIntentsRule = new GuessTokopediaTestRule<>(
             MainParentActivity.class, true, false, 3
     );
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testFeedMockInstance() throws Exception {
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        FeedPlusFragment fragment = (FeedPlusFragment) mIntentsRule.getActivity().getFragment(1);
+        if (fragment != null && fragment.isMainViewVisible()) {
+            FeedPlusPresenter presenter = spy(fragment.getPresenter());
+
+            setField(FeedPlusPresenter.class, fragment, "presenter", presenter);
+            fragment.resetToFirstTime();
+
+            FeedPlusAdapter adapter = getField(FeedPlusAdapter.class, fragment, "adapter");
+            mIntentsRule.getActivity().runOnUiThread(() -> {
+                adapter.clearData();
+            });
+
+            Thread.sleep(1_000);
+
+            // prepare the data
+            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase = mock(GetFirstPageFeedsCloudUseCase.class);
+            setField(GetFirstPageFeedsCloudUseCase.class, presenter, "getFirstPageFeedsCloudUseCase", getFirstPageFeedsCloudUseCase);
+
+            when(getFirstPageFeedsCloudUseCase.createObservable(any())).thenReturn(
+                    Observable.just(test3())
+            );
+
+            onView(withId(R.id.swipe_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+            Thread.sleep(10_000);
+        }
+    }
 
     /**
      *
@@ -206,6 +265,47 @@ public class MainParentActivityTest {
             onView(allOf(withId(R.id.list), withTagValue(is("home_list")), isCompletelyDisplayed()))
                     .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
         }
+    }
+
+    private FeedResult test3() {
+        
+        FeedQuery homeData = CacheUtil.convertStringToModel(
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[1])
+                , FeedQuery.class);
+        GraphqlResponse<FeedQuery> homeDataGraphqlResponse = new GraphqlResponse<>();
+        homeDataGraphqlResponse.setData(homeData);
+
+        Response<GraphqlResponse<FeedQuery>> response =
+                Response.success(homeDataGraphqlResponse);
+
+        FeedResult feedResult = just(response)
+                .map(new FeedListMapper())
+                .map(new FeedResultMapper(FeedResult.SOURCE_CLOUD))
+                .defaultIfEmpty(null).toBlocking().first();
+
+        ProductItemData productItemData = CacheUtil.convertStringToModel(
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[2])
+                , ProductItemData.class);
+
+        DataResponse<ProductItemData> dataResponse
+                = new DataResponse<>();
+        dataResponse.setData(productItemData);
+
+        Response<DataResponse<ProductItemData>> response1 =
+                Response.success(dataResponse);
+
+        feedResult.getFeedDomain().setRecentProduct(just(response1)
+                .map(new RecentProductMapper(new Gson()))
+                .defaultIfEmpty(null).toBlocking().first());
+
+        WhitelistQuery whitelistQuery = CacheUtil.convertStringToModel(
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[0])
+                , WhitelistQuery.class);
+        feedResult.getFeedDomain().setWhitelist(
+                GetFirstPageFeedsCloudUseCase.getWhitelistDomain(whitelistQuery)
+        );
+        
+        return feedResult;
     }
 
     private List<Visitable> test2() {

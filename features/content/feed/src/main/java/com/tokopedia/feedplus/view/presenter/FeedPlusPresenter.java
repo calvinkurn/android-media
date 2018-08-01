@@ -43,7 +43,7 @@ public class FeedPlusPresenter
     private final GetFeedsUseCase getFeedsUseCase;
     private final GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private final FavoriteShopUseCase doFavoriteShopUseCase;
-    private final GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
+    private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private final CheckNewFeedUseCase checkNewFeedUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostUseCase followKolPostUseCase;

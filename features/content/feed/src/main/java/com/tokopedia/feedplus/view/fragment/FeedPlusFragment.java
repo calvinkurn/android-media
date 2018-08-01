@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -208,6 +209,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
+    }
+
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public FeedPlusPresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void resetToFirstTime(){
+        isLoadedOnce = false;
     }
 
     @Nullable
