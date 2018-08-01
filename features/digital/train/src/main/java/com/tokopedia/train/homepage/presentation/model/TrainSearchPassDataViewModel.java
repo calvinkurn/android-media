@@ -18,42 +18,54 @@ public class TrainSearchPassDataViewModel implements Parcelable {
         "destination_city": "Jakarta"
     */
 
+    private int adult;
+    private int infant;
     private String departureDate;
     private String returnDate;
     private String originStationCode;
-    private String destinationStationCode;
     private String originCityName;
+    private String destinationStationCode;
     private String destinationCityName;
-    private int adult;
-    private int infant;
     private boolean isOneWay;
 
-    public TrainSearchPassDataViewModel() {
+    public TrainSearchPassDataViewModel(int adult, int infant,
+                                        String departureDate, String returnDate,
+                                        String originStationCode, String originCityName,
+                                        String destinationStationCode, String destinationCityName,
+                                        boolean isOneWay) {
+        this.adult = adult;
+        this.infant = infant;
+        this.departureDate = departureDate;
+        this.returnDate = returnDate;
+        this.originStationCode = originStationCode;
+        this.originCityName = originCityName;
+        this.destinationStationCode = destinationStationCode;
+        this.destinationCityName = destinationCityName;
+        this.isOneWay = isOneWay;
     }
 
-
     protected TrainSearchPassDataViewModel(Parcel in) {
+        adult = in.readInt();
+        infant = in.readInt();
         departureDate = in.readString();
         returnDate = in.readString();
         originStationCode = in.readString();
-        destinationStationCode = in.readString();
         originCityName = in.readString();
+        destinationStationCode = in.readString();
         destinationCityName = in.readString();
-        adult = in.readInt();
-        infant = in.readInt();
         isOneWay = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(adult);
+        dest.writeInt(infant);
         dest.writeString(departureDate);
         dest.writeString(returnDate);
         dest.writeString(originStationCode);
-        dest.writeString(destinationStationCode);
         dest.writeString(originCityName);
+        dest.writeString(destinationStationCode);
         dest.writeString(destinationCityName);
-        dest.writeInt(adult);
-        dest.writeInt(infant);
         dest.writeByte((byte) (isOneWay ? 1 : 0));
     }
 
@@ -69,76 +81,40 @@ public class TrainSearchPassDataViewModel implements Parcelable {
         }
     };
 
-    public String getDepartureDate() {
-        return departureDate;
-    }
-
-    public void setDepartureDate(String departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public String getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(String returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public String getOriginStationCode() {
-        return originStationCode;
-    }
-
-    public void setOriginStationCode(String originStationCode) {
-        this.originStationCode = originStationCode;
-    }
-
-    public String getDestinationStationCode() {
-        return destinationStationCode;
-    }
-
-    public void setDestinationStationCode(String destinationStationCode) {
-        this.destinationStationCode = destinationStationCode;
-    }
-
-    public String getOriginCityName() {
-        return originCityName;
-    }
-
-    public void setOriginCityName(String originCityName) {
-        this.originCityName = originCityName;
-    }
-
-    public String getDestinationCityName() {
-        return destinationCityName;
-    }
-
-    public void setDestinationCityName(String destinationCityName) {
-        this.destinationCityName = destinationCityName;
-    }
-
     public int getAdult() {
         return adult;
-    }
-
-    public void setAdult(int adult) {
-        this.adult = adult;
     }
 
     public int getInfant() {
         return infant;
     }
 
-    public void setInfant(int infant) {
-        this.infant = infant;
+    public String getDepartureDate() {
+        return departureDate;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public String getOriginStationCode() {
+        return originStationCode;
+    }
+
+    public String getOriginCityName() {
+        return originCityName;
+    }
+
+    public String getDestinationStationCode() {
+        return destinationStationCode;
+    }
+
+    public String getDestinationCityName() {
+        return destinationCityName;
     }
 
     public boolean isOneWay() {
         return isOneWay;
-    }
-
-    public void setOneWay(boolean oneWay) {
-        isOneWay = oneWay;
     }
 
     @Override

@@ -7,6 +7,11 @@ public interface TrainEventTracking {
 
     interface Event {
         String GENERIC_TRAIN_EVENT = "genericTrainEvent";
+        String PROMO_CLICK = "promoCLick";
+        String PRODUCT_VIEW = "productView";
+        String PRODUCT_CLICK = "productClick";
+        String VIEW_PRODUCT = "viewProduct";
+        Object ADD_TO_CART = "addToCart";
     }
 
     interface Category {
@@ -32,8 +37,8 @@ public interface TrainEventTracking {
         String PRODUCT_DETAIL_IMPRESSIONS = "product detail impressions";
         String ADD_TO_CART = "add to cart";
         String CLICK_DETAIL = "click detail";
-        String CLICK_NEXT = "click next";
-        String CLICK_USE_VOUCHER = "click gunakan voucher";
+        String CLICK_NEXT_ON_CUSTOMERS_PAGE = "click next on customers page";
+        String CLICK_USE_VOUCHER_CODE = "click gunakan voucher code";
         String VOUCHER_SUCCESS = "voucher success";
         String VOUCHER_ERROR = "voucher error";
         String PROCEED_TO_PAYMENT = "proceed to payment";

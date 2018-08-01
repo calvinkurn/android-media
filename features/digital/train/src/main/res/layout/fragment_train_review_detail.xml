@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fillViewport="true">
 
     <FrameLayout
@@ -21,11 +22,13 @@
                 android:layout_height="wrap_content"
                 android:background="@color/light_orange"
                 android:orientation="horizontal"
+                android:gravity="center"
                 android:paddingEnd="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingStart="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8">
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="0dp"
@@ -41,6 +44,7 @@
                     app:ctv_hour_title="@string/train_countdown_hour_label"
                     app:ctv_minute_title="@string/train_countdown_minute_label"
                     app:ctv_second_title="@string/train_countdown_second_label" />
+
             </LinearLayout>
 
             <com.tokopedia.design.component.CardWithAction
@@ -60,6 +64,16 @@
                 android:visibility="visible"
                 app:cmw_action="Detail"
                 tools:visibility="visible" />
+
+            <com.tokopedia.design.component.ticker.TickerView
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:id="@+id/ticker_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -88,8 +102,8 @@
                 android:id="@+id/voucher_cart_hachiko_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_20" />
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10" />
 
             <View
                 android:layout_width="match_parent"

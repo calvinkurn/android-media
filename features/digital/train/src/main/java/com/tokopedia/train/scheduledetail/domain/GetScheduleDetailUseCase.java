@@ -43,39 +43,37 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
                         return Observable.zip(
                                 trainRepository.getStationByStationCode(trainScheduleViewModel.getOrigin()),
                                 trainRepository.getStationByStationCode(trainScheduleViewModel.getDestination()),
-                                (origin, destination) -> {
-                                    return new TrainScheduleDetailViewModel.Builder()
-                                            .originCityName(origin.getCityName())
-                                            .destinationCityName(destination.getCityName())
-                                            .originStationName(origin.getStationName())
-                                            .originStationCode(origin.getStationCode())
-                                            .destinationStationName(destination.getStationName())
-                                            .destinationStationCode(destination.getStationCode())
-                                            .arrivalDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                                                    TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getArrivalTimestamp()))
-                                            .arrivalTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                                                    TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()))
-                                            .departureDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                                                    TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getDepartureTimestamp()))
-                                            .departureTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                                                    TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()))
-                                            .duration(trainScheduleViewModel.getDisplayDuration())
-                                            .trainClass(trainScheduleViewModel.getDisplayClass())
-                                            .subclass(trainScheduleViewModel.getSubclass())
-                                            .trainName(trainScheduleViewModel.getTrainName())
-                                            .trainNumber(trainScheduleViewModel.getTrainNumber())
-                                            .displayAdultFare(trainScheduleViewModel.getDisplayAdultFare())
-                                            .adultFare(trainScheduleViewModel.getAdultFare())
-                                            .totalAdultFare(totalAdultFare)
-                                            .displayInfantFare(trainScheduleViewModel.getDisplayInfantFare())
-                                            .infantFare(trainScheduleViewModel.getInfantFare())
-                                            .totalInfantFare(totalInfantFare)
-                                            .totalPrice(totalPrice)
-                                            .numOfAdultPassenger(numOfAdultPassenger)
-                                            .numOfInfantPassenger(numOfInfantPassenger)
-                                            .isReturnTrip(trainScheduleViewModel.isReturnTrip())
-                                            .build();
-                                });
+                                (origin, destination) -> new TrainScheduleDetailViewModel.Builder()
+                                        .originCityName(origin.getCityName())
+                                        .destinationCityName(destination.getCityName())
+                                        .originStationName(origin.getStationName())
+                                        .originStationCode(origin.getStationCode())
+                                        .destinationStationName(destination.getStationName())
+                                        .destinationStationCode(destination.getStationCode())
+                                        .arrivalDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                                TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getArrivalTimestamp()))
+                                        .arrivalTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()))
+                                        .departureDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                                TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getDepartureTimestamp()))
+                                        .departureTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()))
+                                        .duration(trainScheduleViewModel.getDisplayDuration())
+                                        .trainClass(trainScheduleViewModel.getDisplayClass())
+                                        .subclass(trainScheduleViewModel.getSubclass())
+                                        .trainName(trainScheduleViewModel.getTrainName())
+                                        .trainNumber(trainScheduleViewModel.getTrainNumber())
+                                        .displayAdultFare(trainScheduleViewModel.getDisplayAdultFare())
+                                        .adultFare(trainScheduleViewModel.getAdultFare())
+                                        .totalAdultFare(totalAdultFare)
+                                        .displayInfantFare(trainScheduleViewModel.getDisplayInfantFare())
+                                        .infantFare(trainScheduleViewModel.getInfantFare())
+                                        .totalInfantFare(totalInfantFare)
+                                        .totalPrice(totalPrice)
+                                        .numOfAdultPassenger(numOfAdultPassenger)
+                                        .numOfInfantPassenger(numOfInfantPassenger)
+                                        .isReturnTrip(trainScheduleViewModel.isReturnTrip())
+                                        .build());
                     } else {
                         return null;
                     }

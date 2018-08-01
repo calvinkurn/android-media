@@ -3,7 +3,6 @@ package com.tokopedia.train.common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 
@@ -24,8 +23,7 @@ public interface TrainRouter {
 
     Interceptor getChuckInterceptor();
 
-    Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
-                                                   String reservationId, String reservationCode);
+    Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform, String reservationId, String reservationCode);
 
     Intent getLoginIntent();
 
@@ -56,4 +54,5 @@ public interface TrainRouter {
     Intent getWebviewActivity(Activity activity, String url);
 
     boolean isTrainNativeEnable();
+
 }

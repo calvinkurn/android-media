@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,11 +21,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
+import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainFlowConstant;
 import com.tokopedia.train.common.util.TrainFlowUtil;
@@ -44,6 +47,9 @@ import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassDat
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import javax.inject.Inject;
 
 /**
@@ -59,13 +65,19 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private static final int REQUEST_CODE_LOYALTY = 200;
 
     @Inject
+    TrainAnalytics trainAnalytics;
+
+    @Inject
     TrainReviewDetailPresenter trainReviewDetailPresenter;
+
     @Inject
     TrainRouter trainRouter;
+
     @Inject
     TrainFlowUtil trainFlowUtil;
 
     private CountdownTimeView countdownTimeView;
+    private TickerView tickerView;
     private CardWithAction cardDepartureTrip;
     private CardWithAction cardReturnTrip;
     private ViewTrainReviewDetailPriceSection viewTrainReviewDetailPriceSection;
@@ -81,6 +93,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
 
     private TrainReviewDetailComponent trainReviewDetailComponent;
+
+    private TrainScheduleDetailViewModel departureTripViewModel;
+    private TrainScheduleDetailViewModel returnTripViewModel;
+
+    private String appliedVoucherCode;
 
     public static Fragment newInstance(TrainSoftbook trainSoftbook,
                                        TrainScheduleBookingPassData trainScheduleBookingPassData) {
@@ -115,12 +132,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                 trainScheduleBookingPassData.getAdultPassenger(),
                 trainScheduleBookingPassData.getInfantPassenger());
 
-        countdownTimeView.setListener(new CountdownTimeView.OnActionListener() {
-            @Override
-            public void onFinished() {
-                trainReviewDetailPresenter.onRunningOutOfTime();
-            }
-        });
+        countdownTimeView.setListener(() -> trainReviewDetailPresenter.onRunningOutOfTime());
     }
 
     @Nullable
@@ -131,6 +143,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         countdownTimeView = rootview.findViewById(R.id.ct_countdown);
         cardDepartureTrip = rootview.findViewById(R.id.train_departure_info);
         cardReturnTrip = rootview.findViewById(R.id.train_return_info);
+        tickerView = rootview.findViewById(R.id.ticker_view);
         viewTrainReviewDetailPriceSection = rootview.findViewById(R.id.view_train_review_detail_price_section);
         voucherCartHachikoView = rootview.findViewById(R.id.voucher_cart_hachiko_view);
         buttonSubmit = rootview.findViewById(R.id.button_train_review_submit);
@@ -139,6 +152,12 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         voucherCartHachikoView.setActionListener(this);
         voucherCartHachikoView.setPromoLabelOnly();
+
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add("Cek kembali detail pesanan Anda sebelum lanjut ke halaman pembayaran");
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(getActivity(), R.color.yellow_200));
+        tickerView.buildView();
 
         cardDepartureTrip.setActionListener(() -> {
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
@@ -159,9 +178,16 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         });
 
         buttonSubmit.setOnClickListener(v -> {
+            trainAnalytics.eventProceedToPayment(
+                    departureTripViewModel.getOriginStationCode(),
+                    departureTripViewModel.getDestinationStationCode(),
+                    departureTripViewModel.getTrainClass(),
+                    departureTripViewModel.getTrainName()
+            );
+
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
                     trainSoftbook.getReservationCode(),
-                    "",
+                    appliedVoucherCode,
                     "web",
                     "7");
         });
@@ -251,9 +277,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
-    public void startCountdown() {
-        countdownTimeView.setExpiredDate(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_SOFTBOOK,
-                trainSoftbook.getExpiryTimestamp()));
+    public void startCountdown(Date expiredDate) {
+        countdownTimeView.setExpiredDate(expiredDate);
         countdownTimeView.start();
     }
 
@@ -293,28 +318,37 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
+    public String getExpireDate() {
+        return trainSoftbook.getExpiryTimestamp();
+    }
+
+    @Override
     public void showExpiredPaymentDialog() {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.train_seat_expired_payment_time));
         dialog.setDesc(getString(R.string.train_seat_expired_payment_time_desc));
         dialog.setBtnOk(getString(R.string.train_seat_expired_payment_time_cta));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                trainFlowUtil.actionSetResultAndClose(
-                        getActivity(),
-                        getActivity().getIntent(),
-                        TrainFlowConstant.RESEARCH
-                );
-            }
+        dialog.setOnOkClickListener(v -> {
+            dialog.dismiss();
+            trainFlowUtil.actionSetResultAndClose(
+                    getActivity(),
+                    getActivity().getIntent(),
+                    TrainFlowConstant.RESEARCH
+            );
         });
         dialog.show();
     }
 
     @Override
+    public void showCheckoutFailed(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
-        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(departureTrip, returnTrip);
+        this.departureTripViewModel = departureTrip;
+        this.returnTripViewModel = returnTrip;
+        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(trainSoftbook, departureTrip, returnTrip);
     }
 
     @Override
@@ -351,7 +385,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         switch (requestCode) {
             case REQUEST_CODE_TOPPAY:
                 hideCheckoutLoading();
-//                reviewTime.start();
+                countdownTimeView.start();
                 int paymentSuccess = trainRouter.getTopPayPaymentSuccessCode();
                 int paymentFailed = trainRouter.getTopPayPaymentFailedCode();
                 int paymentCancel = trainRouter.getTopPayPaymentCancelCode();
@@ -367,11 +401,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                 if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                     Bundle bundle = data.getExtras();
                     if (bundle != null) {
-                        String voucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                        appliedVoucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
                         String voucherMessage = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
                         long voucherDiscountAmount = bundle.getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
 
-                        voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
+                        voucherCartHachikoView.setVoucher(appliedVoucherCode, voucherMessage);
 
                         if (voucherDiscountAmount > 0) {
                             viewTrainReviewDetailPriceSection.showNewPriceAfterDiscount(voucherDiscountAmount);

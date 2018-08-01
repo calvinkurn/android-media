@@ -76,6 +76,7 @@
                     style="@style/Button.Submit.White.Stroke"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/train_booking_passenger_btn_choose_seat" />
+
             </LinearLayout>
 
             <RelativeLayout
@@ -86,12 +87,12 @@
 
                 <ProgressBar
                     android:layout_width="wrap_content"
-
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:visibility="visible"
                     tools:visibility="visible" />
+
             </RelativeLayout>
 
         </LinearLayout>
