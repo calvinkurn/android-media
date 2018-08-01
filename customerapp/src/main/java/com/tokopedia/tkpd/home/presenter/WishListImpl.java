@@ -43,6 +43,8 @@ import com.tokopedia.tkpd.home.wishlist.WishlistViewModelMapper;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import org.parceler.Parcels;
 
@@ -54,7 +56,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -93,7 +94,10 @@ public class WishListImpl implements WishList {
     List<Wishlist> dataWishlist = new ArrayList<>();
     RequestParams params = RequestParams.create();
 
-    public WishListImpl(WishListView wishListView, SearchWishlistUsecase searchWishlistUsecase) {
+    RemoveWishListUseCase removeWishListUseCase;
+
+    public WishListImpl(Context context, WishListView wishListView,
+                        SearchWishlistUsecase searchWishlistUsecase) {
         this.wishListView = wishListView;
         this.searchWishlistUsecase = searchWishlistUsecase;
         mPaging = new WishlistPaging();
@@ -102,6 +106,7 @@ public class WishListImpl implements WishList {
         mojitoService = new MojitoService();
         compositeSubscription = new CompositeSubscription();
         mojitoAuthService = new MojitoAuthService();
+        removeWishListUseCase = new RemoveWishListUseCase(context);
 
     }
 
@@ -294,32 +299,35 @@ public class WishListImpl implements WishList {
     @Override
     public void deleteWishlist(final Context context, final String productId, final int position) {
         wishListView.showProgressDialog();
-        Observable<Response<Void>> observable = mojitoAuthService.getApi()
-                .deleteWishlist(productId, SessionHandler.getLoginID(context));
-
-        Subscriber<Response<Void>> subscriber = new Subscriber<Response<Void>>() {
+        removeWishListUseCase.createObservable(productId, SessionHandler.getLoginID(context), new WishListActionListener() {
             @Override
-            public void onCompleted() {
+            public void onErrorAddWishList(String errorMessage, String productId) {
 
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onSuccessAddWishlist(String productId) {
+
+            }
+
+            @Override
+            public void onErrorRemoveWishlist(String errorMessage, String productId) {
                 wishListView.dismissProgressDialog();
                 wishListView.displayErrorNetwork(true);
             }
 
             @Override
-            public void onNext(Response<Void> voidResponse) {
+            public void onSuccessRemoveWishlist(String productId) {
                 sendMoEngageTracker(productId);
                 onFinishedDeleteWishlist(position);
             }
-        };
 
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
+            @Override
+            public String getString(int resId) {
+                return context.getString(resId);
+            }
+        });
+
     }
 
     @Override
@@ -386,6 +394,9 @@ public class WishListImpl implements WishList {
     public void unSubscribe() {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         cache.unSubscribeObservable();
+        if (removeWishListUseCase != null) {
+            removeWishListUseCase.unsubscribe();
+        }
     }
 
     @Override
