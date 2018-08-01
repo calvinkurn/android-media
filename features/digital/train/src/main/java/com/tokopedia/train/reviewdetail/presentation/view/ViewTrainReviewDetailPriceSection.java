@@ -42,6 +42,13 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
     private TextView textLabelDiscountChannelReturnTrip;
     private TextView textDiscountChannelReturnTrip;
 
+    private LinearLayout viewExtraFeeDepartureTrip;
+    private TextView textLabelExtraFeeDepartureTrip;
+    private TextView textExtraFeeDepartureTrip;
+    private LinearLayout viewExtraFeeReturnTrip;
+    private TextView textLabelExtraFeeReturnTrip;
+    private TextView textExtraFeeReturnTrip;
+
     private LinearLayout viewDiscountVoucher;
     private TextView textDiscountVoucher;
 
@@ -89,6 +96,14 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
         viewDiscountChannelReturnTrip = rootview.findViewById(R.id.view_discount_channel_return_trip);
         textLabelDiscountChannelReturnTrip = rootview.findViewById(R.id.text_label_discount_channel_return_trip);
         textDiscountChannelReturnTrip = rootview.findViewById(R.id.text_discount_channel_return_trip);
+
+        viewExtraFeeDepartureTrip = rootview.findViewById(R.id.view_extra_fee_departure_trip);
+        textLabelExtraFeeDepartureTrip = rootview.findViewById(R.id.text_label_extra_fee_departure_trip);
+        textExtraFeeDepartureTrip = rootview.findViewById(R.id.text_extra_fee_departure_trip);
+        viewExtraFeeReturnTrip = rootview.findViewById(R.id.view_extra_fee_return_trip);
+        textLabelExtraFeeReturnTrip = rootview.findViewById(R.id.text_label_extra_fee_return_trip);
+        textExtraFeeReturnTrip = rootview.findViewById(R.id.text_extra_fee_return_trip);
+
         viewDiscountVoucher = rootview.findViewById(R.id.view_discount_voucher);
         textDiscountVoucher = rootview.findViewById(R.id.text_discount_voucher);
 
@@ -123,6 +138,7 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
         } else {
             viewTotalPriceReturnTrip.setVisibility(View.GONE);
             viewDiscountChannelReturnTrip.setVisibility(GONE);
+            viewExtraFeeReturnTrip.setVisibility(GONE);
         }
     }
 
@@ -138,6 +154,12 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
                 departureTrip.getOriginStationCode(), departureTrip.getDestinationStationCode()));
         textDiscountChannelDepartureTrip.setText(
                 CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getDepartureTrips().get(0).getDiscount(),
+                        false, 0).getFormattedString());
+
+        textLabelExtraFeeDepartureTrip.setText(getResources().getString(R.string.train_review_label_extra_fee,
+                departureTrip.getOriginStationCode(), departureTrip.getDestinationStationCode()));
+        textExtraFeeDepartureTrip.setText(
+                CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getDepartureTrips().get(0).getExtraFee(),
                         false, 0).getFormattedString());
     }
 
@@ -155,6 +177,13 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
                 returnTrip.getOriginStationCode(), returnTrip.getDestinationStationCode()));
         textDiscountChannelReturnTrip.setText(
                 CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getReturnTrips().get(0).getDiscount(),
+                        false, 0).getFormattedString());
+
+        viewExtraFeeReturnTrip.setVisibility(VISIBLE);
+        textLabelExtraFeeReturnTrip.setText(getResources().getString(R.string.train_review_label_extra_fee,
+                returnTrip.getOriginStationCode(), returnTrip.getDestinationStationCode()));
+        textExtraFeeReturnTrip.setText(
+                CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getReturnTrips().get(0).getExtraFee(),
                         false, 0).getFormattedString());
     }
 
