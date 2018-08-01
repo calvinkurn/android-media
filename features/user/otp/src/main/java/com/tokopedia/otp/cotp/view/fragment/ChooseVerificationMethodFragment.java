@@ -131,12 +131,6 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         methodListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         methodListRecyclerView.setAdapter(adapter);
-
-//        if (!userSession.isMsisdnVerified() ||
-//                passModel.getOtpType() == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
-//            changePhoneNumberButton.setVisibility(View.GONE);
-//        }
-
     }
 
     @Override
