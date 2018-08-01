@@ -3,20 +3,16 @@ package com.tokopedia.train.search.presentation.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,13 +28,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
-import com.tokopedia.train.common.util.TrainFlowExtraConstant;
+import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.constant.TrainSortOption;
-import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
 import com.tokopedia.train.search.domain.FilterParam;
@@ -104,6 +99,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected String arrivalScheduleSelected;
 
     private BottomActionView filterAndSortBottomAction;
+
+    @Inject
+    TrainAnalytics trainAnalytics;
 
     @Inject
     TrainFlowUtil trainFlowUtil;
@@ -187,7 +185,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     protected abstract void getDataFromFragment();
 
-
     private void setCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         textView.setLayoutParams(layoutParams);
@@ -203,6 +200,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trainAnalytics.eventClickFilterOnBottomBar();
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
                         arrivalScheduleSelected, getScheduleVariant(), filterSearchData), FILTER_SEARCH_REQUEST_CODE);
             }
@@ -210,6 +208,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trainAnalytics.eventClickSortOnBottomBar();
                 showSortBottomSheets();
             }
         });
@@ -233,6 +232,11 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     protected Visitable getEmptyDataViewModel() {
+        trainAnalytics.eventViewRouteNotAvailablePage(
+                trainSearchPassDataViewModel.getOriginStationCode(),
+                trainSearchPassDataViewModel.getOriginStationCode(),
+                trainSearchPassDataViewModel.getDepartureDate());
+
         clearAdapterData();
         EmptyResultViewModel emptyResultViewModel;
         if (filterSearchData != null && filterSearchData.isHasFilter()) {
@@ -363,7 +367,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     protected TrainSearchAdapterTypeFactory getAdapterTypeFactory() {
-        return new TrainSearchAdapterTypeFactory(this);
+        return new TrainSearchAdapterTypeFactory(this, trainAnalytics);
     }
 
     @Override
@@ -374,6 +378,22 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
+        String specialTagging = "";
+        if (trainScheduleViewModel.isCheapestFlag()) {
+            specialTagging = "Termurah";
+        } else if (trainScheduleViewModel.isFastestFlag()) {
+            specialTagging = "Tercepat";
+        }
+
+        trainAnalytics.eventProductClick(
+                trainScheduleViewModel.getIdSchedule(),
+                trainScheduleViewModel.getOrigin(),
+                trainScheduleViewModel.getDestination(),
+                trainScheduleViewModel.getDisplayClass(),
+                trainScheduleViewModel.getTrainName(),
+                specialTagging
+        );
+
         Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                 trainScheduleViewModel.getIdSchedule(),
                 trainSearchPassDataViewModel.getAdult(),

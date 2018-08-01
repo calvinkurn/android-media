@@ -41,7 +41,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 

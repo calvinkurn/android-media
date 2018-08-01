@@ -1,7 +1,7 @@
 package com.tokopedia.train.common.presentation;
 
+import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -9,7 +9,11 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.train.homepage.presentation.fragment.TrainHomepageFragment;
+import com.tokopedia.train.common.di.TrainComponent;
+import com.tokopedia.train.common.di.utils.TrainComponentUtils;
+import com.tokopedia.train.common.util.TrainAnalytics;
+
+import javax.inject.Inject;
 
 /**
  * Created by alvarisi on 2/19/18.
@@ -18,6 +22,18 @@ import com.tokopedia.train.homepage.presentation.fragment.TrainHomepageFragment;
 public abstract class TrainBaseActivity extends BaseSimpleActivity {
 
     private Menus menus;
+
+    private TrainComponent trainComponent;
+
+    @Inject
+    TrainAnalytics trainAnalytics;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initInjector();
+    }
 
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
@@ -49,10 +65,9 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
     public void showBottomMenus() {
         menus = new Menus(this);
         String[] menuItem = new String[]{
-                getResources().getString(R.string.train_homepage_bottom_menu_order_list),
+                getResources().getString(R.string.train_homepage_bottom_menu_transaction_list),
                 getResources().getString(R.string.train_homepage_bottom_menu_promo),
                 getResources().getString(R.string.train_homepage_bottom_menu_help)
-
         };
         menus.setItemMenuList(menuItem);
 
@@ -62,16 +77,19 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
             switch (pos) {
                 case 0:
                     if (getApplication() instanceof TrainRouter) {
+                        trainAnalytics.eventClickTransactionList();
                         startActivity(((TrainRouter) getApplication()).getTrainOrderListIntent(this));
                     }
                     break;
                 case 1:
                     if (getApplication() instanceof TrainRouter) {
+                        trainAnalytics.eventClickPromoList();
                         startActivity(((TrainRouter) getApplication()).getPromoListIntent(this));
                     }
                     break;
                 case 2:
                     if (getApplication() instanceof TrainRouter) {
+                        trainAnalytics.eventClickHelp();
                         startActivity(((TrainRouter) getApplication()).getWebviewActivity(this, TrainUrl.HELP_PAGE));
                     }
                     break;
@@ -87,4 +105,12 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
     protected boolean isOverflowMenuVisible() {
         return true;
     }
+
+    protected void initInjector() {
+        if (trainComponent == null) {
+            trainComponent = TrainComponentUtils.getTrainComponent(getApplication());
+        }
+        trainComponent.inject(this);
+    }
+
 }

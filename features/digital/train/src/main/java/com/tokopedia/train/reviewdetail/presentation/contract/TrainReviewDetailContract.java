@@ -7,6 +7,8 @@ import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerI
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
+import java.util.Date;
+
 /**
  * Created by Rizky on 02/07/18.
  */
@@ -22,7 +24,7 @@ public class TrainReviewDetailContract {
 
         void hideReturnTrip();
 
-        void startCountdown();
+        void startCountdown(Date expiredDate);
 
         void navigateToTopPayActivity(TrainCheckoutViewModel trainCheckoutViewModel);
 
@@ -34,7 +36,12 @@ public class TrainReviewDetailContract {
 
         void showCheckoutLoading();
 
+        String getExpireDate();
+
         void showExpiredPaymentDialog();
+
+        void showCheckoutFailed(String message);
+
     }
 
     public interface Presenter {
@@ -54,6 +61,7 @@ public class TrainReviewDetailContract {
         void onPaymentCancelled();
 
         void onRunningOutOfTime();
+
     }
 
 }

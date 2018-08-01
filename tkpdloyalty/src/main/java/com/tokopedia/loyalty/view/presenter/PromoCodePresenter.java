@@ -118,7 +118,6 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                             view.hideProgressLoading();
                             view.checkVoucherSuccessfull(voucherViewModel);
                         }
-
                     }
                 }
 
@@ -291,6 +290,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
@@ -302,6 +302,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onNext(VoucherViewModel voucherViewModel) {
+                view.sendTrackingOnCheckTrainVoucherSuccessful(voucherViewModel.getMessage());
                 view.hideProgressLoading();
                 view.checkDigitalVoucherSucessful(voucherViewModel);
             }

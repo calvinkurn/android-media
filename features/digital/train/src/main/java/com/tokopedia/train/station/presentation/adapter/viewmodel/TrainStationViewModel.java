@@ -74,12 +74,6 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
         this.cityName = cityName;
     }
 
-    @Override
-    public int type(TrainStationTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
-
-
     public String getStationName() {
         return stationName;
     }
@@ -95,6 +89,12 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
     public void setIslandName(String islandName) {
         this.islandName = islandName;
     }
+
+    @Override
+    public int type(TrainStationTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
 
     public static Creator<TrainStationViewModel> getCREATOR() {
         return CREATOR;
@@ -114,4 +114,5 @@ public class TrainStationViewModel implements Parcelable, Visitable<TrainStation
         parcel.writeString(cityName);
         parcel.writeString(islandName);
     }
+
 }
