@@ -222,9 +222,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     override fun onErrorChangePassword(errorMessage: String) {
         hideLoading()
         if (TextUtils.isEmpty(errorMessage)) {
-            NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.default_request_error_unknown))
+            NetworkErrorHelper.showRedSnackbar(activity, getString(R.string
+                    .default_request_error_unknown))
         } else {
-            NetworkErrorHelper.showRedCloseSnackbar(activity, errorMessage)
+            NetworkErrorHelper.showRedSnackbar(activity, errorMessage)
         }
 
     }
