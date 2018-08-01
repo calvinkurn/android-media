@@ -231,7 +231,6 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("TrainReviewDetailPresenter", e.getMessage());
                         if (e instanceof TrainNetworkException) {
                             getView().showCheckoutFailed(e.getMessage());
                         }
