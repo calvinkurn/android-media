@@ -1,5 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -48,6 +50,11 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse graphqlResponse) {
         GetKolCommentData data = graphqlResponse.getData(GetKolCommentData.class);
         GetUserPostComment postComment = data.getGetUserPostComment();
+
+        if (!TextUtils.isEmpty(postComment.getError())) {
+            view.onErrorGetKolPotDetail(postComment.getError());
+            return;
+        }
 
         List<Visitable> list = new ArrayList<>();
         list.add(convertToKolPostViewModel(postComment.getPostKol()));
