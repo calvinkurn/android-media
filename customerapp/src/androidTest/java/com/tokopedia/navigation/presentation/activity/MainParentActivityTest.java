@@ -120,6 +120,8 @@ public class MainParentActivityTest {
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
+        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
         FeedPlusFragment fragment = (FeedPlusFragment) mIntentsRule.getActivity().getFragment(1);
         if (fragment != null && fragment.isMainViewVisible()) {
             FeedPlusPresenter presenter = spy(fragment.getPresenter());
