@@ -243,14 +243,13 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
-        menuGrid.setApplinkUrl("tokopedia://seller");
+        menuGrid.setApplinkUrl(ApplinkConst.SELLER_STATUS);
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
 
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_new_order,
                 context.getString(R.string.label_menu_new_order),
-                // TODO: 7/25/18 oka: need applink
-                "tokopedia://home",
+                ApplinkConst.SELLER_NEW_ORDER,
                 accountModel.getNotifications().getSellerOrder().getNewOrder()
         );
         menuGridItems.add(gridItem);
@@ -258,8 +257,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_ready_to_ship,
                 context.getString(R.string.label_menu_ready_to_ship),
-                // TODO: 7/25/18 oka: need applink
-                "tokopedia://buyer/payment",
+                ApplinkConst.SELLER_OPPORTUNITY,
                 accountModel.getNotifications().getSellerOrder().getReadyToShip()
         );
         menuGridItems.add(gridItem);
@@ -267,8 +265,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipped),
-                // TODO: 7/25/18 oka: need applink
-                "tokopedia://buyer/payment",
+                ApplinkConst.SELLER_SHIPMENT,
                 accountModel.getNotifications().getSellerOrder().getShipped()
         );
         menuGridItems.add(gridItem);
@@ -276,8 +273,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_arrive_at_destination),
-                // TODO: 7/25/18 oka: need applink
-                "tokopedia://buyer/payment",
+                ApplinkConst.SELLER_SHIPMENT,
                 accountModel.getNotifications().getSellerOrder().getArriveAtDestination()
         );
         menuGridItems.add(gridItem);

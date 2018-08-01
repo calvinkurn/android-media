@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -86,7 +87,16 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     FragmentManager fragmentManager;
 
-    @DeepLink(Constants.Applinks.SELLER_NEW_ORDER)
+    @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
+    public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ActivitySellingTransaction.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_OPPORTUNITY)
+                .putExtras(extras);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_NEW_ORDER)
     public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
@@ -95,7 +105,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.SELLER_SHIPMENT)
+    @DeepLink(ApplinkConst.SELLER_SHIPMENT)
     public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
@@ -104,7 +114,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.SELLER_STATUS)
+    @DeepLink(ApplinkConst.SELLER_STATUS)
     public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
@@ -113,7 +123,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.SELLER_HISTORY)
+    @DeepLink(ApplinkConst.SELLER_HISTORY)
     public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
@@ -122,7 +132,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.SellerApp.SALES)
+    @DeepLink(ApplinkConst.SellerApp.SALES)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
