@@ -254,8 +254,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     markUiSortAndFilterOption();
                     minPrice = filterSearchData.getMinPrice();
                     maxPrice = filterSearchData.getMaxPrice();
-                    trains = filterSearchData.getTrainClass();
-                    trainClass = filterSearchData.getTrains();
+                    trains = filterSearchData.getTrains();
+                    trainClass = filterSearchData.getTrainClass();
                     departureTrains = filterSearchData.getDepartureTimeList();
                     presenter.getFilteredAndSortedSchedules();
                 }
