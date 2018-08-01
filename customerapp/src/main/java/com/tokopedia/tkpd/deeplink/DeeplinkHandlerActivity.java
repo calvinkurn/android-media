@@ -43,10 +43,14 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
+import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
+import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
+import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -109,12 +113,15 @@ import io.branch.referral.BranchError;
         KolApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
+        HowtopayApplinkModule.class,
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
-        TokopointApplinkModule.class
+        TokopointApplinkModule.class,
+        InstantLoanAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
+
 
 
     public static DeepLinkDelegate getDelegateInstance() {
@@ -143,9 +150,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new KolApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
+                new HowtopayApplinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new TokopointApplinkModuleLoader()
+                new TokopointApplinkModuleLoader(),
+                new InstantLoanAppLinkModuleLoader()
         );
     }
 
