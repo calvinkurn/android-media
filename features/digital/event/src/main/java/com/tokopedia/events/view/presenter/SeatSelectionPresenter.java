@@ -1,7 +1,6 @@
 package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -67,7 +66,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     private String email;
     private String number;
     private SelectedSeatViewModel mSelectedSeatViewModel;
-    private int quantity;
     private FirebaseRemoteConfigImpl remoteConfig;
 
 
@@ -162,12 +160,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         return EventsGAConst.EVENTS_SEAT_SELECTIONPAGE;
     }
 
-    public void setTicketPrice(int numOfTickets) {
-        quantity = numOfTickets;
-        getView().setTicketPrice(numOfTickets);
-
-    }
-
     public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds, List<String> actualSeatNo) {
         getView().initializeSeatLayoutModel(selectedSeatList, rowIds, actualSeatNo);
     }
@@ -248,7 +240,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice() * quantity);
+        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
         sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
         config.setSubConfig(sub);
@@ -264,7 +256,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
         packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
         packageItem.setDescription("");
-        packageItem.setQuantity(quantity);
+        packageItem.setQuantity(mSelectedSeatViewModel.getQuantity());
         packageItem.setPricePerSeat(mSelectedSeatViewModel.getPrice());
         packageItem.setSeatId(mSelectedSeatViewModel.getSeatIds());
         packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());

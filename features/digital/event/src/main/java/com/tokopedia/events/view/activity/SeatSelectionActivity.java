@@ -314,6 +314,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                 seatIds.add(selectedSeats.get(i).substring(k, selectedSeats.get(i).length()));
                 areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
+            selectedSeatViewModel.setQuantity(selectedSeats.size());
             mPresenter.verifySeatSelection(selectedSeatViewModel);
         } else {
 
