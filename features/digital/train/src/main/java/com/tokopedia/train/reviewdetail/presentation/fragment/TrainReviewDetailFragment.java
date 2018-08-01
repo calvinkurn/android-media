@@ -367,6 +367,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
+    public void showCheckoutFailed(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
         this.departureTripViewModel = departureTrip;
         this.returnTripViewModel = returnTrip;

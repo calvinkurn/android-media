@@ -40,6 +40,8 @@ public class TrainReviewDetailContract {
 
         void showExpiredPaymentDialog();
 
+        void showCheckoutFailed(String message);
+
     }
 
     public interface Presenter {
