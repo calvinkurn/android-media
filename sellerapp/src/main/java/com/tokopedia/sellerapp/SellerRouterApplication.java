@@ -43,6 +43,7 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -1455,27 +1456,28 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void setStringRemoteConfigLocal(String key, String value) {
-
+        remoteConfig.setString(key, value);
     }
 
     @Override
     public String getStringRemoteConfig(String key) {
-        return null;
+        return remoteConfig.getString(key, "");
     }
 
     @Override
     public Intent getHelpUsIntent(Context context) {
-        return null;
+        return new Intent(context, ContactUsActivity.class);
     }
 
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return null;
+        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
 
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return null;
+        return SimpleWebViewWithFilePickerActivity.getIntent(context,
+                url);
     }
 
     @Override
