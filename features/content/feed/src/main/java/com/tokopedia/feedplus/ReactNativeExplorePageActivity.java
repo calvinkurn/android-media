@@ -3,12 +3,9 @@ package com.tokopedia.feedplus;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.feedplus.R;
-import com.tokopedia.tkpdreactnative.react.ReactConst;
+
 import com.tokopedia.feedplus.view.fragment.ReactNativeExploreContentFragment;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactNativeExploreContentFragment> {
@@ -19,18 +16,18 @@ public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactN
     public static final String KEY_TAB = "tab_name";
 
 
-    @DeepLink({Constants.Applinks.CONTENT_EXPLORE})
-    public static Intent getContentExplorePageApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(EXPLORE_PAGE);
-        bundle.getString(KEY_CAT);
-        bundle.getString(KEY_TAB);
-        return ReactNativeExplorePageActivity.createApplinkCallingIntent(
-                context,
-                ReactConst.Screen.EXPLORE_PAGE,
-                context.getString(R.string.react_native_explore_page_title),
-                bundle
-        );
-    }
+//    @DeepLink({Constants.Applinks.CONTENT_EXPLORE})
+//    public static Intent getContentExplorePageApplinkCallingIntent(Context context, Bundle bundle) {
+//        ScreenTracking.screen(EXPLORE_PAGE);
+//        bundle.getString(KEY_CAT);
+//        bundle.getString(KEY_TAB);
+//        return ReactNativeExplorePageActivity.createApplinkCallingIntent(
+//                context,
+//                ReactConst.Screen.EXPLORE_PAGE,
+//                context.getString(R.string.react_native_explore_page_title),
+//                bundle
+//        );
+//    }
 
     public static Intent createApplinkCallingIntent(Context context,
                                                     String reactScreenName,

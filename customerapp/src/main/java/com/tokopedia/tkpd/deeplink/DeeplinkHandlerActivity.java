@@ -30,6 +30,8 @@ import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
 import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
+import com.tokopedia.explore.applink.ExploreApplinkModule;
+import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.flight.applink.FlightApplinkModule;
@@ -99,6 +101,7 @@ import io.branch.referral.BranchError;
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
         KolApplinkModule.class,
+        ExploreApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
         CustomerCareApplinkModule.class,
@@ -132,6 +135,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new GamificationApplinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new KolApplinkModuleLoader(),
+                new ExploreApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
