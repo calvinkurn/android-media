@@ -4,6 +4,7 @@ import com.tokopedia.train.common.specification.Specification;
 import com.tokopedia.train.station.data.entity.TrainStationIslandEntity;
 import com.tokopedia.train.station.domain.model.TrainStation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -31,22 +32,37 @@ public class TrainStationDataStoreFactory {
     public Observable<List<TrainStation>> getStations(final Specification specification) {
         return trainStationCacheDataStore.isExpired()
                 .flatMap((Func1<Boolean, Observable<List<TrainStation>>>)
-                        isExpired -> {
+                        (Boolean isExpired) -> {
                             if (isExpired) {
-                                return trainStationDbDataStore.deleteAll().flatMap((Func1<Boolean, Observable<List<TrainStation>>>)
-                                        isSuccessDeletingData -> {
-                                            if (isSuccessDeletingData)
-                                                return getDatasFromCloud(specification);
-                                            else
-                                                return Observable.empty();
-                                        });
+                                return trainStationDbDataStore
+                                        .deleteAll()
+                                        .flatMap((Func1<Boolean, Observable<List<TrainStation>>>)
+                                                isSuccessDeletingData -> {
+                                                    if (isSuccessDeletingData)
+                                                        return getDatasFromCloud(specification);
+                                                    else
+                                                        return Observable.empty();
+                                                });
                             } else {
-                                return trainStationDbDataStore.getDatas(specification).flatMap((Func1<List<TrainStation>, Observable<List<TrainStation>>>)
-                                        trainStations -> {
-                                            if (trainStations != null && trainStations.size() > 0)
-                                                return Observable.just(trainStations);
-                                            else
-                                                return getDatasFromCloud(specification);
+                                return trainStationDbDataStore
+                                        .getDatas(specification)
+                                        .flatMap(new Func1<List<TrainStation>, Observable<List<TrainStation>>>() {
+                                            @Override
+                                            public Observable<List<TrainStation>> call(List<TrainStation> trainStations) {
+                                                if (trainStations != null && trainStations.size() > 0) {
+                                                    return Observable.just(trainStations);
+                                                } else {
+                                                    return trainStationDbDataStore.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<TrainStation>>>() {
+                                                        @Override
+                                                        public Observable<List<TrainStation>> call(Boolean aBoolean) {
+                                                            if (aBoolean) {
+                                                                return Observable.just(new ArrayList<>());
+                                                            }
+                                                            return TrainStationDataStoreFactory.this.getDatasFromCloud(specification);
+                                                        }
+                                                    });
+                                                }
+                                            }
                                         });
                             }
                         });

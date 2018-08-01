@@ -62,12 +62,23 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
             public void onNext(List<TrainWagonViewModel> trainWagonViewModels) {
                 getView().showPage();
                 getView().hideLoading();
-                getView().renderWagon(trainWagonViewModels);
+                getView().renderWagon(trainWagonViewModels, calculateMaxRow(trainWagonViewModels));
                 if (getView().getExpireDate() != null && !getView().getExpireDate().isEmpty()) {
-                    getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, getView().getExpireDate()));
+                    getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_SOFTBOOK, getView().getExpireDate()));
                 }
             }
         });
+    }
+
+    private int calculateMaxRow(List<TrainWagonViewModel> trainWagonViewModels){
+        int max = 0;
+        for (TrainWagonViewModel wagon :
+                trainWagonViewModels) {
+            if (max < wagon.getMaxRow()){
+                max = wagon.getMaxRow();
+            }
+        }
+        return max;
     }
 
     private RequestParams buildGetSeatRequests(boolean returning, TrainSoftbook trainSoftbook) {
@@ -131,7 +142,9 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                         if (isViewAttached()) {
                             getView().hideLoading();
                             getView().showPage();
+                            getView().showErrorChangeSeat(e.getMessage());
                             onViewCreated();
+                            getView().clearSeatMaps();
                             getSeatMaps();
                         }
                     }

@@ -32,19 +32,25 @@ import javax.inject.Inject;
  */
 public class TrainStationsFragment extends BaseSearchListFragment<Visitable, TrainStationTypeFactory> implements TrainStationsContract.View, TrainStationActionListener {
 
+    private static final String EXTRA_HINT = "EXTRA_HINT";
     @Inject
     TrainStationsPresenter presenter;
 
     private OnFragmentInteractionListener interactionListener;
 
     private boolean isFirstTime = true;
+    private String searchHint;
 
     public interface OnFragmentInteractionListener {
         void onStationClicked(TrainStationAndCityViewModel viewModel);
     }
 
-    public static TrainStationsFragment newInstance() {
-        return new TrainStationsFragment();
+    public static TrainStationsFragment newInstance(String hint) {
+        TrainStationsFragment fragment = new TrainStationsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_HINT, hint);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public TrainStationsFragment() {
@@ -62,10 +68,16 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        searchHint = getArguments().getString(EXTRA_HINT);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         super.onViewCreated(view, savedInstanceState);
-
+        presenter.onViewCreated();
     }
 
     @Override
@@ -134,6 +146,11 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     @Override
     public void hideLoading() {
         super.hideLoading();
+    }
+
+    @Override
+    public void renderSearchHint() {
+        searchInputView.setSearchHint(searchHint);
     }
 
     @Override

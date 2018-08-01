@@ -10,9 +10,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -23,11 +20,9 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainAppScreen;
-import com.tokopedia.train.common.constant.TrainEventTracking;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.presentation.TextInputView;
 import com.tokopedia.train.common.util.TrainAnalytics;
@@ -121,12 +116,17 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
         layoutOriginStation.setOnClickListener(view12 -> startActivityForResult(
-                TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_origin_toolbar)),
+                TrainStationsActivity.getCallingIntent(
+                        getActivity(),
+                        getString(R.string.train_station_origin_toolbar),
+                        getString(R.string.train_station_origin_hint)),
                 ORIGIN_STATION_REQUEST_CODE));
 
         layoutDestinationStation.setOnClickListener(view13 -> startActivityForResult(
                 TrainStationsActivity.getCallingIntent(getActivity(),
-                        getString(R.string.train_station_destination_toolbar)), DESTINATION_STATION_REQUEST_CODE));
+                        getString(R.string.train_station_destination_toolbar),
+                        getString(R.string.train_station_destination_hint)),
+                DESTINATION_STATION_REQUEST_CODE));
 
         buttonOneWayTrip.setSelected(true);
 

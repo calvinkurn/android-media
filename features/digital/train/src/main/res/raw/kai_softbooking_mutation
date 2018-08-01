@@ -16,6 +16,7 @@ mutation kaiSoftbook($input: KaiBookingData!) {
             numcode
             paxPassenger {
                 name
+                idNumber
                 paxType
                 seat {
                     wagonCode
@@ -54,6 +55,7 @@ mutation kaiSoftbook($input: KaiBookingData!) {
             errCode
             paxPassenger {
                 name
+                idNumber
                 paxType
                 seat {
                     wagonCode

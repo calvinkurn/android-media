@@ -58,9 +58,9 @@ public class TrainErrorResponse extends BaseResponseError {
             } catch (JsonSyntaxException e) {
                 CommonUtils.dumper(error.getMessage());
             }
-
             results.add(error.getMessage());
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return String.join(", ", results);
         } else {

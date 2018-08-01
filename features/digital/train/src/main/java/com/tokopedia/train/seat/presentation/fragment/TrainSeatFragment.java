@@ -167,13 +167,13 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
-    public void renderWagon(List<TrainWagonViewModel> trainWagonViewModels) {
+    public void renderWagon(List<TrainWagonViewModel> trainWagonViewModels, int maxRow) {
         wagons = trainWagonViewModels;
         pagerIndicator.renderView(trainWagonViewModels.size());
         pagerIndicator.setCurrentIndicator(0);
         trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
         trainSeatHeader.renderPassenger(getPassengers());
-        double height = (trainWagonViewModels.get(0).getMaxRow() + 1) * getResources().getDimensionPixelOffset(R.dimen.train_seat_with_margin);
+        double height = (maxRow + 1) * getResources().getDimensionPixelOffset(R.dimen.train_seat_with_margin);
         ViewGroup.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) height);
         wagonViewPager.setLayoutParams(layoutParams);
 
@@ -256,6 +256,11 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                 presenter.getSeatMaps();
             }
         });
+    }
+
+    @Override
+    public void showErrorChangeSeat(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
     @Override
@@ -385,6 +390,11 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void clearSeatMaps() {
+
     }
 
     @Override

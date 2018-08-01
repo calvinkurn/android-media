@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.di.TrainComponent;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainAnalytics;
@@ -77,7 +78,7 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
                 case 0:
                     if (getApplication() instanceof TrainRouter) {
                         trainAnalytics.eventClickTransactionList();
-                        ((TrainRouter) getApplication()).goToTrainTransactionList(this);
+                        startActivity(((TrainRouter) getApplication()).getTrainOrderListIntent(this));
                     }
                     break;
                 case 1:
@@ -89,6 +90,7 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
                 case 2:
                     if (getApplication() instanceof TrainRouter) {
                         trainAnalytics.eventClickHelp();
+                        startActivity(((TrainRouter) getApplication()).getWebviewActivity(this, TrainUrl.HELP_PAGE));
                     }
                     break;
             }

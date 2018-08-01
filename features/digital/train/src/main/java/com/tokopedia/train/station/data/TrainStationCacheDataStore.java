@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TrainStationCacheDataStore extends DataCacheSource {
     private static final String PREF_KEY_NAME = "PREF_KEY_TRAIN_STATIONS";
-    private static final long ONE_HOURS = TimeUnit.HOURS.toSeconds(1);
+    private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
 
     public TrainStationCacheDataStore(Context context) {
         super(context);
@@ -25,6 +25,6 @@ public class TrainStationCacheDataStore extends DataCacheSource {
 
     @Override
     protected long getExpiredTimeInSec() {
-        return ONE_HOURS;
+        return THREE_HOURS;
     }
 }

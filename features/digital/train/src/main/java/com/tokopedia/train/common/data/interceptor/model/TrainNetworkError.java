@@ -9,15 +9,8 @@ public class TrainNetworkError {
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("path")
-    @Expose
-    private List<String> paths;
 
     public String getMessage() {
         return message;
-    }
-
-    public List<String> getPaths() {
-        return paths;
     }
 }

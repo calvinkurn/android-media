@@ -19,7 +19,7 @@ public interface TrainSeatContract {
 
         void hideLoading();
 
-        void renderWagon(List<TrainWagonViewModel> trainWagonViewModels);
+        void renderWagon(List<TrainWagonViewModel> trainWagonViewModels, int i);
 
         void hidePage();
 
@@ -56,6 +56,10 @@ public interface TrainSeatContract {
         void setToolbarSubTitle(String subtitle);
 
         void showConfirmChangePassengersDialog(List<TrainSeatPassengerViewModel> passengers);
+
+        void clearSeatMaps();
+
+        void showErrorChangeSeat(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

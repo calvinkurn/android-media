@@ -46,6 +46,7 @@ public class TrainSeatPagerIndicator extends BaseCustomView {
     }
 
     public void renderView(int count) {
+        container.removeAllViews();
         pointViews = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             ImageView pointView = new ImageView(getContext());

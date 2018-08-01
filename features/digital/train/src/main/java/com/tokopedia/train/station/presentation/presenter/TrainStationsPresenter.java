@@ -98,6 +98,11 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
         if (inputListener != null) inputListener.onQuerySubmit(keyword);
     }
 
+    @Override
+    public void onViewCreated() {
+        getView().renderSearchHint();
+    }
+
     private void onKeywordReceived(String keyword) {
         getView().clearStationList();
         getView().showLoading();
