@@ -251,17 +251,22 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         // mechanism to transfer the state from sticky etalase state to non-sticky view holder
-        if (holder instanceof ShopProductEtalaseListViewHolder) {
-            Parcelable recyclerViewState = null;
-            try {
-                if (shopProductEtalaseListStickyWeakReference != null &&
-                        shopProductEtalaseListStickyWeakReference.get()!= null) {
-                    recyclerViewState = shopProductEtalaseListStickyWeakReference.get().getRecyclerViewState();
+        if (holder instanceof ShopProductEtalaseListViewHolder ) {
+            if (onStickySingleHeaderViewListener!= null &&
+                    onStickySingleHeaderViewListener.isStickyShowed()) {
+                Parcelable recyclerViewState = null;
+                try {
+                    if (shopProductEtalaseListStickyWeakReference != null &&
+                            shopProductEtalaseListStickyWeakReference.get() != null) {
+                        recyclerViewState = shopProductEtalaseListStickyWeakReference.get().getRecyclerViewState();
+                    }
+                } catch (Throwable e) {
+                    recyclerViewState = null;
                 }
-            } catch (Throwable e) {
-                recyclerViewState = null;
+                ((ShopProductEtalaseListViewHolder) holder).setRecyclerViewState(recyclerViewState);
+            } else {
+                ((ShopProductEtalaseListViewHolder) holder).setRecyclerViewState(null);
             }
-            ((ShopProductEtalaseListViewHolder)holder).setRecyclerViewState(recyclerViewState);
         }
         super.onBindViewHolder(holder, position);
     }

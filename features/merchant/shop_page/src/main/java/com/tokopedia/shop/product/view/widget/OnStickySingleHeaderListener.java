@@ -6,4 +6,5 @@ package com.tokopedia.shop.product.view.widget;
 
 public interface OnStickySingleHeaderListener {
     void refreshSticky();
+    boolean isStickyShowed();
 }

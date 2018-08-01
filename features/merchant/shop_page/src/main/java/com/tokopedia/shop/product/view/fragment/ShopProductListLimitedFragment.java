@@ -232,8 +232,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     shopInfo.getInfo().getShopId(),
                     shopInfo.getInfo().isShopOfficial());
 
-            shopProductLimitedListPresenter.getShopEtalase(shopInfo.getInfo().getShopId(),
-                    ShopPageConstant.ETALASE_TO_SHOW);
         }
     }
 
@@ -256,7 +254,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
                     page,
                     ShopPageConstant.DEFAULT_PER_PAGE,
-                    selectedEtalaseId);
+                    selectedEtalaseId,
+                    ShopPageConstant.ETALASE_TO_SHOW);
         }
     }
 
@@ -306,6 +305,11 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 loadData(page);
             }
         };
+    }
+
+    @Override
+    public List<ShopEtalaseViewModel> getShopEtalaseViewModelList() {
+        return shopProductAdapter.getShopProductEtalaseListViewModel().getEtalaseModelList();
     }
 
     @NonNull

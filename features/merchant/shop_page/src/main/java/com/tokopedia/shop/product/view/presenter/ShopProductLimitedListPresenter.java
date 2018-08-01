@@ -37,7 +37,6 @@ import rx.Subscriber;
 
 public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
-    //    private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
     private final GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase;
     private final GetShopProductListWithAttributeUseCase productListWithAttributeUseCase;
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
@@ -79,12 +78,60 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
     public void getProductListWithAttributes(String shopId, boolean isShopClosed,
                                              boolean isOfficialStore, int page,
                                              int itemPerPage,
-                                             String etalaseId) {
+                                             String etalaseId,
+                                             final int etalaseLimit) {
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
                 isOfficialStore, page, true, itemPerPage);
-        if (!TextUtils.isEmpty(etalaseId)) {
-            shopProductRequestModel.setEtalaseId(etalaseId);
+
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = getView().getShopEtalaseViewModelList();
+        if (shopEtalaseViewModelList.size() > 0) {
+            boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
+            shopProductRequestModel.setUseAce(isUseAce);
+            getProductListWithAttributes(shopProductRequestModel);
+        } else {
+            ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(
+                    shopId, userSession.getUserId(), userSession.getDeviceId());
+            RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
+            getShopEtalaseUseCase.execute(params, new Subscriber<PagingListOther<EtalaseModel>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    if (isViewAttached()) {
+                        getView().onErrorGetEtalaseList(throwable);
+                    }
+                }
+
+                @Override
+                public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
+                    if (isViewAttached()) {
+                        List<ShopEtalaseViewModel> shopEtalaseViewModelList =
+                                ShopProductMapper.mergeEtalaseList(pagingListOther, null, etalaseLimit);
+                        getView().onSuccessGetEtalaseList(shopEtalaseViewModelList);
+                        boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
+                        shopProductRequestModel.setUseAce(isUseAce);
+                        getProductListWithAttributes(shopProductRequestModel);
+                    }
+                }
+            });
         }
+    }
+
+    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId){
+        if (etalaseViewModelList!= null) {
+            for (ShopEtalaseViewModel shopEtalaseViewModel : etalaseViewModelList) {
+                if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
+                    return shopEtalaseViewModel.isUseAce();
+                }
+            }
+        }
+        return true;
+    }
+
+    private void getProductListWithAttributes(ShopProductRequestModel shopProductRequestModel) {
         productListWithAttributeUseCase.unsubscribe();
         productListWithAttributeUseCase.execute(
                 GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel),
