@@ -1,7 +1,6 @@
 query wishlist($user_id: Int, $page: Int, $count: Int){
   wishlist(user_id: $user_id, page: $page, count: $count){
 
-      count
       has_next_page
       total_data
       items {

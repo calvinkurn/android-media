@@ -22,10 +22,6 @@ public class GqlWishListDataResponse {
 
     public class GqlWishList {
 
-        @SerializedName("count")
-        @Expose
-        int count;
-
         @SerializedName("has_next_page")
         @Expose
         boolean hasNextPage;
@@ -44,14 +40,6 @@ public class GqlWishListDataResponse {
 
         public void setPagination(Pagination pagination) {
             this.pagination = pagination;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
         }
 
         public boolean isHasNextPage() {
