@@ -14,7 +14,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Map;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class TrainInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
@@ -42,5 +47,10 @@ public class TrainInterceptor extends TkpdAuthInterceptor {
         );
         headerMap.put(HEADER_TKPD_USER_ID, userSession.getUserId());
         return headerMap;
+    }
+
+
+    protected Response getResponse(Chain chain, Request request) throws IOException {
+        return chain.proceed(request);
     }
 }

@@ -1,4 +1,4 @@
-mutation kaiChangeSeatmap($input: KaiChangeSeat!) {
+mutation kaiChangeSeatmap($input: KaiChangeSeatmapsParam!) {
   kaiGantiKursi(input: $input) {
     changeSeatmap{
       bookCode

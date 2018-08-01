@@ -104,7 +104,7 @@ public class TrainSoftbook implements Parcelable {
         TrainSoftbook softbook = new TrainSoftbook();
         softbook.setReservationId("12345");
         softbook.setReservationCode("TKP12345");
-        softbook.setExpiryTimestamp("2018-07-28T14:35:00Z");
+        softbook.setExpiryTimestamp("2018-08-02T14:35:00Z");
         List<TrainTrip> trainTrips = new ArrayList<>();
         TrainTrip trainTrip = new TrainTrip();
         trainTrip.setAdultPrice(100000);

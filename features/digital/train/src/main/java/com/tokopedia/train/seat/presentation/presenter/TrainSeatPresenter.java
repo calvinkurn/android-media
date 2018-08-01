@@ -30,6 +30,7 @@ import rx.Subscriber;
 public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.View> implements TrainSeatContract.Presenter {
     private TrainGetSeatsUseCase trainGetSeatsUseCase;
     private TrainChangeSeatUseCase trainChangeSeatUseCase;
+    private String bookCode;
 
     @Inject
     public TrainSeatPresenter(TrainGetSeatsUseCase trainGetSeatsUseCase, TrainChangeSeatUseCase trainChangeSeatUseCase) {
@@ -126,7 +127,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     public void onChangePassengerConfirmDialogAccepted() {
         getView().hidePage();
         getView().showLoading();
-        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getReservationCode(),
+        List<ChangeSeatMapRequest> requests = transformSeatRequest(getBookCode(),
                 getView().getOriginalPassenger(),
                 getView().getPassengers());
         trainChangeSeatUseCase.execute(
@@ -164,7 +165,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     public void onSubmitButtonClicked() {
         getView().hidePage();
         getView().showLoading();
-        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getReservationCode(),
+        List<ChangeSeatMapRequest> requests = transformSeatRequest(getBookCode(),
                 getView().getOriginalPassenger(),
                 getView().getPassengers());
         if (requests.size() > 0) {
@@ -334,5 +335,17 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         trainGetSeatsUseCase.unsubscribe();
         trainChangeSeatUseCase.unsubscribe();
         super.detachView();
+    }
+
+    private String getBookCode() {
+        if (!getView().isReturning()) {
+            return getView().getTrainSoftbook().getDepartureTrips().get(0).getBookCode();
+        } else {
+            return getView().getTrainSoftbook().getReturnTrips().get(0).getBookCode();
+        }
+    }
+
+    public void setBookCode(String bookCode) {
+        this.bookCode = bookCode;
     }
 }
