@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
-import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.di.component.DaggerProductDraftComponent
 import com.tokopedia.product.edit.common.di.component.ProductComponent

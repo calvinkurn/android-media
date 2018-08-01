@@ -2,8 +2,10 @@ package com.tokopedia.product.edit.view.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseService;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.edit.R;
@@ -23,6 +26,8 @@ import com.tokopedia.product.edit.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.product.edit.di.module.AddProductserviceModule;
 import com.tokopedia.product.edit.domain.listener.ProductSubmitNotificationListener;
 import com.tokopedia.product.edit.util.ProductEditModuleRouter;
+import com.tokopedia.product.edit.view.activity.ProductDraftAddActivity;
+import com.tokopedia.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.product.edit.view.presenter.AddProductServiceListener;
 import com.tokopedia.product.edit.view.presenter.AddProductServicePresenter;
 
@@ -166,39 +171,42 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private NotificationCompat.Builder buildBaseNotification(String productName) {
         String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
-//        Intent pendingIntent = new Intent(this, ProductManageActivity.class);
-//        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
-//        int largeIconRes = R.drawable.ic_stat_notify2;
-//        if (!GlobalConfig.isSellerApp()) {
-//            largeIconRes = R.drawable.ic_stat_notify;
-//        }
-//        return new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
-//                .setContentTitle(title)
-//                .setSmallIcon(R.drawable.ic_stat_notify_white)
-//                .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
-//                .setContentIntent(pIntent)
-//                .setGroup(getString(R.string.product_group_notification))
-//                .setOnlyAlertOnce(true);
-        return null;
+        ProductEditModuleRouter productEditModuleRouter;
+        Intent pendingIntent = null;
+        if(getApplication() instanceof ProductEditModuleRouter){
+            productEditModuleRouter = (ProductEditModuleRouter) getApplication();
+            pendingIntent = productEditModuleRouter.getManageProductIntent(this);
+        }
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
+        int largeIconRes = R.drawable.ic_stat_notify2;
+        if (!GlobalConfig.isSellerApp()) {
+            largeIconRes = R.drawable.ic_stat_notify;
+        }
+        return new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.ic_stat_notify_white)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
+                .setContentIntent(pIntent)
+                .setGroup(getString(R.string.product_group_notification))
+                .setOnlyAlertOnce(true);
     }
 
     private Notification buildFailedNotification(String errorMessage, int notificationId, @ProductStatus int productStatus) {
-//        Intent pendingIntent = ProductDraftAddActivity.createInstance(this, notificationId);
-//        if (productStatus == ProductStatus.EDIT) {
-//            pendingIntent = ProductDraftEditActivity.createInstance(this, notificationId);
-//        }
-//        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        if (notificationBuilderMap.get(notificationId) == null) {
-//            createNotification(notificationId, "");
-//        }
-//        return notificationBuilderMap.get(notificationId)
-//                .setContentText(errorMessage)
-//                .setStyle(new NotificationCompat.BigTextStyle().bigText(errorMessage))
-//                .setContentIntent(pIntent)
-//                .setProgress(0, 0, false)
-//                .setOngoing(false)
-//                .setAutoCancel(true)
-//                .build();
-        return null;
+        Intent pendingIntent = ProductDraftAddActivity.Companion.createInstance(this, notificationId);
+        if (productStatus == ProductStatus.EDIT) {
+            pendingIntent = ProductDraftEditActivity.Companion.createInstance(this, notificationId);
+        }
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (notificationBuilderMap.get(notificationId) == null) {
+            createNotification(notificationId, "");
+        }
+        return notificationBuilderMap.get(notificationId)
+                .setContentText(errorMessage)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(errorMessage))
+                .setContentIntent(pIntent)
+                .setProgress(0, 0, false)
+                .setOngoing(false)
+                .setAutoCancel(true)
+                .build();
     }
 }

@@ -85,26 +85,6 @@
             android:label="@string/title_filter_but"
             android:screenOrientation="portrait" />
 
-        <!-- Product Add / Edit -->
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductAddActivity"-->
-            <!--android:label="@string/title_activity_add_product"-->
-            <!--android:screenOrientation="portrait">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.SEND" />-->
-
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-
-                <!--<data android:mimeType="image/*" />-->
-            <!--</intent-filter>-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.SEND_MULTIPLE" />-->
-
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-
-                <!--<data android:mimeType="image/*" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
         <activity
             android:name=".common.imageeditor.ImageEditorActivity"
             android:label="@string/title_activity_image_edit"
@@ -115,22 +95,6 @@
             android:label="@string/title_activity_image_edit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat" />
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductEditActivity"-->
-            <!--android:label="@string/title_activity_edit_product"-->
-            <!--android:screenOrientation="portrait" />-->
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductDraftAddActivity"-->
-            <!--android:label="@string/title_activity_add_product"-->
-            <!--android:screenOrientation="portrait" />-->
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductDraftEditActivity"-->
-            <!--android:label="@string/title_activity_edit_product"-->
-            <!--android:screenOrientation="portrait" />-->
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductDuplicateActivity"-->
-            <!--android:label="@string/title_activity_add_product"-->
-            <!--android:screenOrientation="portrait" />-->
         <activity
             android:name="com.tokopedia.product.edit.view.activity.ProductScoringDetailActivity"
             android:label="@string/product_title_activity_product_score"
@@ -147,20 +111,10 @@
             android:name=".product.etalase.view.activity.EtalasePickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
             android:screenOrientation="portrait" />
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductAddCatalogPickerActivity"-->
-            <!--android:exported="true"-->
-            <!--android:label="@string/title_activity_catalog_picker"-->
-            <!--android:screenOrientation="portrait" />-->
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductAddDescriptionPickerActivity"-->
-            <!--android:label="@string/product_label_product_description"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/Theme.White" />-->
-        <!--<activity-->
-            <!--android:name="com.tokopedia.product.edit.view.activity.ProductAddDescriptionInfoActivity"-->
-            <!--android:label="@string/product_desc_guide"-->
-            <!--android:screenOrientation="portrait" />-->
+        <activity
+            android:name="com.tokopedia.product.edit.view.activity.ProductAddDescriptionInfoActivity"
+            android:label="@string/product_desc_guide"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".product.variant.view.activity.ProductVariantDashboardActivity"
             android:exported="true"

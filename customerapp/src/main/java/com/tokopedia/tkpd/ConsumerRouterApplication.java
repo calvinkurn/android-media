@@ -195,8 +195,8 @@ import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel;
 import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.edit.util.ProductEditModuleRouter;
-import com.tokopedia.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
+import com.tokopedia.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
@@ -217,6 +217,7 @@ import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -759,8 +760,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return null;
-//        return ProductEditActivity.createInstance(context, productId);
+        return ProductEditActivity.Companion.createInstance(context, productId);
     }
 
     @Override
@@ -1898,7 +1898,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToAddProduct(Context context) {
         if (context != null && context instanceof Activity) {
-//            ProductAddActivity.start((Activity) context);
+            Intent intent = new Intent(context, ProductAddNameCategoryActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -2338,5 +2339,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
                 productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
                 hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale);
+    }
+
+    @Override
+    public Intent getManageProductIntent(Context context) {
+        return new Intent(context, ProductManageActivity.class);
+    }
+
+    @Override
+    public Intent createIntentProductEtalase(Context context,int etalaseId) {
+        return EtalasePickerActivity.createInstance(context, etalaseId);
     }
 }

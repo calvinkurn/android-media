@@ -7,6 +7,7 @@ import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel;
 import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.edit.view.service.UploadProductService;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,4 +26,8 @@ public interface ProductEditModuleRouter {
                                       int productStock, boolean officialStore, String productSku,
                                       boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
                                       boolean hasOriginalVariantLevel2, boolean hasWholesale);
+
+    Intent getManageProductIntent(Context context);
+
+    Intent createIntentProductEtalase(Context context, int etalaseId);
 }

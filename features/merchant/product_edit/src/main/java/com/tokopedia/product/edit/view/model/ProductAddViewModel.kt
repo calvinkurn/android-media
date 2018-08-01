@@ -12,24 +12,28 @@ data class ProductAddViewModel(var productCatalog: ProductCatalog = ProductCatal
                                var productName: ProductName = ProductName(),
                                var productDescription: ProductDescription = ProductDescription(),
                                var productVariantViewModel: ProductVariantViewModel? = ProductVariantViewModel(),
-                               var productPictureList: ArrayList<String>? = ArrayList(),
+                               var productPictureList: ArrayList<String>? = ArrayList<String>(),
                                var productStock: ProductStock? = ProductStock(),
                                var productSizeChart: ProductPictureViewModel? = null,
                                var hasOriginalVariantLevel1: Boolean? = false,
                                var hasOriginalVariantLevel2: Boolean? = false,
-                               var productLogistic: ProductLogistic? = ProductLogistic()) : Parcelable {
+                               var productLogistic: ProductLogistic? = ProductLogistic(),
+                               var etalaseId: Int? = 0,
+                               var etalaseName: String? = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(ProductCatalog::class.java.classLoader),
             parcel.readParcelable(ProductCategory::class.java.classLoader),
             parcel.readParcelable(ProductName::class.java.classLoader),
             parcel.readParcelable(ProductDescription::class.java.classLoader),
             parcel.readParcelable(ProductVariantViewModel::class.java.classLoader),
-            TODO("productPictureList"),
+            parcel.readArrayList(ArrayList::class.java.classLoader) as? ArrayList<String>,
             parcel.readParcelable(ProductStock::class.java.classLoader),
             parcel.readParcelable(ProductPictureViewModel::class.java.classLoader),
             parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
             parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readParcelable(ProductLogistic::class.java.classLoader)) {
+            parcel.readParcelable(ProductLogistic::class.java.classLoader),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -38,11 +42,14 @@ data class ProductAddViewModel(var productCatalog: ProductCatalog = ProductCatal
         parcel.writeParcelable(productName, flags)
         parcel.writeParcelable(productDescription, flags)
         parcel.writeParcelable(productVariantViewModel, flags)
+        parcel.writeStringList(productPictureList)
         parcel.writeParcelable(productStock, flags)
         parcel.writeParcelable(productSizeChart, flags)
         parcel.writeValue(hasOriginalVariantLevel1)
         parcel.writeValue(hasOriginalVariantLevel2)
         parcel.writeParcelable(productLogistic, flags)
+        parcel.writeValue(etalaseId)
+        parcel.writeString(etalaseName)
     }
 
     override fun describeContents(): Int {
@@ -58,4 +65,5 @@ data class ProductAddViewModel(var productCatalog: ProductCatalog = ProductCatal
             return arrayOfNulls(size)
         }
     }
+
 }

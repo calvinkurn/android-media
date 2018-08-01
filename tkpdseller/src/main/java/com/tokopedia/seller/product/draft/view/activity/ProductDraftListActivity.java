@@ -16,6 +16,7 @@ import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.product.edit.common.di.component.ProductComponent;
@@ -241,7 +242,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
-//            ProductDraftAddActivity.start(this, draftProductIdList.get(0));
+            startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
         } else {
             CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
                     draftProductIdList.size()));

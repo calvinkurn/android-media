@@ -5,9 +5,6 @@ import com.tokopedia.product.edit.common.model.edit.ProductCatalogViewModel
 import com.tokopedia.product.edit.common.model.edit.ProductCategoryViewModel
 import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel
-import com.tokopedia.product.edit.common.util.ProductStatus
-import com.tokopedia.product.edit.common.util.StockTypeDef
-import com.tokopedia.product.edit.constant.ProductStockTypeDef
 import com.tokopedia.product.edit.price.model.*
 import com.tokopedia.product.edit.view.model.ProductAddViewModel
 import java.util.ArrayList
@@ -53,6 +50,8 @@ fun ProductViewModel.convertToProductAddViewModel() : ProductAddViewModel?{
     productAddViewModel.hasOriginalVariantLevel2 = checkOriginalVariantLevel2(this)
     productAddViewModel.productSizeChart = this.productSizeChart
     productAddViewModel.productVariantViewModel = this.productVariant
+    productAddViewModel.etalaseName = this.productEtalase.etalaseName
+    productAddViewModel.etalaseId = this.productEtalase.etalaseId.toInt()
     return productAddViewModel
 }
 

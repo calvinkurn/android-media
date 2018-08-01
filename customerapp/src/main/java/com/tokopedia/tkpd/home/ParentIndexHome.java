@@ -86,6 +86,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 //import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
@@ -664,14 +665,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
-//                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
+                startActivity(ProductAddActivity.Companion.createInstance(ParentIndexHome.this, imageUrls));
             }
 
             @Override
             public void onSuccess(String path) {
                 ArrayList<String> imageUrls = new ArrayList<>();
                 imageUrls.add(path);
-//                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
+                startActivity(ProductAddActivity.Companion.createInstance(ParentIndexHome.this, imageUrls));
             }
 
             @Override

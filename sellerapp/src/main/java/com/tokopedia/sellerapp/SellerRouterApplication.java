@@ -64,6 +64,14 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.edit.util.ProductEditModuleRouter;
+import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
+import com.tokopedia.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.product.edit.common.di.component.DaggerProductComponent;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
@@ -198,7 +206,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter {
+        NetworkRouter, TopChatRouter,ProductEditModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -295,8 +303,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return null;
-//        return ProductEditActivity.createInstance(context, productId);
+        return ProductEditActivity.Companion.createInstance(context, productId);
     }
 
     @Override
@@ -900,7 +907,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
-//            ProductAddActivity.start(activity);
+            startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
         }
     }
 
@@ -1189,7 +1196,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToAddProduct(Context context) {
         if (context != null && context instanceof Activity) {
-//            ProductAddActivity.start((Activity) context);
+            startActivity(new Intent(context, ProductAddNameCategoryActivity.class));
         }
     }
 
@@ -1421,5 +1428,26 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isIndicatorVisible() {
         return false; //Sellerapp dont have groupchat therefore always set false to indicator
+    }
+
+    @Override
+    public Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
+                                             ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
+                                             int productStock, boolean officialStore, String productSku,
+                                             boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
+                                             boolean hasOriginalVariantLevel2, boolean hasWholesale) {
+        return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
+                productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
+                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale);
+    }
+
+    @Override
+    public Intent getManageProductIntent(Context context) {
+        return new Intent(context, ProductManageActivity.class);
+    }
+
+    @Override
+    public Intent createIntentProductEtalase(Context context,int etalaseId) {
+        return EtalasePickerActivity.createInstance(context, etalaseId);
     }
 }

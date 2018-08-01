@@ -46,6 +46,8 @@ import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
+import com.tokopedia.product.edit.utils.ProductAddDeeplinkModule;
+import com.tokopedia.product.edit.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -103,7 +105,8 @@ import io.branch.referral.BranchError;
         CheckoutAppLinkModule.class,
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
-        TokopointApplinkModule.class
+        TokopointApplinkModule.class,
+        ProductAddDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -136,7 +139,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new CheckoutAppLinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new TokopointApplinkModuleLoader()
+                new TokopointApplinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader()
         );
     }
 

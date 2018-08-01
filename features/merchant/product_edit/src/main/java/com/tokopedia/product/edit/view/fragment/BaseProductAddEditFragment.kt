@@ -1,6 +1,8 @@
 package com.tokopedia.product.edit.view.fragment
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,9 +14,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.network.NetworkErrorHelper
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel
+import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel
 import com.tokopedia.product.edit.common.util.ProductStatus
+import com.tokopedia.product.edit.constant.ProductExtraConstant
 import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.edit.price.ProductEditWeightLogisticFragment
 import com.tokopedia.product.edit.price.model.*
@@ -43,7 +49,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     var isHasLoadShopInfo: Boolean = false
     private var officialStore: Boolean = false
-    val appRouter = activity?.application
+    val appRouter : Context by lazy { activity?.application as Context}
     protected var currentProductAddViewModel: ProductAddViewModel? = null
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
@@ -72,41 +78,56 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
         populateView(currentProductAddViewModel)
 
-        llCategoryCatalog.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditCategoryActivity::class.java)
-                    .putExtra(EXTRA_CATALOG, currentProductAddViewModel?.productCatalog)
-                    .putExtra(EXTRA_CATEGORY, currentProductAddViewModel?.productCategory), REQUEST_CODE_GET_CATALOG_CATEGORY)
-        }
-        labelViewNameProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditNameActivity::class.java)
-                    .putExtra(EXTRA_NAME, currentProductAddViewModel?.productName), REQUEST_CODE_GET_NAME)
-        }
-        labelViewPriceProduct.setOnClickListener { startActivity(Intent(activity, ProductEditPriceActivity::class.java)) }
-        labelViewDescriptionProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditDescriptionActivity::class.java)
-                    .putExtra(EXTRA_DESCRIPTION, currentProductAddViewModel?.productDescription)
-                    .putExtra(EXTRA_KEYWORD, currentProductAddViewModel?.productName?.name), REQUEST_CODE_GET_DESCRIPTION)
-        }
-        labelViewStockProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditStockActivity::class.java)
-                    .putExtra(EXTRA_STOCK, currentProductAddViewModel?.productStock), REQUEST_CODE_GET_STOCK)
-        }
-        labelViewWeightLogisticProduct.setOnClickListener {
-            startActivityForResult(Intent(activity, ProductEditWeightLogisticActivity::class.java)
-                    .putExtra(EXTRA_LOGISTIC, currentProductAddViewModel?.productLogistic), REQUEST_CODE_GET_LOGISTIC)
-        }
-        labelViewEtalaseProduct.setOnClickListener{
-
-        }
-        labelViewVariantProduct.setOnClickListener {
-            startProductVariantActivity()
-        }
-        containerImageProduct.setOnClickListener{
-            onAddImagePickerClicked()
-        }
+        llCategoryCatalog.setOnClickListener { startCatalogActivity() }
+        labelViewNameProduct.setOnClickListener { startNameActivity() }
+        labelViewPriceProduct.setOnClickListener { startPriceActivity() }
+        labelViewDescriptionProduct.setOnClickListener { startDescriptionActivity() }
+        labelViewStockProduct.setOnClickListener { startStockActivity() }
+        labelViewWeightLogisticProduct.setOnClickListener { startLogisticActivity() }
+        labelViewEtalaseProduct.setOnClickListener{ startProductEtalaseActivity() }
+        labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
+        containerImageProduct.setOnClickListener{ onAddImagePickerClicked() }
 
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener { saveDraft(true)}
+    }
+
+    private fun startCatalogActivity() {
+        startActivityForResult(Intent(activity, ProductEditCategoryActivity::class.java)
+                .putExtra(EXTRA_CATALOG, currentProductAddViewModel?.productCatalog)
+                .putExtra(EXTRA_CATEGORY, currentProductAddViewModel?.productCategory), REQUEST_CODE_GET_CATALOG_CATEGORY)
+    }
+
+    private fun startNameActivity() {
+        startActivityForResult(Intent(activity, ProductEditNameActivity::class.java)
+                .putExtra(EXTRA_NAME, currentProductAddViewModel?.productName), REQUEST_CODE_GET_NAME)
+    }
+
+    private fun startPriceActivity() {
+        startActivity(Intent(activity, ProductEditPriceActivity::class.java))
+    }
+
+    private fun startDescriptionActivity() {
+        startActivityForResult(Intent(activity, ProductEditDescriptionActivity::class.java)
+                .putExtra(EXTRA_DESCRIPTION, currentProductAddViewModel?.productDescription)
+                .putExtra(EXTRA_KEYWORD, currentProductAddViewModel?.productName?.name), REQUEST_CODE_GET_DESCRIPTION)
+    }
+
+    private fun startStockActivity() {
+        startActivityForResult(Intent(activity, ProductEditStockActivity::class.java)
+                .putExtra(EXTRA_STOCK, currentProductAddViewModel?.productStock), REQUEST_CODE_GET_STOCK)
+    }
+
+    private fun startLogisticActivity() {
+        startActivityForResult(Intent(activity, ProductEditWeightLogisticActivity::class.java)
+                .putExtra(EXTRA_LOGISTIC, currentProductAddViewModel?.productLogistic), REQUEST_CODE_GET_LOGISTIC)
+    }
+
+    private fun startProductEtalaseActivity() {
+        if(appRouter is ProductEditModuleRouter){
+            startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId!!), REQUEST_CODE_GET_ETALASE);
+
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -142,6 +163,26 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 REQUEST_CODE_GET_DESCRIPTION -> {
                     val productDescription: ProductDescription = data!!.getParcelableExtra(EXTRA_DESCRIPTION)
                     currentProductAddViewModel?.productDescription = productDescription
+                }
+                REQUEST_CODE_GET_ETALASE ->{
+                    val etalaseId = data!!.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
+                    val etalaseNameString = data.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
+                    currentProductAddViewModel?.etalaseId = etalaseId
+                    currentProductAddViewModel?.etalaseName = etalaseNameString
+                }
+                REQUEST_CODE_GET_IMAGES ->{
+                    val imageUrlOrPathList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    currentProductAddViewModel?.productPictureList = imageUrlOrPathList
+                }
+                REQUEST_CODE_VARIANT ->{
+                    if (data!!.hasExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                        val productVariantViewModel = data.getParcelableExtra<ProductVariantViewModel>(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION)
+                        currentProductAddViewModel?.productVariantViewModel = productVariantViewModel
+                    }
+                    if (data!!.hasExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART)) {
+                        val productPictureViewModel = data.getParcelableExtra<ProductPictureViewModel>(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART)
+                        currentProductAddViewModel?.productSizeChart = productPictureViewModel
+                    }
                 }
             }
             populateView(currentProductAddViewModel)
@@ -233,7 +274,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     fun onAddImagePickerClicked() {
         val intent = AddProductImagePickerBuilder.createPickerIntentWithCatalog(context,
                 currentProductAddViewModel?.productPictureList, currentProductAddViewModel?.productCatalog?.catalogId.toString())
-        startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT_IMAGE)
+        startActivityForResult(intent, REQUEST_CODE_GET_IMAGES)
     }
 
     fun goToProductDescriptionPicker(description: String) {
@@ -244,7 +285,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
         val hasWholesale = true /* Todo currentProductAddViewModel!!.getProductWholesale() != null && currentProductAddViewModel!!.getProductWholesale().size > 0*/
         if (appRouter is ProductEditModuleRouter) {
-            val intent = appRouter.createIntentProductVariant(activity,
+            val intent = (appRouter as ProductEditModuleRouter).createIntentProductVariant(activity,
                     null,
                     currentProductAddViewModel?.productVariantViewModel,
                     1/*todo*/,
@@ -296,6 +337,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val REQUEST_CODE_GET_STOCK = 6
         const val REQUEST_CODE_GET_LOGISTIC = 7
         const val REQUEST_CODE_VARIANT = 9
+        const val REQUEST_CODE_GET_ETALASE = 10
 
         const val EXTRA_NAME = "EXTRA_NAME"
         const val EXTRA_CATALOG = "EXTRA_CATALOG"
@@ -304,10 +346,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
-
-        val DEFAULT_PARENT_STOCK_IF_VARIANT = 1
-        val REQUEST_CODE_ADD_PRODUCT_IMAGE = 3912
-        val REQUEST_CODE_EDIT_IMAGE = 3412
 
         val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
     }

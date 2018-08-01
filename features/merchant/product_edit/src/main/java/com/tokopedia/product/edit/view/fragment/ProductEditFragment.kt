@@ -13,7 +13,6 @@ import com.tokopedia.product.edit.common.util.ProductStatus
 import com.tokopedia.product.edit.di.component.DaggerProductEditComponent
 import com.tokopedia.product.edit.di.module.ProductEditModule
 import com.tokopedia.product.edit.utils.convertToProductAddViewModel
-import com.tokopedia.product.edit.utils.convertToProductViewModel
 import com.tokopedia.product.edit.view.model.ProductAddViewModel
 import com.tokopedia.product.edit.view.presenter.ProductEditPresenterImpl
 import com.tokopedia.product.edit.view.presenter.ProductEditView
