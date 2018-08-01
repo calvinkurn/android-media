@@ -39,6 +39,7 @@ import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTo
 import com.tokopedia.session.login.loginphonenumber.view.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
+import com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneActivity;
 
 import java.util.ArrayList;
 
@@ -162,11 +163,12 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Intent intent = ChangeInactivePhoneNumberWebView.
-                        getIntentWithTitle(
-                                getContext(),
-                                SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
-                                getString(R.string.title_change_inactive_phone_number));
+
+                Intent intent = ChangeInactivePhoneActivity.
+                        getChangeInactivePhoneIntent(
+                                getContext()
+//                                SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
+                                );
                 startActivity(intent);
             }
 
@@ -182,8 +184,9 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         changeInactiveNumber.setText(changeInactiveString);
         changeInactiveNumber.setMovementMethod(LinkMovementMethod.getInstance());
         changeInactiveNumber.setHighlightColor(Color.TRANSPARENT);
-        changeInactiveNumber.setVisibility(sessionRouter.isLoginInactivePhoneLinkEnabled() ?
-                View.VISIBLE : View.GONE);
+        /*changeInactiveNumber.setVisibility(sessionRouter.isLoginInactivePhoneLinkEnabled() ?
+                View.VISIBLE : View.GONE);*/
+        changeInactiveNumber.setVisibility(View.VISIBLE);
     }
 
     @Override
