@@ -9,7 +9,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -19,6 +18,10 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
+
+import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_PRODUCT;
+import static com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity.KEY_IS_COUPON_APPLIED_APPLINK;
+import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
@@ -38,13 +41,19 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .putExtra(EXTRA_CATEGORY_PASS_DATA, passData);
     }
 
+    public static Intent newInstance(Context context, DigitalCategoryDetailPassData passData, int isCouponApplied) {
+        return new Intent(context, DigitalProductActivity.class)
+                .putExtra(EXTRA_CATEGORY_PASS_DATA, passData)
+                .putExtra(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({ApplinkConst.DIGITAL_PRODUCT})
+    @DeepLink({ DIGITAL_PRODUCT })
     public static Intent getcallingIntent(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -66,7 +75,11 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .productId(extras.getString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
                 .clientNumber(extras.getString(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
                 .build();
-        Intent destination = DigitalProductActivity.newInstance(context, passData);
+
+        Intent destination = (extras.containsKey(KEY_IS_COUPON_APPLIED_APPLINK)) ?
+                DigitalProductActivity.newInstance(context, passData, extras.getInt(KEY_IS_COUPON_APPLIED_APPLINK)) :
+                DigitalProductActivity.newInstance(context, passData);
+
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         taskStackBuilder.addNextIntent(destination);
         return destination;
@@ -90,16 +103,28 @@ public class DigitalProductActivity extends BasePresenterActivity
     @Override
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalProductFragment))
-            getFragmentManager().beginTransaction().replace(R.id.container,
-                    DigitalProductFragment.newInstance(
-                            passData.getCategoryId(),
-                            passData.getOperatorId(),
-                            passData.getProductId(),
-                            passData.getClientNumber(),
-                            passData.getAdditionalETollBalance(),
-                            passData.getAdditionalETollLastUpdatedDate()))
+        if (fragment == null || !(fragment instanceof DigitalProductFragment)) {
+            Fragment digitalProductFragment = (getIntent().hasExtra(PARAM_IS_COUPON_ACTIVE)) ?
+                DigitalProductFragment.newInstance(
+                        passData.getCategoryId(),
+                        passData.getOperatorId(),
+                        passData.getProductId(),
+                        passData.getClientNumber(),
+                        passData.getAdditionalETollBalance(),
+                        passData.getAdditionalETollLastUpdatedDate(),
+                        getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)):
+                DigitalProductFragment.newInstance(
+                        passData.getCategoryId(),
+                        passData.getOperatorId(),
+                        passData.getProductId(),
+                        passData.getClientNumber(),
+                        passData.getAdditionalETollBalance(),
+                        passData.getAdditionalETollLastUpdatedDate());
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, digitalProductFragment)
                     .commit();
+        }
     }
 
     @Override
