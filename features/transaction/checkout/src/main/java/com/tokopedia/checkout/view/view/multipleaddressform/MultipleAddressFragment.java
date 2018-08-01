@@ -185,7 +185,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 setNewShipmentRecipientAddress(dataList, newAddress, childPosition, parentPosition);
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-                setRecyclerViewAdapter(dataList, parentPosition);
+                setRecyclerViewAdapter(dataList, parentPosition, false);
             } else if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT) {
                 ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
                 RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
@@ -225,7 +225,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 }
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-                setRecyclerViewAdapter(dataList, parentPosition);
+                setRecyclerViewAdapter(dataList, parentPosition, false);
             }
         }
     }
@@ -280,7 +280,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void renderCartData(CartListData cartListData) {
-        setRecyclerViewAdapter(initiateAdapterData(cartListData), 0);
+        setRecyclerViewAdapter(initiateAdapterData(cartListData), 0, true);
     }
 
     @Override
@@ -415,10 +415,12 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         rvOrderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition) {
+    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition, boolean isInitialSetup) {
         multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
         rvOrderAddressList.setAdapter(multipleAddressAdapter);
-        rvOrderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+        if (isInitialSetup) {
+            rvOrderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+        }
         if (itemPosition != 0) {
             rvOrderAddressList.scrollToPosition(itemPosition);
         }
