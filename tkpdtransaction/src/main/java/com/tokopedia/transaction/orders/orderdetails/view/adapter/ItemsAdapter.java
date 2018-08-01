@@ -336,7 +336,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tapActionTextView.setLayoutParams(params);
             tapActionTextView.setTextColor(Color.WHITE);
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-            tapActionTextView.setText(actionButton.getLabel().toUpperCase());
+            tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
             if (!actionButton.getActionColor().getBackground().equals("")) {
