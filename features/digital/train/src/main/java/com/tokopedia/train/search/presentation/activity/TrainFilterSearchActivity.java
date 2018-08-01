@@ -88,6 +88,10 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         presenter.getFilterSearchData();
     }
 
+    protected void setupFragment(Bundle savedInstance) {
+
+    }
+
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_train_filter_search;

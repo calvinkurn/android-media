@@ -171,7 +171,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @NonNull
     @Override
     protected BaseListAdapter<TrainScheduleViewModel, TrainSearchAdapterTypeFactory> createAdapterInstance() {
-        BaseListAdapter<TrainScheduleViewModel, TrainSearchAdapterTypeFactory> adapter = super.createAdapterInstance();
+        BaseListAdapter<TrainScheduleViewModel, TrainSearchAdapterTypeFactory> adapter = new BaseListAdapter<>(getAdapterTypeFactory());
         ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
         errorNetworkModel.setIconDrawableRes(R.drawable.ic_train_error_network);
         errorNetworkModel.setErrorMessage(getString(R.string.train_search_no_connection_title));
