@@ -7,16 +7,15 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.abstraction.base.view.listener.NotificationListener;
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -34,9 +33,6 @@ import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -52,7 +48,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public static int ACCOUNT_MENU = 4;
 
     private BottomNavigation bottomNavigation;
-    private TouchViewPager viewPager;
+    private FrameLayout container;
+
+    private Notification notification;
 
     private UserSession userSession;
     @Inject MainParentPresenter presenter;
@@ -76,36 +74,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         userSession = ((AbstractionRouter) this.getApplication()).getSession();
 
         bottomNavigation = findViewById(R.id.bottomnav);
-        viewPager = findViewById(R.id.container);
-
-        adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
-        viewPager.setAdapter(adapterViewPager);
-        viewPager.setOffscreenPageLimit(5);
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            public void onPageSelected(int position) {
-                currentFragment = adapterViewPager.getFragmentList().get(position);
-                bottomNavigation.getMenu().getItem(position).setChecked(true);
-                setBadgeNotifCounter(currentFragment);
-            }
-        });
+        container = findViewById(R.id.container);
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-
-        viewPager.setOnTouchListener((arg0, arg1) -> true);
-        viewPager.setAllowPageSwitching(false);
 
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
         }
-
-        currentFragment = adapterViewPager.getFragmentList().get(HOME_MENU);
     }
 
     private void setBadgeNotifCounter(Fragment fragment) {
@@ -123,24 +98,50 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                 .inject(this);
     }
 
+    private void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(fragment.getClass().getSimpleName());
+        transaction.commit();
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Fragment fragment = null;
         int i = item.getItemId();
         if (i == R.id.menu_home) {
-            viewPager.setCurrentItem(HOME_MENU, false);
+            if (getApplication() instanceof  GlobalNavRouter) {
+                fragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
+            }
         } else if (i == R.id.menu_feed) {
-            viewPager.setCurrentItem(FEED_MENU, false);
+            if (getApplication() instanceof  GlobalNavRouter) {
+                fragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment();
+            }
         } else if (i == R.id.menu_inbox) {
-            if (isUserLogin())
-                viewPager.setCurrentItem(INBOX_MENU, false);
+            if (isUserLogin()) {
+                fragment = InboxFragment.newInstance();
+            }
         } else if (i == R.id.menu_cart) {
             if (isUserLogin())
-                viewPager.setCurrentItem(CART_MENU, false);
+                if (getApplication() instanceof  GlobalNavRouter) {
+                    fragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment();
+                }
         } else if (i == R.id.menu_account) {
-            if (isUserLogin())
-                viewPager.setCurrentItem(ACCOUNT_MENU, false);
+            if (isUserLogin()) {
+                fragment = AccountHomeFragment.newInstance();
+            }
+        }
+
+        if (fragment != null) {
+            this.currentFragment = fragment;
+            selectFragment(fragment);
         }
         return true;
+    }
+
+    private void selectFragment(Fragment fragment) {
+        openFragment(fragment);
+        setBadgeNotifCounter(fragment);
     }
 
     private boolean isUserLogin() {
@@ -170,27 +171,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         presenter.onDestroy();
     }
 
-    FragmentAdapter adapterViewPager;
 
     private void reloadPage() {
-        adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
-        viewPager.setAdapter(adapterViewPager);
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        selectFragment(currentFragment);
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
-
-    private List<Fragment> createFragments() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment());
-            fragmentList.add(InboxFragment.newInstance());
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
-            fragmentList.add(AccountHomeFragment.newInstance());
-        }
-        return fragmentList;
-    }
-
-    Notification notification;
 
     @Override
     public void renderNotification(Notification notification) {
@@ -198,7 +184,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
 
-        setBadgeNotifCounter(currentFragment);
+        if (currentFragment != null)
+            setBadgeNotifCounter(currentFragment);
     }
 
     @Override
@@ -213,35 +200,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     public Context getContext() {
         return this;
-    }
-
-    public class FragmentAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> fragmentList;
-
-        public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
-            super(fm);
-            this.fragmentList = fragmentList;
-        }
-
-        public List<Fragment> getFragmentList() {
-            return fragmentList;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragmentList.size();
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
-        }
     }
 
     @Override
