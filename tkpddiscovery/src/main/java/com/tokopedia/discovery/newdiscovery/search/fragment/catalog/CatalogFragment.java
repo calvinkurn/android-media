@@ -358,7 +358,6 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            String message = String.format(getString(R.string.empty_search_content_template), query);
             catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title));
             SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
