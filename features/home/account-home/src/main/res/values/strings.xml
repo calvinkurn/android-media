@@ -112,7 +112,13 @@
     <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top Up & Tagihan]]></string>
     <string name="title_menu_deals">Deals</string>
+    <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
+    <string name="title_menu_reksadana">Reksa Dana</string>
+    <string name="title_menu_event">Event</string>
+    <string name="title_menu_gold">Emas</string>
+    <string name="title_menu_zakat">Zakat</string>
+    <string name="title_menu_donation">Donasi</string>
     <string name="title_menu_show_all">Lihat Semua</string>
     <string name="title_menu_sales">Penjualan</string>
     <string name="label_menu_new_order">Pesanan Baru</string>

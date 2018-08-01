@@ -165,8 +165,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
-                // TODO: 7/25/18 oka: need applink
-                "",
+                AccountConstants.KEY_SEE_ALL,
                 0
         );
         menuGridItems.add(gridItem);

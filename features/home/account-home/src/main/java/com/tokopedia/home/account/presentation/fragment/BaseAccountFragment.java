@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
@@ -62,6 +63,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuGridItemClicked(MenuGridItemViewModel item) {
+        if (TextUtils.equals(item.getApplink(), AccountConstants.KEY_SEE_ALL)){
+
+        }
         openApplink(item.getApplink());
     }
 
