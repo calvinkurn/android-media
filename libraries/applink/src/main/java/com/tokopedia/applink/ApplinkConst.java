@@ -117,6 +117,7 @@ public interface ApplinkConst {
 
     String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String TOPADS = "tokopedia://topads";
@@ -130,6 +131,14 @@ public interface ApplinkConst {
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String NOTIFICATION = "tokopedia://notification";
+    String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
+    String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
+    String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
+    String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
+
+    String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
+    String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
+    String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

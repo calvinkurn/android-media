@@ -70,6 +70,7 @@
     <string name="pref_receive_promo" translatable="false">notification_receive_promo</string>
     <string name="pref_receive_seller_info" translatable="false">notification_seller_info</string>
     <string name="pref_receive_group_chat" translatable="false">notification_group_chat</string>
+    <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
 
     <string name="application_version_fmt">Versi %1$s</string>
     <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
@@ -139,6 +140,11 @@
     <string name="label_menu_wishlist">Lihat Produk yang sudah Anda wishlist</string>
     <string name="label_button_add_product">+ Tambah Produk</string>
     <string name="title_dev_options">Developer Options</string>
+    <string name="title_shake_setting">Shake Shake</string>
+    <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
+    <string name="logout_confirmation">Apakah Anda ingin keluar?</string>
+    <string name="cancel">Batal</string>
+
 
     <string name="msg_has_no_shop">Anda belum memiliki Toko</string>
     <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan

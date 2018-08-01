@@ -20,7 +20,7 @@ import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 
 public class OpportunityListActivity extends BasePresenterActivity {
 
-    @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
+//    @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
     public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras) {
         return OpportunityListActivity.getCallingIntent(context, "");
     }

@@ -11,19 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
-import com.tokopedia.home.account.presentation.adapter.SellerAccountAdapter;
-import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
+import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
-import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 
 import java.util.ArrayList;
