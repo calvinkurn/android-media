@@ -1066,14 +1066,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeIntent(Context context) {
-        //return ParentIndexHome.getHomeIntent(context);
         return MainParentActivity.start(context);
     }
 
     @Override
     public Intent getHomePageIntent(Context context) {
-        // Force navigation to home tab
-        //return ParentIndexHome.getHomeIntent(context);
         return MainParentActivity.start(context);
     }
 

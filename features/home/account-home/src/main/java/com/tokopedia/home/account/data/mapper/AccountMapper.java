@@ -191,7 +191,6 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_favorite_shops));
         menuList.setMenuDescription(context.getString(R.string.label_menu_favorite_shops));
-        // TODO: 7/25/18 oka: need activity
         menuList.setApplink(ApplinkConst.FAVORITE_SHOPS);
         items.add(menuList);
 
@@ -262,7 +261,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_ready_to_ship,
                 context.getString(R.string.label_menu_ready_to_ship),
-                ApplinkConst.SELLER_OPPORTUNITY,
+                ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP,
                 accountModel.getNotifications().getSellerOrder().getReadyToShip()
         );
         menuGridItems.add(gridItem);
@@ -270,7 +269,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipped),
-                ApplinkConst.SELLER_SHIPMENT,
+                ApplinkConst.SELLER_PURCHASE_SHIPPED,
                 accountModel.getNotifications().getSellerOrder().getShipped()
         );
         menuGridItems.add(gridItem);
@@ -278,7 +277,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_arrive_at_destination),
-                ApplinkConst.SELLER_SHIPMENT,
+                ApplinkConst.SELLER_PURCHASE_DELIVERED,
                 accountModel.getNotifications().getSellerOrder().getArriveAtDestination()
         );
         menuGridItems.add(gridItem);
