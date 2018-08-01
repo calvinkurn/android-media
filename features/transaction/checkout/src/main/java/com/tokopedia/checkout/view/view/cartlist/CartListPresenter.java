@@ -11,21 +11,18 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
@@ -299,48 +296,49 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
-            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
-            boolean hasCalculateWholesalePrice = false;
-            if (wholesalePrices != null && wholesalePrices.size() > 0) {
-                double subTotalWholesalePrice = 0;
-                for (WholesalePrice wholesalePrice : wholesalePrices) {
-                    if (itemQty >= wholesalePrice.getQtyMin() && itemQty <= wholesalePrice.getQtyMax()) {
-                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
-                        hasCalculateWholesalePrice = true;
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
-                        break;
+                totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
+                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+                boolean hasCalculateWholesalePrice = false;
+                if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                    double subTotalWholesalePrice = 0;
+                    for (WholesalePrice wholesalePrice : wholesalePrices) {
+                        if (itemQty >= wholesalePrice.getQtyMin() && itemQty <= wholesalePrice.getQtyMax()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                            hasCalculateWholesalePrice = true;
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                            break;
+                        }
                     }
-                }
-                if (!hasCalculateWholesalePrice) {
-                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
-                    } else {
-                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                    if (!hasCalculateWholesalePrice) {
+                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
+                        } else {
+                            subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
+                    }
+                    if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+                        subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
+                    }
+                } else {
+                    if (!parentIds.contains(data.getCartItemData().getOriginData().getParentId())) {
+                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        parentIds.add(data.getCartItemData().getOriginData().getParentId());
                     }
                 }
-                if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
-                }
-            } else {
-                if (!parentIds.contains(data.getCartItemData().getOriginData().getParentId())) {
-                    subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
-                    data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                    parentIds.add(data.getCartItemData().getOriginData().getParentId());
+            }
+
+            if (!subtotalWholesalePriceMap.isEmpty()) {
+                for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                    subtotalPrice += item.getValue();
                 }
             }
-        }
 
-        if (!subtotalWholesalePriceMap.isEmpty()) {
-            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
-                subtotalPrice += item.getValue();
-            }
+            view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) subtotalPrice), true));
         }
-
-        view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) subtotalPrice), true));
     }
 
     @Override

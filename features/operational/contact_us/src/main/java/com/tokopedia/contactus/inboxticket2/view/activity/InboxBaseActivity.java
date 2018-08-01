@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -161,5 +164,29 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     public boolean onOptionsItemSelected(MenuItem item) {
         mPresenter.onOptionsItemSelected(item);
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setSnackBarErrorMessage(String message) {
+        final Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setVisibility(View.INVISIBLE);
+
+// Inflate our custom view
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View snackView = inflater.inflate(R.layout.snackbar_error_layout, null);
+        TextView tv = snackView.findViewById(R.id.tv_msg);
+        tv.setText(message);
+        TextView okbtn = snackView.findViewById(R.id.snack_ok);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+            }
+        });
+        layout.addView(snackView, 0);
+        layout.setPadding(0, 0, 0, 0);
+        snackbar.show();
     }
 }

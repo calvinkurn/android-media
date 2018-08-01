@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl;
@@ -48,7 +50,9 @@ public class InboxModule {
 
     @Provides
     @Named("InboxDetailPresenter")
-    InboxDetailContract.InboxDetailPresenter provideInboxListPresenter(GetTicketDetailUseCase useCase) {
-        return new InboxDetailPresenterImpl(useCase);
+    InboxDetailContract.InboxDetailPresenter provideInboxListPresenter(GetTicketDetailUseCase useCase,
+                                                                       PostMessageUseCase messageUseCase,
+                                                                       PostMessageUseCase2 messageUseCase2) {
+        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2);
     }
 }

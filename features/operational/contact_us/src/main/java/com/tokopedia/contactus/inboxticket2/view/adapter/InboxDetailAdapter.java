@@ -1,6 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,13 +70,31 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         TextView comment;
         @BindView(R2.id.layout_item_message)
         View itemView;
+        @BindView(R2.id.rv_attached_image)
+        RecyclerView rvAttachedImage;
+
+        private AttachmentAdapter attachmentAdapter;
+        private LinearLayoutManager layoutManager;
 
         DetailViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+            rvAttachedImage.setLayoutManager(layoutManager);
         }
 
         void bindViewHolder(int position) {
+            if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0) {
+                if (attachmentAdapter == null) {
+                    attachmentAdapter = new AttachmentAdapter(mContext, commentList.get(position).getAttachment());
+                } else {
+                    attachmentAdapter.addAll(commentList.get(position).getAttachment());
+                }
+                rvAttachedImage.setAdapter(attachmentAdapter);
+                rvAttachedImage.setVisibility(View.VISIBLE);
+            } else {
+                rvAttachedImage.setVisibility(View.GONE);
+            }
             CommentsItem item = commentList.get(position);
             imageHandler.loadImage(ivProfile, item.getCreatedBy().getPicture());
             tvName.setText(item.getCreatedBy().getName());
@@ -83,10 +102,13 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvDateRecent.setText(item.getCreateTime());
                 comment.setText(item.getMessagePlaintext());
                 comment.setVisibility(View.VISIBLE);
+                if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
+                    rvAttachedImage.setVisibility(View.VISIBLE);
             } else {
                 tvDateRecent.setText(item.getMessagePlaintext());
                 comment.setText("");
                 comment.setVisibility(View.GONE);
+                rvAttachedImage.setVisibility(View.GONE);
             }
         }
 

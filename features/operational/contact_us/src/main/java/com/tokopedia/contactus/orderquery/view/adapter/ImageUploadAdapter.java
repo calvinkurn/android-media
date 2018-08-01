@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.R;
@@ -34,19 +35,20 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     public ArrayList<ImageUpload> getImageUpload() {
         ArrayList<ImageUpload> imageList = new ArrayList<>();
-        for(int i =0 ;i< imageUpload.size()-1;i++) {
+        for (int i = 0; i < imageUpload.size() - 1; i++) {
             imageList.add(imageUpload.get(i));
         }
         return imageList;
     }
 
-    ArrayList<ImageUpload> imageUpload = new ArrayList<>();
+    private ArrayList<ImageUpload> imageUpload;
 
     private Context context;
 
     public ImageUploadAdapter(Context context, OnSelectImageClick onSelectImageClick) {
         this.context = context;
         this.onSelectImageClick = onSelectImageClick;
+        imageUpload = new ArrayList<>();
         imageUpload.add(new ImageUpload());
     }
 
@@ -69,15 +71,16 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     @Override
     public int getItemCount() {
-        if (imageUpload.size() >= maxPicUpload) {
-            return maxPicUpload;
-        }
         return imageUpload.size();
     }
 
     public void addImage(ImageUpload image) {
-        imageUpload.add(imageUpload.size()-1, image);
-        notifyDataSetChanged();
+        if (imageUpload.size() < maxPicUpload) {
+            imageUpload.add(imageUpload.size() - 1, image);
+            notifyDataSetChanged();
+        } else {
+            Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

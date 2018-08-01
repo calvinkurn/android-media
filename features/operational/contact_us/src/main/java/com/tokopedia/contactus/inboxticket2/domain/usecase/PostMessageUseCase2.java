@@ -8,7 +8,7 @@ import com.tokopedia.common.network.data.model.RestCacheStrategy;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint;
-import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
+import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.ArrayList;
@@ -22,19 +22,19 @@ import javax.inject.Inject;
  * Created by pranaymohapatra on 06/07/18.
  */
 
-public class PostMessageUseCase extends RestRequestUseCase {
+public class PostMessageUseCase2 extends RestRequestUseCase {
 
     private Map<String, Object> queryMap;
 
     @Inject
-    public PostMessageUseCase() {
+    public PostMessageUseCase2() {
         queryMap = new HashMap<>();
     }
 
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-        RestRequest restRequest1 = new RestRequest.Builder(getUrl(), new TypeToken<DataResponse<CreateTicketResult>>() {
+        RestRequest restRequest1 = new RestRequest.Builder(getUrl(), new TypeToken<DataResponse<StepTwoResponse>>() {
         }.getType())
                 .setRequestType(RequestType.POST)
                 .setBody(queryMap)
@@ -46,16 +46,12 @@ public class PostMessageUseCase extends RestRequestUseCase {
     }
 
     private String getUrl() {
-        return TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.SEND_MESSAGE;
+        return TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.SEND_MESSAGE_ATTACHMENT;
     }
 
-    public void setQueryMap(String id, String message, int photo, String photoall) {
+    public void setQueryMap(String fileUploaded, String postKey) {
         queryMap.clear();
-        queryMap.put("ticket_id", id);
-        queryMap.put("message", message);
-        if (photo == 1)
-            queryMap.put("p_photo", 1);
-        if (photoall.length() > 0)
-            queryMap.put("p_photo_all", photoall);
+        queryMap.put("file_uploaded", fileUploaded);
+        queryMap.put("post_key", postKey);
     }
 }

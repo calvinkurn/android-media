@@ -84,20 +84,20 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     AppCompatEditText edtQuery;
     @BindView(R2.id.btn_send)
     TextView sendButton;
-    ImageUploadAdapter imageUploadAdapter;
     @BindView(R2.id.tooltiplayout)
     ConstraintLayout toolTipLayout;
     @BindView(R2.id.submit_success)
     ConstraintLayout submitSuccess;
-    String mInvoiceNumber;
+    @BindView(R2.id.rv_selected_images)
+    RecyclerView rvSelectedImages;
+    private String mInvoiceNumber;
 
-    OrderQueryComponent orderQueryComponent;
     @Inject
     SubmitTicketPresenter presenter;
 
-    ImageUploadHandler imageUploadHandler;
-    @BindView(R2.id.rv_selected_images)
-    RecyclerView rvSelectedImages;
+
+    private ImageUploadHandler imageUploadHandler;
+    private ImageUploadAdapter imageUploadAdapter;
 
     public static SubmitTicketFragment newInstance(SubmitTicketInvoiceData submitTicketInvoiceData) {
         Bundle args = new Bundle();
@@ -115,7 +115,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         ButterKnife.bind(this, view);
         imageUploadHandler = ImageUploadHandler.createInstance(this);
         presenter.attachView(this);
-        imageUploadAdapter = new ImageUploadAdapter(getContext(),this);
+        imageUploadAdapter = new ImageUploadAdapter(getContext(), this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edtQuery.addTextChangedListener(watcher(edtQuery));
@@ -153,7 +153,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @Override
     protected void initInjector() {
-        orderQueryComponent = DaggerOrderQueryComponent.builder()
+        OrderQueryComponent orderQueryComponent = DaggerOrderQueryComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
         orderQueryComponent.inject(this);
@@ -254,7 +254,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void setSnackBarErrorMessage(String hello) {
         final Snackbar snackbar = Snackbar.make(constraint_layout, hello, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
 // Inflate our custom view
@@ -342,8 +342,6 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
 
-
-
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
@@ -413,7 +411,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     @OnClick(R2.id.btn_send)
     public void onSendClick() {
         String invoiceLabel = "With Invoice";
-        if(mInvoiceNumber.equals("")){
+        if (mInvoiceNumber.equals("")) {
             invoiceLabel = "Without Invoice";
         }
         ContactUsTracking.eventSuccessClick(invoiceLabel);

@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/iv_attachment"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
         android:scaleType="centerCrop" />
 
     <ImageView
@@ -17,6 +17,7 @@
         android:layout_height="@dimen/dp_18"
         android:layout_gravity="end"
         android:layout_margin="@dimen/dp_4"
+        android:visibility="gone"
         app:srcCompat="@drawable/ic_clear" />
 
 </FrameLayout>

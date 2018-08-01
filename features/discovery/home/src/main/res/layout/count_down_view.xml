@@ -9,8 +9,8 @@
     <TextView
         android:id="@+id/hourView"
         style="@style/TextView.Small.White.Bold"
-        android:layout_width="@dimen/count_down_item_size"
-        android:layout_height="@dimen/count_down_item_size"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:background="@drawable/background_countdown"
         android:gravity="center"
         android:textAlignment="center"
@@ -25,8 +25,8 @@
     <TextView
         android:id="@+id/minuteView"
         style="@style/TextView.Small.White.Bold"
-        android:layout_width="@dimen/count_down_item_size"
-        android:layout_height="@dimen/count_down_item_size"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:background="@drawable/background_countdown"
         android:gravity="center"
         android:textAlignment="center"
@@ -41,8 +41,8 @@
     <TextView
         android:id="@+id/secondView"
         style="@style/TextView.Small.White.Bold"
-        android:layout_width="@dimen/count_down_item_size"
-        android:layout_height="@dimen/count_down_item_size"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:background="@drawable/background_countdown"
         android:gravity="center"
         android:textAlignment="center"

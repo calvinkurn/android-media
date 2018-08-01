@@ -12,6 +12,7 @@ import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,7 +30,8 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
 
     public AttachmentAdapter(Context context, List<AttachmentItem> data) {
         mContext = context;
-        attachmentList = data;
+        attachmentList = new ArrayList<>();
+        attachmentList.addAll(data);
         imageHandler = new ImageHandler(mContext);
     }
 
@@ -42,6 +44,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
     @Override
     public void onBindViewHolder(AttachmentViewHolder holder, int position) {
         holder.bindView(position);
+    }
+
+    public void addAll(List<AttachmentItem> attachmentItems) {
+        attachmentList.clear();
+        attachmentList.addAll(attachmentItems);
     }
 
     @Override
