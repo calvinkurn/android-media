@@ -20,12 +20,14 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.discovery.similarsearch.di.SimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.di.DaggerSimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
 import com.tokopedia.discovery.similarsearch.view.presenter.SimilarSearchPresenter;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -134,6 +136,18 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
     public void setProductList(List<ProductsItem> productList) {
         mProgressBar.setVisibility(View.GONE);
         mSimilarItemList.setVisibility(View.VISIBLE);
+        List<Object> dataLayerList = new ArrayList<>();
+        if(productList != null) {
+            int i = 0;
+            for(ProductsItem productsItem: productList) {
+                if(productsItem.getId() != 0) {
+                    productsItem.setOriginProductID(getProductID());
+                    dataLayerList.add(productsItem.getProductAsObjectDataLayer(String.valueOf(i++)));
+                }
+            }
+        }
+        if(dataLayerList.size() > 0)
+            SimilarSearchTracking.eventUserSeeSimilarProduct(getProductID(),dataLayerList);
         mAdapter.setProductsItems(productList);
     }
 

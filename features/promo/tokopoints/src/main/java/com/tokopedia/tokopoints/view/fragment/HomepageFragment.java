@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -22,13 +21,11 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
-import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -36,23 +33,22 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.HomepagePagerAdapter;
+import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.CouponExtraInfoEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
+import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
+import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.gamification.applink.ApplinkConstant.GAMIFICATION;
 
 public class HomepageFragment extends BaseDaggerFragment implements HomepageContract.View, View.OnClickListener {
     private static final int CONTAINER_LOADER = 0;
@@ -63,11 +59,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private ImageView mImgEgg;
     private TabLayout mTabLayoutPromo;
     private ViewPager mPagerPromos;
-    private AppBarLayout onEggScrollListener;
-    private FloatingEggButtonFragment floatingEggButtonFragment;
-    private TickerView tickerView;
     @Inject
     public HomepagePresenter mPresenter;
+
+    private int mSumToken;
+
+    StartPurchaseBottomSheet mStartPurchaseBottomSheet;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
@@ -118,32 +115,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     @Override
-    public void onError(String error) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
-    }
-
-    @Override
-    public void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData) {
-        mContainerMain.setDisplayedChild(CONTAINER_DATA);
-        mPresenter.getPromos();
-        mTextMembershipValue.setText(String.valueOf(tierData.getNameDesc()));
-        mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(pointData.getReward(), false));
-        mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(pointData.getLoyalty(), false));
-        ImageHandler.loadImageFitCenter(getActivityContext(), mImgEgg, tierData.getEggImageUrl());
-    }
-
-    @Override
-    public void onErrorPromos(String error) {
-
-    }
-
-    @Override
-    public void onSuccessPromos(TokoPointPromosEntity data) {
-        initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons());
-        buildTickerView(data.getCoupon().getExtraInfo());
-    }
-
-    @Override
     public Context getAppContext() {
         return getActivity().getApplicationContext();
     }
@@ -181,8 +152,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             openWebView(CommonConstant.WebLink.HISTORY);
         } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getTokoPointDetail();
-        } else if (source.getId() == R.id.container_fab_egg_token) {
-            RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
         }
     }
 
@@ -194,8 +163,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mImgEgg = view.findViewById(R.id.img_egg);
         mTabLayoutPromo = view.findViewById(R.id.tab_layout_promos);
         mPagerPromos = view.findViewById(R.id.view_pager_promos);
-        onEggScrollListener = view.findViewById(R.id.app_bar);
-        tickerView = view.findViewById(R.id.ticker_view);
     }
 
     private void initListener() {
@@ -211,7 +178,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         getView().findViewById(R.id.text_loyalty_label).setOnClickListener(this);
         getView().findViewById(R.id.text_loyalty_value).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
-        getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(this);
     }
 
     @Override
@@ -230,6 +196,62 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     @Override
+    public void onSuccessPromos(@NonNull TokoPointPromosEntity data) {
+        initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons());
+
+        if (data.getCoupon() != null && data.getCoupon().getCoupons() != null) {
+            TextView counterCoupon = getView().findViewById(R.id.text_count);
+            if (data.getCoupon().getCoupons().size() > CommonConstant.MAX_COUPON_TO_SHOW_COUNT) {
+                counterCoupon.setVisibility(View.VISIBLE);
+                counterCoupon.setText(CommonConstant.MAX_COUPON_TO_SHOW_COUNT + "+");
+            } else if (data.getCoupon().getCoupons().size() > 0) {
+                counterCoupon.setVisibility(View.VISIBLE);
+                counterCoupon.setText(String.valueOf(data.getCoupon().getCoupons().size()));
+            }
+
+            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon_space);
+        } else {
+            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon);
+        }
+    }
+
+    @Override
+    public void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData, LobDetails lobDetails) {
+        mContainerMain.setDisplayedChild(CONTAINER_DATA);
+        mPresenter.getPromos();
+        mTextMembershipValue.setText(String.valueOf(tierData.getNameDesc()));
+        mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(pointData.getReward(), false));
+        mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(pointData.getLoyalty(), false));
+        ImageHandler.loadImageFitCenter(getActivityContext(), mImgEgg, tierData.getEggImageUrl());
+
+        //init bottom sheet
+        mStartPurchaseBottomSheet = new StartPurchaseBottomSheet();
+        mStartPurchaseBottomSheet.setData(lobDetails);
+
+        if (getView() != null) {
+            getView().findViewById(R.id.img_token).setOnClickListener(view -> {
+                if (mSumToken <= 0) {
+                    showStartPurchaseBottomSheet(lobDetails.getTitle());
+                } else {
+                    if (getActivity() != null) {
+                        RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                    }
+                }
+            });
+
+            getView().findViewById(R.id.text_token_title).setOnClickListener(view -> {
+                if (mSumToken <= 0) {
+                    showStartPurchaseBottomSheet(lobDetails.getTitle());
+                } else {
+                    if (getActivity() != null) {
+                        RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
         if (tokenDetail != null) {
             try {
@@ -238,6 +260,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
                 ImageView imgToken = getView().findViewById(R.id.img_token);
                 textCount.setText(String.valueOf(tokenDetail.getSumToken()));
+                this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
                 ImageHandler.loadImageFit2(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
@@ -253,6 +276,43 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 //to avoid any accidental crash in order to prevent homepage error
             }
         }
+    }
+
+    @Override
+    public void onSuccessTicker(@NonNull List<TickerContainer> tickers) {
+        if (getView() != null && tickers.size() > 0) {
+            ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
+            pager.setAdapter(new TickerPagerAdapter(getContext(), tickers));
+            final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
+            if (tickers != null && tickers.size() > 1) {
+                //adding bottom dots(Page Indicator)
+                pageIndicator.setVisibility(View.VISIBLE);
+                pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+                pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
+                pageIndicator.setViewPager(pager, 0);
+            } else {
+                pageIndicator.setVisibility(View.GONE);
+            }
+
+            getView().findViewById(R.id.cons_ticker_container).setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onError(String error) {
+        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+    }
+
+    @Override
+    public void onErrorTicker(String errorMessage) {
+        if (getView() != null) {
+            getView().findViewById(R.id.cons_ticker_container).setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onErrorPromos(String error) {
+
     }
 
     @Override
@@ -399,21 +459,38 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mToolTip.show();
     }
 
-    private void buildTickerView(List<CouponExtraInfoEntity> tickers) {
-        if (tickers == null || tickers.isEmpty()) {
+    @Override
+    public void showRedeemFullError(CatalogsValueEntity item, String title, String desc) {
+        if (getActivity() == null || !isAdded()) {
             return;
         }
 
-        tickerView.setVisibility(View.VISIBLE);
-        ArrayList<String> messages = new ArrayList<>();
-        for (CouponExtraInfoEntity ticker : tickers) {
-            if (ticker == null) {
-                continue;
-            }
-            messages.add(ticker.getInfoHtml());
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.layout_tp_network_error_large, null, false);
+
+        ImageView img = view.findViewById(R.id.img_error);
+        img.setImageResource(R.drawable.ic_tp_error_redeem_full);
+        TextView titleText = view.findViewById(R.id.text_title_error);
+
+        if (title == null || title.isEmpty()) {
+            titleText.setText(R.string.tp_label_too_many_access);
+        } else {
+            titleText.setText(title);
         }
 
-        tickerView.setListMessage(messages);
-        tickerView.buildView();
+        TextView label = view.findViewById(R.id.text_label_error);
+        label.setText(desc);
+
+        view.findViewById(R.id.text_failed_action).setOnClickListener(view1 -> mPresenter.startSaveCoupon(item));
+
+        adb.setView(view);
+        AlertDialog dialog = adb.create();
+        dialog.show();
+        decorateDialog(dialog);
+    }
+
+    public void showStartPurchaseBottomSheet(String title) {
+        mStartPurchaseBottomSheet.show(getChildFragmentManager(), title);
     }
 }
