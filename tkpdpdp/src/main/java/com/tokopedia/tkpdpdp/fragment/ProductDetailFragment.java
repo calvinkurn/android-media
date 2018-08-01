@@ -39,7 +39,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -92,6 +91,7 @@ import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.tkpdpdp.ProductModalActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -117,6 +117,7 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
@@ -139,7 +140,6 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
-import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
@@ -178,6 +178,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
     public static final int REQUEST_VARIANT = 99;
+    public static final int REQUEST_PRODUCT_MODAL = 101;
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
@@ -517,7 +518,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 buttonBuyView.changeToLoading();
             }
         } else {
-            onProductBuySessionLogin(createProductCartPass(source));
+            openProductModalActivity(generateStateVariant(source));
+//            onProductBuySessionLogin(createProductCartPass(source));
         }
     }
 
@@ -683,6 +685,19 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(0, 0);
+    }
+
+    public void openProductModalActivity(int state) {
+        startActivityForResult(
+                ProductModalActivity.Companion.createActivity(
+                        getActivity(),
+                        productVariant,
+                        productData,
+                        selectedQuantity,
+                        selectedRemarkNotes
+                ),
+                REQUEST_PRODUCT_MODAL
+        );
     }
 
     @Override
