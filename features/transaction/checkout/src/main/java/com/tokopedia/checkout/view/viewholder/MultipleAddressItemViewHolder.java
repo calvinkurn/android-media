@@ -67,6 +67,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private EditText etQty;
     private TextView tvErrorQtyValidation;
     private TextView tvErrorNoteValidation;
+    private TextView tvNoteCharCounter;
 
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
@@ -93,6 +94,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         etQty = itemView.findViewById(R.id.et_qty);
         tvErrorQtyValidation = itemView.findViewById(R.id.tv_error_qty_validation);
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
+        tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
         phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
 
@@ -190,6 +192,9 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
         if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
+            String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                    editable.length(), data.getMaxRemark());
+            tvNoteCharCounter.setText(noteCounter);
             data.setProductNotes(editable.toString());
             validateNote(data);
         }
@@ -360,6 +365,10 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             etNotesForSeller.setText(itemData.getProductNotes());
             etNotesForSeller.setSelection(etNotesForSeller.length());
         }
+
+        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                itemData.getProductNotes().length(), itemData.getMaxRemark());
+        tvNoteCharCounter.setText(noteCounter);
 
         if (noteTextwatcherListener != null) {
             etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
