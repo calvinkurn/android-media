@@ -21,7 +21,6 @@ import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShopItem;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.DataFavoriteMapper;
-import com.tokopedia.tkpd.home.favorite.view.viewmodel.EmptyWishlistViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 
@@ -197,18 +196,6 @@ public class FavoritePresenter
                 dataFavoriteItemList
                         .add(favoriteMapper
                                 .prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
-            }
-        }
-    }
-
-    private void addWishlist(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
-        if (dataFavorite != null) {
-            if (dataFavorite.getWishListData() != null) {
-                validateWishlistErrorNetwork(dataFavorite.getWishListData());
-                dataFavoriteItemList.add(
-                        favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
-            } else {
-                dataFavoriteItemList.add(new EmptyWishlistViewModel());
             }
         }
     }
