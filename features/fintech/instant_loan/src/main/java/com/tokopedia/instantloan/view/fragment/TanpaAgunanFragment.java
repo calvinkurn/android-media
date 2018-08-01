@@ -15,12 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -40,7 +41,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     private static final String TAB_POSITION = "tab_position";
     private Spinner mSpinnerLoanAmount;
-    private final String SCREEN_NAME = "tanpa agunan";
+
 
     @Inject
     InstantLoanPresenter presenter;
@@ -122,7 +123,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     private void sendCariPinjamanClickEvent() {
         String eventLabel = getScreenName() + " - " + mSpinnerLoanAmount.getSelectedItem().toString();
-        UnifyTracking.eventCariPinjamanClick(eventLabel);
+        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     @Override
@@ -131,7 +132,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     }
 
     public String getScreenNameId() {
-        return SCREEN_NAME;
+        return InstantLoanEventConstants.Screen.TANPA_AGUNAN_SCREEN_NAME;
     }
 
     @Override

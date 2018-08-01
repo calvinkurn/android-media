@@ -48,7 +48,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     public static final int LOGIN_REQUEST_CODE = 1005;
     private static final String TAB_POSITION = "tab_position";
-    private final String SCREEN_NAME = "dana instan";
 
     private ProgressBar mProgressBar;
     private Dialog mDialogIntro;
@@ -346,7 +345,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     public String getScreenNameId() {
-        return SCREEN_NAME;
+        return InstantLoanEventConstants.Screen.DANA_INSTAN_SCREEN_NAME;
     }
 
     @Override

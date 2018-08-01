@@ -2,6 +2,12 @@ package com.tokopedia.instantloan.common.analytics;
 
 public class InstantLoanEventConstants {
 
+    public interface Screen {
+        String DANA_INSTAN_SCREEN_NAME = "dana instan";
+        String TANPA_AGUNAN_SCREEN_NAME = "tanpa agunan";
+        String AGUNAN_SCREEN_NAME = "agunan";
+    }
+
     interface Event {
         String EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
