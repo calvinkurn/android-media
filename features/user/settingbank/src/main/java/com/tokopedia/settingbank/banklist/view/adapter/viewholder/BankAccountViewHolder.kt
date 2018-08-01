@@ -71,8 +71,7 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
         if (!::popupMenu.isInitialized) {
             popupMenu = PopupMenu(context, v)
             popupMenu.setOnMenuItemClickListener { item: MenuItem? ->
-                onPopupMenuClicked(item,
-                        element)
+                onPopupMenuClicked(item)
             }
         }
         setupPopupMenu(element, popupMenu, context)
@@ -80,19 +79,19 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
     }
 
 
-    private fun onPopupMenuClicked(item: MenuItem?, element: BankAccountViewModel?): Boolean {
+    private fun onPopupMenuClicked(item: MenuItem?): Boolean {
         return if (item != null) {
             when (item.itemId) {
                 MENU_MAKE_DEFAULT -> {
-                    listener.makeMainAccount(adapterPosition, element)
+                    listener.makeMainAccount(adapterPosition)
                     return true
                 }
                 MENU_EDIT -> {
-                    listener.editBankAccount(adapterPosition, element)
+                    listener.editBankAccount(adapterPosition)
                     return true
                 }
                 MENU_DELETE -> {
-                    listener.deleteBankAccount(adapterPosition, element)
+                    listener.deleteBankAccount(adapterPosition)
                     return true
                 }
                 else -> false

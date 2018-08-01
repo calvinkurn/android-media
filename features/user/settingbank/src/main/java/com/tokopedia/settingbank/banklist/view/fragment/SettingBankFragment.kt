@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -160,26 +159,29 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         add_account_button.visibility = View.GONE
     }
 
-    override fun makeMainAccount(adapterPosition: Int, element: BankAccountViewModel?) {
-        analyticTracker.trackSetDefaultAccount()
+    override fun makeMainAccount(adapterPosition: Int) {
+        if (adapter.getList() != null) {
+            val element = adapter.getList()!![adapterPosition] as BankAccountViewModel
+            analyticTracker.trackSetDefaultAccount()
 
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            if (!::alertDialog.isInitialized) {
+                alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            }
+
+            alertDialog.setTitle(getString(R.string.make_main_account_prompt_title))
+            alertDialog.setDesc(composeMakeMainDescription(element))
+            alertDialog.setBtnCancel(getString(R.string.No))
+            alertDialog.setBtnOk(getString(R.string.yes))
+            alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
+            alertDialog.setOnOkClickListener({
+                analyticTracker.trackConfirmYesSetDefaultAccount()
+
+                presenter.setMainAccount(adapterPosition, element)
+                alertDialog.dismiss()
+            })
+
+            alertDialog.show()
         }
-
-        alertDialog.setTitle(getString(R.string.make_main_account_prompt_title))
-        alertDialog.setDesc(composeMakeMainDescription(element))
-        alertDialog.setBtnCancel(getString(R.string.No))
-        alertDialog.setBtnOk(getString(R.string.yes))
-        alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
-        alertDialog.setOnOkClickListener({
-            analyticTracker.trackConfirmYesSetDefaultAccount()
-
-            presenter.setMainAccount(adapterPosition, element)
-            alertDialog.dismiss()
-        })
-
-        alertDialog.show()
 
     }
 
@@ -214,43 +216,51 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         }
     }
 
-    override fun editBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
-        if (element != null) {
-            analyticTracker.trackEditBankAccount()
-            startActivityForResult(AddEditBankActivity.createIntentEditBank(
-                    activity!!
-                    , BankFormModel(
-                    BankFormModel.Companion.STATUS_EDIT,
-                    element.bankId!!,
-                    element.accountId!!,
-                    element.accountName!!,
-                    element.accountNumber!!,
-                    element.bankName!!,
-                    adapterPosition
-            )), REQUEST_EDIT_BANK)
-        }
+    override fun editBankAccount(adapterPosition: Int) {
+        if (adapter.getList() != null) {
+            val element = adapter.getList()!![adapterPosition] as BankAccountViewModel
 
+            if (element != null) {
+                analyticTracker.trackEditBankAccount()
+                startActivityForResult(AddEditBankActivity.createIntentEditBank(
+                        activity!!
+                        , BankFormModel(
+                        BankFormModel.Companion.STATUS_EDIT,
+                        element.bankId!!,
+                        element.accountId!!,
+                        element.accountName!!,
+                        element.accountNumber!!,
+                        element.bankName!!,
+                        adapterPosition
+                )), REQUEST_EDIT_BANK)
+            }
+
+        }
     }
 
-    override fun deleteBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
-        analyticTracker.trackDeleteBankAccount()
+    override fun deleteBankAccount(adapterPosition: Int) {
+        if (adapter.getList() != null) {
+            val element = adapter.getList()!![adapterPosition] as BankAccountViewModel
 
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            analyticTracker.trackDeleteBankAccount()
+
+            if (!::alertDialog.isInitialized) {
+                alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            }
+
+            alertDialog.setTitle(getString(R.string.delete_bank_account_prompt_title))
+            alertDialog.setDesc(composeDeleteDescription(element))
+            alertDialog.setBtnCancel(getString(R.string.No))
+            alertDialog.setBtnOk(getString(R.string.yes_delete))
+            alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
+            alertDialog.setOnOkClickListener({
+                analyticTracker.trackConfirmYesDeleteBankAccount()
+                presenter.deleteAccount(adapterPosition, element)
+                alertDialog.dismiss()
+            })
+
+            alertDialog.show()
         }
-
-        alertDialog.setTitle(getString(R.string.delete_bank_account_prompt_title))
-        alertDialog.setDesc(composeDeleteDescription(element))
-        alertDialog.setBtnCancel(getString(R.string.No))
-        alertDialog.setBtnOk(getString(R.string.yes_delete))
-        alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
-        alertDialog.setOnOkClickListener({
-            analyticTracker.trackConfirmYesDeleteBankAccount()
-            presenter.deleteAccount(adapterPosition, element)
-            alertDialog.dismiss()
-        })
-
-        alertDialog.show()
     }
 
     private fun composeDeleteDescription(element: BankAccountViewModel?): String {

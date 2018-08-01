@@ -1469,7 +1469,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_setting_bank"))
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_setting_bank", true))
             return SettingBankActivity.Companion.createIntent(context);
         else {
             return ManagePeopleBankActivity.createInstance(context);
