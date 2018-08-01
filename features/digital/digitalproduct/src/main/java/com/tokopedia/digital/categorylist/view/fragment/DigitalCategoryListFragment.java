@@ -1,14 +1,13 @@
 package com.tokopedia.digital.categorylist.view.fragment;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +34,7 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TokoCashTypeDef;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
@@ -73,6 +73,10 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
     private static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
+    public static final String PARAM_IS_COUPON_ACTIVE = "PARAM_IS_COUPON_APPLIED";
+
+    private static final int DEFAULT_COUPON_APPLIED = 1;
+    private static final int DEFAULT_COUPON_NOT_APPLIED = 0;
 
     @BindView(R2.id.rv_digital_category)
     RecyclerView rvDigitalCategoryList;
@@ -85,6 +89,10 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     DigitalItemHeaderHolder headerSubscription;
     @BindView(R2.id.header_fav_number)
     DigitalItemHeaderHolder headerFavNumber;
+    @BindView(R2.id.container_ticker_view)
+    LinearLayout containerTickerView;
+    @BindView(R2.id.ticker_view)
+    TickerView tickerView;
 
     private CompositeSubscription compositeSubscription;
     private DigitalCategoryListAdapter adapter;
@@ -94,11 +102,20 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private TokoCashData tokoCashBalanceData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
     private boolean fromAppShortcut = false;
+    private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
 
     private RemoteConfig remoteConfig;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
+    }
+
+    public static DigitalCategoryListFragment newInstance(int isCouponApplied) {
+        DigitalCategoryListFragment fragment = new DigitalCategoryListFragment();
+        Bundle extras = new Bundle();
+        extras.putInt(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
+        fragment.setArguments(extras);
+        return fragment;
     }
 
     public static DigitalCategoryListFragment newInstance(boolean isFromAppShortcut) {
@@ -123,6 +140,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public void onSaveState(Bundle state) {
         state.putParcelableArrayList(EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA,
                 (ArrayList<? extends Parcelable>) digitalCategoryListDataState);
+        state.putInt(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
     }
 
     @Override
@@ -130,6 +148,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         digitalCategoryListDataState = savedState.getParcelableArrayList(
                 EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA
         );
+        isCouponApplied = savedState.getInt(PARAM_IS_COUPON_ACTIVE);
     }
 
     @Override
@@ -169,7 +188,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     protected void setupArguments(Bundle arguments) {
         if (arguments != null) {
-            fromAppShortcut = arguments.getBoolean(FROM_APP_SHORTCUTS);
+            if (arguments.containsKey(FROM_APP_SHORTCUTS)) {
+                fromAppShortcut = arguments.getBoolean(FROM_APP_SHORTCUTS);
+            }
+
+            isCouponApplied = arguments.getInt(PARAM_IS_COUPON_ACTIVE, 0);
         }
     }
 
@@ -181,6 +204,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     protected void initView(View view) {
         refreshHandler = new RefreshHandler(getActivity(), view, this);
+
+        if (isCouponApplied == DEFAULT_COUPON_APPLIED) {
+            showCouponAppliedTicker();
+        } else if (isCouponApplied == DEFAULT_COUPON_NOT_APPLIED) {
+            hideCouponAppliedTicker();
+        }
     }
 
     @Override
@@ -453,5 +482,19 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     public boolean isFromAppShortcut() {
         return fromAppShortcut;
+    }
+
+    private void showCouponAppliedTicker() {
+        containerTickerView.setVisibility(View.VISIBLE);
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(getString(R.string.digital_coupon_applied_ticker_message));
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
+        tickerView.setTickerHeight(getResources().getDimensionPixelSize(R.dimen.dp_56));
+        tickerView.buildView();
+    }
+
+    private void hideCouponAppliedTicker() {
+        containerTickerView.setVisibility(View.GONE);
     }
 }
