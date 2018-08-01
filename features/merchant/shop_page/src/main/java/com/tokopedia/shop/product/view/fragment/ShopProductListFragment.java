@@ -275,6 +275,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         if (stickySingleHeaderView != null) {
             stickySingleHeaderView.clearHeaderView();
         }
+        shopProductAdapter.setShopEtalase(null);
+        shopProductAdapter.setShopEtalaseTitle(null);
         super.onSwipeRefresh();
     }
 
@@ -509,7 +511,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onErrorGetShopInfo(Throwable e) {
-        //TODO check this.
         showGetListError(e);
     }
 
