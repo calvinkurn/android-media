@@ -68,6 +68,7 @@ import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
+import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
@@ -1370,12 +1371,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (templateAdapter != null && templateAdapter.getList().size() != 0) {
             templateRecyclerView.setVisibility(View.VISIBLE);
         }
-        presenter.sendMessage(networkType, quickReply.getMessage());
+        presenter.sendMessageWithAttachmentType(networkType,quickReply.getMessage(), WebSocketMapper
+                .TYPE_QUICK_REPLY);
     }
 
     @Override
     public void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable modelToBeRemoved) {
-        presenter.sendMessage(networkType,message.getMessage());
+        presenter.sendMessageWithAttachmentType(networkType,message.getMessage(),WebSocketMapper
+                .TYPE_QUICK_REPLY);
         adapter.remove(modelToBeRemoved);
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.domain;
 
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -133,6 +134,25 @@ public class WebSocketUseCase {
         data.addProperty("message_id", Integer.valueOf(messageId));
         data.addProperty("message", reply);
         data.addProperty("start_time", startTime);
+        json.add("data", data);
+        return json;
+    }
+
+    public JsonObject getParamSendReply(String messageId, String reply, String startTime, String
+            attachmentType) {
+        int attachmentTypeInt = Integer.MIN_VALUE;
+        if(!TextUtils.isEmpty(attachmentType) && TextUtils.isDigitsOnly(attachmentType)) {
+            attachmentTypeInt = Integer.parseInt(attachmentType);
+        }
+        JsonObject json = new JsonObject();
+        json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
+        JsonObject data = new JsonObject();
+        data.addProperty("message_id", Integer.valueOf(messageId));
+        data.addProperty("message", reply);
+        data.addProperty("start_time", startTime);
+        if (attachmentTypeInt != Integer.MIN_VALUE) {
+            data.addProperty("attachment_type",attachmentTypeInt);
+        }
         json.add("data", data);
         return json;
     }
