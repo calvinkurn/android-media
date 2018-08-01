@@ -139,6 +139,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>app_enable_similar_search</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_show_simple_app_rating</key>
         <value>true</value>
     </entry>
@@ -184,10 +188,6 @@
     <entry>
         <key>mainapp_native_promo_list</key>
         <value>true</value>
-    </entry>
-    <entry>
-        <key>mainapp_flight_transaction_menu</key>
-        <value>false</value>
     </entry>
     <entry>
         <key>mainapp_show_recomendation_button</key>

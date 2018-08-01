@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSource;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 
 import java.util.Date;
@@ -12,12 +13,12 @@ import java.util.Date;
 
 public class TopAdsDatePickerInteractorImpl implements TopAdsDatePickerInteractor {
 
-    private TopAdsCacheDataSourceImpl topAdsCacheDataSource;
-    private Context context;
+    private TopAdsCacheDataSource topAdsCacheDataSource;
+    //private Context context;
 
-    public TopAdsDatePickerInteractorImpl(Context context) {
-        this.context = context;
-        topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
+    public TopAdsDatePickerInteractorImpl(TopAdsCacheDataSource topAdsCacheDataSource) {
+        //this.context = context;
+        this.topAdsCacheDataSource = topAdsCacheDataSource;
     }
 
     @Override

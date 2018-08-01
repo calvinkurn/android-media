@@ -1,7 +1,5 @@
 package com.tokopedia.transactionanalytics;
 
-import android.util.Log;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
@@ -9,64 +7,68 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Key;
+
+
 /**
  * @author anggaprasetiyo on 06/06/18.
  */
-public class CheckoutAnalyticsAddToCart extends CheckoutAnalytics {
+public class CheckoutAnalyticsAddToCart extends TransactionAnalytics {
 
     @Inject
     public CheckoutAnalyticsAddToCart(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
 
-    public void enhancedECommerceAddToCart(Map<String, Object> cartMap, String eventLabel) {
-        if (analyticTracker != null) {
-            Map<String, Object> dataLayer = DataLayer.mapOf("event", ConstantTransactionAnalytics.EventName.ADD_TO_CART,
-                    "eventCategory", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
-                    "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_BELI,
-                    "eventLabel", eventLabel,
-                    "ecommerce", cartMap);
-            Log.d("EE ATC", dataLayer.toString());
-            analyticTracker.sendEnhancedEcommerce(dataLayer);
-        }
+    public void enhancedECommerceAddToCartClickBeli(Map<String, Object> cartMap, String eventLabel) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.ADD_TO_CART,
+                Key.EVENT_CATEGORY, EventCategory.ADD_TO_CART,
+                Key.EVENT_ACTION, EventAction.CLICK_BELI,
+                Key.EVENT_LABEL, eventLabel,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+
 
     }
 
     public void enhancedECommerceAddToCart(Map<String, Object> cartMap, String eventLabel, String eventAction) {
-        if (analyticTracker != null)
-            analyticTracker.sendEnhancedEcommerce(
-                    DataLayer.mapOf("event", ConstantTransactionAnalytics.EventName.ADD_TO_CART,
-                            "eventCategory", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
-                            "eventAction", eventAction,
-                            "eventLabel", eventLabel,
-                            "ecommerce", cartMap)
-            );
+        sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        Key.EVENT, EventName.ADD_TO_CART,
+                        Key.EVENT_CATEGORY, EventCategory.ADD_TO_CART,
+                        Key.EVENT_ACTION, eventAction,
+                        Key.EVENT_LABEL, eventLabel,
+                        Key.E_COMMERCE, cartMap
+                )
+        );
     }
 
-    public void eventClickAddToCartImpressionAtcSuccess() {
-        if (analyticTracker != null)
-            analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                    ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
-                    ConstantTransactionAnalytics.EventAction.IMPRESSION_ATC_SUCCESS,
-                    ""
-            );
+    public void eventClickAtcAddToCartImpressionAtcSuccess() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.ADD_TO_CART,
+                EventAction.IMPRESSION_ATC_SUCCESS
+        );
     }
 
-    public void eventClickAddToCartClickBayarOnAtcSuccess() {
-        if (analyticTracker != null)
-            analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                    ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
-                    ConstantTransactionAnalytics.EventAction.CLICK_BAYAR_ON_ATC_SUCCESS,
-                    ""
-            );
+    public void eventClickAtcAddToCartClickBayarOnAtcSuccess() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.ADD_TO_CART,
+                EventAction.CLICK_BAYAR_ON_ATC_SUCCESS
+        );
     }
 
-    public void eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess() {
-        if (analyticTracker != null)
-            analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
-                    ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
-                    ConstantTransactionAnalytics.EventAction.CLICK_LANJUTKAN_BELANJA_ON_ATC_SUCCESS,
-                    ""
-            );
+    public void eventClickAtcAddToCartClickLanjutkanBelanjaOnAtcSuccess() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.ADD_TO_CART,
+                EventAction.CLICK_LANJUTKAN_BELANJA_ON_ATC_SUCCESS
+        );
     }
 }

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.session.register.RegisterConstant;
@@ -21,9 +20,9 @@ import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
  */
 public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, RegisterConstant {
 
-    private static final int STATUS_ACTIVE = 1;
-    private static final int STATUS_PENDING = -1;
-    private static final int STATUS_INACTIVE = 0;
+    public static final int STATUS_ACTIVE = 1;
+    public static final int STATUS_PENDING = -1;
+    public static final int STATUS_INACTIVE = 0;
 
     private final RegisterEmailViewListener viewListener;
     private RegisterViewModel registerViewModel;
@@ -46,8 +45,8 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
         registerEmail();
     }
 
-    private RequestParams getRegisterStep2Param() {
-        RequestParams param = RequestParams.create();
+    private com.tokopedia.usecase.RequestParams getRegisterStep2Param() {
+        com.tokopedia.usecase.RequestParams param = com.tokopedia.usecase.RequestParams.create();
         viewListener.getRegisterModel(registerViewModel);
         param.putString(RegisterEmailUseCase.PARAM_EMAIL, registerViewModel.getEmail());
         param.putString(RegisterEmailUseCase.PARAM_FULLNAME, registerViewModel.getName());

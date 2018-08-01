@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.SubmitTicketActivity;
@@ -94,6 +95,7 @@ public class QueryTicketDetailFragment extends BaseDaggerFragment implements Que
 
     @OnClick(R2.id.txt_hyper)
     public void onViewClicked() {
+        ContactUsTracking.eventArticleHubungiKamiClick();
         getContext().startActivity(SubmitTicketActivity.getSubmitTicketActivity(getContext(), getSubmitTicketInvoiceData()));
     }
 }
