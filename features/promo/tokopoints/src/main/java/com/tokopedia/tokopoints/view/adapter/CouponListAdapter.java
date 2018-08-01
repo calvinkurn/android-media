@@ -60,7 +60,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     public void onBindViewHolder(CouponListAdapter.ViewHolder holder, int position) {
         final CouponValueEntity item = mItems.get(position);
         holder.description.setText(item.getTitle());
-        ImageUtil.loadImage(holder.imgBanner, item.getThumbnailUrlMobile());
+        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFit2(holder.imgBanner.getContext(),holder.imgBanner, item.getThumbnailUrlMobile());
+
 
         if (item.getUsage() != null) {
             holder.imgLabel.setImageResource(R.drawable.ic_tp_time);

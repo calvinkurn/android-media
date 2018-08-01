@@ -1,10 +1,21 @@
 package com.tokopedia.tokopoints.view.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class TickerContainer {
+    @Expose
+    @SerializedName("id")
     private int id;
+
+    @Expose
+    @SerializedName("type")
     private String type;
+
+    @Expose
+    @SerializedName("metadata")
     private List<TickerMetadata> metadata;
 
     public int getId() {
