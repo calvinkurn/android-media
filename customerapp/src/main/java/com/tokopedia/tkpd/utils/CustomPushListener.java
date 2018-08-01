@@ -68,7 +68,7 @@ public class CustomPushListener extends PushMessageListener {
                                                            ConfigurationProvider provider) {
         NotificationCompat.Builder builder = super.onCreateNotification(context, extras, provider);
 
-        if (extras.getBoolean("is_persistent")) {
+        if ("1".equalsIgnoreCase("is_persistent")) {
             long when = System.currentTimeMillis();
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
 
@@ -79,7 +79,7 @@ public class CustomPushListener extends PushMessageListener {
             String deeplink1 = extras.getString("deeplink1");
             String deeplink2 = extras.getString("deeplink2");
             String deeplink3 = extras.getString("deeplink3");
-            String deeplink4 = extras.getString("deeplink3");
+            String deeplink4 = extras.getString("deeplink4");
             String url1 = extras.getString("url1");
             String url2 = extras.getString("url2");
             String url3 = extras.getString("url3");
@@ -103,7 +103,7 @@ public class CustomPushListener extends PushMessageListener {
             if (!TextUtils.isEmpty(title3) && !TextUtils.isEmpty(deeplink3) && !TextUtils.isEmpty(url3)) {
                 remoteView.setTextViewText(R.id.title3, title3);
 
-                remoteView.setImageViewBitmap(R.id.image_icon1, MoEHelperUtils.downloadImageBitmap(url3));
+                remoteView.setImageViewBitmap(R.id.image_icon3, MoEHelperUtils.downloadImageBitmap(url3));
                 Intent intent3 = RouteManager.getIntent(context, deeplink3);
                 PendingIntent pIntent3 = PendingIntent.getActivity(context, 0, intent3,
                         PendingIntent.FLAG_UPDATE_CURRENT);
@@ -111,11 +111,11 @@ public class CustomPushListener extends PushMessageListener {
             }
             if (!TextUtils.isEmpty(title4) && !TextUtils.isEmpty(deeplink4) && !TextUtils.isEmpty(url4)) {
                 remoteView.setTextViewText(R.id.title4, title4);
-                remoteView.setImageViewBitmap(R.id.image_icon1, MoEHelperUtils.downloadImageBitmap(url4));
+                remoteView.setImageViewBitmap(R.id.image_icon4, MoEHelperUtils.downloadImageBitmap(url4));
                 Intent intent4 = RouteManager.getIntent(context, deeplink4);
                 PendingIntent pIntent4 = PendingIntent.getActivity(context, 0, intent4,
                         PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteView.setOnClickPendingIntent(R.id.image_icon3, pIntent4);
+                remoteView.setOnClickPendingIntent(R.id.image_icon4, pIntent4);
             }
             Intent intent5 = new Intent();
             PendingIntent pIntent5 = PendingIntent.getActivity(context, 0, intent5,
