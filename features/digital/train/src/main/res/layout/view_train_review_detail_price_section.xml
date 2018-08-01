@@ -88,11 +88,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="3"
-            android:id="@+id/view_total_price_departure_trip"
+            android:id="@+id/view_adult_total_price_departure_trip"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/text_departure_trip_passenger_count"
+                android:id="@+id/text_departure_trip_adult_passenger_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2.2"
@@ -101,10 +101,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp"/>
+                android:text="@string/train_review_label_rp"/>
 
             <TextView
-                android:id="@+id/text_departure_trip_price"
+                android:id="@+id/text_departure_trip_adult_total_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
@@ -120,11 +120,43 @@
             tools:visibility="visible"
             android:layout_marginTop="@dimen/dp_8"
             android:weightSum="3"
-            android:id="@+id/view_total_price_return_trip"
+            android:id="@+id/view_infant_total_price_departure_trip"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/text_return_trip_passenger_count"
+                android:id="@+id/text_departure_trip_infant_passenger_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.2"
+                tools:text="GMR - BD (Bayi) x 2"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/train_review_label_rp"/>
+
+            <TextView
+                android:id="@+id/text_departure_trip_infant_total_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:gravity="end"
+                tools:text="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginTop="@dimen/dp_8"
+            android:weightSum="3"
+            android:id="@+id/view_adult_total_price_return_trip"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_return_trip_adult_passenger_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2.2"
@@ -134,15 +166,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Rp"/>
+                android:text="@string/train_review_label_rp"/>
 
             <TextView
-                android:id="@+id/text_return_trip_price"
+                android:id="@+id/text_return_trip_adult_total_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
                 android:gravity="end"
                 tools:text="960.000"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginTop="@dimen/dp_8"
+            android:weightSum="3"
+            android:id="@+id/view_infant_total_price_return_trip"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_return_trip_infant_passenger_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.2"
+                tools:text="BD - GMR (infant) x 3"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/train_review_label_rp"/>
+
+            <TextView
+                android:id="@+id/text_return_trip_infant_total_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:gravity="end"
+                tools:text="0"/>
 
         </LinearLayout>
 
@@ -166,7 +231,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Rp"/>
+                android:text="@string/train_review_label_rp"/>
 
             <TextView
                 android:id="@+id/text_discount_channel_departure_trip"
@@ -201,7 +266,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Rp"/>
+                android:text="@string/train_review_label_rp"/>
 
             <TextView
                 android:id="@+id/text_discount_channel_return_trip"
@@ -234,7 +299,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Rp"/>
+                android:text="@string/train_review_label_rp"/>
 
             <TextView
                 android:id="@+id/text_extra_fee_departure_trip"
@@ -268,7 +333,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Rp"/>
+                android:text="@string/train_review_label_rp"/>
 
             <TextView
                 android:id="@+id/text_extra_fee_return_trip"
@@ -308,14 +373,13 @@
             android:textColor="@color/black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.2"
-            tools:text="Subtotal"/>
+            android:layout_weight="2.2"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Rp"/>
+            android:text="@string/train_review_label_rp"/>
 
         <TextView
             android:id="@+id/text_subtotal_price"
@@ -344,14 +408,13 @@
             android:text="@string/train_review_label_discount_voucher"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.2"
-            tools:text="Diskon Voucher"/>
+            android:layout_weight="2.2"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Rp"/>
+            android:text="@string/train_review_label_rp"/>
 
         <TextView
             android:id="@+id/text_discount_voucher"

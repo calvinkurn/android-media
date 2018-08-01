@@ -33,6 +33,7 @@ import com.tokopedia.train.common.util.TrainFlowConstant;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.passenger.domain.model.TrainTrip;
 import com.tokopedia.train.reviewdetail.di.DaggerTrainReviewDetailComponent;
 import com.tokopedia.train.reviewdetail.di.TrainReviewDetailComponent;
 import com.tokopedia.train.reviewdetail.presentation.NonScrollableLinearLayoutManager;
@@ -192,6 +193,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                     "7");
         });
 
+        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(trainSoftbook);
+
         return rootview;
     }
 
@@ -348,7 +351,6 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
         this.departureTripViewModel = departureTrip;
         this.returnTripViewModel = returnTrip;
-        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(trainSoftbook, departureTrip, returnTrip);
     }
 
     @Override
@@ -360,12 +362,12 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     public void disableVoucherDiscount() {
-
+        viewTrainReviewDetailPriceSection.removeDiscount();
     }
 
     @Override
     public void trackingSuccessVoucher(String voucherName) {
-
+        trainAnalytics.eventVoucherSuccess(voucherName);
     }
 
     @Override

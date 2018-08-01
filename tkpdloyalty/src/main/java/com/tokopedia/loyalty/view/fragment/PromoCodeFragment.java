@@ -383,14 +383,6 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     }
 
     @Override
-    public void sendTrackingOnCheckTrainVoucherSuccessful(String successMessage) {
-        if (getActivity() instanceof LoyaltyModuleRouter) {
-            ((LoyaltyModuleRouter) getActivity())
-                    .trainSendTrackingOnCheckVoucherCodeSuccessful(successMessage);
-        }
-    }
-
-    @Override
     public void sendTrackingOnCheckTrainVoucherError(String errorMessage) {
         if (getActivity() instanceof LoyaltyModuleRouter) {
             ((LoyaltyModuleRouter) getActivity())

@@ -36,6 +36,8 @@ public class TrainTrip implements Parcelable{
     private String subclass;
     private String trainClass;
     private List<TrainPaxPassenger> paxPassengers;
+    private int numOfAdultPassenger;
+    private int numOfInfantPassenger;
 
     public TrainTrip() {
     }
@@ -46,7 +48,7 @@ public class TrainTrip implements Parcelable{
                      int discount, String displayDiscount, int adultPrice, String displayAdultPrice,
                      int infantPrice, String displayInfantPrice, int totalPriceAdult, String displayTotalPriceAdult,
                      int totalPriceInfant, String displayTotalPriceInfant, int totalPrice, String displayTotalPrice,
-                     List<TrainPaxPassenger> paxPassengers) {
+                     List<TrainPaxPassenger> paxPassengers, int numOfAdultPassenger, int numOfInfantPassenger) {
         this.errCode = errCode;
         this.org = org;
         this.des = des;
@@ -74,6 +76,8 @@ public class TrainTrip implements Parcelable{
         this.totalPrice = totalPrice;
         this.displayTotalPrice = displayTotalPrice;
         this.paxPassengers = paxPassengers;
+        this.numOfAdultPassenger = numOfAdultPassenger;
+        this.numOfInfantPassenger = numOfInfantPassenger;
     }
 
 
@@ -107,6 +111,8 @@ public class TrainTrip implements Parcelable{
         subclass = in.readString();
         trainClass = in.readString();
         paxPassengers = in.createTypedArrayList(TrainPaxPassenger.CREATOR);
+        numOfAdultPassenger = in.readInt();
+        numOfInfantPassenger = in.readInt();
     }
 
     @Override
@@ -140,6 +146,8 @@ public class TrainTrip implements Parcelable{
         dest.writeString(subclass);
         dest.writeString(trainClass);
         dest.writeTypedList(paxPassengers);
+        dest.writeInt(numOfAdultPassenger);
+        dest.writeInt(numOfInfantPassenger);
     }
 
     @Override
@@ -267,6 +275,22 @@ public class TrainTrip implements Parcelable{
         return displayTotalPrice;
     }
 
+    public String getTrainClass() {
+        return trainClass;
+    }
+
+    public String getSubclass() {
+        return subclass;
+    }
+
+    public int getNumOfAdultPassenger() {
+        return numOfAdultPassenger;
+    }
+
+    public int getNumOfInfantPassenger() {
+        return numOfInfantPassenger;
+    }
+
     public void setErrCode(int errCode) {
         this.errCode = errCode;
     }
@@ -375,19 +399,20 @@ public class TrainTrip implements Parcelable{
         this.paxPassengers = paxPassengers;
     }
 
-    public String getSubclass() {
-        return subclass;
-    }
-
     public void setSubclass(String subclass) {
         this.subclass = subclass;
-    }
-
-    public String getTrainClass() {
-        return trainClass;
     }
 
     public void setTrainClass(String trainClass) {
         this.trainClass = trainClass;
     }
+
+    public void setNumOfAdultPassenger(int numOfAdultPassenger) {
+        this.numOfAdultPassenger = numOfAdultPassenger;
+    }
+
+    public void setNumOfInfantPassenger(int numOfInfantPassenger) {
+        this.numOfInfantPassenger = numOfInfantPassenger;
+    }
+
 }

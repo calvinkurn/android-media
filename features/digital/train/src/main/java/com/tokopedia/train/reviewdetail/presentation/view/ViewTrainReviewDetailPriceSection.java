@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
+import com.tokopedia.train.passenger.domain.model.TrainTrip;
 
 /**
  * Created by Rizky on 24/07/18.
@@ -29,11 +29,19 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
     private View viewDivider1;
     private View viewDivider2;
 
-    private TextView textDepartureTripPassengerCount;
-    private TextView textDepartureTripPrice;
-    private TextView textReturnTripPassengerCount;
-    private TextView textReturnTripPrice;
-    private LinearLayout viewTotalPriceReturnTrip;
+    private TextView textDepartureTripAdultPassengerCount;
+    private TextView textDepartureTripAdultTotalPrice;
+
+    private TextView textDepartureTripInfantPassengerCount;
+    private TextView textDepartureTripInfantTotalPrice;
+
+    private TextView textReturnTripAdultPassengerCount;
+    private TextView textReturnTripAdultTotalPrice;
+    private LinearLayout viewAdultTotalPriceReturnTrip;
+
+    private TextView textReturnTripInfantPassengerCount;
+    private TextView textReturnTripInfantTotalPrice;
+    private LinearLayout viewInfantTotalPriceReturnTrip;
 
     private LinearLayout viewDiscountChannelDepartureTrip;
     private TextView textLabelDiscountChannelDepartureTrip;
@@ -51,6 +59,10 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
 
     private LinearLayout viewDiscountVoucher;
     private TextView textDiscountVoucher;
+    private LinearLayout viewSubtotalPrice;
+    private TextView textSubtotalPrice;
+
+    private double totalPrice;
 
     public ViewTrainReviewDetailPriceSection(Context context) {
         super(context);
@@ -84,15 +96,24 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
         viewDivider1 = rootview.findViewById(R.id.view_divider);
         viewDivider2 = rootview.findViewById(R.id.view_divider_2);
 
-        textDepartureTripPassengerCount = rootview.findViewById(R.id.text_departure_trip_passenger_count);
-        textDepartureTripPrice = rootview.findViewById(R.id.text_departure_trip_price);
-        textReturnTripPassengerCount = rootview.findViewById(R.id.text_return_trip_passenger_count);
-        textReturnTripPrice = rootview.findViewById(R.id.text_return_trip_price);
-        viewTotalPriceReturnTrip = rootview.findViewById(R.id.view_total_price_return_trip);
+        textDepartureTripAdultPassengerCount = rootview.findViewById(R.id.text_departure_trip_adult_passenger_count);
+        textDepartureTripAdultTotalPrice = rootview.findViewById(R.id.text_departure_trip_adult_total_price);
+
+        textDepartureTripInfantPassengerCount = rootview.findViewById(R.id.text_departure_trip_infant_passenger_count);
+        textDepartureTripInfantTotalPrice = rootview.findViewById(R.id.text_departure_trip_infant_total_price);
+
+        viewAdultTotalPriceReturnTrip = rootview.findViewById(R.id.view_adult_total_price_return_trip);
+        textReturnTripAdultPassengerCount = rootview.findViewById(R.id.text_return_trip_adult_passenger_count);
+        textReturnTripAdultTotalPrice = rootview.findViewById(R.id.text_return_trip_adult_total_price);
+
+        viewInfantTotalPriceReturnTrip = rootview.findViewById(R.id.view_infant_total_price_return_trip);
+        textReturnTripInfantPassengerCount = rootview.findViewById(R.id.text_return_trip_infant_passenger_count);
+        textReturnTripInfantTotalPrice = rootview.findViewById(R.id.text_return_trip_infant_total_price);
 
         viewDiscountChannelDepartureTrip = rootview.findViewById(R.id.view_discount_channel_departure_trip);
         textLabelDiscountChannelDepartureTrip = rootview.findViewById(R.id.text_label_discount_channel_departure_trip);
         textDiscountChannelDepartureTrip = rootview.findViewById(R.id.text_discount_channel_departure_trip);
+
         viewDiscountChannelReturnTrip = rootview.findViewById(R.id.view_discount_channel_return_trip);
         textLabelDiscountChannelReturnTrip = rootview.findViewById(R.id.text_label_discount_channel_return_trip);
         textDiscountChannelReturnTrip = rootview.findViewById(R.id.text_discount_channel_return_trip);
@@ -100,12 +121,16 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
         viewExtraFeeDepartureTrip = rootview.findViewById(R.id.view_extra_fee_departure_trip);
         textLabelExtraFeeDepartureTrip = rootview.findViewById(R.id.text_label_extra_fee_departure_trip);
         textExtraFeeDepartureTrip = rootview.findViewById(R.id.text_extra_fee_departure_trip);
+
         viewExtraFeeReturnTrip = rootview.findViewById(R.id.view_extra_fee_return_trip);
         textLabelExtraFeeReturnTrip = rootview.findViewById(R.id.text_label_extra_fee_return_trip);
         textExtraFeeReturnTrip = rootview.findViewById(R.id.text_extra_fee_return_trip);
 
         viewDiscountVoucher = rootview.findViewById(R.id.view_discount_voucher);
         textDiscountVoucher = rootview.findViewById(R.id.text_discount_voucher);
+
+        viewSubtotalPrice = rootview.findViewById(R.id.view_subtotal_price);
+        textSubtotalPrice = rootview.findViewById(R.id.text_subtotal_price);
 
         final boolean [] isPriceDetailOpened = {false};
 
@@ -126,73 +151,125 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
         });
     }
 
-    public void showScheduleTripsPrice(TrainSoftbook trainSoftbook, TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
-        textTrainReviewTotalPrice.setText(getResources().getString(R.string.train_label_currency,
-                CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalPrice(),
-                        false, 0).getFormattedString()));
+    public void showScheduleTripsPrice(TrainSoftbook trainSoftbook) {
+        TrainTrip departureTrip = trainSoftbook.getDepartureTrips().get(0);
+        showDepartureTripPrice(departureTrip);
 
-        showDepartureTripPrice(trainSoftbook, departureTrip);
-
-        if (returnTrip != null) {
-            showReturnTripPrice(trainSoftbook, returnTrip);
+        double totalReturnPrice = 0;
+        if (trainSoftbook.getReturnTrips() != null && !trainSoftbook.getReturnTrips().isEmpty()) {
+            TrainTrip returnTrip = trainSoftbook.getReturnTrips().get(0);
+            totalReturnPrice = returnTrip.getTotalPrice();
+            showReturnTripPrice(returnTrip);
         } else {
-            viewTotalPriceReturnTrip.setVisibility(View.GONE);
+            viewAdultTotalPriceReturnTrip.setVisibility(View.GONE);
             viewDiscountChannelReturnTrip.setVisibility(GONE);
             viewExtraFeeReturnTrip.setVisibility(GONE);
         }
+
+        totalPrice = departureTrip.getTotalPrice() + totalReturnPrice;
+
+        textTrainReviewTotalPrice.setText(getResources().getString(R.string.train_label_currency,
+                CurrencyFormatUtil.getThousandSeparatorString(totalPrice,
+                        false, 0).getFormattedString()));
     }
 
-    private void showDepartureTripPrice(TrainSoftbook trainSoftbook, TrainScheduleDetailViewModel departureTrip) {
-        textDepartureTripPassengerCount.setText(getResources().getString(R.string.train_review_trip_passenger_count,
-                departureTrip.getOriginStationCode(), departureTrip.getDestinationStationCode(),
-                departureTrip.getNumOfAdultPassenger()));
-        textDepartureTripPrice.setText(
-                CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalAdultFare(),
+    private void showDepartureTripPrice(TrainTrip departureTrip) {
+        String origin = departureTrip.getOrg();
+        String destination = departureTrip.getDes();
+        int numOfAdultPassenger = departureTrip.getNumOfAdultPassenger();
+        int numOfInfantPassenger = departureTrip.getNumOfInfantPassenger();
+
+        textDepartureTripAdultPassengerCount.setText(getResources().getString(R.string.train_review_trip_adult_passenger_count,
+                origin, destination, numOfAdultPassenger));
+        textDepartureTripAdultTotalPrice.setText(
+                CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalPriceAdult(),
                         false, 0).getFormattedString());
 
+        if (numOfInfantPassenger > 0) {
+            textDepartureTripInfantPassengerCount.setText(getResources().getString(R.string.train_review_trip_infant_passenger_count,
+                    origin, destination, numOfInfantPassenger));
+            textDepartureTripInfantTotalPrice.setText(
+                    CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalPriceInfant(),
+                            false, 0).getFormattedString());
+        }
+
         textLabelDiscountChannelDepartureTrip.setText(getResources().getString(R.string.train_review_label_discount_channel,
-                departureTrip.getOriginStationCode(), departureTrip.getDestinationStationCode()));
+                origin, destination));
         textDiscountChannelDepartureTrip.setText(
-                CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getDepartureTrips().get(0).getDiscount(),
+                CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getDiscount(),
                         false, 0).getFormattedString());
 
         textLabelExtraFeeDepartureTrip.setText(getResources().getString(R.string.train_review_label_extra_fee,
-                departureTrip.getOriginStationCode(), departureTrip.getDestinationStationCode()));
+                origin, destination));
         textExtraFeeDepartureTrip.setText(
-                CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getDepartureTrips().get(0).getExtraFee(),
+                CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getExtraFee(),
                         false, 0).getFormattedString());
     }
 
-    private void showReturnTripPrice(TrainSoftbook trainSoftbook, TrainScheduleDetailViewModel returnTrip) {
-        viewTotalPriceReturnTrip.setVisibility(View.VISIBLE);
-        textReturnTripPassengerCount.setText(getResources().getString(R.string.train_review_trip_passenger_count,
-                returnTrip.getOriginStationCode(), returnTrip.getDestinationStationCode(),
-                returnTrip.getNumOfAdultPassenger()));
-        textReturnTripPrice.setText(
-                CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getTotalAdultFare(),
+    private void showReturnTripPrice(TrainTrip returnTrip) {
+        String origin = returnTrip.getOrg();
+        String destination = returnTrip.getDes();
+        int numOfAdultPassenger = returnTrip.getNumOfAdultPassenger();
+        int numOfInfantPassenger = returnTrip.getNumOfInfantPassenger();
+
+        viewAdultTotalPriceReturnTrip.setVisibility(View.VISIBLE);
+        textReturnTripAdultPassengerCount.setText(getResources().getString(R.string.train_review_trip_adult_passenger_count,
+                origin, destination, numOfAdultPassenger));
+        textReturnTripAdultTotalPrice.setText(
+                CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getTotalPriceAdult(),
                         false, 0).getFormattedString());
+
+        if (numOfInfantPassenger > 0) {
+            viewInfantTotalPriceReturnTrip.setVisibility(View.VISIBLE);
+            textReturnTripInfantPassengerCount.setText(getResources().getString(R.string.train_review_trip_infant_passenger_count,
+                    origin, destination, numOfInfantPassenger));
+            textReturnTripInfantTotalPrice.setText(
+                    CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getTotalPriceInfant(),
+                            false, 0).getFormattedString());
+        }
 
         viewDiscountChannelReturnTrip.setVisibility(VISIBLE);
         textLabelDiscountChannelReturnTrip.setText(getResources().getString(R.string.train_review_label_discount_channel,
-                returnTrip.getOriginStationCode(), returnTrip.getDestinationStationCode()));
+                origin, destination));
         textDiscountChannelReturnTrip.setText(
-                CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getReturnTrips().get(0).getDiscount(),
+                CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getDiscount(),
                         false, 0).getFormattedString());
 
         viewExtraFeeReturnTrip.setVisibility(VISIBLE);
         textLabelExtraFeeReturnTrip.setText(getResources().getString(R.string.train_review_label_extra_fee,
-                returnTrip.getOriginStationCode(), returnTrip.getDestinationStationCode()));
+                origin, destination));
         textExtraFeeReturnTrip.setText(
-                CurrencyFormatUtil.getThousandSeparatorString(trainSoftbook.getReturnTrips().get(0).getExtraFee(),
+                CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getExtraFee(),
                         false, 0).getFormattedString());
     }
 
     public void showNewPriceAfterDiscount(long voucherDiscountAmount) {
         viewDivider2.setVisibility(VISIBLE);
+
+        viewSubtotalPrice.setVisibility(VISIBLE);
+        textSubtotalPrice.setText(CurrencyFormatUtil.getThousandSeparatorString(totalPrice,
+                false, 0).getFormattedString());
+
         viewDiscountVoucher.setVisibility(VISIBLE);
-        String discountAmountInRp = CurrencyFormatUtil.getThousandSeparatorString(voucherDiscountAmount,
+        String discountAmount = CurrencyFormatUtil.getThousandSeparatorString(voucherDiscountAmount,
                 false, 0).getFormattedString();
-        textDiscountVoucher.setText(discountAmountInRp);
+        textDiscountVoucher.setText(discountAmount);
+
+        double discountedPrice = totalPrice - voucherDiscountAmount;
+
+        textTrainReviewTotalPrice.setText(getResources().getString(R.string.train_label_currency,
+                CurrencyFormatUtil.getThousandSeparatorString(discountedPrice,
+                        false, 0).getFormattedString()));
+    }
+
+    public void removeDiscount() {
+        textTrainReviewTotalPrice.setText(getResources().getString(R.string.train_label_currency,
+                CurrencyFormatUtil.getThousandSeparatorString(totalPrice,
+                        false, 0).getFormattedString()));
+
+        viewDivider2.setVisibility(GONE);
+        viewSubtotalPrice.setVisibility(GONE);
+        viewDiscountVoucher.setVisibility(GONE);
     }
 
 }
