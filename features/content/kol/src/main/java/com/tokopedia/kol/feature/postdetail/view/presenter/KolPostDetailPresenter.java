@@ -36,6 +36,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     public void detachView() {
         super.detachView();
         getKolPostDetailUseCase.unsubsribe();
+        likeKolPostUseCase.unsubscribe();
     }
 
     @Override
