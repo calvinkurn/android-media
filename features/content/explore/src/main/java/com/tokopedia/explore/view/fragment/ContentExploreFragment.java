@@ -53,6 +53,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
     private View tabFeed;
+    private View appBarLayout;
 
     @Inject
     ContentExploreContract.Presenter presenter;
@@ -97,6 +98,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
         tabFeed = view.findViewById(R.id.tab_feed);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
         return view;
     }
 
@@ -289,6 +291,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     private void loadTagData(List<ExploreCategoryViewModel> tagViewModelList) {
         categoryAdapter.setList(tagViewModelList);
+        appBarLayout.setVisibility(View.VISIBLE);
     }
 
     private boolean isLoading() {
