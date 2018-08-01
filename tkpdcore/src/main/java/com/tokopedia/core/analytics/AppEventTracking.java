@@ -523,7 +523,6 @@ public interface AppEventTracking {
         String CLICK_CATALOG = "click - catalog";
         String CLICK_TAB = "click - tab";
         String CLICK_PRODUCT = "click-product";
-
     }
 
     interface ImageEditor {
