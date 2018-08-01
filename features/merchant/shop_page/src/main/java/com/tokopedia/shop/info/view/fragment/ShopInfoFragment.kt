@@ -55,11 +55,11 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     private var shopId: String = "0"
     private var shopDomain: String? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_shop_info, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_shop_info, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerViewNote.isNestedScrollingEnabled = false
         recyclerViewNote.isFocusable = false
@@ -121,7 +121,7 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     }
 
     private fun goToManageLogistic() {
-        val app = activity.application
+        val app = activity?.application
         if (app is ShopModuleRouter){
             app.goToManageShipping(activity)
         }
@@ -141,12 +141,12 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     }
 
     private fun gotoShopDiscussion() {
-        if (activity.application is ShopModuleRouter){
+        if (activity?.application is ShopModuleRouter){
             shopInfo.run {
                 shopPageTracking.eventClickDiscussion(shopId,
                         presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo.info))
             }
-            (activity.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
+            (activity?.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
         }
     }
 
@@ -180,8 +180,8 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     }
 
     private fun goToReviewQualityDetail() {
-        if (activity.application is ShopModuleRouter){
-            (activity.application as ShopModuleRouter).goToShopReview(activity, shopId, shopDomain)
+        if (activity?.application is ShopModuleRouter){
+            (activity?.application as ShopModuleRouter).goToShopReview(activity, shopId, shopDomain)
         }
     }
 
@@ -222,7 +222,7 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
-        val app = activity.application
+        val app = activity?.application
         if (app is ShopModuleRouter){
             app.goToEditShopNote(activity)
         }

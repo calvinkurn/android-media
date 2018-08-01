@@ -36,15 +36,15 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopNoteId = arguments.getString(ShopParamConstant.EXTRA_SHOP_NOTE_ID)
+        shopNoteId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_NOTE_ID) ?: ""
         shopNoteDetailPresenter.attachView(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_shop_note_detail, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_shop_note_detail, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getShopDetail()
     }
 
@@ -64,7 +64,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
         DaggerShopNoteComponent
                 .builder()
                 .shopNoteModule(ShopNoteModule())
-                .shopComponent(ShopComponentInstance.getComponent(activity.application))
+                .shopComponent(ShopComponentInstance.getComponent(activity?.application))
                 .build()
                 .inject(this)
     }
