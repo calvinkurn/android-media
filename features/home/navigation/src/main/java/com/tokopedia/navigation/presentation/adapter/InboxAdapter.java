@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tokopedia.navigation.R;
 
-import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
+import com.tokopedia.navigation_common.NotificationsModel;
 
 
 /**
@@ -22,7 +22,7 @@ public class InboxAdapter extends BaseListAdapter<Inbox, InboxAdapter.InboxViewH
         super(context);
     }
 
-    public void updateValue(NotificationEntity.Notification entity) {
+    public void updateValue(NotificationsModel entity) {
         if (items != null && items.size() > 0) {
             items.get(InboxFragment.CHAT_MENU)
                     .setTotalBadge(entity.getChat().getUnreads());

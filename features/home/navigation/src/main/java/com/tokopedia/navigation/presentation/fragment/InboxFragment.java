@@ -19,10 +19,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
-import com.tokopedia.navigation.domain.model.Notification;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
@@ -30,6 +27,7 @@ import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
+import com.tokopedia.navigation_common.NotificationsModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,7 +176,7 @@ public class InboxFragment extends BaseParentFragment implements
     }
 
     @Override
-    public void onRenderNotifINbox(NotificationEntity.Notification entity) {
+    public void onRenderNotifInbox(NotificationsModel entity) {
         adapter.updateValue(entity);
     }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.navigation.domain.subscriber;
 
-import com.tokopedia.navigation.data.entity.DrawerNotificationEntity;
+import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.presentation.view.NotificationView;
 
 import rx.Subscriber;
@@ -8,7 +8,7 @@ import rx.Subscriber;
 /**
  * Created by meta on 25/07/18.
  */
-public class DrawerNotificationSubscriber extends Subscriber<DrawerNotificationEntity> {
+public class DrawerNotificationSubscriber extends Subscriber<NotificationEntity> {
 
     private NotificationView notificationView;
 
@@ -28,7 +28,7 @@ public class DrawerNotificationSubscriber extends Subscriber<DrawerNotificationE
     }
 
     @Override
-    public void onNext(DrawerNotificationEntity entity) {
+    public void onNext(NotificationEntity entity) {
         if (entity != null)
             this.notificationView.renderNotification(entity.getNotifications());
     }

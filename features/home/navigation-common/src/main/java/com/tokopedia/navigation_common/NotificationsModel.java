@@ -22,9 +22,18 @@ public class NotificationsModel {
     @SerializedName("userSatisfactionSurvey")
     @Expose
     private Integer userSatisfaction;
+
     @SerializedName("total_notif")
     @Expose
     private String totalNotification;
+
+    @SerializedName("total_cart")
+    @Expose
+    private String totalCart;
+
+    private InboxModel inbox;
+
+    private ChatModel chat;
 
     public NotificationResolutionModel getResolution() {
         return resolution;
@@ -72,5 +81,29 @@ public class NotificationsModel {
 
     public void setTotalNotification(String totalNotification) {
         this.totalNotification = totalNotification;
+    }
+
+    public String getTotalCart() {
+        return totalCart;
+    }
+
+    public void setTotalCart(String totalCart) {
+        this.totalCart = totalCart;
+    }
+
+    public InboxModel getInbox() {
+        return inbox;
+    }
+
+    public void setInbox(InboxModel inbox) {
+        this.inbox = inbox;
+    }
+
+    public ChatModel getChat() {
+        return chat;
+    }
+
+    public void setChat(ChatModel chat) {
+        this.chat = chat;
     }
 }
