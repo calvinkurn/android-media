@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccountAdapter.ViewHolder> {
 
-    private ChooseTokocashAccount.View viewListener;
+    private ChooseTokocashAccount.ViewAdapter viewListener;
     private ArrayList<AccountTokocash> list;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,12 +47,12 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
         }
 
     }
-    public static TokocashAccountAdapter createInstance(ChooseTokocashAccount.View
+    public static TokocashAccountAdapter createInstance(ChooseTokocashAccount.ViewAdapter
                                                                 viewListener, ArrayList<AccountTokocash> listAccount) {
         return new TokocashAccountAdapter(viewListener, listAccount);
     }
 
-    public TokocashAccountAdapter(ChooseTokocashAccount.View viewListener, ArrayList<AccountTokocash> listAccount) {
+    public TokocashAccountAdapter(ChooseTokocashAccount.ViewAdapter viewListener, ArrayList<AccountTokocash> listAccount) {
         this.list = listAccount;
         this.viewListener = viewListener;
     }

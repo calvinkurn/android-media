@@ -105,6 +105,20 @@ public class Product {
     @SerializedName("free_returns")
     @Expose
     private FreeReturns freeReturns;
+    @SerializedName("ProductCategory")
+    @Expose
+    private String productCategory;
+    @SerializedName("product_tracker_data")
+    @Expose
+    private ProductTrackerData productTrackerData;
+
+    public String getProductCategory() {
+        return productCategory;
+    }
+
+    public ProductTrackerData getProductTrackerData() {
+        return productTrackerData;
+    }
 
     public List<String> getErrors() {
         return errors;
