@@ -22,6 +22,8 @@ import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryLi
 
 public class DigitalCategoryListActivity extends BasePresenterActivity {
 
+    public static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
+
     @Override
     public String getScreenName() {
         return DigitalCategoryListActivity.class.getSimpleName();
@@ -31,8 +33,8 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     @DeepLink({DIGITAL_CATEGORY, DIGITAL})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         int isCouponApplied = 0;
-        if (extras.containsKey("is_coupon_applied")) {
-            isCouponApplied = extras.getInt("is_coupon_applied");
+        if (extras.containsKey(KEY_IS_COUPON_APPLIED_APPLINK)) {
+            isCouponApplied = extras.getInt(KEY_IS_COUPON_APPLIED_APPLINK);
         }
         return DigitalCategoryListActivity.newInstance(context, isCouponApplied);
     }
