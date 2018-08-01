@@ -325,8 +325,10 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                 }
             } else { // if there is keyword, we selected etalase = null, and we save it.
                 // if keyword is changed, we assume that new keyword means user want to start a new search.
-                prevSelectedEtalaseId = selectedEtalaseId;
-                prevSelectedEtalaseName = selectedEtalaseName;
+                if (!TextUtils.isEmpty(selectedEtalaseId)){
+                    prevSelectedEtalaseId = selectedEtalaseId;
+                    prevSelectedEtalaseName = selectedEtalaseName;
+                }
                 selectedEtalaseId = null;
                 selectedEtalaseName = null;
                 shopProductAdapter.setShopEtalaseTitle(null);
