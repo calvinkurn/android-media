@@ -19,7 +19,7 @@ public interface KolPostDetailContract {
 
         void onSuccessGetKolPostDetail(List<Visitable> list);
 
-        void onErrorGetKolPotDetail(String message);
+        void onErrorGetKolPostDetail(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

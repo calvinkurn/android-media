@@ -1,5 +1,7 @@
 package com.tokopedia.explore.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.explore.domain.entity.Category;
 import com.tokopedia.explore.domain.entity.Content;
@@ -59,6 +61,12 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
         if (clearData) {
             view.clearData();
+
+            if (!TextUtils.isEmpty(discoveryKolData.getError())) {
+                view.dismissLoading();
+                view.onErrorGetExploreDataFirstPage();
+                return;
+            }
         }
 
         view.updateCursor(discoveryKolData.getLastCursor());

@@ -171,7 +171,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetKolPotDetail(String message) {
+    public void onErrorGetKolPostDetail(String message) {
         NetworkErrorHelper.showEmptyState(
                 getContext(),
                 getView(),

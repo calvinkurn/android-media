@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.view.subscriber;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kol.common.util.TimeConverter;
@@ -43,7 +44,10 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
-        view.onErrorGetKolPotDetail(ErrorHandler.getErrorMessage(view.getContext(), e));
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace();
+        }
+        view.onErrorGetKolPostDetail(ErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
     @Override
@@ -52,7 +56,7 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         GetUserPostComment postComment = data.getGetUserPostComment();
 
         if (!TextUtils.isEmpty(postComment.getError())) {
-            view.onErrorGetKolPotDetail(postComment.getError());
+            view.onErrorGetKolPostDetail(postComment.getError());
             return;
         }
 
