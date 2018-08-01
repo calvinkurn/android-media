@@ -3,9 +3,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.feedplus.view.fragment.ReactNativeContentDetailFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
@@ -18,17 +15,18 @@ public class ReactNativeContentDetailsActivity extends ReactFragmentActivity<Rea
     public static final String KEY_ID = "post_id";
 
 
-    @DeepLink({Constants.Applinks.CONTENT_DETAIL})
-    public static Intent getContentDetailPageApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(CONTENT_DETAIL);
-        bundle.getString(KEY_ID);
-        return ReactNativeContentDetailsActivity.createApplinkCallingIntent(
-                context,
-                ReactConst.Screen.CONTENT_DETAIL,
-                context.getString(R.string.react_native_content_detail_title),
-                bundle
-        );
-    }
+    //TODO milhamj remove react native applink
+//    @DeepLink({Constants.Applinks.CONTENT_DETAIL})
+//    public static Intent getContentDetailPageApplinkCallingIntent(Context context, Bundle bundle) {
+//        ScreenTracking.screen(CONTENT_DETAIL);
+//        bundle.getString(KEY_ID);
+//        return ReactNativeContentDetailsActivity.createApplinkCallingIntent(
+//                context,
+//                ReactConst.Screen.CONTENT_DETAIL,
+//                context.getString(R.string.react_native_content_detail_title),
+//                bundle
+//        );
+//    }
 
     public static Intent createApplinkCallingIntent(Context context, String reactScreenName, String pageTitle, Bundle extras) {
         Intent intent = new Intent(context, ReactNativeContentDetailsActivity.class);

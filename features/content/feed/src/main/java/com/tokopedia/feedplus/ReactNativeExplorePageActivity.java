@@ -16,6 +16,7 @@ public class ReactNativeExplorePageActivity extends ReactFragmentActivity<ReactN
     public static final String KEY_TAB = "tab_name";
 
 
+    //TODO milhamj remove react native applink
 //    @DeepLink({Constants.Applinks.CONTENT_EXPLORE})
 //    public static Intent getContentExplorePageApplinkCallingIntent(Context context, Bundle bundle) {
 //        ScreenTracking.screen(EXPLORE_PAGE);
