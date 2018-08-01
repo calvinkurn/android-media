@@ -424,4 +424,10 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                 break;
         }
     }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

@@ -505,4 +505,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void hideLoading() {
         progressBar.setVisibility(View.GONE);
     }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

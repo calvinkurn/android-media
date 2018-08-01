@@ -133,4 +133,11 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
         getTrainSchedules();
     }
 
+    @Override
+    public void detachView() {
+        getAvailabilityScheduleUseCase.unsubscribe();
+        getFilteredAndSortedScheduleUseCase.unsubscribe();
+        getScheduleUseCase.unsubscribe();
+        super.detachView();
+    }
 }

@@ -180,4 +180,10 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
             throw new RuntimeException("Activity must implement " + OnFragmentInteractionListener.class.getSimpleName());
         }
     }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

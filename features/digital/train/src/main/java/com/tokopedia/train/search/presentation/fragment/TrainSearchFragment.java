@@ -555,4 +555,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     }
 
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

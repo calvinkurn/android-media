@@ -156,4 +156,12 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
             }
         }
     }
+
+    @Override
+    public void detachView() {
+        trainGetAllStationsUseCase.unsubscribe();
+        trainGetPopularStationsUseCase.unsubscribe();
+        traingGetStationAutoCompleteUseCase.unsubscribe();
+        super.detachView();
+    }
 }
