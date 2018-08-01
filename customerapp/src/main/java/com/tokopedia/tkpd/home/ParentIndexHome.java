@@ -273,23 +273,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
         initHockeyBroadcastReceiver();
-        CustomPushListener customPushListener=new CustomPushListener();
-
-        Bundle bundle=new Bundle();
-        bundle.putString("title1","Beli");
-        bundle.putString("title2","promo");
-        bundle.putString("title3","Referral");
-        bundle.putString("title4","Wishlist");
-        bundle.putString("deeplink1","tokopedia://digital");
-        bundle.putString("deeplink2","tokopedia://promo");
-        bundle.putString("deeplink3","tokopedia://referral");
-        bundle.putString("deeplink4","tokopedia://wishlist");
-        bundle.putString("url1","http://www.pngmart.com/files/4/Android-PNG-Free-Download.png");
-        bundle.putString("url2","https://ecs7.tokopedia.net/img/category/new/v1/icon_tiket_event.png");
-        bundle.putString("url3","https://ecs7.tokopedia.net/img/category/new/v1/icon_pinjaman.png");
-        bundle.putString("url4","https://ecs7.tokopedia.net/img/cache/200-square/attachment/2018/2/21/3127195/3127195_da3515a8-ceab-4d51-bd9a-d04fa8a15cd1.png");
-        ConfigurationProvider provider = ConfigurationProvider.getInstance(ParentIndexHome.this);
-        customPushListener.onCreateNotification(ParentIndexHome.this,bundle,provider);
     }
 
     private void addShortcuts() {

@@ -21,6 +21,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.moe.pushlibrary.utils.MoEHelperUtils;
 import com.moengage.core.ConfigurationProvider;
+import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
@@ -117,7 +118,9 @@ public class CustomPushListener extends PushMessageListener {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteView.setOnClickPendingIntent(R.id.image_icon4, pIntent4);
             }
-            Intent intent5 = new Intent();
+            Intent intent5 = new Intent(context, ParentIndexHome.class);
+            int notificationId = MoEngageNotificationUtils.getNotificationIdIfAny(extras);
+            intent5.putExtra("NOTIFICATION_ID", notificationId);
             PendingIntent pIntent5 = PendingIntent.getActivity(context, 0, intent5,
                     PendingIntent.FLAG_CANCEL_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
