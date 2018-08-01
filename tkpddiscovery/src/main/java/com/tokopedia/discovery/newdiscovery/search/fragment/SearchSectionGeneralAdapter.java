@@ -124,26 +124,31 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
     }
 
     public void showEmptyState(Context context, String query, boolean isFilterActive,
-                               FilterFlagSelectedModel filterFlagSelectedModel) {
+                               FilterFlagSelectedModel filterFlagSelectedModel, String sectionTitle) {
         clearData();
-        getItemList().add(mappingEmptySearch(context, query, isFilterActive, filterFlagSelectedModel));
+        getItemList().add(mappingEmptySearch(context, query, isFilterActive, filterFlagSelectedModel, sectionTitle));
         notifyDataSetChanged();
     }
 
     protected EmptySearchModel mappingEmptySearch(Context context, String query, boolean isFilterActive,
-                                                FilterFlagSelectedModel filterFlagSelectedModel) {
+                                                FilterFlagSelectedModel filterFlagSelectedModel, String sectionTitle) {
         EmptySearchModel emptySearchModel = new EmptySearchModel();
         emptySearchModel.setImageRes(R.drawable.ic_empty_search);
         if (isFilterActive) {
-            emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_with_filter_1));
+            emptySearchModel.setTitle(getEmptySearchTitle(context, sectionTitle));
             emptySearchModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));
             emptySearchModel.setFilterFlagSelectedModel(filterFlagSelectedModel);
         } else {
-            emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_with_filter_1));
+            emptySearchModel.setTitle(getEmptySearchTitle(context, sectionTitle));
             emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
             emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
         }
         return emptySearchModel;
+    }
+
+    private String getEmptySearchTitle(Context context, String sectionTitle) {
+        String templateText = context.getString(R.string.msg_empty_search_with_filter_1);
+        return String.format(templateText, sectionTitle);
     }
 
     public abstract List<Visitable> getItemList();
