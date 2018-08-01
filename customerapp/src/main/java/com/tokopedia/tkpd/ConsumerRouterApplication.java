@@ -2380,16 +2380,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        if (isEnabledRevampBankAccount())
+        if (remoteConfig.getBoolean("mainapp_is_enabled_new_setting_bank"))
             return SettingBankActivity.Companion.createIntent(context);
         else {
             return ManagePeopleBankActivity.createInstance(context);
         }
-    }
-
-    private boolean isEnabledRevampBankAccount() {
-//        return remoteConfig.getBoolean("is_enabled_new_setting_bank");
-        return true;
-
     }
 }

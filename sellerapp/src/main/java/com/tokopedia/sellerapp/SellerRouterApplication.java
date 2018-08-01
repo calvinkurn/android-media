@@ -1469,26 +1469,21 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        if (isEnabledRevampBankAccount())
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_setting_bank"))
             return SettingBankActivity.Companion.createIntent(context);
         else {
             return ManagePeopleBankActivity.createInstance(context);
         }
     }
 
-    private boolean isEnabledRevampBankAccount() {
-//        return remoteConfig.getBoolean("is_enabled_new_setting_bank");
-        return true;
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
     }
 
     @Override
     public void setStringRemoteConfigLocal(String key, String value) {
-
-    }
-
-    @Override
-    public String getStringRemoteConfig(String key) {
-        return null;
+        remoteConfig.setString(key, value);
     }
 
     @Override
