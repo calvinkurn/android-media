@@ -118,6 +118,7 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
 
@@ -509,7 +510,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onBuyClick(String source) {
         if (productData.getInfo().getHasVariant()) {
-            if (!onClickBuyWhileRequestingVariant) {
+            if (!onClickBuyWhileRequestingVariant && productVariant != null) {
                 openVariantPage(generateStateVariant(source));
             } else {
                 onClickBuyWhileRequestingVariant = true;
@@ -594,6 +595,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void updateButtonBuyListener() {
         buttonBuyView.removeLoading();
         if (onClickBuyWhileRequestingVariant) {
+            onClickBuyWhileRequestingVariant = false;
             onBuyClick(lastStateOnClickBuyWhileRequestVariant);
         }
     }
@@ -686,6 +688,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void openVariantPage(int state) {
+        if (productVariant == null) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), VariantActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
@@ -799,7 +804,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private boolean isAllowShowCaseNcf() {
-        return buttonBuyView.containerNewButtonBuy.getVisibility() == View.VISIBLE;
+        return buttonBuyView.getVisibility() == View.VISIBLE
+                && buttonBuyView.containerNewButtonBuy.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -1410,8 +1416,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPromoAdsClicked() {
-        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
-                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
+        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
+                String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
+                GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP :
+                        TopAdsSourceOption.MA_PDP);
     }
 
     @Override
@@ -1711,6 +1719,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
@@ -1724,6 +1737,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         showSnackbarSuccessAtc(addToCartResult.getMessage());
