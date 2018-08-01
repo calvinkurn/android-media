@@ -26,24 +26,13 @@ public class OpportunityListActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
+    protected void setupURIPass(Uri data) { }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
+    protected void setupBundlePass(Bundle extras) { }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
+    protected void initialPresenter() { }
 
     @Override
     protected int getLayoutId() {
@@ -71,22 +60,15 @@ public class OpportunityListActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
+    protected void setViewListener() { }
 
     @Override
-    protected void initVar() {
-
-    }
+    protected void initVar() { }
 
     @Override
-    protected void setActionVar() {
+    protected void setActionVar() { }
 
-    }
-
-    public static Intent getCallingIntent(Context context,
-                                          String query) {
+    public static Intent getCallingIntent(Context context, String query) {
         Intent intent = new Intent(context, OpportunityListActivity.class);
         intent.putExtra(OpportunityListFragment.EXTRA_QUERY, query);
         return intent;
