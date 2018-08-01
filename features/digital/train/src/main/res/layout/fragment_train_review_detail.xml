@@ -102,8 +102,8 @@
                 android:id="@+id/voucher_cart_hachiko_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_20" />
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10" />
 
             <View
                 android:layout_width="match_parent"

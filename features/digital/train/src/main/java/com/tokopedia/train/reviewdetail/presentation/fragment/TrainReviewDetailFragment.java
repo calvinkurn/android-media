@@ -178,35 +178,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         });
 
         buttonSubmit.setOnClickListener(v -> {
-            String trip = "single trip";
-            String origin = departureTripViewModel.getOriginStationCode();
-            String destination = departureTripViewModel.getDestinationStationCode();
-
-            String departureScheduleId = trainScheduleBookingPassData.getDepartureScheduleId();
-            String departureTrainClass = departureTripViewModel.getTrainClass();
-            String departureTrainName = departureTripViewModel.getTrainName();
-            double departurePrice = departureTripViewModel.getTotalPrice();
-
-            String returnScheduleId = null;
-            String returnTrainClass = null;
-            String returnTrainName = null;
-            double returnPrice = 0;
-
-            if (returnTripViewModel != null) {
-                returnScheduleId = trainScheduleBookingPassData.getReturnScheduleId();
-                returnTrainClass = returnTripViewModel.getTrainClass();
-                returnTrainName = returnTripViewModel.getTrainName();
-                returnPrice = returnTripViewModel.getTotalPrice();
-            }
-
-            int numOfTotalPassenger = trainScheduleBookingPassData.getAdultPassenger() +
-                    trainScheduleBookingPassData.getInfantPassenger();
-
-            trainAnalytics.eventAddToCart(
-                    trip, origin, destination,
-                    departureScheduleId, departureTrainClass, departureTrainName, departurePrice,
-                    returnScheduleId, returnTrainClass, returnTrainName, returnPrice,
-                    numOfTotalPassenger
+            trainAnalytics.eventProceedToPayment(
+                    departureTripViewModel.getOriginStationCode(),
+                    departureTripViewModel.getDestinationStationCode(),
+                    departureTripViewModel.getTrainClass(),
+                    departureTripViewModel.getTrainName()
             );
 
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
@@ -372,7 +348,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
         this.departureTripViewModel = departureTrip;
         this.returnTripViewModel = returnTrip;
-        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(departureTrip, returnTrip);
+        viewTrainReviewDetailPriceSection.showScheduleTripsPrice(trainSoftbook, departureTrip, returnTrip);
     }
 
     @Override
