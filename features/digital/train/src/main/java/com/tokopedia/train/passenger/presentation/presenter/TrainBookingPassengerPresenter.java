@@ -351,4 +351,11 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                 postix
         );
     }
+
+    @Override
+    public void detachView() {
+        getDetailScheduleUseCase.unsubscribe();
+        trainSoftBookingUseCase.unsubscribe();
+        super.detachView();
+    }
 }

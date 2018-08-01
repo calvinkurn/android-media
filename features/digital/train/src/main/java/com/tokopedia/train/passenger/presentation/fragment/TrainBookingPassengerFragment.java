@@ -536,7 +536,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void showErrorSoftBooking(Throwable e) {
         String message = ErrorHandler.getErrorMessage(getActivity(), e);
-        NetworkErrorHelper.showSnackbar(getActivity(), message);
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
     @Override
@@ -557,5 +557,11 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void hideLoading() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
     }
 }

@@ -50,8 +50,8 @@ public class TrainErrorResponse extends BaseResponseError {
             try {
                 jsonObject = jsonParser.parse(error.getMessage()).getAsJsonObject();
                 if (jsonObject != null) {
-                    if (jsonObject.has("title")) {
-                        results.add(jsonObject.get("title").getAsString());
+                    if (jsonObject.has("message")) {
+                        results.add(jsonObject.get("message").getAsString());
                         continue;
                     }
                 }

@@ -70,11 +70,11 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         });
     }
 
-    private int calculateMaxRow(List<TrainWagonViewModel> trainWagonViewModels){
+    private int calculateMaxRow(List<TrainWagonViewModel> trainWagonViewModels) {
         int max = 0;
         for (TrainWagonViewModel wagon :
                 trainWagonViewModels) {
-            if (max < wagon.getMaxRow()){
+            if (max < wagon.getMaxRow()) {
                 max = wagon.getMaxRow();
             }
         }
@@ -327,5 +327,12 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
             }
         }
         return requests;
+    }
+
+    @Override
+    public void detachView() {
+        trainGetSeatsUseCase.unsubscribe();
+        trainChangeSeatUseCase.unsubscribe();
+        super.detachView();
     }
 }

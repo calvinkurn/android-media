@@ -46,6 +46,7 @@ public class TrainBookingPassengerActivity extends TrainBaseActivity {
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog.dismiss();
                 TrainBookingPassengerActivity.super.onBackPressed();
             }
         });

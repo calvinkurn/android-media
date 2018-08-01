@@ -34,7 +34,11 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
             if (getView().getPaxType() == TrainBookingPassenger.ADULT) {
                 trainPassengerViewModel.setPhone(getView().getPhoneNumber());
                 trainPassengerViewModel.setIdentityNumber(getView().getIdentityNumber());
-            }
+            } /*else {
+                String defaultPhoneAndId = TrainDateUtil.dateToString(TrainDateUtil.addTimeToCurrentDate(Calendar.YEAR, -1), TrainDateUtil.FORMAT_DEFAULT_DATE_FOR_CHILD);
+                trainPassengerViewModel.setPhone(defaultPhoneAndId);
+                trainPassengerViewModel.setIdentityNumber(defaultPhoneAndId);
+            }*/
             getView().navigateToBookingPassenger(trainPassengerViewModel);
         }
     }
@@ -50,18 +54,24 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
         } else if (getView().getContactName().length() > MAX_CONTACT_NAME) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_max);
+        } else if (!getView().getContactName().matches("^[a-zA-Z\\s]*$")) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_containt_alphabet);
         } else if (TextUtils.isEmpty(getView().getPhoneNumber()) && getView().getPaxType() == TrainBookingPassenger.ADULT) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_phone_number);
         } else if (TextUtils.isEmpty(getView().getIdentityNumber()) && getView().getPaxType() == TrainBookingPassenger.ADULT) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number);
-        }  else if (getView().getPhoneNumber().length() > MAX_PHONE_NUMBER) {
+        } else if (getView().getPhoneNumber().length() > MAX_PHONE_NUMBER) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_max_length_error);
         } else if (getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER && getView().getPaxType() == TrainBookingPassenger.ADULT) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number_max);
+        } else if (!getView().getIdentityNumber().matches("^[A-Za-z0-9]+$") && getView().getPaxType() == TrainBookingPassenger.ADULT) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_alphanumeric);
         }
 
         return allDataValid;

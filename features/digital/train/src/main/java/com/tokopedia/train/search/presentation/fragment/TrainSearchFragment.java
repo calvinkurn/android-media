@@ -258,8 +258,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     markUiSortAndFilterOption();
                     minPrice = filterSearchData.getMinPrice();
                     maxPrice = filterSearchData.getMaxPrice();
-                    trains = filterSearchData.getTrainClass();
-                    trainClass = filterSearchData.getTrains();
+                    trains = filterSearchData.getTrains();
+                    trainClass = filterSearchData.getTrainClass();
                     departureTrains = filterSearchData.getDepartureTimeList();
                     presenter.getFilteredAndSortedSchedules();
                 }
@@ -575,4 +575,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     }
 
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

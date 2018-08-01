@@ -48,7 +48,7 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
                 inputListener = new AutoCompleteInputListener() {
                     @Override
                     public void onQuerySubmit(String query) {
-                        subscriber.onNext(String.valueOf(query));
+                        subscriber.onNext(String.valueOf(query.trim()));
                     }
                 };
             }
@@ -155,5 +155,13 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
                 onKeywordReceived(keyword);
             }
         }
+    }
+
+    @Override
+    public void detachView() {
+        trainGetAllStationsUseCase.unsubscribe();
+        trainGetPopularStationsUseCase.unsubscribe();
+        traingGetStationAutoCompleteUseCase.unsubscribe();
+        super.detachView();
     }
 }
