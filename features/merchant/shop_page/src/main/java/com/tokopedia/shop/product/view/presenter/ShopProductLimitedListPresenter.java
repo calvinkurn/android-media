@@ -83,10 +83,16 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
                 isOfficialStore, page, true, itemPerPage);
 
+        if (!TextUtils.isEmpty(etalaseId)) {
+            shopProductRequestModel.setEtalaseId(etalaseId);
+        }
+
         List<ShopEtalaseViewModel> shopEtalaseViewModelList = getView().getShopEtalaseViewModelList();
         if (shopEtalaseViewModelList.size() > 0) {
-            boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
-            shopProductRequestModel.setUseAce(isUseAce);
+            if (!TextUtils.isEmpty(etalaseId)) {
+                boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
+                shopProductRequestModel.setUseAce(isUseAce);
+            }
             getProductListWithAttributes(shopProductRequestModel);
         } else {
             ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(
@@ -111,8 +117,10 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                         List<ShopEtalaseViewModel> shopEtalaseViewModelList =
                                 ShopProductMapper.mergeEtalaseList(pagingListOther, null, etalaseLimit);
                         getView().onSuccessGetEtalaseList(shopEtalaseViewModelList);
-                        boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
-                        shopProductRequestModel.setUseAce(isUseAce);
+                        if (!TextUtils.isEmpty(etalaseId)) {
+                            boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
+                            shopProductRequestModel.setUseAce(isUseAce);
+                        }
                         getProductListWithAttributes(shopProductRequestModel);
                     }
                 }
