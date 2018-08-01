@@ -18,6 +18,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ATC = "clickATC";
         String VIEW_ATC = "viewATC";
         String REMOVE_FROM_CART = "removeFromCart";
+        String CHECKOUT = "checkout";
         String ADD_TO_CART = "addToCart";
         String CLICK_COURIER = "clickCourier";
         String CLICK_COUPON = "clickCoupon";
