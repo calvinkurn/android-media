@@ -18,7 +18,9 @@ public interface ContentExploreContract {
 
         void onSuccessGetExploreData(ExploreViewModel exploreViewModel);
 
-        void onErrorGetExploreData();
+        void onErrorGetExploreDataFirstPage();
+
+        void onErrorGetExploreDataMore();
 
         void updateCursor(String cursor);
 

@@ -59,14 +59,16 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     private void add(Visitable visitable) {
         int position = getItemCount();
-        this.list.add(visitable);
-        notifyItemInserted(position);
+        if (this.list.add(visitable)) {
+            notifyItemInserted(position);
+        }
     }
 
     private void remove(Visitable visitable) {
         int position = this.list.indexOf(visitable);
-        this.list.remove(visitable);
-        notifyItemRemoved(position);
+        if (this.list.remove(visitable)) {
+            notifyItemRemoved(position);
+        }
     }
 
     public void showLoading() {

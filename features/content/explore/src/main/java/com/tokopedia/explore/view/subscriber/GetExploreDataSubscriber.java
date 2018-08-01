@@ -45,6 +45,11 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
             e.printStackTrace();
         }
         view.dismissLoading();
+        if (clearData) {
+            view.onErrorGetExploreDataFirstPage();
+        } else {
+            view.onErrorGetExploreDataMore();
+        }
     }
 
     @Override

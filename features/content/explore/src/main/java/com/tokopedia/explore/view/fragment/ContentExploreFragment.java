@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.di.DaggerExploreComponent;
@@ -123,8 +124,18 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetExploreData() {
+    public void onErrorGetExploreDataFirstPage() {
+        NetworkErrorHelper.showEmptyState(getContext(), getView(), () -> {
+            presenter.getExploreData(true);
+        });
+    }
 
+    @Override
+    public void onErrorGetExploreDataMore() {
+        canLoadMore = false;
+        NetworkErrorHelper.showDialog(getContext(), () -> {
+            presenter.getExploreData(false);
+        });
     }
 
     @Override
