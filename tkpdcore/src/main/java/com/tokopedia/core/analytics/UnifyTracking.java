@@ -25,9 +25,9 @@ import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
- * modified by Alvarisi
- * this class contains tracking for Unify (Click, Discovery & View Product, Authentication,
- * Login/Register)
+ *         modified by Alvarisi
+ *         this class contains tracking for Unify (Click, Discovery & View Product, Authentication,
+ *         Login/Register)
  */
 
 public class UnifyTracking extends TrackingUtils {
@@ -3234,5 +3234,4 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).setUserId().getEvent());
     }
-
 }
