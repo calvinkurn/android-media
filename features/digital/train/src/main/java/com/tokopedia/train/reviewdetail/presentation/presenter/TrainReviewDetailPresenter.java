@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.checkout.domain.TrainCheckoutUseCase;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
+import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -231,11 +232,13 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     @Override
                     public void onError(Throwable e) {
                         Log.d("TrainReviewDetailPresenter", e.getMessage());
+                        if (e instanceof TrainNetworkException) {
+
+                        }
                     }
 
                     @Override
                     public void onNext(TrainCheckoutViewModel trainCheckoutViewModel) {
-                        Log.d("TrainReviewDetailPresenter", trainCheckoutViewModel.toString());
                         getView().navigateToTopPayActivity(trainCheckoutViewModel);
                     }
                 }

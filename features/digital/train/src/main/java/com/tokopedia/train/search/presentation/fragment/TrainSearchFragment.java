@@ -389,7 +389,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 trainScheduleViewModel.getIdSchedule(),
                 trainScheduleViewModel.getOrigin(),
                 trainScheduleViewModel.getDestination(),
-                trainScheduleViewModel.getClassTrain(),
+                trainScheduleViewModel.getDisplayClass(),
                 trainScheduleViewModel.getTrainName(),
                 specialTagging
         );

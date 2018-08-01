@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -26,7 +25,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
@@ -96,6 +94,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private TrainBuyerRequest trainBuyerRequest;
     private TrainScheduleRequest departureTripRequest;
     private TrainScheduleRequest returnTripRequest;
+
+    private TrainScheduleViewModel departureScheduleViewModel;
+    private TrainScheduleViewModel returnScheduleViewModel;
 
     @Inject
     TrainAnalytics trainAnalytics;
@@ -185,19 +186,13 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     }
 
     private void initializeActionButton() {
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onSubmitButtonClicked();
-            }
+        submitButton.setOnClickListener(view -> {
+            trainAnalytics.eventClickNextOnCustomersPage();
+
+            presenter.onSubmitButtonClicked();
         });
 
-        chooseSeatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onChooseSeatButtonClicked();
-            }
-        });
+        chooseSeatButton.setOnClickListener(view -> presenter.onChooseSeatButtonClicked());
     }
 
     private void initializeBuyerInfo() {
@@ -210,15 +205,12 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         presenter.getDetailSchedule(trainScheduleBookingPassData.getReturnScheduleId(), cardActionReturn);
 
         cardActionDeparture.setActionListener(() -> {
-//            String trainClass = trainScheduleDetailViewModel.getTrainClass();
-//            String trainName = trainScheduleDetailViewModel.getTrainName();
-//            String totalPrice = getString(R.string.train_label_currency,
-//                    CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
-//                            false, 0).getFormattedString());
-//            int numOfTotalPassenger = trainScheduleDetailViewModel.getNumOfAdultPassenger()
-//                    + trainScheduleDetailViewModel.getNumOfInfantPassenger();
-//
-//            trainAnalytics.eventClickDetail();
+            String origin = departureScheduleViewModel.getOrigin();
+            String destination = departureScheduleViewModel.getDestination();
+            String trainClass = departureScheduleViewModel.getDisplayClass();
+            String trainName = departureScheduleViewModel.getTrainName();
+
+            trainAnalytics.eventClickDetail(origin, destination, trainClass, trainName);
 
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                     trainScheduleBookingPassData.getDepartureScheduleId(),
@@ -229,6 +221,13 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         });
 
         cardActionReturn.setActionListener(() -> {
+            String origin = returnScheduleViewModel.getOrigin();
+            String destination = returnScheduleViewModel.getDestination();
+            String trainClass = returnScheduleViewModel.getDisplayClass();
+            String trainName = returnScheduleViewModel.getTrainName();
+
+            trainAnalytics.eventClickDetail(origin, destination, trainClass, trainName);
+
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                     trainScheduleBookingPassData.getReturnScheduleId(),
                     trainScheduleBookingPassData.getAdultPassenger(),
@@ -301,6 +300,12 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
         String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
         cardWithAction.setSubContentInfo(" | " + timeDepartureString + " - " + timeArrivalString + deviationDayString);
+
+        if (!trainScheduleViewModel.isReturnTrip()) {
+            this.departureScheduleViewModel = trainScheduleViewModel;
+        } else {
+            this.returnScheduleViewModel = trainScheduleViewModel;
+        }
     }
 
     @Override

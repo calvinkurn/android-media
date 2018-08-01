@@ -83,7 +83,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                     trainScheduleViewModel.getIdSchedule(),
                     trainScheduleViewModel.getOrigin(),
                     trainScheduleViewModel.getDestination(),
-                    trainScheduleViewModel.getClassTrain(),
+                    trainScheduleViewModel.getDisplayClass(),
                     trainScheduleViewModel.getTrainName()
             );
             index.add(getAdapterPosition());

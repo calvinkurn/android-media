@@ -48,15 +48,6 @@ public class TrainAnalytics {
         );
     }
 
-    public void eventClickTransactionList() {
-        analyticTracker.sendEventTracking(
-                TrainEventTracking.Event.PROMO_CLICK,
-                TrainEventTracking.Category.DIGITAL_TRAIN,
-                TrainEventTracking.Action.CLICK_TRANSACTION_LIST,
-                ""
-        );
-    }
-
     public void eventClickPromoList() {
         analyticTracker.sendEventTracking(
                 TrainEventTracking.Event.PROMO_CLICK,
@@ -72,6 +63,66 @@ public class TrainAnalytics {
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_HELP,
                 ""
+        );
+    }
+
+    public void eventClickTransactionList() {
+        analyticTracker.sendEventTracking(
+                TrainEventTracking.Event.PROMO_CLICK,
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.CLICK_TRANSACTION_LIST,
+                ""
+        );
+    }
+
+    public void eventProductImpression(String scheduleId, String origin, String destination,
+                                       String trainClass, String trainName) {
+        Object productItem = DataLayer.mapOf(
+                "name", trainName,
+                "id", scheduleId,
+                "category", "train ticket",
+                "variant", trainClass,
+                "list", "/kereta-api"
+        );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", TrainEventTracking.Event.PRODUCT_VIEW,
+                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
+                        "eventAction", TrainEventTracking.Action.PRODUCT_IMPRESSIONS,
+                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
+                                trainName,
+                        "ecommerce", DataLayer.mapOf(
+                                "impression", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(productItem))
+                        )
+                )
+        );
+    }
+
+    public void eventProductClick(String scheduleId, String origin, String destination, String trainClass,
+                                  String trainName, String specialTagging) {
+        Object productItem = DataLayer.mapOf(
+                "name", trainName,
+                "id", scheduleId,
+                "category", "train ticket",
+                "variant", trainClass,
+                "list", "/kereta-api"
+        );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", TrainEventTracking.Event.PRODUCT_CLICK,
+                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
+                        "eventAction", TrainEventTracking.Action.PRODUCT_CLICK,
+                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
+                                trainName + " - " + specialTagging,
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf(
+                                                "list", "/kereta-api"),
+                                        "products", DataLayer.listOf(productItem)
+                                )
+                        )
+                )
         );
     }
 
@@ -192,53 +243,12 @@ public class TrainAnalytics {
         );
     }
 
-    public void eventProductClick(String scheduleId, String origin, String destination, String trainClass,
-                                  String trainName, String specialTagging) {
-        Object productItem = DataLayer.mapOf(
-                "name", trainName,
-                "id", scheduleId,
-                "category", "train ticket",
-                "variant", trainClass,
-                "list", "/kereta-api"
-        );
-
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", TrainEventTracking.Event.PRODUCT_CLICK,
-                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
-                        "eventAction", TrainEventTracking.Action.PRODUCT_CLICK,
-                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
-                                trainName + " - " + specialTagging,
-                        "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf(
-                                                "list", "/kereta-api"),
-                                        "products", DataLayer.listOf(productItem)
-                                )
-                        )
-                )
-        );
-    }
-
-    public void eventProductImpression(String scheduleId, String origin, String destination, String trainClass, String trainName) {
-        Object productItem = DataLayer.mapOf(
-                "name", trainName,
-                "id", scheduleId,
-                "category", "train ticket",
-                "variant", trainClass,
-                "list", "/kereta-api"
-        );
-
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", TrainEventTracking.Event.PRODUCT_VIEW,
-                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
-                        "eventAction", TrainEventTracking.Action.PRODUCT_IMPRESSIONS,
-                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
-                                trainName,
-                        "ecommerce", DataLayer.mapOf(
-                                "impression", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(productItem))
-                        )
-                )
+    public void eventClickNextOnCustomersPage() {
+        analyticTracker.sendEventTracking(
+                "",
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.CLICK_NEXT_ON_CUSTOMERS_PAGE,
+                ""
         );
     }
 
@@ -266,6 +276,16 @@ public class TrainAnalytics {
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_ERROR,
                 errorMessage
+        );
+    }
+
+    public void eventProceedToPayment(String origin, String destination, String trainClass,
+                                      String trainName) {
+        analyticTracker.sendEventTracking(
+                "",
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.PROCEED_TO_PAYMENT,
+                origin + " - " + destination + " - " + trainClass + " - " + trainName
         );
     }
 
