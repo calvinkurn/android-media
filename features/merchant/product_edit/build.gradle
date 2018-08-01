@@ -29,7 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.libraries.productDraftDatabase)
+    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.shopCommon)
 
     kapt  rootProject.ext.dbDependencies.dbFlowProcessor

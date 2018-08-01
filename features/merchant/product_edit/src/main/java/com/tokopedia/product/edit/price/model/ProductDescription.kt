@@ -9,7 +9,7 @@ data class ProductDescription(var description: String = "", var feature : String
             parcel.readString(),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
-            TODO("videoIDs")) {
+            parcel.readArrayList(ArrayList::class.java.classLoader) as ArrayList<String>) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

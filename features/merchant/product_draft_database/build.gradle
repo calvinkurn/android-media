@@ -35,4 +35,4 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../../../publish_local.gradle'
