@@ -171,6 +171,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
             if (categoryViewModel.getId() == categoryId) {
                 categoryViewModel.setActive(true);
                 categoryAdapter.notifyItemChanged(i);
+                exploreCategoryRv.scrollToPosition(i);
                 break;
             }
         }
