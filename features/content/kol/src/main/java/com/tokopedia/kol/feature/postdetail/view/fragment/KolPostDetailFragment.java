@@ -249,7 +249,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onUnfollowKolClicked(int rowNumber, int id) {
-        presenter.unfollowKol(rowNumber, id);
+        presenter.unfollowKol(id, rowNumber);
     }
 
     @Override
