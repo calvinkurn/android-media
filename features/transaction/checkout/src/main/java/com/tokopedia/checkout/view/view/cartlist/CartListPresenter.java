@@ -339,6 +339,7 @@ public class CartListPresenter implements ICartListPresenter {
         if (cashback > 0) {
             view.updateCashback(cashback);
         }
+
     }
 
     @Override
