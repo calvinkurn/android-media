@@ -21,14 +21,14 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -226,13 +226,13 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
                 boolean right = mCurrentPagePosition < position;
 
                 if (mCurrentPagePosition == 0 && right) {
-                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
                 } else if (mCurrentPagePosition == 1 && !right) {
-                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_PREVIOUS);
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_SECOND_PREVIOUS);
                 } else if (mCurrentPagePosition == 1) {
-                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
                 } else if (mCurrentPagePosition == 2 && !right) {
-                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_THIRD_PREVIOUS);
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_THIRD_PREVIOUS);
                 }
 
                 mCurrentPagePosition = position;
@@ -250,9 +250,9 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
                 int position = pager.getCurrentItem();
 
                 if (position == 0) {
-                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
                 } else if (position == 1) {
-                    sendIntroSliderScrollEvent(AppEventTracking.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
                 }
 
                 pager.setCurrentItem(pager.getCurrentItem() + 1, true);
@@ -276,7 +276,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     private void sendIntroSliderScrollEvent(String label) {
-        UnifyTracking.eventIntroSliderScrollEvent(label);
+        InstantLoanEventTracking.eventIntroSliderScrollEvent(label);
     }
 
     @Override
@@ -375,7 +375,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     private void sendCariPinjamanClickEvent() {
         String eventLabel = getScreenName();
-        UnifyTracking.eventCariPinjamanClick(eventLabel);
+        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     public static DanaInstantFragment createInstance(int position) {

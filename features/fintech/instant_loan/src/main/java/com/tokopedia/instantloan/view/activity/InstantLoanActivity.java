@@ -21,8 +21,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -31,6 +29,8 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -323,7 +323,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        sendPermissionDEniedGTMEvent(permissions, grantResults);
+        sendPermissionDeniedGTMEvent(permissions, grantResults);
         DDCollectorManager.getsInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -367,7 +367,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
                 bannerPagerAdapter.getBannerEntityList().get(position) != null) {
             String eventLabel = bannerPagerAdapter.getBannerEntityList().get(position).getLink()
                     + " - " + String.valueOf(position);
-            UnifyTracking.eventLoanBannerImpression(eventLabel);
+            InstantLoanEventTracking.eventLoanBannerImpression(eventLabel);
         }
     }
 
@@ -379,7 +379,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     public void onBannerClick(View view, int position) {
         String url = (String) view.getTag();
         String eventLabel = url + " - " + String.valueOf(position);
-        UnifyTracking.eventLoanBannerClick(eventLabel);
+        InstantLoanEventTracking.eventLoanBannerClick(eventLabel);
         if (!TextUtils.isEmpty(url)) {
             openWebView(url);
         }
@@ -390,14 +390,14 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         startActivity(intent);
     }
 
-    private void sendPermissionDEniedGTMEvent(@NonNull String[] permissions, @NonNull int[] grantResults) {
-        StringBuilder eventLabel = new StringBuilder(AppEventTracking.EventLabel.PL_PERMISSION_DENIED);
+    private void sendPermissionDeniedGTMEvent(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        StringBuilder eventLabel = new StringBuilder(InstantLoanEventConstants.EventLabel.PL_PERMISSION_DENIED);
         for (int i = 0; i < permissions.length; i++) {
             if (grantResults[i] == -1) {
                 eventLabel.append(permissions[i]).append(", ");
             }
         }
-        UnifyTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
+        InstantLoanEventTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
     }
 }
 

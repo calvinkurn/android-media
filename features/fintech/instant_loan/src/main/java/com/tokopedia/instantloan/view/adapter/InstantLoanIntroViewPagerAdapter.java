@@ -12,16 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_LEARN_MORE;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_TNC;
-
-//import static com.tokopedia.core.network.constants.TkpdBaseURL.InstantLoan.WEB_LINK_TNC;
 
 /**
  * View pager adapter
@@ -59,7 +57,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
                 @Override
                 public void onClick(View view) {
-                    sendLoanPopupClickEvent(AppEventTracking.EventLabel.PL_POPUP_LEARN_MORE);
+                    sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_LEARN_MORE);
                     mActivity.openWebView(WEB_LINK_LEARN_MORE);
                 }
             };
@@ -92,7 +90,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
                 @Override
                 public void onClick(View view) {
-                    sendLoanPopupClickEvent(AppEventTracking.EventLabel.PL_POPUP_TNC);
+                    sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_TNC);
                     mActivity.openWebView(WEB_LINK_TNC);
                 }
             };
@@ -103,7 +101,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
             textTnC.setText(spannableString);
             textTnC.setMovementMethod(LinkMovementMethod.getInstance());
             view.findViewById(R.id.button_connect_device).setOnClickListener(v -> {
-                sendLoanPopupClickEvent(AppEventTracking.EventLabel.PL_POPUP_CONNECT_DEVICE);
+                sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_CONNECT_DEVICE);
                 mPresenter.startDataCollection();
             });
 
@@ -115,7 +113,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
     }
 
     private void sendLoanPopupClickEvent(String label) {
-        UnifyTracking.eventLoanPopupClick(label);
+        InstantLoanEventTracking.eventLoanPopupClick(label);
     }
 
     @Override
