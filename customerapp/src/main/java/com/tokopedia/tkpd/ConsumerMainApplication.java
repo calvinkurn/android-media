@@ -27,6 +27,7 @@ import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.analytics.Analytics;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
@@ -41,7 +42,7 @@ import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
-import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
+import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.network.SessionUrl;
@@ -60,9 +61,11 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.vote.data.VoteUrl;
 
 import io.hansel.hanselsdk.Hansel;
 
@@ -90,6 +93,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
         initializeDatabase();
@@ -177,9 +183,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.TOKOPOINT_API_DOMAIN = ConsumerAppBaseUrl.TOKOPOINT_API_DOMAIN;
         FlightUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         FlightUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
-        FlightUrl.PULSA_BASE_URL = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         AbstractionBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
-        FlightUrl.BANNER_PATH = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN + FlightUrl.FLIGHT_BANNER_VERSION;
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
@@ -188,6 +192,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         WalletUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         ShopCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
@@ -197,6 +202,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
@@ -270,6 +276,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 .build());
         TkpdFlight.initDatabase(getApplicationContext());
         PushNotification.initDatabase(getApplicationContext());
+        Analytics.initDB(getApplicationContext());
     }
 
     @Override
@@ -354,5 +361,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
+    }
+
+    @Override
+    public Intent getInstantLoanActivityIntent(Context context) {
+        return null;
     }
 }

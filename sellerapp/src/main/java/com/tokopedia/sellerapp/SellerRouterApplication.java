@@ -21,7 +21,8 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
-import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
+import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -43,6 +44,7 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -58,6 +60,13 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
+import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
@@ -85,7 +94,6 @@ import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCa
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
-import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
@@ -160,6 +168,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -187,7 +196,8 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
-        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter {
+        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
+        NetworkRouter, TopChatRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1201,10 +1211,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void registerShake(String screenName) {
-    }
-
-    @Override
     public void unregisterShake() {
     }
 
@@ -1336,5 +1342,50 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
+    }
+
+    @Override
+    public FingerprintModel getFingerprintModel() {
+        return FingerprintModelGenerator.generateFingerprintModel(this);
+    }
+
+    @Override
+    public void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
+        try {
+            sessionRefresh.gcmUpdate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
+        Intent intent = new Intent(context, ContactUsActivity.class);
+        intent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs(
+                TextUtils.isEmpty(url) ? TkpdBaseURL.BASE_CONTACT_US : url, context
+        ));
+        intent.putExtra(ContactUsConstant.IS_CHAT_BOT, isFromChatBot);
+        return intent;
+    }
+
+    @Override
+    public Intent getChatBotIntent(Context context, String messageId) {
+        return ChatRoomActivity.getChatBotIntent(context, messageId);
+    }
+
+    @Override
+    public void registerShake(String screenName, Activity activity) {
+
+    }
+
+    @Override
+    public void openRedirectUrl(Activity activity, String url) {
+        goToWebview(activity,url);
+    }
+
+    @Override
+    public boolean isIndicatorVisible() {
+        return false; //Sellerapp dont have groupchat therefore always set false to indicator
     }
 }

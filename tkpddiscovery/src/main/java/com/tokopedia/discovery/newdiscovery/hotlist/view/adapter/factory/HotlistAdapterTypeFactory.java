@@ -6,6 +6,7 @@ import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.BigGridProductViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.GridProductViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.HotlistHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.ListProductViewHolder;
@@ -40,6 +41,7 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
             case TkpdState.RecyclerView.VIEW_PRODUCT:
                 return ListProductViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return BigGridProductViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
                 return GridProductViewHolder.LAYOUT;
@@ -56,6 +58,8 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
         AbstractViewHolder viewHolder;
         if (type == HotlistHeaderViewHolder.LAYOUT) {
             viewHolder = new HotlistHeaderViewHolder(parent, mItemClickListener, searchQuery);
+        } else if (type == BigGridProductViewHolder.LAYOUT) {
+            viewHolder = new BigGridProductViewHolder(parent, mItemClickListener);
         } else if (type == GridProductViewHolder.LAYOUT) {
             viewHolder = new GridProductViewHolder(parent, mItemClickListener);
         } else if (type == ListProductViewHolder.LAYOUT) {

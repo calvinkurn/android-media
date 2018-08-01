@@ -42,6 +42,15 @@ public class ImageUploadHandler {
         uploadimage.context = fragment.getActivity();
         return uploadimage;
     }
+    public static ImageUploadHandler createInstance(android.support.v4.app.Fragment fragment) {
+        ImageUploadHandler uploadimage = new ImageUploadHandler();
+        uploadimage.fragmentv4 = fragment;
+        uploadimage.context = fragment.getActivity();
+        return uploadimage;
+    }
+
+
+
 
     public class Model {
         public String cameraFileLoc;
@@ -52,6 +61,8 @@ public class ImageUploadHandler {
 
     private Activity activity;
     private Fragment fragment;
+
+    private android.support.v4.app.Fragment fragmentv4;
     private Context context;
     private Model model = new Model();
 
@@ -64,6 +75,8 @@ public class ImageUploadHandler {
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);
+        else if(fragmentv4 != null)
+            fragmentv4.startActivityForResult(intent,code);
         else
             fragment.startActivityForResult(intent, code);
     }

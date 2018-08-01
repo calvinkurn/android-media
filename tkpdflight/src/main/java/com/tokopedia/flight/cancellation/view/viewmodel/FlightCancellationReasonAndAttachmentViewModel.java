@@ -3,9 +3,6 @@ package com.tokopedia.flight.cancellation.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
-
 import java.util.List;
 
 /**
