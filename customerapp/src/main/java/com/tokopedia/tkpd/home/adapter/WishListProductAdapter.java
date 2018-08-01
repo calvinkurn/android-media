@@ -238,6 +238,11 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         public void onAddFavorite(int position, Data data) {
 
         }
+
+        @Override
+        public void onAddWishList(int position, Data data) {
+            //TODO: next implement wishlist action
+        }
     }
 
     private ViewHolder createProductView(ViewGroup viewGroup) {

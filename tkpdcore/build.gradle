@@ -130,12 +130,12 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation rootProject.ext.debugToolsDependencies.stetho
-    implementation rootProject.ext.analyticsDependencies.logentries
-    compile rootProject.ext.analyticsDependencies.logentries
-    implementation project(rootProject.ext.libraries.analytics)
 
+    implementation rootProject.ext.analyticsDependencies.logentries
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.analytics)
 }
 
 apply plugin: 'com.google.gms.google-services'
 apply from: '../publish_local.gradle'
-

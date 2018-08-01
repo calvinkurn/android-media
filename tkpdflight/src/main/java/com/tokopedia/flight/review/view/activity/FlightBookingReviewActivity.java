@@ -3,6 +3,7 @@ package com.tokopedia.flight.review.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
@@ -40,10 +41,8 @@ public class FlightBookingReviewActivity extends BaseFlightActivity implements H
     @Override
     public void onBackPressed() {
         if (getFragment() instanceof OnBackActionListener) {
-            if (!((OnBackActionListener) getFragment()).isCanGoBack()) {
-                ((OnBackActionListener) getFragment()).onBackPressed();
-                return;
-            }
+            ((OnBackActionListener) getFragment()).onBackPressed();
+            return;
         }
         super.onBackPressed();
     }
@@ -51,5 +50,15 @@ public class FlightBookingReviewActivity extends BaseFlightActivity implements H
     @Override
     public String getScreenName() {
         return FlightAnalytics.Screen.REVIEW;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home :
+                onBackPressed();
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
     }
 }

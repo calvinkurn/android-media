@@ -227,4 +227,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                     });
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

@@ -16,7 +16,7 @@ import java.util.List;
  * Created by kris on 3/14/18. Tokopedia
  */
 
-public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder{
+public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private static final int SINGLE_DATA_SIZE = 1;
 
@@ -63,8 +63,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder{
 
         productQty = itemView.findViewById(R.id.product_qty);
 
-        notesForSeller = itemView.findViewById(R.id.notes_for_seller);
-
         addressLayout = itemView.findViewById(R.id.address_layout);
 
         addressTitle = itemView.findViewById(R.id.tv_address_name);
@@ -78,9 +76,9 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder{
         phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
 
         phoneNumber.setVisibility(View.GONE);
-        
+
     }
-    
+
     public void bindItemAdapterAddress(MultipleAddressItemData itemData,
                                        List<MultipleAddressItemData> itemDataList,
                                        View.OnClickListener onEditClickedListener,
@@ -107,11 +105,11 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder{
         addressLayout.setOnClickListener(
                 onAddressLayoutClickedListener(itemData)
         );
-        if(itemDataList.size() == SINGLE_DATA_SIZE) deleteButton.setVisibility(View.GONE);
+        if (itemDataList.size() == SINGLE_DATA_SIZE) deleteButton.setVisibility(View.GONE);
         else deleteButton.setVisibility(View.VISIBLE);
-        if(position == itemDataList.size() - 1) borderLine.setVisibility(View.GONE);
+        if (position == itemDataList.size() - 1) borderLine.setVisibility(View.GONE);
         else borderLine.setVisibility(View.VISIBLE);
-        
+
     }
 
     private View.OnClickListener onAddressLayoutClickedListener(MultipleAddressItemData data) {

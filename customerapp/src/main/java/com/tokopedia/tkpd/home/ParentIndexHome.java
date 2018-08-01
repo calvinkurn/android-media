@@ -628,13 +628,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this)) {
-            if (isUserFirstTimeLogin) {
-                initStateFragment = INIT_STATE_FRAGMENT_HOME;
-                adapter = new PagerAdapter(getSupportFragmentManager());
-                setupViewPager();
-                adapter.notifyDataSetChanged();
-            }
+        if (SessionHandler.isV4Login(this) ) {
+            if ( isUserFirstTimeLogin) {
+
+            adapter.notifyDataSetChanged();}
             updateCartNotification();
         }
 

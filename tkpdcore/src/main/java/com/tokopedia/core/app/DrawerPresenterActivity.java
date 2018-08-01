@@ -29,6 +29,7 @@ import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
+import com.tokopedia.core.drawer2.view.databinder.DrawerPosHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
@@ -63,7 +64,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         sessionHandler = new SessionHandler(MainApplication.getAppContext());
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
-        if (!GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isCustomerApp()) {
             registerBroadcastReceiverHeaderTokoCash();
             registerBroadcastReceiverHeaderTokoCashPending();
             registerBroadcastReceiverHeaderTokoPoint();
@@ -360,6 +361,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
             ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                     .getData().setDrawerProfile(profile);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerPosHeaderDataBinder) {
+            ((DrawerPosHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerProfile(profile);
+        }
+
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
         drawerHelper.setFooterData(profile);
     }
@@ -401,7 +407,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void onDestroy() {
         super.onDestroy();
         drawerDataManager.unsubscribe();
-        if (!GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isCustomerApp()) {
             unregisterBroadcastReceiverHeaderTokoCash();
             unregisterBroadcastReceiverHeaderTokoCashPending();
             unregisterBroadcastReceiverHeaderTokoPoint();

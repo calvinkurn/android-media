@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -56,7 +57,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected DiscoverySearchView searchView;
     protected ProgressBar loadingView;
 
-    private MenuItem searchItem;
+    public MenuItem searchItem;
     private boolean isLastRequestForceSearch;
 
     private TkpdProgressDialog tkpdProgressDialog;
@@ -543,6 +544,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         } else {
             sendGalleryImageSearchResultGTM(SUCCESS);
         }
+    }
+
+    @Override
+    public void showImageNotSupportedError() {
+        super.showImageNotSupportedError();
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.image_not_supported));
     }
 
     public void showSnackBarView(String message) {

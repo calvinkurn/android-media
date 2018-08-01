@@ -22,29 +22,6 @@ public class ShipmentItemData implements Parcelable {
     public ShipmentItemData() {
     }
 
-    protected ShipmentItemData(Parcel in) {
-        serviceId = in.readInt();
-        type = in.readString();
-        singlePriceRange = in.readString();
-        deliveryTimeRange = in.readString();
-        multiplePriceRange = in.readString();
-        courierItemData = in.createTypedArrayList(CourierItemData.CREATOR);
-        selected = in.readByte() != 0;
-        lessThanADayDelivery = in.readByte() != 0;
-    }
-
-    public static final Creator<ShipmentItemData> CREATOR = new Creator<ShipmentItemData>() {
-        @Override
-        public ShipmentItemData createFromParcel(Parcel in) {
-            return new ShipmentItemData(in);
-        }
-
-        @Override
-        public ShipmentItemData[] newArray(int size) {
-            return new ShipmentItemData[size];
-        }
-    };
-
     public int getServiceId() {
         return serviceId;
     }
@@ -116,13 +93,36 @@ public class ShipmentItemData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(serviceId);
-        dest.writeString(type);
-        dest.writeString(singlePriceRange);
-        dest.writeString(multiplePriceRange);
-        dest.writeString(deliveryTimeRange);
-        dest.writeTypedList(courierItemData);
-        dest.writeByte((byte) (selected ? 1 : 0));
-        dest.writeByte((byte) (lessThanADayDelivery ? 1 : 0));
+        dest.writeInt(this.serviceId);
+        dest.writeString(this.type);
+        dest.writeString(this.singlePriceRange);
+        dest.writeString(this.multiplePriceRange);
+        dest.writeString(this.deliveryTimeRange);
+        dest.writeByte(this.lessThanADayDelivery ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.courierItemData);
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
     }
+
+    protected ShipmentItemData(Parcel in) {
+        this.serviceId = in.readInt();
+        this.type = in.readString();
+        this.singlePriceRange = in.readString();
+        this.multiplePriceRange = in.readString();
+        this.deliveryTimeRange = in.readString();
+        this.lessThanADayDelivery = in.readByte() != 0;
+        this.courierItemData = in.createTypedArrayList(CourierItemData.CREATOR);
+        this.selected = in.readByte() != 0;
+    }
+
+    public static final Creator<ShipmentItemData> CREATOR = new Creator<ShipmentItemData>() {
+        @Override
+        public ShipmentItemData createFromParcel(Parcel source) {
+            return new ShipmentItemData(source);
+        }
+
+        @Override
+        public ShipmentItemData[] newArray(int size) {
+            return new ShipmentItemData[size];
+        }
+    };
 }

@@ -9,6 +9,7 @@ import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartPr
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductItemViewModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Irfan Khoirul on 24/05/18.
@@ -43,6 +44,9 @@ public interface RemoveCartItemContract {
         CartProductHeaderViewModel getCartProductHeaderViewModel();
 
         void processRemoveCartItem(List<String> carIds, boolean addToWishlist);
+
+        Map<String, Object> generateCartDataAnalytics(List<String> selectedCartItemIds,
+                                                      String enhancedECommerceAction);
 
     }
 

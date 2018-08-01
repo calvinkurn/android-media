@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
-import android.net.Uri;
-import android.os.Bundle;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
@@ -25,6 +22,7 @@ public interface TkpdInboxRouter {
 
     String ENABLE_GROUPCHAT = "enable_groupchat";
     String IS_CHAT_BOT = "is_chat_bot";
+    String INDICATOR_VISIBILITY = "indicator_groupchat";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,
@@ -64,5 +62,15 @@ public interface TkpdInboxRouter {
 
     void startAddProduct(Activity activity, String shopId);
 
+    Intent getHelpUsIntent(Context context);
+
+    Intent getWebviewActivityWithIntent(Context context, String url, String title);
+
+    Intent getWebviewActivityWithIntent(Context context, String url);
+
     boolean isEnabledGroupChat();
+
+    Intent getChatBotIntent(Context context, String messageId);
+
+    boolean isIndicatorVisible();
 }

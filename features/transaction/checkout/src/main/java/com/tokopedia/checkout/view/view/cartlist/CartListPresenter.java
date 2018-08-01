@@ -18,6 +18,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -28,10 +29,10 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -45,6 +46,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +62,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class CartListPresenter implements ICartListPresenter {
+    private static final String PARAM_PARAMS = "params";
+    private static final String PARAM_LANG = "lang";
+    private static final String PARAM_CARTS = "carts";
+    private static final String PARAM_IS_RESET = "isReset";
+    private static final String PARAM_STEP = "step";
     private final ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
     private final CompositeSubscription compositeSubscription;
@@ -108,8 +115,6 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
-
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
@@ -160,15 +165,28 @@ public class CartListPresenter implements ICartListPresenter {
                 .addWishlist(addWishList ? 1 : 0)
                 .build();
         TKPDMapParam<String, String> paramDelete = new TKPDMapParam<>();
-        paramDelete.put("params", new Gson().toJson(removeCartRequest));
+        paramDelete.put(PARAM_PARAMS, new Gson().toJson(removeCartRequest));
 
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
-        paramGetList.put("lang", "id");
+        paramGetList.put(PARAM_LANG, "id");
 
+        List<CartItemData> cartItemDataList = view.getCartDataList();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
+        requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
                 view.getGeneratedAuthParamNetwork(paramGetList));
 
@@ -195,10 +213,10 @@ public class CartListPresenter implements ICartListPresenter {
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
+        paramGetShipmentForm.put(PARAM_LANG, "id");
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
@@ -221,8 +239,8 @@ public class CartListPresenter implements ICartListPresenter {
     public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("lang", "id");
-        param.put("isReset", "false");
+        param.put(PARAM_LANG, "id");
+        param.put(PARAM_IS_RESET, "false");
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING, view.getGeneratedAuthParamNetwork(param)
@@ -242,33 +260,7 @@ public class CartListPresenter implements ICartListPresenter {
                             public void onError(Throwable e) {
                                 view.hideProgressLoading();
                                 e.printStackTrace();
-                                if (e instanceof UnknownHostException) {
-                                    /* Ini kalau ga ada internet */
-                                    view.renderErrorNoConnectionToShipmentMultipleAddress(
-                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                                    );
-                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                                    /* Ini kalau timeout */
-                                    view.renderErrorTimeoutConnectionToShipmentMultipleAddress(
-                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                                    );
-                                } else if (e instanceof ResponseErrorException) {
-                                    /* Ini kalau error dari API kasih message error */
-                                    view.renderErrorToShipmentMultipleAddress(e.getMessage());
-                                } else if (e instanceof ResponseDataNullException) {
-                                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                                    view.renderErrorToShipmentMultipleAddress(e.getMessage());
-                                } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                                    view.renderErrorHttpToShipmentMultipleAddress(e.getMessage());
-                                } else if (e instanceof ResponseCartApiErrorException) {
-                                    view.renderErrorToShipmentMultipleAddress(e.getMessage());
-                                } else {
-                                    /* Ini diluar dari segalanya hahahaha */
-                                    view.renderErrorHttpToShipmentMultipleAddress(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
+                                handleErrorCheckoutToMultipleAddress(e);
                             }
 
                             @Override
@@ -285,51 +277,84 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i).getCartItemData() != null && dataList.get(i).getCartItemData().getOriginData() != null) {
+                if (dataList.get(i).getCartItemData().getOriginData().getWholesalePrice() != null &&
+                        dataList.get(i).getCartItemData().getOriginData().getWholesalePrice().size() > 0 &&
+                        dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
+                    dataList.get(i).getCartItemData().getOriginData().setParentId(String.valueOf(i + 1));
+                }
+            }
+        }
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
+        Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
+        Map<String, CartItemHolderData> cartItemParentIdMap = new HashMap<>();
         for (CartItemHolderData data : dataList) {
-            String parentId = data.getCartItemData().getOriginData().getParentId();
-            String productId = data.getCartItemData().getOriginData().getProductId();
-            int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
-            if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
-                for (CartItemHolderData dataForQty : dataList) {
-                    if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
-                            parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId())) {
-                        itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+            if (data.getCartItemData() != null && data.getCartItemData().getOriginData() != null) {
+                String parentId = data.getCartItemData().getOriginData().getParentId();
+                String productId = data.getCartItemData().getOriginData().getProductId();
+                int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
+                if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
+                    for (CartItemHolderData dataForQty : dataList) {
+                        if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
+                                parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId()) &&
+                                dataForQty.getCartItemData().getOriginData().getPricePlan() ==
+                                        data.getCartItemData().getOriginData().getPricePlan()) {
+                            itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+                        }
+                    }
+                }
+
+                totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
+                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+                boolean hasCalculateWholesalePrice = false;
+                if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                    double subTotalWholesalePrice = 0;
+                    for (WholesalePrice wholesalePrice : wholesalePrices) {
+                        if (itemQty >= wholesalePrice.getQtyMin()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                            hasCalculateWholesalePrice = true;
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                            break;
+                        }
+                    }
+                    if (!hasCalculateWholesalePrice) {
+                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
+                        } else {
+                            subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
+                    }
+                    if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+                        subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
+                    }
+                } else {
+                    if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
+                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
+                    } else {
+                        CartItemHolderData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
+                        if (calculatedHolderData.getCartItemData().getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
+                            subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
                     }
                 }
             }
+        }
 
-            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
-            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
-            boolean hasCalculateWholesalePrice = false;
-            if (wholesalePrices != null && wholesalePrices.size() > 0) {
-                for (WholesalePrice wholesalePrice : wholesalePrices) {
-                    if (itemQty >= wholesalePrice.getQtyMin() &&
-                            itemQty <= wholesalePrice.getQtyMax()) {
-                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrice.getPrdPrc());
-                        hasCalculateWholesalePrice = true;
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
-                        break;
-                    }
-                }
-                if (!hasCalculateWholesalePrice) {
-                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc());
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
-                    } else {
-                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                    }
-                }
-            } else {
-                subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
-                data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+        if (!subtotalWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                subtotalPrice += item.getValue();
             }
         }
 
         view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(((int) subtotalPrice), true));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) subtotalPrice), true));
     }
 
     @Override
@@ -372,10 +397,10 @@ public class CartListPresenter implements ICartListPresenter {
 
 
     @Override
-    public void processToShipmentForm() {
+    public void processToShipmentForm(boolean toAddressChoice) {
         view.showProgressLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
+        paramGetShipmentForm.put(PARAM_LANG, "id");
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
@@ -386,7 +411,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberToShipmentForm())
+                        .subscribe(getSubscriberToShipmentForm(toAddressChoice))
         );
     }
 
@@ -394,14 +419,13 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
-        paramResetCart.put("lang", "id");
-        paramResetCart.put("step", "4");
+        paramResetCart.put(PARAM_LANG, "id");
+        paramResetCart.put(PARAM_STEP, "4");
 
         TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
-        paramGetCart.put("lang", "id");
+        paramGetCart.put(PARAM_LANG, "id");
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ResetCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_RESET_CART,
@@ -423,11 +447,11 @@ public class CartListPresenter implements ICartListPresenter {
     public void processResetThenToShipmentForm() {
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
-        paramResetCart.put("lang", "id");
-        paramResetCart.put("step", "4");
+        paramResetCart.put(PARAM_LANG, "id");
+        paramResetCart.put(PARAM_STEP, "4");
 
         TKPDMapParam<String, String> paramShipmentForm = new TKPDMapParam<>();
-        paramShipmentForm.put("lang", "id");
+        paramShipmentForm.put(PARAM_LANG, "id");
 
 
         RequestParams requestParams = RequestParams.create();
@@ -457,34 +481,7 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionToShipmentForm(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionToShipmentForm(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                    view.renderErrorHttpToShipmentForm(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
-
+                handleErrorGetShipmentForm(e);
             }
 
             @Override
@@ -513,33 +510,7 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionInitialGetCartListData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionInitialGetCartListData(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorInitialGetCartListData(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorInitialGetCartListData(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
-                    view.renderErrorHttpInitialGetCartListData(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorInitialGetCartListData(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpInitialGetCartListData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                handleErrorinitCartList(e);
             }
 
             @Override
@@ -548,11 +519,131 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getCartItemDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
+                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
-
             }
         };
+    }
+
+    private void handleErrorCheckoutToMultipleAddress(Throwable e) {
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            view.renderErrorNoConnectionToShipmentMultipleAddress(
+                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+            );
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            view.renderErrorTimeoutConnectionToShipmentMultipleAddress(
+                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            );
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            view.renderErrorToShipmentMultipleAddress(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            view.renderErrorToShipmentMultipleAddress(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+            code http errornya bisa diambil
+            e.getErrorCode */
+            view.renderErrorHttpToShipmentMultipleAddress(e.getMessage());
+        } else if (e instanceof ResponseCartApiErrorException) {
+            view.renderErrorToShipmentMultipleAddress(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            view.renderErrorHttpToShipmentMultipleAddress(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private void handleErrorGetShipmentForm(Throwable e) {
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            view.renderErrorNoConnectionToShipmentForm(
+                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+            );
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            view.renderErrorTimeoutConnectionToShipmentForm(
+                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            );
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            view.renderErrorToShipmentForm(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            view.renderErrorToShipmentForm(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+             code http errornya bisa diambil
+             e.getErrorCode */
+            view.renderErrorHttpToShipmentForm(e.getMessage());
+        } else if (e instanceof ResponseCartApiErrorException) {
+            view.renderErrorToShipmentForm(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private void handleErrorinitCartList(Throwable e) {
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            view.renderErrorNoConnectionInitialGetCartListData(
+                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+            );
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            view.renderErrorTimeoutConnectionInitialGetCartListData(
+                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            );
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            view.renderErrorInitialGetCartListData(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            view.renderErrorInitialGetCartListData(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+            code http errornya bisa diambil
+            e.getErrorCode */
+            view.renderErrorHttpInitialGetCartListData(e.getMessage());
+        } else if (e instanceof ResponseCartApiErrorException) {
+            view.renderErrorInitialGetCartListData(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            view.renderErrorHttpInitialGetCartListData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private void handleErrorCartList(Throwable e) {
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            view.renderErrorNoConnectionActionDeleteCartData(
+                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+            );
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            view.renderErrorTimeoutConnectionActionDeleteCartData(
+                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            );
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            view.renderErrorActionDeleteCartData(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            view.renderErrorActionDeleteCartData(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+            code http errornya bisa diambil
+            e.getErrorCode */
+            view.renderErrorHttpActionDeleteCartData(e.getMessage());
+        } else if (e instanceof ResponseCartApiErrorException) {
+            view.renderErrorActionDeleteCartData(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
     }
 
     @NonNull
@@ -567,33 +658,7 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionActionDeleteCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionActionDeleteCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorActionDeleteCartData(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorActionDeleteCartData(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                    view.renderErrorHttpActionDeleteCartData(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorActionDeleteCartData(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                handleErrorCartList(e);
             }
 
             @Override
@@ -619,34 +684,9 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideProgressLoading();
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionActionDeleteCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionActionDeleteCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorActionDeleteCartData(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorActionDeleteCartData(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-    /* Ini Http error, misal 403, 500, 404,
-     code http errornya bisa diambil
-     e.getErrorCode */
-                    view.renderErrorHttpActionDeleteCartData(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorActionDeleteCartData(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                handleErrorCartList(e);
             }
 
             @Override
@@ -656,7 +696,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                         && deleteAndRefreshCartListData.getCartListData() != null) {
                     if (deleteAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData(null);
+                        processInitialGetCartData();
                     } else {
                         view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                     }
@@ -681,34 +721,8 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionToShipmentForm(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionToShipmentForm(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
-                    view.renderErrorHttpToShipmentForm(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
-
+                handleErrorGetShipmentForm(e);
+                processInitialGetCartData();
             }
 
             @Override
@@ -732,7 +746,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CartShipmentAddressFormData> getSubscriberToShipmentForm() {
+    private Subscriber<CartShipmentAddressFormData> getSubscriberToShipmentForm(boolean toAddressChoice) {
         return new Subscriber<CartShipmentAddressFormData>() {
             @Override
             public void onCompleted() {
@@ -743,33 +757,7 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionToShipmentForm(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionToShipmentForm(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                    view.renderErrorHttpToShipmentForm(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorToShipmentForm(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                handleErrorGetShipmentForm(e);
             }
 
             @Override
@@ -778,7 +766,11 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartShipmentAddressFormData.isError()) {
                     view.renderErrorToShipmentForm(cartShipmentAddressFormData.getErrorMessage());
                 } else {
-                    view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                    if (toAddressChoice) {
+                        view.renderToAddressChoice(cartShipmentAddressFormData);
+                    } else {
+                        view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                    }
                 }
             }
         };
@@ -797,33 +789,7 @@ public class CartListPresenter implements ICartListPresenter {
                 view.hideProgressLoading();
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionInitialGetCartListData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionInitialGetCartListData(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorInitialGetCartListData(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorInitialGetCartListData(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                    view.renderErrorHttpInitialGetCartListData(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorInitialGetCartListData(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpInitialGetCartListData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                handleErrorinitCartList(e);
             }
 
             @Override
@@ -833,8 +799,9 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
+                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData(null);
+                        view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }
@@ -844,8 +811,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CheckPromoCodeCartListResult> getSubscriberCheckPromoCodeFromSuggestion() {
-        return new Subscriber<CheckPromoCodeCartListResult>() {
+    private Subscriber<PromoCodeCartListData> getSubscriberCheckPromoCodeFromSuggestion() {
+        return new Subscriber<PromoCodeCartListData>() {
             @Override
             public void onCompleted() {
 
@@ -858,7 +825,7 @@ public class CartListPresenter implements ICartListPresenter {
             }
 
             @Override
-            public void onNext(CheckPromoCodeCartListResult promoCodeCartListData) {
+            public void onNext(PromoCodeCartListData promoCodeCartListData) {
                 view.hideProgressLoading();
                 if (!promoCodeCartListData.isError())
                     view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
@@ -908,48 +875,59 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem) {
+    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction) {
         List<CartItemData> cartItemDataList = new ArrayList<>();
-        return generateCartDataAnalytics(cartItemDataList);
+        return generateCartDataAnalytics(cartItemDataList, enhancedECommerceAction);
     }
 
-    public Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList) {
+    @Override
+    public Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction) {
 
-        GTMCart gtmCart = new GTMCart();
-
-        gtmCart.setCurrencyCode("IDR");
-        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
 
         for (CartItemData cartItemData : cartItemDataList) {
-            com.tokopedia.core.analytics.nishikino.model.Product product =
-                    new com.tokopedia.core.analytics.nishikino.model.Product();
-            product.setProductName(cartItemData.getOriginData().getProductName());
-            product.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
-            product.setPrice(cartItemData.getOriginData().getPriceFormatted());
-            product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
-
-            product.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
-                    ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                    new EnhancedECommerceProductCartMapData();
+            enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
+            enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
+            enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+            enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
+            enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                    ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     : cartItemData.getOriginData().getCategoryForAnalytics());
-            product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
-            product.setQty(cartItemData.getUpdatedData().getQuantity());
-            product.setShopId(cartItemData.getOriginData().getShopId());
-            //   product.setShopType(generateShopType(productData.getShopInfo()));
-            product.setShopName(cartItemData.getOriginData().getShopName());
-            product.setCategoryId(cartItemData.getOriginData().getCategoryId());
-            product.setDimension38(
+            enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
+            enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
+            enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
+            enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
+            enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
+            enhancedECommerceProductCartMapData.setDimension38(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerAttribution()
             );
-            product.setDimension40(
+            enhancedECommerceProductCartMapData.setAttribution(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
+            enhancedECommerceProductCartMapData.setDimension40(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerListName()
             );
-            gtmCart.addProduct(product.getProduct());
+            enhancedECommerceProductCartMapData.setListName(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
+            enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
-        return gtmCart.getCartMap();
 
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
+
+        return enhancedECommerceCartMapData.getCartMap();
     }
 }

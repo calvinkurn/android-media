@@ -18,7 +18,7 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/TextSmallNormalBlack70"
+            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_payment_total" />
