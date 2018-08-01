@@ -130,7 +130,7 @@ public class StickySingleHeaderView extends FrameLayout
         }
     }
 
-    private boolean isStickyShowed() {
+    public boolean isStickyShowed() {
         return mHeaderContainer.getChildCount() > 0;
     }
 

@@ -31,5 +31,7 @@ public interface ShopProductListView extends BaseListViewListener<BaseShopProduc
     void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList);
 
     void onErrorGetEtalaseList(Throwable e);
+
+    List<ShopEtalaseViewModel> getShopEtalaseViewModelList();
 }
 

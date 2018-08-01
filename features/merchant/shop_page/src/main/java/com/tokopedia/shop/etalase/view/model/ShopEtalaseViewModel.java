@@ -13,6 +13,7 @@ import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
 
 public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFactory>, Parcelable{
 
+    public static final int USE_ACE = 1;
     private long useAce;
     private String etalaseId;
     private String etalaseName;
@@ -47,6 +48,10 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
 
     public long getUseAce() {
         return useAce;
+    }
+
+    public boolean isUseAce(){
+        return useAce == USE_ACE;
     }
 
     public void setUseAce(long useAce) {

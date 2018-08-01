@@ -48,7 +48,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
-    private final static int USE_ACE = 1;
 
     public static final String ALL_ETALASE_ID = "etalase"; // from api
 
@@ -155,8 +154,10 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(shopProductRequestModel.getShopId(),
                 userSession.getUserId(), userSession.getDeviceId());
 
-        if (getView().getShopEtalaseViewModelList().size() > 0) {
-            // the view has already had shop etalase list. So, no need to get from network.
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = getView().getShopEtalaseViewModelList();
+        if (shopEtalaseViewModelList.size() > 0) {
+            boolean isUseAce = isUseAce(shopEtalaseViewModelList, selectedEtalaseId);
+            shopProductRequestModel.setUseAce(isUseAce);
             getShopProductWithWishList(shopProductRequestModel);
         } else {
             getShopEtalaseUseCase.unsubscribe();
@@ -190,7 +191,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                         for (EtalaseModel etalaseModel : etalaseModelListTemp) {
                             if (selectedEtalaseId.equalsIgnoreCase(etalaseModel.getEtalaseId())) {
                                 selectedEtalaseName = etalaseModel.getEtalaseName();
-                                shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+                                shopProductRequestModel.setUseAce((etalaseModel.isUseAce()));
                                 break;
                             }
                         }
@@ -202,7 +203,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                                 if (cleanedSelectedEtalaseId.equalsIgnoreCase(cleanedEtalaseName)) {
                                     shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
                                     selectedEtalaseName = etalaseModel.getEtalaseName();
-                                    shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+                                    shopProductRequestModel.setUseAce((etalaseModel.isUseAce()));
                                     break;
                                 }
                             }
@@ -228,6 +229,17 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                 }
             });
         }
+    }
+
+    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId){
+        if (etalaseViewModelList!= null) {
+            for (ShopEtalaseViewModel shopEtalaseViewModel : etalaseViewModelList) {
+                if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
+                    return shopEtalaseViewModel.isUseAce();
+                }
+            }
+        }
+        return true;
     }
 
     private String cleanString(String text) {
