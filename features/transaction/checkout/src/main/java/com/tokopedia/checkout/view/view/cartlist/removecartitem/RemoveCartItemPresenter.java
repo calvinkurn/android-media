@@ -11,8 +11,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductHeaderViewModel;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductItemViewModel;
-import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.usecase.RequestParams;
 
@@ -167,20 +167,10 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
             enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
             enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
             enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
-            enhancedECommerceProductCartMapData.setDimension38(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerAttribution()
-            );
             enhancedECommerceProductCartMapData.setAttribution(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
                             ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerAttribution()
-            );
-            enhancedECommerceProductCartMapData.setDimension40(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerListName()
             );
             enhancedECommerceProductCartMapData.setListName(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())

@@ -84,10 +84,10 @@ public class ShipmentAddressListAdapter
     }
 
     private String getFullAddress(RecipientAddressModel recipientAddress) {
-        return recipientAddress.getAddressStreet() + ", "
+        return recipientAddress.getStreet() + ", "
                 + recipientAddress.getDestinationDistrictName() + ", "
-                + recipientAddress.getAddressCityName() + ", "
-                + recipientAddress.getAddressProvinceName();
+                + recipientAddress.getCityName() + ", "
+                + recipientAddress.getProvinceName();
     }
 
     private View.OnClickListener getItemClickListener(final RecipientAddressModel recipientAddressModel,
