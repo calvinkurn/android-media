@@ -352,16 +352,13 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         dialog.setTitle(getString(R.string.train_seat_expired_payment_time));
         dialog.setDesc(getString(R.string.train_seat_expired_payment_time_desc));
         dialog.setBtnOk(getString(R.string.train_seat_expired_payment_time_cta));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                trainFlowUtil.actionSetResultAndClose(
-                        getActivity(),
-                        getActivity().getIntent(),
-                        TrainFlowConstant.RESEARCH
-                );
-            }
+        dialog.setOnOkClickListener(v -> {
+            dialog.dismiss();
+            trainFlowUtil.actionSetResultAndClose(
+                    getActivity(),
+                    getActivity().getIntent(),
+                    TrainFlowConstant.RESEARCH
+            );
         });
         dialog.show();
     }
