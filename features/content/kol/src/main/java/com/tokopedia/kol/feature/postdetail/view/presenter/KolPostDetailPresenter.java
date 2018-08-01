@@ -40,6 +40,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
     @Override
     public void getCommentFirstTime(int id) {
+        getView().showLoading();
         getKolPostDetailUseCase.execute(
                 GetKolPostDetailUseCase.getVariables(id),
                 new GetKolPostDetailSubscriber(getView())

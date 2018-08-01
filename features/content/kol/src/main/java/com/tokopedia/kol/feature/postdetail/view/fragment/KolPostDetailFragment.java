@@ -181,6 +181,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showLoading() {
+        if (!isLoading()) {
+            adapter.showLoading();
+        }
+    }
+
+    @Override
+    public void dismissLoading() {
+        if (isLoading()) {
+            adapter.dismissLoading();
+        }
+    }
+
+    @Override
     public void onLikeKolSuccess(int rowNumber) {
         if (adapter.getList().get(rowNumber) != null
                 && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
@@ -295,6 +309,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             default:
                 break;
         }
+    }
+
+    private boolean isLoading() {
+        return adapter.isLoading();
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {

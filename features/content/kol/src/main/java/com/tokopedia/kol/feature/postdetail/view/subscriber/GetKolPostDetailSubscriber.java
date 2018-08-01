@@ -47,6 +47,7 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        view.dismissLoading();
         view.onErrorGetKolPostDetail(ErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
@@ -54,6 +55,8 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse graphqlResponse) {
         GetKolCommentData data = graphqlResponse.getData(GetKolCommentData.class);
         GetUserPostComment postComment = data.getGetUserPostComment();
+
+        view.dismissLoading();
 
         if (!TextUtils.isEmpty(postComment.getError())) {
             view.onErrorGetKolPostDetail(postComment.getError());
@@ -70,7 +73,6 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         }
         Collections.reverse(kolCommentViewModels);
         list.addAll(kolCommentViewModels);
-
 
         view.onSuccessGetKolPostDetail(list);
     }

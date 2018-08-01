@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
 
@@ -24,10 +25,12 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
 
     private List<Visitable> list;
     private KolPostDetailTypeFactory typeFactory;
+    private LoadingMoreModel loadingMoreModel;
 
     @Inject
     KolPostDetailAdapter() {
         list = new ArrayList<>();
+        loadingMoreModel = new LoadingMoreModel();
     }
 
     @NonNull
@@ -52,6 +55,32 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
     @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
+    }
+
+    private void add(Visitable visitable) {
+        int position = getItemCount();
+        if (this.list.add(visitable)) {
+            notifyItemInserted(position);
+        }
+    }
+
+    private void remove(Visitable visitable) {
+        int position = this.list.indexOf(visitable);
+        if (this.list.remove(visitable)) {
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void showLoading() {
+        add(loadingMoreModel);
+    }
+
+    public void dismissLoading() {
+        remove(loadingMoreModel);
+    }
+
+    public boolean isLoading() {
+        return this.list.contains(loadingMoreModel);
     }
 
     public void setTypeFactory(KolPostDetailTypeFactory typeFactory) {

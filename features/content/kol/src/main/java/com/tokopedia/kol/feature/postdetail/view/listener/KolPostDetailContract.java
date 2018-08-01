@@ -17,6 +17,10 @@ public interface KolPostDetailContract {
     interface View extends CustomerView {
         Context getContext();
 
+        void showLoading();
+
+        void dismissLoading();
+
         void onSuccessGetKolPostDetail(List<Visitable> list);
 
         void onErrorGetKolPostDetail(String message);
