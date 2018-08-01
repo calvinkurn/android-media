@@ -1,12 +1,13 @@
 package com.tokopedia.home.account.presentation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.home.account.di.AccountHomeInjection;
 
 public interface AccountHomeRouter {
-    void doLogoutAccount(Context context);
+    void doLogoutAccount(Activity activity);
 
     void goToHelpCenter(Context context);
 

@@ -1,7 +1,6 @@
 /tkpdsession/       @tokopedia/minion-kevin
 /tkpdflight/        @tokopedia/minion-mark
 /tkpdloyalty/       @tokopedia/minion-bob
-/tkpdride/          @vishalgupta1987
 /tkpddigital/       @tokopedia/minion-mark
 /tkpdcore/          @tokopedia/core-team
 /tkpdinbox/         @tokopedia/minion-kevin
@@ -14,7 +13,6 @@
 /tkpdseller/        @tokopedia/minion-stuart
 /tkpdtokocash/      @tokopedia/minion-mark
 /tkpdabstraction/   @tokopedia/core-team
-/tkpdevents/        @vishalgupta1987
 /tkpdhome/          @tokopedia/minion-dave
 /customerapp/       @tokopedia/core-team
 
@@ -33,10 +31,12 @@
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/payment/payment/              @tokopedia/minion-bob
 
+/features/user/topchat/                 @tokopedia/minion-kevin
 /features/user/groupchat/               @tokopedia/minion-kevin
 /features/user/profile/                 @tokopedia/minion-kevin
 /features/user/vote/                    @tokopedia/minion-kevin
 /features/user/otp/                     @tokopedia/minion-kevin
+/features/user/logout/                  @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 
@@ -52,4 +52,10 @@
 /libraries/user_session/                @tokopedia/minion-kevin
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
-/features/promo/tokopoints              @lavekush-t
+/features/promo/tokopoints              @tokopedia/india-android-team
+/libraries/common_network/              @ricoharisin
+/features/digital/event                 @tokopedia/india-android-team
+/features/operational/contact_us        @tokopedia/india-android-team
+/features/digital/digital_deals         @tokopedia/india-android-team
+/features/fintech/instant_loan          @tokopedia/india-android-team
+/libraries/oms                          @naveengoyal87
