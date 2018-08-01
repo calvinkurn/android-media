@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.design.R;
@@ -361,6 +362,15 @@ public class TickerView extends BaseCustomView {
             state = bundle.getParcelable(SAVED);
         }
         super.onRestoreInstanceState(state);
+    }
+
+    public void setTickerHeight(int height) {
+        ViewGroup.LayoutParams layoutParams = tickerHighlightView.getLayoutParams();
+        layoutParams.height = height;
+
+        tickerHighlightView.setLayoutParams(layoutParams);
+        tickerHighlightView.invalidate();
+        tickerHighlightView.requestLayout();
     }
 
 }
