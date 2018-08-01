@@ -123,8 +123,8 @@ public class CustomPushListener extends PushMessageListener {
             remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
             Intent notificationIntent = new Intent(context, ParentIndexHome.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-            remoteView.setOnClickPendingIntent(R.id.image_icon6, pIntent5);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
 
             builder.setSmallIcon(R.drawable.qc_launcher)
                     .setCustomContentView(remoteView)
