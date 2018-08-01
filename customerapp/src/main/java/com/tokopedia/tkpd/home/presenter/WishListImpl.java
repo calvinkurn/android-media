@@ -393,7 +393,8 @@ public class WishListImpl implements WishList {
         mPaging.resetPage();
         params = RequestParams.create();
 
-        Subscriber<Response<WishlistData>> subscriber = new Subscriber<Response<WishlistData>>() {
+
+        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -408,23 +409,28 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(Response<WishlistData> response) {
-                WishlistData wishlistData = response.body();
-                data.clear();
-                dataWishlist.addAll(wishlistData.getWishlist());
-                data.addAll(convertToProductItemList(wishlistData.getWishlist()));
-                mPaging.setPagination(wishlistData.getPaging());
-                wishListView.loadDataChange();
-                wishListView.displayContentList(true);
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
+                    GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
+                    data.clear();
+                    dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
+                    data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
+                    mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
+                    wishListView.loadDataChange();
+                    wishListView.displayContentList(true);
 
-                if (mPaging.CheckNextPage()) {
-                    wishListView.displayLoadMore(true);
+                    if (mPaging.CheckNextPage()) {
+                        wishListView.displayLoadMore(true);
+                    } else {
+                        wishListView.displayLoadMore(false);
+                    }
+                    wishListView.setPullEnabled(true);
+                    if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
+                        wishListView.setEmptyState();
+                    }
+
                 } else {
-                    wishListView.displayLoadMore(false);
-                }
-                wishListView.setPullEnabled(true);
-                if (response.body().getWishlist().size() == 0) {
-                    wishListView.setEmptyState();
+                    setData();
                 }
             }
         };
