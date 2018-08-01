@@ -112,7 +112,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (fragment == null)
             return;
 
-        if (fragment instanceof NotificationListener) {
+        if (fragment instanceof NotificationListener && notification != null) {
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
         }
     }
