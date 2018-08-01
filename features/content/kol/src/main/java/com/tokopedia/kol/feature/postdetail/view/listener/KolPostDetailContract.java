@@ -24,14 +24,18 @@ public interface KolPostDetailContract {
         void onSuccessGetKolPostDetail(List<Visitable> list);
 
         void onErrorGetKolPostDetail(String message);
+
+        void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);
+
+        void onSuccessFollowUnfollowKol(int rowNumber);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getCommentFirstTime(int id);
 
-        void followKol(int id, int rowNumber, KolPostListener.View kolListener);
+        void followKol(int id, int rowNumber);
 
-        void unfollowKol(int id, int rowNumber, KolPostListener.View kolListener);
+        void unfollowKol(int id, int rowNumber);
 
         void likeKol(int id, int rowNumber, KolPostListener.View.Like likeListener);
 

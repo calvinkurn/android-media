@@ -30,6 +30,7 @@ import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -243,12 +244,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onFollowKolClicked(int rowNumber, int id) {
-
+        presenter.followKol(id, rowNumber);
     }
 
     @Override
     public void onUnfollowKolClicked(int rowNumber, int id) {
-
+        presenter.unfollowKol(rowNumber, id);
     }
 
     @Override
@@ -275,6 +276,27 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition) {
         return false;
+    }
+
+    @Override
+    public void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
+            if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW) {
+                presenter.unfollowKol(id, rowNumber);
+            } else {
+                presenter.followKol(id, rowNumber);
+            }
+        }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onSuccessFollowUnfollowKol(int rowNumber) {
+        if (adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(rowNumber);
+            kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
+            kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
+            adapter.notifyItemChanged(rowNumber);
+        }
     }
 
     @Override

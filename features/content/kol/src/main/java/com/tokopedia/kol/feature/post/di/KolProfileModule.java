@@ -54,6 +54,7 @@ public class KolProfileModule {
     KolPostDetailContract.Presenter
     provideKolPostDetailPresenter(GetKolPostDetailUseCase getKolPostDetailUseCase,
                                   LikeKolPostUseCase likeKolPostUseCase) {
-        return new KolPostDetailPresenter(getKolPostDetailUseCase, likeKolPostUseCase);
+        return new KolPostDetailPresenter(getKolPostDetailUseCase, likeKolPostUseCase,
+                followKolPostGqlUseCase);
     }
 }
