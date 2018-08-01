@@ -1378,7 +1378,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable modelToBeRemoved) {
         presenter.sendMessageWithAttachmentType(networkType,message.getMessage(),WebSocketMapper
-                .TYPE_QUICK_REPLY);
+                .TYPE_CHAT_BALLOON_ACTION);
         adapter.remove(modelToBeRemoved);
     }
 
