@@ -211,6 +211,9 @@
             android:screenOrientation="portrait" />
 
         <!-- Opportunity -->
+        <activity android:name=".opportunity.activity.OpportunityListActivity"
+            android:label="@string/title_opportunity_list"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".opportunity.activity.OpportunitySortActivity"
             android:label="@string/title_sort_but"

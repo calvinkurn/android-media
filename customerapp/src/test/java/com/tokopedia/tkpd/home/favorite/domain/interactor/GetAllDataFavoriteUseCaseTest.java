@@ -27,8 +27,6 @@ public class GetAllDataFavoriteUseCaseTest {
     @Mock
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
     @Mock
-    private GetWishlistUsecase getWishlistUsecase;
-    @Mock
     private GetTopAdsShopUseCase getTopAdsShopUseCase;
     @Mock
     private Context context;
@@ -44,7 +42,6 @@ public class GetAllDataFavoriteUseCaseTest {
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,
-                getWishlistUsecase,
                 getTopAdsShopUseCase);
 
     }
