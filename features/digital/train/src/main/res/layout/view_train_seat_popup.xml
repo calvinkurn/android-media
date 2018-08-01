@@ -31,8 +31,8 @@
             android:layout_width="18dp"
             android:layout_height="12dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_9"
+            android:layout_marginStart="@dimen/dp_9"
             app:srcCompat="@drawable/ic_train_up_arrow" />
     </LinearLayout>
 
@@ -78,8 +78,8 @@
             android:id="@+id/bottom_seat_arrow"
             android:layout_width="18dp"
             android:layout_height="12dp"
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_9"
+            android:layout_marginStart="@dimen/dp_9"
             app:srcCompat="@drawable/ic_train_down_arrow" />
 
         <LinearLayout

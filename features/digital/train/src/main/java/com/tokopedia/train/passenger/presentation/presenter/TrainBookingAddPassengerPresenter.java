@@ -4,10 +4,14 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.contract.TrainBookingAddPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.data.TrainPassengerTitle;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -34,6 +38,10 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
             if (getView().getPaxType() == TrainBookingPassenger.ADULT) {
                 trainPassengerViewModel.setPhone(getView().getPhoneNumber());
                 trainPassengerViewModel.setIdentityNumber(getView().getIdentityNumber());
+            } else {
+                String defaultPhoneAndId = TrainDateUtil.dateToString(TrainDateUtil.addTimeToCurrentDate(Calendar.YEAR, -1), TrainDateUtil.FORMAT_DEFAULT_DATE_FOR_CHILD);
+                trainPassengerViewModel.setPhone(defaultPhoneAndId);
+                trainPassengerViewModel.setIdentityNumber(defaultPhoneAndId);
             }
             getView().navigateToBookingPassenger(trainPassengerViewModel);
         }
@@ -56,7 +64,7 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
         } else if (TextUtils.isEmpty(getView().getIdentityNumber()) && getView().getPaxType() == TrainBookingPassenger.ADULT) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number);
-        }  else if (getView().getPhoneNumber().length() > MAX_PHONE_NUMBER) {
+        } else if (getView().getPhoneNumber().length() > MAX_PHONE_NUMBER) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_max_length_error);
         } else if (getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER && getView().getPaxType() == TrainBookingPassenger.ADULT) {
