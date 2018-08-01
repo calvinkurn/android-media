@@ -27,6 +27,5 @@
     <dimen name="dp_64">64dp</dimen>
     <dimen name="sp_4">4sp</dimen>
     <dimen name="sp_6">6sp</dimen>
-    <dimen name="dp_half">0.5dp</dimen>
     <dimen name="max_width_etalase_chip">180dp</dimen>
 </resources>

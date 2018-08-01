@@ -133,7 +133,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         return new ShopProductAdapterTypeFactory(null,
                 this, this,
                 this, null,
-                false, 0, false
+                false, 0,false
         );
     }
 
