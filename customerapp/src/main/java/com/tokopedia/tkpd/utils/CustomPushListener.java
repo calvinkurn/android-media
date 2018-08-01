@@ -46,14 +46,12 @@ public class CustomPushListener extends PushMessageListener {
     @Override
     protected void onPostNotificationReceived(Context context, Bundle extras) {
         super.onPostNotificationReceived(context, extras);
-        Log.e("onPostNoReceiv", extras.toString());
 
     }
 
     //if the app wants to modify the logic for showing notifications
     @Override
     public boolean isNotificationRequired(Context context, Bundle extras) {
-        Log.e("isNotificationRequired", extras.toString());
 
         boolean result = super.isNotificationRequired(context,
                 extras);//if SUPER is not not called then it will throw an exception
@@ -72,7 +70,7 @@ public class CustomPushListener extends PushMessageListener {
 
         if (extras.getBoolean("is_persistent")) {
             long when = System.currentTimeMillis();
-            RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.custom_notification_layout);
+            RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
 
             String title1 = extras.getString("title1");
             String title2 = extras.getString("title2");
@@ -119,9 +117,14 @@ public class CustomPushListener extends PushMessageListener {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteView.setOnClickPendingIntent(R.id.image_icon3, pIntent4);
             }
+            Intent intent5 = new Intent();
+            PendingIntent pIntent5 = PendingIntent.getActivity(context, 0, intent5,
+                    PendingIntent.FLAG_CANCEL_CURRENT);
+            remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
             Intent notificationIntent = new Intent(context, ParentIndexHome.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+            remoteView.setOnClickPendingIntent(R.id.image_icon6, pIntent5);
 
             builder.setSmallIcon(R.drawable.qc_launcher)
                     .setCustomContentView(remoteView)
@@ -137,13 +140,11 @@ public class CustomPushListener extends PushMessageListener {
     @Override
     public void onNonMoEngageMessageReceived(Context context, Bundle extras) {
         super.onNonMoEngageMessageReceived(context, extras);
-        Log.e("onNonMReceived", extras.toString());
 
     }
 
     @Override
     public void onNotificationNotRequired(Context context, Bundle extras) {
-        Log.e("onNnNotRequired", extras.toString());
 
     }
 }
