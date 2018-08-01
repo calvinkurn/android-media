@@ -42,6 +42,7 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
+import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -53,6 +54,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
@@ -65,6 +67,7 @@ import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -73,6 +76,8 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -2556,7 +2561,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getInboxHelpIntent(Context context) {
         return InboxTicketActivity.getCallingIntent(context);
     }
-          
+
     @Override
     public Intent getInboxTalkCallingIntent(Context context) {
         return new Intent(context, InboxTalkActivity.class);
@@ -2592,11 +2597,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FragmentFavorite.newInstance();
     }
 
-    @Override
-    public void doLogoutAccount(Context context) {
-        SessionHandler session = new SessionHandler(context);
-        session.Logout(context);
-        UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.SIGN_OUT);
-        AnalyticsEventTrackingHelper.hamburgerOptionClicked("Home", "Logout");
+    public void doLogoutAccount(Activity activity) {
+        new GlobalCacheManager().deleteAll();
+        Router.clearEtalase(activity);
+        DbManagerImpl.getInstance().removeAllEtalase();
+        TrackingUtils.eventMoEngageLogoutUser();
+        SessionHandler.clearUserData(activity);
+        NotificationModHandler notif = new NotificationModHandler(activity);
+        notif.dismissAllActivedNotifications();
+        NotificationModHandler.clearCacheAllNotification(activity);
+
+        Intent intent;
+        if (GlobalConfig.isSellerApp()) {
+            intent = getHomeIntent(activity);
+        } else if(GlobalConfig.isPosApp()) {
+            intent = getLoginIntent(activity);
+        } else {
+            invalidateCategoryMenuData();
+            intent = HomeRouter.getHomeActivity(activity);
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+        AppWidgetUtil.sendBroadcastToAppWidget(activity);
     }
 }

@@ -33,6 +33,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
@@ -62,7 +63,7 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivitySellingTransaction extends TkpdActivity
+public class ActivitySellingTransaction extends BaseTemporaryDrawerActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
         DownloadResultReceiver.Receiver {
 
@@ -214,7 +215,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         TrackingUtils.sendMoEngageOpenSellerScreen();
     }
 
-    @Override
     public int getDrawerPosition() {
         return 0;
     }
