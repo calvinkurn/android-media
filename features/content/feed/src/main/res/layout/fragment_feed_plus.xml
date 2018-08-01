@@ -106,5 +106,4 @@
             android:textColor="@color/medium_green"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>
-
 </RelativeLayout>

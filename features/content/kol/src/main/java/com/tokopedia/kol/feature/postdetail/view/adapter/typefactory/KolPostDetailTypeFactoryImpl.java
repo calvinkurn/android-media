@@ -15,6 +15,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 
@@ -68,6 +69,12 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(ExploreViewModel exploreViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + ExploreViewModel.class.getSimpleName());
+    }
+
+    @Override
+    public int type(KolPostYoutubeViewModel kolPostYoutubeViewModel) {
+        throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
+                + KolPostYoutubeViewModel.class.getSimpleName());
     }
 
     @Override

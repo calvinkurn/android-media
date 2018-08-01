@@ -80,6 +80,7 @@ public interface HotlistFragmentContract {
 
         void trackImpressionProduct(Map<String, Object> dataLayer);
 
+        String getString(int resId);
     }
 
     interface Presenter extends SearchSectionFragmentPresenter<View> {

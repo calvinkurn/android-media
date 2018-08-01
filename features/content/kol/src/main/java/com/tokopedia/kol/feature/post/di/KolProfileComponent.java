@@ -13,7 +13,6 @@ import dagger.Component;
 @KolProfileScope
 @Component(modules = KolProfileModule.class, dependencies = KolComponent.class)
 public interface KolProfileComponent {
-
     void inject(KolPostFragment kolPostFragment);
 
     void inject(KolPostDetailFragment kolPostDetailFragment);
