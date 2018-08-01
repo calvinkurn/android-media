@@ -215,7 +215,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
                     // name is empty means etalase is deleted, so no need to add to chip, and make it to all etalase.
                     if (TextUtils.isEmpty(selectedEtalaseName) || ALL_ETALASE_ID.equalsIgnoreCase(selectedEtalaseId)) {
-                        shopProductRequestModel.setEtalaseId("");
+                        shopProductRequestModel.setEtalaseId(ALL_ETALASE_ID);
                     } else {
                         getView().addNewEtalaseToChip(selectedEtalaseId, selectedEtalaseName);
                     }

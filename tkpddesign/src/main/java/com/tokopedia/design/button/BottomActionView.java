@@ -184,6 +184,8 @@ public class BottomActionView extends BaseCustomView {
     public void startHideAnimation() {
         if (showAnimator!= null && showAnimator.isRunning()) {
             showAnimator.cancel();
+            show(false);
+            return;
         }
         if (hideAnimator == null) {
             hideAnimator = ObjectAnimator.ofFloat(this, "translationY", 0, getHeight());
@@ -195,6 +197,8 @@ public class BottomActionView extends BaseCustomView {
     public void startShowAnimation() {
         if (hideAnimator!= null && hideAnimator.isRunning()) {
             hideAnimator.cancel();
+            hide(false);
+            return;
         }
         if (showAnimator == null) {
             showAnimator = ObjectAnimator.ofFloat(this, "translationY", getHeight(), 0);

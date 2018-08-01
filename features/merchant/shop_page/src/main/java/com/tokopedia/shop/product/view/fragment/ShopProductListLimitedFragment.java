@@ -108,6 +108,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private GridLayoutManager gridLayoutManager;
     private boolean needReloadData;
     private boolean needToShowEtalase;
+    private boolean isClickedFromChip;
 
     public static ShopProductListLimitedFragment createInstance(String shopAttribution) {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -434,6 +435,11 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         shopProductAdapter.addProductList(list);
         updateScrollListenerState(hasNextPage);
 
+        if (isClickedFromChip) {
+            gridLayoutManager.scrollToPositionWithOffset(DEFAULT_ETALASE_POSITION, 0);
+            isClickedFromChip = false;
+        }
+
         if (shopProductAdapter.getShopProductViewModelList().size() == 0) {
             // only add the empty state when the shop has No Product And No Official URL
 
@@ -557,6 +563,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     shopProductLimitedListPresenter.isMyShop(shopId),
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
+        isClickedFromChip = true;
         // no need ro rearraged, just notify the adapter to reload product list by etalase id
         reloadProductData();
     }
