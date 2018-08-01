@@ -34,5 +34,6 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
         layout.setOnClickListener(v -> listener.onMenuListClicked(element));
         labelView.setTitle(element.getMenu());
         labelView.setSubTitle(element.getMenuDescription());
+        labelView.showRightArrow(false);
     }
 }

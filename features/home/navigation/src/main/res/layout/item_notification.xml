@@ -6,15 +6,12 @@
     android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/title"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/sp_17"
+        style="@style/TextView.TitleMedium.Bold"
         tools:text="Penjualan"/>
 
     <android.support.v7.widget.RecyclerView
