@@ -73,6 +73,7 @@ ext {
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
+    tkpdUpdateInactivePhoneVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
