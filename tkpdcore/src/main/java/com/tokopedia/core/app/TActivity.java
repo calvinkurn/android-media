@@ -110,8 +110,6 @@ public abstract class TActivity extends BaseActivity {
         return true;
     }
 
-
-
     public void inflateView(int layoutId) {
         if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);
     }
