@@ -100,7 +100,7 @@ public class ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCon
                 if (topBotStatus.isIsActive()) {
                     getView().setChatBotVisible();
                     getView().setChatBotMessageId(topBotStatus.getMsgId());
-                    getView().setHighMessageUserName(SessionHandler.getLoginName(context));
+                    getView().setHighMessageUserName(SessionHandler.getLoginName(context).split(" ")[0]);
                 }
 
             }
