@@ -70,6 +70,7 @@ ext {
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
+    tkpdPaymentManagementSystem = '2.22'
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
@@ -266,7 +267,8 @@ ext {
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
-            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
     ]
 
     tkpdLibDependencies = [
@@ -332,7 +334,8 @@ ext {
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
-            digitalDeals          : ":features:digital:digital_deals"
+            digitalDeals          : ":features:digital:digital_deals",
+            paymentManagementSystem     : ":features:payment:pms"
     ]
 
     libraries = [
