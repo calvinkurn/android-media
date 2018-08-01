@@ -274,7 +274,7 @@
     <string name="help_text">disini</string>
     <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
     <string name="contact_us_applink">https://www.tokopedia.com/bantuan/</string>
-    <string name="type_of_ticket_events">Jenis Tiket Event</string>
+    <string name="type_of_ticket_events">Nama Event</string>
     <string name="address">Alamat</string>
     <string name="category_ticket">Kategori Tiket</string>
     <string name="number_of_bookings">Jumlah Tiket</string>
