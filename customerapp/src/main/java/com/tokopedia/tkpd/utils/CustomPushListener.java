@@ -68,7 +68,7 @@ public class CustomPushListener extends PushMessageListener {
                                                            ConfigurationProvider provider) {
         NotificationCompat.Builder builder = super.onCreateNotification(context, extras, provider);
 
-        if ("1".equalsIgnoreCase("is_persistent")) {
+        if ("1".equalsIgnoreCase(extras.getString("is_persistent"))) {
             long when = System.currentTimeMillis();
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
 
