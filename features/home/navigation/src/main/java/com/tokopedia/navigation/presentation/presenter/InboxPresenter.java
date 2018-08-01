@@ -3,7 +3,7 @@ package com.tokopedia.navigation.presentation.presenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.GlobalNavConstant;
-import com.tokopedia.navigation.domain.GetNotificationUseCase;
+import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.usecase.RequestParams;
@@ -17,9 +17,9 @@ public class InboxPresenter {
 
     private InboxView inboxView;
 
-    private final GetNotificationUseCase getNotificationUseCase;
+    private final GetDrawerNotificationUseCase getNotificationUseCase;
 
-    @Inject InboxPresenter(GetNotificationUseCase getNotificationUseCase) {
+    @Inject InboxPresenter(GetDrawerNotificationUseCase getNotificationUseCase) {
         this.getNotificationUseCase = getNotificationUseCase;
     }
 

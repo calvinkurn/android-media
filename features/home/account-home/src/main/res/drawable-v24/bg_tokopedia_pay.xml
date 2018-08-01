@@ -13,7 +13,7 @@
       android:fillAlpha=".38"
       android:fillType="evenOdd">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="86.01874"
           android:startX="139.1145"
           android:endY="-1.6709976"
@@ -29,7 +29,7 @@
       android:fillAlpha=".08"
       android:fillType="evenOdd">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="91.644"
           android:startX="147.5"
           android:endY="70.28346"

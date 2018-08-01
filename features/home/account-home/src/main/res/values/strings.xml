@@ -38,6 +38,7 @@
     <string name="screentitle_tkpd_pay_setting">Atur Tokopedia Pay</string>
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
+    <string name="title_favorite_page">Favorit</string>
 
     <string name="label_chat">Chat</string>
     <string name="label_chat_admin">Chat Tokopedia Administrator</string>

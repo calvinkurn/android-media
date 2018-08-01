@@ -1,17 +1,38 @@
-query NotificationQuery() {
-  notifications {
-    total_cart
-    total_notif
+query {
+  userShopInfo {
+    info {
+      shop_id
+    }
+  }
+  notifications{
+  	total_notif
+  	total_cart
     inbox {
       talk
       ticket
       review
-      friend
-      wishlist
-      message
     }
     chat {
       unreads
+    }
+    resolutionAs {
+      buyer
+      seller
+    }
+    sellerInfo {
+      notification
+    }
+    buyerOrderStatus {
+      confirmed
+      processed
+      shipped
+      arriveAtDestination
+    }
+    sellerOrderStatus {
+      newOrder
+      readyToShip
+      shipped
+      arriveAtDestination
     }
   }
 }

@@ -289,6 +289,7 @@ import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
+import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -2584,6 +2585,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public AccountHomeInjection getAccountHomeInjection() {
         return new AccountHomeInjectionImpl();
+    }
+
+    @Override
+    public Fragment getFavoriteFragment() {
+        return FragmentFavorite.newInstance();
     }
 
     @Override
