@@ -4,6 +4,7 @@ import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -349,6 +350,10 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderNotes(MultipleAddressItemData itemData) {
+        etNotesForSeller.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(itemData.getMaxRemark())
+        });
+
         if (StringUtils.isBlank(itemData.getProductNotes())) {
             etNotesForSeller.setText("");
         } else {
