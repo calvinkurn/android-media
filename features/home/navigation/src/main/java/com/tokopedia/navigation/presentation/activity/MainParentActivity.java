@@ -80,6 +80,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
         adapterViewPager = new FragmentAdapter(getSupportFragmentManager(), createFragments());
         viewPager.setAdapter(adapterViewPager);
+        viewPager.setOffscreenPageLimit(5);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
@@ -111,7 +112,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (fragment == null)
             return;
 
-        if (fragment instanceof NotificationListener) {
+        if (fragment instanceof NotificationListener && notification != null) {
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
         }
     }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
@@ -118,6 +119,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             if (accountViewModel.isSeller()) {
                 item = new AccountFragmentItem();
                 item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
+                item.setTitle(getContext().getString(R.string.label_account_seller));
+                fragmentItems.add(item);
+            } else {
+                item = new AccountFragmentItem();
+                item.setFragment(SellerEmptyAccountFragment.newInstance());
                 item.setTitle(getContext().getString(R.string.label_account_seller));
                 fragmentItems.add(item);
             }

@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -62,6 +63,12 @@ public class MainToolbar extends Toolbar {
         btnNotification = findViewById(R.id.btn_notification);
         ImageButton btnWishlist = findViewById(R.id.btn_wishlist);
         EditText editTextSearch = findViewById(R.id.et_search);
+
+        if ((getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) >=
+                Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            editTextSearch.setTextSize(18);
+        }
 
         btnQrCode.setOnClickListener(v ->
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())

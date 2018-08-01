@@ -82,6 +82,7 @@ public interface Constants {
         String PRODUCT_ADD = "tokopedia://product/add";
         String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
         String CART = "tokopedia://cart";
+        String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
         String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
         String SELLER_STATUS = "tokopedia://seller/status";

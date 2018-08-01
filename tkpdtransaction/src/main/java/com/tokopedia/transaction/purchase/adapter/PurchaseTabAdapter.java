@@ -28,14 +28,6 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
-                return TxSummaryFragment.createInstancePurchase();
-//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
-//                return getVerificationFragment();
-//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
-//                return TxListFragment.instanceStatusOrder();
-//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
-//                return TxListFragment.instanceDeliverOrder();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED:
                 return TxListFragment.instanceStatusOrder(TransactionPurchaseRouter.TRANSACTION_CONFIRMED_FILTER_ID);
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED:

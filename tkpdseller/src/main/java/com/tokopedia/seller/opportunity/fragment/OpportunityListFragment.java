@@ -19,6 +19,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.PagingHandler;
@@ -215,11 +216,11 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initialListener(Activity activity) {
-        if (activity != null && activity instanceof BaseActivity) {
+        if (activity != null && activity.getApplication() instanceof MainApplication) {
             opportunityComponent = DaggerOpportunityComponent
                     .builder()
                     .opportunityModule(new OpportunityModule())
-                    .appComponent(((BaseActivity) activity).getApplicationComponent())
+                    .appComponent(((MainApplication) activity.getApplication()).getAppComponent())
                     .build();
         }
     }
