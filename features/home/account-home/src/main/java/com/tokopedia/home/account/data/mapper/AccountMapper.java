@@ -247,6 +247,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
+        shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
