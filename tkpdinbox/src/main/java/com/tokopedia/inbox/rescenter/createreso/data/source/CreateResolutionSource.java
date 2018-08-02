@@ -22,12 +22,10 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblem
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateSubmitUseCase;
-import com.tokopedia.inbox.rescenter.di.ResolutionModule;
 import com.tokopedia.inbox.rescenter.network.ResolutionApi;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Observable;
 
@@ -53,7 +51,7 @@ public class CreateResolutionSource {
                                   CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper,
                                   CreateValidateMapper createValidateMapper,
                                   CreateSubmitMapper createSubmitMapper,
-                                  @Named(ResolutionModule.RESOLUTION_SERVICE) ResolutionApi resolutionApi,
+                                  ResolutionApi resolutionApi,
                                   EditSolutionMapper editSolutionMapper,
                                   AppealSolutionMapper appealSolutionMapper,
                                   EditAppealResolutionResponseMapper editAppealResolutionResponseMapper

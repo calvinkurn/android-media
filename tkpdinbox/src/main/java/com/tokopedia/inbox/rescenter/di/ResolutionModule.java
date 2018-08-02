@@ -2,30 +2,30 @@ package com.tokopedia.inbox.rescenter.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.rescenter.network.ResolutionApi;
 import com.tokopedia.inbox.rescenter.network.ResolutionErrorInterceptor;
 import com.tokopedia.inbox.rescenter.network.ResolutionErrorResponse;
-import com.tokopedia.inbox.rescenter.network.ResolutionInterceptor;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.converter.TokopediaApiResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-
-import javax.inject.Named;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author by yfsx on 26/07/18.
@@ -34,7 +34,6 @@ import retrofit2.Retrofit;
 public class ResolutionModule {
 
     public static final String RESOLUTION_SERVICE = "Resolution_Service";
-    public static final String RESOLUTION_IMAGE_SERVICE = "Resolution_Image_Service";
 
     @ResolutionScope
     @Provides
@@ -43,12 +42,6 @@ public class ResolutionModule {
             return ((AbstractionRouter) context).getAnalyticTracker();
         }
         throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
-    }
-
-    @ResolutionScope
-    @Provides
-    public ResolutionInterceptor provideResolutionInterceptor(UserSession userSession) {
-        return new ResolutionInterceptor(userSession);
     }
 
     @ResolutionScope
@@ -65,57 +58,37 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    @Named(RESOLUTION_SERVICE)
     public Retrofit provideResolutionServiceRetrofit(Retrofit.Builder retrofitBuilder,
-                                              OkHttpClient okHttpClient,
-                                              TokopediaApiResponseConverter tokopediaApiResponseConverter,
-                                              StringResponseConverter stringResponseConverter) {
+                                                     OkHttpClient okHttpClient) {
         return retrofitBuilder.baseUrl(ResolutionUrl.BASE_URL)
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
-                .addConverterFactory(tokopediaApiResponseConverter)
-                .addConverterFactory(stringResponseConverter)
                 .build();
     }
 
     @ResolutionScope
     @Provides
-    @Named(RESOLUTION_IMAGE_SERVICE)
-    public Retrofit provideResolutionImageServiceRetrofit(Retrofit.Builder retrofitBuilder,
-                                              OkHttpClient okHttpClient,
-                                              TokopediaApiResponseConverter tokopediaApiResponseConverter,
-                                              StringResponseConverter stringResponseConverter) {
-        return retrofitBuilder.baseUrl(ResolutionUrl.BASE_URL_IMAGE_SERVICE)
-                .client(okHttpClient)
-                .addConverterFactory(tokopediaApiResponseConverter)
-                .addConverterFactory(stringResponseConverter)
-                .build();
+    public TkpdAuthInterceptor providesTkpdAuthInterceptor(@ApplicationContext Context context) {
+        return new TkpdAuthInterceptor(context,
+                (NetworkRouter) context,
+                new com.tokopedia.user.session.UserSession(context));
     }
-
-    @ResolutionScope
-    @Provides
-    public StringResponseConverter provideStringResponseConverter() {
-        return new StringResponseConverter();
-    }
-
-    @ResolutionScope
-    @Provides
-    public TokopediaApiResponseConverter provideTokopediaApiResponseConverter() {
-        return new TokopediaApiResponseConverter();
-    }
-
 
     @ResolutionScope
     @Provides
     public OkHttpClient provideOkHttpClient(ChuckInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
-                                            ResolutionInterceptor resolutionInterceptor,
+                                            TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @ApplicationContext Context context) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new ErrorResponseInterceptor(ResolutionErrorResponse.class))
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter) context,
                         new com.tokopedia.user.session.UserSession(context)))
-                .addInterceptor(resolutionInterceptor);
+                .addInterceptor(tkpdAuthInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
@@ -126,16 +99,9 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    @Named(RESOLUTION_SERVICE)
-    public ResolutionApi provideResolutionApi(@Named(RESOLUTION_SERVICE) Retrofit retrofit) {
+    public ResolutionApi provideResolutionApi(Retrofit retrofit) {
         return retrofit.create(ResolutionApi.class);
     }
 
-    @ResolutionScope
-    @Provides
-    @Named(RESOLUTION_IMAGE_SERVICE)
-    public ResolutionApi provideResolutionImageServiceApi(@Named(RESOLUTION_IMAGE_SERVICE) Retrofit retrofit) {
-        return retrofit.create(ResolutionApi.class);
-    }
 
 }

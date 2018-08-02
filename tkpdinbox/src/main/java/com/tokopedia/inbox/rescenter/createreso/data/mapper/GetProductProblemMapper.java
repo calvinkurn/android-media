@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderDetailResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderProductResponse;
@@ -25,6 +24,8 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Ship
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusInfoDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
+import com.tokopedia.inbox.rescenter.network.ErrorMessageException;
+import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +39,27 @@ import rx.functions.Func1;
  * Created by yoasfs on 16/08/17.
  */
 
-public class GetProductProblemMapper implements Func1<Response<DataResponse<ProductProblemListResponse>>, ProductProblemResponseDomain> {
+public class GetProductProblemMapper implements Func1<Response<ResolutionResponse<ProductProblemListResponse>>, ProductProblemResponseDomain> {
 
     @Inject
     public GetProductProblemMapper() {
     }
 
     @Override
-    public ProductProblemResponseDomain call(Response<DataResponse<ProductProblemListResponse>> response) {
+    public ProductProblemResponseDomain call(Response<ResolutionResponse<ProductProblemListResponse>> response) {
+        if (response.isSuccessful()) {
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
+                }
+            }
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
+        }
         ProductProblemListResponse productProblemListResponse = response.body().getData();
+
         return new ProductProblemResponseDomain(
                 mappingProductProblemListDomain(
                         productProblemListResponse.getProductProblemResponseList()));

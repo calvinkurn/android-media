@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.FreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.RequireResponse;
@@ -11,6 +11,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturn
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
+import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,18 +25,29 @@ import rx.functions.Func1;
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionMapper implements Func1<Response<DataResponse<SolutionResponseResponse>>, SolutionResponseDomain> {
+public class SolutionMapper implements Func1<Response<ResolutionResponse<SolutionResponseResponse>>, SolutionResponseDomain> {
 
     @Inject
     public SolutionMapper() {
     }
 
     @Override
-    public SolutionResponseDomain call(Response<DataResponse<SolutionResponseResponse>> dataResponseResponse) {
+    public SolutionResponseDomain call(Response<ResolutionResponse<SolutionResponseResponse>> dataResponseResponse) {
         return mappingResponse(dataResponseResponse);
     }
 
-    private SolutionResponseDomain mappingResponse(Response<DataResponse<SolutionResponseResponse>> response) {
+    private SolutionResponseDomain mappingResponse(Response<ResolutionResponse<SolutionResponseResponse>> response) {
+        if (response.isSuccessful()) {
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
+                }
+            }
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
+        }
         SolutionResponseResponse solutionResponseResponse =
                 response.body().getData();
         return new SolutionResponseDomain(

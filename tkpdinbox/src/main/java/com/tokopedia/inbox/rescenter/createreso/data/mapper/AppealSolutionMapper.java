@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealFreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealSolutionResponse;
@@ -9,6 +9,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Amou
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
+import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,19 +23,29 @@ import rx.functions.Func1;
  * Created by yoasfs on 24/08/17.
  */
 
-public class AppealSolutionMapper implements Func1<Response<DataResponse<AppealSolutionResponseResponse>>, AppealSolutionResponseDomain> {
+public class AppealSolutionMapper implements Func1<Response<ResolutionResponse<AppealSolutionResponseResponse>>, AppealSolutionResponseDomain> {
 
     @Inject
     public AppealSolutionMapper() {
     }
 
     @Override
-    public AppealSolutionResponseDomain call(Response<DataResponse<AppealSolutionResponseResponse>> response) {
+    public AppealSolutionResponseDomain call(Response<ResolutionResponse<AppealSolutionResponseResponse>> response) {
         return mappingResponse(response);
     }
 
-    private AppealSolutionResponseDomain mappingResponse(Response<DataResponse<AppealSolutionResponseResponse>> response) {
-
+    private AppealSolutionResponseDomain mappingResponse(Response<ResolutionResponse<AppealSolutionResponseResponse>> response) {
+        if (response.isSuccessful()) {
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
+                }
+            }
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
+        }
         AppealSolutionResponseResponse appealSolutionResponseResponse =
                 response.body().getData();
         return new AppealSolutionResponseDomain(

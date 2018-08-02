@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditFreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponse;
@@ -9,6 +9,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Amou
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
+import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,18 +23,29 @@ import rx.functions.Func1;
  * Created by yoasfs on 24/08/17.
  */
 
-public class EditSolutionMapper implements Func1<Response<DataResponse<EditSolutionResponseResponse>>, EditSolutionResponseDomain> {
+public class EditSolutionMapper implements Func1<Response<ResolutionResponse<EditSolutionResponseResponse>>, EditSolutionResponseDomain> {
 
     @Inject
     public EditSolutionMapper() {
     }
 
     @Override
-    public EditSolutionResponseDomain call(Response<DataResponse<EditSolutionResponseResponse>> response) {
+    public EditSolutionResponseDomain call(Response<ResolutionResponse<EditSolutionResponseResponse>> response) {
         return mappingResponse(response);
     }
 
-    private EditSolutionResponseDomain mappingResponse(Response<DataResponse<EditSolutionResponseResponse>> response) {
+    private EditSolutionResponseDomain mappingResponse(Response<ResolutionResponse<EditSolutionResponseResponse>> response) {
+        if (response.isSuccessful()) {
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
+                }
+            }
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
+        }
         EditSolutionResponseResponse editSolutionResponseResponse =
                 response.body().getData();
         return new EditSolutionResponseDomain(
