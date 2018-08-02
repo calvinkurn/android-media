@@ -31,7 +31,7 @@ public class SearchTracking {
                                                           String eventLabel,
                                                           Map<String, String> selectedFilter,
                                                           Map<String, String> selectedSort) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -56,7 +56,7 @@ public class SearchTracking {
     }
 
     public static void trackEventClickImageSearchResultProduct(Context context, Object item, int position) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -84,7 +84,7 @@ public class SearchTracking {
     }
 
     public static void eventImpressionSearchResultProduct(Context context, List<Object> list, String eventLabel) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -104,7 +104,7 @@ public class SearchTracking {
     }
 
     public static void eventImpressionImageSearchResultProduct(Context context, List<Object> list) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -124,7 +124,7 @@ public class SearchTracking {
     }
 
     public static void eventClickGuidedSearch(Context context, String previousKey, String page, String nextKey) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -138,7 +138,7 @@ public class SearchTracking {
     }
 
     public static void eventImpressionGuidedSearch(Context context, String currentKey, String page) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -153,7 +153,7 @@ public class SearchTracking {
 
     public static void eventSearchResultShopItemClick(Context context, String keyword, String shopName,
                                                       int page, int position) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -167,7 +167,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultShare(Context context, String screenName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -181,7 +181,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -196,7 +196,7 @@ public class SearchTracking {
 
     public static void eventSearchResultFavoriteShopClick(Context context, String keyword, String shopName,
                                                           int page, int position) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -210,7 +210,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultCatalogClick(Context context, String keyword, String catalogName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -224,7 +224,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultTabClick(Context context, String tabTitle) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -238,7 +238,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultFilter(Context context, String screenName, Map<String, String> selectedFilter) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -254,7 +254,7 @@ public class SearchTracking {
     public static void eventSearchResultCloseBottomSheetFilter(Context context,
                                                                String screenName,
                                                                Map<String, String> selectedFilter) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -302,7 +302,7 @@ public class SearchTracking {
                                                       String filterValue,
                                                       boolean isInsideDetail, boolean isActive) {
 
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -318,7 +318,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultApplyFilterDetail(Context context, String filterName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -332,7 +332,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultBackFromFilterDetail(Context context, String filterName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -346,7 +346,7 @@ public class SearchTracking {
     }
 
     public static void eventSearchResultNavigateToFilterDetail(Context context, String filterName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -372,7 +372,7 @@ public class SearchTracking {
     }
 
     private static void eventSearchResultOpenFilterPage(Context context, String tabName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
@@ -389,7 +389,7 @@ public class SearchTracking {
                                            String keyword, String screenName,
                                            Map<String, String> selectedFilter) {
 
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();

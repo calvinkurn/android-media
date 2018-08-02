@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -55,6 +56,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     private int cartItemPosition;
     private ShipmentDetailData shipmentDetailData;
     private List<ShopShipment> shopShipmentList;
+    private RecipientAddressModel recipientAddressModel;
     private Activity activity;
 
     @Inject
@@ -71,12 +73,14 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     public CourierBottomsheet(@NonNull Activity activity,
                               @NonNull ShipmentDetailData shipmentDetailData,
                               @NonNull List<ShopShipment> shopShipmentList,
+                              @NonNull RecipientAddressModel recipientAddressModel,
                               @NonNull int cartItemPosition) {
         super(activity);
         this.activity = activity;
         this.cartItemPosition = cartItemPosition;
         this.shipmentDetailData = shipmentDetailData;
         this.shopShipmentList = shopShipmentList;
+        this.recipientAddressModel = recipientAddressModel;
         setCancelable(false);
         initializeInjector();
         initializeView(activity);
@@ -108,7 +112,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
             @Override
             public void onClick(View view) {
                 onCloseClick();
-                checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickXOnCourierOption();
+                checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickXOnCourierOption();
             }
         });
 
@@ -117,25 +121,27 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     public void updateHeight() {
         actionDismiss = false;
         behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED && actionDismiss) {
-                    CourierBottomsheet.this.dismiss();
+        if (behavior != null) {
+            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED && actionDismiss) {
+                        CourierBottomsheet.this.dismiss();
+                    }
                 }
-            }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 
-            }
-        });
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
+                }
+            });
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;
 
-        behavior.setPeekHeight(height);
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setPeekHeight(height);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 
     private void initializeData(ShipmentDetailData shipmentDetailData) {
@@ -159,6 +165,10 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     public void setListener(ActionListener listener) {
         this.actionListener = listener;
+    }
+
+    public void setSelectedCourier(CourierItemData selectedCourier) {
+        presenter.setSelectedCourier(selectedCourier);
     }
 
     private void setupRecyclerView() {
@@ -213,20 +223,32 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     void onCloseClick() {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
     }
 
     @Override
     public void onBackPressed() {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
     }
 
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        actionListener.onShipmentItemClick(courierItemData, cartItemPosition);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
+        actionListener.onShipmentItemClick(courierItemData, recipientAddressModel, cartItemPosition);
     }
 
     @Override
@@ -240,7 +262,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     }
 
     public interface ActionListener {
-        void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition);
+        void onShipmentItemClick(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition);
     }
 
 

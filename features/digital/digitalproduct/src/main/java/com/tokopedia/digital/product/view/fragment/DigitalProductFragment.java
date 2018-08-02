@@ -403,8 +403,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         promoViewPager.postDelayed(new Runnable() {
             @Override
             public void run() {
-                promoViewPager.setCurrentItem(0);
-                promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
+                if (promoViewPager != null) {
+                    promoViewPager.setCurrentItem(0);
+                    promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
+                }
             }
         }, DEFAULT_POST_DELAYED_VALUE);
     }

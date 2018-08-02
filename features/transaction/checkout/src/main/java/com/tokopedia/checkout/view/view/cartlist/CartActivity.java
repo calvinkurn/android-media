@@ -64,18 +64,14 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof RemoveCartItemFragment) {
             ((RemoveCartItemFragment) currentFragment)
-                    .getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
+                    .getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
         } else if (currentFragment instanceof CartFragment) {
             ((CartFragment) currentFragment)
-                    .getCartPageAnalytics().eventClickCartClickArrowBack();
+                    .getCartPageAnalytics().eventClickAtcCartClickArrowBack();
         }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
-            startActivity(
-                    ((ICheckoutModuleRouter) getApplication())
-                            .getHomePageIntent(this)
-            );
             finish();
         }
     }

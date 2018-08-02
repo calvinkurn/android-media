@@ -747,5 +747,9 @@ public class TrackingUtils extends TrackingConfig {
     public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
         getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
     }
+
+    public static void setMoEngagePushPreference(Boolean status) {
+        getMoEngine().setPushPreference(status);
+    }
 }
 

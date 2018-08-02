@@ -11,11 +11,9 @@ import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
-import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;
 import java.util.Map;
@@ -77,6 +75,6 @@ public interface IntermediaryContract {
 
         void addWishLish(int position, Data data);
 
-        void setWishlishListener(WishlistActionListener wishlishListener);
+        void setWishlishListener(WishListActionListener wishListActionListener);
     }
 }

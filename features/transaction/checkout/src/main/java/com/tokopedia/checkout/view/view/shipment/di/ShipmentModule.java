@@ -15,8 +15,10 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
@@ -31,6 +33,7 @@ import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataRequestCo
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
+import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 
 import dagger.Module;
 import dagger.Provides;
@@ -63,8 +66,8 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    CheckoutUseCase provideCheckoutUseCase(ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
-        return new CheckoutUseCase(cartRepository, checkoutMapper);
+    CheckoutUseCase provideCheckoutUseCase(ICheckoutModuleRouter checkoutModuleRouter, ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
+        return new CheckoutUseCase(cartRepository, checkoutMapper, checkoutModuleRouter);
     }
 
     @Provides
@@ -96,12 +99,6 @@ public class ShipmentModule {
     @ShipmentScope
     ShipmentDataConverter provideShipmentDataConverter() {
         return new ShipmentDataConverter();
-    }
-
-    @Provides
-    @ShipmentScope
-    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
-        return new CartMapper(mapperUtil);
     }
 
     @Provides

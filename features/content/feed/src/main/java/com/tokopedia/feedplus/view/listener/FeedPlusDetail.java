@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 
@@ -62,7 +63,7 @@ public interface FeedPlusDetail {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void attachView(FeedPlusDetail.View view, WishlistListener wishlistListener);
+        void attachView(FeedPlusDetail.View view, WishListActionListener wishlistListener);
 
         void getFeedDetail(String detailId, int page);
 
