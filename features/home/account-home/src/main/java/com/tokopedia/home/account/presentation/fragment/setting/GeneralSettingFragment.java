@@ -273,4 +273,10 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             ((AccountHomeRouter) getActivity().getApplication()).doLogoutAccount(getActivity());
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
+    }
 }

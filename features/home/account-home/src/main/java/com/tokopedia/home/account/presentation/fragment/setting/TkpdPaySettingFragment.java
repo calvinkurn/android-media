@@ -83,10 +83,16 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                     break;
                 case SettingConstant.SETTING_TOKOCASH_ID:
                     WalletModel walletModel = walletPref.retrieveWallet();
-                    if (walletModel != null && walletModel.getAction() != null){
-                        router.goToTokoCash(walletModel.getAction().getApplink(),
-                                walletModel.getAction().getRedirectUrl(),
-                                getActivity());
+                    if (walletModel != null){
+                        if (walletModel.isLinked()){
+                            router.goToTokoCash(walletModel.getApplink(),
+                                    walletModel.getRedirectUrl(),
+                                    getActivity());
+                        } else {
+                            router.goToTokoCash(walletModel.getAction().getApplink(),
+                                    walletModel.getAction().getRedirectUrl(),
+                                    getActivity());
+                        }
                     }
                     break;
                 case SettingConstant.SETTING_SALDO_ID:
