@@ -16,13 +16,12 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.BankRouter
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics
 import com.tokopedia.settingbank.addeditaccount.di.AddEditBankDependencyInjector
+import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
-import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
@@ -51,9 +50,9 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     override fun getScreenName(): String {
         return if (activity!!.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) ==
                 BankFormModel.Companion.STATUS_ADD) {
-            AddEditBankAnalytics.SCREEN_NAME_ADD
+            SettingBankAnalytics.SCREEN_NAME_ADD
         } else {
-            AddEditBankAnalytics.SCREEN_NAME_EDIT
+            SettingBankAnalytics.SCREEN_NAME_EDIT
         }
     }
 

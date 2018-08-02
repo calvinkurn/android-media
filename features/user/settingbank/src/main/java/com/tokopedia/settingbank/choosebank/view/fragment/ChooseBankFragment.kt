@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics.Companion.SCREEN_NAME_CHOOSE_BANK
 import com.tokopedia.settingbank.addeditaccount.view.listener.ChooseBankContract
 import com.tokopedia.settingbank.choosebank.di.ChooseBankDependencyInjector
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
@@ -22,6 +21,7 @@ import com.tokopedia.settingbank.choosebank.view.adapter.BankTypeFactoryImpl
 import com.tokopedia.settingbank.choosebank.view.listener.BankListener
 import com.tokopedia.settingbank.choosebank.view.presenter.ChooseBankPresenter
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
+import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import kotlinx.android.synthetic.main.fragment_choose_bank.*
 
 /**
@@ -39,7 +39,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
     private val MIN_CHAR_SEARCH: Int = 3
 
     override fun getScreenName(): String {
-        return SCREEN_NAME_CHOOSE_BANK
+        return SettingBankAnalytics.SCREEN_NAME_CHOOSE_BANK
     }
 
     override fun initInjector() {
