@@ -56,13 +56,15 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
+import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActivitySellingTransaction extends TkpdActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
-        DownloadResultReceiver.Receiver {
+        DownloadResultReceiver.Receiver,
+        SellingTransaction {
 
     public static final String FROM_WIDGET_TAG = "from widget";
 
@@ -532,6 +534,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 //        }
 //    }
 
+    @Override
     public void SellingAction(int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_MULTI_SHIPPING:
