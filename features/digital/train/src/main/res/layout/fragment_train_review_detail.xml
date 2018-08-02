@@ -21,26 +21,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/light_orange"
-                android:orientation="horizontal"
                 android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingStart="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8">
+                android:paddingTop="@dimen/dp_8">
 
                 <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Micro"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.6"
                     android:text="@string/train_countdown_label" />
 
                 <com.tokopedia.train.seat.presentation.widget.CountdownTimeView
                     android:id="@+id/ct_countdown"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.4"
                     app:ctv_hour_title="@string/train_countdown_hour_label"
                     app:ctv_minute_title="@string/train_countdown_minute_label"
                     app:ctv_second_title="@string/train_countdown_second_label" />
@@ -66,14 +67,14 @@
                 tools:visibility="visible" />
 
             <com.tokopedia.design.component.ticker.TickerView
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:id="@+id/ticker_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16" />
 
             <TextView
                 android:layout_width="wrap_content"

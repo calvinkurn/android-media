@@ -50,16 +50,19 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/dp_5"
-            android:paddingBottom="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_8"
+            android:layout_height="@dimen/dp_40"
+            android:layout_gravity="center_vertical"
             android:layout_marginBottom="@dimen/dp_5"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
             android:background="@drawable/bg_train_popup_shadow"
+            android:elevation="@dimen/dp_5"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_8"
+            style="@style/TextView.Small.Bold"
             android:text="@string/train_seat_popup_choose_passenger" />
 
         <android.support.v7.widget.RecyclerView
