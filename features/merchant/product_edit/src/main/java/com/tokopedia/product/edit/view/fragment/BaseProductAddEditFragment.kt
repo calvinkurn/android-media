@@ -93,34 +93,27 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startCatalogActivity() {
-        startActivityForResult(Intent(activity, ProductEditCategoryActivity::class.java)
-                .putExtra(EXTRA_CATALOG, currentProductAddViewModel?.productCatalog)
-                .putExtra(EXTRA_CATEGORY, currentProductAddViewModel?.productCategory), REQUEST_CODE_GET_CATALOG_CATEGORY)
+        startActivityForResult(ProductEditCategoryActivity.createIntent(activity!!, currentProductAddViewModel?.productCategory!!, currentProductAddViewModel?.productCatalog!!), REQUEST_CODE_GET_CATALOG_CATEGORY)
     }
 
     private fun startNameActivity() {
-        startActivityForResult(Intent(activity, ProductEditNameActivity::class.java)
-                .putExtra(EXTRA_NAME, currentProductAddViewModel?.productName), REQUEST_CODE_GET_NAME)
+        startActivityForResult(ProductEditNameActivity.createIntent(activity!!, currentProductAddViewModel?.productName!!), REQUEST_CODE_GET_NAME)
     }
 
     private fun startPriceActivity() {
-        startActivity(Intent(activity, ProductEditPriceActivity::class.java))
+        startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, currentProductAddViewModel?.productPrice!!, false, false, true), REQUEST_CODE_GET_PRICE)
     }
 
     private fun startDescriptionActivity() {
-        startActivityForResult(Intent(activity, ProductEditDescriptionActivity::class.java)
-                .putExtra(EXTRA_DESCRIPTION, currentProductAddViewModel?.productDescription)
-                .putExtra(EXTRA_KEYWORD, currentProductAddViewModel?.productName?.name), REQUEST_CODE_GET_DESCRIPTION)
+        startActivityForResult(ProductEditDescriptionActivity.createIntent(activity!!, currentProductAddViewModel?.productDescription!!, currentProductAddViewModel?.productName?.name!!), REQUEST_CODE_GET_DESCRIPTION)
     }
 
     private fun startStockActivity() {
-        startActivityForResult(Intent(activity, ProductEditStockActivity::class.java)
-                .putExtra(EXTRA_STOCK, currentProductAddViewModel?.productStock), REQUEST_CODE_GET_STOCK)
+        startActivityForResult(ProductEditStockActivity.createIntent(activity!!, currentProductAddViewModel?.productStock!!), REQUEST_CODE_GET_STOCK)
     }
 
     private fun startLogisticActivity() {
-        startActivityForResult(Intent(activity, ProductEditWeightLogisticActivity::class.java)
-                .putExtra(EXTRA_LOGISTIC, currentProductAddViewModel?.productLogistic), REQUEST_CODE_GET_LOGISTIC)
+        startActivityForResult(ProductEditWeightLogisticActivity.createIntent(activity!!, currentProductAddViewModel?.productLogistic!!), REQUEST_CODE_GET_LOGISTIC)
     }
 
     private fun startProductEtalaseActivity() {

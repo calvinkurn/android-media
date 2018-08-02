@@ -6,12 +6,12 @@ import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_HAS_VARIANT
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_PRICE
 import com.tokopedia.product.edit.price.ProductEditPriceFragment
 import com.tokopedia.product.edit.price.model.ProductPrice
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_PRICE
 
 class ProductEditPriceActivity : BaseSimpleActivity(){
 

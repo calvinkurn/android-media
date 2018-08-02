@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_LOGISTIC
 import com.tokopedia.product.edit.price.ProductEditWeightLogisticFragment
 import com.tokopedia.product.edit.price.model.ProductLogistic
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
 
 class ProductEditWeightLogisticActivity : BaseSimpleActivity(){
 

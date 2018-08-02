@@ -6,11 +6,11 @@ import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATEGORY
 import com.tokopedia.product.edit.price.ProductEditCategoryFragment
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
 
 class ProductEditCategoryActivity : BaseSimpleActivity(){
 
