@@ -20,7 +20,6 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 
 import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_PRODUCT;
-import static com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity.KEY_IS_COUPON_APPLIED_APPLINK;
 import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 
 /**
@@ -30,6 +29,7 @@ import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryLi
 public class DigitalProductActivity extends BasePresenterActivity
         implements DigitalProductFragment.ActionListener {
 
+    private static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
     public static final String EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA";
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
 
@@ -76,9 +76,13 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .clientNumber(extras.getString(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
                 .build();
 
-        Intent destination = (extras.containsKey(KEY_IS_COUPON_APPLIED_APPLINK)) ?
-                DigitalProductActivity.newInstance(context, passData, extras.getInt(KEY_IS_COUPON_APPLIED_APPLINK)) :
-                DigitalProductActivity.newInstance(context, passData);
+        Intent destination;
+        if (extras.containsKey(KEY_IS_COUPON_APPLIED_APPLINK)) {
+            int isCouponApplied = Integer.parseInt(extras.getString(KEY_IS_COUPON_APPLIED_APPLINK));
+            destination = DigitalProductActivity.newInstance(context, passData, isCouponApplied);
+        } else {
+            destination = DigitalProductActivity.newInstance(context, passData);
+        }
 
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         taskStackBuilder.addNextIntent(destination);
