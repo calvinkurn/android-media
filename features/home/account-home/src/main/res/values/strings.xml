@@ -112,7 +112,13 @@
     <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top Up & Tagihan]]></string>
     <string name="title_menu_deals">Deals</string>
+    <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
+    <string name="title_menu_reksadana">Reksa Dana</string>
+    <string name="title_menu_event">Event</string>
+    <string name="title_menu_gold">Emas</string>
+    <string name="title_menu_zakat">Zakat</string>
+    <string name="title_menu_donation">Donasi</string>
     <string name="title_menu_show_all">Lihat Semua</string>
     <string name="title_menu_sales">Penjualan</string>
     <string name="label_menu_new_order">Pesanan Baru</string>
@@ -147,4 +153,15 @@
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
 
 
+    <string name="msg_has_no_shop">Anda belum memiliki Toko</string>
+    <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
+        <b>Menguntungkan</b>.</string>
+    <string name="top_features">Top Features</string>
+    <string name="topads_desc">Media iklan Produk dan Toko</string>
+    <string name="gold_merchant">Gold Merchant</string>
+    <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
+    <string name="seller_center">Seller Center</string>
+    <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
+    <string name="open_shop">Buka Toko</string>
+    <string name="learn_more">Pelajari Selengkapnya</string>
 </resources>

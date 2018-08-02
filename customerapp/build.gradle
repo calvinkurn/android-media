@@ -199,7 +199,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
@@ -409,6 +409,9 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     androidTestImplementation rootProject.ext.testDependencies.retrofitMock
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler

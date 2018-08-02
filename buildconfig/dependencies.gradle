@@ -17,7 +17,7 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
-    espressoVersion = "2.2.2"
+    espressoVersion = "3.0.1"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
@@ -208,6 +208,7 @@ ext {
             androidTestRunner  : "com.android.support.test:runner:$runnerVersion",
             androidRulesVersion: "com.android.support.test:rules:$rulesVersion",
             espressoIntents    : "com.android.support.test.espresso:espresso-intents:$espressoVersion",
+            espressoContrib    : "com.android.support.test.espresso:espresso-contrib:$espressoVersion",
             retrofitMock       : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
             retrofitMockWebser : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker           : 'com.google.dexmaker:dexmaker:1.2',

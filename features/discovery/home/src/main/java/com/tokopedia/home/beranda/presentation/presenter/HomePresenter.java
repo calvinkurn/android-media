@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
@@ -16,7 +17,6 @@ import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -31,6 +31,9 @@ import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubsc
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -48,13 +51,17 @@ import rx.subscriptions.Subscriptions;
 
 /**
  * @author by errysuprayogi on 11/27/17.
+ *
+ * TODO : Remove context
+ * TODO : Remove Old GetShopInfoRetrofit
  */
 
 public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implements HomeContract.Presenter {
 
     private static final String TAG = HomePresenter.class.getSimpleName();
     private static final String CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED";
-    private final Context context;
+    private UserSession userSession;
+
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
     @Inject
@@ -64,23 +71,25 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
 
-    private SessionHandler sessionHandler;
-    private GetShopInfoRetrofit getShopInfoRetrofit;
     private String currentCursor = "";
     private PagingHandler pagingHandler;
+    private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
     private HomeFeedListener feedListener;
     private HeaderViewModel headerViewModel;
     private boolean fetchFirstData;
     private long REQUEST_DELAY = 180000;// 3 minutes
     private static long lastRequestTime;
 
-    public HomePresenter(Context context) {
-        this.context = context;
+    public HomePresenter(PagingHandler pagingHandler,
+                         UserSession userSession,
+                         GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
+        this.userSession = userSession;
+        this.pagingHandler = pagingHandler;
+        this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
+
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
-        this.pagingHandler = new PagingHandler();
         resetPageFeed();
-        sessionHandler = new SessionHandler(context);
     }
 
     @Override
@@ -147,14 +156,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(refreshData())
+                .doOnNext(visitables -> {
+                    compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
+                })
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
     }
 
     private void initHeaderViewModelData() {
-        if (SessionHandler.isV4Login(context)) {
+        if(userSession.isLoggedIn()){
             if (headerViewModel == null) {
                 headerViewModel = new HeaderViewModel();
             }
@@ -162,15 +173,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    @NonNull
-    private Action1<List<Visitable>> refreshData() {
-        return new Action1<List<Visitable>>() {
-            @Override
-            public void call(List<Visitable> visitables) {
-                compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
-            }
-        };
-    }
 
     private HomeDataSubscriber createHomeDataSubscriber() {
         return new HomeDataSubscriber(this);
@@ -242,7 +244,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onRefreshTokoCash() {
-        if (!SessionHandler.isV4Login(context)) return;
+        if (!userSession.isLoggedIn()) return;
 
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
@@ -256,82 +258,58 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getShopInfo(final String url, String shopDomain) {
-        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
-        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+        getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain), new Subscriber<ShopInfo>() {
             @Override
-            public void onSuccess(String result) {
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    try {
-                        ShopModel shopModel = new Gson().fromJson(result, ShopModel.class);
-                        if (shopModel.info != null) {
-                            Intent intent = ((IHomeRouter) MainApplication.getAppContext()).getShopPageIntent(MainApplication.getAppContext(), shopModel.getInfo().getShopId());
-                            context.startActivity(intent);
-                        } else {
-                            getView().openWebViewURL(url, context);
-                        }
-                    } catch (Exception e) {
-                        getView().openWebViewURL(url, context);
-                    }
+                    getView().openWebViewURL(url);
                 }
             }
 
             @Override
-            public void onError(String message) {
-                if (isViewAttached()) {
-                    getView().openWebViewURL(url, context);
-                }
-            }
-
-            @Override
-            public void onFailure() {
-                if (isViewAttached()) {
-                    getView().openWebViewURL(url, context);
+            public void onNext(ShopInfo shopInfo) {
+                if(shopInfo.getInfo() != null) {
+                    getView().startShopInfo(shopInfo.getInfo().getShopId());
+                }else {
+                    getView().openWebViewURL(url);
                 }
             }
         });
-        getShopInfoRetrofit.getShopInfo();
     }
 
     @Override
     public void openProductPageIfValid(final String url, String shopDomain) {
-        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
-        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+        getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain), new Subscriber<ShopInfo>() {
             @Override
-            public void onSuccess(String result) {
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    try {
-                        ShopModel shopModel = new Gson().fromJson(result,
-                                ShopModel.class);
-                        if (shopModel.info != null) {
-                            DeepLinkChecker.openProduct(url, context);
-                        } else {
-                            getView().openWebViewURL(url, context);
-                        }
-                    } catch (Exception e) {
-                        getView().openWebViewURL(url, context);
-                    }
+                    getView().openWebViewURL(url);
                 }
             }
 
             @Override
-            public void onError(String message) {
-                if (isViewAttached()) {
-                    getView().openWebViewURL(url, context);
-                }
-            }
-
-            @Override
-            public void onFailure() {
-                if (isViewAttached()) {
-                    getView().openWebViewURL(url, context);
+            public void onNext(ShopInfo shopInfo) {
+                if(shopInfo.getInfo() != null) {
+                    getView().startDeeplinkShopInfo(url);
+                }else {
+                    getView().openWebViewURL(url);
                 }
             }
         });
-        getShopInfoRetrofit.getShopInfo();
     }
 
     public void getHeaderData(boolean initialStart) {
-        if (!SessionHandler.isV4Login(context)) return;
+        if (!userSession.isLoggedIn()) return;
 
         if (initialStart && headerViewModel != null) {
             if (headerViewModel.getHomeHeaderWalletActionData() == null)
@@ -367,7 +345,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getHomeFeedsUseCase.execute(
                 getHomeFeedsUseCase.getFeedPlusParam(
                         pagingHandler.getPage(),
-                        sessionHandler.getLoginID(),
+                        userSession.getUserId(),
                         currentCursor),
                 new GetHomeFeedsSubscriber(feedListener, pagingHandler.getPage()));
     }
@@ -393,11 +371,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public boolean isLogin() {
-        return SessionHandler.isV4Login(context);
+        return userSession.isLoggedIn();
     }
 
     public void showNetworkError() {
-        getView().showNetworkError(context.getString(R.string.msg_network_error));
+        getView().showNetworkError();
     }
 
     private static class HomeDataSubscriber extends Subscriber<List<Visitable>> {

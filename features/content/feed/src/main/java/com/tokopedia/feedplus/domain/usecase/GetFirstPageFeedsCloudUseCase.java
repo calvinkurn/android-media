@@ -63,8 +63,12 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
         return getWhitelistUseCase.createObservable(RequestParams.EMPTY);
     }
 
-    private WhitelistDomain mappingWhitelist(GraphqlResponse response) {
+    public static WhitelistDomain mappingWhitelist(GraphqlResponse response) {
         WhitelistQuery query = response.getData(WhitelistQuery.class);
+        return getWhitelistDomain(query);
+    }
+
+    public static WhitelistDomain getWhitelistDomain(WhitelistQuery query) {
         if (query == null) return null;
         else {
             WhitelistDomain domain = new WhitelistDomain();

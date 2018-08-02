@@ -52,7 +52,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         accountViewModel.setBuyerViewModel(getBuyerModel(accountModel));
         if (accountModel.getShopInfo() != null
                 && accountModel.getShopInfo().getInfo() != null
-                && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())) {
+                && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
+                && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1")) {
             accountViewModel.setSellerViewModel(getSellerModel(accountModel));
             accountViewModel.setSeller(true);
         } else {
@@ -173,8 +174,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
-                // TODO: 7/25/18 oka: need applink
-                "",
+                AccountConstants.KEY_SEE_ALL,
                 0
         );
         menuGridItems.add(gridItem);
