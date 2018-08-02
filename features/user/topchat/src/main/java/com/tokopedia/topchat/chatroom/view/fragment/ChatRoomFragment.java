@@ -712,8 +712,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     if (onlineDesc != null && when != null)
                         onlineDesc.setText(when);
                     if(onlineStatus != null) {
-                        if(isOnline) onlineStatus.setVisibility(View.VISIBLE);
-                        else onlineStatus.setVisibility(View.GONE);
+                        if(isOnline) onlineStatus.setImageResource(R.drawable.status_indicator_online);
+                        else onlineStatus.setImageResource(R.drawable.status_indicator_offline);
                     }
                 }
             });
