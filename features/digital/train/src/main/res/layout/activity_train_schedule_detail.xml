@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:clipToPadding="false">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -18,47 +18,63 @@
         app:subtitleTextAppearance="@style/SubTitleTextAppearance"
         app:titleTextAppearance="@style/TitleTextAppearance" />
 
-    <include layout="@layout/header_train_schedule_detail"
-        android:id="@+id/header_train_schedule_detail"
-        android:layout_below="@id/toolbar"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/indicator"
-        android:layout_below="@+id/header_train_schedule_detail"
-        style="@style/Tabs.Secondary.Train"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabGravity="fill"
-        android:elevation="@dimen/dp_2"
-        app:tabMode="scrollable"
-        app:tabIndicatorColor="@color/colorPrimary"
-        footerColor="@color/colorPrimary"
-        android:background="@color/white"
-        app:tabSelectedTextColor="@color/colorPrimary"
-        app:tabTextAppearance="@style/TitlePageWhiteIndicator"
-        app:tabTextColor="@color/font_black_disabled_38"
-        tools:targetApi="lollipop" />
-
     <RelativeLayout
-        android:layout_below="@id/indicator"
+        android:id="@+id/container"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
 
-        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-            android:id="@+id/pager"
+        <include
+            android:id="@+id/header_train_schedule_detail"
+            layout="@layout/header_train_schedule_detail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16" />
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/indicator"
+            style="@style/Tabs.Secondary.Train"
+            footerColor="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/header_train_schedule_detail"
+            android:background="@color/white"
+            android:elevation="@dimen/dp_2"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabTextAppearance="@style/TitlePageWhiteIndicator"
+            app:tabTextColor="@color/font_black_disabled_38"
+            tools:targetApi="lollipop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/indicator">
+
+            <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/button_submit"
+            style="@style/Button.Submit.Orange"
+            android:layout_alignParentBottom="true"
+            android:text="@string/label_choose" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/button_submit"
-        style="@style/Button.Submit.Orange"
-        android:layout_alignParentBottom="true"
-        android:text="@string/label_choose"/>
-
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_centerInParent="true" />
 </RelativeLayout>

@@ -380,9 +380,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
         String specialTagging = "";
         if (trainScheduleViewModel.isCheapestFlag()) {
-            specialTagging = "Termurah";
+            specialTagging = getString(R.string.train_search_cheapest_tagging);
         } else if (trainScheduleViewModel.isFastestFlag()) {
-            specialTagging = "Tercepat";
+            specialTagging = getString(R.string.train_search_fastest_tagging);
         }
 
         trainAnalytics.eventProductClick(
@@ -442,7 +442,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     public FilterParam getFilterParam() {
-        FilterParam filterParam = new FilterParam.Builder()
+        return new FilterParam.Builder()
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
                 .trains(trains)
@@ -451,7 +451,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 .scheduleVariant(getScheduleVariant())
                 .arrivalTimestampSelected(arrivalScheduleSelected)
                 .build();
-        return filterParam;
     }
 
     @Override
@@ -514,14 +513,14 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(getString(R.string.train_search_sort));
 
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_DEPARTURE, "Waktu Keberangkatan Terpagi", null, isSortSelected(TrainSortOption.EARLIEST_DEPARTURE));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_DEPARTURE, "Waktu Keberangkatan Termalam", null, isSortSelected(TrainSortOption.LATEST_DEPARTURE));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.SHORTEST_DURATION, "Durasi Terpendek", null, isSortSelected(TrainSortOption.SHORTEST_DURATION));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LONGEST_DURATION, "Durasi Terlama", null, isSortSelected(TrainSortOption.LONGEST_DURATION));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_ARRIVAL, "Waktu Tiba Terpagi", null, isSortSelected(TrainSortOption.EARLIEST_ARRIVAL));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_ARRIVAL, "Waktu Tiba Termalam", null, isSortSelected(TrainSortOption.LATEST_ARRIVAL));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.CHEAPEST, "Harga Termurah", null, isSortSelected(TrainSortOption.CHEAPEST));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.MOST_EXPENSIVE, "Harga Termahal", null, isSortSelected(TrainSortOption.MOST_EXPENSIVE));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_DEPARTURE, R.string.train_sorting_earliest_departure, null, isSortSelected(TrainSortOption.EARLIEST_DEPARTURE));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_DEPARTURE, R.string.train_sorting_latest_departure, null, isSortSelected(TrainSortOption.LATEST_DEPARTURE));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.SHORTEST_DURATION, R.string.train_sorting_shortest_duration, null, isSortSelected(TrainSortOption.SHORTEST_DURATION));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LONGEST_DURATION, R.string.train_sorting_longest_duration, null, isSortSelected(TrainSortOption.LONGEST_DURATION));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_ARRIVAL, R.string.train_sorting_earliest_arrival, null, isSortSelected(TrainSortOption.EARLIEST_ARRIVAL));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_ARRIVAL, R.string.train_sorting_latest_arrival, null, isSortSelected(TrainSortOption.LATEST_ARRIVAL));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.CHEAPEST, R.string.train_sorting_cheapest, null, isSortSelected(TrainSortOption.CHEAPEST));
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.MOST_EXPENSIVE, R.string.train_sorting_most_expensive, null, isSortSelected(TrainSortOption.MOST_EXPENSIVE));
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(new BottomSheetItemClickListener() {
@@ -547,17 +546,19 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case FILTER_SEARCH_REQUEST_CODE:
-                    filterSearchData = data.getExtras().getParcelable(TrainFilterSearchActivity.MODEL_SEARCH_FILTER);
-                    minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
-                    maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
-                    trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
-                            filterSearchData.getSelectedTrains() : filterSearchData.getTrains();
-                    trainClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
-                            filterSearchData.getSelectedTrainClass() : filterSearchData.getTrainClass();
-                    departureTrains = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
-                            filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
+                    if (data != null) {
+                        filterSearchData = data.getExtras().getParcelable(TrainFilterSearchActivity.MODEL_SEARCH_FILTER);
+                        minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
+                        maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
+                        trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
+                                filterSearchData.getSelectedTrains() : filterSearchData.getTrains();
+                        trainClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
+                                filterSearchData.getSelectedTrainClass() : filterSearchData.getTrainClass();
+                        departureTrains = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
+                                filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
 
-                    presenter.getFilteredAndSortedSchedules();
+                        presenter.getFilteredAndSortedSchedules();
+                    }
                     break;
                 case REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL:
                     if (data != null && data.hasExtra(TrainScheduleDetailActivity.EXTRA_TRAIN_SELECTED)) {

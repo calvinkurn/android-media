@@ -192,5 +192,15 @@
     <string name="train_countdown_hour_label">Jam</string>
     <string name="train_passenger_contact_name_containt_alphabet">Nama penumpang hanya boleh alphabet</string>
     <string name="train_passenger_error_identity_alphanumeric">Nomor ID harus alphanumeric</string>
+    <string name="train_search_cheapest_tagging">Termurah</string>
+    <string name="train_search_fastest_tagging">Tercepat</string>
+    <string name="train_sorting_earliest_departure">Waktu Keberangkatan Terpagi</string>
+    <string name="train_sorting_latest_departure">Waktu Keberangkatan Termalam</string>
+    <string name="train_sorting_shortest_duration">Durasi Terpendek</string>
+    <string name="train_sorting_longest_duration">Durasi Terlama</string>
+    <string name="train_sorting_earliest_arrival">Waktu Tiba Terpagi</string>
+    <string name="train_sorting_latest_arrival">Waktu Tiba Termalam</string>
+    <string name="train_sorting_cheapest">Harga Termurah</string>
+    <string name="train_sorting_most_expensive">Harga Termahal</string>
 
 </resources>

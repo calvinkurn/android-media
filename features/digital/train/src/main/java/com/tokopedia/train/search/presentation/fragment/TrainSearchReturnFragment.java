@@ -117,13 +117,13 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
         departureDetailLayout.setVisibility(View.VISIBLE);
         String dateDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_SEARCH,
                 TrainDateUtil.DEFAULT_VIEW_FORMAT, trainSearchPassDataViewModel.getDepartureDate());
-        titleDepartureInfoTv.setText(getString(R.string.train_search_departure_title) + " - " + dateDepartureString);
+        titleDepartureInfoTv.setText(String.format("%s - %s", getString(R.string.train_search_departure_title), dateDepartureString));
         trainNameTv.setText(viewModel.getTrainName());
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, viewModel.getDepartureTimestamp());
         String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, viewModel.getArrivalTimestamp());
-        detailDepartureInfoTv.setText(" | " + timeDepartureString + " - " + timeArrivalString);
+        detailDepartureInfoTv.setText(String.format(" | %s - %s", timeDepartureString, timeArrivalString));
     }
 
     @Override
