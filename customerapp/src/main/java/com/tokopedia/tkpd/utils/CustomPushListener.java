@@ -1,46 +1,18 @@
 package com.tokopedia.tkpd.utils;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
-
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.moe.pushlibrary.utils.MoEHelperUtils;
 import com.moengage.core.ConfigurationProvider;
-import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.moengage.pushbase.push.PushMessageListener;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
-
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
 public class CustomPushListener extends PushMessageListener {
 
@@ -67,24 +39,39 @@ public class CustomPushListener extends PushMessageListener {
     @Override
     public NotificationCompat.Builder onCreateNotification(Context context, Bundle extras,
                                                            ConfigurationProvider provider) {
+        final String KEY_ICON_NAME1 = "icon_name1";
+        final String KEY_ICON_NAME2 = "icon_name2";
+        final String KEY_ICON_NAME3 = "icon_name3";
+        final String KEY_ICON_NAME4 = "icon_name4";
+        final String KEY_DEEPLINK1 = "deeplink1";
+        final String KEY_DEEPLINK2 = "deeplink2";
+        final String KEY_DEEPLINK3 = "deeplink3";
+        final String KEY_DEEPLINK4 = "deeplink4";
+        final String KEY_ICON_URL1 = "icon_url1";
+        final String KEY_ICON_URL2 = "icon_url2";
+        final String KEY_ICON_URL3 = "icon_url3";
+        final String KEY_ICON_URL4 = "icon_url4";
+        final String KEY_IS_PERSISTENT = "is_persistent";
+        final String PERSISTENT = "1";
+
         NotificationCompat.Builder builder = super.onCreateNotification(context, extras, provider);
 
-        if ("1".equalsIgnoreCase(extras.getString("is_persistent"))) {
+        if (PERSISTENT.equalsIgnoreCase(extras.getString(KEY_IS_PERSISTENT))) {
             long when = System.currentTimeMillis();
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
 
-            String title1 = extras.getString("name1");
-            String title2 = extras.getString("name2");
-            String title3 = extras.getString("name3");
-            String title4 = extras.getString("name4");
-            String deeplink1 = extras.getString("deeplink1");
-            String deeplink2 = extras.getString("deeplink2");
-            String deeplink3 = extras.getString("deeplink3");
-            String deeplink4 = extras.getString("deeplink4");
-            String url1 = extras.getString("icon1");
-            String url2 = extras.getString("icon2");
-            String url3 = extras.getString("icon3");
-            String url4 = extras.getString("icon4");
+            String title1 = extras.getString(KEY_ICON_NAME1);
+            String title2 = extras.getString(KEY_ICON_NAME2);
+            String title3 = extras.getString(KEY_ICON_NAME3);
+            String title4 = extras.getString(KEY_ICON_NAME4);
+            String deeplink1 = extras.getString(KEY_DEEPLINK1);
+            String deeplink2 = extras.getString(KEY_DEEPLINK2);
+            String deeplink3 = extras.getString(KEY_DEEPLINK3);
+            String deeplink4 = extras.getString(KEY_DEEPLINK4);
+            String url1 = extras.getString(KEY_ICON_URL1);
+            String url2 = extras.getString(KEY_ICON_URL2);
+            String url3 = extras.getString(KEY_ICON_URL3);
+            String url4 = extras.getString(KEY_ICON_URL4);
             if (!TextUtils.isEmpty(title1) && !TextUtils.isEmpty(deeplink1) && !TextUtils.isEmpty(url1)) {
                 remoteView.setTextViewText(R.id.title1, title1);
                 Intent intent = RouteManager.getIntent(context, deeplink1);
@@ -118,9 +105,7 @@ public class CustomPushListener extends PushMessageListener {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteView.setOnClickPendingIntent(R.id.image_icon4, pIntent4);
             }
-            Intent intent5 = new Intent(context, ParentIndexHome.class);
-            int notificationId = MoEngageNotificationUtils.getNotificationIdIfAny(extras);
-            intent5.putExtra("NOTIFICATION_ID", notificationId);
+            Intent intent5 = new Intent();
             PendingIntent pIntent5 = PendingIntent.getActivity(context, 0, intent5,
                     PendingIntent.FLAG_CANCEL_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
@@ -132,7 +117,7 @@ public class CustomPushListener extends PushMessageListener {
             builder.setSmallIcon(R.drawable.qc_launcher)
                     .setCustomContentView(remoteView)
                     .setCustomBigContentView(remoteView)
-                    .setContentTitle("Tokopedia")
+                    .setContentTitle(context.getResources().getString(R.string.app_name))
                     .setContentIntent(contentIntent)
                     .setAutoCancel(true)
                     .setWhen(when);
