@@ -53,12 +53,12 @@ public class TrainSeatViewModelMapper {
             }
         }
         List<TrainSeatViewModel> newViewModels = new ArrayList<>();
-        int j = 0, size = entities.size();
-        while (j < size) {
-            for (int i = 0; i < maxColumn; i++) {
-                if (j >= size) break;
-                int currentIndexSeat = seatAlphabet.get(entities.get(j).getColumn());
-                if (i < currentIndexSeat) {
+        int indexEntity = 0, size = entities.size();
+        while (indexEntity < size) {
+            for (int indexSeharusnya = 0; indexSeharusnya < maxColumn; indexSeharusnya++) {
+                if (indexEntity >= size) break;
+                int currentIndexSeat = seatAlphabet.get(entities.get(indexEntity).getColumn());
+                if (indexSeharusnya < currentIndexSeat) {
                     int beforeItem = 0;
                     if (newViewModels.size() > 0) {
                         int newBeforeItem = currentIndexSeat - seatAlphabet.get(newViewModels.get(newViewModels.size() - 1).getColumn());
@@ -66,16 +66,16 @@ public class TrainSeatViewModelMapper {
                             beforeItem = newBeforeItem;
                         }
                     }
-                    newViewModels.addAll(buildPreAlphabet(entities.get(j).getRow(), currentIndexSeat, i));
-                    newViewModels.add(transform(entities.get(j)));
-                    i = currentIndexSeat;
-                    j++;
-                } else if (i > currentIndexSeat) {
-                    newViewModels.addAll(buildPastColumn(entities.get(j).getRow() - 1, i, maxColumn));
-                    i = -1;
+                    newViewModels.addAll(buildPreAlphabet(entities.get(indexEntity).getRow(), currentIndexSeat, indexSeharusnya));
+                    newViewModels.add(transform(entities.get(indexEntity)));
+                    indexSeharusnya = currentIndexSeat;
+                    indexEntity++;
+                } else if (indexSeharusnya > currentIndexSeat) {
+                    newViewModels.addAll(buildPastColumn(entities.get(indexEntity).getRow() - 1, indexSeharusnya, maxColumn));
+                    indexSeharusnya = -1;
                 } else {
-                    newViewModels.add(transform(entities.get(j)));
-                    j++;
+                    newViewModels.add(transform(entities.get(indexEntity)));
+                    indexEntity++;
                 }
             }
         }
