@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
@@ -32,13 +31,10 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -50,11 +46,13 @@ import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingDelivered;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingReadyToShip;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
+import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +61,8 @@ import java.util.List;
  * @author okasurya on 8/1/18.
  */
 public class CustomerAppSellerTransactionActivity extends BaseTabActivity
-        implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver {
+        implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver,
+        SellingTransaction {
     public static final String FROM_WIDGET_TAG = "from widget";
 
     public static final String EXTRA_STATE_TAB_POSITION = "tab";
@@ -170,7 +169,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @Override
     protected int getLayoutRes() {
-        return com.tokopedia.design.R.layout.layout_tablayout_secondary;
+        return R.layout.layout_customer_app_seller_tx;
     }
 
     @Override
@@ -204,6 +203,19 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = findViewById(com.tokopedia.design.R.id.pager);
         indicator = findViewById(com.tokopedia.design.R.id.indicator);
+
+        setupToolbar();
+    }
+
+    private void setupToolbar() {
+        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowCustomEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
     }
 
     private void initSellerTicker() {
@@ -303,9 +315,9 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
         fragmentList.add(OpportunityListFragment.newInstance(query));
         fragmentList.add(FragmentSellingNewOrder.createInstance());
-        fragmentList.add(FragmentSellingStatus.newInstance());
+        fragmentList.add(FragmentSellingReadyToShip.newInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
-        fragmentList.add(FragmentSellingStatus.newInstance());
+        fragmentList.add(FragmentSellingDelivered.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
         mViewPager.setOffscreenPageLimit(fragmentList.size());
     }
@@ -461,6 +473,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         return fragment;
     }
 
+    @Override
     public void SellingAction(int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_MULTI_SHIPPING:

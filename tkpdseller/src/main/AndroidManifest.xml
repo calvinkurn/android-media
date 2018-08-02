@@ -343,7 +343,6 @@
         <activity android:name=".selling.view.activity.CustomerAppSellerTransactionActivity"
             android:label="@string/title_activity_shop_transaction_new"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 

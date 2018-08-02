@@ -2,21 +2,19 @@ package com.tokopedia.home.account.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 
-import com.tokopedia.home.account.presentation.view.DialogLogoutView;
+import com.tokopedia.home.account.presentation.view.LogoutView;
 import com.tokopedia.logout.domain.model.LogoutDomain;
 import com.tokopedia.logout.domain.usecase.LogoutUseCase;
 import com.tokopedia.user.session.UserSession;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 
-public class DialogLogoutPresenter extends BaseDaggerPresenter<DialogLogoutView>{
+public class LogoutPresenter extends BaseDaggerPresenter<LogoutView>{
 
     private LogoutUseCase useCase;
     private UserSession userSession;
 
-    public DialogLogoutPresenter(LogoutUseCase useCase, UserSession userSession) {
+    public LogoutPresenter(LogoutUseCase useCase, UserSession userSession) {
         this.useCase = useCase;
         this.userSession = userSession;
     }
