@@ -56,10 +56,6 @@ open class ProductAddActivity : BaseProductAddEditActivity(), ProductAddImageVie
         return ProductAddFragment.createInstance(productCatalog, productCategory, productName, productImages)
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_product_edit_with_menu
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
     }

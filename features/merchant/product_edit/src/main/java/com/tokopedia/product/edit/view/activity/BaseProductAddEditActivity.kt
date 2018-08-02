@@ -11,6 +11,7 @@ import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.app.TkpdCoreRouter
 import com.tokopedia.core.router.productdetail.ProductDetailRouter
+import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.di.component.ProductComponent
 import com.tokopedia.product.edit.util.ProductEditModuleRouter
 
@@ -21,5 +22,7 @@ abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<P
         return (getApplication() as ProductEditModuleRouter).getProductComponent()
     }
 
-
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_product_edit_with_menu
+    }
 }

@@ -6,14 +6,18 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
+import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
 import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.edit.common.util.ViewUtils;
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 import com.tokopedia.product.edit.view.listener.ProductAddView;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -25,14 +29,17 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final GetShopInfoUseCase getShopInfoUseCase;
+    protected final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
     private UserSession userSession;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    GetShopInfoUseCase getShopInfoUseCase,
-                                   UserSession userSession) {
+                                   UserSession userSession,
+                                   FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.userSession = userSession;
+        this.fetchProductVariantByCatUseCase = fetchProductVariantByCatUseCase;
     }
 
     @Override
@@ -64,6 +71,34 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
                         TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()));
             }
         });
+    }
+
+    @Override
+    public void fetchProductVariantByCat(long categoryId) {
+        com.tokopedia.core.base.domain.RequestParams requestParam = FetchProductVariantByCatUseCase.generateParam(categoryId);
+        fetchProductVariantByCatUseCase.execute(requestParam, getProductVariantSubscriber());
+    }
+
+    private Subscriber<List<ProductVariantByCatModel>> getProductVariantSubscriber() {
+        return new Subscriber<List<ProductVariantByCatModel>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().onErrorGetProductVariantByCat(e);
+            }
+
+            @Override
+            public void onNext(List<ProductVariantByCatModel> s) {
+                getView().onSuccessGetProductVariantCat(s);
+            }
+        };
     }
 
 
