@@ -173,7 +173,12 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
     }
 
     @Override
-    public List<TrainSeatViewModel> getSelectedSelected() {
+    public void updatePreviousSelectionToAvailable(TrainSeatViewModel trainSeatViewModel) {
+
+    }
+
+    @Override
+    public List<TrainSeatViewModel> getSelectedSeatInCurrentWagon() {
         return selectedSeatsInWagon;
     }
 
@@ -182,10 +187,8 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
         int pos[] = new int[2];
         gridLayoutManager.findViewByPosition(position).getLocationOnScreen(pos);
         int top = pos[1];
-
         int popupHeight = getResources().getDimensionPixelSize(R.dimen.train_seat_popup);
         TrainSeatPopupWindow trainPopup = new TrainSeatPopupWindow();
-
         trainPopup.showPopup(viewModel, height, pos[0], top, popupHeight);
     }
 

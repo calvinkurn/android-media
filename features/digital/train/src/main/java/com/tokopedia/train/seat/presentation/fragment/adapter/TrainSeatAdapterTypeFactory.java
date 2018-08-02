@@ -24,7 +24,7 @@ public class TrainSeatAdapterTypeFactory extends BaseAdapterTypeFactory {
     public interface ActionListener {
         List<TrainSeatPassengerViewModel> getPassengers();
 
-        List<TrainSeatViewModel> getSelectedSelected();
+        List<TrainSeatViewModel> getSelectedSeatInCurrentWagon();
 
         void seatClicked(TrainSeatViewModel viewModel, int position, int height);
 

@@ -8,8 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -62,8 +60,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private TextView textHeaderOriginCityName;
     private TextView textHeaderDestinationStationCode;
     private TextView textHeaderDestinationCityName;
-    private RelativeLayout layoutPage;
-    private ProgressBar mainProgressBar;
 
     private TrainScheduleViewModel trainScheduleViewModel;
 
@@ -101,26 +97,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     }
 
     @Override
-    public void hidePage() {
-        layoutPage.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showLoading() {
-        mainProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showPage() {
-        layoutPage.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoading() {
-        mainProgressBar.setVisibility(View.GONE);
-    }
-
-    @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
 
@@ -129,8 +105,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         textHeaderOriginCityName = findViewById(R.id.header_origin_city_name);
         textHeaderDestinationStationCode = findViewById(R.id.header_destination_station_code);
         textHeaderDestinationCityName = findViewById(R.id.header_destination_city_name);
-        layoutPage = findViewById(R.id.container);
-        mainProgressBar = findViewById(R.id.progress_bar);
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -152,10 +126,8 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
             @Override
             public CharSequence getPageTitle(int position) {
                 switch (position) {
-                    case 0:
-                        return getString(R.string.train_schedule_detail_title_trip);
-                    case 1:
-                        return getString(R.string.train_schedule_detail_title_price);
+                    case 0 : return getString(R.string.train_schedule_detail_title_trip);
+                    case 1 : return getString(R.string.train_schedule_detail_title_price);
                 }
                 return null;
             }
@@ -163,10 +135,8 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    case 0:
-                        return TrainScheduleDetailFragment.createInstance();
-                    case 1:
-                        return TrainSchedulePriceDetailFragment.createInstance();
+                    case 0 : return TrainScheduleDetailFragment.createInstance();
+                    case 1 : return TrainSchedulePriceDetailFragment.createInstance();
                 }
                 return null;
             }
@@ -223,9 +193,4 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        trainSchedulePresenter.detachView();
-        super.onDestroy();
-    }
 }

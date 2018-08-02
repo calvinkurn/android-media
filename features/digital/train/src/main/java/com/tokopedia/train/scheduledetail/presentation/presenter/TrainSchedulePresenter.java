@@ -35,8 +35,6 @@ public class TrainSchedulePresenter extends BaseDaggerPresenter<TrainScheduleCon
 
     @Override
     public void getScheduleDetail(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger) {
-        getView().hidePage();
-        getView().showLoading();
         getDetailScheduleUseCase.setIdSchedule(scheduleId);
         getDetailScheduleUseCase.createObservable(RequestParams.EMPTY)
                 .zipWith(getScheduleDetailUseCase.createObservable(
@@ -52,14 +50,11 @@ public class TrainSchedulePresenter extends BaseDaggerPresenter<TrainScheduleCon
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showPage();
-                        getView().hideLoading();
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(Pair<TrainScheduleViewModel, TrainScheduleDetailViewModel> modelPair) {
-                        getView().showPage();
-                        getView().hideLoading();
                         getView().showScheduleDetail(modelPair.first, modelPair.second);
                     }
                 });

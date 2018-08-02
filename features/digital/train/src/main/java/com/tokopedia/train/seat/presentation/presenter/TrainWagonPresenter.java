@@ -23,14 +23,19 @@ public class TrainWagonPresenter extends BaseDaggerPresenter<TrainWagonContract.
         List<TrainSeatViewModel> seats = new ArrayList<>();
         for (TrainSeatPassengerViewModel passenger : passengers) {
             if (getView().getWagon().getWagonCode().equalsIgnoreCase(passenger.getSeatViewModel().getWagonCode())) {
-                TrainSeatViewModel seat = new TrainSeatViewModel();
-                seat.setRow(Integer.parseInt(passenger.getSeatViewModel().getRow()));
-                seat.setColumn(passenger.getSeatViewModel().getColumn());
-                seat.setAvailable(false);
+                TrainSeatViewModel seat = transformSelectedViewModel(passenger, false);
                 seats.add(seat);
             }
         }
         return seats;
+    }
+
+    private TrainSeatViewModel transformSelectedViewModel(TrainSeatPassengerViewModel seatPassengerViewModel, boolean available) {
+        TrainSeatViewModel seat = new TrainSeatViewModel();
+        seat.setRow(Integer.parseInt(seatPassengerViewModel.getSeatViewModel().getRow()));
+        seat.setColumn(seatPassengerViewModel.getSeatViewModel().getColumn());
+        seat.setAvailable(available);
+        return seat;
     }
 
     @Override
@@ -71,6 +76,11 @@ public class TrainWagonPresenter extends BaseDaggerPresenter<TrainWagonContract.
             }
         }
         if (!isFilledByExistingPassenger) {
+            TrainSeatViewModel trainSeatViewModel = transformSelectedViewModel(selectedPassenger, true);
+            int index = getView().getWagon().getSeats().indexOf(trainSeatViewModel);
+            if (index != -1){
+                getView().getWagon().getSeats().set(index, trainSeatViewModel);
+            }
             getView().updatePassengersSeat(selectedPassenger, seat, getView().getWagon().getWagonCode());
         }
     }

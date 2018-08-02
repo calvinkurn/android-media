@@ -67,7 +67,7 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
         } else if (getView().getPhoneNumber().length() > MAX_PHONE_NUMBER) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_max_length_error);
-        } else if (getView().getIdentityNumber().length() <= MIN_IDENTITY_NUMBER && getView().getPaxType() == TrainBookingPassenger.ADULT) {
+        } else if (getView().getIdentityNumber().length() < MIN_IDENTITY_NUMBER && getView().getPaxType() == TrainBookingPassenger.ADULT) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number_min);
         } else if (getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER && getView().getPaxType() == TrainBookingPassenger.ADULT) {

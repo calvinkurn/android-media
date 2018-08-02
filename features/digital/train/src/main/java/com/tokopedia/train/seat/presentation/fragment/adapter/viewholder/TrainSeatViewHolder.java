@@ -30,6 +30,34 @@ public class TrainSeatViewHolder extends AbstractViewHolder<TrainSeatViewModel> 
     public void bind(TrainSeatViewModel viewModel) {
         item = viewModel;
 
+        setupItemView(viewModel);
+        setupListener(viewModel);
+        setVisibilityIfCurrentIsGap(viewModel);
+    }
+
+    private void setupListener(TrainSeatViewModel viewModel) {
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int index = listener.getSelectedSeatInCurrentWagon().indexOf(viewModel);
+                if (index != -1 || item.isAvailable()) {
+                    if (listener != null) {
+                        listener.seatClicked(item, getAdapterPosition(), itemView.getHeight());
+                    }
+                }
+            }
+        });
+    }
+
+    private void setVisibilityIfCurrentIsGap(TrainSeatViewModel viewModel) {
+        if (viewModel.isEmpty()) {
+            container.setVisibility(View.GONE);
+        } else {
+            container.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setupItemView(TrainSeatViewModel viewModel) {
         int passengerNumber = findPassengerNumber(viewModel);
 
         if (passengerNumber != -1) {
@@ -46,23 +74,6 @@ public class TrainSeatViewHolder extends AbstractViewHolder<TrainSeatViewModel> 
                 container.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_train_filled));
             }
             labelTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
-        }
-
-        container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int index = listener.getSelectedSelected().indexOf(viewModel);
-                if (index != -1 || item.isAvailable()) {
-                    if (listener != null) {
-                        listener.seatClicked(item, getAdapterPosition(), itemView.getHeight());
-                    }
-                }
-            }
-        });
-        if (viewModel.isEmpty()) {
-            container.setVisibility(View.GONE);
-        } else {
-            container.setVisibility(View.VISIBLE);
         }
     }
 
