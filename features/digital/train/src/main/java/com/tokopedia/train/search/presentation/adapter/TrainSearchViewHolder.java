@@ -130,6 +130,13 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                 listener.onDetailClicked(trainScheduleViewModel, getAdapterPosition());
             }
         });
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onSheduleClicked(trainScheduleViewModel);
+            }
+        });
     }
 
     private void setFlagTrainSchedule(boolean isOutOfStock, boolean isFastestFlag, boolean isCheapestFlag) {

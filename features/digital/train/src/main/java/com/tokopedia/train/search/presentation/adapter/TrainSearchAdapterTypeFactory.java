@@ -61,5 +61,7 @@ public class TrainSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         void onRetryClicked();
 
         void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition);
+
+        void onSheduleClicked(TrainScheduleViewModel trainScheduleViewModel);
     }
 }
