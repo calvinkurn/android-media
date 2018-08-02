@@ -30,13 +30,13 @@ interface AddEditBankContract {
 
         fun onErrorGeneral(errorMessage: String?)
 
-        fun onGoToCOTP()
-
         fun onCloseForm()
 
         fun onErrorAddBank(errorMessage: String)
 
         fun onErrorEditBank(errorMessage: String)
+
+        fun onSuccessValidateForm(bankFormModel: BankFormModel)
 
     }
 

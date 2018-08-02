@@ -27,7 +27,7 @@ class GetBankListDBUseCase(private val getBankListMapper: GetBankListDBMapper) :
         else {
             bankList = Select().from(Bank::class.java).where(Bank_Table.bank_name.like("%$query%")).queryList()
         }
-        return getBankListMapper.map(bankList)
+        return getBankListMapper.map(bankList, query)
 
     }
 

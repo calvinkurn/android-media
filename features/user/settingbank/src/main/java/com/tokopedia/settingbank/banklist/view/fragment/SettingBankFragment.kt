@@ -129,6 +129,10 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
+    override fun onSuccessRefresh(bankAccountList: BankAccountListViewModel, resultMessage: String) {
+        onSuccessGetListBank(bankAccountList)
+        NetworkErrorHelper.showSnackbar(activity!!, resultMessage)
+    }
 
     override fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel) {
         adapter.setList(bankAccountList.list!!)
@@ -146,7 +150,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
             errorMessage = activity!!.getString(R.string.default_request_error_unknown)
         }
         ToasterError.make(view, errorMessage, BaseToaster.LENGTH_LONG)
-                .setAction(activity!!.getString(R.string.close)) { }
                 .show()
     }
 
@@ -340,13 +343,13 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         super.onActivityResult(requestCode, resultCode, data)
 
         if (activity != null && resultCode == Activity.RESULT_OK) {
+            var resultMessage = ""
             when (requestCode) {
-                REQUEST_ADD_BANK -> NetworkErrorHelper.showSnackbar(activity!!,
-                        getString(R.string.success_add_bank_account))
-                REQUEST_EDIT_BANK -> NetworkErrorHelper.showSnackbar(activity!!,
-                        getString(R.string.success_edit_bank_account))
+                REQUEST_ADD_BANK -> resultMessage = getString(R.string.success_add_bank_account)
+                REQUEST_EDIT_BANK -> resultMessage = getString(R.string.success_edit_bank_account)
+
             }
-            getBankList()
+            presenter.refreshBankList(resultMessage)
         }
 
     }

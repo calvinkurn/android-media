@@ -43,22 +43,16 @@ class AddEditBankPresenter(private val userSession: UserSession,
 
             override fun onError(e: Throwable) {
                 view.hideLoading()
-                val errorMessage: String = ErrorHandler.getErrorMessage(view.getContext(), e)
-                showErrorGeneral(errorMessage)
+                showErrorGeneral(e)
             }
 
             override fun onNext(validateBankViewModel: ValidateBankViewModel) {
                 view.hideLoading()
 
-                if (validateBankViewModel.isSuccess != null
-                        && validateBankViewModel.isSuccess) {
+                if (validateBankViewModel.isSuccess != null && validateBankViewModel.isSuccess) {
 
-                    if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD
-                            || (validateBankViewModel.isDataChanged != null
-                                    && validateBankViewModel.isDataChanged
-                                    && bankFormModel.status == BankFormModel.Companion
-                                    .STATUS_EDIT)) {
-                        view.onGoToCOTP()
+                    if (isFormActuallyChanged(bankFormModel, validateBankViewModel)) {
+                        view.onSuccessValidateForm(bankFormModel)
                     } else {
                         view.onCloseForm()
                     }
@@ -68,6 +62,13 @@ class AddEditBankPresenter(private val userSession: UserSession,
                 }
             }
         })
+    }
+
+    private fun isFormActuallyChanged(bankFormModel: BankFormModel, validateBankViewModel: ValidateBankViewModel): Boolean {
+        return bankFormModel.status == BankFormModel.Companion.STATUS_ADD
+                || (validateBankViewModel.isDataChanged != null
+                && validateBankViewModel.isDataChanged
+                && bankFormModel.status == BankFormModel.Companion.STATUS_EDIT)
     }
 
     private fun showErrorForm(listValidation: List<ValidationForm>) {
@@ -84,7 +85,9 @@ class AddEditBankPresenter(private val userSession: UserSession,
         }
     }
 
-    private fun showErrorGeneral(messageError: String) {
+    private fun showErrorGeneral(e: Throwable) {
+        val messageError: String = ErrorHandler.getErrorMessage(view.getContext(), e)
+
         val accountNumber = "nomor rekening"
         val accountName = "nama rekening"
 

@@ -25,7 +25,7 @@ class EmptySearchBankViewHolder(val v: View) :
         if (element != null) {
 
             titleText.visibility = View.INVISIBLE
-            contentText.text = getString(R.string.hint_search_address_no_result)
+            contentText.text = getString(R.string.hint_search_bank_no_result)
 
         }
     }

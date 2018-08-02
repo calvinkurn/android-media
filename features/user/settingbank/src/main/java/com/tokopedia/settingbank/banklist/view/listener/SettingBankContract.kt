@@ -39,6 +39,8 @@ interface SettingBankContract {
 
         fun onErrorGetListBank(errorMessage: String)
 
+        fun onSuccessRefresh(bankAccountList: BankAccountListViewModel, resultMessage: String)
+
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -52,5 +54,7 @@ interface SettingBankContract {
         fun loadMore()
 
         fun isMsisdnVerified(): Boolean
+
+        fun refreshBankList(resultMessage: String)
     }
 }

@@ -87,7 +87,10 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         setMode(savedInstanceState)
 
         submit_button.setOnClickListener({
-            showConfirmationDialog()
+            setupBankFormModel()
+            if (!bankFormModel.status.isBlank()) {
+                presenter.validateBank(bankFormModel)
+            }
         })
 
         bank_name_et.setOnClickListener({
@@ -95,7 +98,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         })
     }
 
-    private fun showConfirmationDialog() {
+    override fun onSuccessValidateForm(bankFormModel: BankFormModel) {
 
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -111,19 +114,16 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         alertDialog.setOnOkClickListener({
             if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
                 analyticTracker.trackConfirmYesAddBankAccount()
-            }else{
+            } else {
                 analyticTracker.trackConfirmYesEditBankAccount()
-
             }
-            setupBankFormModel()
-            if (!bankFormModel.status.isBlank()) {
-                presenter.validateBank(bankFormModel)
-            }
+            onGoToCOTP()
             alertDialog.dismiss()
         })
 
         alertDialog.show()
     }
+
 
     private fun composeMakeMainDescription(): String {
         return if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
@@ -432,8 +432,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         }
     }
 
-    override fun onGoToCOTP() {
-
+    fun onGoToCOTP() {
         val intent = presenter.getCotpIntent(activity)
         startActivityForResult(intent, REQUEST_OTP)
     }

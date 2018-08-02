@@ -32,6 +32,8 @@ mempermudah proses penarikan dana</string>
     <string name="bottom_dialog_add_bank_info">Keterangan dapat ditemukan pada halaman depan buku tabungan</string>
     <string name="bottom_dialog_add_bank_title">Contoh Buku Tabungan</string>
     <string name="search_bank_hint">Cari Bank</string>
+    <string name="hint_search_bank_no_result">Pencarian tidak ditemukan</string>
+
     <string name="add_bank_account_prompt_title">Apakah Rekening sudah benar?</string>
     <string name="you_will_add_account">Anda akan menambahkan rekening</string>
     <string name="success_add_bank_account">Rekening bank berhasil ditambahkan</string>

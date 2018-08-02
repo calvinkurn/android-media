@@ -1,5 +1,8 @@
 package com.tokopedia.settingbank.choosebank.view.adapter.viewholder
 
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.RadioButton
 import android.widget.TextView
@@ -26,7 +29,11 @@ class BankViewHolder(val v: View, val listener: BankListener) :
 
     override fun bind(element: BankViewModel?) {
         if (element != null) {
-            bankName.text = MethodChecker.fromHtml(element.bankName)
+            if (element.highlight.isNullOrBlank()) {
+                bankName.text = MethodChecker.fromHtml(element.bankName)
+            } else if (element.highlight != null && element.bankName != null) {
+                highlight(bankName, element.highlight!!, element.bankName!!)
+            }
 
             bankRadio.isChecked = element.isSelected
 
@@ -34,6 +41,23 @@ class BankViewHolder(val v: View, val listener: BankListener) :
             bankRadio.setOnClickListener { listener.onBankSelected(adapterPosition, element) }
 
         }
+    }
+
+    private fun highlight(bankNameTV: TextView, highlight: String, bankNameText: String) {
+        val spannableString = SpannableString(bankNameText)
+
+        var indexOfKeyword = spannableString.toString().toLowerCase().indexOf(highlight)
+
+        while (indexOfKeyword < bankNameText.length && indexOfKeyword >= 0) {
+            spannableString.setSpan(ForegroundColorSpan(MethodChecker.getColor(bankNameTV.context, R.color.medium_green)), indexOfKeyword,
+                    indexOfKeyword +
+                            highlight.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            indexOfKeyword = spannableString.toString().indexOf(highlight, indexOfKeyword + highlight
+                    .length)
+        }
+
+        bankNameTV.text = spannableString
     }
 
 }

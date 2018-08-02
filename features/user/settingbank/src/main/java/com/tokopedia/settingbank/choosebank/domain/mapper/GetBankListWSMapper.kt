@@ -31,7 +31,8 @@ class GetBankListWSMapper : Func1<Response<DataResponse<BankListPojo>>,
             listBank.add(BankViewModel(
                     data.bank_id,
                     data.bank_name,
-                    false
+                    false,
+                    ""
             ))
         }
         return BankListViewModel(listBank, hasNextPage(pojo))

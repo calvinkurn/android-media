@@ -10,20 +10,21 @@ import rx.Observable
  */
 
 class GetBankListDBMapper {
-    fun map(data: List<Bank>): Observable<BankListViewModel>? {
+    fun map(data: List<Bank>, query: String): Observable<BankListViewModel>? {
 
         val bankList: ArrayList<BankViewModel> = ArrayList()
 
         for (bankData in data) {
-            bankList.add(mapToBank(bankData))
+            bankList.add(mapToBank(bankData, query))
         }
         return Observable.just(BankListViewModel(bankList, false))
     }
 
-    private fun mapToBank(bankData: Bank): BankViewModel {
+    private fun mapToBank(bankData: Bank, query: String): BankViewModel {
         return BankViewModel(bankData.bankId,
                 bankData.bankName,
-                false)
+                false,
+                query)
     }
 }
 

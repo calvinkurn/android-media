@@ -12,12 +12,14 @@ import com.tokopedia.settingbank.choosebank.view.adapter.BankTypeFactory
 data class BankViewModel(
         var bankId: String? = "",
         var bankName: String? = "",
-        var isSelected: Boolean = false)
+        var isSelected: Boolean = false,
+        var highlight: String? = "")
     : Visitable<BankTypeFactory>, Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
-            parcel.readByte() != 0.toByte()) {
+            parcel.readByte() != 0.toByte(),
+            parcel.readString()) {
     }
 
     override fun type(typeFactory: BankTypeFactory): Int {
@@ -28,6 +30,7 @@ data class BankViewModel(
         parcel.writeString(bankId)
         parcel.writeString(bankName)
         parcel.writeByte(if (isSelected) 1 else 0)
+        parcel.writeString(highlight)
     }
 
     override fun describeContents(): Int {

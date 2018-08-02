@@ -111,7 +111,6 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
 
     override fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>) {
         adapter.setList(listBank)
-
         setSelectedBank()
     }
 
@@ -144,6 +143,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
 
     override fun onSuccessSearchBank(list: ArrayList<BankViewModel>) {
         adapter.setList(list)
+        setSelectedBank()
     }
 
     override fun onEmptySearchBank() {

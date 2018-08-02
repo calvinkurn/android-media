@@ -51,6 +51,34 @@ class SettingBankPresenter(private val userSession: UserSession,
         })
     }
 
+    override fun refreshBankList(resultMessage: String) {
+        page = 1
+        view.showLoadingFull()
+        getBankAccountUseCase.execute(GetBankAccountListUseCase.getParam(
+                userSession.userId,
+                page
+        ), object : Subscriber<BankAccountListViewModel>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                view.hideLoadingFull()
+                view.onErrorGetListBankFirstTime(ErrorHandler.getErrorMessage(view.getContext(), e))
+            }
+
+            override fun onNext(bankAccountList: BankAccountListViewModel) {
+                view.hideLoadingFull()
+                if (bankAccountList.list?.isNotEmpty()!!) {
+                    page++
+                    view.onSuccessRefresh(bankAccountList, resultMessage)
+                } else {
+                    view.onEmptyList(bankAccountList.enableAddButton, bankAccountList.reason)
+                }
+            }
+        })
+    }
+
     override fun loadMore() {
         view.showLoadingList()
         getBankAccountUseCase.execute(GetBankAccountListUseCase.getParam(
