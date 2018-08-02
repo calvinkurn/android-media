@@ -110,7 +110,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startStockActivity() {
-        startActivityForResult(ProductEditStockActivity.createIntent(activity!!, currentProductAddViewModel?.productStock!!, true, false), REQUEST_CODE_GET_STOCK)
+        startActivityForResult(ProductEditStockActivity.createIntent(activity!!, currentProductAddViewModel?.productStock!!, false, false), REQUEST_CODE_GET_STOCK)
     }
 
     private fun startLogisticActivity() {

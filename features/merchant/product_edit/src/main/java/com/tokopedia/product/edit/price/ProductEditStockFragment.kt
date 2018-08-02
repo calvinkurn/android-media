@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextWatcher
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.product.edit.R
@@ -12,6 +13,7 @@ import com.tokopedia.product.edit.price.model.ProductStock
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
 import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
+import android.text.Editable
 
 class ProductEditStockFragment : Fragment() {
 
@@ -53,6 +55,31 @@ class ProductEditStockFragment : Fragment() {
         texViewMenu.setOnClickListener {
             setResult()
         }
+
+        decimalInputViewStock.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                isTotalStockValid()
+            }
+        })
+    }
+
+    private fun String.removeCommaToInt(): Int{
+        return toString().replace(",", "").toInt()
+    }
+
+    private fun getTotalStock(): Int{
+        return decimalInputViewStock.text.toString().replace(",", "").toInt()
+    }
+
+    private fun isTotalStockValid(): Boolean {
+        if (MIN_STOCK.removeCommaToInt() > getTotalStock() || getTotalStock() > MAX_STOCK.removeCommaToInt()) {
+            decimalInputViewStock.setError(getString(R.string.product_error_total_stock_not_valid, MIN_STOCK, MAX_STOCK))
+            return false
+        }
+        decimalInputViewStock.setError(null)
+        return true
     }
 
     private fun setRadioButtonChosen(labelRadioButton: LabelRadioButton){
@@ -68,11 +95,11 @@ class ProductEditStockFragment : Fragment() {
                 decimalInputViewStock.visibility = View.VISIBLE
                 textViewHelperStock.visibility = View.VISIBLE
             }
-            decimalInputViewStock.text = DEFAULT_PARENT_STOCK.toString()
+            decimalInputViewStock.text = DEFAULT_PARENT_STOCK
         } else {
             decimalInputViewStock.visibility = View.GONE
             textViewHelperStock.visibility = View.GONE
-            decimalInputViewStock.text = DEFAULT_EMPTY_STOCK.toString()
+            decimalInputViewStock.text = MIN_STOCK
         }
     }
 
@@ -94,8 +121,8 @@ class ProductEditStockFragment : Fragment() {
     private fun saveData(productStock: ProductStock): ProductStock{
         productStock.isActive = !labelRadioButtonStockEmpty.isChecked
         if(labelRadioButtonStockLimited.isChecked) {
-            if(decimalInputViewStock.text.toString().replace(",", "").toInt() > 0)
-                productStock.stockCount = decimalInputViewStock.text.toString().replace(",", "").toInt()
+            if(getTotalStock() > 0)
+                productStock.stockCount = getTotalStock()
             else
                 decimalInputViewStock.setError("Jumlah Stok harus lebih dari 0, atau pilih Stock Kosong")
         } else {
@@ -113,8 +140,9 @@ class ProductEditStockFragment : Fragment() {
     }
 
     companion object {
-        const val DEFAULT_EMPTY_STOCK = 0
-        const val DEFAULT_PARENT_STOCK = 1
+        const val MIN_STOCK = "1"
+        const val MAX_STOCK = "10,000"
+        const val DEFAULT_PARENT_STOCK = "1"
         fun createInstance() = ProductEditStockFragment()
     }
 }
