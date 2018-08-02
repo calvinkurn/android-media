@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/dp_15">
 
     <LinearLayout
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_3"
         android:id="@+id/chat_action_bubble_selection_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
