@@ -94,7 +94,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_shopping_transaction));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
-        menuGrid.setApplinkUrl(ApplinkConst.ORDER_LIST);
+        menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
 
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
