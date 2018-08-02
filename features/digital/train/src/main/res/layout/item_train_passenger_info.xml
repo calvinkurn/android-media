@@ -7,6 +7,7 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_8"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -113,12 +114,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <View
-        android:layout_below="@+id/view_passenger_info"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/grey_300" />
 
 </RelativeLayout>
