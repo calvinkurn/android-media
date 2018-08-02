@@ -153,6 +153,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             showOrderMaxForm()
         }
         validateData()
+        spinnerCounterInputViewPrice.setCounterError(null)
     }
 
     private fun getPriceValue(): Double{
@@ -229,8 +230,19 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                     return
                 }
                 if(itemId != selectedCurrencyType){
-                    selectedCurrencyType = itemId
-                    setPriceTextChangedListener()
+                    if (!isGoldMerchant && itemId == CurrencyTypeDef.TYPE_USD) {
+                        if (GlobalConfig.isSellerApp()) {
+                            UnifyTracking.eventSwitchRpToDollarAddProduct()
+                            setResult(true)
+                        } else {
+                            Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                                    .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
+                                    .show()
+                        }
+                    } else {
+                        selectedCurrencyType = itemId
+                        setPriceTextChangedListener()
+                    }
                     spinnerCounterInputViewPrice.counterValue = DEFAULT_PRICE
                     spinnerCounterInputViewPrice.counterEditText.setSelection(spinnerCounterInputViewPrice.counterEditText.text.length)
                     spinnerCounterInputViewPrice.setCounterError(null)
@@ -304,17 +316,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         if (selectedCurrencyType == CurrencyTypeDef.TYPE_IDR) {
             spinnerCounterInputViewPrice.addTextChangedListener(idrTextWatcher)
         } else {
-            if (!isGoldMerchant && selectedCurrencyType == CurrencyTypeDef.TYPE_USD) {
-                if (GlobalConfig.isSellerApp()) {
-                    UnifyTracking.eventSwitchRpToDollarAddProduct()
-                    setResult(true)
-                } else {
-                    Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
-                            .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
-                            .show()
-                }
-                return
-            }
             spinnerCounterInputViewPrice.addTextChangedListener(usdTextWatcher)
         }
     }

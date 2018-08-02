@@ -102,7 +102,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startPriceActivity() {
-        startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, currentProductAddViewModel?.productPrice!!, false, true, true), REQUEST_CODE_GET_PRICE)
+        startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, currentProductAddViewModel?.productPrice!!, false, false, false), REQUEST_CODE_GET_PRICE)
     }
 
     private fun startDescriptionActivity() {
