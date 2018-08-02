@@ -22,6 +22,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.navigation_common.WalletModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +75,18 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
-        tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
-        tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
+        if (!accountModel.getWallet().isLinked()){
+            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
+            tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
+            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_ACTIVATION);
+        } else {
+            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
+            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
+            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_HOME);
+        }
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+        tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
         items.add(tokopediaPayViewModel);
 
         MenuTitleViewModel menuTitle = new MenuTitleViewModel();
@@ -247,7 +256,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
-        menuGrid.setApplinkUrl(ApplinkConst.SELLER_TRANSACTION);
+        menuGrid.setApplinkUrl(ApplinkConst.SELLER_HISTORY);
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
 
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(

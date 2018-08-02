@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -26,6 +27,8 @@ public class TokopediaPayCardView extends BaseCustomView {
     private TextView textDescLeft;
     private TextView textAmountRight;
     private TextView textDesctRight;
+    private LinearLayout layoutLeft;
+    private LinearLayout layoutRight;
     private View container;
 
     public TokopediaPayCardView(@NonNull Context context) {
@@ -51,6 +54,8 @@ public class TokopediaPayCardView extends BaseCustomView {
         textDescLeft = view.findViewById(R.id.text_desc_left);
         textAmountRight = view.findViewById(R.id.text_amount_right);
         textDesctRight = view.findViewById(R.id.text_desc_right);
+        layoutLeft = view.findViewById(R.id.layout_left);
+        layoutRight = view.findViewById(R.id.layout_right);
 
         ImageHandler.loadImageBitmap2(getContext(),
                 AccountConstants.Url.IMAGE_URL + "bg_tokopedia_pay.png",
@@ -85,5 +90,13 @@ public class TokopediaPayCardView extends BaseCustomView {
 
     public void setActionTextClickListener(View.OnClickListener listener) {
         actionText.setOnClickListener(listener);
+    }
+
+    public void setLeftItemClickListener(View.OnClickListener listener) {
+        layoutLeft.setOnClickListener(listener);
+    }
+
+    public void setRightItemClickListener(View.OnClickListener listener) {
+        layoutRight.setOnClickListener(listener);
     }
 }

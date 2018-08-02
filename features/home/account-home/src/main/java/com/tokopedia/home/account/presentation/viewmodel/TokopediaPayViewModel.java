@@ -13,6 +13,8 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     private String amountLeft;
     private String labelRight;
     private String amountRight;
+    private String applinkLeft;
+    private String applinkRight;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -51,6 +53,24 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.amountRight = amountRight;
     }
 
+    public String getApplinkLeft() {
+        return applinkLeft;
+    }
+
+    public void setApplinkLeft(String applinkLeft) {
+        this.applinkLeft = applinkLeft;
+    }
+
+    public String getApplinkRight() {
+        return applinkRight;
+    }
+
+    public void setApplinkRight(String applinkRight) {
+        this.applinkRight = applinkRight;
+    }
+
+    public TokopediaPayViewModel() {
+    }
 
     @Override
     public int describeContents() {
@@ -63,9 +83,8 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         dest.writeString(this.amountLeft);
         dest.writeString(this.labelRight);
         dest.writeString(this.amountRight);
-    }
-
-    public TokopediaPayViewModel() {
+        dest.writeString(this.applinkLeft);
+        dest.writeString(this.applinkRight);
     }
 
     protected TokopediaPayViewModel(Parcel in) {
@@ -73,6 +92,8 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.amountLeft = in.readString();
         this.labelRight = in.readString();
         this.amountRight = in.readString();
+        this.applinkLeft = in.readString();
+        this.applinkRight = in.readString();
     }
 
     public static final Creator<TokopediaPayViewModel> CREATOR = new Creator<TokopediaPayViewModel>() {

@@ -144,6 +144,7 @@
     <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
     <string name="logout_confirmation">Apakah Anda ingin keluar?</string>
     <string name="cancel">Batal</string>
+    <string name="label_wallet_activation">Aktivasi TokoCash</string>
 
 
 </resources>
