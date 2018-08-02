@@ -83,9 +83,7 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
                 isOfficialStore, page, true, itemPerPage);
 
-        if (!TextUtils.isEmpty(etalaseId)) {
-            shopProductRequestModel.setEtalaseId(etalaseId);
-        }
+        shopProductRequestModel.setEtalaseId(etalaseId);
 
         List<ShopEtalaseViewModel> shopEtalaseViewModelList = getView().getShopEtalaseViewModelList();
         if (shopEtalaseViewModelList.size() > 0) {

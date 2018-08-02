@@ -49,8 +49,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
 
-    public static final String ALL_ETALASE_ID = "etalase"; // from api
-
     @Inject
     public ShopProductListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeNewUseCase,
                                     AddToWishListUseCase addToWishListUseCase,
@@ -107,9 +105,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                 useAce,
                 itemPerPage
         );
-        if (!TextUtils.isEmpty(etalaseId)) {
-            shopProductRequestModel.setEtalaseId(etalaseId);
-        }
+        shopProductRequestModel.setEtalaseId(etalaseId);
 
         if (!TextUtils.isEmpty(keyword)) {
             shopProductRequestModel.setKeyword(keyword);
@@ -139,13 +135,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     }
 
     private void getShopProductWithEtalase(final ShopProductRequestModel shopProductRequestModel) {
-        // if no etalase id, continue to get get Product as usual
         String selectedEtalaseId = shopProductRequestModel.getEtalaseId();
-        if (TextUtils.isEmpty(selectedEtalaseId)) {
-            getShopProductWithWishList(shopProductRequestModel);
-            return;
-        }
-
         // has etalase id
         // if there is no etalase list yet,
         //    1. From deeplink: etalaseID might contains as name instead of ID, so we need to loop the list to get the ID
@@ -214,10 +204,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                     }
 
                     // name is empty means etalase is deleted, so no need to add to chip, and make it to all etalase.
-                    if (TextUtils.isEmpty(selectedEtalaseName) || ALL_ETALASE_ID.equalsIgnoreCase(selectedEtalaseId)) {
-                        shopProductRequestModel.setEtalaseId(ALL_ETALASE_ID);
-                    } else {
-                        getView().addNewEtalaseToChip(selectedEtalaseId, selectedEtalaseName);
+                    if (TextUtils.isEmpty(selectedEtalaseName)) {
+                        shopProductRequestModel.setEtalaseId("");
                     }
 
                     ArrayList<ShopEtalaseViewModel> etalaseViewModelList = getView().getSelectedEtalaseViewModelList();
@@ -231,8 +219,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         }
     }
 
-    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId){
-        if (etalaseViewModelList!= null) {
+    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId) {
+        if (etalaseViewModelList != null) {
             for (ShopEtalaseViewModel shopEtalaseViewModel : etalaseViewModelList) {
                 if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
                     return shopEtalaseViewModel.isUseAce();

@@ -311,6 +311,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         return shopProductAdapter.getShopProductEtalaseListViewModel().getEtalaseModelList();
     }
 
+    public String getSelectedEtalaseId() {
+        return selectedEtalaseId;
+    }
+
     @NonNull
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
