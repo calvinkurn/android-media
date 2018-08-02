@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.home.account.presentation.view.LogoutView;
 import com.tokopedia.logout.domain.model.LogoutDomain;
 import com.tokopedia.logout.domain.usecase.LogoutUseCase;
+import com.tokopedia.navigation_common.WalletPref;
 import com.tokopedia.user.session.UserSession;
 
 import rx.Subscriber;
@@ -13,10 +14,12 @@ public class LogoutPresenter extends BaseDaggerPresenter<LogoutView>{
 
     private LogoutUseCase useCase;
     private UserSession userSession;
+    private WalletPref walletPref;
 
-    public LogoutPresenter(LogoutUseCase useCase, UserSession userSession) {
+    public LogoutPresenter(LogoutUseCase useCase, UserSession userSession, WalletPref walletPref) {
         this.useCase = useCase;
         this.userSession = userSession;
+        this.walletPref = walletPref;
     }
 
     public void doLogout(){
@@ -38,6 +41,7 @@ public class LogoutPresenter extends BaseDaggerPresenter<LogoutView>{
             @Override
             public void onNext(LogoutDomain logoutDomain) {
                 if (logoutDomain.is_success() && isViewAttached()){
+                    walletPref.clear();
                     getView().onSuccessLogout();
                 }
             }
