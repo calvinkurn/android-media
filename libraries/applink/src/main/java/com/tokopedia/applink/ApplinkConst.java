@@ -84,7 +84,7 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
-
+    String PROFILE_COMPLETION = "tokopedia://profilecompletion";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
@@ -127,6 +127,7 @@ public interface ApplinkConst {
     String ORDER_LIST = "tokopedia://order";
     String PAYMENT_UNPAID = "tokopedia://payment/unpaid";
     String TOKOPOINTS = "tokopedia://tokopoints";
+    String COUPON = "tokopedia://tokopoints/coupon";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
@@ -135,6 +136,7 @@ public interface ApplinkConst {
     String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
     String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
     String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
+    String PURCHASE_HISTORY = "tokopedia://buyer/history";
 
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
