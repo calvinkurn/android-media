@@ -13,8 +13,12 @@ import com.tokopedia.abstraction.common.di.module.AppModule;
 
 public class BaseMainApplication extends MultiDexApplication {
 
-
     private BaseAppComponent baseAppComponent;
+
+    public BaseAppComponent reinitBaseAppComponent(AppModule appModule){
+        return baseAppComponent = DaggerBaseAppComponent.builder()
+                .appModule(appModule).build();
+    }
 
     public BaseAppComponent getBaseAppComponent(){
         if (baseAppComponent == null) {

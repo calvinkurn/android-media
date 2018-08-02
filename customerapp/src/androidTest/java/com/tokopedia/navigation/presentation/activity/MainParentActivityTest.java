@@ -18,6 +18,9 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
+import com.tokopedia.abstraction.common.di.module.TestAppModule;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.entity.home.ProductItemData;
@@ -29,6 +32,8 @@ import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
+import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
@@ -37,6 +42,9 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.kol.common.di.DaggerKolComponent;
+import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.navigation.presentation.module.DaggerTestBerandaComponent;
 import com.tokopedia.navigation.presentation.module.TestBerandaComponent;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -108,6 +116,66 @@ public class MainParentActivityTest {
     public GuessTokopediaTestRule<MainParentActivity> mIntentsRule = new GuessTokopediaTestRule<>(
             MainParentActivity.class, true, false, 3
     );
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testFeedMockInstance2() throws Exception {
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+        BaseMainApplication application = (BaseMainApplication) mIntentsRule.getActivity().getApplication();
+
+        BaseAppComponent baseAppComponent = application.reinitBaseAppComponent(new TestAppModule(application));
+
+        KolComponent kolComponent = DaggerKolComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build();
+
+        FeedPlusComponent component = DaggerFeedPlusComponent.builder()
+                .kolComponent(kolComponent)
+                .build();
+
+        UserSession userSession = component.userSession();
+
+        doReturn(true).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+        FeedPlusFragment fragment = (FeedPlusFragment) mIntentsRule.getActivity().getFragment(1);
+        if (fragment != null && fragment.isMainViewVisible()) {
+
+            fragment.reInitInjector(component);
+
+            fragment.resetToFirstTime();
+
+            // Get total item of myRecyclerView
+            RecyclerView recyclerView =fragment.getView().findViewById(R.id.recycler_view);
+            FeedPlusAdapter adapter = (FeedPlusAdapter)recyclerView.getAdapter();
+            mIntentsRule.getActivity().runOnUiThread(() -> {
+                adapter.clearData();
+            });
+
+            Thread.sleep(1_000);
+
+            // prepare the data
+            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase = mock(GetFirstPageFeedsCloudUseCase.class);
+
+            fragment.getPresenter().setGetFirstPageFeedsCloudUseCase(getFirstPageFeedsCloudUseCase);
+
+            doReturn(Observable.just(test3())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
+
+            onView(withId(R.id.swipe_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+            Thread.sleep(10_000);
+        }
+    }
 
     /**
      *
