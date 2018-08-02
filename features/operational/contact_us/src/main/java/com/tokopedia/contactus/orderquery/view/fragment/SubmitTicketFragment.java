@@ -17,6 +17,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,10 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,19 +60,13 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by sandeepgoyal on 16/04/18.
  */
-@RuntimePermissions
 public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View, ImageUploadAdapter.OnSelectImageClick {
 
+    private static final int REQUEST_CODE_IMAGE = 1001;
     public static final String KEY_QUERY_TICKET = "KEY_QUERY_TICKET";
     @BindView(R2.id.constraint_layout)
     ConstraintLayout constraint_layout;
@@ -272,135 +271,38 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         snackbar.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        imageUploadHandler.actionCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        imageUploadHandler.actionImagePicker();
-    }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == ImageUploadHandler.REQUEST_CODE)
-                && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
-
-            if (rvSelectedImages != null && rvSelectedImages.getVisibility() == View.GONE) {
-                rvSelectedImages.setVisibility(View.VISIBLE);
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            if (imagePathList == null || imagePathList.size() <= 0) {
+                return;
             }
-            int position = imageUploadAdapter.getItemCount();
-            ImageUpload image = new ImageUpload();
-            image.setPosition(position);
-            image.setImageId("image" + UUID.randomUUID().toString());
-
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    break;
-                case Activity.RESULT_OK:
-                    image.setFileLoc(imageUploadHandler.getCameraFileloc());
-                    break;
-                default:
-                    break;
+            String imagePath = imagePathList.get(0);
+            if (!TextUtils.isEmpty(imagePath)) {
+                if (rvSelectedImages != null && rvSelectedImages.getVisibility() == View.GONE) {
+                    rvSelectedImages.setVisibility(View.VISIBLE);
+                }
+                int position = imageUploadAdapter.getItemCount();
+                ImageUpload image = new ImageUpload();
+                image.setPosition(position);
+                image.setImageId("image" + UUID.randomUUID().toString());
+                image.setFileLoc(imagePath);
+                presenter.onImageSelect(image);
             }
-            presenter.onImageSelect(image);
-
         }
 
     }
 
     private void showImagePickerDialog() {
-        Context context = getContext();
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
-        myAlertDialog.setMessage(context.getString(com.tokopedia.core.R.string.dialog_upload_option));
-        myAlertDialog.setPositiveButton(context.getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                SubmitTicketFragmentPermissionsDispatcher.actionImagePickerWithCheck(
-                        SubmitTicketFragment.this);
-            }
-        });
-        myAlertDialog.setNegativeButton(context.getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                SubmitTicketFragmentPermissionsDispatcher.actionCameraWithCheck(
-                        SubmitTicketFragment.this);
-            }
-
-
-        });
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-    }
-
-
-
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SubmitTicketFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
+                null, null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
     @OnClick(R2.id.img_tooltip)

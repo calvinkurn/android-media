@@ -4,12 +4,8 @@ package com.tokopedia.contactus.createticket.fragment;
  * Created by nisie on 8/12/16.
  */
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -20,22 +16,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.createticket.adapter.ImageUploadAdapter;
@@ -44,26 +30,31 @@ import com.tokopedia.contactus.createticket.model.ImageUpload;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenter;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
+import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by Tkpd_Eka on 8/13/2015.
  */
-@RuntimePermissions
 public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicketFormFragmentPresenter>
         implements CreateTicketFormFragmentView, ContactUsConstant {
 
+    private static final int REQUEST_CODE_IMAGE = 1001;
     @BindView(R2.id.main_category)
     EditText mainCategory;
     @BindView(R2.id.detail)
@@ -252,37 +243,12 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     private void showImagePickerDialog() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
-        myAlertDialog.setMessage(context.getString(R.string.dialog_upload_option));
-        myAlertDialog.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                CreateTicketFormFragmentPermissionsDispatcher.actionImagePickerWithCheck(
-                        CreateTicketFormFragment.this);
-            }
-        });
-        myAlertDialog.setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                CreateTicketFormFragmentPermissionsDispatcher.actionCameraWithCheck(
-                        CreateTicketFormFragment.this);
-            }
-
-
-        });
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        imageUploadHandler.actionCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        imageUploadHandler.actionImagePicker();
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.contactus.R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
+                null, null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
     @Override
@@ -397,90 +363,21 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == ImageUploadHandler.REQUEST_CODE)
-                && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
-
-            int position = imageAdapter.getList().size();
-            ImageUpload image = new ImageUpload();
-            image.setPosition(position);
-            image.setImageId("image" + UUID.randomUUID().toString());
-
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    break;
-                case Activity.RESULT_OK:
-                    image.setFileLoc(imageUploadHandler.getCameraFileloc());
-                    break;
-                default:
-                    break;
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            if (imagePathList == null || imagePathList.size() <= 0) {
+                return;
             }
-            imageAdapter.addImage(image);
-
+            String imagePath = imagePathList.get(0);
+            if (!TextUtils.isEmpty(imagePath)) {
+                int position = imageAdapter.getList().size();
+                ImageUpload image = new ImageUpload();
+                image.setPosition(position);
+                image.setImageId("image" + UUID.randomUUID().toString());
+                image.setFileLoc(imagePath);
+                imageAdapter.addImage(image);
+            }
         }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CreateTicketFormFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                CreateTicketFormFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     public void setFinishContactUsListener(FinishContactUsListener finishContactUsListener) {
