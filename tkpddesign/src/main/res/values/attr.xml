@@ -11,6 +11,7 @@
         <attr name="lv_image_height" format="dimension" />
         <attr name="lv_image_margin_right" format="dimension"/>
         <attr name="lv_title" format="string" />
+        <attr name="lv_badge" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
         <attr name="lv_title_color" format="color" />
         <attr name="lv_title_min_width" format="dimension" />

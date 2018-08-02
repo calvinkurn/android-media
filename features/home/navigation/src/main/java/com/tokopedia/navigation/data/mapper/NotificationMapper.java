@@ -17,6 +17,13 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
         return graphqlResponse.getData(NotificationEntity.class);
     }
 
+    public static boolean isHasShop(NotificationEntity entity) {
+        return entity != null
+                && entity.getShopInfo() != null
+                && entity.getShopInfo().getInfo() != null
+                && !entity.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1");
+    }
+
     public static Notification notificationMapper(NotificationsModel entity) {
         Notification data = new Notification();
         try {
@@ -33,7 +40,7 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
         Integer total = 0;
         try {
             total += entity.getSellerInfo().getNotification();
-            total += entity.getBuyerOrder().getConfirmed(); // TODO: belum dibayar
+//            total += entity.getBuyerOrder().getConfirmed(); // TODO: belum dibayar
             total += entity.getBuyerOrder().getShipped();
             total += entity.getBuyerOrder().getArriveAtDestination();
             total += entity.getSellerOrder().getNewOrder();

@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_username"
             tools:progress="55"
-            tools:visibility="invisible" />
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/image_profile"
@@ -44,7 +44,7 @@
 
         <TextView
             android:id="@+id/text_username"
-            style="@style/TextView.TitleBig.Bold"
+            style="@style/TextView.TitleMedium.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -59,10 +59,11 @@
             android:id="@+id/text_profile_completion"
             style="@style/TextView.Micro.Green"
             android:layout_width="0dp"
-            android:layout_height="19dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.025"
             app:layout_constraintStart_toEndOf="@+id/circular_progress_bar"

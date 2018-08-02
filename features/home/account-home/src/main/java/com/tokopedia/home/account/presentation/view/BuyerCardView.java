@@ -76,6 +76,7 @@ public class BuyerCardView extends BaseCustomView {
         animation.start();
         if(progress > 0 && progress < 100) {
             textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
+            textProfileCompletion.setVisibility(VISIBLE);
         }
     }
 

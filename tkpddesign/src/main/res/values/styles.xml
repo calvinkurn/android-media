@@ -203,12 +203,12 @@
         <item name="footerIndicatorHeight">5dp</item>
         <item name="footerIndicatorStyle">underline</item>
         <item name="selectedBold">true</item>
-        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/border_bottom_no_rounded</item>
     </style>
 
     <style name="Tabs.Main">
+        <item name="android:textStyle">bold</item>
         <item name="footerColor">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textAllCaps">true</item>
