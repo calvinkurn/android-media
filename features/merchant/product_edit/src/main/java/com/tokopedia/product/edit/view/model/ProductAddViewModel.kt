@@ -11,9 +11,10 @@ import java.util.ArrayList
 data class ProductAddViewModel(var productCatalog: ProductCatalog? = ProductCatalog(),
                                var productCategory: ProductCategory? = ProductCategory(),
                                var productName: ProductName? = ProductName(),
+                               var productPrice: ProductPrice? = ProductPrice(),
                                var productDescription: ProductDescription? = ProductDescription(),
                                var productVariantViewModel: ProductVariantViewModel? = ProductVariantViewModel(),
-                               var productPictureList: ArrayList<ProductPictureViewModel>? = ArrayList<ProductPictureViewModel>(),
+                               var productPictureList: ArrayList<ProductPictureViewModel>? = ArrayList(),
                                var productStock: ProductStock? = ProductStock(),
                                var productSizeChart: ProductPictureViewModel? = null,
                                var hasOriginalVariantLevel1: Boolean? = false,
@@ -38,8 +39,7 @@ data class ProductAddViewModel(var productCatalog: ProductCatalog? = ProductCata
             parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
             parcel.readParcelable(ProductLogistic::class.java.classLoader),
             parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString()) {
-    }
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(productCatalog, flags)

@@ -14,6 +14,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.network.NetworkErrorHelper
+import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
@@ -31,7 +34,6 @@ import com.tokopedia.product.edit.utils.convertToListImageString
 import com.tokopedia.product.edit.utils.convertToProductViewModel
 import com.tokopedia.product.edit.utils.isDataValid
 import com.tokopedia.product.edit.view.activity.*
-import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
 import com.tokopedia.product.edit.view.listener.ProductAddView
 import com.tokopedia.product.edit.view.mapper.AnalyticsMapper
 import com.tokopedia.product.edit.view.model.ProductAddViewModel
@@ -48,11 +50,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     @ProductStatus
     protected abstract var statusUpload: Int
-    protected var productDraftId: Int = 0
+    private var productDraftId: Int = 0
 
-    var isHasLoadShopInfo: Boolean = false
+    private var isHasLoadShopInfo: Boolean = false
     private var officialStore: Boolean = false
-    val appRouter : Context by lazy { activity?.application as Context}
+    private val appRouter : Context by lazy { activity?.application as Context}
     protected var currentProductAddViewModel: ProductAddViewModel? = null
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
@@ -120,8 +122,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startProductEtalaseActivity() {
         if(appRouter is ProductEditModuleRouter){
-            startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId!!), REQUEST_CODE_GET_ETALASE);
-
+            startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId!!), REQUEST_CODE_GET_ETALASE)
         }
     }
 
@@ -225,7 +226,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         //do nothing
     }
 
-    fun startUploadProduct(productId: Long) {
+    private fun startUploadProduct(productId: Long) {
         startUploadProductService(productId)
         activity?.finish()
     }
@@ -257,12 +258,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
             labelViewDescriptionProduct.setSubTitle("")
         }
-        labelViewNameProduct.setContent(currentProductViewModel.productName.name)
-        if(currentProductViewModel.productPrice.price>0) {
-            labelViewPriceProduct.setContent(CurrencyFormatUtil.convertPriceValueToIdrFormat(currentProductViewModel.productPrice.price, true))
+        labelViewNameProduct.setContent(currentProductViewModel.productName?.name)
+        if(currentProductViewModel.productPrice?.price!! > 0) {
+            labelViewPriceProduct.setContent(CurrencyFormatUtil.convertPriceValueToIdrFormat(currentProductViewModel.productPrice?.price!!, true))
             labelViewPriceProduct.setSubTitle("")
         }
-        labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription.description)
+        labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
         if (currentProductViewModel.productLogistic?.weight!! > 0) {
             labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType!!))}")
             labelViewWeightLogisticProduct.setSubTitle("")
@@ -281,16 +282,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewVariantProduct.visibility = View.VISIBLE
             val productVariantOptionParentLv1 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(0)
             val productVariantOptionParentLv2 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(1)
-            var selectedVariantString = "${productVariantOptionParentLv1?.getProductVariantOptionChild()?.size} ${productVariantOptionParentLv1?.name}"
+            var selectedVariantString = "${productVariantOptionParentLv1?.productVariantOptionChild?.size} ${productVariantOptionParentLv1?.name}"
             if (productVariantOptionParentLv2 != null && productVariantOptionParentLv2.hasProductVariantOptionChild()) {
-                selectedVariantString = "$selectedVariantString \n ${productVariantOptionParentLv2.getProductVariantOptionChild().size} ${productVariantOptionParentLv2.getName()}"
+                selectedVariantString = "$selectedVariantString \n ${productVariantOptionParentLv2.productVariantOptionChild.size} ${productVariantOptionParentLv2.name}"
             }
             labelViewVariantProduct.setContent(selectedVariantString)
         }else{
             labelViewVariantProduct.visibility = View.GONE
         }
-
-
 
         if (currentProductViewModel.productStock?.isActive!!){
             if(currentProductViewModel.productStock?.stockCount!! > 0)
@@ -301,17 +300,17 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
     }
 
-    fun saveDraft(isUploading: Boolean) {
+    private fun saveDraft(isUploading: Boolean) {
         if (isUploading) {
             sendAnalyticsAdd(currentProductAddViewModel?.convertToProductViewModel())
         }
         if (currentProductAddViewModel?.productVariantViewModel != null) {
             currentProductAddViewModel?.productVariantViewModel?.generateTid()
         }
-        presenter!!.saveDraft(currentProductAddViewModel?.convertToProductViewModel(), isUploading)
+        presenter.saveDraft(currentProductAddViewModel?.convertToProductViewModel(), isUploading)
     }
 
-    fun onAddImagePickerClicked() {
+    private fun onAddImagePickerClicked() {
         var catalogId = ""
         if(currentProductAddViewModel?.productCatalog?.catalogId!! > 0){
             catalogId = currentProductAddViewModel!!.productCatalog?.catalogId.toString()
@@ -330,11 +329,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         onSuccessGetProductVariantCat(null)
     }
 
-    fun goToProductDescriptionPicker(description: String) {
-        startActivity(ProductEditDescriptionActivity.createIntent(activity, description))
-    }
-
-    fun startProductVariantActivity() {
+    private fun startProductVariantActivity() {
         if (currentProductAddViewModel?.productVariantByCatModelList == null || currentProductAddViewModel?.productVariantByCatModelList!!.size == 0) {
             NetworkErrorHelper.createSnackbarWithAction(activity) {
                 presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId!!.toLong())
@@ -379,11 +374,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         return isEditStatus() && productDraftId > 0
     }
 
-    fun isEditStatus(): Boolean {
+    private fun isEditStatus(): Boolean {
         return statusUpload == ProductStatus.EDIT
     }
 
-    fun isAddStatus(): Boolean {
+    private fun isAddStatus(): Boolean {
         return statusUpload == ProductStatus.ADD
     }
 
@@ -415,6 +410,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val EXTRA_IS_MOVE_TO_GM = "EXTRA_IS_MOVE_TO_GM"
         const val EXTRA_IS_STATUS_ADD = "EXTRA_IS_STATUS_ADD"
 
-        val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
+        const val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
     }
 }
