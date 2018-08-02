@@ -2365,12 +2365,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-//        if(remoteConfig.getBoolean("mainapp_new_change_password_enabled")){
-//            return ChangePasswordActivity.Companion.createIntent(context);
-//        }else{
-//            return  new Intent(context, ManagePasswordActivity.class);
-//        }
-        return ChangePasswordActivity.Companion.createIntent(context);
+        if(remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)){
+            return ChangePasswordActivity.Companion.createIntent(context);
+        }else{
+            return  new Intent(context, ManagePasswordActivity.class);
+        }
     }
 
     @Override
