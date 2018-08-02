@@ -43,7 +43,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onBuyerTokopointClicked(BuyerCardViewModel element) {
-
+        openApplink(ApplinkConst.TOKOPOINTS);
     }
 
     @Override
