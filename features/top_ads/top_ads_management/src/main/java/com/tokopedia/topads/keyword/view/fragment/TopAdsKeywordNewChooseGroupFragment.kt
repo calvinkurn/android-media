@@ -99,11 +99,11 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
         adapterChooseGroup = TopAdsAutoCompleteAdapter(activity, R.layout.item_autocomplete_text)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_top_ads_keyword_new_choose_group, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_top_ads_keyword_new_choose_group, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         choose_group_auto_text.setAdapter(adapterChooseGroup)
 
@@ -206,7 +206,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState?.run {
             putString(SAVED_GROUP_ID, chosenId)
@@ -243,7 +243,9 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
     }
 
     override fun onGetGroupAdListError(e: Throwable?) {
-        input_layout_choose_group.error = ViewUtils.getGeneralErrorMessage(context, e)
+        context?.let {
+            input_layout_choose_group.error = ViewUtils.getGeneralErrorMessage(it, e)
+        }
     }
 
     override fun onDestroy() {

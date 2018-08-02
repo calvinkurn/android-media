@@ -66,20 +66,20 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null){
+        arguments?.let {
             localKeywords.clear()
-            localKeywords.addAll(arguments.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM))
-            maxCount = arguments.getInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, 50)
-            positiveKeyword = arguments.getBoolean(PARAM_POSITIVE_KEYWORD)
-            groupId = arguments.getString(PARAM_GROUP_ID, "")
+            localKeywords.addAll(it.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM))
+            maxCount = it.getInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, 50)
+            positiveKeyword = it.getBoolean(PARAM_POSITIVE_KEYWORD)
+            groupId = it.getString(PARAM_GROUP_ID, "")
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_top_ads_keyword_new_item, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_top_ads_keyword_new_item, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         totalKeyAdded.text = getString(R.string.top_ads_keywords_total_current_and_max, localKeywords.size, maxCount)
         textKeywordExample.text = MethodChecker.fromHtml(getString(R.string.topads_keyword_search_example_value_phrase))
@@ -101,8 +101,10 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
             val intent = Intent().apply {
                 putParcelableArrayListExtra(PARAM_ADDED_KEYWORDS, ArrayList(keywordAdded))
             }
-            activity.setResult(Activity.RESULT_OK, intent)
-            activity.finish()
+            activity?.let {
+                it.setResult(Activity.RESULT_OK, intent)
+                it.finish()
+            }
         }
     }
 
