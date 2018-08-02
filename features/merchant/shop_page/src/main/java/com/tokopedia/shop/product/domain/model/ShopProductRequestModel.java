@@ -1,5 +1,7 @@
 package com.tokopedia.shop.product.domain.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
@@ -15,7 +17,7 @@ public class ShopProductRequestModel {
 
     private String shopId;
     private String keyword;
-    private String etalaseId;
+    private String etalaseId = "";
     private int page;
     private int orderBy;
     private int perPage;
@@ -48,12 +50,16 @@ public class ShopProductRequestModel {
         this.keyword = keyword;
     }
 
-    public String getEtalaseId() {
+    public @NonNull String getEtalaseId() {
         return etalaseId;
     }
 
-    public void setEtalaseId(String etalaseId) {
-        this.etalaseId = etalaseId;
+    public void setEtalaseId(@Nullable String etalaseId) {
+        if (etalaseId == null) {
+            this.etalaseId = "";
+        } else {
+            this.etalaseId = etalaseId;
+        }
     }
 
     public int getPage() {
