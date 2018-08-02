@@ -46,6 +46,9 @@ public class SeeAllView extends BottomSheets{
     @Override
     public void initView(View view) {
         holder = view.findViewById(R.id.holder_all_item);
+
+        List<MenuGridItemViewModel> list = createItems();
+
         adapter = new MenuGridAdapter(listener);
         holder.setAdapter(adapter);
         holder.setLayoutManager(
@@ -56,7 +59,7 @@ public class SeeAllView extends BottomSheets{
         holder.addItemDecoration(
                 new MenuGridSpacingDecoration(4,0,false));
 
-        adapter.setNewData(createItems());
+        adapter.setNewData(list);
     }
 
     @Override
@@ -81,6 +84,7 @@ public class SeeAllView extends BottomSheets{
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_train,
                 getContext().getString(R.string.title_menu_train),
+                //TODO change this
                 ApplinkConst.DIGITAL_ORDER,
                 0
         );
@@ -105,7 +109,6 @@ public class SeeAllView extends BottomSheets{
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_reksa_dana,
                 getContext().getString(R.string.title_menu_reksadana),
-                //TODO change applink
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
                         AccountConstants.Url.REKSA_DANA_URL),
@@ -150,5 +153,7 @@ public class SeeAllView extends BottomSheets{
                 0
         );
         list.add(gridItem);
+
+        return list;
     }
 }
