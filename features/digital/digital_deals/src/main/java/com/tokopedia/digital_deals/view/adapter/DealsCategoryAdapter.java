@@ -56,7 +56,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private boolean isHeaderAdded;
     private boolean shortLayout;
     private boolean brandPageCard;
-    private boolean favouritePageCard;
     private boolean topDealsLayout;
     private String highLightText;
     private String lowerhighlight;
@@ -80,11 +79,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (layoutType.length > 1) {
             if (layoutType[1] != null) {
                 brandPageCard = layoutType[1];
-            }
-        }
-        if (layoutType.length > 2) {
-            if (layoutType[2] != null) {
-                favouritePageCard = layoutType[2];
             }
         }
         this.toActivityRequest = toActivityRequest;
@@ -330,26 +324,19 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         public void bindData(final ProductItem productItem) {
             dealsDetails.setText(productItem.getDisplayName());
             ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
-            if (favouritePageCard) {
-                cvBrand.setVisibility(View.GONE);
-                Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_location);
-                dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
-                img = getActivity().getResources().getDrawable(R.drawable.ic_calender_deals);
-                brandName.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                brandName.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
-            } else if (brandPageCard) {
-                cvBrand.setVisibility(View.GONE);
-                brandName.setVisibility(View.GONE);
-                Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_location);
-                dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
-            } else {
+            if (!brandPageCard) {
                 ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
                 brandName.setText(productItem.getBrand().getTitle());
                 if (productItem.getBrand().getUrl() != null) {
                     cvBrand.setOnClickListener(this);
                 }
+
+            } else {
+                cvBrand.setVisibility(View.GONE);
+                brandName.setVisibility(View.GONE);
+                Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_location);
+                dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
 
             }
             setLikes(productItem.getLikes(), productItem.isLiked());

@@ -36,8 +36,8 @@
             style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
             android:textColor="@color/expandable_text_color"
             tools:text="@string/bigcontent" />

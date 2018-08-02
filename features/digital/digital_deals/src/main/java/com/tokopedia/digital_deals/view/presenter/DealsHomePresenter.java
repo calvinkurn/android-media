@@ -20,7 +20,6 @@ import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.activity.FavouriteDealsActivity;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
@@ -154,7 +153,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             getView().getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
 
         } else if (id == R.id.action_menu_favourite) {
-            getView().navigateToActivity(new Intent(getView().getActivity(), FavouriteDealsActivity.class));
+
         } else if (id == R.id.action_promo) {
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else if (id == R.id.action_booked_history) {

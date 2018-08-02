@@ -76,7 +76,7 @@ public class TncBottomSheetFragment extends BaseDaggerFragment {
                 tncBuffer.append("<ul>");
                 for (int i = 0; i < splitArray.length; i++) {
                     String line = splitArray[i];
-                    tncBuffer.append("<li>&ensp").append(line).append("</li>");
+                    tncBuffer.append("<li>").append(line.trim()).append("</li>");
                 }
 
                 tncBuffer.append("</ul>");

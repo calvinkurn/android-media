@@ -344,14 +344,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(tvExpandableTC.getLineCount()>=10){
+                if (tvExpandableTC.getLineCount() >= 10) {
                     seeMoreButtonTC.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     seeMoreButtonTC.setVisibility(View.GONE);
                 }
-                if(tvExpandableDesc.getLineCount()>=10){
+                if (tvExpandableDesc.getLineCount() >= 10) {
                     seeMoreButtonDesc.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     seeMoreButtonDesc.setVisibility(View.GONE);
                 }
             }
@@ -362,23 +362,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (!TextUtils.isEmpty(tnc)) {
             String splitArray[] = tnc.split("~");
             StringBuilder tncBuffer = new StringBuilder();
-
-            if(splitArray.length==1){
-                tncBuffer.append(splitArray[0]);
-            }else{
-                tncBuffer.append("<ul>");
-                for (int i = 0; i < splitArray.length; i++) {
-                    String line = splitArray[i];
-                    tncBuffer.append("<li>&ensp;").append(line).append("</li>");
-                }
-
-                tncBuffer.append("</ul>");
+            tncBuffer.append("<ul>");
+            for (int i = 0; i < splitArray.length; i++) {
+                String line = splitArray[i];
+                tncBuffer.append("<li>").append(line.trim()).append("</li>");
             }
-
             tncBuffer.append("</ul>");
-
             return tncBuffer.toString();
-
         } else {
             return null;
         }

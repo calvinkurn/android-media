@@ -27,45 +27,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <LinearLayout
-            android:id="@+id/ll_favourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tv_exclusive"
-                style="@style/TextView.Micro11.FontMedium.White"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/details_header_background_2"
-                android:paddingBottom="@dimen/dp_3"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_3"
-                android:layout_marginRight="@dimen/dp_8"
-                android:text="@string/exclusive" />
-
-            <TextView
-                android:id="@+id/tv_limited"
-                style="@style/TextView.Micro11.FontMedium.White"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/details_header_background"
-                android:paddingBottom="@dimen/dp_3"
-                android:layout_toRightOf="@+id/tv_exclusive"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_3"
-                android:text="@string/limited" />
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/tv_hot_deal"
             style="@style/TextView.Micro11.FontMedium.White"
