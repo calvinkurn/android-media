@@ -22,6 +22,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
@@ -291,6 +295,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
             kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
             adapter.notifyItemChanged(rowNumber);
+
+            if (kolPostViewModel.isFollowed()) {
+                ToasterNormal
+                        .make(swipeToRefresh,
+                                getString(R.string.post_detail_follow_success_toast),
+                                BaseToaster.LENGTH_LONG)
+                        .setAction(getString(R.string.post_detail_follow_success_check_now),
+                                followSuccessOnClickListener())
+                        .show();
+            }
         }
     }
 
@@ -323,5 +337,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), message);
         }
+    }
+
+    private View.OnClickListener followSuccessOnClickListener() {
+        return v -> {
+            RouteManager.route(getContext(), ApplinkConst.FEED);
+        };
     }
 }
