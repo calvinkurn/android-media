@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.tokopedia.tkpdpdp.R;
 
-import butterknife.ButterKnife;
 
 
 /**
@@ -45,7 +44,6 @@ public class YoutubeWebViewThumbnail extends RelativeLayout{
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.youtube_thumbnail_webview, this, true);
-        ButterKnife.bind(this);
         thumbnail = (ImageView) findViewById(R.id.thumbnail);
         Glide.with(getContext())
                 .load("http://img.youtube.com/vi/"+videoId+"/1.jpg").into(thumbnail);
