@@ -66,14 +66,16 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
 
     public void add(Visitable item) {
         int position = getItemCount();
-        this.list.add(item);
-        notifyItemInserted(position);
+        if (this.list.add(item)) {
+            notifyItemInserted(position);
+        }
     }
 
     public void remove(Visitable item) {
         int position = this.list.indexOf(item);
-        this.list.remove(item);
-        notifyItemRemoved(position);
+        if (this.list.remove(item)) {
+            notifyItemRemoved(position);
+        }
     }
 
     public void showEmpty() {
