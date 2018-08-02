@@ -131,6 +131,9 @@ public class TrainBookingAddPassengerFragment extends BaseDaggerFragment
             identityNumber.setText(trainPassengerViewModel.getIdentityNumber());
 
         setEnableEditTextBasedOnCheckbox();
+        if (isCheckSameAsBuyer){
+            identityNumber.requestFocus();
+        }
     }
 
     private void setEnableEditTextBasedOnCheckbox() {

@@ -560,6 +560,11 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void unCheckSameAsBuyerCheckbox() {
+        sameAsBuyerCheckbox.setChecked(false);
+    }
+
+    @Override
     public void onDestroy() {
         presenter.detachView();
         super.onDestroy();

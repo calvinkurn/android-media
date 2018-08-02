@@ -214,6 +214,15 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     }
 
     private boolean isAllDataValid() {
+        boolean isValid = isValidContactInfo();
+        if (isValid && !isAllPassengerFilled(getView().getCurrentPassengerList())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_passenger_not_fullfilled_error);
+        }
+        return isValid;
+    }
+
+    private boolean isValidContactInfo() {
         boolean isValid = true;
         if (TextUtils.isEmpty(getView().getContactNameEt())) {
             isValid = false;
@@ -245,9 +254,6 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         } else if (!isEmailWithoutProhibitSymbol(getView().getEmailEt()) || !isValidEmail(getView().getEmailEt())) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_email_invalid_error);
-        } else if (!isAllPassengerFilled(getView().getCurrentPassengerList())) {
-            isValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_passenger_not_fullfilled_error);
         }
         return isValid;
     }
@@ -294,15 +300,19 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
     @Override
     public void wrapPassengerSameAsBuyer() {
-        TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
-        trainPassengerViewModel.setPassengerId(1);
-        trainPassengerViewModel.setName(getView().getContactNameEt());
-        trainPassengerViewModel.setPhone(getView().getPhoneNumberEt());
-        trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
-        trainPassengerViewModel.setHeaderTitle(
-                formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
-                        1, getView().getString(R.string.train_select_passenger_adult_title)));
-        getView().loadPassengerSameAsBuyer(trainPassengerViewModel);
+        if (isValidContactInfo()) {
+            TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
+            trainPassengerViewModel.setPassengerId(1);
+            trainPassengerViewModel.setName(getView().getContactNameEt());
+            trainPassengerViewModel.setPhone(getView().getPhoneNumberEt());
+            trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
+            trainPassengerViewModel.setHeaderTitle(
+                    formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
+                            1, getView().getString(R.string.train_select_passenger_adult_title)));
+            getView().loadPassengerSameAsBuyer(trainPassengerViewModel);
+        }else {
+            getView().unCheckSameAsBuyerCheckbox();
+        }
     }
 
     @Override
