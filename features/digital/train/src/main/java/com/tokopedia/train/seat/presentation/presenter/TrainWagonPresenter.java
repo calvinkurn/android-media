@@ -8,6 +8,7 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatTopLabelViewMode
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,6 +42,7 @@ public class TrainWagonPresenter extends BaseDaggerPresenter<TrainWagonContract.
     @Override
     public void onViewCreated() {
         getView().setSelectedSeat(transformToSelectedSeat(getView().getPassengers()));
+
         List<Visitable> visitables = new ArrayList<>();
         visitables.addAll(buildTrainSeatLabel(getView().getWagon().getMaxColumn()));
         visitables.addAll(getView().getWagon().getSeats());
@@ -60,7 +62,26 @@ public class TrainWagonPresenter extends BaseDaggerPresenter<TrainWagonContract.
     @Override
     public void onPassengerSeatUpdate() {
         getView().setSelectedSeat(transformToSelectedSeat(getView().getPassengers()));
-        getView().refreshSeats();
+        List<Visitable> visitables = new ArrayList<>();
+        visitables.addAll(buildTrainSeatLabel(getView().getWagon().getMaxColumn()));
+        visitables.addAll(buildSeatWithCheckIfCurrentlyNotSelectedButOldSelected(getView().getWagon().getSeats()));
+        getView().renderSeats(visitables);
+    }
+
+    private List<TrainSeatViewModel> buildSeatWithCheckIfCurrentlyNotSelectedButOldSelected(List<TrainSeatViewModel> seats) {
+        for (TrainSeatPassengerViewModel passenger : getView().getOriginPassengers()) {
+            if (getView().getWagon().getWagonCode().equalsIgnoreCase(passenger.getSeatViewModel().getWagonCode())) {
+                TrainSeatViewModel seatViewModel = transformSelectedViewModel(passenger, true);
+                int index = getView().getSelectedSeat().indexOf(seatViewModel);
+                if (index == -1){
+                    int indexSeatInWagon = seats.indexOf(seatViewModel);
+                    if (indexSeatInWagon != -1){
+                        seats.set(indexSeatInWagon, seatViewModel);
+                    }
+                }
+            }
+        }
+        return seats;
     }
 
     @Override
@@ -78,7 +99,7 @@ public class TrainWagonPresenter extends BaseDaggerPresenter<TrainWagonContract.
         if (!isFilledByExistingPassenger) {
             TrainSeatViewModel trainSeatViewModel = transformSelectedViewModel(selectedPassenger, true);
             int index = getView().getWagon().getSeats().indexOf(trainSeatViewModel);
-            if (index != -1){
+            if (index != -1) {
                 getView().getWagon().getSeats().set(index, trainSeatViewModel);
             }
             getView().updatePassengersSeat(selectedPassenger, seat, getView().getWagon().getWagonCode());

@@ -80,6 +80,8 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
     public interface OnFragmentInteraction {
         List<TrainSeatPassengerViewModel> getPassengers();
 
+        List<TrainSeatPassengerViewModel> getOriginPassengers();
+
         void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode);
     }
 
@@ -152,12 +154,23 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
     }
 
     @Override
+    public List<TrainSeatPassengerViewModel> getOriginPassengers() {
+        return interaction.getOriginPassengers();
+    }
+
+    @Override
     public void setSelectedSeat(List<TrainSeatViewModel> trainSeatViewModels) {
         this.selectedSeatsInWagon = trainSeatViewModels;
     }
 
     @Override
+    public List<TrainSeatViewModel> getSelectedSeat() {
+        return this.selectedSeatsInWagon;
+    }
+
+    @Override
     public void renderSeats(List<Visitable> seats) {
+        adapter.clearAllElements();
         adapter.addElement(seats);
     }
 

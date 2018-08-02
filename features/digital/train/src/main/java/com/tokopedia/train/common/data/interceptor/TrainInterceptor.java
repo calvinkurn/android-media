@@ -52,6 +52,10 @@ public class TrainInterceptor extends TkpdAuthInterceptor {
 
 
     protected Response getResponse(Chain chain, Request request) throws IOException {
-        return chain.proceed(request);
+        try {
+            return chain.proceed(request);
+        } catch (Error e) {
+            throw new UnknownHostException();
+        }
     }
 }

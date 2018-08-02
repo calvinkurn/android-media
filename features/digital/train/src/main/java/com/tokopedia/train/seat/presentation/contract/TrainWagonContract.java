@@ -26,6 +26,10 @@ public interface TrainWagonContract {
         void updatePassengersSeat(TrainSeatPassengerViewModel selectedPassenger, TrainSeatViewModel seat, String wagonCode);
 
         void updatePreviousSelectionToAvailable(TrainSeatViewModel trainSeatViewModel);
+
+        List<TrainSeatPassengerViewModel> getOriginPassengers();
+
+        List<TrainSeatViewModel> getSelectedSeat();
     }
 
     interface Presenter extends CustomerPresenter<View>{

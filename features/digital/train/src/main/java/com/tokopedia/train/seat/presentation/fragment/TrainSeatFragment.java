@@ -201,7 +201,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                 wagonViewPager.setCurrentItem(pos);
                 pagerIndicator.setCurrentIndicator(pos);
                 Object fragment = adapter.instantiateItem(wagonViewPager, wagonViewPager.getCurrentItem());
-                if (fragment != null && fragment instanceof TrainSeatListener) {
+                if (fragment instanceof TrainSeatListener) {
                     ((TrainSeatListener) fragment).notifyPassengerUpdate();
                 }
             }
@@ -219,6 +219,11 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             @Override
             public List<TrainSeatPassengerViewModel> getPassengers() {
                 return passengers;
+            }
+
+            @Override
+            public List<TrainSeatPassengerViewModel> getOriginPassengers() {
+                return originPassengers;
             }
 
 

@@ -71,7 +71,7 @@ public class TrainSeatViewModelMapper {
                     i = currentIndexSeat;
                     j++;
                 } else if (i > currentIndexSeat) {
-                    newViewModels.addAll(buildPastColumn(entities.get(j).getRow(), i, maxColumn));
+                    newViewModels.addAll(buildPastColumn(entities.get(j).getRow() - 1, i, maxColumn));
                     i = -1;
                 } else {
                     newViewModels.add(transform(entities.get(j)));
