@@ -34,8 +34,7 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
         buyerCardView.setTokopoint(element.getTokopoint());
         buyerCardView.setVoucher(element.getVoucher());
 
-        buyerCardView.setOnClickAvatar(v -> listener.onBuyerAvatarClicked(element));
-        buyerCardView.setOnClickName(v -> listener.onBuyerNameClicked(element));
+        buyerCardView.setOnClickProfile(v -> listener.onProfileClicked(element));
         buyerCardView.setOnClickProfileCompletion(v -> listener.onProfileCompletionClicked(element));
         buyerCardView.setOnClickTokoPoint(v -> listener.onBuyerTokopointClicked(element));
         buyerCardView.setOnClickVoucher(v -> listener.onBuyerVoucherClicked(element));

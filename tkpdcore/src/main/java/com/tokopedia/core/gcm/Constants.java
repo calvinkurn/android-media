@@ -132,6 +132,7 @@ public interface Constants {
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
         String FAVORITE = "tokopedia://home/favorite";
+        String PROFILE_COMPLETION = "tokopedia://profilecompletion";
 
         String EVENTS = "tokopedia://events";
         String EVENTS_HIBURAN = "tokopedia://hiburan";
