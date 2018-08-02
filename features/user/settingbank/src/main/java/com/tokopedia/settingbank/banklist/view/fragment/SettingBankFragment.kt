@@ -223,7 +223,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         if (adapter.getList() != null) {
             val element = adapter.getList()!![adapterPosition] as BankAccountViewModel
 
-            if (element != null) {
+            if (element != null && presenter.isMsisdnVerified()) {
                 analyticTracker.trackEditBankAccount()
                 startActivityForResult(AddEditBankActivity.createIntentEditBank(
                         activity!!
@@ -236,6 +236,12 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
                         element.bankName!!,
                         adapterPosition
                 )), REQUEST_EDIT_BANK)
+            }else if (activity != null
+                    && activity!!.applicationContext is BankRouter
+                    && !presenter.isMsisdnVerified()) {
+                val intentPhoneVerification = (activity!!.applicationContext as BankRouter)
+                        .getPhoneVerificationActivityIntent(activity!!)
+                startActivityForResult(intentPhoneVerification, REQUEST_PHONE_VERIFICATION)
             }
 
         }
@@ -309,12 +315,10 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
             startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
         } else if (activity != null
                 && activity!!.applicationContext is BankRouter
-                && !presenter.isMsisdnVerified()
-        ) {
+                && !presenter.isMsisdnVerified()) {
             val intentPhoneVerification = (activity!!.applicationContext as BankRouter)
                     .getPhoneVerificationActivityIntent(activity!!)
             startActivityForResult(intentPhoneVerification, REQUEST_PHONE_VERIFICATION)
-
         } else {
             showErrorAddAccount(reason)
         }
@@ -347,7 +351,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
             when (requestCode) {
                 REQUEST_ADD_BANK -> resultMessage = getString(R.string.success_add_bank_account)
                 REQUEST_EDIT_BANK -> resultMessage = getString(R.string.success_edit_bank_account)
-
             }
             presenter.refreshBankList(resultMessage)
         }
