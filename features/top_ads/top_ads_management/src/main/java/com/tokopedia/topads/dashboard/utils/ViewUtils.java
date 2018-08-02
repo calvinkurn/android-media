@@ -2,9 +2,9 @@ package com.tokopedia.topads.dashboard.utils;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.common.data.exception.ResponseErrorException;
 
 /**
  * @author normansyahputa on 2/16/17.

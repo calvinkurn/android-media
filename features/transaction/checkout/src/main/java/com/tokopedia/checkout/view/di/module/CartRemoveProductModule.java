@@ -47,7 +47,7 @@ public class CartRemoveProductModule {
     @Provides
     @CartRemoveProductScope
     RecyclerView.ItemDecoration provideCartItemDecoration() {
-        return new CartItemDecoration((int) context.getResources().getDimension(R.dimen.new_margin_med), false, 0);
+        return new CartItemDecoration((int) context.getResources().getDimension(R.dimen.dp_4), false, 0);
     }
 
     @Provides

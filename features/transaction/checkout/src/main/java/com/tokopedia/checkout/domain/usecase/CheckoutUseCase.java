@@ -3,6 +3,7 @@ package com.tokopedia.checkout.domain.usecase;
 import android.os.Build;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
@@ -47,7 +48,10 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     public Observable<CheckoutData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         CheckoutRequest checkoutRequest = (CheckoutRequest) requestParams.getObject(PARAM_CARTS);
-        param.put(PARAM_CARTS, new Gson().toJson(checkoutRequest));
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String paramCartJson = gson.toJson(checkoutRequest);
+        param.put(PARAM_CARTS, paramCartJson);
         param.put(PARAM_OPTIONAL, "0");
         param.put(PARAM_IS_THANKYOU_NATIVE, "1");
         param.put(PARAM_IS_THANKYOU_NATIVE_NEW, "1");

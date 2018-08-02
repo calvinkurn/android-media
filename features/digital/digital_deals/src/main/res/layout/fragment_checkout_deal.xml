@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bottomnav_bg"
+        android:orientation="vertical">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_80">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/base_main_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_16">
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_24"
+                    app:cardCornerRadius="@dimen/dp_8"
+                    app:cardElevation="@dimen/dp_0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/image_view_brand"
+                        android:layout_width="@dimen/image_width_brand"
+                        android:layout_height="@dimen/image_width_brand"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_popular"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/tv_deal_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:includeFontPadding="false"
+                    android:maxLines="3"
+                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                    app:layout_constraintLeft_toRightOf="@+id/card_view_brand"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/card_view_brand"
+                    tools:text="5 Persons Package (Include 3 Small Pizza's, 1 pasta, 1 Garlic Bread, Drinks)" />
+
+                <TextView
+                    android:id="@+id/tv_brand_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    style="@style/TextView.Micro.Black40"
+                    app:layout_constraintBottom_toBottomOf="@+id/card_view_brand"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_deal_details"
+                    tools:text="Bakerzin" />
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/divider_color"
+                    app:layout_constraintTop_toBottomOf="@+id/card_view_brand" />
+
+
+                <ImageView
+                    android:id="@+id/iv_clock"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider1"
+                    app:srcCompat="@drawable/ic_promo_valid_clock" />
+
+                <TextView
+                    android:id="@+id/tv_expiry_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    style="@style/TextView.Small.BlackPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_clock"
+                    app:layout_constraintLeft_toRightOf="@+id/iv_clock"
+                    app:layout_constraintTop_toTopOf="@+id/iv_clock"
+                    tools:text="Berlaku hingga tanggal 1 Juni 2018" />
+
+                <ImageView
+                    android:id="@+id/iv_map"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_clock"
+                    app:srcCompat="@drawable/ic_location_2" />
+
+                <TextView
+                    android:id="@+id/tv_available_locations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:text="@string/available_locations"
+                    style="@style/TextView.Small.BlackPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+                    app:layout_constraintLeft_toRightOf="@+id/iv_map"
+                    app:layout_constraintTop_toTopOf="@+id/iv_map"
+                    app:layout_constraintVertical_bias="0.5" />
+
+                <TextView
+                    android:id="@+id/tv_no_locations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextView.Small.Green"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_map"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_available_locations"
+                    app:layout_constraintTop_toTopOf="@+id/iv_map"
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:text="25 Lokasi" />
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/divider_color"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_map" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_contact_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider2">
+
+                    <TextView
+                        android:id="@+id/tv1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:text="@string/voucher_delivery_destination"
+                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/tv2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv1"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:text="@string/email"
+                        android:textColor="@color/grey_700"
+                        style="@style/TextView.Micro"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv1"
+                        app:layout_constraintTop_toBottomOf="@+id/tv1" />
+
+                    <EditText
+                        android:id="@+id/tv_email"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:maxLines="1"
+                        android:paddingLeft="@dimen/dp_0"
+                        android:textColorHint="@color/grey_300"
+                        style="@style/TextView.Title.BlackPrimary"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv2"
+                        app:layout_constraintRight_toLeftOf="@+id/update_email"
+                        app:layout_constraintTop_toBottomOf="@+id/tv2" />
+
+                    <TextView
+                        android:id="@+id/update_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:padding="@dimen/dp_2"
+                        android:text="@string/ubah"
+                        style="@style/TextView.Small.Green.Bold"
+                        android:visibility="gone"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv2" />
+
+                    <TextView
+                        android:id="@+id/tv3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv1"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:text="@string/phone_number"
+                        style="@style/TextView.Micro"
+                        android:textColor="@color/grey_700"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv1"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_email" />
+
+                    <EditText
+                        android:id="@+id/tv_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:maxLines="1"
+                        android:paddingLeft="@dimen/dp_0"
+                        android:textColorHint="@color/grey_300"
+                        style="@style/TextView.Title.BlackPrimary"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv3"
+                        app:layout_constraintTop_toBottomOf="@+id/tv3" />
+
+
+                </android.support.constraint.ConstraintLayout>
+
+
+                <View
+                    android:id="@+id/divider6"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/divider_color"
+                    app:layout_constraintTop_toBottomOf="@+id/cl_contact_info" />
+
+
+                <TextView
+                    android:id="@+id/tv_promocode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:gravity="center_vertical"
+                    android:text="@string/redeem_coupon_promo"
+                    style="@style/TextView.Small.Green"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider6" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_promo_applied"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:background="@drawable/background_lightgreen_voucher"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_promocode">
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="1.5dp"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="1.5dp"
+                        android:background="@drawable/line_green"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_voucher_code_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingLeft="@dimen/dp_8"
+                        android:paddingTop="@dimen/dp_8"
+                        style="@style/TextView.Micro11.FontMedium"
+                        android:text="@string/text_voucher_code"
+                        android:textColor="@color/black_40" />
+
+                    <TextView
+                        android:id="@+id/tv_voucher_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/dp_8"
+                        android:textColor="@color/red_800"
+                        style="@style/TextView.Micro11.FontMedium"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_voucher_code_text"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_voucher_code_text"
+                        app:layout_constraintTop_toTopOf="@+id/tv_voucher_code_text"
+                        tools:text="GAJIAN" />
+
+                    <ImageView
+                        android:id="@+id/iv_remove_promo"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:layout_marginRight="@dimen/dp_4"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:padding="@dimen/dp_3"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_close_deals" />
+
+                    <TextView
+                        android:id="@+id/amount_of_cashback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="4sp"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingLeft="@dimen/dp_8"
+                        android:paddingRight="@dimen/dp_24"
+                        style="@style/TextView.Micro11.Black40"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_voucher_code_text"
+                        tools:text="@string/cashback_amount" />
+
+
+                </android.support.constraint.ConstraintLayout>
+
+                <View
+                    android:id="@+id/divider5"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/divider_color"
+                    app:layout_constraintTop_toBottomOf="@+id/cl_promo_applied" />
+
+                <TextView
+                    android:id="@+id/tv_price_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/pricing_details"
+                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider5" />
+
+
+                <TextView
+                    android:id="@+id/tv_number_vouchers"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    style="@style/TextView.Small.BlackPrimary"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_price_details"
+                    tools:text="2 x Vouchers" />
+
+
+                <TextView
+                    android:id="@+id/tv_sales_price_all_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:includeFontPadding="false"
+                    style="@style/TextView.Small.FontMedium.BlackPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_number_vouchers"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_number_vouchers"
+                    tools:text="Rp 800.000" />
+
+
+                <TextView
+                    android:id="@+id/tv_mrp_per_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:textColor="@color/black_38"
+                    style="@style/TextView.Micro"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers"
+                    tools:text="Rp 1.200.000" />
+
+                <TextView
+                    android:id="@+id/tv_sales_price_per_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:includeFontPadding="false"
+                    android:layout_marginTop="@dimen/dp_4"
+                    style="@style/TextView.Small.FontMedium.BlackPrimary"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_mrp_per_quantity"
+                    tools:text="Rp 800.000" />
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_promo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_sales_price_per_quantity">
+
+                    <TextView
+                        android:id="@+id/tv_promo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/sp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/text_discount_promo"
+                        android:textColor="@color/black_39"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="normal"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_promo_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:includeFontPadding="false"
+                        style="@style/TextView.Small.FontMedium.BlackPrimary"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_promo"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tv_promo"
+                        tools:text="Rp 1.000" />
+                </android.support.constraint.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_service_fee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/text_service_fees"
+                    style="@style/TextView.Small.BlackPrimary"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cl_promo" />
+
+                <TextView
+                    android:id="@+id/tv_service_fee_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:includeFontPadding="false"
+                    style="@style/TextView.Small.FontMedium.BlackPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_service_fee"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_service_fee"
+                    tools:text="Rp 1.000" />
+
+
+                <View
+                    android:id="@+id/divider4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/divider_color"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_service_fee" />
+
+                <TextView
+                    android:id="@+id/tv_total_payment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/total_amount"
+                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider4" />
+
+                <TextView
+                    android:id="@+id/tv_total_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/red_800"
+                    style="@style/TextView.Medium.FontMedium"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_total_payment"
+                    tools:text="Rp 800.000" />
+
+
+            </android.support.constraint.ConstraintLayout>
+        </ScrollView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cl_btn_payment"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_view_height"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/white">
+
+
+            <TextView
+                android:id="@+id/ll_select_payment_method"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_14"
+                android:background="@drawable/button_buy_now_background"
+                android:gravity="center"
+                style="@style/TextView.Small.White"
+                android:text="@string/payment_option"
+                android:textStyle="normal" />
+
+
+        </android.support.v7.widget.CardView>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</FrameLayout>

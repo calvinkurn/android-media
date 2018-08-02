@@ -66,6 +66,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           isFollowed
           createTime
           showComment
+          showLike
           userName
           userPhoto
           userInfo
@@ -75,6 +76,9 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           content {
             __typename
             imageurl
+            video
+            youtube
+            type
             tags {
               __typename
               id
@@ -96,14 +100,19 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           isFollowed
           createTime
           showComment
+          showLike
           userName
           userPhoto
           userInfo
           userUrl
+          headerTitle
           userId
           content {
             __typename
             imageurl
+            video
+            youtube
+            type
             tags {
               __typename
               id

@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,14 @@ public class ShipmentDataConverter {
         return createRecipientAddressModel(userAddress);
     }
 
+    public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
+        shipmentDonationModel.setChecked(false);
+        shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
+
+        return shipmentDonationModel;
+    }
+
     @NonNull
     private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
@@ -44,13 +53,13 @@ public class ShipmentDataConverter {
         recipientAddress.setId(String.valueOf(userAddress.getAddressId()));
         recipientAddress.setAddressStatus(userAddress.getStatus());
         recipientAddress.setAddressName(userAddress.getAddressName());
-        recipientAddress.setAddressCountryName(userAddress.getCountry());
-        recipientAddress.setAddressProvinceName(userAddress.getProvinceName());
+        recipientAddress.setCountryName(userAddress.getCountry());
+        recipientAddress.setProvinceName(userAddress.getProvinceName());
         recipientAddress.setDestinationDistrictName(userAddress.getDistrictName());
-        recipientAddress.setAddressCityName(userAddress.getCityName());
+        recipientAddress.setCityName(userAddress.getCityName());
         recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
-        recipientAddress.setAddressStreet(userAddress.getAddress());
-        recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+        recipientAddress.setStreet(userAddress.getAddress());
+        recipientAddress.setPostalCode(userAddress.getPostalCode());
         recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
         recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
 
@@ -77,6 +86,7 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel = new ShipmentCartItemModel();
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
+                    setCartItemModelError(shipmentCartItemModel);
                     shipmentCartItemModels.add(shipmentCartItemModel);
                 }
             }
@@ -86,11 +96,20 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel = new ShipmentCartItemModel();
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
+                setCartItemModelError(shipmentCartItemModel);
                 shipmentCartItemModels.add(shipmentCartItemModel);
             }
         }
 
         return shipmentCartItemModels;
+    }
+
+    private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isAllItemError()) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                cartItemModel.setError(true);
+            }
+        }
     }
 
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
@@ -125,6 +144,8 @@ public class ShipmentDataConverter {
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
         shipmentCartItemModel.setShopName(shop.getShopName());
+        shipmentCartItemModel.setOfficialStore(shop.isOfficial());
+        shipmentCartItemModel.setGoldMerchant(shop.isGold());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -176,6 +197,7 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
 
+        cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;
     }
 

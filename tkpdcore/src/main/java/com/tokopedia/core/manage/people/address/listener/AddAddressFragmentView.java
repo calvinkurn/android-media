@@ -63,4 +63,8 @@ public interface AddAddressFragmentView {
 
     void setDistrict(List<District> districts);
 
+    void errorSaveAddress();
+
+    void successSaveAddress();
+
 }

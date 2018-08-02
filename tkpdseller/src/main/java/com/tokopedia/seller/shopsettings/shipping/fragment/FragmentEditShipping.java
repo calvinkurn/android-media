@@ -360,7 +360,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     @Override
     public void editAddress() {
-        startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity(),
+        startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(getActivity(),
                 editShippingPresenter.getToken()),
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }
@@ -491,7 +491,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                 );
                 locationPass.setCityName(editShippingPresenter.getShopInformation().getCityName());
             }
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+            Intent intent = GeolocationActivity.createInstanceIntent(getActivity(), locationPass);
             startActivityForResult(intent, OPEN_MAP_CODE);
         } else {
             CommonUtils.dumper("Google play services unavailable");
