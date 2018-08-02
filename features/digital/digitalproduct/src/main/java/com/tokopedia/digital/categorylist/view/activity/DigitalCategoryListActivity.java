@@ -34,7 +34,7 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         int isCouponApplied = 0;
         if (extras.containsKey(KEY_IS_COUPON_APPLIED_APPLINK)) {
-            isCouponApplied = extras.getInt(KEY_IS_COUPON_APPLIED_APPLINK);
+            isCouponApplied = Integer.parseInt(extras.getString(KEY_IS_COUPON_APPLIED_APPLINK));
         }
         return DigitalCategoryListActivity.newInstance(context, isCouponApplied);
     }
