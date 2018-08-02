@@ -24,9 +24,15 @@
             app:layout_constraintTop_toTopOf="parent" />
         <LinearLayout
             android:id="@+id/layout_action"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingRight="0dp"
+            android:paddingEnd="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/label_tokopedia_pay"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/label_tokopedia_pay">

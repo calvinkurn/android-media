@@ -22,6 +22,7 @@ import com.tokopedia.home.account.R;
  * @author okasurya on 7/18/18.
  */
 public class TokopediaPayCardView extends BaseCustomView {
+    private LinearLayout layoutAction;
     private TextView actionText;
     private TextView textAmountLeft;
     private TextView textDescLeft;
@@ -49,6 +50,7 @@ public class TokopediaPayCardView extends BaseCustomView {
     private void init() {
         View view = inflate(getContext(), R.layout.view_tokopedia_pay_card, this);
         container = view.findViewById(R.id.container);
+        layoutAction = view.findViewById(R.id.layout_action);
         actionText = view.findViewById(R.id.text_action);
         textAmountLeft = view.findViewById(R.id.text_amount_left);
         textDescLeft = view.findViewById(R.id.text_desc_left);
@@ -89,7 +91,7 @@ public class TokopediaPayCardView extends BaseCustomView {
     }
 
     public void setActionTextClickListener(View.OnClickListener listener) {
-        actionText.setOnClickListener(listener);
+        layoutAction.setOnClickListener(listener);
     }
 
     public void setLeftItemClickListener(View.OnClickListener listener) {

@@ -107,4 +107,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public void onTokopediaPayItemClicked(String applink) {
         openApplink(applink);
     }
+
+    @Override
+    public void onDepositClicked(ShopCardViewModel element) {
+        openApplink(ApplinkConst.DEPOSIT);
+    }
 }

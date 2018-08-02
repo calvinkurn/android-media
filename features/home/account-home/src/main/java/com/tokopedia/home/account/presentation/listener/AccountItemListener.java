@@ -38,4 +38,6 @@ public interface AccountItemListener {
     void onAddProductClicked();
 
     void onTokopediaPayItemClicked(String applink);
+
+    void onDepositClicked(ShopCardViewModel element);
 }
