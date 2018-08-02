@@ -12,8 +12,8 @@ public class TrainUrl {
 
 
     public static String BASE_URL = "http://gql-staging.tokopedia.com";
-    public static String WEB_DOMAIN = "https://tiket-staging.tokopedia.com/";
-    public static String BASE_WEB_DOMAIN = "https://staging.tokopedia.com/";
+    public static String WEB_DOMAIN = "https://tiket.tokopedia.com/";
+    public static String BASE_WEB_DOMAIN = "https://tokopedia.com/";
     public static String KAI_WEBVIEW = WEB_DOMAIN + "kereta-api";
 
     private static String PATH_USER_BOOKING_LIST = "/user/bookings";
