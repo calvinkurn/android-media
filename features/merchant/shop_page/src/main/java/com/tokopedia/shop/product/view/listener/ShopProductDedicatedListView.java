@@ -38,8 +38,6 @@ public interface ShopProductDedicatedListView extends BaseListViewListener<BaseS
 
     String getSelectedEtalaseName();
 
-    void addNewEtalaseToChip(String etalaseId, String etalaseName);
-
 
 }
 

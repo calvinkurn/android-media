@@ -536,11 +536,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         showGetListError(e);
     }
 
-    @Override
-    public void addNewEtalaseToChip(String etalaseId, String etalaseName) {
+    public void addToSelectedEtalaseList(String etalaseId, String etalaseName) {
         // if etalase id is not on the list, add it
-        selectedEtalaseId = etalaseId;
-        selectedEtalaseName = etalaseName;
         boolean isAddedToCurrentEtalaseList = addEtalaseFromListMore(etalaseId, etalaseName);
         if (isAddedToCurrentEtalaseList) {
             selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName));
@@ -641,6 +638,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         }
         // update the adapter
         bindEtalaseChipData(new ShopProductEtalaseListViewModel(shopEtalaseViewModelList, selectedEtalaseId));
+        addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName);
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
     }
 
@@ -652,7 +650,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
 
-                    addNewEtalaseToChip(selectedEtalaseId, selectedEtalaseName);
+                    addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName);
                     if (shopPageTracking != null) {
                         shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
                                 false, selectedEtalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
