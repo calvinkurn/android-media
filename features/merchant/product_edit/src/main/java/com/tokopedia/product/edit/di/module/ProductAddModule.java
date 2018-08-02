@@ -18,6 +18,7 @@ import com.tokopedia.product.edit.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.edit.common.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.product.edit.common.data.source.ProductDraftDataSource;
 import com.tokopedia.product.edit.common.data.source.ProductVariantDataSource;
+import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
 import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.product.edit.common.repository.ProductVariantRepository;
 import com.tokopedia.product.edit.common.repository.ProductVariantRepositoryImpl;
@@ -68,8 +69,9 @@ public class ProductAddModule {
     @ProductAddScope
     @Provides
     ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                                       GetShopInfoUseCase getShopInfoUseCase, UserSession userSession){
-        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession);
+                                                                       GetShopInfoUseCase getShopInfoUseCase, UserSession userSession,
+                                                                       FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
+        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
     }
 
     @ProductAddScope

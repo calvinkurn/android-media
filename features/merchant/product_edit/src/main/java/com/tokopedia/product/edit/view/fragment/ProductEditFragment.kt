@@ -43,6 +43,7 @@ open class ProductEditFragment : BaseProductAddEditFragment<ProductEditPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = arguments?.getString(EDIT_PRODUCT_ID) ?: ""
         super.onCreate(savedInstanceState)
+        presenter.attachView(this)
     }
 
     override fun onErrorFetchEditProduct(throwable: Throwable?) {
@@ -73,10 +74,8 @@ open class ProductEditFragment : BaseProductAddEditFragment<ProductEditPresenter
 
     override fun onSuccessLoadProduct(model: ProductViewModel?) {
         hideLoading()
-        if (currentProductAddViewModel == null) {
-            currentProductAddViewModel = ProductAddViewModel()
-        }
-        populateView(model?.convertToProductAddViewModel())
+        currentProductAddViewModel = model?.convertToProductAddViewModel()
+        populateView(currentProductAddViewModel)
     }
 
     companion object {

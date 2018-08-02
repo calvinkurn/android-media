@@ -1,10 +1,10 @@
 package com.tokopedia.product.edit.view.fragment
 
 import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +14,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.network.NetworkErrorHelper
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel
+import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel
 import com.tokopedia.product.edit.common.util.ProductStatus
 import com.tokopedia.product.edit.constant.ProductExtraConstant
@@ -26,6 +26,8 @@ import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImage
 import com.tokopedia.product.edit.price.ProductEditWeightLogisticFragment
 import com.tokopedia.product.edit.price.model.*
 import com.tokopedia.product.edit.util.ProductEditModuleRouter
+import com.tokopedia.product.edit.utils.convertImageListResult
+import com.tokopedia.product.edit.utils.convertToListImageString
 import com.tokopedia.product.edit.utils.convertToProductViewModel
 import com.tokopedia.product.edit.utils.isDataValid
 import com.tokopedia.product.edit.view.activity.*
@@ -36,13 +38,13 @@ import com.tokopedia.product.edit.view.model.ProductAddViewModel
 import com.tokopedia.product.edit.view.presenter.ProductAddPresenterImpl
 import com.tokopedia.product.edit.view.service.UploadProductService
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(), ProductAddView {
 
     @Inject
     lateinit var presenter: T
-    val view : P? = null
 
     @ProductStatus
     protected abstract var statusUpload: Int
@@ -56,7 +58,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter.attachView(view)
         setHasOptionsMenu(true)
     }
 
@@ -170,7 +171,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_IMAGES ->{
                     val imageUrlOrPathList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                    currentProductAddViewModel?.productPictureList = imageUrlOrPathList
+                    currentProductAddViewModel?.productPictureList = currentProductAddViewModel?.let {
+                        imageUrlOrPathList?.convertImageListResult(it,
+                                data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE),
+                                data.getSerializableExtra(RESULT_IS_EDITTED) as ArrayList<Boolean>?)
+                    }
                 }
                 REQUEST_CODE_VARIANT ->{
                     if (data!!.hasExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
@@ -238,14 +243,19 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (currentProductViewModel?.productCatalog?.catalogName != null) {
             textViewCatalog.run {
                 visibility = View.VISIBLE
-                text = currentProductViewModel.productCatalog.catalogName
+                text = currentProductViewModel.productCatalog?.catalogName
             }
 
         }
         if (currentProductViewModel?.productPictureList?.size!! > 0) {
-            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0])
+            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0].uriOrPath)
             if (currentProductViewModel.productPictureList?.size!! > 1)
-                ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0])
+                ImageHandler.loadImageRounded2(context, imageTwo, currentProductViewModel.productPictureList!![1].uriOrPath)
+        }
+        labelViewNameProduct.setContent(currentProductViewModel.productName?.name)
+        if(!TextUtils.isEmpty(currentProductViewModel.productDescription?.description)) {
+            labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
+            labelViewDescriptionProduct.setSubTitle("")
         }
         labelViewNameProduct.setContent(currentProductViewModel.productName.name)
         if(currentProductViewModel.productPrice.price>0) {
@@ -257,6 +267,30 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType!!))}")
             labelViewWeightLogisticProduct.setSubTitle("")
         }
+        if (currentProductViewModel.productStock?.isActive!!) {
+            if(currentProductViewModel.productStock?.stockCount!! > 0) {
+                labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
+            }else {
+                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
+            }
+        }else{
+            labelViewStockProduct.setContent("Stok Kosong")
+        }
+
+        if(currentProductViewModel.productVariantByCatModelList.size > 0){
+            labelViewVariantProduct.visibility = View.VISIBLE
+            val productVariantOptionParentLv1 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(0)
+            val productVariantOptionParentLv2 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(1)
+            var selectedVariantString = "${productVariantOptionParentLv1?.getProductVariantOptionChild()?.size} ${productVariantOptionParentLv1?.name}"
+            if (productVariantOptionParentLv2 != null && productVariantOptionParentLv2.hasProductVariantOptionChild()) {
+                selectedVariantString = "$selectedVariantString \n ${productVariantOptionParentLv2.getProductVariantOptionChild().size} ${productVariantOptionParentLv2.getName()}"
+            }
+            labelViewVariantProduct.setContent(selectedVariantString)
+        }else{
+            labelViewVariantProduct.visibility = View.GONE
+        }
+
+
 
         if (currentProductViewModel.productStock?.isActive!!){
             if(currentProductViewModel.productStock?.stockCount!! > 0)
@@ -278,23 +312,46 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     fun onAddImagePickerClicked() {
+        var catalogId = ""
+        if(currentProductAddViewModel?.productCatalog?.catalogId!! > 0){
+            catalogId = currentProductAddViewModel!!.productCatalog?.catalogId.toString()
+        }
         val intent = AddProductImagePickerBuilder.createPickerIntentWithCatalog(context,
-                currentProductAddViewModel?.productPictureList, currentProductAddViewModel?.productCatalog?.catalogId.toString())
+                currentProductAddViewModel?.productPictureList?.convertToListImageString(), catalogId  )
         startActivityForResult(intent, REQUEST_CODE_GET_IMAGES)
     }
 
-    fun startProductVariantActivity() {
+    override fun onSuccessGetProductVariantCat(productVariantByCatModelList: MutableList<ProductVariantByCatModel>?) {
+        currentProductAddViewModel?.productVariantByCatModelList = productVariantByCatModelList as ArrayList<ProductVariantByCatModel>
+        populateView(currentProductAddViewModel)
+    }
 
-        val hasWholesale = true /* Todo currentProductAddViewModel!!.getProductWholesale() != null && currentProductAddViewModel!!.getProductWholesale().size > 0*/
+    override fun onErrorGetProductVariantByCat(throwable: Throwable?) {
+        onSuccessGetProductVariantCat(null)
+    }
+
+    fun goToProductDescriptionPicker(description: String) {
+        startActivity(ProductEditDescriptionActivity.createIntent(activity, description))
+    }
+
+    fun startProductVariantActivity() {
+        if (currentProductAddViewModel?.productVariantByCatModelList == null || currentProductAddViewModel?.productVariantByCatModelList!!.size == 0) {
+            NetworkErrorHelper.createSnackbarWithAction(activity) {
+                presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId!!.toLong())
+            }.showRetrySnackbar()
+            return
+        }
+
+        val hasWholesale = false /* Todo currentProductAddViewModel!!.getProductWholesale() != null && currentProductAddViewModel!!.getProductWholesale().size > 0*/
         if (appRouter is ProductEditModuleRouter) {
             val intent = (appRouter as ProductEditModuleRouter).createIntentProductVariant(activity,
-                    null,
+                    currentProductAddViewModel?.productVariantByCatModelList,
                     currentProductAddViewModel?.productVariantViewModel,
                     1/*todo*/,
                     123.0 /*todo*/,
                     currentProductAddViewModel?.productStock?.stockCount!!,
                     officialStore,
-                    ""/*todo*/,
+                    currentProductAddViewModel?.productStock?.sku,
                     isEdittingDraft(),
                     currentProductAddViewModel?.productSizeChart,
                     currentProductAddViewModel?.hasOriginalVariantLevel1!!,

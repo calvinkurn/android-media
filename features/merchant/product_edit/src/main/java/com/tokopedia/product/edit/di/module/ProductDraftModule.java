@@ -3,6 +3,7 @@ package com.tokopedia.product.edit.di.module;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.product.edit.common.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
+import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
 import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.product.edit.view.presenter.ProductDraftPresenterImpl;
@@ -24,8 +25,9 @@ public class ProductDraftModule {
     ProductDraftPresenterImpl productDraftPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                                         GetShopInfoUseCase getShopInfoUseCase,
                                                         UserSession userSession,
+                                                        FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                                         FetchDraftProductUseCase fetchDraftProductUseCase){
-        return new ProductDraftPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchDraftProductUseCase);
+        return new ProductDraftPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, fetchDraftProductUseCase);
     }
 
     @ProductAddScope

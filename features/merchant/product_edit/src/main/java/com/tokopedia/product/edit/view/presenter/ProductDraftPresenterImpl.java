@@ -28,8 +28,9 @@ public class ProductDraftPresenterImpl extends ProductAddPresenterImpl<ProductDr
     public ProductDraftPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                      GetShopInfoUseCase getShopInfoUseCase,
                                      UserSession userSession,
+                                     FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                      FetchDraftProductUseCase fetchDraftProductUseCase) {
-        super(saveDraftProductUseCase, getShopInfoUseCase, userSession);
+        super(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
         this.fetchDraftProductUseCase = fetchDraftProductUseCase;
     }
 
