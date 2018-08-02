@@ -423,4 +423,9 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         containerTrainReview.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onDestroy() {
+        trainReviewDetailPresenter.detachView();
+        super.onDestroy();
+    }
 }

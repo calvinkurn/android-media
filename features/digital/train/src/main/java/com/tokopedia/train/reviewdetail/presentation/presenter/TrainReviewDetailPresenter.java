@@ -262,7 +262,16 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
     @Override
     public void onRunningOutOfTime() {
-        getView().showExpiredPaymentDialog();
+        if (isViewAttached()) {
+            getView().showExpiredPaymentDialog();
+        }
     }
 
+    @Override
+    public void detachView() {
+        getDetailScheduleUseCase.unsubscribe();
+        getScheduleDetailUseCase.unsubscribe();
+        trainCheckoutUseCase.unsubscribe();
+        super.detachView();
+    }
 }
