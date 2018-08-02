@@ -537,7 +537,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     public void addToSelectedEtalaseList(String etalaseId, String etalaseName) {
-        // only add the etalase with not-empty name. Empty name is a deleted etalase.
+        // only add the etalase with not-empty name. Empty name is a deleted etalase (that come from deeplink)
         if (TextUtils.isEmpty(etalaseName)) {
             return;
         }
