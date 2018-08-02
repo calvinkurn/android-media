@@ -9,7 +9,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.product.edit.view.dialog.ProductAddImageEditVariantDialogFragment;
-import com.tokopedia.seller.product.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 
 import java.util.ArrayList;
 

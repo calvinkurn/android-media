@@ -46,6 +46,10 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
+import com.tokopedia.product.edit.view.activity.ProductDuplicateActivity;
+import com.tokopedia.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
@@ -60,7 +64,7 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
 import com.tokopedia.product.edit.common.util.ViewUtils;
 //import com.tokopedia.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.manage.constant.CashbackOption;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
@@ -203,7 +207,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
             @Override
             public void onEmptyButtonClicked() {
-//                startActivity(ProductAddActivity.getCallingIntent(getActivity()));
+                startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
             }
         });
         return emptyDataBinder;
@@ -324,7 +328,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         intent != null) {
                     ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
                     if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-//                        ProductAddActivity.start(getActivity(), imageUrlOrPathList);
+                        startActivity(ProductAddActivity.Companion.createInstance(getActivity(), imageUrlOrPathList));
                     }
                 }
                 break;
@@ -837,12 +841,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void goToDuplicateProduct(String productId) {
-//        Intent intent = ProductDuplicateActivity.createInstance(getActivity(), productId);
-//        startActivity(intent);
+        Intent intent = ProductDuplicateActivity.Companion.createInstance(getActivity(), productId);
+        startActivity(intent);
     }
 
     private void goToEditProduct(String productId) {
-//        Intent intent = ProductEditActivity.createInstance(getActivity(), productId);
-//        startActivity(intent);
+        Intent intent = ProductEditActivity.Companion.createInstance(getActivity(), productId);
+        startActivity(intent);
     }
 }

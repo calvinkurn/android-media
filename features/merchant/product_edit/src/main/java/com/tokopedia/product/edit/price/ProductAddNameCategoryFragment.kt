@@ -19,16 +19,16 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATEGORY
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_IMAGES
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
-import com.tokopedia.product.edit.view.activity.BaseProductEditActivity
+import com.tokopedia.product.edit.view.activity.ProductAddActivity
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
@@ -96,13 +96,7 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
                 }
                 REQUEST_CODE_GET_IMAGES -> {
                     val imageUrlOrPathList = data!!.getStringArrayListExtra(PICKER_RESULT_PATHS)
-
-                    val intent = Intent(activity, BaseProductEditActivity::class.java)
-                    intent.putExtra(EXTRA_NAME, productName)
-                    intent.putExtra(EXTRA_CATALOG, productCatalog)
-                    intent.putExtra(EXTRA_CATEGORY, productCategory)
-                    intent.putStringArrayListExtra(EXTRA_IMAGES, imageUrlOrPathList)
-                    startActivity(intent)
+                    startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, imageUrlOrPathList))
                     activity?.finish()
                 }
             }

@@ -167,4 +167,12 @@
     <string name="usd_format">US$ %s</string>
     <string name="product_currency_value_idr">1</string>
     <string name="product_currency_value_usd">2</string>
+    <string name="product_label_try_again">Coba Lagi</string>
+    <string name="product_draft_error_cannot_load_draft">Tidak bisa membuka draft product</string>
+    <string name="primary">Utama</string>
+    <string name="product_label_product_description">Deskripsi Produk</string>
+    <string name="product_desc_guide">Panduan Deskripsi Produk</string>
+    <string name="product_description_tips_title"><![CDATA[<b>Tips:</b> Penulisan Deskripsi Produk yang menarik lihat di sini.]]></string>
+    <string name="product_label_enter_product_description">Tulis dengan lengkap dan jelas deskripsi produk Anda</string>
+    <string name="product_label_message_error_upload_image">Gagal mengunggah gambar, silahkan coba lagi.</string>
 </resources>

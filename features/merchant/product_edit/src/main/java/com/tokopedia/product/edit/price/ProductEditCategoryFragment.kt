@@ -4,12 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder

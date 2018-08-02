@@ -5,23 +5,21 @@ import android.os.Parcelable
 import com.tokopedia.product.edit.util.ProductEditPreOrderTimeType
 import com.tokopedia.product.edit.util.ProductEditWeightType
 
-class ProductLogistic(): Parcelable{
-    var weight: Int = 0
-    var weightType: Int = ProductEditWeightType.GRAM
-    var insurance: Boolean = false
-    var freeReturn: Boolean = false
-    var preOrder: Boolean = false
-    var processTime: Int = 0
-    var processTimeType: Int = ProductEditPreOrderTimeType.DAY
-
-    constructor(parcel: Parcel) : this() {
-        weight = parcel.readInt()
-        weightType = parcel.readInt()
-        insurance = parcel.readByte() != 0.toByte()
-        freeReturn = parcel.readByte() != 0.toByte()
-        preOrder = parcel.readByte() != 0.toByte()
-        processTime = parcel.readInt()
-        processTimeType = parcel.readInt()
+data class ProductLogistic(var weight: Int = 0,
+                           var weightType: Int = ProductEditWeightType.GRAM,
+                           var insurance: Boolean = false,
+                           var freeReturn: Boolean = false,
+                           var preOrder: Boolean = false,
+                           var processTime: Int = 0,
+                           var processTimeType: Int = ProductEditPreOrderTimeType.DAY) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readInt(),
+            parcel.readInt()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

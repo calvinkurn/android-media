@@ -7,5 +7,5 @@ import javax.inject.Qualifier;
  */
 
 @Qualifier
-@interface ProductTomeQualifier {
+public @interface ProductTomeQualifier {
 }

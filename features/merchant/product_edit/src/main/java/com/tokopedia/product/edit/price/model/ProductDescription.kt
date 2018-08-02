@@ -4,26 +4,18 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.ArrayList
 
-class ProductDescription(): Parcelable{
-    var description: String? = null
-    var feature: String? = null
-    var isNew: Boolean = true
-    var videoIDs: ArrayList<String> = ArrayList()
-
-    constructor(parcel: Parcel) : this() {
-        description = parcel.readString()
-        feature = parcel.readString()
-        isNew = parcel.readByte() != 0.toByte()
-        videoIDs = arrayListOf<String>().apply {
-                        parcel.readList(this, String::class.java.classLoader)
-                    }
+data class ProductDescription(var description: String = "", var feature : String = "", var isNew : Boolean = true, var videoIDs : ArrayList<String> = ArrayList()): Parcelable{
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readArrayList(ArrayList::class.java.classLoader) as ArrayList<String>) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(description)
         parcel.writeString(feature)
         parcel.writeByte(if (isNew) 1 else 0)
-        parcel.writeList(videoIDs)
     }
 
     override fun describeContents(): Int {

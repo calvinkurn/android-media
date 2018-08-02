@@ -204,7 +204,6 @@
     <string name="product_manage_title_dialog_variant">Produk dengan Varian</string>
     <string name="product_manage_label_dialog_variant">Saat ini produk yang memiliki varian hanya bisa diubah dan dihapus melalui desktop</string>
     <string name="product_manage_label_snackbar_variant">Produk dengan Varian hanya dapat dihapus dan diubah melalui desktop.</string>
-    <string name="product_desc_guide">Panduan Deskripsi Produk</string>
     <string name="test_strike"><strike>TextView</strike></string>
     <string name="item_price_label">Harga Barang</string>
     <string name="shipping_fee_label">Ongkos Kirim</string>
@@ -231,7 +230,6 @@
     <string name="product_sizechart_optional">Panduan Ukuran (Optional)</string>
     <string name="product_sizechart_info">Tambah gambar panduan atau tabel ukuran agar pembeli mengetahui dimensi produk setiap varian.</string>
     <string name="product_variant_option_cannot_empty">Minimum 1 opsi varian harus dipilih</string>
-    <string name="product_description_tips_title"><![CDATA[<b>Tips:</b> Penulisan Deskripsi Produk yang menarik lihat di sini.]]></string>
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
     <string name="product_category_locked">Kategori Terkunci</string>
@@ -245,5 +243,4 @@
     <string name="sticker_cashback">Cashback %1$d%%</string>
     <string name="catalog">Katalog</string>
     <string name="primary">Utama</string>
-    <string name="product_label_message_error_upload_image">Gagal mengunggah gambar, silahkan coba lagi.</string>
 </resources>

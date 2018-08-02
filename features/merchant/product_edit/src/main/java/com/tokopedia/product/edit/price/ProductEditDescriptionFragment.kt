@@ -9,10 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_DESCRIPTION
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_DESCRIPTION
 import com.tokopedia.product.edit.price.model.ProductDescription
 import com.tokopedia.product.edit.view.activity.ProductAddVideoActivity
-import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_VIDEOS_LINKS
 import kotlinx.android.synthetic.main.fragment_product_edit_description.*

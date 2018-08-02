@@ -20,7 +20,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
-import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.page.view.widget.ShopWarningTickerView;
 
