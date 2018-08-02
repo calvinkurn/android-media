@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.network.NetworkErrorHelper
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
@@ -247,6 +248,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0])
         }
         labelViewNameProduct.setContent(currentProductViewModel.productName.name)
+        if(currentProductViewModel.productPrice.price>0) {
+            labelViewPriceProduct.setContent(CurrencyFormatUtil.convertPriceValueToIdrFormat(currentProductViewModel.productPrice.price, true))
+        }
         labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription.description)
         if (currentProductViewModel.productLogistic?.weight!! > 0) {
             labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType!!))}")
