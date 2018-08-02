@@ -712,7 +712,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     public void openProductModalActivity(int state) {
-        startActivityForResult(
+        if (getActivity() != null) {
+            startActivityForResult(
                 ProductModalActivity.Companion.createActivity(
                         getActivity(),
                         productVariant,
@@ -722,7 +723,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         selectedRemarkNotes
                 ),
                 REQUEST_PRODUCT_MODAL
-        );
+            );
+            getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+        }
     }
 
     @Override
