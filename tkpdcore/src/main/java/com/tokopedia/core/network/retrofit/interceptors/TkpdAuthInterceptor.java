@@ -78,7 +78,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
-        Log.d("adr", "checkForceLogout: "+response.peekBody(512).string());
         if (isNeedGcmUpdate(response)) {
             return refreshTokenAndGcmUpdate(chain, response, finalRequest);
         } else if (isUnauthorized(finalRequest, response)) {
