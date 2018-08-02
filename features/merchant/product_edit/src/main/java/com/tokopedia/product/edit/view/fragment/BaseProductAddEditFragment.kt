@@ -110,7 +110,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startStockActivity() {
-        startActivityForResult(ProductEditStockActivity.createIntent(activity!!, currentProductAddViewModel?.productStock!!), REQUEST_CODE_GET_STOCK)
+        startActivityForResult(ProductEditStockActivity.createIntent(activity!!, currentProductAddViewModel?.productStock!!, true, false), REQUEST_CODE_GET_STOCK)
     }
 
     private fun startLogisticActivity() {
@@ -257,10 +257,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType!!))}")
             labelViewWeightLogisticProduct.setSubTitle("")
         }
-        if (currentProductViewModel.productStock?.isActive!!)
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
-        else
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
+
+        if (currentProductViewModel.productStock?.isActive!!){
+            if(currentProductViewModel.productStock?.stockCount!! > 0)
+                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
+            else
+                labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
+        } else
+            labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
     }
 
     fun saveDraft(isUploading: Boolean) {
@@ -352,6 +356,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val EXTRA_HAS_VARIANT = "EXTRA_HAS_VARIANT"
         const val EXTRA_IS_GOLD_MERCHANT = "EXTRA_GOLD_MERCHANT"
         const val EXTRA_IS_MOVE_TO_GM = "EXTRA_IS_MOVE_TO_GM"
+        const val EXTRA_IS_STATUS_ADD = "EXTRA_IS_STATUS_ADD"
 
         val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
     }

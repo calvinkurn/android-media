@@ -8,13 +8,18 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.ProductEditStockFragment
 import com.tokopedia.product.edit.price.model.ProductStock
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 
 class ProductEditStockActivity : BaseSimpleActivity(){
 
     companion object {
-        fun createIntent(context: Context, productStock: ProductStock): Intent {
-            return Intent(context, ProductEditStockActivity::class.java).putExtra(EXTRA_STOCK, productStock)
+        fun createIntent(context: Context, productStock: ProductStock, hasVariant: Boolean, isAddStatus: Boolean): Intent {
+            return Intent(context, ProductEditStockActivity::class.java)
+                    .putExtra(EXTRA_STOCK, productStock)
+                    .putExtra(EXTRA_HAS_VARIANT, hasVariant)
+                    .putExtra(EXTRA_IS_STATUS_ADD, isAddStatus)
         }
     }
 

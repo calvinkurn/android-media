@@ -9,6 +9,8 @@ import android.widget.TextView
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.edit.price.model.ProductStock
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
 import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
 
 class ProductEditStockFragment : Fragment() {
@@ -16,13 +18,13 @@ class ProductEditStockFragment : Fragment() {
     private var productStock = ProductStock()
 
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    private val hasVariant by lazy { activity!!.intent.getBooleanExtra(EXTRA_HAS_VARIANT, false) }
+    private val isAddStatus by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_STATUS_ADD, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if(activity!!.intent.hasExtra(EXTRA_STOCK)) {
-            productStock = activity!!.intent.getParcelableExtra(EXTRA_STOCK)
-        }
+        productStock = activity!!.intent.getParcelableExtra(EXTRA_STOCK)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -46,6 +48,7 @@ class ProductEditStockFragment : Fragment() {
             setRadioButtonChosen(labelRadioButtonStockEmpty)
             setVisibleStockTextInputLayout()
         }
+
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
             setResult()
@@ -61,24 +64,31 @@ class ProductEditStockFragment : Fragment() {
 
     private fun setVisibleStockTextInputLayout(){
         if(labelRadioButtonStockLimited.isChecked){
-            decimalInputViewStock.visibility = View.VISIBLE
-            textViewHelperStock.visibility = View.VISIBLE
+            if (!hasVariant) {
+                decimalInputViewStock.visibility = View.VISIBLE
+                textViewHelperStock.visibility = View.VISIBLE
+            }
+            decimalInputViewStock.text = DEFAULT_PARENT_STOCK.toString()
         } else {
             decimalInputViewStock.visibility = View.GONE
             textViewHelperStock.visibility = View.GONE
+            decimalInputViewStock.text = DEFAULT_EMPTY_STOCK.toString()
         }
     }
 
     private fun setDataStock(productStock: ProductStock){
+        labelRadioButtonStockEmpty.isChecked = !productStock.isActive
         if(productStock.stockCount > 0){
             labelRadioButtonStockLimited.isChecked = productStock.isActive
         } else {
             labelRadioButtonStockAvailable.isChecked = productStock.isActive
         }
-        labelRadioButtonStockEmpty.isChecked = !productStock.isActive
         setVisibleStockTextInputLayout()
         decimalInputViewStock.text = productStock.stockCount.toString()
         editTextSku.setText(productStock.sku)
+        if(isAddStatus){
+            labelRadioButtonStockEmpty.visibility = View.GONE
+        }
     }
 
     private fun saveData(productStock: ProductStock): ProductStock{
@@ -103,7 +113,8 @@ class ProductEditStockFragment : Fragment() {
     }
 
     companion object {
-
+        const val DEFAULT_EMPTY_STOCK = 0
+        const val DEFAULT_PARENT_STOCK = 1
         fun createInstance() = ProductEditStockFragment()
     }
 }

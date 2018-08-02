@@ -3,7 +3,7 @@ package com.tokopedia.product.edit.price.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class ProductStock(var isActive : Boolean  = false, var stockCount : Int = 0, var sku :String = ""): Parcelable{
+data class ProductStock(var isActive : Boolean  = true, var stockCount : Int = 0, var sku :String = ""): Parcelable{
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
             parcel.readInt(),
