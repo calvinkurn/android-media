@@ -49,6 +49,10 @@ public interface KolComment {
 
         void onSuccessDeleteComment(int adapterPosition);
 
+        void enableSendComment();
+
+        void disableSendComment();
+
         interface ViewHolder {
             void onGoToProfile(String url);
 

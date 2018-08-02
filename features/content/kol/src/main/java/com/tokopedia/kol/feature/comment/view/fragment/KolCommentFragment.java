@@ -276,6 +276,7 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorSendComment(String errorMessage) {
+        enableSendComment();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -299,6 +300,7 @@ public class KolCommentFragment extends BaseDaggerFragment
         ));
 
         kolComment.setText("");
+        enableSendComment();
         KeyboardHandler.DropKeyboard(getActivity(), kolComment);
         totalNewComment += 1;
 
@@ -329,6 +331,16 @@ public class KolCommentFragment extends BaseDaggerFragment
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void enableSendComment() {
+        sendButton.setClickable(true);
+    }
+
+    @Override
+    public void disableSendComment() {
+        sendButton.setClickable(false);
     }
 
     private boolean isInfluencer() {
