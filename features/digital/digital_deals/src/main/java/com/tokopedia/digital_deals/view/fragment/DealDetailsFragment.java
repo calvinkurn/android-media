@@ -496,13 +496,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     @Override
-    public void showLoginSnackbar(String message) {
+    public void showLoginSnackbar(String message, int position) {
 
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
                     Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
-                    getActivity().startActivityForResult(intent, LIKE_REQUEST_CODE);
+                    startActivityForResult(intent, LIKE_REQUEST_CODE);
                 }
         ).show();
 
@@ -605,6 +605,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             if (userSession.isLoggedIn()) {
                 mPresenter2.setDealLike(dealDetail, 0);
+                if (dealDetail.getIsLiked()) {
+                    setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
+                } else {
+                    setLikes(dealDetail.getLikes() + 1, !dealDetail.getIsLiked());
+                }
             }
         }
     }
@@ -623,7 +628,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     };
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         navigateToActivityRequest(intent, requestCode);
     }
 }

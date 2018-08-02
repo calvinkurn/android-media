@@ -13,7 +13,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,8 +28,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -74,10 +75,11 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private LinearLayout noContent;
     @Inject
     public BrandDetailsPresenter mPresenter;
-    private DealsCategoryAdapter categoryAdapter;
+    private DealsCategoryAdapter dealsAdapter;
     private LinearLayoutManager layoutManager;
     private Toolbar toolbar;
     private String locationName;
+    private int adapterPosition=-1;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new BrandDetailsFragment();
@@ -183,16 +185,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         loadBrandImage(ivHeader, brand.getFeaturedImage());
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
         if (productItems != null && productItems.size() > 0) {
-            for (ProductItem productItem : productItems) {
-                productItem.setBrand(brand);
-            }
             if (count == 0)
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), productItems.size()));
             else
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            categoryAdapter = new DealsCategoryAdapter(productItems, this, !isShortLayout, true);
+            dealsAdapter = new DealsCategoryAdapter(productItems, this, !isShortLayout, true);
 
-            recyclerViewDeals.setAdapter(categoryAdapter);
+            recyclerViewDeals.setAdapter(dealsAdapter);
             recyclerViewDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
@@ -320,6 +319,17 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                     }
                 }
                 break;
+            case DealsHomeActivity.REQUEST_CODE_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    if (userSession.isLoggedIn()) {
+                        if (adapterPosition != -1) {
+                            if (dealsAdapter != null)
+                                dealsAdapter.setLike(adapterPosition);
+                        }
+                    }
+                }
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -338,7 +348,8 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
+        this.adapterPosition=position;
         navigateToActivityRequest(intent, requestCode);
     }
 }

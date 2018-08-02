@@ -1,5 +1,4 @@
 /tkpdsession/       @tokopedia/minion-kevin
-/tkpdflight/        @tokopedia/minion-mark
 /tkpdloyalty/       @tokopedia/minion-bob
 /tkpddigital/       @tokopedia/minion-mark
 /tkpdcore/          @tokopedia/core-team
@@ -28,8 +27,17 @@
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 
+/features/digital/flight/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
-/features/payment/payment/              @tokopedia/minion-bob
+
+/features/payment/payment/                      @tokopedia/minion-bob
+/features/transaction/checkout                  @tokopedia/minion_bob
+/features/transaction/transactionanalytics      @tokopedia/minion_bob
+/features/transaction/transactiondata           @tokopedia/minion_bob
+/features/logistic/district_recommendation      @tokopedia/minion_bob
+/features/logistic/logisticdata                 @tokopedia/minion_bob
+/features/logistic/logisticuploadawb            @tokopedia/minion_bob
+/features/logistic/tracking                     @tokopedia/minion_bob
 
 /features/user/topchat/                 @tokopedia/minion-kevin
 /features/user/groupchat/               @tokopedia/minion-kevin
@@ -49,6 +57,7 @@
 /libraries/applink/                     @tokopedia/core-team
 /libraries/push_notification/           @ricoharisin
 /libraries/user_session/                @tokopedia/minion-kevin
+/libraries/youtubeutils/                @tokopedia/minion-kevin
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
 /features/promo/tokopoints              @tokopedia/india-android-team
