@@ -147,6 +147,8 @@ public interface Constants {
         String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
         String CONTENT_DETAIL ="tokopedia://content/{post_id}";
 
+        String ORDER_LIST = "tokopedia://order";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";
