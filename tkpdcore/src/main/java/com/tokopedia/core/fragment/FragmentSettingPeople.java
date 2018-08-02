@@ -132,7 +132,6 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-//                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
                             intent = ((TkpdCoreRouter) MainApplication.getAppContext())
                                     .getSettingBankIntent(getActivity());
                             startActivity(intent);
@@ -184,7 +183,6 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-//                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
                             intent = ((TkpdCoreRouter) MainApplication.getAppContext())
                                     .getSettingBankIntent(getActivity());
                             startActivity(intent);
