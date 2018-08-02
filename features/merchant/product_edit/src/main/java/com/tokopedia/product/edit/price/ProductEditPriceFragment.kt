@@ -3,6 +3,7 @@ package com.tokopedia.product.edit.price
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -12,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -25,14 +27,16 @@ import com.tokopedia.product.edit.util.ProductEditOptionMenuAdapter
 import com.tokopedia.product.edit.util.ProductEditOptionMenuBottomSheets
 import com.tokopedia.product.edit.utils.ProductPriceRangeUtils
 import com.tokopedia.product.edit.view.activity.ProductAddWholesaleActivity
+import com.tokopedia.product.edit.view.dialog.ProductChangeVariantPriceDialogFragment
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_MOVE_TO_GM
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_PRICE
 import com.tokopedia.product.edit.view.fragment.ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE
 import kotlinx.android.synthetic.main.fragment_product_edit_price.*
 
-class ProductEditPriceFragment : Fragment() {
+class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFragment.OnProductChangeVariantPriceFragmentListener {
 
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
@@ -79,7 +83,7 @@ class ProductEditPriceFragment : Fragment() {
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
             if(isDataValid()){
-                setResult()
+                setResult(false)
             }
         }
 
@@ -128,6 +132,10 @@ class ProductEditPriceFragment : Fragment() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onChangeAllPriceVariantSubmit(currencyType: Int, currencyValue: Double) {
+        spinnerCounterInputViewPrice.counterValue = currencyValue
     }
 
     private fun showDataPrice(productPrice: ProductPrice){
@@ -251,14 +259,36 @@ class ProductEditPriceFragment : Fragment() {
                 setLabelViewWholesale(wholesalePrice)
                 dialog.cancel()
                 if (hasVariant) {
-
+                    showEditPriceWhenHasVariantDialog()
                 }
             }
             builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
             val alert = builder.create()
             alert.show()
         } else if (hasVariant) {
+            showEditPriceWhenHasVariantDialog()
+        }
+    }
 
+    private fun showEditPriceWhenHasVariantDialog(){
+        val dialogFragment = ProductChangeVariantPriceDialogFragment.newInstance(selectedCurrencyType,
+                isGoldMerchant,
+                getPriceValue(),
+                isOfficialStore)
+        dialogFragment.show(activity!!.supportFragmentManager,
+                ProductChangeVariantPriceDialogFragment.TAG)
+        dialogFragment.attachListener(this)
+        dialogFragment.setOnDismissListener {
+            Handler().post(Runnable {
+                if (!isAdded || activity == null) {
+                    return@Runnable
+                }
+                val view = activity!!.currentFocus
+                if (view != null) {
+                    CommonUtils.hideSoftKeyboard(view)
+                    view.clearFocus()
+                }
+            })
         }
     }
 
@@ -277,7 +307,7 @@ class ProductEditPriceFragment : Fragment() {
             if (!isGoldMerchant && selectedCurrencyType == CurrencyTypeDef.TYPE_USD) {
                 if (GlobalConfig.isSellerApp()) {
                     UnifyTracking.eventSwitchRpToDollarAddProduct()
-//                    this@ProductPriceViewHolder.listener.showDialogMoveToGM(R.string.product_add_label_alert_dialog_dollar)
+                    setResult(true)
                 } else {
                     Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
                             .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
@@ -333,9 +363,10 @@ class ProductEditPriceFragment : Fragment() {
         }
     }
 
-    private fun setResult(){
+    private fun setResult(isMoveToGm: Boolean){
         val intent = Intent()
         intent.putExtra(EXTRA_PRICE, saveData(productPrice))
+        intent.putExtra(EXTRA_IS_MOVE_TO_GM, isMoveToGm)
         activity!!.setResult(Activity.RESULT_OK, intent)
         activity!!.finish()
     }

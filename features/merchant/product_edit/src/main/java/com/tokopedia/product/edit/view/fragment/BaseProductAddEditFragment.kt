@@ -98,11 +98,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startNameActivity() {
-        startActivityForResult(ProductEditNameActivity.createIntent(activity!!, currentProductAddViewModel?.productName!!), REQUEST_CODE_GET_NAME)
+        startActivityForResult(ProductEditNameActivity.createIntent(activity!!, currentProductAddViewModel?.productName!!, true), REQUEST_CODE_GET_NAME)
     }
 
     private fun startPriceActivity() {
-        startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, currentProductAddViewModel?.productPrice!!, false, false, true), REQUEST_CODE_GET_PRICE)
+        startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, currentProductAddViewModel?.productPrice!!, false, true, true), REQUEST_CODE_GET_PRICE)
     }
 
     private fun startDescriptionActivity() {
@@ -250,6 +250,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewNameProduct.setContent(currentProductViewModel.productName.name)
         if(currentProductViewModel.productPrice.price>0) {
             labelViewPriceProduct.setContent(CurrencyFormatUtil.convertPriceValueToIdrFormat(currentProductViewModel.productPrice.price, true))
+            labelViewPriceProduct.setSubTitle("")
         }
         labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription.description)
         if (currentProductViewModel.productLogistic?.weight!! > 0) {
@@ -276,10 +277,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         val intent = AddProductImagePickerBuilder.createPickerIntentWithCatalog(context,
                 currentProductAddViewModel?.productPictureList, currentProductAddViewModel?.productCatalog?.catalogId.toString())
         startActivityForResult(intent, REQUEST_CODE_GET_IMAGES)
-    }
-
-    fun goToProductDescriptionPicker(description: String) {
-//        startActivity(ProductEditDescriptionActivity.createIntent(activity, description))
     }
 
     fun startProductVariantActivity() {
@@ -350,9 +347,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
 
+        const val EXTRA_IS_EDITABLE_NAME = "EXTRA_IS_EDITABLE_NAME"
         const val EXTRA_IS_OFFICIAL_STORE = "EXTRA_OFFICIAL_STORE"
         const val EXTRA_HAS_VARIANT = "EXTRA_HAS_VARIANT"
         const val EXTRA_IS_GOLD_MERCHANT = "EXTRA_GOLD_MERCHANT"
+        const val EXTRA_IS_MOVE_TO_GM = "EXTRA_IS_MOVE_TO_GM"
 
         val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
     }
