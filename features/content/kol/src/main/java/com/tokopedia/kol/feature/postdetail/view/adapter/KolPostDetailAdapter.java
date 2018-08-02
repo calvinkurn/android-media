@@ -90,12 +90,12 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
 
         @Override
         public int getOldListSize() {
-            return oldList.size();
+            return oldList == null ? 0 : oldList.size();
         }
 
         @Override
         public int getNewListSize() {
-            return newList.size();
+            return newList == null ? 0 : newList.size();
         }
 
         @Override
