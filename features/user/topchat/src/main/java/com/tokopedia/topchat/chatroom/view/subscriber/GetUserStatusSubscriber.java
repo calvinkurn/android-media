@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.subscriber;
 
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusDataPojo;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
@@ -30,7 +31,9 @@ public class GetUserStatusSubscriber extends Subscriber<GetUserStatusDataPojo> {
 
     @Override
     public void onError(Throwable e) {
-
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace();
+        }
     }
 
     @Override
