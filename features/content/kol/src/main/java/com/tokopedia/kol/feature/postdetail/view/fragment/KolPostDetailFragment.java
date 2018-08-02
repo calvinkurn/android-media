@@ -173,6 +173,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void showLoading() {
         if (!isLoading()) {
             adapter.showLoading();
+            recyclerView.smoothScrollToPosition(0);
         }
     }
 
@@ -294,7 +295,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         switch (requestCode) {
             case OPEN_KOL_COMMENT:
             case OPEN_KOL_PROFILE:
-                adapter.clearData();
                 presenter.getCommentFirstTime(postId);
                 break;
             default:
