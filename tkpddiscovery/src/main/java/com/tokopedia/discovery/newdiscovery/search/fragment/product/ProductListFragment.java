@@ -961,6 +961,9 @@ public class ProductListFragment extends SearchSectionFragment
 
 
     private boolean isShowCaseAllowed(String tag) {
+        if(getActivity() == null) {
+            return false;
+        }
         return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
     }
 
