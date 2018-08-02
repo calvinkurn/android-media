@@ -33,6 +33,13 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -84,6 +91,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
         }
+
+        startShowCase();
     }
 
     private void setBadgeNotifCounter(Fragment fragment) {
@@ -229,5 +238,37 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
         }
+    }
+
+    private ShowCaseDialog showCaseDialog;
+
+    private void startShowCase() {
+        final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
+//        if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null) {
+//            return;
+//        }
+        showCaseDialog = createShowCase();
+        showCaseDialog.setShowCaseStepListener((previousStep, nextStep, showCaseObject) -> false);
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        showCaseObjectList.add(new ShowCaseObject(
+                bottomNavigation,
+                "Title",
+                "Description",
+                ShowCaseContentPosition.TOP,
+                R.color.tkpd_main_green));
+        showCaseDialog.show(this, showCaseTag, showCaseObjectList);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
     }
 }
