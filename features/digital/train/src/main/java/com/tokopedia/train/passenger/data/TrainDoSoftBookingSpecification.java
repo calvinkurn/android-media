@@ -65,13 +65,13 @@ public class TrainDoSoftBookingSpecification implements GqlNetworkSpecification 
         TrainScheduleRequest returnTripOrg = (TrainScheduleRequest) parameters.get(TrainSoftBookingUseCase.RETURN_TRIP);
         if (returnTripOrg != null) {
             JsonObject returnTrip = new JsonObject();
-            returnTrip.addProperty(TRIP_ORIGIN, departure.getOrigin());
-            returnTrip.addProperty(TRIP_DESTINATION, departure.getDestination());
-            returnTrip.addProperty(TRIP_TRAIN_NAME, departure.getTrainName());
-            returnTrip.addProperty(TRIP_TRAIN_NO, departure.getTrainNo());
-            returnTrip.addProperty(TRIP_TRAIN_CLASS, departure.getTrainClass());
-            returnTrip.addProperty(TRIP_TRAIN_SUBCLASS, departure.getSubclass());
-            returnTrip.addProperty(TRIP_DEPARTURE_TIMESTAMP, departure.getDepartureTimestamp());
+            returnTrip.addProperty(TRIP_ORIGIN, returnTripOrg.getOrigin());
+            returnTrip.addProperty(TRIP_DESTINATION, returnTripOrg.getDestination());
+            returnTrip.addProperty(TRIP_TRAIN_NAME, returnTripOrg.getTrainName());
+            returnTrip.addProperty(TRIP_TRAIN_NO, returnTripOrg.getTrainNo());
+            returnTrip.addProperty(TRIP_TRAIN_CLASS, returnTripOrg.getTrainClass());
+            returnTrip.addProperty(TRIP_TRAIN_SUBCLASS, returnTripOrg.getSubclass());
+            returnTrip.addProperty(TRIP_DEPARTURE_TIMESTAMP, returnTripOrg.getDepartureTimestamp());
             result.put(TrainSoftBookingUseCase.RETURN_TRIP, returnTrip);
         }
         TrainBuyerRequest trainBuyerRequest = (TrainBuyerRequest) parameters.get(TrainSoftBookingUseCase.BUYER);
