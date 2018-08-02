@@ -160,6 +160,10 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     val productStock: ProductStock = data!!.getParcelableExtra(EXTRA_STOCK)
                     currentProductAddViewModel?.productStock = productStock
                 }
+                REQUEST_CODE_GET_PRICE -> {
+                    val productPrice: ProductPrice = data!!.getParcelableExtra(EXTRA_PRICE)
+                    currentProductAddViewModel?.productPrice = productPrice
+                }
                 REQUEST_CODE_GET_DESCRIPTION -> {
                     val productDescription: ProductDescription = data!!.getParcelableExtra(EXTRA_DESCRIPTION)
                     currentProductAddViewModel?.productDescription = productDescription
@@ -179,7 +183,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         val productVariantViewModel = data.getParcelableExtra<ProductVariantViewModel>(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION)
                         currentProductAddViewModel?.productVariantViewModel = productVariantViewModel
                     }
-                    if (data!!.hasExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART)) {
+                    if (data.hasExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART)) {
                         val productPictureViewModel = data.getParcelableExtra<ProductPictureViewModel>(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART)
                         currentProductAddViewModel?.productSizeChart = productPictureViewModel
                     }
@@ -278,7 +282,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     fun goToProductDescriptionPicker(description: String) {
-        startActivity(ProductEditDescriptionActivity.createIntent(activity, description))
+//        startActivity(ProductEditDescriptionActivity.createIntent(activity, description))
     }
 
     fun startProductVariantActivity() {
@@ -333,6 +337,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val REQUEST_CODE_GET_IMAGES = 1
         const val REQUEST_CODE_GET_CATALOG_CATEGORY = 2
         const val REQUEST_CODE_GET_NAME = 3
+        const val REQUEST_CODE_GET_PRICE = 4
         const val REQUEST_CODE_GET_DESCRIPTION = 5
         const val REQUEST_CODE_GET_STOCK = 6
         const val REQUEST_CODE_GET_LOGISTIC = 7
@@ -343,9 +348,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val EXTRA_CATALOG = "EXTRA_CATALOG"
         const val EXTRA_CATEGORY = "EXTRA_CATEGORY"
         const val EXTRA_IMAGES = "EXTRA_IMAGES"
+        const val EXTRA_PRICE = "EXTRA_PRICE"
         const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
         const val EXTRA_STOCK = "EXTRA_STOCK"
         const val EXTRA_LOGISTIC = "EXTRA_LOGISTIC"
+
+        const val EXTRA_IS_OFFICIAL_STORE = "EXTRA_OFFICIAL_STORE"
+        const val EXTRA_HAS_VARIANT = "EXTRA_HAS_VARIANT"
+        const val EXTRA_IS_GOLD_MERCHANT = "EXTRA_GOLD_MERCHANT"
 
         val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
     }

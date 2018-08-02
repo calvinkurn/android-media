@@ -7,8 +7,7 @@ data class ProductStock(var isActive : Boolean  = false, var stockCount : Int = 
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
             parcel.readInt(),
-            parcel.readString()) {
-    }
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (isActive) 1 else 0)
