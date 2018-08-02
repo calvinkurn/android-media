@@ -3,18 +3,36 @@ package com.tokopedia.product.edit.price
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.TextView
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.edit.common.di.component.ProductComponent
+import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryComponent
+import com.tokopedia.product.edit.di.module.ProductEditCategoryModule
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
+import com.tokopedia.product.edit.view.presenter.ProductEditCategoryPresenter
+import javax.inject.Inject
 
-class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHolder.Listener{
+class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCatalogViewHolder.Listener{
+
+    override fun getScreenName(): String? = null
+
+    @Inject lateinit var presenter: ProductEditCategoryPresenter
+
+    private var productName: String = ""
+
+
+    override fun initInjector() {
+        DaggerProductEditCategoryComponent.builder()
+                .productComponent(getComponent(ProductComponent::class.java))
+                .productEditCategoryModule(ProductEditCategoryModule())
+                .build()
+                .inject(this)
+    }
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
@@ -24,9 +42,10 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        productCategory = activity!!.intent.getParcelableExtra(EXTRA_CATEGORY)
-        if(activity!!.intent.hasExtra(EXTRA_CATALOG)) {
-            productCatalog = activity!!.intent.getParcelableExtra(EXTRA_CATALOG)
+        arguments?.run {
+            productCategory = getParcelable(EXTRA_CATEGORY)
+            productCatalog = getParcelable(EXTRA_CATALOG)
+            productName = getString(EXTRA_PRODUCT_NAME, "")
         }
     }
 
@@ -43,6 +62,7 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
         texViewMenu.setOnClickListener {
             setResult()
         }
+        presenter.getCategotyRecommendation(productName)
     }
 
     override fun onLabelCategoryClicked() {
@@ -84,8 +104,18 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
     }
 
     companion object {
+        private const val EXTRA_PRODUCT_NAME = "product_name"
+        private const val EXTRA_CATALOG = "extra_catalog"
+        private const val EXTRA_CATEGORY = "extra_category"
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
-        fun createInstance() = ProductEditCategoryFragment()
+
+        fun createInstance(productName: String, category: ProductCategory?, catalog: ProductCatalog?) =
+                ProductEditCategoryFragment().apply {
+                    arguments = Bundle().apply { putString(EXTRA_PRODUCT_NAME, productName)
+                        putParcelable(EXTRA_CATALOG, catalog ?: ProductCatalog())
+                        putParcelable(EXTRA_CATEGORY, category ?: ProductCategory())
+                }
+        }
     }
 }
