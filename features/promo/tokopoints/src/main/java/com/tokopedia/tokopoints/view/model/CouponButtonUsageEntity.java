@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class CouponButtonUsageEntity {
     @Expose
-    @SerializedName("applink")
+    @SerializedName("appLink")
     private String appLink;
 
     @Expose

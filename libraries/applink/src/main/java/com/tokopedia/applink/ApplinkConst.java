@@ -82,6 +82,7 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
+    String HOWTOPAY = "tokopedia://howtopay";
 
 
     String EVENTS = "tokopedia://events";
@@ -108,8 +109,10 @@ public interface ApplinkConst {
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
-    String ORDER_TRACKING = "tokopedia://order/tracking";
+    String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
+    String INSTANT_LOAN = "tokopedia://loan";
+    String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

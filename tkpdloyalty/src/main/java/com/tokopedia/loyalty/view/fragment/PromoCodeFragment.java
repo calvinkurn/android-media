@@ -342,6 +342,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     @Override
     public void onPromoCodeError(String errorMessage) {
         voucherCodeFieldHolder.setError(errorMessage);
+        listener.sendAnalyticsOnErrorGetPromoCode(errorMessage);
     }
 
     @Override
@@ -456,6 +457,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         void onUsePromoCodeClicked();
 
         void sendAnalyticsScreenNamePromoCode();
+
+        void sendAnalyticsOnErrorGetPromoCode(String errorMessage);
 
     }
 }
