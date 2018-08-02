@@ -634,7 +634,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) ) {
             if ( isUserFirstTimeLogin) {
-
             adapter.notifyDataSetChanged();}
             updateCartNotification();
         }
@@ -689,6 +688,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
+        } else if (requestCode == DrawerHelper.REQUEST_LOGIN && resultCode == RESULT_OK) {
+            initStateFragment = INIT_STATE_FRAGMENT_HOME;
+            adapter = new PagerAdapter(getSupportFragmentManager());
+            setupViewPager();
+            adapter.notifyDataSetChanged();
         }
     }
 
