@@ -45,7 +45,6 @@ import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.presenter.ShippingView;
-import com.tokopedia.seller.selling.view.fragment.FragmentReadyToShip;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingDelivered;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipped;
@@ -316,8 +315,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
         fragmentList.add(OpportunityListFragment.newInstance(query));
         fragmentList.add(FragmentSellingNewOrder.createInstance());
-//        fragmentList.add(FragmentSellingShipping.createInstance());
-        fragmentList.add(FragmentReadyToShip.newInstance());
+        fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingShipped.newInstance());
         fragmentList.add(FragmentSellingDelivered.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
