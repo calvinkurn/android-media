@@ -2,19 +2,12 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 
 import java.util.ArrayList;
@@ -49,33 +42,35 @@ public class AccountSettingFragment extends BaseGeneralSettingFragment {
 
     @Override
     public void onItemClicked(int settingId) {
-        Intent intent = null;
-        switch (settingId){
-            case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
-                intent = new Intent(getActivity(), ManagePeopleProfileActivity.class);
-                startActivityForResult(intent, 0);
-                break;
-            case SettingConstant.SETTING_ACCOUNT_PASS_ID:
-                if (userSession.isHasPassword()) {
-                    intent = new Intent(getActivity(), ManagePasswordActivity.class);
-                    startActivity(intent);
-                } else {
-                    intentToAddPassword();
-                }
-                break;
-            case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
-                intent = new Intent(getActivity(), ManagePeopleAddressActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                break;
+        Intent intent;
+
+        if (getActivity().getApplication() instanceof AccountHomeRouter) {
+            AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
+            switch (settingId) {
+                case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
+                    startActivityForResult(router.getManageProfileIntent(getActivity()), 0);
+                    break;
+                case SettingConstant.SETTING_ACCOUNT_PASS_ID:
+                    if (userSession.isHasPassword()) {
+                        startActivity(router.getManagePasswordIntent(getActivity()));
+                    } else {
+                        intentToAddPassword();
+                    }
+                    break;
+                case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
+                    startActivity(router.getManageAddressIntent(getActivity()));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     private void intentToAddPassword() {
-        startActivityForResult(
-                ((TkpdCoreRouter)getActivity().getApplicationContext())
-                        .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+        if (getActivity().getApplication() instanceof AccountHomeRouter){
+            startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
+                    .getManagePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+        }
     }
 
     @Override

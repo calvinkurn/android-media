@@ -12,12 +12,15 @@ public class GlobalNavConstant {
     public static final int PENJUALAN = 2;
     public static final int KOMPLAIN = 3;
 
-    public static final int BELUM_DIBAYAR = 0;
-    public static final int SIAP_DIKIRIM = 1;
-    public static final int SAMPAI_TUJUAN = 2;
+    public static final int MENUNGGU_KONFIRMASI = 4;
+    public static final int PESANAN_DIPROSES = 5;
 
-    public static final int PESANAN_BARU = 0;
+    public static final int PESANAN_BARU = 6;
+    public static final int SIAP_DIKIRIM = 7;
 
-    public static final int BUYER = 0;
-    public static final int SELLER = 1;
+    public static final int SEDANG_DIKIRIM = 8;
+    public static final int SAMPAI_TUJUAN = 9;
+
+    public static final int BUYER = 10;
+    public static final int SELLER = 11;
 }

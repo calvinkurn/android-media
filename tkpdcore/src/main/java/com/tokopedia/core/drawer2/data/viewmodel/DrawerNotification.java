@@ -31,6 +31,10 @@ public class DrawerNotification {
     public static final String CACHE_TOTAL_CART = "CACHE_INCR_NOTIF";
     public static final String IS_HAS_CART = "IS_HAS_CART";
 
+    public static final String CACHE_PURCHASE_CONFIRMED = "CACHE_PURCHASE_CONFIRMED";
+    public static final String CACHE_PURCHASE_PROCESSED = "CACHE_PURCHASE_PROCESSED";
+    public static final String CACHE_PURCHASE_SHIPPED = "CACHE_PURCHASE_SHIPPED";
+    public static final String CACHE_PURCHASE_DELIVERED = "CACHE_PURCHASE_DELIVERED";
 
     private int inboxMessage;
     private int inboxTalk;

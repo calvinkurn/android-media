@@ -42,7 +42,7 @@ import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRou
 public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInitContract.Presenter>
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener{
     private static final String ORDER_CATEGORY = "orderCategory";
-    private int drawerPosition;
+//    private int drawerPosition;
     private String orderCategory = "ALL";
     private Tabs tabLayout;
     private ViewPager viewPager;
@@ -83,8 +83,8 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION,
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
+//        drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION,
+//                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
     }
 
     @Override
@@ -102,22 +102,22 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
     @Override
     protected void onResume() {
         super.onResume();
-        if(drawerHelper != null) {
-            switch (orderCategory){
-                case OrderCategory.DIGITAL:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.FLIGHTS:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
-                    break;
-                    case OrderCategory.DEALS:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.EVENTS:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
-                    break;
-            }
-        }
+//        if(drawerHelper != null) {
+//            switch (orderCategory){
+//                case OrderCategory.DIGITAL:
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
+//                    break;
+//                case OrderCategory.FLIGHTS:
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
+//                    break;
+//                    case OrderCategory.DEALS:
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
+//                    break;
+//                case OrderCategory.EVENTS:
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
+//                    break;
+//            }
+//        }
     }
 
     @Override
@@ -127,7 +127,7 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
 
     @Override
     protected void initVar() {
-        tabLayout = findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.indicator);
         viewPager = findViewById(R.id.pager);
     }
 
@@ -136,7 +136,8 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
 
     @Override
     protected int setDrawerPosition() {
-        return drawerPosition;
+        return 0;
+//        return drawerPosition;
     }
 
     @Override
@@ -209,26 +210,26 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            drawerPosition = position;
-            switch (orderCategory){
-                case OrderCategory.DIGITAL:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.FLIGHTS:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.EVENTS:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.DEALS:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
-                    break;
-
-            }
+//            drawerPosition = position;
+//            switch (orderCategory){
+//                case OrderCategory.DIGITAL:
+//                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST;
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
+//                    break;
+//                case OrderCategory.FLIGHTS:
+//                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST;
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
+//                    break;
+//                case OrderCategory.EVENTS:
+//                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST;
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
+//                    break;
+//                case OrderCategory.DEALS:
+//                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST;
+//                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
+//                    break;
+//
+//            }
         }
     }
 

@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.navigation.data.mapper.NotificationMapper;
+import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.data.mapper.DrawerNotificationMapper;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
@@ -30,13 +32,8 @@ public class GlobalNavModule {
     }
 
     @Provides
-    GetNotificationUseCase provideGetNotificationUseCase(GraphqlUseCase graphqlUseCase) {
-        return new GetNotificationUseCase(graphqlUseCase, new NotificationMapper());
-    }
-
-    @Provides
     GetDrawerNotificationUseCase provideGetDrawerNotificationUseCase(GraphqlUseCase graphqlUseCase) {
-        return new GetDrawerNotificationUseCase(graphqlUseCase, new DrawerNotificationMapper());
+        return new GetDrawerNotificationUseCase(graphqlUseCase, new NotificationMapper());
     }
 
     @Named("FRAGMENT_ONE")

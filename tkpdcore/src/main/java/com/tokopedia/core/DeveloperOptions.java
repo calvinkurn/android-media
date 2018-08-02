@@ -22,7 +22,7 @@ import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 
-@DeepLink("tokopedia://dev-opts")
+@DeepLink("tokopedia://setting/dev-opts")
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String IS_CHUCK_ENABLED = "is_enable";

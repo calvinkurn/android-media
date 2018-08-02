@@ -3,7 +3,7 @@ package com.tokopedia.navigation.presentation.presenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.GlobalNavConstant;
-import com.tokopedia.navigation.domain.GetNotificationUseCase;
+import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.subscriber.NotificationSubscriber;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.usecase.RequestParams;
@@ -17,10 +17,10 @@ public class MainParentPresenter {
 
     private MainParentView mainParentView;
 
-    private final GetNotificationUseCase getNotificationUseCase;
+    private final GetDrawerNotificationUseCase getNotificationUseCase;
 
     @Inject
-    MainParentPresenter(GetNotificationUseCase getNotificationUseCase) {
+    MainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase) {
         this.getNotificationUseCase = getNotificationUseCase;
     }
 

@@ -8,11 +8,11 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
-import com.tokopedia.navigation.presentation.adapter.BaseListAdapter;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
@@ -25,16 +25,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.navigation.data.GlobalNavConstant.BELUM_DIBAYAR;
 import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
 import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.MENUNGGU_KONFIRMASI;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_DIPROSES;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SEDANG_DIKIRIM;
 
 /**
  * Created by meta on 24/07/18.
@@ -73,45 +75,20 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         adapter = new NotificationAdapter(getActivity());
         recyclerView.setAdapter(adapter);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                presenter.getDrawerNotification();
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.getDrawerNotification());
+
+        adapter.setOnNotifClickListener((parent, child) -> {
+            Intent intent = getCallingIntent(parent, child);
+            if (intent != null) {
+                startActivity(intent);
             }
         });
 
-        adapter.setOnItemClickListener(new BaseListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = getCallingIntent(position);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            }
-        });
-    }
-
-    private Intent getCallingIntent(int position) {
-        Intent intent = null;
-        switch (position) {
-            case SELLER_INFO:
-                intent = ((GlobalNavRouter)getActivity().getApplication())
-                        .getSellerInfoCallingIntent(getActivity());
-                break;
-            case PEMBELIAN:
-                break;
-            case PENJUALAN:
-                break;
-            case KOMPLAIN:
-                break;
-        }
-        return intent;
+        adapter.addAll(getData());
     }
 
     @Override
-    public void loadData() {
-        adapter.addAll(getData());
-    }
+    public void loadData() { }
 
     @Override
     public void onStartLoading() {
@@ -147,49 +124,120 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         return getString(R.string.notifications);
     }
 
+    boolean isHasAdded = false;
+
     @Override
-    public void renderNotification(NotificationsModel data) {
+    public void renderNotification(NotificationsModel data, boolean isHasShop) {
+        if (!isHasAdded) {
+            if (isHasShop) {
+                adapter.add(sellerInfoData(), SELLER_INFO);
+                adapter.add(sellerData(), PENJUALAN);
+            }
+            adapter.add(complain(isHasShop));
+            isHasAdded = !isHasAdded;
+        }
         adapter.updateValue(data);
     }
 
     private List<DrawerNotification> getData() {
         List<DrawerNotification> notifications = new ArrayList<>();
 
-        DrawerNotification inbox = new DrawerNotification();
-
-        List<DrawerNotification.ChildDrawerNotification> childInbox = new ArrayList<>();
-        childInbox.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.info_penjual)));
-        inbox.setChilds(childInbox);
-        notifications.add(inbox);
-
         DrawerNotification buyer = new DrawerNotification();
+        buyer.setId(PEMBELIAN);
         buyer.setTitle(getString(R.string.pembelian));
 
         List<DrawerNotification.ChildDrawerNotification> childBuyer = new ArrayList<>();
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.belum_dibayar)));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sedang_dikirim)));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sampai_tujuan)));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI, getString(R.string.menunggu_konfirmasi)));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES, getString(R.string.pesanan_diproses)));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM, getString(R.string.sedang_dikirim)));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN, getString(R.string.sampai_tujuan)));
         buyer.setChilds(childBuyer);
         notifications.add(buyer);
 
-        DrawerNotification seller = new DrawerNotification();
-        seller.setTitle(getString(R.string.penjualan));
+        return notifications;
+    }
 
-        List<DrawerNotification.ChildDrawerNotification> childSeller = new ArrayList<>();
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.pesanan_baru)));
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.siap_dikirim)));
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sampai_tujuan)));
-        seller.setChilds(childSeller);
-        notifications.add(seller);
-
+    private DrawerNotification complain(boolean isHasShop) {
         DrawerNotification complain = new DrawerNotification();
+        complain.setId(KOMPLAIN);
         complain.setTitle(getString(R.string.komplain_saya));
 
         List<DrawerNotification.ChildDrawerNotification> childComplain = new ArrayList<>();
-        childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_pembeli)));
-        childComplain.add(new DrawerNotification.ChildDrawerNotification(getString(R.string.sebagai_penjual)));
+        childComplain.add(new DrawerNotification.ChildDrawerNotification(BUYER, getString(R.string.sebagai_pembeli)));
+        if (isHasShop) {
+            childComplain.add(new DrawerNotification.ChildDrawerNotification(SELLER, getString(R.string.sebagai_penjual)));
+        }
         complain.setChilds(childComplain);
-        notifications.add(complain);
-        return notifications;
+
+        return complain;
+    }
+
+    private DrawerNotification sellerInfoData() {
+        DrawerNotification inbox = new DrawerNotification();
+
+        List<DrawerNotification.ChildDrawerNotification> childInbox = new ArrayList<>();
+        childInbox.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual)));
+        inbox.setChilds(childInbox);
+        return inbox;
+    }
+
+    private DrawerNotification sellerData() {
+        DrawerNotification seller = new DrawerNotification();
+        seller.setId(PENJUALAN);
+        seller.setTitle(getString(R.string.penjualan));
+
+        List<DrawerNotification.ChildDrawerNotification> childSeller = new ArrayList<>();
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(PESANAN_BARU, getString(R.string.pesanan_baru)));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SIAP_DIKIRIM, getString(R.string.siap_dikirim)));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM, getString(R.string.sedang_dikirim)));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN, getString(R.string.sampai_tujuan)));
+        seller.setChilds(childSeller);
+        return seller;
+    }
+
+    private Intent getCallingIntent(int parentPosition, int childPosition) {
+        Intent intent = null;
+        DrawerNotification item = adapter.getItem(parentPosition);
+        if (item != null && item.getId() != null) {
+            DrawerNotification.ChildDrawerNotification child = adapter
+                    .getItem(parentPosition).getChilds().get(childPosition);
+            switch (item.getId()) {
+                case PEMBELIAN:
+                    if (child.getId() == MENUNGGU_KONFIRMASI) {
+                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                    } else if (child.getId() == PESANAN_DIPROSES){
+                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                    } else if (child.getId() == SEDANG_DIKIRIM){
+                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                    } else if (child.getId() == SAMPAI_TUJUAN){
+                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                    }
+                    break;
+                case PENJUALAN:
+                    if (child.getId() == PESANAN_BARU) {
+                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
+                    } else if (child.getId() == SIAP_DIKIRIM){
+                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
+                    } else if (child.getId() == SEDANG_DIKIRIM){
+                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
+                    } else if (child.getId() == SAMPAI_TUJUAN){
+                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
+                    }
+                    break;
+                case KOMPLAIN:
+                    if (child.getId() == BUYER) {
+                        intent = ((GlobalNavRouter)getActivity().getApplication())
+                                .getResolutionCenterIntentBuyer(getActivity());
+                    } else if (child.getId()  == SELLER) {
+                        intent = ((GlobalNavRouter)getActivity().getApplication())
+                                .getResolutionCenterIntentSeller(getActivity());
+                    }
+                    break;
+            }
+        } else {
+            intent = ((GlobalNavRouter)getActivity().getApplication())
+                    .getSellerInfoCallingIntent(getActivity());
+        }
+        return intent;
     }
 }

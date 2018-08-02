@@ -3,19 +3,25 @@ package com.tokopedia.navigation.presentation.fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
@@ -25,6 +31,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
+import com.tokopedia.navigation_common.NotificationsModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +39,14 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import q.rorbin.badgeview.QBadgeView;
 import dagger.Component;
 
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements InboxView {
+public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter>  implements
+        InboxView, NotificationListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -52,6 +61,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Inject InboxPresenter presenter;
     private InboxAdapter adapter;
+
+    private ImageButton menuItemNotification;
+    private TextView toolbarTitle;
 
     @Override
     public int resLayout() {
@@ -80,20 +92,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_notification, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_notification) {
-            startActivity(NotificationActivity.start(getActivity()));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private List<Inbox> getData() {
         List<Inbox> inboxList = new ArrayList<>();
         inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
@@ -117,13 +115,21 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
                 break;
             case DISCUSSION_MENU:
-                RouteManager.route(getActivity(), ApplinkConst.TALK);
+//                RouteManager.route(getActivity(), ApplinkConst.TALK);
+                if (getActivity().getApplication() instanceof GlobalNavRouter) {
+                    startActivity(((GlobalNavRouter) getActivity().getApplication())
+                            .getInboxTalkCallingIntent(getActivity()));
+                }
                 break;
             case REVIEW_MENU:
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+//                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+                if (getActivity().getApplication() instanceof GlobalNavRouter) {
+                    startActivity(((GlobalNavRouter) getActivity().getApplication())
+                            .getInboxTicketCallingIntent(getActivity()));
+                }
                 break;
         }
     }
@@ -142,8 +148,21 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void loadData() {
-        if (toolbar != null)
-            toolbar.setTitle(getString(R.string.inbox));
+        setTitle(getString(R.string.inbox));
+    }
+
+    @Override
+    public void setupToolbar(View view) {
+        super.setupToolbar(view);
+        toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        menuItemNotification = toolbar.findViewById(R.id.action_notification);
+        menuItemNotification.setOnClickListener(v -> startActivity(NotificationActivity.start(getActivity())));
+    }
+
+    @Override
+    public void setTitle(String title) {
+        if (toolbarTitle != null)
+            toolbarTitle.setText(title);
     }
 
     @Override
@@ -163,7 +182,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void onRenderNotifINbox(NotificationEntity.Notification entity) {
+    public void onRenderNotifInbox(NotificationsModel entity) {
         adapter.updateValue(entity);
     }
 
@@ -172,6 +191,20 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         return getString(R.string.inbox);
     }
 
+    private QBadgeView badgeView;
+
+    @Override
+    public void onNotifyBadgeNotification(int number) {
+        if (menuItemNotification == null)
+            return;
+
+        if (badgeView == null)
+            badgeView = new QBadgeView(getActivity());
+
+        badgeView.bindTarget(menuItemNotification);
+        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
+        badgeView.setBadgeNumber(number);
+      
     @Override
     public void reInitInjector(GlobalNavComponent component) {
 

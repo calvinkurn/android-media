@@ -16,7 +16,7 @@
     <string name="title_privacy_setting">Kebijakan Privasi</string>
     <string name="title_help_center_setting">Pusat Bantuan</string>
     <string name="subtitle_account_setting">Atur Data Diri, Kata Sandi dan Alamat</string>
-    <string name="subtitle_shop_setting">Atur Lokasi, Etalase, Pengiriman, dan...</string>
+    <string name="subtitle_shop_setting">Atur Lokasi, Etalase, Pengiriman, dan lainnya</string>
     <string name="subtitle_tkpd_pay_setting">Atur Kartu Kredit, Akun Bank, dan lainnya</string>
     <string name="subtitle_notification_setting">Atur Chat, Diskusi, Ulasan, dan Buletin</string>
     <string name="logout">Keluar</string>
@@ -37,19 +37,48 @@
     <string name="title_credit_card_setting">Kartu Kredit</string>
     <string name="screentitle_tkpd_pay_setting">Atur Tokopedia Pay</string>
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
+    <string name="save_setting_label">Simpan</string>
+    <string name="title_favorite_page">Favorit</string>
 
     <string name="label_chat">Chat</string>
-    <string name="label_chat_admin">Chat dari Admin</string>
+    <string name="label_chat_admin">Chat Tokopedia Administrator</string>
     <string name="label_talk">Diskusi</string>
     <string name="label_review">Ulasan</string>
-    <string name="label_bulletin">Buletin</string>
+    <string name="label_bulletin">Newsletter</string>
 
-    <string name="pref_chat_key" translatable="false">notification_receive_chat</string>
-    <string name="pref_chat_admin_key" translatable="false">notification_receive_chat_admin</string>
-    <string name="pref_talk_key" translatable="false">notification_receive_talk</string>
-    <string name="pref_review_key" translatable="false">notification_receive_review</string>
-    <string name="pref_bulletin_key" translatable="false">notification_receive_bulletin</string>
+    <string name="label_review_summary">Setiap ulasan dan komentar yang saya terima</string>
+    <string name="label_talk_summary">Setiap pertanyaan dan komentar diskusi yang saya terima</string>
+    <string name="label_chat_summary">Setiap chat yang saya terima</string>
+    <string name="label_chat_admin_summary">Setiap chat dari Tokopedia Administrator yang saya terima</string>
+    <string name="label_bulletin_summary">Setiap promosi, tips dan trik, update informasi terbaru seputar Tokopedia</string>
+
+    <string name="label_receive_purchasing">Notifikasi Pembelian</string>
+    <string name="label_receive_sales">Notifikasi Penjualan</string>
+    <string name="label_receive_pm">Notifikasi Pesan</string>
+    <string name="label_receive_talk">Notifikasi Diskusi</string>
+    <string name="label_receive_review">Notifikasi Ulasan</string>
+    <string name="label_receive_promo">Notifikasi Promo</string>
+    <string name="label_receive_seller_info">Notifikasi Info Penjual</string>
+    <string name="label_receive_group_chat">Notifikasi Group Chat</string>
+
+
+    <string name="pref_receive_purchasing" translatable="false">notification_purchase</string>
+    <string name="pref_receive_sales" translatable="false">notification_sales</string>
+    <string name="pref_receive_pm" translatable="false">notification_receive_pm</string>
+    <string name="pref_receive_talk" translatable="false">notification_receive_talk</string>
+    <string name="pref_receive_review" translatable="false">notification_receive_review</string>
+    <string name="pref_receive_promo" translatable="false">notification_receive_promo</string>
+    <string name="pref_receive_seller_info" translatable="false">notification_seller_info</string>
+    <string name="pref_receive_group_chat" translatable="false">notification_group_chat</string>
+    <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
+
     <string name="application_version_fmt">Versi %1$s</string>
+    <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
+    <string name="error_no_password_yes">Buat kata sandi</string>
+    <string name="error_no_password_no">Tutup</string>
+    <string name="message_success_change_profile">Sukses mengubah profil</string>
+
     <string name="label_profile_completion">Kelengkapan Profile %1$d%%</string>
     <string name="label_tokopedia_pay_title">Tokopedia Pay</string>
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
@@ -83,7 +112,13 @@
     <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top Up & Tagihan]]></string>
     <string name="title_menu_deals">Deals</string>
+    <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
+    <string name="title_menu_reksadana">Reksa Dana</string>
+    <string name="title_menu_event">Event</string>
+    <string name="title_menu_gold">Emas</string>
+    <string name="title_menu_zakat">Zakat</string>
+    <string name="title_menu_donation">Donasi</string>
     <string name="title_menu_show_all">Lihat Semua</string>
     <string name="title_menu_sales">Penjualan</string>
     <string name="label_menu_new_order">Pesanan Baru</string>
@@ -105,8 +140,27 @@
     <string name="title_menu_loan">Modal usaha untuk toko Anda</string>
     <string name="label_menu_loan">Potensi pinjaman senilai Rp 1.000.000</string>
     <string name="label_tokopoint_see_voucher">Lihat Kupon</string>
+    <string name="title_app_notif_setting">Notifikasi Aplikasi</string>
+    <string name="title_email_notif_setting">Notifikasi Email</string>
     <string name="title_menu_wishlist">Wishlist</string>
     <string name="label_menu_wishlist">Lihat Produk yang sudah Anda wishlist</string>
     <string name="label_button_add_product">+ Tambah Produk</string>
     <string name="title_dev_options">Developer Options</string>
+    <string name="title_shake_setting">Shake Shake</string>
+    <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
+    <string name="logout_confirmation">Apakah Anda ingin keluar?</string>
+    <string name="cancel">Batal</string>
+
+
+    <string name="msg_has_no_shop">Anda belum memiliki Toko</string>
+    <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
+        <b>Menguntungkan</b>.</string>
+    <string name="top_features">Top Features</string>
+    <string name="topads_desc">Media iklan Produk dan Toko</string>
+    <string name="gold_merchant">Gold Merchant</string>
+    <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
+    <string name="seller_center">Seller Center</string>
+    <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
+    <string name="open_shop">Buka Toko</string>
+    <string name="learn_more">Pelajari Selengkapnya</string>
 </resources>

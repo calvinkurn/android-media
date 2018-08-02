@@ -211,6 +211,9 @@
             android:screenOrientation="portrait" />
 
         <!-- Opportunity -->
+        <activity android:name=".opportunity.activity.OpportunityListActivity"
+            android:label="@string/title_opportunity_list"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".opportunity.activity.OpportunitySortActivity"
             android:label="@string/title_sort_but"
@@ -313,6 +316,10 @@
             android:label="@string/choose_image"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
+        <activity android:name=".seller.info.view.activity.SellerCenterActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/title_activity_seller_center"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".selling.SellingService"
@@ -333,6 +340,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".selling.view.activity.CustomerAppSellerTransactionActivity"
+            android:label="@string/title_activity_shop_transaction_new"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 
 </manifest>

@@ -2,25 +2,26 @@ package com.tokopedia.home.account.presentation.adapter.setting;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 
 import java.util.List;
 
-public class GeneralSettingAdapter extends RecyclerView.Adapter<GeneralSettingAdapter.GeneralSettingViewHolder> {
+public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int TYPE_GENERAL = 0;
+    private static final int TYPE_SWITCH = 1;
+
     private List<SettingItemViewModel> settingItems;
     private OnSettingItemClicked listener;
-
-    public GeneralSettingAdapter(List<SettingItemViewModel> settingItems) {
-        this.settingItems = settingItems;
-    }
+    private SwitchSettingListener switchSettingListener;
 
     public GeneralSettingAdapter(List<SettingItemViewModel> settingItems, OnSettingItemClicked listener) {
         this.settingItems = settingItems;
@@ -31,16 +32,38 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<GeneralSettingAd
         this.listener = listener;
     }
 
-    @NonNull
-    @Override
-    public GeneralSettingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new GeneralSettingViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_general_setting, parent, false));
+    public void setSwitchSettingListener(SwitchSettingListener switchSettingListener) {
+        this.switchSettingListener = switchSettingListener;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GeneralSettingViewHolder holder, int position) {
-        holder.bind(settingItems.get(position));
+    public int getItemViewType(int position) {
+        if (settingItems.get(position) instanceof SwitchSettingItemViewModel){
+            return TYPE_SWITCH;
+        } else {
+            return TYPE_GENERAL;
+        }
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_SWITCH){
+            return new SwitchSettingViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_notif_setting, parent, false));
+        } else {
+            return new GeneralSettingViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_general_setting, parent, false));
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == TYPE_SWITCH){
+            ((SwitchSettingViewHolder) holder).bind((SwitchSettingItemViewModel) settingItems.get(position));
+        } else {
+            ((GeneralSettingViewHolder) holder).bind(settingItems.get(position));
+        }
     }
 
     @Override
@@ -49,17 +72,13 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<GeneralSettingAd
     }
 
     class GeneralSettingViewHolder extends RecyclerView.ViewHolder{
-        private TextView titleTextView;
-        private TextView subtitleTextView;
-        private ImageView iconSetting;
-        private ImageView rightArrow;
+        private LabelView labelView;
+
 
         public GeneralSettingViewHolder(View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.title);
-            subtitleTextView = itemView.findViewById(R.id.subtitle);
-            iconSetting = itemView.findViewById(R.id.icon_setting);
-            rightArrow = itemView.findViewById(R.id.image_arrow);
+            labelView = itemView.findViewById(R.id.labelview);
+
             itemView.setOnClickListener(view -> {
                 if (listener != null){
                     listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
@@ -68,24 +87,51 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<GeneralSettingAd
         }
 
         public void bind(SettingItemViewModel item){
-            titleTextView.setText(item.getTitle());
-            if (!TextUtils.isEmpty(item.getSubtitle())){
-                subtitleTextView.setText(item.getSubtitle());
-                subtitleTextView.setVisibility(View.VISIBLE);
-            } else {
-                subtitleTextView.setVisibility(View.GONE);
-            }
+            labelView.setTitle(item.getTitle());
+            labelView.setSubTitle(item.getSubtitle());
+            labelView.setImageResource(item.getIconResource());
+
             if (item.getIconResource() > 0){
-                iconSetting.setVisibility(View.VISIBLE);
-                iconSetting.setImageResource(item.getIconResource());
+                labelView.getImageView().setVisibility(View.VISIBLE);
+                labelView.getImageView().setImageResource(item.getIconResource());
             } else {
-                iconSetting.setVisibility(View.GONE);
+                labelView.getImageView().setVisibility(View.GONE);
             }
-            rightArrow.setVisibility(item.isHideArrow()? View.GONE : View.VISIBLE);
+            labelView.showRightArrow(item.isHideArrow());
+        }
+    }
+
+    class SwitchSettingViewHolder extends RecyclerView.ViewHolder{
+        private TextView titleTextView;
+        private TextView summaryextView;
+        private Switch aSwitch;
+
+        public SwitchSettingViewHolder(View itemView) {
+            super(itemView);
+            titleTextView = itemView.findViewById(R.id.title);
+            summaryextView = itemView.findViewById(R.id.subtitle);
+            aSwitch = itemView.findViewById(R.id.switchWidget);
+            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (switchSettingListener != null) {
+                switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
+            }});
+
+            itemView.setOnClickListener(view -> aSwitch.toggle());
+        }
+
+        public void bind(SwitchSettingItemViewModel item){
+            titleTextView.setText(item.getTitle());
+            summaryextView.setText(item.getSubtitle());
+            aSwitch.setChecked(switchSettingListener != null && switchSettingListener.isSwitchSelected(item.getId()));
         }
     }
 
     public interface OnSettingItemClicked{
         void onItemClicked(int settingId);
+    }
+
+    public interface SwitchSettingListener{
+        boolean isSwitchSelected(int settingId);
+        void onChangeChecked(int settingId, boolean value);
     }
 }

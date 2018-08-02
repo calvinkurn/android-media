@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
@@ -27,13 +28,13 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
-                return TxSummaryFragment.createInstancePurchase();
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
-                return getVerificationFragment();
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
-                return TxListFragment.instanceStatusOrder();
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED:
+                return TxListFragment.instanceStatusOrder(TransactionPurchaseRouter.TRANSACTION_CONFIRMED_FILTER_ID);
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED:
+                return TxListFragment.instanceStatusOrder(TransactionPurchaseRouter.TRANSACTION_PROCESSED_FILTER_ID);
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED:
+                return TxListFragment.instanceStatusOrder(TransactionPurchaseRouter.TRANSACTION_SHIPPED_FILTER_ID);
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVERED:
                 return TxListFragment.instanceDeliverOrder();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
                 return TxListFragment.instanceAllOrder(listener.getFilterCaseAllTransaction());

@@ -23,6 +23,7 @@ public abstract class BaseGeneralSettingFragment extends TkpdBaseV4Fragment
 
     protected RecyclerView recyclerView;
     protected UserSession userSession;
+    protected GeneralSettingAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
@@ -42,7 +43,8 @@ public abstract class BaseGeneralSettingFragment extends TkpdBaseV4Fragment
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new GeneralSettingAdapter(getSettingItems(), this));
+        adapter = new GeneralSettingAdapter(getSettingItems(), this);
+        recyclerView.setAdapter(adapter);
     }
 
     protected abstract List<SettingItemViewModel> getSettingItems();

@@ -21,7 +21,7 @@
             tools:src="@drawable/ic_big_notif_customerapp" />
 
         <ImageView
-            android:id="@+id/badge"
+            android:id="@+id/image_badge"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="@+id/image_shop"
@@ -81,7 +81,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/image_saldo"
             app:layout_constraintStart_toEndOf="@+id/image_saldo"
             app:layout_constraintTop_toTopOf="@+id/image_saldo"
-            style="@style/TextView.Micro"/>
+            style="@style/TextView.Micro.BlackDisabled"/>
 
         <TextView
             android:id="@+id/text_saldo_amount"

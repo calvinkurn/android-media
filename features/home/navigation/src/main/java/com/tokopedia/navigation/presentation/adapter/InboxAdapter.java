@@ -4,13 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
 
-import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
+import com.tokopedia.navigation_common.NotificationsModel;
 
 
 /**
@@ -22,7 +22,7 @@ public class InboxAdapter extends BaseListAdapter<Inbox, InboxAdapter.InboxViewH
         super(context);
     }
 
-    public void updateValue(NotificationEntity.Notification entity) {
+    public void updateValue(NotificationsModel entity) {
         if (items != null && items.size() > 0) {
             items.get(InboxFragment.CHAT_MENU)
                     .setTotalBadge(entity.getChat().getUnreads());
@@ -47,36 +47,30 @@ public class InboxAdapter extends BaseListAdapter<Inbox, InboxAdapter.InboxViewH
 
     @Override
     protected int getItemResourceLayout(int viewType) {
-        return R.layout.item_common_subtitle;
+        return R.layout.item_single_notification;
     }
 
     class InboxViewHolder extends BaseViewHolder<Inbox> {
 
-        private ImageView icon;
-        private TextView title, subtitle, badge;
+        private LabelView labelView;
 
-        public InboxViewHolder(View itemView, OnItemClickListener onItemClickListener) {
+        InboxViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
-            icon = itemView.findViewById(R.id.icon);
-            title = itemView.findViewById(R.id.title);
-            subtitle = itemView.findViewById(R.id.subtitle);
-            badge = itemView.findViewById(R.id.badge);
+            labelView = itemView.findViewById(R.id.labelview);
         }
 
 
         @Override
         public void bind(Inbox item) {
-            icon.setImageResource(item.getIcon());
-            title.setText(item.getTitle());
-            subtitle.setText(item.getSubtitle());
+            labelView.setImageResource(item.getIcon());
+            labelView.setTitle(context.getString(item.getTitle()));
+            labelView.setSubTitle(context.getString(item.getSubtitle()));
             if (item.getTotalBadge() != null
                     && !item.getTotalBadge().isEmpty()
                     && !item.getTotalBadge().equalsIgnoreCase("0")) {
-                badge.setVisibility(View.VISIBLE);
-                badge.setText(item.getTotalBadge());
-            } else {
-                badge.setVisibility(View.GONE);
+                labelView.setBadgeCounter(item.getTotalBadge());
             }
+            labelView.showRightArrow(false);
         }
     }
 }

@@ -9,19 +9,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.data.GlobalNavConstant;
 import com.tokopedia.navigation_common.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 
-import com.tokopedia.navigation.data.GlobalNavConstant.*;
+import java.util.List;
 
-import static com.tokopedia.navigation.data.GlobalNavConstant.BELUM_DIBAYAR;
 import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
 import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.MENUNGGU_KONFIRMASI;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_DIPROSES;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.data.GlobalNavConstant.SEDANG_DIKIRIM;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
@@ -35,6 +37,16 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
     private static final int TYPE_ITEM = 2;
     private static final int TYPE_SINGLE = 3;
 
+    public interface OnNotifClickListener {
+        void onNotifClick(int parent, int child);
+    }
+
+    private OnNotifClickListener onNotifClickListener;
+
+    public void setOnNotifClickListener(OnNotifClickListener onNotifClickListener) {
+        this.onNotifClickListener = onNotifClickListener;
+    }
+
     public NotificationAdapter(Context context) {
         super(context);
     }
@@ -42,7 +54,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
     @Override
     protected int getItemResourceLayout(int viewType) {
         if(viewType == TYPE_SINGLE) {
-            return R.layout.item_common_title;
+            return R.layout.item_single_notification;
         } else if(viewType == TYPE_ITEM) {
             return R.layout.item_notification;
         }
@@ -68,17 +80,13 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
 
     public class NotificationSingleHolder extends BaseViewHolder<DrawerNotification> {
 
-        private TextView title;
-        private TextView badge;
-        private ImageView arrow;
-        private View border;
+        private LabelView labelView;
+        private View separator;
 
         NotificationSingleHolder(View itemView, BaseListAdapter.OnItemClickListener onItemClickListener) {
             super(itemView, onItemClickListener);
-            title = itemView.findViewById(R.id.title);
-            badge = itemView.findViewById(R.id.badge);
-            arrow = itemView.findViewById(R.id.arrow);
-            border = itemView.findViewById(R.id.border);
+            labelView = itemView.findViewById(R.id.labelview);
+            separator = itemView.findViewById(R.id.separator);
         }
 
         @Override
@@ -87,18 +95,15 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
             if (child == null)
                 return;
 
-            title.setText(child.getTitle());
+            labelView.setTitle(child.getTitle());
 
             if (child.getBadge() != null && child.getBadge() > 0) {
-                badge.setVisibility(View.VISIBLE);
-                arrow.setVisibility(View.VISIBLE);
-                badge.setText(String.format("%s", child.getBadge()));
+                labelView.showRightArrow(false);
+                labelView.setBadgeCounter(String.format("%s", child.getBadge()));
             } else {
-                badge.setVisibility(View.GONE);
-                arrow.setVisibility(View.GONE);
+                labelView.showRightArrow(true);
             }
-
-            border.setVisibility(View.GONE);
+            separator.setVisibility(View.GONE);
         }
     }
 
@@ -122,41 +127,54 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
 
             NotificationChildAdapter adapter = new NotificationChildAdapter(context);
             adapter.addAll(item.getChilds());
+            adapter.setOnItemClickListener((view, position) -> {
+                if (onNotifClickListener != null)
+                    onNotifClickListener.onNotifClick(getAdapterPosition(), position);
+            });
             recyclerView.setAdapter(adapter);
         }
     }
 
-    public void updateValue(NotificationsModel notificationsModel) {
+    public void updateValue(NotificationsModel data) {
         if (this.items == null)
             return;
 
-        DrawerNotification.ChildDrawerNotification sellerInfo = items.get(SELLER_INFO).getChilds().get(SELLER_INFO);
-        sellerInfo.setBadge(notificationsModel.getSellerInfo().getNotification());
-
-        DrawerNotification.ChildDrawerNotification belumDibayar = items.get(PEMBELIAN).getChilds().get(BELUM_DIBAYAR);
-        belumDibayar.setBadge(notificationsModel.getBuyerOrder().getConfirmed());
-
-        DrawerNotification.ChildDrawerNotification siapDikirim = items.get(PEMBELIAN).getChilds().get(SIAP_DIKIRIM);
-        siapDikirim.setBadge(notificationsModel.getBuyerOrder().getShipped());
-
-        DrawerNotification.ChildDrawerNotification sampaiTujuan = items.get(PEMBELIAN).getChilds().get(SAMPAI_TUJUAN);
-        sampaiTujuan.setBadge(notificationsModel.getBuyerOrder().getArriveAtDestination());
-
-        DrawerNotification.ChildDrawerNotification pesananBaru = items.get(PENJUALAN).getChilds().get(PESANAN_BARU);
-        pesananBaru.setBadge(notificationsModel.getSellerOrder().getNewOrder());
-
-        DrawerNotification.ChildDrawerNotification penjualanSiapDikirim = items.get(PENJUALAN).getChilds().get(SIAP_DIKIRIM);
-        penjualanSiapDikirim.setBadge(notificationsModel.getSellerOrder().getShipped());
-
-        DrawerNotification.ChildDrawerNotification penjualanSampaiTujuan = items.get(PENJUALAN).getChilds().get(SAMPAI_TUJUAN);
-        penjualanSampaiTujuan.setBadge(notificationsModel.getSellerOrder().getArriveAtDestination());
-
-        DrawerNotification.ChildDrawerNotification pembeli = items.get(KOMPLAIN).getChilds().get(BUYER);
-        pembeli.setBadge(notificationsModel.getResolution().getBuyer());
-
-        DrawerNotification.ChildDrawerNotification penjual = items.get(KOMPLAIN).getChilds().get(SELLER);
-        penjual.setBadge(notificationsModel.getResolution().getSeller());
-
+        for (DrawerNotification item : items) {
+            if (item.getId() != null) {
+                List<DrawerNotification.ChildDrawerNotification> childs = item.getChilds();
+                for (DrawerNotification.ChildDrawerNotification child : childs) {
+                    if (item.getId() == PEMBELIAN) {
+                        if (child.getId() == MENUNGGU_KONFIRMASI) {
+                            child.setBadge(0);
+                        } else if (child.getId() == PESANAN_DIPROSES) {
+                            child.setBadge(data.getBuyerOrder().getProcessed());
+                        } else if (child.getId() == SEDANG_DIKIRIM) {
+                            child.setBadge(data.getBuyerOrder().getShipped());
+                        } else if (child.getId() == SAMPAI_TUJUAN) {
+                            child.setBadge(data.getBuyerOrder().getArriveAtDestination());
+                        }
+                    } else if (item.getId() == PENJUALAN) {
+                        if (child.getId() == PESANAN_BARU) {
+                            child.setBadge(data.getSellerOrder().getNewOrder());
+                        } else if (child.getId() == SIAP_DIKIRIM) {
+                            child.setBadge(data.getSellerOrder().getReadyToShip());
+                        } else if (child.getId() == SEDANG_DIKIRIM) {
+                            child.setBadge(data.getSellerOrder().getShipped());
+                        } else if (child.getId() == SAMPAI_TUJUAN) {
+                            child.setBadge(data.getSellerOrder().getArriveAtDestination());
+                        }
+                    } else if (item.getId() == KOMPLAIN) {
+                        if (child.getId() == BUYER) {
+                            child.setBadge(data.getResolution().getBuyer());
+                        } else if (child.getId() == SELLER) {
+                            child.setBadge(data.getResolution().getSeller());
+                        }
+                    }
+                }
+            } else {
+                item.getChilds().get(0).setBadge(data.getSellerInfo().getNotification());
+            }
+        }
         notifyDataSetChanged();
     }
 }

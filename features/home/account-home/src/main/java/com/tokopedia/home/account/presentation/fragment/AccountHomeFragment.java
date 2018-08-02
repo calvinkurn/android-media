@@ -1,7 +1,5 @@
 package com.tokopedia.home.account.presentation.fragment;
 
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,21 +8,25 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
-import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
@@ -37,10 +39,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import q.rorbin.badgeview.QBadgeView;
+
 /**
  * @author okasurya on 7/16/18.
  */
-public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHome.View {
+public class AccountHomeFragment extends TkpdBaseV4Fragment implements
+        AccountHome.View, NotificationListener {
 
     @Inject
     AccountHomePresenter presenter;
@@ -48,6 +53,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private AccountHomePagerAdapter adapter;
+
+    private Toolbar toolbar;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -82,23 +89,23 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
         return null;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_account_home, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_setting) {
-            startActivity(GeneralSettingActivity.createIntent(getActivity()));
-            return true;
-        } else if (item.getItemId() == R.id.menu_notification) {
-            Toast.makeText(getContext(), "Notif", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.menu_account_home, menu);
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == R.id.menu_setting) {
+//            startActivity(GeneralSettingActivity.createIntent(getActivity()));
+//            return true;
+//        } else if (item.getItemId() == R.id.menu_notification) {
+//            Toast.makeText(getContext(), "Notif", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void renderData(AccountViewModel accountViewModel) {
@@ -114,6 +121,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
                 item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
                 item.setTitle(getContext().getString(R.string.label_account_seller));
                 fragmentItems.add(item);
+            } else {
+                item = new AccountFragmentItem();
+                item.setFragment(SellerEmptyAccountFragment.newInstance());
+                item.setTitle(getContext().getString(R.string.label_account_seller));
+                fragmentItems.add(item);
             }
 
             adapter.setItems(fragmentItems);
@@ -121,10 +133,12 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     }
 
     private void initInjector() {
-        AccountHomeComponent component = DaggerAccountHomeComponent.builder()
-                .baseAppComponent(
-                        ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
-                ).build();
+        AccountHomeComponent component =
+            ((AccountHomeRouter) getActivity().getApplicationContext())
+            .getAccountHomeInjection()
+            .getAccountHomeComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()
+            );
 
         component.inject(this);
         presenter.attachView(this);
@@ -137,9 +151,18 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
         setAdapter();
     }
 
+    private ImageButton menuNotification;
+
     private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.title_account);
+        TextView title = toolbar.findViewById(R.id.toolbar_title);
+        title.setText(getString(R.string.title_account));
+        menuNotification = toolbar.findViewById(R.id.action_notification);
+        ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
+
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent(getActivity())));
+        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION));
+
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
@@ -150,5 +173,19 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
         adapter = new AccountHomePagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private QBadgeView badgeView;
+
+    @Override
+    public void onNotifyBadgeNotification(int number) {
+        if (menuNotification == null)
+            return;
+        if (badgeView == null)
+            badgeView = new QBadgeView(getActivity());
+
+        badgeView.bindTarget(menuNotification);
+        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
+        badgeView.setBadgeNumber(number);
     }
 }

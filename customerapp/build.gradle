@@ -281,6 +281,7 @@ dependencies {
     implementation project(rootProject.ext.features.districtrecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -298,6 +299,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
+    implementation project(rootProject.ext.features.accountHome)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -434,7 +436,6 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
-
 }
 
 

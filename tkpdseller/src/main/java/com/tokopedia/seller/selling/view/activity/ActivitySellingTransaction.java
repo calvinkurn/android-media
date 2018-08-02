@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -34,7 +34,6 @@ import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -57,13 +56,15 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
+import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActivitySellingTransaction extends TkpdActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
-        DownloadResultReceiver.Receiver {
+        DownloadResultReceiver.Receiver,
+        SellingTransaction {
 
     public static final String FROM_WIDGET_TAG = "from widget";
 
@@ -86,16 +87,33 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     FragmentManager fragmentManager;
 
-    @DeepLink(Constants.Applinks.SELLER_NEW_ORDER)
-    public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
-                .putExtras(extras);
+    @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
+    public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras) {
+        if(GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_OPPORTUNITY)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
+        }
     }
 
-    @DeepLink(Constants.Applinks.SELLER_SHIPMENT)
+    @DeepLink(ApplinkConst.SELLER_NEW_ORDER)
+    public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
+        if(GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
+        }
+    }
+
+    @DeepLink(ApplinkConst.SELLER_SHIPMENT)
     public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
@@ -104,7 +122,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.SELLER_STATUS)
+    @DeepLink(ApplinkConst.SELLER_STATUS)
     public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
@@ -113,16 +131,20 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.SELLER_HISTORY)
+    @DeepLink(ApplinkConst.SELLER_HISTORY)
     public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
-                .putExtras(extras);
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+        }
     }
 
-    @DeepLink(Constants.Applinks.SellerApp.SALES)
+    @DeepLink(ApplinkConst.SellerApp.SALES)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -171,17 +193,11 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
-    private @LayoutRes Integer layoutId() {
-        if (GlobalConfig.isCustomerApp())
-            return R.layout.layout_tablayout_secondary;
-        return R.layout.activity_shop_transaction_v2;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clearNotif();
-        inflateView(layoutId());
+        inflateView(R.layout.activity_shop_transaction_v2);
         setView();
         initVariable();
         setAdapter();
@@ -213,7 +229,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         sellerTickerView = findViewById(R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = findViewById(R.id.pager);
-        indicator = findViewById(R.id.tabs);
+        indicator = findViewById(R.id.indicator);
     }
 
     private void initSellerTicker() {
@@ -518,6 +534,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 //        }
 //    }
 
+    @Override
     public void SellingAction(int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_MULTI_SHIPPING:

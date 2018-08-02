@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.home.favorite.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.home.account.presentation.activity.FavoriteShopsActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
@@ -77,6 +79,9 @@ public class FragmentFavorite extends BaseDaggerFragment
     private TopAdsShopItem shopItemSelected;
     private Trace trace;
 
+    public static Fragment newInstance() {
+        return new FragmentFavorite();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -398,6 +403,8 @@ public class FragmentFavorite extends BaseDaggerFragment
                     favoritePresenter.loadInitialData();
                 }
             }
+        } else if (getActivity() instanceof FavoriteShopsActivity){
+            favoritePresenter.loadInitialData();
         }
     }
 }

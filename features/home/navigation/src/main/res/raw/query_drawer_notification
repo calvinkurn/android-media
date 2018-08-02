@@ -1,4 +1,9 @@
 query {
+  userShopInfo {
+    info {
+      shop_id
+    }
+  }
   notifications{
     purchase {
       deliveryConfirm
