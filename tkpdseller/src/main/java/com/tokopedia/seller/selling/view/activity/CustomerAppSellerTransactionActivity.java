@@ -37,7 +37,6 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.Tabs;
@@ -46,9 +45,10 @@ import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.view.fragment.FragmentReadyToShip;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingDelivered;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingReadyToShip;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipped;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
@@ -61,7 +61,8 @@ import java.util.List;
  * @author okasurya on 8/1/18.
  */
 public class CustomerAppSellerTransactionActivity extends BaseTabActivity
-        implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver,
+        implements FragmentSellingTxCenter.OnCenterMenuClickListener,
+        DownloadResultReceiver.Receiver,
         SellingTransaction {
     public static final String FROM_WIDGET_TAG = "from widget";
 
@@ -315,8 +316,9 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
         fragmentList.add(OpportunityListFragment.newInstance(query));
         fragmentList.add(FragmentSellingNewOrder.createInstance());
-        fragmentList.add(FragmentSellingReadyToShip.newInstance());
-        fragmentList.add(FragmentSellingShipping.createInstance());
+//        fragmentList.add(FragmentSellingShipping.createInstance());
+        fragmentList.add(FragmentReadyToShip.newInstance());
+        fragmentList.add(FragmentSellingShipped.newInstance());
         fragmentList.add(FragmentSellingDelivered.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
         mViewPager.setOffscreenPageLimit(fragmentList.size());

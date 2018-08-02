@@ -322,13 +322,13 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setApplink(ApplinkConst.SELLER_CENTER);
         items.add(menuList);
 
-        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
-        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
-        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
-        infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
-        // TODO: 7/26/18 oka: set applink mitratoppers
-        infoCardViewModel.setApplink("");
-        items.add(infoCardViewModel);
+//        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
+//        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
+//        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
+//        infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
+//        // TODO: 7/26/18 oka: set applink mitratoppers
+//        infoCardViewModel.setApplink("");
+//        items.add(infoCardViewModel);
 
         sellerViewModel.setItems(items);
         return sellerViewModel;
