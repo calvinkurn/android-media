@@ -9,6 +9,7 @@ import com.tokopedia.train.search.presentation.contract.TrainFilterSearchContrac
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -90,14 +91,14 @@ public class TrainFilterSearchPresenter extends BaseDaggerPresenter<TrainFilterS
                             filterSearchDataFromIntent.getSelectedDepartureTimeList().size() != filterSearchData.getDepartureTimeList().size()) {
                         filterSearchData.setSelectedDepartureTimeList(filterSearchDataFromIntent.getSelectedDepartureTimeList());
                     } else {
-                        filterSearchData.setSelectedDepartureTimeList(filterSearchData.getDepartureTimeList());
+                        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>(filterSearchData.getDepartureTimeList()));
                     }
 
                     if (filterSearchDataFromIntent.getSelectedTrainClass() != null &&
                             filterSearchDataFromIntent.getSelectedTrainClass().size() != filterSearchData.getTrainClass().size()) {
                         filterSearchData.setSelectedTrainClass(filterSearchDataFromIntent.getSelectedTrainClass());
                     } else {
-                        filterSearchData.setSelectedTrainClass(filterSearchData.getTrainClass());
+                        filterSearchData.setSelectedTrainClass(new ArrayList<>(filterSearchData.getTrainClass()));
                     }
 
                     filterSearchData.setSelectedTrains(filterSearchDataFromIntent.getSelectedTrains());
