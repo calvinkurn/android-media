@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.abstraction.base.view.listener.NotificationListener;
@@ -54,8 +54,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private BottomNavigation bottomNavigation;
     private TouchViewPager viewPager;
 
-    private UserSession userSession;
-    @Inject MainParentPresenter presenter;
+    @Inject
+    UserSession userSession;
+
+    @Inject
+    MainParentPresenter presenter;
 
     private boolean isUserFirstTimeLogin = false;
 
@@ -69,11 +72,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GraphqlClient.init(this);
-        this.intiInjector();
+        this.initInjector();
         presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
-
-        userSession = ((AbstractionRouter) this.getApplication()).getSession();
 
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
@@ -116,8 +117,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
         }
     }
-    private void intiInjector() {
+  
+    private void initInjector() {
         DaggerGlobalNavComponent.builder()
+                .baseAppComponent(getApplicationComponent())
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
@@ -149,6 +152,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return userSession.isLoggedIn();
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setUserSession(UserSession userSession){
+        this.userSession = userSession;
+    }
+
     @Override
     public BaseAppComponent getComponent() {
         return getApplicationComponent();
@@ -178,7 +186,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
 
-    private List<Fragment> createFragments() {
+    List<Fragment> createFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
@@ -191,6 +199,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     Notification notification;
+  
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public Fragment getFragment(int index){ return ((FragmentAdapter)viewPager.getAdapter()).getItem(index); }
 
     @Override
     public void renderNotification(Notification notification) {

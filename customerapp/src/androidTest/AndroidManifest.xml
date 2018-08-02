@@ -8,4 +8,13 @@
     <instrumentation
         android:name="com.tokopedia.tkpd.MyRunner"
         android:targetPackage="com.tokopedia.tkpd" />
+
+    <application android:name="com.tokopedia.tkpd.MyCustomEspressoApplication">
+        <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity2"
+            android:exported="true"
+            android:label="Tokopedia"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+    </application>
 </manifest>

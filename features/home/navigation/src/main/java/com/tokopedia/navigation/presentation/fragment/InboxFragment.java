@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.listener.NotificationListener;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -23,7 +25,9 @@ import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
+import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
@@ -36,11 +40,12 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import q.rorbin.badgeview.QBadgeView;
+import dagger.Component;
 
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends BaseParentFragment implements
+public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter>  implements
         InboxView, NotificationListener {
 
     public static final int CHAT_MENU = 0;
@@ -98,6 +103,7 @@ public class InboxFragment extends BaseParentFragment implements
 
     private void intiInjector() {
         DaggerGlobalNavComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
@@ -198,5 +204,19 @@ public class InboxFragment extends BaseParentFragment implements
         badgeView.bindTarget(menuItemNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
+      
+    @Override
+    public void reInitInjector(GlobalNavComponent component) {
+
+    }
+
+    @Override
+    public InboxPresenter getPresenter() {
+        return null;
+    }
+
+    @Override
+    public void setPresenter(GlobalNavComponent presenter) {
+
     }
 }

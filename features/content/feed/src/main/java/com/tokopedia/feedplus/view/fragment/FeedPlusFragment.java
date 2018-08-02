@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +58,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.AddFeedViewHol
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
@@ -212,6 +214,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
+    }
+
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(FeedPlusComponent component){
+        component.inject(this);
+        presenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public FeedPlusPresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void resetToFirstTime(){
+        isLoadedOnce = false;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(FeedPlusPresenter presenter) {
+        this.presenter = presenter;
     }
 
     @Nullable
