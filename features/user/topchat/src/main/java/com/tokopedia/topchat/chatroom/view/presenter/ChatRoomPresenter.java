@@ -220,17 +220,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void sendMessageWithAttachmentType(int networkType, final String reply,
-                                              final String attachmentType) {
-        if(networkType == InboxChatConstant.MODE_WEBSOCKET) {
-            String startTime = SendableViewModel.generateStartTime();
-            getView().addDummyMessage(reply, startTime);
-            getView().setViewEnabled(false);
-            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-            sendReply(messageId, reply, startTime, attachmentType);
-        }
-    }
-
     public void sendMessage(int networkType, final String reply) {
         if (isValidReply(reply)) {
             String startTime = SendableViewModel.generateStartTime();
@@ -494,12 +483,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     public void sendReply(String messageId, String reply, String startTime) {
         webSocketUseCase.execute(webSocketUseCase.getParamSendReply(messageId, reply, startTime));
-        flagTyping = false;
-    }
-
-    public void sendReply(String messageId, String reply, String startTime, String attachmentType) {
-        webSocketUseCase.execute(webSocketUseCase.getParamSendReply(messageId, reply, startTime,
-                attachmentType));
         flagTyping = false;
     }
 
