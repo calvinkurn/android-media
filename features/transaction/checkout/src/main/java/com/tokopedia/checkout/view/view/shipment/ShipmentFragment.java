@@ -71,6 +71,7 @@ import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -627,6 +628,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public Activity getActivityContext() {
         return getActivity();
+    }
+
+    @Override
+    public void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap) {
+        checkoutAnalyticsCourierSelection.enhancedECommerceGoToCheckoutStep2(stringObjectMap);
     }
 
     @Override

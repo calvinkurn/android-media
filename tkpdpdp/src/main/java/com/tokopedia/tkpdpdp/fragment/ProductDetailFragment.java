@@ -126,7 +126,6 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapDa
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsProductDetailPage;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1811,20 +1810,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceProductCartMapData.setShopType(generateShopType(productData.getShopInfo()));
         enhancedECommerceProductCartMapData.setShopName(productData.getShopInfo().getShopName());
         enhancedECommerceProductCartMapData.setCategoryId(generateCategoryId(productData.getBreadcrumb()));
-        enhancedECommerceProductCartMapData.setDimension38(
-                TextUtils.isEmpty(productPass.getTrackerAttribution())
-                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                        : productPass.getTrackerAttribution()
-        );
         enhancedECommerceProductCartMapData.setAttribution(
                 TextUtils.isEmpty(productPass.getTrackerAttribution())
                         ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                         : productPass.getTrackerAttribution()
-        );
-        enhancedECommerceProductCartMapData.setDimension40(
-                TextUtils.isEmpty(productPass.getTrackerListName())
-                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                        : productPass.getTrackerListName()
         );
         enhancedECommerceProductCartMapData.setListName(
                 TextUtils.isEmpty(productPass.getTrackerListName())
@@ -1958,6 +1947,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartClickBayarOnAtcSuccess();
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(cartMap, eventLabel, eventAction);
     }
+
     @Override
     public void refreshData() {
         presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
