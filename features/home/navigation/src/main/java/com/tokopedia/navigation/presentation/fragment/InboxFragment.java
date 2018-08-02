@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.R;
@@ -17,7 +19,9 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
+import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
@@ -28,10 +32,12 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import dagger.Component;
+
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends BaseParentFragment implements InboxView {
+public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements InboxView {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -99,6 +105,7 @@ public class InboxFragment extends BaseParentFragment implements InboxView {
 
     private void intiInjector() {
         DaggerGlobalNavComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
@@ -163,5 +170,20 @@ public class InboxFragment extends BaseParentFragment implements InboxView {
     @Override
     protected String getScreenName() {
         return getString(R.string.inbox);
+    }
+
+    @Override
+    public void reInitInjector(GlobalNavComponent component) {
+
+    }
+
+    @Override
+    public InboxPresenter getPresenter() {
+        return null;
+    }
+
+    @Override
+    public void setPresenter(GlobalNavComponent presenter) {
+
     }
 }

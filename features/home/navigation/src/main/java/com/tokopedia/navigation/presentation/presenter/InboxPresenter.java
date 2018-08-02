@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.presenter;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.GlobalNavConstant;
@@ -13,7 +14,7 @@ import javax.inject.Inject;
 /**
  * Created by meta on 25/07/18.
  */
-public class InboxPresenter {
+public class InboxPresenter extends BaseDaggerPresenter{
 
     private InboxView inboxView;
 

@@ -53,6 +53,8 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
 
 import org.hamcrest.Matcher;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -117,12 +119,41 @@ public class MainParentActivityTest {
             MainParentActivity.class, true, false, 3
     );
 
-    /**
-     *
-     * @throws Exception
-     */
+    private BaseAppComponent baseAppComponent;
+    private TestAppModule testAppModule;
+
+    @Before
+    public void before(){
+        BaseMainApplication application = (BaseMainApplication)InstrumentationRegistry.getTargetContext().getApplicationContext();
+        baseAppComponent = application.reinitBaseAppComponent(testAppModule = new TestAppModule(application));
+    }
+
+    @After
+    public void after(){
+        baseAppComponent = null;
+        testAppModule = null;
+        TestAppModule.userSession = null;
+    }
+
     @Test
-    public void testFeedMockInstance2() throws Exception {
+    public void test_load_inbox_first_time(){
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(true).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+    }
+
+    @Test
+    public void test_load_first_time_feed_plus() throws Exception {
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -130,10 +161,6 @@ public class MainParentActivityTest {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
         onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-
-        BaseMainApplication application = (BaseMainApplication) mIntentsRule.getActivity().getApplication();
-
-        BaseAppComponent baseAppComponent = application.reinitBaseAppComponent(new TestAppModule(application));
 
         KolComponent kolComponent = DaggerKolComponent.builder()
                 .baseAppComponent(baseAppComponent)
@@ -172,58 +199,6 @@ public class MainParentActivityTest {
             doReturn(Observable.just(test3())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
 
             onView(withId(R.id.swipe_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
-
-            Thread.sleep(10_000);
-        }
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testFeedMockInstance() throws Exception {
-        prepareForFullSmartLockBundle();
-
-        startEmptyActivity();
-
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-
-        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-
-        FeedPlusFragment fragment = (FeedPlusFragment) mIntentsRule.getActivity().getFragment(1);
-        if (fragment != null && fragment.isMainViewVisible()) {
-            FeedPlusPresenter presenter = spy(fragment.getPresenter());
-
-            fragment.setPresenter(presenter);
-//            setField(FeedPlusPresenter.class, fragment, "presenter", presenter);
-            fragment.resetToFirstTime();
-
-//            FeedPlusAdapter adapter = getField(FeedPlusAdapter.class, fragment, "adapter");
-            // Get total item of myRecyclerView
-            RecyclerView recyclerView =fragment.getView().findViewById(R.id.recycler_view);
-            FeedPlusAdapter adapter = (FeedPlusAdapter)recyclerView.getAdapter();
-            mIntentsRule.getActivity().runOnUiThread(() -> {
-                adapter.clearData();
-            });
-
-            Thread.sleep(1_000);
-
-            // prepare the data
-            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase = spy(presenter.getGetFirstPageFeedsCloudUseCase());
-
-            presenter.setGetFirstPageFeedsCloudUseCase(getFirstPageFeedsCloudUseCase);
-//            setField(GetFirstPageFeedsCloudUseCase.class, presenter, "getFirstPageFeedsCloudUseCase", getFirstPageFeedsCloudUseCase);
-
-            doReturn(Observable.just(test3())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
-
-//            when(getFirstPageFeedsCloudUseCase.createObservable(any(RequestParams.class))).thenReturn(
-//                    Observable.just(test3())
-//            );
-
-            onView(withId(R.id.swipe_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
-
-            Thread.sleep(10_000);
         }
     }
 
@@ -426,21 +401,6 @@ public class MainParentActivityTest {
 
         bannerViewModel.setSlides(slides);
         return bannerViewModel;
-    }
-
-    @Test
-    public void testSluggishTap(){
-        // TODO iterate 1000 times, and randomly tap navbar
-    }
-
-    @Test
-    public void testSearchGoToDiscovery(){
-
-    }
-
-    @Test
-    public void testTapGoToBarCode(){
-
     }
 
     private void prepareForFullSmartLockBundle() {

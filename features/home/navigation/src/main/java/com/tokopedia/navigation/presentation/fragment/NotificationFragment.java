@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -53,6 +54,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private void initInjector() {
         DaggerGlobalNavComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);

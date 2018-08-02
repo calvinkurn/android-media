@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
@@ -54,8 +53,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private BottomNavigation bottomNavigation;
     private TouchViewPager viewPager;
 
-    private UserSession userSession;
-    @Inject MainParentPresenter presenter;
+    @Inject
+    UserSession userSession;
+
+    @Inject
+    MainParentPresenter presenter;
 
     private boolean isUserFirstTimeLogin = false;
 
@@ -67,11 +69,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GraphqlClient.init(this);
-        this.intiInjector();
+        this.initInjector();
         presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
-
-        userSession = ((AbstractionRouter) this.getApplication()).getSession();
 
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
@@ -101,8 +101,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         }
     }
 
-    private void intiInjector() {
+    private void initInjector() {
         DaggerGlobalNavComponent.builder()
+                .baseAppComponent(getApplicationComponent())
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);

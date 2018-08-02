@@ -20,6 +20,6 @@ public class TestAppModule extends AppModule {
 
     @Override
     protected UserSession realProvideUserSession(AbstractionRouter abstractionRouter) {
-        return userSession = mock(UserSession.class);
+        return userSession == null ? userSession = mock(UserSession.class) : userSession;
     }
 }
