@@ -16,20 +16,37 @@ public class CatalogCategory implements Parcelable {
     private String name;
 
     @Expose
-    @SerializedName("image_id")
+    @SerializedName("imageID")
     private String imageId;
 
     @Expose
-    @SerializedName("image_url")
+    @SerializedName("imageURL")
     private String imageUrl;
 
     @Expose
     @SerializedName("index")
     private int index;
 
-    private transient boolean isSelected;
+    @Expose
+    @SerializedName("timeRemainingSeconds")
+    private long timeRemainingSeconds;
+
+    private long timeWithCurrentMs;
+
+    @Expose
+    @SerializedName("isSelected")
+    private boolean isSelected;
 
     public CatalogCategory() {
+
+    }
+
+    public long getTimeWithCurrentMs() {
+        return timeWithCurrentMs;
+    }
+
+    public void setTimeWithCurrentMs(long timeWithCurrentMs) {
+        this.timeWithCurrentMs = timeWithCurrentMs;
     }
 
     public boolean isSelected() {
@@ -38,6 +55,14 @@ public class CatalogCategory implements Parcelable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public long getTimeRemainingSeconds() {
+        return timeRemainingSeconds;
+    }
+
+    public void setTimeRemainingSeconds(long timeRemainingSeconds) {
+        this.timeRemainingSeconds = timeRemainingSeconds;
     }
 
     public int getId() {
@@ -103,6 +128,8 @@ public class CatalogCategory implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(imageId);
         parcel.writeString(imageUrl);
+        parcel.writeLong(timeRemainingSeconds);
+        parcel.writeLong(timeWithCurrentMs);
     }
 
     private CatalogCategory(Parcel in) {
@@ -111,6 +138,8 @@ public class CatalogCategory implements Parcelable {
         name = in.readString();
         imageId = in.readString();
         imageUrl = in.readString();
+        timeRemainingSeconds = in.readLong();
+        timeWithCurrentMs = in.readLong();
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
