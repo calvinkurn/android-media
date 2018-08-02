@@ -29,6 +29,8 @@ class TickerViewAdapter extends PagerAdapter {
     private ArrayList<Integer> listTextColor;
     private TickerView.OnPartialTextClickListener listener;
 
+    private View tickerBackground;
+
     public TickerViewAdapter(ArrayList<Integer> listTextColor,
                              ArrayList<Integer> listBackGroundColor,
                              ArrayList<String> listMessage,
@@ -43,7 +45,7 @@ class TickerViewAdapter extends PagerAdapter {
     public Object instantiateItem(final ViewGroup container, final int position) {
         LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.item_ticker, container, false);
-        View tickerBackground = view.findViewById(R.id.ticker_background);
+        tickerBackground = view.findViewById(R.id.ticker_background);
         TextView tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
 
         tickerBackground.setBackgroundColor(listBackGroundColor.get(position));
@@ -109,6 +111,10 @@ class TickerViewAdapter extends PagerAdapter {
 
     public void setListener(TickerView.OnPartialTextClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setPadding(int top, int right, int bottom, int left) {
+        tickerBackground.setPadding(left, top, right, bottom);
     }
 
     @SuppressWarnings("deprecation")

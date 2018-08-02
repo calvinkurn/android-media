@@ -75,6 +75,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String PARAM_IS_COUPON_ACTIVE = "PARAM_IS_COUPON_APPLIED";
 
+    private static final int DEFAULT_DELAY_TIME = 1000;
+
     public static final int DEFAULT_COUPON_APPLIED = 1;
     public static final int DEFAULT_COUPON_NOT_APPLIED = 0;
 
@@ -492,6 +494,18 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
         tickerView.setTickerHeight(getResources().getDimensionPixelSize(R.dimen.dp_75));
         tickerView.buildView();
+
+        tickerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tickerView.setItemPadding(
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15),
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15)
+                );
+            }
+        }, DEFAULT_DELAY_TIME);
     }
 
     private void hideCouponAppliedTicker() {

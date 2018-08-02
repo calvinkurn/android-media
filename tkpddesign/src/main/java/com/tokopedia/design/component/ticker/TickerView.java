@@ -373,4 +373,8 @@ public class TickerView extends BaseCustomView {
         tickerHighlightView.requestLayout();
     }
 
+    public void setItemPadding(int top, int right, int bottom, int left) {
+        tickerAdapter.setPadding(top, right, bottom, left);
+    }
+
 }
