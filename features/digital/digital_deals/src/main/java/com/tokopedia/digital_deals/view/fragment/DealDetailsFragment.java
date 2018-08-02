@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -15,7 +16,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +29,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -53,7 +52,7 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
-import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.Media;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -73,8 +72,8 @@ import javax.inject.Inject;
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private ExpandableTextView tvExpandableDesc;
-    private ExpandableTextView tvExpandableTC;
+    private TextView tvExpandableDesc;
+    private TextView tvExpandableTC;
     private LinearLayout seeMoreButtonDesc;
     private LinearLayout seeMoreButtonTC;
 
@@ -111,6 +110,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView buyDealNow;
     private Menu mMenu;
     private ConstraintLayout clHeader;
+    private ConstraintLayout clOutlets;
+    private ConstraintLayout clDescription;
+    private ConstraintLayout clTnc;
     private CardView cardView;
     private Toolbar toolbar;
     private DealFragmentCallbacks fragmentCallbacks;
@@ -172,6 +174,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvSeeMoreTextDesc = view.findViewById(R.id.seemorebutton_description);
         seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
         ivArrowSeeMoreDesc = view.findViewById(R.id.down_arrow_description);
+        clDescription = view.findViewById(R.id.cl_description);
+        clOutlets = view.findViewById(R.id.cl_outlets);
+        clTnc = view.findViewById(R.id.cl_tnc);
 
 
         tvExpandableTC = view.findViewById(R.id.tv_expandable_tnc);
@@ -201,8 +206,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvViewMap.setOnClickListener(this);
         ivFavourite.setOnClickListener(this);
         clRedeemInstuctns.setOnClickListener(this);
-        tvExpandableDesc.setInterpolator(new OvershootInterpolator());
-        tvExpandableTC.setInterpolator(new OvershootInterpolator());
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDeals.setLayoutManager(mLayoutManager);
         recyclerViewDeals.setAdapter(new DealsCategoryAdapter(new ArrayList<ProductItem>(), this, IS_SHORT_LAYOUT));
@@ -293,6 +296,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 });
             }
 
+        } else {
+            clOutlets.setVisibility(View.GONE);
         }
 
         if (detailsViewModel.getMediaUrl() != null && detailsViewModel.getMediaUrl().size() > 0) {
@@ -314,38 +319,68 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             circlePageIndicator.setViewPager(viewPager);
             mPresenter.startBannerSlide(viewPager);
         }
-
-
-        tvExpandableDesc.setText(detailsViewModel.getLongRichDesc());
-        setExpandableItemText(detailsViewModel.getTnc());
-
+        setTnCandDescription();
         seeMoreButtonDesc.setOnClickListener(this);
         seeMoreButtonTC.setOnClickListener(this);
-        tvExpandableDesc.setInterpolator(new OvershootInterpolator());
-        tvExpandableTC.setInterpolator(new OvershootInterpolator());
-
         cardView.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
 
+
     }
 
-    private void setExpandableItemText(String tnc) {
-        if (tnc != null) {
+    private void setTnCandDescription() {
+        String text = getExpandableItemText(dealDetail.getLongRichDesc());
+        if (TextUtils.isEmpty(text)) {
+            clDescription.setVisibility(View.GONE);
+        } else {
+            tvExpandableDesc.setText(Html.fromHtml(text));
+        }
+        text = getExpandableItemText(dealDetail.getTnc());
+        if (TextUtils.isEmpty(text)) {
+            clTnc.setVisibility(View.GONE);
+        } else {
+            tvExpandableTC.setText(Html.fromHtml(text));
+        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(tvExpandableTC.getLineCount()>=10){
+                    seeMoreButtonTC.setVisibility(View.VISIBLE);
+                }else{
+                    seeMoreButtonTC.setVisibility(View.GONE);
+                }
+                if(tvExpandableDesc.getLineCount()>=10){
+                    seeMoreButtonDesc.setVisibility(View.VISIBLE);
+                }else{
+                    seeMoreButtonDesc.setVisibility(View.GONE);
+                }
+            }
+        }, 100);
+    }
+
+    private String getExpandableItemText(String tnc) {
+        if (!TextUtils.isEmpty(tnc)) {
             String splitArray[] = tnc.split("~");
             StringBuilder tncBuffer = new StringBuilder();
 
+            if(splitArray.length==1){
+                tncBuffer.append(splitArray[0]);
+            }else{
+                tncBuffer.append("<ul>");
+                for (int i = 0; i < splitArray.length; i++) {
+                    String line = splitArray[i];
+                    tncBuffer.append("<li>&ensp;").append(line).append("</li>");
+                }
 
-            for (int i = 0; i < splitArray.length; i++) {
-                String line = splitArray[i];
-                tncBuffer.append((i + 1) + ". <i>").append(line).append("</i>");
-                if (i != splitArray.length - 1)
-                    tncBuffer.append("<br>");
-
+                tncBuffer.append("</ul>");
             }
 
-            tvExpandableTC.setText(Html.fromHtml(tncBuffer.toString()));
+            tncBuffer.append("</ul>");
+
+            return tncBuffer.toString();
+
         } else {
-            tvExpandableTC.setText("");
+            return null;
         }
     }
 
@@ -458,6 +493,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         String url = getArguments().getString(DealDetailsPresenter.HOME_DATA);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(DealDetailsPresenter.TAG, url);
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null) {
+            requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
+        }
         return requestParams;
     }
 
@@ -532,27 +571,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.expand_view_description) {
-            if (tvExpandableDesc.isExpanded()) {
-                tvSeeMoreTextDesc.setText(R.string.expand);
-                ivArrowSeeMoreDesc.animate().rotation(0f);
-
-            } else {
-                tvSeeMoreTextDesc.setText(R.string.collapse);
-                ivArrowSeeMoreDesc.animate().rotation(180f);
-
-            }
-            tvExpandableDesc.toggle();
+            fragmentCallbacks.replaceFragment(dealDetail.getLongRichDesc(), getString(R.string.show_description), 0);
         } else if (v.getId() == R.id.expand_view_tnc) {
-            if (tvExpandableTC.isExpanded()) {
-                tvSeeMoreTextTC.setText(R.string.expand);
-                ivArrowSeeMoreTC.animate().rotation(0f);
-
-            } else {
-                tvSeeMoreTextTC.setText(R.string.collapse);
-                ivArrowSeeMoreTC.animate().rotation(180f);
-
-            }
-            tvExpandableTC.toggle();
+            fragmentCallbacks.replaceFragment(dealDetail.getTnc(), getString(R.string.show_tnc), 0);
         } else if (v.getId() == R.id.tv_see_all_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
         } else if (v.getId() == R.id.ll_buynow) {

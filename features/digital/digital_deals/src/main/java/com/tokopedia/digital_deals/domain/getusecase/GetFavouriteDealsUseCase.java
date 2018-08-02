@@ -5,40 +5,40 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
-import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
+import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
+import com.tokopedia.digital_deals.view.model.response.FavouriteDealsResponse;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class GetDealDetailsUseCase extends RestRequestUseCase {
+public class GetFavouriteDealsUseCase extends RestRequestUseCase {
     private RequestParams params;
 
     @Inject
-    public GetDealDetailsUseCase(){ }
+    public GetFavouriteDealsUseCase() {
+    }
 
-    public void setRequestParams(RequestParams requestParams) {
-        this.params = requestParams;
+    public void setRequestParams(RequestParams params) {
+        this.params = params;
     }
 
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-
-        HashMap<String, Object> map = params.getParameters();
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_PRODUCT +"/" + map.get(DealDetailsPresenter.TAG);
-        //Request 1
-        map.remove(DealDetailsPresenter.TAG);
-        Type token = new TypeToken<DataResponse<DealsDetailsResponse>>() {
+        String url;
+        if (params == null) {
+            url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIKED_PRODUCT;
+        } else {
+            url = params.getString(Utils.NEXT_URL, "");
+        }
+        Type token = new TypeToken<DataResponse<FavouriteDealsResponse>>() {
         }.getType();
-
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
-                .setQueryParams(map)
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;
