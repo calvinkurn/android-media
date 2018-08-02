@@ -5,8 +5,16 @@ query {
     deposit_fmt
   }
   wallet {
+    linked
     rawBalance
     balance
+    redirect_url
+    applinks
+    action {
+      text
+      redirect_url
+      applinks
+    }
   }
   profile {
     name

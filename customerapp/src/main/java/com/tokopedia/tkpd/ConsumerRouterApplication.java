@@ -77,6 +77,7 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -2533,8 +2534,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToTokoCash(Context context) {
-
+    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
+        WalletRouterUtil.navigateWallet(
+                activity.getApplication(),
+                activity,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                applinkUrl,
+                redirectUrl,
+                new Bundle()
+        );
     }
 
     @Override

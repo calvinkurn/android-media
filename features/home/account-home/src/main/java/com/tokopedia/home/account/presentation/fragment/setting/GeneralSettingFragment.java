@@ -1,5 +1,8 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,11 +18,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.di.component.AccountLogoutComponent;
+import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
@@ -27,15 +37,24 @@ import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter;
-import com.tokopedia.home.account.presentation.fragment.DialogLogoutFragment;
+import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
+import com.tokopedia.home.account.presentation.view.LogoutView;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
-        implements GeneralSettingAdapter.SwitchSettingListener {
+        implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
+
+    @Inject LogoutPresenter presenter;
+
+    private View loadingView;
+    private View baseSettingView;
+
     public static Fragment createInstance() {
         return new GeneralSettingFragment();
     }
@@ -45,12 +64,20 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        AccountLogoutComponent component = DaggerAccountLogoutComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplication())
+                        .getBaseAppComponent()).build();
+        component.inject(this);
+        presenter.attachView(this);
+
         return inflater.inflate(R.layout.fragment_general_setting, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadingView = view.findViewById(R.id.logout_status);
+        baseSettingView = view.findViewById(R.id.setting_layout);
         adapter.setSwitchSettingListener(this);
         recyclerView.setNestedScrollingEnabled(false);
         TextView appVersion = view.findViewById(R.id.text_view_app_version);
@@ -125,11 +152,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 }
                 break;
             case SettingConstant.SETTING_OUT_ID:
-                doLogout();
-                /*application = getActivity().getApplication();
-                if (application instanceof AccountHomeRouter){
-                    ((AccountHomeRouter) application).doLogoutAccount(getActivity());
-                }*/
+                showDialogLogout();
                 break;
             case SettingConstant.SETTING_DEV_OPTIONS:
                 if(GlobalConfig.isAllowDebuggingTools()) {
@@ -140,11 +163,51 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
     }
 
+    private void showDialogLogout() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity())
+                .setIcon(R.drawable.launch_screen)
+                .setTitle(getString(R.string.logout)+" dari Tokopedia")
+                .setMessage(R.string.logout_confirmation)
+                .setPositiveButton(R.string.logout, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    doLogout();
+                })
+                .setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dialogInterface.dismiss()));
+        alertDialog.create().show();
+
+    }
+
     private void doLogout() {
-        if (getFragmentManager().findFragmentByTag(DialogLogoutFragment.FRAGMENT_TAG) == null){
-            DialogLogoutFragment dialogLogoutFragment = new DialogLogoutFragment();
-            dialogLogoutFragment.show(getFragmentManager(), DialogLogoutFragment.FRAGMENT_TAG);
-        }
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        showLoading(true);
+        presenter.doLogout();
+    }
+
+    private void showLoading(boolean isLoading) {
+        int shortAnimTime = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+
+        loadingView.animate().setDuration(shortAnimTime)
+                .alpha(isLoading ? 1 : 0)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (loadingView != null) {
+                            loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                        }
+                    }
+                });
+
+        baseSettingView.animate().setDuration(shortAnimTime)
+                .alpha(isLoading ? 0 : 1)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (baseSettingView != null) {
+                            baseSettingView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+                        }
+                    }
+                });
     }
 
     private void saveSettingValue(String key, boolean isChecked) {
@@ -190,5 +253,24 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             intent.setData(Uri.parse(url));
         }
         startActivity(intent);
+    }
+
+    @Override
+    public void logoutFacebook() {
+        LoginManager.getInstance().logOut();
+    }
+
+    @Override
+    public void onErrorLogout(Throwable throwable) {
+        showLoading(false);
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), throwable));
+    }
+
+    @Override
+    public void onSuccessLogout() {
+        showLoading(false);
+        if (getActivity().getApplication() instanceof AccountHomeRouter){
+            ((AccountHomeRouter) getActivity().getApplication()).doLogoutAccount(getActivity());
+        }
     }
 }
