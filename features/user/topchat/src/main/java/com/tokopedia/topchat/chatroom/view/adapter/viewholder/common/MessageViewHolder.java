@@ -97,7 +97,8 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
                 && !TextUtils.isEmpty(element.getFromRole())
                 && !element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())
                 && element.isSender()
-                && !element.isDummy()) {
+                && !element.isDummy()
+                && element.isShowTime()) {
             name.setText(element.getFrom());
             label.setText(element.getFromRole());
             name.setVisibility(View.VISIBLE);
@@ -109,6 +110,10 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
             label.setVisibility(View.GONE);
             dot.setVisibility(View.GONE);
         }
+    }
+
+    private void setNameLabelVisibility(boolean isVisible){
+
     }
 
     private void setReadStatus(MessageViewModel element) {

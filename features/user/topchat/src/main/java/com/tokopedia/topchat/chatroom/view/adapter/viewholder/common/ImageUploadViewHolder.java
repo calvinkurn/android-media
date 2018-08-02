@@ -134,7 +134,8 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
                 && !TextUtils.isEmpty(element.getFromRole())
                 && !element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())
                 && element.isSender()
-                && !element.isDummy()) {
+                && !element.isDummy()
+                && element.isShowTime()) {
             name.setText(element.getFrom());
             label.setText(element.getFromRole());
             name.setVisibility(View.VISIBLE);
