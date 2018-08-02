@@ -9,14 +9,12 @@ public class TrainCheckVoucherModel {
     private String message;
     private double discountAmountPlain;
     private double cashbackAmountPlain;
-    private boolean success;
 
-    public TrainCheckVoucherModel(String voucherCode, String message, double discountAmountPlain, double cashbackAmountPlain, boolean success) {
+    public TrainCheckVoucherModel(String voucherCode, String message, double discountAmountPlain, double cashbackAmountPlain) {
         this.voucherCode = voucherCode;
         this.message = message;
         this.discountAmountPlain = discountAmountPlain;
         this.cashbackAmountPlain = cashbackAmountPlain;
-        this.success = success;
     }
 
     public String getVoucherCode() {
@@ -33,10 +31,6 @@ public class TrainCheckVoucherModel {
 
     public double getCashbackAmountPlain() {
         return cashbackAmountPlain;
-    }
-
-    public boolean isSuccess() {
-        return success;
     }
 
 }

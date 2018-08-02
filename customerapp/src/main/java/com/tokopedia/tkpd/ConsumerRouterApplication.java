@@ -2325,7 +2325,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
                 trainReservationId, trainReservationCode, galaCode
         )).map(trainCheckVoucherModel -> new VoucherViewModel(
-                trainCheckVoucherModel.isSuccess(),
+                true,
                 trainCheckVoucherModel.getMessage(),
                 null,
                 trainCheckVoucherModel.getVoucherCode(),
@@ -2338,12 +2338,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void trainSendTrackingOnClickUseVoucherCode(String voucherCode) {
         TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
         trainAnalytics.eventClickUseVoucherCode(voucherCode);
-    }
-
-    @Override
-    public void trainSendTrackingOnCheckVoucherCodeSuccessful(String successMessage) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
-        trainAnalytics.eventVoucherSuccess(successMessage);
     }
 
     @Override

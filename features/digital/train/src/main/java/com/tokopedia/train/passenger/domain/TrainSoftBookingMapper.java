@@ -1,5 +1,6 @@
 package com.tokopedia.train.passenger.domain;
 
+import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.data.cloud.entity.TrainPaxPassengerEntity;
 import com.tokopedia.train.passenger.data.cloud.entity.TrainSoftbookEntity;
 import com.tokopedia.train.passenger.data.cloud.entity.TrainTripEntity;
@@ -51,6 +52,8 @@ public class TrainSoftBookingMapper implements Func1<TrainSoftbookEntity, TrainS
             trainTrip.setNumCode(trainTripEntityList.get(i).getNumCode());
 
             List<TrainPaxPassenger> trainPaxPassengerList = new ArrayList<>();
+            int numOfInfant = 0;
+            int numOfAdult = 0;
             for (int j = 0; j < trainTripEntityList.get(i).getPaxPassengers().size(); j++) {
                 TrainPaxPassengerEntity trainPaxPassengerEntity = trainTripEntityList
                         .get(i).getPaxPassengers().get(j);
@@ -58,6 +61,12 @@ public class TrainSoftBookingMapper implements Func1<TrainSoftbookEntity, TrainS
                 trainPaxPassenger.setIdNumber(trainPaxPassengerEntity.getIdNumber());
                 trainPaxPassenger.setName(trainPaxPassengerEntity.getName());
                 trainPaxPassenger.setPaxType(trainPaxPassengerEntity.getPaxType());
+
+                if (trainPaxPassengerEntity.getPaxType() == TrainBookingPassenger.INFANT) {
+                    numOfInfant++;
+                } else if (trainPaxPassengerEntity.getPaxType() == TrainBookingPassenger.ADULT) {
+                    numOfAdult++;
+                }
 
                 TrainSeat trainSeat = new TrainSeat();
                 trainSeat.setColumn(trainPaxPassengerEntity.getSeat().getColumn());
@@ -68,6 +77,9 @@ public class TrainSoftBookingMapper implements Func1<TrainSoftbookEntity, TrainS
                 trainPaxPassengerList.add(trainPaxPassenger);
             }
             trainTrip.setPaxPassengers(trainPaxPassengerList);
+
+            trainTrip.setNumOfAdultPassenger(numOfAdult);
+            trainTrip.setNumOfInfantPassenger(numOfInfant);
 
             trainTrip.setAdultPrice(trainTripEntityList.get(i).getAdultPrice());
             trainTrip.setBookBalance(trainTripEntityList.get(i).getBookBalance());
