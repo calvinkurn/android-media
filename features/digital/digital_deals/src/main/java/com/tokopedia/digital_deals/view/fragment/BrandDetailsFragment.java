@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private LinearLayoutManager layoutManager;
     private Toolbar toolbar;
     private String locationName;
-    private int adapterPosition=-1;
+    private int adapterPosition = -1;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new BrandDetailsFragment();
@@ -308,11 +309,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if(getActivity()==null)
+            return;
         switch (requestCode) {
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!locationName.equals(location1.getName())) {
+                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (location!=null && !TextUtils.isEmpty(locationName) &&!TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
                         mPresenter.getBrandDetails(true);
                     } else {
                         mPresenter.getBrandDetails(false);
@@ -349,7 +352,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-        this.adapterPosition=position;
+        this.adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
     }
 }
