@@ -55,13 +55,13 @@ public class ShopCardView extends BaseCustomView {
 
     public void setShopImage(String url) {
         if(!TextUtils.isEmpty(url)) {
-            ImageHandler.loadImage(getContext(), imageShop, url, new ColorDrawable(ContextCompat.getColor(getContext(), R.color.grey_500)));
+            ImageHandler.loadImageCircle2(getContext(), imageShop, url);
         }
     }
 
     public void setBadgeImage(String url) {
         if(!TextUtils.isEmpty(url)) {
-            ImageHandler.loadImage(getContext(), badge, url, new ColorDrawable(ContextCompat.getColor(getContext(), R.color.grey_500)));
+            ImageHandler.loadImageCircle2(getContext(), badge, url);
             badge.setVisibility(VISIBLE);
         } else {
             badge.setVisibility(GONE);

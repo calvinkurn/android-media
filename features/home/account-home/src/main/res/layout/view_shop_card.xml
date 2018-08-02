@@ -81,7 +81,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/image_saldo"
             app:layout_constraintStart_toEndOf="@+id/image_saldo"
             app:layout_constraintTop_toTopOf="@+id/image_saldo"
-            style="@style/TextView.Micro"/>
+            style="@style/TextView.Micro.BlackDisabled"/>
 
         <TextView
             android:id="@+id/text_saldo_amount"

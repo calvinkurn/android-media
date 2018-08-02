@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.home.account.di.qualifier.AccountLogoutQualifier;
 import com.tokopedia.home.account.di.scope.AccountLogoutScope;
-import com.tokopedia.home.account.presentation.presenter.DialogLogoutPresenter;
+import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
 import com.tokopedia.logout.data.LogoutApi;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.logout.domain.mapper.LogoutMapper;
@@ -23,7 +23,7 @@ import retrofit2.Retrofit;
 
 @AccountLogoutScope
 @Module
-public class DialogLogoutModule {
+public class LogoutModule {
 
     @AccountLogoutScope
     @Provides
@@ -86,7 +86,7 @@ public class DialogLogoutModule {
 
     @AccountLogoutScope
     @Provides
-    public DialogLogoutPresenter provideDialogLogoutPresenter(LogoutUseCase logoutUseCase, UserSession userSession){
-        return new DialogLogoutPresenter(logoutUseCase, userSession);
+    public LogoutPresenter provideDialogLogoutPresenter(LogoutUseCase logoutUseCase, UserSession userSession){
+        return new LogoutPresenter(logoutUseCase, userSession);
     }
 }
