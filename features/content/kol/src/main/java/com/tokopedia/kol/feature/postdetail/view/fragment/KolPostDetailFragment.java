@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -48,12 +50,14 @@ import javax.inject.Inject;
 
 public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostDetailContract.View, KolPostListener.View.Like,
-        KolPostListener.View.ViewHolder, KolComment.View.ViewHolder, KolComment.View.SeeAll {
+        KolPostListener.View.ViewHolder, KolComment.View.ViewHolder, KolComment.View.SeeAll,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
 
     private Integer postId;
+    private SwipeToRefresh swipeRefreshLayout;
     private RecyclerView recyclerView;
     private ImageView userAvatar;
     private EditText replyEditText;
@@ -92,6 +96,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_kol_post_detail, container, false);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         userAvatar = view.findViewById(R.id.user_avatar);
         replyEditText = view.findViewById(R.id.reply_edit_text);
@@ -118,6 +123,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         GraphqlClient.init(getContext());
         initVar();
+
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
@@ -172,15 +179,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void showLoading() {
         if (!isLoading()) {
-            adapter.showLoading();
-            recyclerView.smoothScrollToPosition(0);
+            swipeRefreshLayout.setRefreshing(true);
         }
     }
 
     @Override
     public void dismissLoading() {
         if (isLoading()) {
-            adapter.dismissLoading();
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -302,8 +308,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onRefresh() {
+        presenter.getCommentFirstTime(postId);
+    }
+
     private boolean isLoading() {
-        return adapter.isLoading();
+        return swipeRefreshLayout.isRefreshing();
     }
 
     private void showError(String message) {

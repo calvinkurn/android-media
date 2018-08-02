@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -28,12 +27,10 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
 
     private List<Visitable> list;
     private KolPostDetailTypeFactory typeFactory;
-    private LoadingMoreModel loadingMoreModel;
 
     @Inject
     KolPostDetailAdapter() {
         list = new ArrayList<>();
-        loadingMoreModel = new LoadingMoreModel();
     }
 
     @NonNull
@@ -58,30 +55,6 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
     @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
-    }
-
-    private void add(Visitable visitable, int position) {
-        this.list.add(position, visitable);
-        notifyItemInserted(position);
-    }
-
-    private void remove(Visitable visitable) {
-        int position = this.list.indexOf(visitable);
-        if (this.list.remove(visitable)) {
-            notifyItemRemoved(position);
-        }
-    }
-
-    public void showLoading() {
-        add(loadingMoreModel, 0);
-    }
-
-    public void dismissLoading() {
-        remove(loadingMoreModel);
-    }
-
-    public boolean isLoading() {
-        return this.list.contains(loadingMoreModel);
     }
 
     public void setTypeFactory(KolPostDetailTypeFactory typeFactory) {
@@ -133,7 +106,7 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
             if (oldItem instanceof KolPostViewModel) {
                 return newItem instanceof KolPostViewModel
                         && ((KolPostViewModel) oldItem).getKolId()
-                        == ((KolPostViewModel) newItem).getKolId();
+                        == ((KolPostViewModel) oldItem).getKolId();
             } else if (oldItem instanceof KolCommentViewModel) {
                 return newItem instanceof KolCommentViewModel
                         && ((KolCommentViewModel) oldItem).getId()
@@ -147,6 +120,25 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
             Visitable oldItem = oldList.get(oldItemPosition);
             Visitable newItem = newList.get(newItemPosition);
 
+            if (oldItem instanceof KolPostViewModel && newItem instanceof KolPostViewModel) {
+                KolPostViewModel oldPost = ((KolPostViewModel) oldItem);
+                KolPostViewModel newPost = ((KolPostViewModel) newItem);
+
+                return oldPost.getTotalLike() == newPost.getTotalLike()
+                        && oldPost.getTotalComment() == newPost.getTotalComment()
+                        && oldPost.isLiked() == newPost.isLiked()
+                        && oldPost.isFollowed() == newPost.isFollowed()
+                        && oldPost.isTemporarilyFollowed() == newPost.isTemporarilyFollowed();
+
+            } else if (oldItem instanceof KolCommentViewModel
+                    && newItem instanceof KolCommentViewModel) {
+                KolCommentViewModel oldComment = (KolCommentViewModel) oldItem;
+                KolCommentViewModel newComment = (KolCommentViewModel) newItem;
+
+                return oldComment.getReview().equals(newComment.getReview())
+                        && oldComment.getName().equals(newComment.getName())
+                        && oldComment.getTime().equals(newComment.getTime());
+            }
             return oldItem.equals(newItem);
         }
     }
