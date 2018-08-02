@@ -68,6 +68,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         if (hour != null
                 && (TextUtils.isEmpty(hourTime) || !element.isShowTime())) {
             hour.setVisibility(View.GONE);
+
         } else if (hour != null) {
             hour.setText(hourTime);
             hour.setVisibility(View.VISIBLE);

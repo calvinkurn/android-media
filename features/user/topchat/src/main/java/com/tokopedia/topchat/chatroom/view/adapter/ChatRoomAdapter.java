@@ -62,6 +62,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             showDateBaseChat(holder.itemView.getContext(), holder.getAdapterPosition());
             showTimeBaseChat(holder.getAdapterPosition());
         }
+        if(list.get(position) instanceof SendableViewModel) {
+            showRoleBaseChat(holder.itemView.getContext(), holder.getAdapterPosition());
+        }
         holder.bind(list.get(holder.getAdapterPosition()));
     }
 
@@ -104,6 +107,36 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         } else {
             try {
                 ((BaseChatViewModel) list.get(position)).setShowDate(true);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showRoleBaseChat(Context context, int position) {
+        if (position != list.size() - 1) {
+            try {
+                SendableViewModel now = (SendableViewModel) list.get(position);
+                SendableViewModel prev = null;
+                long myTime = Long.parseLong(now.getReplyTime());
+                long prevTime = 0;
+
+                if (list.get(position + 1) != null && list.get(position + 1) instanceof SendableViewModel) {
+                    prev = (SendableViewModel) list.get(position + 1);
+                    prevTime = Long.parseLong(prev.getReplyTime());
+                }
+
+                if (prev != null && compareSender(now,prev) && compareHour(myTime,prevTime)) {
+                    ((SendableViewModel) list.get(position)).setShowRole(false);
+                } else {
+                    ((SendableViewModel) list.get(position)).setShowRole(true);
+                }
+            } catch (NumberFormatException | ClassCastException e) {
+                ((SendableViewModel) list.get(position)).setShowRole(false);
+            }
+        } else {
+            try {
+                ((SendableViewModel) list.get(position)).setShowRole(true);
             } catch (ClassCastException e) {
                 e.printStackTrace();
             }
@@ -155,10 +188,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private boolean compareHour(long calCurrent, long calBefore) {
         long MILIS = 1000;
         long SECONDS = 60;
-        long delta = Math.abs(calCurrent - calBefore);
-        delta = delta / MILIS;
-        delta = delta / SECONDS;
-        return (delta == 0);
+        long MINUTES = MILIS * SECONDS;
+        return (calCurrent/MINUTES == calBefore/MINUTES);
     }
 
     private boolean compareSender(BaseChatViewModel source, BaseChatViewModel dest){
