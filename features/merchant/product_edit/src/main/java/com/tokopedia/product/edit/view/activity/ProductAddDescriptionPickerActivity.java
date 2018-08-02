@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.view.fragment.ProductAddDescriptionPickerFragment;
 
 /**
@@ -17,16 +18,10 @@ public class ProductAddDescriptionPickerActivity extends BaseSimpleActivity {
 
     private ProductAddDescriptionPickerFragment productAddDescriptionPickerFragment;
 
-    public static void start(Activity activity, int requestCode, String description) {
+    public static Intent start(Activity activity, String description) {
         Intent intent = new Intent(activity, ProductAddDescriptionPickerActivity.class);
         intent.putExtra(PRODUCT_DESCRIPTION, description);
-        activity.startActivityForResult(intent, requestCode);
-    }
-
-    public static void start(Fragment fragment, int requestCode, String description) {
-        Intent intent = new Intent(fragment.getActivity(), ProductAddDescriptionPickerActivity.class);
-        intent.putExtra(PRODUCT_DESCRIPTION, description);
-        fragment.startActivityForResult(intent, requestCode);
+        return intent;
     }
 
     @Override
@@ -37,13 +32,7 @@ public class ProductAddDescriptionPickerActivity extends BaseSimpleActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        if(productAddDescriptionPickerFragment==null){
-            productAddDescriptionPickerFragment = (ProductAddDescriptionPickerFragment) getFragment();
-        }
-        intent.putExtra(PRODUCT_DESCRIPTION, productAddDescriptionPickerFragment.getDescriptionText());
-        setResult(RESULT_OK, intent);
-        super.onBackPressed();
+    protected int getLayoutRes() {
+        return R.layout.activity_product_edit_with_menu;
     }
 }

@@ -9,13 +9,15 @@ data class ProductDescription(var description: String = "", var feature : String
             parcel.readString(),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
-            parcel.readArrayList(ArrayList::class.java.classLoader) as ArrayList<String>) {
-    }
+            arrayListOf<String>().apply {
+                parcel.readList(this, String::class.java.classLoader)
+            })
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(description)
         parcel.writeString(feature)
         parcel.writeByte(if (isNew) 1 else 0)
+        parcel.writeList(videoIDs)
     }
 
     override fun describeContents(): Int {
@@ -31,5 +33,4 @@ data class ProductDescription(var description: String = "", var feature : String
             return arrayOfNulls(size)
         }
     }
-
 }

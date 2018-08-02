@@ -36,6 +36,21 @@
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
+    <com.tokopedia.product.edit.price.LabelRadioButton
+        android:id="@+id/labelRadioButtonStockEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="@dimen/dp_16"
+        app:lr_title="@string/product_label_stock_empty" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_divider"
+        android:layout_marginLeft="@dimen/dp_16" />
+
     <com.tokopedia.design.text.DecimalInputView
         android:id="@+id/decimalInputViewStock"
         android:layout_width="match_parent"
