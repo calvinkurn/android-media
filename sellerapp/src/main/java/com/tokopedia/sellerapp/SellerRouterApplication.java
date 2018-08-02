@@ -1379,11 +1379,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getOrderListIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
         return null;
     }
@@ -1445,7 +1440,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openRedirectUrl(Activity activity, String url) {
-        goToWebview(activity,url);
+        goToWebview(activity, url);
     }
 
     @Override
@@ -1461,11 +1456,35 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-        if(remoteConfig.getBoolean("sellerapp_new_change_password_enabled", true)){
+        if (remoteConfig.getBoolean("sellerapp_new_change_password_enabled", true)) {
             return ChangePasswordActivity.Companion.createIntent(context);
-        }else{
-            return  new Intent(context, ManagePasswordActivity.class);
+        } else {
+            return new Intent(context, ManagePasswordActivity.class);
         }
-        return ChangePasswordActivity.Companion.createIntent(context);
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
     }
 }
