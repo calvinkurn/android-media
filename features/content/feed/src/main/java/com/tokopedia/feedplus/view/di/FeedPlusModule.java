@@ -258,13 +258,6 @@ public class FeedPlusModule {
         return new RemoveWishListUseCase(context);
     }
 
-    /*@FeedPlusScope
-    @Provides
-    WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
-        return new WishlistRepositoryImpl(wishlistFactory);
-    }
-    }*/
-
     @FeedPlusScope
     @Provides
     FeedPlusDetail.Presenter FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
