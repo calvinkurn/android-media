@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SearchInputView;
@@ -43,7 +44,8 @@ import javax.inject.Inject;
  */
 
 public class ContentExploreFragment extends BaseDaggerFragment
-        implements ContentExploreContract.View, SearchInputView.Listener {
+        implements ContentExploreContract.View, SearchInputView.Listener,
+        SwipeToRefresh.OnRefreshListener {
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
@@ -52,6 +54,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
+    private SwipeToRefresh swipeToRefresh;
     private View tabFeed;
     private View appBarLayout;
 
@@ -97,6 +100,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
         searchInspiration = view.findViewById(R.id.search_inspiration);
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         tabFeed = view.findViewById(R.id.tab_feed);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         return view;
@@ -114,6 +118,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     private void initView() {
         searchInspiration.setListener(this);
+        swipeToRefresh.setOnRefreshListener(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL,
@@ -262,6 +267,9 @@ public class ContentExploreFragment extends BaseDaggerFragment
         if (isLoading()) {
             imageAdapter.dismissLoading();
         }
+        if (swipeToRefresh.isRefreshing()) {
+            swipeToRefresh.setRefreshing(false);
+        }
     }
 
     @Override
@@ -285,6 +293,13 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     }
 
+    @Override
+    public void onRefresh() {
+        clearData();
+        presenter.updateCursor("");
+        presenter.refreshExploreData();
+    }
+
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
         imageAdapter.addList(new ArrayList<>(exploreImageViewModelList));
     }
@@ -295,7 +310,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     private boolean isLoading() {
-        return imageAdapter.isLoading();
+        return imageAdapter.isLoading() || swipeToRefresh.isRefreshing();
     }
 
     private RecyclerView.OnScrollListener onScrollListener(GridLayoutManager layoutManager) {

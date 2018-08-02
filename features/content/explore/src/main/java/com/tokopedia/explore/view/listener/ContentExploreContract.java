@@ -42,6 +42,8 @@ public interface ContentExploreContract {
     interface Presenter extends CustomerPresenter<View> {
         void getExploreData(boolean clearData);
 
+        void refreshExploreData();
+
         void updateCursor(String cursor);
 
         void updateCategoryId(int categoryId);

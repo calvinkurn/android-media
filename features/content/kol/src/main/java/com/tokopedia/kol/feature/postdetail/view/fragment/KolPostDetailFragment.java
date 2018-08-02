@@ -57,7 +57,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_PROFILE = 13;
 
     private Integer postId;
-    private SwipeToRefresh swipeRefreshLayout;
+    private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
     private ImageView userAvatar;
     private EditText replyEditText;
@@ -96,7 +96,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_kol_post_detail, container, false);
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         userAvatar = view.findViewById(R.id.user_avatar);
         replyEditText = view.findViewById(R.id.reply_edit_text);
@@ -124,7 +124,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         GraphqlClient.init(getContext());
         initVar();
 
-        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeToRefresh.setOnRefreshListener(this);
 
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
@@ -179,14 +179,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void showLoading() {
         if (!isLoading()) {
-            swipeRefreshLayout.setRefreshing(true);
+            swipeToRefresh.setRefreshing(true);
         }
     }
 
     @Override
     public void dismissLoading() {
         if (isLoading()) {
-            swipeRefreshLayout.setRefreshing(false);
+            swipeToRefresh.setRefreshing(false);
         }
     }
 
@@ -314,7 +314,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private boolean isLoading() {
-        return swipeRefreshLayout.isRefreshing();
+        return swipeToRefresh.isRefreshing();
     }
 
     private void showError(String message) {
