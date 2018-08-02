@@ -2,6 +2,7 @@ package com.tokopedia.home.account.di.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.home.account.di.qualifier.AccountLogoutQualifier;
 import com.tokopedia.home.account.di.scope.AccountLogoutScope;
@@ -10,6 +11,7 @@ import com.tokopedia.logout.data.LogoutApi;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.logout.domain.mapper.LogoutMapper;
 import com.tokopedia.logout.domain.usecase.LogoutUseCase;
+import com.tokopedia.navigation_common.WalletPref;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -86,7 +88,14 @@ public class LogoutModule {
 
     @AccountLogoutScope
     @Provides
-    public LogoutPresenter provideDialogLogoutPresenter(LogoutUseCase logoutUseCase, UserSession userSession){
-        return new LogoutPresenter(logoutUseCase, userSession);
+    public LogoutPresenter provideDialogLogoutPresenter(LogoutUseCase logoutUseCase,
+                                                        UserSession userSession, WalletPref walletPref){
+        return new LogoutPresenter(logoutUseCase, userSession, walletPref);
+    }
+
+    @AccountLogoutScope
+    @Provides
+    public WalletPref provideWalletPref(@ApplicationContext Context context, Gson gson){
+        return new WalletPref(context, gson);
     }
 }

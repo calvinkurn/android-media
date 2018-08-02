@@ -26,4 +26,8 @@ public class WalletPref {
         String jsonWallet = preferences.getString(WALLET_PREF, null);
         return gson.fromJson(jsonWallet, WalletModel.class);
     }
+
+    public void clear() {
+        preferences.edit().clear().apply();
+    }
 }
