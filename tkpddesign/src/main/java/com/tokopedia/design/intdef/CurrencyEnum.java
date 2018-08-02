@@ -1,6 +1,7 @@
 package com.tokopedia.design.intdef;
 
 public enum CurrencyEnum {
+    RPwithSpace ("Rp %s", false),
     RP ("Rp%s", false),
     USD ("$%s", true);
 

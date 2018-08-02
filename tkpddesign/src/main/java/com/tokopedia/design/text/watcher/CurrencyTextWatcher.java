@@ -37,6 +37,11 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
     }
 
     private OnNumberChangeListener onNumberChangeListener;
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     public interface OnNumberChangeListener {
         void onNumberChanged(double value);
     }
@@ -60,6 +65,7 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         String sString = s.toString();
+
         double doubleValue = StringUtils.convertToNumeric(sString, useCommaForThousand);
         if (onNumberChangeListener!= null) {
             onNumberChangeListener.onNumberChanged(doubleValue);

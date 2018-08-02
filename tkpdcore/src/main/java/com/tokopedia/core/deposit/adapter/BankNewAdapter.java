@@ -21,11 +21,7 @@ import java.util.List;
  */
 public class BankNewAdapter extends RecyclerView.Adapter<BankNewAdapter.ViewHolder> {
 
-    int mSelectedItem = -1;
-
-    public List<BankAccount> getListBank() {
-        return listBank;
-    }
+    int selectedItem = -1;
 
     public interface OnBankClickListener {
         void onClick(int position);
@@ -50,7 +46,16 @@ public class BankNewAdapter extends RecyclerView.Adapter<BankNewAdapter.ViewHold
     public void setList(List<BankAccount> listBank) {
         this.listBank.clear();
         this.listBank.addAll(listBank);
+        this.listBank.add(new BankAccount());
         notifyDataSetChanged();
+    }
+
+    public List<BankAccount> getListBank() {
+        return listBank;
+    }
+
+    public boolean hasSelectedItem() {
+        return selectedItem != -1;
     }
 
     public void showEmpty() {
@@ -62,12 +67,17 @@ public class BankNewAdapter extends RecyclerView.Adapter<BankNewAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
 
+    public class ItemBankViewHolder extends ViewHolder {
         RadioButton mRadio;
         TextView bankName;
         TextView bankAccountName;
 
-        public ViewHolder(View itemView) {
+        public ItemBankViewHolder(View itemView) {
             super(itemView);
             bankName = itemView.findViewById(R.id.bank_name);
             bankAccountName = itemView.findViewById(R.id.bank_account_name);
@@ -75,8 +85,10 @@ public class BankNewAdapter extends RecyclerView.Adapter<BankNewAdapter.ViewHold
             View.OnClickListener clickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mSelectedItem = getAdapterPosition();
-                    notifyDataSetChanged();
+                    int oldPosition = selectedItem;
+                    selectedItem = getAdapterPosition();
+                    notifyItemChanged(oldPosition);
+                    notifyItemChanged(selectedItem);
                 }
             };
             itemView.setOnClickListener(clickListener);
@@ -84,31 +96,54 @@ public class BankNewAdapter extends RecyclerView.Adapter<BankNewAdapter.ViewHold
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position == listBank.size() - 1 ? 1 : 0;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View parentView = LayoutInflater.from(parent.getContext())
+        View parentView;
+        if (viewType == 1) {
+            parentView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_add_bank, parent, false);
+            return new ViewHolder(parentView);
+        }
+
+        parentView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_bank, parent, false);
-        return new ViewHolder(parentView);
+        return new ItemBankViewHolder(parentView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        holder.mRadio.setChecked(position == mSelectedItem);
-        
-        if (position == listBank.size() && isEmpty == 1) {
-            holder.bankName.setText(context.getString(R.string.error_bank_not_found));
-            holder.bankName.setOnClickListener(null);
-        } else {
-            holder.bankName.setText(listBank.get(position).getBankName());
-            holder.bankAccountName.setText(listBank.get(position).getBankAccountName());
+        switch (holder.getItemViewType()) {
+            case 1:
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                break;
+            default:
+                ItemBankViewHolder viewHolder = (ItemBankViewHolder) holder;
+                viewHolder.mRadio.setChecked(position == selectedItem);
+
+                if (position == listBank.size() && isEmpty == 1) {
+                    viewHolder.bankName.setText(context.getString(R.string.error_bank_not_found));
+                    viewHolder.bankName.setOnClickListener(null);
+                } else {
+                    viewHolder.bankName.setText(listBank.get(position).getBankName());
+                    viewHolder.bankAccountName.setText(listBank.get(position).getBankAccountName());
+                }
+                break;
         }
     }
 
     @Override
     public int getItemCount() {
-
         return listBank.size() + isEmpty;
     }
 

@@ -435,6 +435,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_success_edit_addr">Sukses mengubah alamat</string>
     <string name="title_success_default_bank">Sukses mengganti rekening Bank Utama.</string>
     <string name="title_add_bank_account">Tambah Rekening Bank</string>
+    <string name="title_add_account_bank">Tambah Rekening</string>
     <string name="title_see_all_addr">Lihat semua</string>
     <string name="error_load_shop">Terjadi kesalahan ketika mengambil informasi toko</string>
     <string name="error_empty_report">Mohon diisi</string>
@@ -604,8 +605,12 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_changeemail_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk mengubah email.</string>
 
     <string name="title_withdrawal_saldo">Saldo yang Dapat Ditarik</string>
+    <string name="title_action_withdraw">Tarik Saldo</string>
     <string name="title_withdrawal_nominal">Masukkan Nominal Penarikan Saldo</string>
     <string name="choose_bank_account">Pilih Rekening Bank</string>
+    <string name="withdrawal_info">Informasi Penarikan Saldo</string>
+    <string name="has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
+    <string name="dot">•</string>
     <!-- Strings related Manage People -->
 
 

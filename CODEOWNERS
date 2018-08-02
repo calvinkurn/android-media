@@ -39,6 +39,7 @@
 /features/user/otp/                     @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
+/features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
 /libraries/bottom_sheet_builder/        @tokopedia/minion-stuart

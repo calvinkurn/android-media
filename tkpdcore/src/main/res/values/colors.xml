@@ -131,5 +131,6 @@
     <color name="clicked_green">#8ad4efd5</color>
     <color name="add_template_disabled">#26000000</color>
 
+    <color name="grey_transp">#fafbfc</color>
 
 </resources>

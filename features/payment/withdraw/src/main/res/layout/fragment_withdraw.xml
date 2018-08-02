@@ -1,0 +1,234 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/dp_8">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/withdraw_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/button_curvy_green"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/sp_11"
+            android:padding="@dimen/dp_8"
+            android:text="@string/title_action_withdraw"
+            android:minHeight="@dimen/dp_40"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/sp_13" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/withdraw_button"
+            android:layout_alignParentTop="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/main_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_3"
+                    android:elevation="@dimen/dp_3"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/cardview_light_background"
+                    app:cardCornerRadius="@dimen/dp_1"
+                    app:cardElevation="@dimen/dp_3"
+                    app:cardPreventCornerOverlap="false">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/dp_16">
+
+                        <TextView
+                            android:id="@+id/withdraw_all"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/bg_rounded_corners_green"
+                            android:gravity="center"
+                            android:padding="@dimen/dp_8"
+                            android:text="Tarik Semua"
+                            android:textColor="@color/medium_green"
+                            android:textSize="@dimen/sp_11" />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/wrapper_total_balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@id/withdraw_all"
+                            android:hint="@string/title_withdrawal_saldo">
+
+                            <EditText
+                                android:id="@+id/total_balance"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/dp_10"
+                                android:background="@null"
+                                android:enabled="false"
+                                android:paddingTop="@dimen/dp_3" />
+                        </android.support.design.widget.TextInputLayout>
+
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_3"
+                    android:elevation="@dimen/dp_3"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/cardview_light_background"
+                    app:cardCornerRadius="@dimen/dp_1"
+                    app:cardElevation="@dimen/dp_3"
+                    app:cardPreventCornerOverlap="false">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/dp_16">
+
+                        <TextView
+                            android:id="@+id/wrapper_total_withdrawal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="@dimen/sp_10"
+                            android:text="@string/title_withdrawal_nominal"
+                            android:textColor="#8a000000"
+                            android:textSize="@dimen/sp_12"
+                            android:textStyle="normal" />
+
+                        <EditText
+                            android:id="@+id/total_withdrawal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_10"
+                            android:background="@null"
+                            android:enabled="true"
+                            android:layout_below="@id/wrapper_total_withdrawal"
+                            android:inputType="numberSigned"
+                            android:paddingTop="@dimen/dp_5" />
+
+                        <TextView
+                            android:id="@+id/total_withdrawal_error"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="@dimen/sp_5"
+                            android:text="@string/title_withdrawal_nominal"
+                            android:textColor="#d50000"
+                            android:textSize="@dimen/sp_12"
+                            android:paddingTop="@dimen/dp_1"
+                            android:layout_below="@id/total_withdrawal"
+                            android:visibility="gone"
+                            android:textStyle="normal" />
+
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_3"
+                    android:elevation="@dimen/dp_3"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/cardview_light_background"
+                    app:cardCornerRadius="@dimen/dp_1"
+                    app:cardElevation="@dimen/dp_3"
+                    app:cardPreventCornerOverlap="false">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/dp_8"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingRight="@dimen/dp_16"
+                        android:paddingLeft="@dimen/dp_16">
+
+                        <TextView
+                            android:id="@+id/title_choose_bank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="10sp"
+                            android:text="@string/choose_bank_account"
+                            android:textColor="#8a000000"
+                            android:textSize="@dimen/sp_12"
+                            android:paddingTop="@dimen/dp_8"
+                            android:textStyle="normal" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycler_view_bank"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/title_choose_bank"
+                            android:paddingTop="@dimen/dp_3">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+                <RelativeLayout
+                    android:id="@+id/info_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/dp_16"
+                    android:background="@color/grey_transp"
+                    android:padding="@dimen/dp_16">
+
+                    <ImageView
+                        android:id="@+id/info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:srcCompat="@drawable/ic_info_orange" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/info"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="4sp"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:text="@string/withdrawal_info"
+                        android:textColor="@color/medium_green"
+                        android:textSize="12sp"
+                        android:background="@color/transparent"
+                        android:textStyle="normal" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+        <include
+            android:id="@+id/loading_layout"
+            layout="@layout/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

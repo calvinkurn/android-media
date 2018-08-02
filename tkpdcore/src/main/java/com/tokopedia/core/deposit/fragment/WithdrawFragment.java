@@ -1,40 +1,34 @@
 package com.tokopedia.core.deposit.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.deposit.adapter.BankAdapter;
-import com.tokopedia.core.deposit.adapter.BankDialogAdapter;
 import com.tokopedia.core.deposit.adapter.BankNewAdapter;
 import com.tokopedia.core.deposit.listener.WithdrawFragmentView;
 import com.tokopedia.core.deposit.model.BankAccount;
@@ -43,6 +37,11 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.deposit.presenter.WithdrawFragmentPresenter;
 import com.tokopedia.core.deposit.presenter.WithdrawFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.intdef.CurrencyEnum;
+import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +59,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @BindView(R2.id.wrapper_total_balance)
     TextInputLayout wrapperTotalBalance;
-
-    @BindView(R2.id.wrapper_total_withdrawal)
-    TextInputLayout wrapperTotalWithdrawal;
 
     @BindView(R2.id.wrapper_account_name)
     TextInputLayout wrapperAccountName;
@@ -94,9 +90,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @BindView(R2.id.total_withdrawal)
     EditText totalWithdrawal;
 
-//    @BindView(R2.id.bank_list)
-//    Spinner bankListView;
-
     @BindView(R2.id.password)
     EditText password;
 
@@ -121,16 +114,18 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @BindView(R2.id.loading_layout)
     View loadingLayout;
 
-    @BindView(R2.id.forgot_pass)
-    TextView forgotPassText;
-
     TkpdProgressDialog progressDialog;
     BankAdapter bankAdapter;
     WithdrawFragmentPresenter presenter;
     List<BankAccount> listBank;
-    Snackbar snackBar;
     BankNewAdapter bankDialogadapter;
     RecyclerView bankRecyclerView;
+    private View withdrawButton;
+    private View withdrawAll;
+    private CurrencyTextWatcher currencyTextWatcher;
+    private Snackbar snackBarError;
+    private TextView withdrawError;
+    private CloseableBottomSheetDialog bottomSheetDialog;
 
     public static WithdrawFragment createInstance(Bundle extras) {
         WithdrawFragment fragment = new WithdrawFragment();
@@ -148,7 +143,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     private void setTextWatcher() {
         totalBalance.addTextChangedListener(watcher(wrapperTotalBalance));
-        totalWithdrawal.addTextChangedListener(watcher(wrapperTotalWithdrawal));
         accountName.addTextChangedListener(watcher(wrapperAccountName));
         accountNumber.addTextChangedListener(watcher(wrapperAccountNumber));
         branchName.addTextChangedListener(watcher(wrapperBankBranch));
@@ -211,39 +205,72 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     protected void initView(View view) {
-        snackBar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_INDEFINITE);
         bankRecyclerView = view.findViewById(R.id.recycler_view_bank);
+        withdrawButton = view.findViewById(R.id.withdraw_button);
+        withdrawAll = view.findViewById(R.id.withdraw_all);
+        withdrawError = view.findViewById(R.id.total_withdrawal_error);
         bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listBank = new ArrayList<>();
         bankDialogadapter = BankNewAdapter.createAdapter(context, listBank);
         bankRecyclerView.setAdapter(bankDialogadapter);
+
+        currencyTextWatcher = new CurrencyTextWatcher(totalWithdrawal, CurrencyEnum.RPwithSpace);
+        currencyTextWatcher.setDefaultValue("");
+
+        snackBarError = ToasterError.make(getView().findViewById(android.R.id.content),
+                "", BaseToaster.LENGTH_LONG)
+                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackBarError.dismiss();
+                    }
+                });
+
+        bottomSheetDialog = CloseableBottomSheetDialog.createInstance(getActivity());
     }
 
     @Override
     protected void setViewListener() {
-//        bankListView.setOnItemSelectedListener(onBankListSelected());
         sendOTP.setOnClickListener(onSendOTPClicked());
         bankNameView.setOnClickListener(onBankNameClicked());
-        forgotPassText.setOnClickListener(onGoToForgotPass());
-    }
-
-    private View.OnClickListener onGoToForgotPass() {
-        return new View.OnClickListener() {
+        withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = ((TkpdCoreRouter) getActivity().getApplication())
-                            .getForgotPasswordIntent(getActivity(), "");
-                    startActivity(intent);
+                KeyboardHandler.hideSoftKeyboard(getActivity());
+                presenter.onConfirmClicked(bankDialogadapter.hasSelectedItem());
+            }
+        });
+        withdrawAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                totalWithdrawal.setText(getArguments().getString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE_INT, DEFAULT_TOTAL_BALANCE));
+            }
+        });
+
+        if (currencyTextWatcher != null) {
+            totalWithdrawal.removeTextChangedListener(currencyTextWatcher);
+        }
+
+        totalWithdrawal.addTextChangedListener(currencyTextWatcher);
+
+        bottomSheetDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }
-        };
+        });
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.save_btn_black, menu);
+
     }
 
     @Override
@@ -251,9 +278,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
         if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.action_send) {
-            KeyboardHandler.hideSoftKeyboard(getActivity());
-            presenter.onConfirmClicked();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -358,8 +382,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @Override
     protected void setActionVar() {
         totalBalance.setText(getArguments().getString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE, DEFAULT_TOTAL_BALANCE));
-        totalWithdrawal.setText(getArguments().getString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE_INT, DEFAULT_TOTAL_WITHDRAWAL));
-
     }
 
     @Override
@@ -377,7 +399,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @Override
     public void setForm(WithdrawForm data) {
         totalBalance.setText(data.getUseableDepositIdr());
-        totalWithdrawal.setText(String.valueOf(data.getUseableDeposit()));
         if (data.isMsisdnVerified() == 0) {
             sendOTP.setText(getActivity().getString(R.string.title_otp_email));
         } else {
@@ -387,8 +408,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public void removeError() {
-        snackBar.dismiss();
-        notifyError(wrapperTotalWithdrawal, null);
+//        notifyError(wrapperTotalWithdrawal, null);
         notifyError(wrapperAccountName, null);
         notifyError(wrapperAccountNumber, null);
         notifyError(wrapperBankBranch, null);
@@ -429,19 +449,12 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public void setError(String error) {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
         if (error.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
         } else {
-            snackBar = SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(getString(R.string.title_close), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                }
-                            }
-                    );
-            snackBar.show();
+            snackBarError.setText(error);
+            snackBarError.show();
         }
 
     }
@@ -508,7 +521,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public TextInputLayout getTotalWithdrawalWrapper() {
-        return wrapperTotalWithdrawal;
+        return null;
     }
 
     @Override

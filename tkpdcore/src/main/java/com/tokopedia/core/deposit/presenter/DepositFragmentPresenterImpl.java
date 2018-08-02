@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.deposit.fragment.DepositFragment;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractor;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractorImpl;
@@ -57,7 +56,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     }
 
     @Override
-    public void onDrawClicked() {
+    public void onDrawClicked(Intent intent) {
         Context context = viewListener.getContext();
         UserSession session = ((AbstractionRouter)context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
@@ -65,7 +64,6 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
                 @Override
                 public void onSuccess(SummaryWithdraw result) {
                     if (result.getSummary().getSummaryUseableDeposit() > 0) {
-                        Intent intent = new Intent(viewListener.getContext(), WithdrawActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString(BUNDLE_TOTAL_BALANCE, String.valueOf(result.getSummary().getSummaryUseableDepositIdr()));
                         bundle.putString(BUNDLE_TOTAL_BALANCE_INT, String.valueOf(result.getSummary().getSummaryUseableDeposit()));

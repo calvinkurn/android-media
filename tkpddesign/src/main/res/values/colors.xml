@@ -13,6 +13,7 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
 
     <color name="background_apps">@color/grey_200</color>
     <color name="background_error">#D50000</color>
@@ -47,7 +48,11 @@
 
     <color name="grey_transparent_background">#28000000</color>
 
+    <color name="black_12">#1e000000</color>
+    <color name="black_36">#5b000000</color>
+    <color name="black_54">#8a000000</color>
     <color name="black_55">#8C000000</color>
+    <color name="black_70">#b3000000</color>
 
     <color name="bottomnav_bg">#FFFFFF</color>
     <color name="bottomnav_active">@color/green_250</color>

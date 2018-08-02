@@ -71,6 +71,7 @@ ext {
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
+    tkpdWithdrawVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -327,7 +328,8 @@ ext {
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
-            digitalDeals          : ":features:digital:digital_deals"
+            digitalDeals          : ":features:digital:digital_deals",
+            withdraw              : ":features:payment:withdraw"
     ]
 
     libraries = [

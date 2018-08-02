@@ -14,7 +14,7 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="#b3000000"
-        android:lineSpacingExtra="8sp"
+        android:lineSpacingExtra="@dimen/sp_8"
         tools:text="PT BANK CENTRAL ASIA TBK"
         />
 
@@ -27,7 +27,7 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="#8a000000"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/sp_5"
         tools:text="5678908730 • Alexandra Ronodididi…"
         />
 

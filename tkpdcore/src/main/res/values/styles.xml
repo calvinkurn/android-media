@@ -242,4 +242,12 @@
         <item name="android:scaleY">1</item>
     </style>
 
+    <style name="text_in_layout_hint_Style">
+        <item name="android:textColor">@color/medium_green</item>
+        <item name="android:textSize">@dimen/sp_11</item>
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="colorControlActivated">#c5c5c5</item>
+        <item name="colorControlHighlight">@color/red_400</item>
+    </style>
+
 </resources>

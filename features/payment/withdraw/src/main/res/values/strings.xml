@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">withdraw</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="activity_withdraw">Penarikan Saldo</string>
+
+    <string name="title_confirm_account">Pastikan Nomor Rekening &amp; Nama Pemilik Rekening sesuai buku tabungan</string>
+    <string name="title_action_withdraw">Tarik Saldo</string>
+    <string name="title_withdrawal_saldo">Saldo yang Dapat Ditarik</string>
+    <string name="title_withdrawal_nominal">Masukkan Nominal Penarikan Saldo</string>
+    <string name="choose_bank_account">Pilih Rekening Bank</string>
+    <string name="withdrawal_info">Informasi Penarikan Saldo</string>
+    <string name="has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
+    <string name="dot">•</string>
+    <string name="title_account_name">Nama Akun</string>
+    <string name="title_account_number_saldo">Nomor Rekening</string>
+    <string name="title_bank_name">Nama Bank</string>
+    <string name="title_choose_bank">Pilih Nama Bank</string>
+    <string name="title_branch">Cabang</string>
+    <string name="title_otp">Masukkan Kode Verifikasi :</string>
+    <string name="title_password">Kata Sandi</string>
+    <string name="title_forgot_password">Lupa kata sandi?</string>
+    <string name="title_close">Tutup</string>
+    <string name="title_add_account_bank">Tambah Rekening</string>
+
+    <string name="title_info_withdrawal_1">Minimum Penarikan</string>
+    <string name="body_1">BCA, BNI, BRI, Mandiri- Rp 10.000\nBank lain - Rp 50.000</string>
+    <string name="title_info_withdrawal_2">Biaya Admin</string>
+    <string name="body_info_withdrawal_2">BRI - Rp 1.000</string>
+    <string name="title_info_withdrawal_3">Waktu Proses Penarikan</string>
+    <string name="body_info_withdrawal_3">Semua bank - paling lama 48 jam (tidak termasuk Sabtu/Minggu/libur) </string>
+    <string name="title_info_withdrawal_4">Biaya Tambahan Ditanggung Pengguna</string>
+
+</resources>

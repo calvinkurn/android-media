@@ -320,8 +320,8 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
     }
 
     @Override
-    public void onConfirmClicked() {
-        if (isValid()) {
+    public void onConfirmClicked(boolean hasSelectBank) {
+        if (isValid(hasSelectBank)) {
             doWithdraw();
         }
     }
@@ -384,69 +384,68 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
         return position == viewListener.getAdapter().getListBank().size() + 1;
     }
 
-    private boolean isValid() {
-        boolean Valid = true;
+    private boolean isValid(boolean hasSelectBank) {
         viewListener.removeError();
 
         if (viewListener.getPassword().length() == 0) {
             viewListener.notifyError(viewListener.getPasswordWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-            Valid = false;
+            return false;
         }
 
-        if (viewListener.getOTPArea().getVisibility() == View.VISIBLE) {
-            if (viewListener.getOTP().length() == 0) {
-                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-                Valid = false;
-            } else if (viewListener.getOTP().length() > 6) {
-                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_max_otp));
-                Valid = false;
-            } else if (viewListener.getOTP().length() < 6) {
-                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_min_otp));
-                Valid = false;
-            }
-        }
+//        if (viewListener.getOTPArea().getVisibility() == View.VISIBLE) {
+//            if (viewListener.getOTP().length() == 0) {
+//                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+//                Valid = false;
+//            } else if (viewListener.getOTP().length() > 6) {
+//                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_max_otp));
+//                Valid = false;
+//            } else if (viewListener.getOTP().length() < 6) {
+//                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_min_otp));
+//                Valid = false;
+//            }
+//        }
 
-        if (viewListener.getBankForm().getVisibility() == View.VISIBLE) {
-            if (viewListener.getAccountName().length() == 0) {
-                viewListener.notifyError(viewListener.getAccountNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-                Valid = false;
-            }
-            if (viewListener.getAccountNumber().length() == 0) {
-                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-                viewListener.getAccountNumber().requestFocus();
-                Valid = false;
-            } else if (viewListener.getAccountNumber().length() > 30) {
-                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_max_account_number));
-                Valid = false;
-            }
+//        if (viewListener.getBankForm().getVisibility() == View.VISIBLE) {
+//            if (viewListener.getAccountName().length() == 0) {
+//                viewListener.notifyError(viewListener.getAccountNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+//                Valid = false;
+//            }
+//            if (viewListener.getAccountNumber().length() == 0) {
+//                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+//                viewListener.getAccountNumber().requestFocus();
+//                Valid = false;
+//            } else if (viewListener.getAccountNumber().length() > 30) {
+//                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_max_account_number));
+//                Valid = false;
+//            }
+//
+//            if (viewListener.getBranchName().length() == 0) {
+//                viewListener.notifyError(viewListener.getBranchNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+//                Valid = false;
+//            }
+//        }
 
-            if (viewListener.getBranchName().length() == 0) {
-                viewListener.notifyError(viewListener.getBranchNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-                Valid = false;
-            }
-        }
-
-        if (viewListener.getBankList().getSelectedItemPosition() == 0) {
-            viewListener.setError(viewListener.getActivity().getString(R.string.error_bank_not_selected));
-            Valid = false;
+        if (!hasSelectBank) {
+            viewListener.setError(viewListener.getActivity().getString(R.string.has_no_bank));
+            return false;
         }
 
         if (viewListener.getTotalWithdrawal().length() == 0) {
-            viewListener.notifyError(viewListener.getTotalWithdrawalWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-            Valid = false;
+            viewListener.setError(viewListener.getActivity().getString(R.string.error_field_required));
+            return false;
         } else {
             if (Double.parseDouble(viewListener.getTotalWithdrawal().getText().toString().replace(",", "")) < MIN_WITHDRAW) {
-                viewListener.notifyError(viewListener.getTotalWithdrawalWrapper(), viewListener.getActivity().getString(R.string.error_min_withdraw));
-                Valid = false;
+                viewListener.setError(viewListener.getActivity().getString(R.string.error_min_withdraw));
+                return false;
             }
             if (Double.parseDouble(viewListener.getTotalWithdrawal().getText().toString().replace(",", "")) >
                     Integer.parseInt(viewListener.getArguments().getString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE_INT))) {
-                viewListener.notifyError(viewListener.getTotalWithdrawalWrapper(), viewListener.getActivity().getString(R.string.error_not_enough));
-                Valid = false;
+                viewListener.setError(viewListener.getActivity().getString(R.string.error_not_enough));
+                return false;
             }
         }
 
-        return Valid;
+        return true;
     }
 
 
