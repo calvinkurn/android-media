@@ -1,7 +1,6 @@
 package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
@@ -46,8 +45,8 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartRespons
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -308,7 +307,10 @@ public class EventReviewTicketPresenter
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
         cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-        cartItem.setProductId(packageViewModel.getDigitalProductID());
+        if (isEventOmsEnabled())
+            cartItem.setProductId(packageViewModel.getDigitalProductID());
+        else
+            cartItem.setProductId(packageViewModel.getProductId());
 
 
         cartItems.add(cartItem);
@@ -366,7 +368,7 @@ public class EventReviewTicketPresenter
                     cartData = verifyCartResponse.getCart();
 
                     if (!isPromoCodeCase) {
-                        if ("failure" .equals(verifyCartResponse.getStatus().getResult())) {
+                        if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
                             getView().hideProgressBar();
                             getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                         } else {
@@ -427,7 +429,7 @@ public class EventReviewTicketPresenter
                 public void onNext(VerifyCartResponse verifyCartResponse) {
 
                     if (!isPromoCodeCase) {
-                        if ("failure" .equals(verifyCartResponse.getStatus().getResult())) {
+                        if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
                             getView().hideProgressBar();
                             getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                         } else {
