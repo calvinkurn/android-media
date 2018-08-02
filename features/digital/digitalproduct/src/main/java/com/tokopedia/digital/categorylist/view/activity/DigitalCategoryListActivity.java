@@ -95,16 +95,22 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     protected void setViewListener() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
-            DigitalCategoryListFragment digitalCategoryListFragment;
+            DigitalCategoryListFragment digitalCategoryListFragment = null;
 
 
             if (getIntent() != null) {
-                boolean isFromAppShortCut = getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false);
-                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(isFromAppShortCut);
+                if (getIntent().hasExtra(Constants.FROM_APP_SHORTCUTS)) {
+                    boolean isFromAppShortCut = getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false);
+                    digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(isFromAppShortCut);
+                }
+
+                if (getIntent().hasExtra(PARAM_IS_COUPON_ACTIVE)) {
+                    digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(
+                            getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)
+                    );
+                }
             } else {
-                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(
-                        getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)
-                );
+                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
             }
 
             getFragmentManager().beginTransaction().replace(R.id.container,
