@@ -27,6 +27,9 @@ interface ChangePasswordContract {
 
         fun onErrorNewPass(errorMessage: String?)
 
+        fun onErrorConfirmPass(errorMessage: String?)
+
+
     }
 
     interface Presenter : CustomerPresenter<View> {

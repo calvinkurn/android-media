@@ -32,6 +32,8 @@ class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordU
                 val errorMessage = ErrorHandler.getErrorMessage(view.getContext(), e)
 
                 when {
+                    errorMessage.toLowerCase().contains("ulangi kata sandi") || errorMessage
+                            .toLowerCase().contains("tidak cocok") -> view.onErrorConfirmPass(errorMessage)
                     errorMessage.toLowerCase().contains("kata sandi baru") -> view
                             .onErrorNewPass(errorMessage)
                     errorMessage.toLowerCase().contains("kata sandi lama") -> view

@@ -247,8 +247,12 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onSuccessChangePassword() {
         hideLoading()
-        if (activity != null) {
-            activity!!.setResult(Activity.RESULT_OK)
+        if (activity!= null && context!= null && context!!.applicationContext is
+                        ChangePasswordRouter) {
+            val intent: Intent = (context!!.applicationContext as ChangePasswordRouter)
+                    .getHomeIntent(activity!!)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
             activity!!.finish()
         }
     }
@@ -263,6 +267,12 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         hideLoading()
         setWrapperHint(wrapper_new, "")
         setWrapperError(wrapper_new, errorMessage)
+    }
+
+    override fun onErrorConfirmPass(errorMessage: String?) {
+        hideLoading()
+        setWrapperHint(wrapper_conf, "")
+        setWrapperError(wrapper_conf, errorMessage)
     }
 
     override fun onErrorChangePassword(errorMessage: String) {
