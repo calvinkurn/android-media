@@ -64,7 +64,9 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.product.edit.common.di.component.DaggerProductComponent;
+import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -72,6 +74,7 @@ import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.share.DefaultShare;
@@ -98,7 +101,6 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
@@ -790,7 +792,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getIntentCreateShop(Context context) {
-        Intent intent = TkpdSeller.getIntentCreateEditShop(context, true, true);
+        Intent intent = ShopOpenRouter.getIntentCreateEditShop(context, true, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
     }
@@ -1378,7 +1380,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public FingerprintModel getFingerprintModel() {
-        return null;
+        return FingerprintModelGenerator.generateFingerprintModel(this);
     }
 
     @Override

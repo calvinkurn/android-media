@@ -30,7 +30,7 @@ public class TopAdsConstant {
     public static final int BUDGET_KEYWORD_MAX = 10_000;
     public static final int BUDGET_MAX = 5000;
     public static final int BUDGET_MULTIPLE_BY = 50;
-    public static final int BUDGET_KEYWORD_MULTIPLE_BY = 1000;
+    public static final int BUDGET_KEYWORD_MULTIPLE_BY = 750;
     public static final int BUDGET_MIN_MULTIPLE_BY = 10;
 
     public static final int AD_TYPE_PRODUCT = 1;

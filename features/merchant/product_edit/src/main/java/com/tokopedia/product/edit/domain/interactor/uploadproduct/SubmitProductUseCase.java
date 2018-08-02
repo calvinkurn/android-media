@@ -6,12 +6,15 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.edit.common.model.edit.BasePictureViewModel;
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.edit.data.exception.ImageUploadErrorException;
 import com.tokopedia.product.edit.domain.interactor.GetProductDetailUseCase;
 import com.tokopedia.product.edit.domain.listener.ProductSubmitNotificationListener;
 import com.tokopedia.product.edit.domain.mapper.ProductUploadMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -87,6 +90,15 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
                                 }
                             });
                         }
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends ProductViewModel>>() {
+                    @Override
+                    public Observable<? extends ProductViewModel> call(Throwable throwable) {
+                        if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
+                            throw new ImageUploadErrorException();
+                        }
+                        return Observable.error(throwable);
                     }
                 })
                 .doOnNext(new Action1<ProductViewModel>() {

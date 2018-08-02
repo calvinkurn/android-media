@@ -86,7 +86,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 //import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
+import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
