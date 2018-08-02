@@ -1,6 +1,5 @@
 package com.tokopedia.kol.feature.postdetail.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,7 +25,6 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
@@ -34,7 +32,6 @@ import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
@@ -45,11 +42,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
-import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
-import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
-import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES;
-
 /**
  * @author by yfsx on 23/07/18.
  */
@@ -58,12 +50,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostDetailContract.View, KolPostListener.View.Like,
         KolPostListener.View.ViewHolder, KolComment.View.ViewHolder, KolComment.View.SeeAll {
 
-    private static final String EXTRA_IS_FOLLOWING = "is_following";
-    private static final int IS_FOLLOWING_TRUE = 1;
-    private static final int IS_FOLLOWING_FALSE = 0;
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
-    private static final int DEFAULT_VALUE = -1;
 
     private Integer postId;
     private RecyclerView recyclerView;
@@ -303,31 +291,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (data == null) {
-            return;
-        }
-
         switch (requestCode) {
             case OPEN_KOL_COMMENT:
-                if (resultCode == Activity.RESULT_OK) {
-                    onSuccessAddDeleteKolComment(
-                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, 0),
-                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
-                    );
-                }
-                break;
             case OPEN_KOL_PROFILE:
-                if (resultCode == Activity.RESULT_OK) {
-                    onSuccessFollowUnfollowFromProfile(
-                            data.getIntExtra(EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
-                    );
-
-                    updatePostState(
-                            data.getIntExtra(PARAM_IS_LIKED, DEFAULT_VALUE),
-                            data.getIntExtra(PARAM_TOTAL_LIKES, DEFAULT_VALUE),
-                            data.getIntExtra(PARAM_TOTAL_COMMENTS, DEFAULT_VALUE)
-                    );
-                }
+                adapter.clearData();
+                presenter.getCommentFirstTime(postId);
+                break;
             default:
                 break;
         }
@@ -335,51 +304,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private boolean isLoading() {
         return adapter.isLoading();
-    }
-
-    private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getList().size() > rowNumber
-                && adapter.getList().get(rowNumber) instanceof BaseKolViewModel) {
-            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getList().get(rowNumber);
-            kolViewModel.setTotalComment((
-                    (BaseKolViewModel)
-                            adapter.getList().get(rowNumber)).getTotalComment() +
-                    totalNewComment);
-            adapter.notifyItemChanged(rowNumber);
-        }
-    }
-
-    private void onSuccessFollowUnfollowFromProfile(int isFollowing) {
-        if (!adapter.getList().isEmpty()
-                && adapter.getList().get(0) instanceof KolPostViewModel) {
-            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getList().get(0);
-
-            if (isFollowing != DEFAULT_VALUE) {
-                kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
-                kolViewModel.setTemporarilyFollowed(isFollowing == IS_FOLLOWING_TRUE);
-            }
-            adapter.notifyItemChanged(0);
-        }
-    }
-
-    private void updatePostState(int isLiked, int totalLike, int totalComment) {
-        if (!adapter.getList().isEmpty()
-                && adapter.getList().get(0) instanceof BaseKolViewModel) {
-            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getList().get(0);
-
-            if (isLiked != DEFAULT_VALUE) {
-                kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
-            }
-
-            if (totalLike != DEFAULT_VALUE) {
-                kolViewModel.setTotalLike(totalLike);
-            }
-
-            if (totalComment != DEFAULT_VALUE) {
-                kolViewModel.setTotalComment(totalComment);
-            }
-            adapter.notifyItemChanged(0);
-        }
     }
 
     private void showError(String message) {

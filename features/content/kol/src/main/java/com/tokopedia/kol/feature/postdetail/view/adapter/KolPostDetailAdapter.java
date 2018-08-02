@@ -95,4 +95,10 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
         this.list = list;
         notifyDataSetChanged();
     }
+
+    public void clearData() {
+        int itemCount = getItemCount();
+        this.list.clear();
+        notifyItemRangeRemoved(0, itemCount);
+    }
 }
