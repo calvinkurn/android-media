@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
+import com.tokopedia.shop.etalase.domain.interactor.DeleteShopEtalaseUseCase;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
 import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
@@ -48,12 +49,14 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
+    private final DeleteShopEtalaseUseCase deleteShopEtalaseUseCase;
 
     @Inject
     public ShopProductListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeNewUseCase,
                                     AddToWishListUseCase addToWishListUseCase,
                                     RemoveFromWishListUseCase removeFromWishListUseCase,
                                     DeleteShopProductUseCase deleteShopProductUseCase,
+                                    DeleteShopEtalaseUseCase deleteShopEtalaseUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     GetShopEtalaseUseCase getShopEtalaseUseCase,
                                     UserSession userSession) {
@@ -61,6 +64,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
+        this.deleteShopEtalaseUseCase = deleteShopEtalaseUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
         this.userSession = userSession;
@@ -307,8 +311,9 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         });
     }
 
-    public void clearProductCache() {
+    public void clearCache() {
         deleteShopProductUseCase.executeSync();
+        deleteShopEtalaseUseCase.executeSync();
     }
 
     @Override
@@ -320,5 +325,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         getShopEtalaseUseCase.unsubscribe();
         getShopInfoUseCase.unsubscribe();
         deleteShopProductUseCase.unsubscribe();
+        deleteShopEtalaseUseCase.unsubscribe();
     }
 }

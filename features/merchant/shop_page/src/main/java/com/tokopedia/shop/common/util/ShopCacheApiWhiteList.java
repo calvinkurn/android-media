@@ -40,9 +40,6 @@ public class ShopCacheApiWhiteList {
         // Shop note
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopCommonUrl.BASE_URL, ShopUrl.SHOP_NOTE_PATH, ONE_HOUR));
 
-        // Featured Product
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(GMCommonUrl.BASE_URL, GMCommonUrl.FEATURED_PRODUCT_URL, ONE_HOUR, true));
-
         // Shop Product list
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_ACE_URL, ShopUrl.SHOP_PRODUCT_PATH, ONE_HOUR));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_URL, ShopUrl.SHOP_PRODUCT_PATH, ONE_HOUR));
