@@ -16,8 +16,6 @@ class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordU
         ChangePasswordContract.Presenter,
         BaseDaggerPresenter<ChangePasswordContract.View>() {
 
-    val PASSWORD_MINIMUM_LENGTH: Int = 6
-
     override fun submitChangePasswordForm(oldPassword: String,
                                           newPassword: String,
                                           confirmPassword: String) {
@@ -62,11 +60,11 @@ class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordU
             isValid = false
         }
 
-        if (newPassword.isBlank() || newPassword.length < PASSWORD_MINIMUM_LENGTH) {
+        if (newPassword.isBlank()) {
             isValid = false
         }
 
-        if (confirmPassword.isBlank() || confirmPassword != newPassword) {
+        if (confirmPassword.isBlank()) {
             isValid = false
         }
 
