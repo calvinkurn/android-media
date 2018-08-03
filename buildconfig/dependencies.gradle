@@ -326,6 +326,7 @@ ext {
             profile               : ":features:user:profile",
             settingbank         : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
+            changepassword        : ":features:user:changepassword",
             contactUs             : ":features:operational:contact_us",
             otp                   : ":features:user:otp",
             logisticdata          : ":features:logistic:logisticdata",

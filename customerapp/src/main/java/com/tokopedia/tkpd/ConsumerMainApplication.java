@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.analytics.Analytics;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
+import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -232,6 +233,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
+        ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
         TravelCalendarUrl.GQL_BASE_URL = ConsumerAppBaseUrl.TRAVEL_CALENDAR_BASE_URL;
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
@@ -369,28 +371,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
-    @Override
-    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
-        return isSupportedDelegateDeepLink(url);
-    }
 
-    @Override
-    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        actionNavigateByApplinksUrl(activity, applinks, bundle);
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
-    }
-
-    @Override
-    public Intent getInstantLoanActivityIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Fragment getFlightOrderListFragment() {
-        return FlightOrderListFragment.createInstance();
-    }
 }

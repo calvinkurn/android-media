@@ -224,6 +224,14 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>mainapp_new_change_password_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_new_change_password_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_kai_native_enable</key>
         <value>true</value>
     </entry>
