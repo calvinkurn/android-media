@@ -9,7 +9,8 @@ public class TrainReviewPassengerInfoViewModelBuilder {
     private String returnTripClass;
     private String departureSeat;
     private String returnSeat;
-    private String passengerType;
+    private String passengerTypeStr;
+    private int passengerType;
 
     public TrainReviewPassengerInfoViewModelBuilder name(String name) {
         this.name = name;
@@ -46,14 +47,19 @@ public class TrainReviewPassengerInfoViewModelBuilder {
         return this;
     }
 
-    public TrainReviewPassengerInfoViewModelBuilder passengerType(String passengerType) {
+    public TrainReviewPassengerInfoViewModelBuilder passengerTypeStr(String passengerTypeStr) {
+        this.passengerTypeStr = passengerTypeStr;
+        return this;
+    }
+
+    public TrainReviewPassengerInfoViewModelBuilder passengerType(int passengerType) {
         this.passengerType = passengerType;
         return this;
     }
 
     public TrainReviewPassengerInfoViewModel createTrainReviewPassengerInfoViewModel() {
         return new TrainReviewPassengerInfoViewModel(name, noID, originStationCode,
-                destinationStationCode, departureSeat, returnSeat, passengerType);
+                destinationStationCode, departureSeat, returnSeat, passengerTypeStr, passengerType);
     }
 
 }

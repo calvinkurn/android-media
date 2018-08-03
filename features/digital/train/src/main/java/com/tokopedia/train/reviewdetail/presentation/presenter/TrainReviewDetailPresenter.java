@@ -91,7 +91,8 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                                 .returnSeat(returnTrainPaxPassenger.getSeat().getWagonNo() + "/"
                                         + returnTrainPaxPassenger.getSeat().getRow()
                                         + returnTrainPaxPassenger.getSeat().getColumn())
-                                .passengerType(passengerType)
+                                .passengerTypeStr(passengerType)
+                                .passengerType(departureTrainPaxPassenger.getPaxType())
                                 .createTrainReviewPassengerInfoViewModel();
                     })
                     .toList();
@@ -114,7 +115,8 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                                         + departureTrainPaxPassenger.getSeat().getRow()
                                         + departureTrainPaxPassenger.getSeat().getColumn())
                                 .returnSeat(null)
-                                .passengerType(passengerType)
+                                .passengerTypeStr(passengerType)
+                                .passengerType(departureTrainPaxPassenger.getPaxType())
                                 .createTrainReviewPassengerInfoViewModel();
                     })
                     .toList();

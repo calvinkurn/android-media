@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
@@ -33,7 +34,6 @@ import com.tokopedia.train.common.util.TrainFlowConstant;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.activity.TrainHomepageActivity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.domain.model.TrainTrip;
 import com.tokopedia.train.reviewdetail.di.DaggerTrainReviewDetailComponent;
 import com.tokopedia.train.reviewdetail.di.TrainReviewDetailComponent;
 import com.tokopedia.train.reviewdetail.presentation.NonScrollableLinearLayoutManager;
@@ -376,8 +376,10 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
-    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        return new NonScrollableLinearLayoutManager(getActivity());
+    public RecyclerView getRecyclerView(View view) {
+        VerticalRecyclerView verticalRecyclerView = view.findViewById(R.id.recycler_view);
+        verticalRecyclerView.setLayoutManager(new NonScrollableLinearLayoutManager(getActivity()));
+        return verticalRecyclerView;
     }
 
     @Override
