@@ -1,8 +1,10 @@
 package com.tokopedia.train.seat.presentation.widget;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,7 @@ import java.util.List;
 
 public class TrainSeatPassengerAndWagonView extends BaseCustomView {
     private AppCompatTextView passengerLabel, wagonLabel;
+    private View wagonBottomSeparator;
     private RecyclerView passengerRecyclerView;
     private TrainSeatActionListener actionListener;
 
@@ -52,6 +55,7 @@ public class TrainSeatPassengerAndWagonView extends BaseCustomView {
         passengerLabel = view.findViewById(R.id.tv_passenger_label);
         wagonLabel = view.findViewById(R.id.tv_wagon_label);
         passengerRecyclerView = view.findViewById(R.id.rv_passenger);
+        wagonBottomSeparator = view.findViewById(R.id.wagon_bottom_separator);
         adapter = new TrainSeatPassengerAdapter(new ArrayList<>());
         passengerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         passengerRecyclerView.setAdapter(adapter);
@@ -68,8 +72,19 @@ public class TrainSeatPassengerAndWagonView extends BaseCustomView {
                 }
             }
         });
-        passengerLabel.setOnClickListener(view -> {
 
+        passengerLabel.setOnClickListener(view -> {
+            if (passengerRecyclerView.getVisibility() == VISIBLE) {
+                Drawable img = ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_down_grey);
+                passengerLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, img, null);
+                passengerRecyclerView.setVisibility(GONE);
+                wagonBottomSeparator.setVisibility(GONE);
+            } else {
+                Drawable img = ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_up_grey);
+                passengerRecyclerView.setVisibility(VISIBLE);
+                wagonBottomSeparator.setVisibility(VISIBLE);
+                passengerLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, img, null);
+            }
         });
     }
 

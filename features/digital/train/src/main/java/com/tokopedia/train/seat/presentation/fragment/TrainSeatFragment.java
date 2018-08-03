@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -59,6 +60,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private TrainSeatPassengerAndWagonView trainSeatHeader;
     private ViewPager wagonViewPager;
     private LinearLayout container;
+    private RelativeLayout containerFullPage;
     private ProgressBar progressBar;
     private Button submitButton;
     private TrainSeatPagerIndicator pagerIndicator;
@@ -121,6 +123,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         trainSeatHeader = (TrainSeatPassengerAndWagonView) view.findViewById(R.id.train_seat_header);
         wagonViewPager = (ViewPager) view.findViewById(R.id.vp_wagon);
         container = (LinearLayout) view.findViewById(R.id.container);
+        containerFullPage = (RelativeLayout) view.findViewById(R.id.container_full_page);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         wagonViewPager = (ViewPager) view.findViewById(R.id.vp_wagon);
         pagerIndicator = (TrainSeatPagerIndicator) view.findViewById(R.id.seat_pager_indicator);
@@ -255,7 +258,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public void showErrorGetSeatMaps(String message) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), message, new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), containerFullPage, message, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.getSeatMaps();

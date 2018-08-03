@@ -7,6 +7,9 @@ import android.util.Patterns;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
+import com.tokopedia.train.common.data.interceptor.model.TrainError;
+import com.tokopedia.train.common.util.TrainNetworkErrorConstant;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -168,6 +171,15 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                     if (isViewAttached()) {
                         getView().showPage();
                         getView().hideLoading();
+                        if (e instanceof TrainNetworkException) {
+                            List<TrainError> errors = ((TrainNetworkException) e).getErrorList();
+                            if (errors.contains(new TrainError(TrainNetworkErrorConstant.SOLD_OUT)) ||
+                                    errors.contains(new TrainError(TrainNetworkErrorConstant.RUTE_NOT_FOUND)) ||
+                                    errors.contains(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURRS))) {
+                                getView().showNavigateToSearchDialog(e.getMessage());
+                                return;
+                            }
+                        }
                         getView().showErrorSoftBooking(e);
                     }
                 }
@@ -310,7 +322,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                     formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
                             1, getView().getString(R.string.train_select_passenger_adult_title)));
             getView().loadPassengerSameAsBuyer(trainPassengerViewModel);
-        }else {
+        } else {
             getView().unCheckSameAsBuyerCheckbox();
         }
     }

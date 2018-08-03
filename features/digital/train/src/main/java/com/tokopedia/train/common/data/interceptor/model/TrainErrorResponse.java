@@ -3,6 +3,7 @@ package com.tokopedia.train.common.data.interceptor.model;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -38,27 +39,29 @@ public class TrainErrorResponse extends BaseResponseError {
 
     @Override
     public IOException createException() {
-        String message = getConcattedMessage();
-        return new TrainNetworkException(message, errorList);
+        List<TrainError> errors = new ArrayList<>();
+        String message = getConcattedMessage(errors);
+
+        return new TrainNetworkException(message, errors);
     }
 
-    private String getConcattedMessage() {
+    private String getConcattedMessage(List<TrainError> errors) {
         List<String> results = new ArrayList<>();
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jsonObject = null;
-        for (TrainNetworkError error : errorList) {
+        Gson gson = new Gson();
+        TrainError error = null;
+        for (TrainNetworkError errorNetwork : errorList) {
             try {
-                jsonObject = jsonParser.parse(error.getMessage()).getAsJsonObject();
-                if (jsonObject != null) {
-                    if (jsonObject.has("message")) {
-                        results.add(jsonObject.get("message").getAsString());
-                        continue;
-                    }
+                error = gson.fromJson(errorNetwork.getMessage(), TrainError.class);
+                if (error != null) {
+                    errors.add(error);
+                    results.add(error.getMessage());
+                    continue;
                 }
             } catch (JsonSyntaxException e) {
-                CommonUtils.dumper(error.getMessage());
+                CommonUtils.dumper(errorNetwork.getMessage());
             }
-            results.add(error.getMessage());
+
+            results.add(errorNetwork.getMessage());
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

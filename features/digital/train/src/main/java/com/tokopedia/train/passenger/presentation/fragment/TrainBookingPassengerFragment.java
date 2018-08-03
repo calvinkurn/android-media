@@ -24,12 +24,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.CardWithAction;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.common.util.TrainFlowConstant;
 import com.tokopedia.train.common.util.TrainFlowExtraConstant;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
@@ -562,6 +564,25 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void unCheckSameAsBuyerCheckbox() {
         sameAsBuyerCheckbox.setChecked(false);
+    }
+
+    @Override
+    public void showNavigateToSearchDialog(String message) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setDesc(message);
+        dialog.setBtnOk(getString(R.string.train_dialog_booking_passanger_yes));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                trainFlowUtil.actionSetResultAndClose(
+                        getActivity(),
+                        getActivity().getIntent(),
+                        TrainFlowConstant.RESEARCH
+                );
+            }
+        });
+        dialog.show();
     }
 
     @Override

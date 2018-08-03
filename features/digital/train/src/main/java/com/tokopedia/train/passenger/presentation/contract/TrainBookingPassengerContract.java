@@ -88,6 +88,8 @@ public interface TrainBookingPassengerContract {
         void hideLoading();
 
         void unCheckSameAsBuyerCheckbox();
+
+        void showNavigateToSearchDialog(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

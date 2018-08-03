@@ -20,6 +20,9 @@ import javax.inject.Inject;
  */
 
 public abstract class TrainBaseActivity extends BaseSimpleActivity {
+    private static final int MENU_ORDER_LIST = 0;
+    private static final int MENU_PROMO = 1;
+    private static final int MENU_HELP = 2;
 
     private Menus menus;
 
@@ -75,19 +78,19 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
 
         menus.setOnItemMenuClickListener((itemMenus, pos) -> {
             switch (pos) {
-                case 0:
+                case MENU_ORDER_LIST:
                     if (getApplication() instanceof TrainRouter) {
                         trainAnalytics.eventClickTransactionList();
                         startActivity(((TrainRouter) getApplication()).getTrainOrderListIntent(this));
                     }
                     break;
-                case 1:
+                case MENU_PROMO:
                     if (getApplication() instanceof TrainRouter) {
                         trainAnalytics.eventClickPromoList();
                         startActivity(((TrainRouter) getApplication()).getPromoListIntent(this));
                     }
                     break;
-                case 2:
+                case MENU_HELP:
                     if (getApplication() instanceof TrainRouter) {
                         trainAnalytics.eventClickHelp();
                         startActivity(((TrainRouter) getApplication()).getWebviewActivity(this, TrainUrl.HELP_PAGE));

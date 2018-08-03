@@ -1,5 +1,6 @@
 package com.tokopedia.core.manage.people.address.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -124,6 +125,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     TkpdProgressDialog mProgressDialog;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
+    private String extraPlatformPage;
+
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
         Bundle bundle = new Bundle();
@@ -171,6 +174,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     protected void setupArguments(Bundle arguments) {
         this.token = arguments.getParcelable(KERO_TOKEN);
         this.address = arguments.getParcelable(EDIT_PARAM);
+        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
     }
 
     @Override
@@ -307,6 +311,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void setViewListener() {
         zipCodeLayout.setOnTouchListener(onZipCodeTouch());
@@ -317,14 +322,39 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtEditText.setOnClickListener(onCityDistrictClick());
         chooseLocation.setOnClickListener(onChooseLocation());
         locationEditText.setOnClickListener(onChooseLocation());
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendAnalyticsOnSubmitSaveAddressClicked();
-                if (isValidAddress()) {
-                    updateAddress();
-                    presenter.saveAddress();
-                }
+
+        addressTypeEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputAddressAsClicked();
+            return false;
+        });
+
+        receiverNameEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputNameClicked();
+            return false;
+        });
+
+        addressEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputAddressClicked();
+            return false;
+        });
+
+        receiverPhoneEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputPhoneClicked();
+            return false;
+        });
+
+
+
+
+        saveButton.setOnClickListener(view -> {
+            sendAnalyticsOnSubmitSaveAddressClicked();
+            if (isValidAddress()) {
+                updateAddress();
+                presenter.saveAddress();
             }
         });
 
@@ -424,28 +454,24 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         };
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener onZipCodeTouch() {
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+        return (view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
                 sendAnalyticsOnZipCodeSelectionClicked();
-                if (!zipCodeTextView.isPopupShowing()) zipCodeTextView.showDropDown();
-                return false;
-            }
+            if (!zipCodeTextView.isPopupShowing()) zipCodeTextView.showDropDown();
+            return false;
         };
     }
 
     private AdapterView.OnItemClickListener onZipCodeItemClick() {
-        return new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
-                    zipCodeTextView.setText("");
-                }
-
-                address.setPostalCode(zipCodeTextView.getText().toString());
-                sendAnalyticsOnZipCodeDropdownSelectionClicked();
+        return (adapterView, view, i, l) -> {
+            if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
+                zipCodeTextView.setText("");
             }
+
+            address.setPostalCode(zipCodeTextView.getText().toString());
+            sendAnalyticsOnZipCodeDropdownSelectionClicked();
         };
     }
 
@@ -690,6 +716,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         presenter.detachView();
     }
 
+    private boolean isAddAddressFromCartCheckoutMarketplace() {
+        return extraPlatformPage.equalsIgnoreCase(PLATFORM_MARKETPLACE_CART);
+    }
+
     public boolean isValidAddress() {
         boolean isValid = true;
 
@@ -716,6 +746,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             receiverPhoneLayout.setError(errorMessage);
             receiverPhoneLayout.requestFocus();
             sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputPhone();
             isValid = false;
         }
 
@@ -731,6 +762,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             addressLayout.setError(errorMessage);
             addressLayout.requestFocus();
             sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputAddress();
             isValid = false;
         }
 
@@ -745,6 +777,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             receiverNameLayout.setError(errorMessage);
             receiverNameLayout.requestFocus();
             sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputName();
             isValid = false;
         }
 
@@ -753,6 +786,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             addressTypeLayout.setError(errorMessage);
             addressTypeLayout.requestFocus();
             sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputAddressAs();
             isValid = false;
         }
 
@@ -762,6 +796,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 districtLayout.setError(errorMessage);
                 districtLayout.requestFocus();
                 sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputDistrict();
                 isValid = false;
             }
 
@@ -770,6 +805,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 zipCodeLayout.setError(errorMessage);
                 zipCodeLayout.requestFocus();
                 sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             }
         } else {
@@ -778,18 +814,21 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 postCodeLayout.setError(errorMessage);
                 postCodeLayout.requestFocus();
                 sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             } else if (postCodeEditText.getText().length() < 5) {
                 String errorMessage = getString(R.string.error_min_5_character);
                 postCodeLayout.setError(errorMessage);
                 postCodeLayout.requestFocus();
                 sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             } else if (postCodeEditText.getText().length() > 10) {
                 String errorMessage = getString(R.string.error_max_post_code);
                 postCodeLayout.setError(errorMessage);
                 postCodeLayout.requestFocus();
                 sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             }
 
@@ -915,10 +954,18 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         if (isEdit() && addressModel != null) {
             spinnerSubDistrict.setSelection(subDistrictAdapter.getPositionFromName(addressModel.getDistrictName()));
             updateAddress();
-//            if (subDistrictAdapter.getPositionFromName(addressModel.getDistrictName()) > 0)
-//                isEdit = false;
         }
         this.mDistricts = new ArrayList<>(districts);
+    }
+
+    @Override
+    public void errorSaveAddress() {
+        sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(false);
+    }
+
+    @Override
+    public void successSaveAddress() {
+        sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(true);
     }
 
     @Override
@@ -928,7 +975,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void sendAnalyticsOnSubmitSaveAddressClicked() {
-        if (getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickSimpanFromTambahAlamat();
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahAlamatFromTambah();
         }
@@ -936,43 +983,119 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void sendAnalyticsOnDistrictSelectionClicked() {
-        if (getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress();
         }
     }
 
     @Override
     public void sendAnalyticsOnZipCodeSelectionClicked() {
-        if (getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKodePosPadaTambahAddress();
         }
     }
 
     @Override
     public void sendAnalyticsOnLocationSelectionClicked() {
-        if (getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTandaiLokasiPadaTambahAddress();
         }
     }
 
     @Override
     public void sendAnalyticsOnZipCodeDropdownSelectionClicked() {
-        if (getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickChecklistKodePosPAdaTambahAddress();
         }
     }
 
     @Override
     public void sendAnalyticsOnZipCodeInputFreeText(String zipCode) {
-        if (getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(zipCode);
         }
     }
 
     @Override
     public void sendAnalyticsOnValidationErrorSaveAddress(String errorMessageValidation) {
-        if (getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorNotFill(errorMessageValidation);
         }
+    }
+
+    @Override
+    public void sendAnalyticsOnInputAddressAsClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickAlamatSebagaiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnInputAddressAsDropdownSelectionItemCliked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickChecklistAlamatSebagaiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnInputNameClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickNamaPadaTambahAddress();
+
+    }
+
+    @Override
+    public void sendAnalyticsOnInputPhoneClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickTeleponPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnInputAddressClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickAlamatPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputAddressAs() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputName() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationNamaPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputPhone() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationTeleponPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputDistrict() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationKotaKecamatanPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputZipCode() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationKodePosPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputAddress() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            if (success)
+                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+            else
+                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
     }
 }

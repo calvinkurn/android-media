@@ -36,6 +36,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -44,7 +45,6 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.feedplus.view.activity.RecentViewActivity;
@@ -72,6 +72,7 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -225,6 +226,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         newFeed = parentView.findViewById(R.id.layout_new_feed);
 
         prepareView();
+        GraphqlClient.init(getActivity());
         presenter.attachView(this);
         return parentView;
 
@@ -680,11 +682,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void forceLoadFirstPage() {
-        hasLoadedOnce = false;
-        loadData(true);
-    }
-
     @Override
     public void onProductItemClicked(int position, Product product) {
         goToProductDetail(product.getId(),
@@ -761,9 +758,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
-        }
-        if (!hasFeed()) {
-            forceLoadFirstPage();
         }
     }
 
@@ -957,7 +951,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onErrorFollowKol(String errorMessage, final int id, final int status, final int rowNumber) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
-            if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
+            if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
                 presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
             else
                 presenter.followKol(id, rowNumber, FeedPlusFragment.this);
@@ -1093,8 +1087,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLogin() {
-        Intent intent = feedModuleRouter.getLoginIntent(getContext());
-        startActivity(intent);
+        Intent intent = feedModuleRouter.getLoginIntent(getActivity());
+        getActivity().startActivityForResult(intent, DrawerHelper.REQUEST_LOGIN);
     }
 
     @Override

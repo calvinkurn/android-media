@@ -149,8 +149,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
 
     @Override
     public void initialize() {
-        // TODO : please remove true statement
-        if (trainRouter.isTrainNativeEnable() || true) {
+        if (trainRouter.isTrainNativeEnable()) {
             if (userSession.isLoggedIn()) {
                 onInitialize();
             } else {

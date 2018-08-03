@@ -223,7 +223,8 @@
     </style>
 
     <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
     </style>
 
     <style name="successTextAppearance" parent="TextAppearance.Design.Error">
