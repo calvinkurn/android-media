@@ -70,6 +70,7 @@ import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewMo
 import com.tokopedia.product.edit.util.ProductEditModuleRouter;
 import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
@@ -1449,5 +1450,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent createIntentProductEtalase(Context context,int etalaseId) {
         return EtalasePickerActivity.createInstance(context, etalaseId);
+    }
+
+    @Override
+    public Intent getCategoryPickerIntent(Context context, int categoryId) {
+        return CategoryPickerActivity.createIntent(context, categoryId);
     }
 }

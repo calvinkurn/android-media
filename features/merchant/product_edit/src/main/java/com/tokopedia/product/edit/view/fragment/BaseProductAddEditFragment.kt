@@ -13,9 +13,11 @@ import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
-import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
@@ -24,6 +26,7 @@ import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
 import com.tokopedia.product.edit.common.model.edit.ProductViewModel
 import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef
 import com.tokopedia.product.edit.common.util.ProductStatus
 import com.tokopedia.product.edit.constant.ProductExtraConstant
 import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -35,6 +38,7 @@ import com.tokopedia.product.edit.utils.convertToListImageString
 import com.tokopedia.product.edit.utils.convertToProductViewModel
 import com.tokopedia.product.edit.utils.isDataValid
 import com.tokopedia.product.edit.view.activity.*
+import com.tokopedia.product.edit.view.listener.ListenerOnErrorAddProduct
 import com.tokopedia.product.edit.view.listener.ProductAddView
 import com.tokopedia.product.edit.view.mapper.AnalyticsMapper
 import com.tokopedia.product.edit.view.model.ProductAddViewModel
@@ -44,20 +48,20 @@ import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import java.util.ArrayList
 import javax.inject.Inject
 
-abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(), ProductAddView {
+abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(), ProductAddView, ListenerOnErrorAddProduct {
 
     @Inject
     lateinit var presenter: T
 
     @ProductStatus
     protected abstract var statusUpload: Int
-    private var productDraftId: Int = 0
 
     private var isHasLoadShopInfo: Boolean = false
     private var officialStore: Boolean = false
-    private val appRouter : Context by lazy { activity?.application as Context}
+    private var isFreeReturn : Boolean = false
+    private var isGoldMerchant: Boolean = false
+    val appRouter : Context by lazy { activity?.application as Context}
     protected var currentProductAddViewModel: ProductAddViewModel? = null
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,38 +96,50 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewEtalaseProduct.setOnClickListener{ startProductEtalaseActivity() }
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener{ onAddImagePickerClicked() }
-
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener { saveDraft(true)}
+        button_save.setOnClickListener {
+            if(currentProductAddViewModel?.isDataValid(this)!!) {
+                saveDraft(true)
+            }
+        }
     }
 
     private fun startCatalogActivity() {
-        startActivityForResult(ProductEditCategoryActivity.createIntent(activity!!, currentProductAddViewModel?.productCategory!!, currentProductAddViewModel?.productCatalog!!), REQUEST_CODE_GET_CATALOG_CATEGORY)
+        activity?.run {
+            startActivityForResult(ProductEditCategoryActivity.createIntent(this,
+                    currentProductAddViewModel?.productName?.name , currentProductAddViewModel?.productCategory,
+                    currentProductAddViewModel?.productCatalog), REQUEST_CODE_GET_CATALOG_CATEGORY)
+        }
     }
 
     private fun startNameActivity() {
-        startActivityForResult(ProductEditNameActivity.createIntent(activity!!, currentProductAddViewModel?.productName!!, true), REQUEST_CODE_GET_NAME)
+        startActivityForResult(ProductEditNameActivity.createIntent(activity!!,
+                currentProductAddViewModel?.productName!!, currentProductAddViewModel?.isProductNameEditable?:true), REQUEST_CODE_GET_NAME)
     }
 
     private fun startPriceActivity() {
-        startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, currentProductAddViewModel?.productPrice!!, false, false, false), REQUEST_CODE_GET_PRICE)
+        startActivityForResult(ProductEditPriceActivity.createIntent(activity!!, currentProductAddViewModel?.productPrice!!, officialStore,
+                currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()?:false, isGoldMerchant), REQUEST_CODE_GET_PRICE)
     }
 
     private fun startDescriptionActivity() {
-        startActivityForResult(ProductEditDescriptionActivity.createIntent(activity!!, currentProductAddViewModel?.productDescription!!, currentProductAddViewModel?.productName?.name!!), REQUEST_CODE_GET_DESCRIPTION)
+        startActivityForResult(ProductEditDescriptionActivity.createIntent(activity!!, currentProductAddViewModel?.productDescription!!,
+                currentProductAddViewModel?.productName?.name!!), REQUEST_CODE_GET_DESCRIPTION)
     }
 
     private fun startStockActivity() {
-        startActivityForResult(ProductEditStockActivity.createIntent(activity!!, currentProductAddViewModel?.productStock!!, false, false), REQUEST_CODE_GET_STOCK)
+        startActivityForResult(ProductEditStockActivity.createIntent(activity!!, currentProductAddViewModel?.productStock!!,
+                currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()?:false, isAddStatus()), REQUEST_CODE_GET_STOCK)
     }
 
     private fun startLogisticActivity() {
-        startActivityForResult(ProductEditWeightLogisticActivity.createIntent(activity!!, currentProductAddViewModel?.productLogistic!!, true), REQUEST_CODE_GET_LOGISTIC)
+        startActivityForResult(ProductEditWeightLogisticActivity.createIntent(activity!!,
+                currentProductAddViewModel?.productLogistic!!, isFreeReturn), REQUEST_CODE_GET_LOGISTIC)
     }
 
     private fun startProductEtalaseActivity() {
         if(appRouter is ProductEditModuleRouter){
-            startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId!!), REQUEST_CODE_GET_ETALASE)
+            startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId!!),
+                    REQUEST_CODE_GET_ETALASE)
         }
     }
 
@@ -142,6 +158,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 REQUEST_CODE_GET_CATALOG_CATEGORY -> {
                     val productCatalog: ProductCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
                     val productCategory: ProductCategory = data.getParcelableExtra(EXTRA_CATEGORY)
+                    if(currentProductAddViewModel?.productCategory?.categoryId != productCategory.categoryId){
+                        presenter.fetchProductVariantByCat(productCategory.categoryId.toLong())
+                    }
                     currentProductAddViewModel?.productCatalog = productCatalog
                     currentProductAddViewModel?.productCategory = productCategory
                 }
@@ -159,6 +178,13 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_PRICE -> {
                     val productPrice: ProductPrice = data!!.getParcelableExtra(EXTRA_PRICE)
+                    val isMoveToGm: Boolean = data.getBooleanExtra(EXTRA_IS_MOVE_TO_GM, false)
+                    if(isMoveToGm){
+                        saveDraft(false)
+                        UnifyTracking.eventClickYesGoldMerchantAddProduct()
+                        goToGoldMerchantPage()
+                        activity!!.finish()
+                    }
                     currentProductAddViewModel?.productPrice = productPrice
                 }
                 REQUEST_CODE_GET_DESCRIPTION -> {
@@ -197,6 +223,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    fun goToGoldMerchantPage() {
+        if (appRouter is ProductEditModuleRouter) {
+            (appRouter as ProductEditModuleRouter).goToGMSubscribe(activity)
+        }
+    }
+
     override fun onSuccessStoreProductToDraft(productId: Long, isUploading: Boolean) {
         if (isUploading) {
             CommonUtils.UniversalToast(activity, getString(R.string.upload_product_waiting))
@@ -209,7 +241,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     override fun onErrorStoreProductToDraftWhenUpload(errorMessage: String?) {
         NetworkErrorHelper.createSnackbarWithAction(activity, getString(R.string.title_try_again)) {
-            if (currentProductAddViewModel?.isDataValid()!!) {
+            if (currentProductAddViewModel?.isDataValid(this)!!) {
                 saveDraft(true)
             }
         }.showRetrySnackbar()
@@ -221,6 +253,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onSuccessLoadShopInfo(goldMerchant: Boolean, freeReturn: Boolean, officialStore: Boolean) {
+        this.isGoldMerchant = goldMerchant
+        this.isFreeReturn = freeReturn
         this.isHasLoadShopInfo = true
         this.officialStore = officialStore
     }
@@ -244,10 +278,10 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     protected fun populateView(currentProductViewModel: ProductAddViewModel?) {
         textViewCategory.text = currentProductViewModel?.productCategory?.categoryName
-        if (currentProductViewModel?.productCatalog?.catalogName != null) {
+        if (currentProductViewModel?.productCatalog?.catalogId?:0 >0) {
             textViewCatalog.run {
                 visibility = View.VISIBLE
-                text = currentProductViewModel.productCatalog?.catalogName
+                text = currentProductViewModel?.productCatalog?.catalogName
             }
         }
 
@@ -284,7 +318,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
         }
 
-        if(currentProductViewModel.productVariantByCatModelList.size > 0){
+        if(currentProductViewModel.productVariantByCatModelList.size > 0 && currentProductViewModel.productVariantViewModel?.hasSelectedVariant()?:false){
             labelViewVariantProduct.visibility = View.VISIBLE
             val productVariantOptionParentLv1 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(0)
             val productVariantOptionParentLv2 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(1)
@@ -293,6 +327,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 selectedVariantString = "$selectedVariantString \n ${productVariantOptionParentLv2.productVariantOptionChild.size} ${productVariantOptionParentLv2.name}"
             }
             labelViewVariantProduct.setContent(selectedVariantString)
+            labelViewVariantProduct.setSubTitle("")
+        }else if(currentProductViewModel.productVariantViewModel?.hasSelectedVariant()?:false){
+            labelViewVariantProduct.visibility = View.VISIBLE
         }else{
             labelViewVariantProduct.visibility = View.GONE
         }
@@ -304,9 +341,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
         } else
             labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
+
+        if(currentProductViewModel.etalaseId!! > 0){
+            labelViewEtalaseProduct.setContent(currentProductViewModel.etalaseName)
+            labelViewEtalaseProduct.setSubTitle("")
+        }
     }
 
-    private fun saveDraft(isUploading: Boolean) {
+    fun saveDraft(isUploading: Boolean) {
         if (isUploading) {
             sendAnalyticsAdd(currentProductAddViewModel?.convertToProductViewModel())
         }
@@ -336,29 +378,27 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startProductVariantActivity() {
-        if (currentProductAddViewModel?.productVariantByCatModelList == null || currentProductAddViewModel?.productVariantByCatModelList!!.size == 0) {
-            NetworkErrorHelper.createSnackbarWithAction(activity) {
-                presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId!!.toLong())
-            }.showRetrySnackbar()
-            return
-        }
+        currentProductAddViewModel?.run {
+            if (productVariantByCatModelList.size == 0) {
+                NetworkErrorHelper.createSnackbarWithAction(activity) {
+                    presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId!!.toLong())
+                }.showRetrySnackbar()
+                return
+            }
 
-        val hasWholesale = false /* Todo currentProductAddViewModel!!.getProductWholesale() != null && currentProductAddViewModel!!.getProductWholesale().size > 0*/
-        if (appRouter is ProductEditModuleRouter) {
-            val intent = (appRouter as ProductEditModuleRouter).createIntentProductVariant(activity,
-                    currentProductAddViewModel?.productVariantByCatModelList,
-                    currentProductAddViewModel?.productVariantViewModel,
-                    1/*todo*/,
-                    123.0 /*todo*/,
-                    currentProductAddViewModel?.productStock?.stockCount!!,
-                    officialStore,
-                    currentProductAddViewModel?.productStock?.sku,
-                    isEdittingDraft(),
-                    currentProductAddViewModel?.productSizeChart,
-                    currentProductAddViewModel?.hasOriginalVariantLevel1!!,
-                    currentProductAddViewModel?.hasOriginalVariantLevel2!!,
-                    hasWholesale)
-            startActivityForResult(intent, REQUEST_CODE_VARIANT)
+            val hasWholesale =  productPrice?.wholesalePrice?.let { it.size > 0 } == true
+            if (appRouter is ProductEditModuleRouter) {
+                val intent = (appRouter as ProductEditModuleRouter).createIntentProductVariant(activity,
+                       productVariantByCatModelList, productVariantViewModel,
+                        productPrice?.currencyType?:CurrencyTypeDef.TYPE_IDR,
+                        productPrice?.price?: 0.0,
+                       productStock?.stockCount ?: 0,
+                        officialStore, productStock?.sku, isEdittingDraft(),
+                        productSizeChart, hasOriginalVariantLevel1 == true,
+                        hasOriginalVariantLevel2 == true,
+                        hasWholesale)
+                startActivityForResult(intent, REQUEST_CODE_VARIANT)
+            }
         }
 
     }
@@ -377,7 +417,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun isEdittingDraft(): Boolean {
-        return isEditStatus() && productDraftId > 0
+        return isEditStatus() && getProductDraftId() > 0
     }
 
     private fun isEditStatus(): Boolean {
@@ -386,6 +426,46 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun isAddStatus(): Boolean {
         return statusUpload == ProductStatus.ADD
+    }
+
+    override fun onErrorName() {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_name_empty))
+    }
+
+    override fun onErrorCategoryEmpty() {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_category_empty))
+        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
+    }
+
+    override fun onErrorEtalase() {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_etalase_empty))
+        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
+    }
+
+    override fun onErrorPrice() {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.error_empty_price))
+        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
+    }
+
+    override fun onErrorWeight() {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.error_empty_weight))
+        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
+    }
+
+    override fun onErrorImage() {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_picture_empty))
+        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE)
+    }
+
+    open fun showDialogSaveDraftOnBack(): Boolean {
+        return true
+    }
+
+    fun deleteNotUsedTkpdCacheImage() {
+        if (currentProductAddViewModel?.productPictureList?.size == 0) {
+            return
+        }
+        ImageUtils.deleteFilesInTokopediaFolder(currentProductAddViewModel?.productPictureList?.convertToListImageString())
     }
 
     companion object {

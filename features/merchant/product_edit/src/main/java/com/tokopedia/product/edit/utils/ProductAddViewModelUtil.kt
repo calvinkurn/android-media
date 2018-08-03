@@ -1,24 +1,30 @@
 package com.tokopedia.product.edit.utils
 
+import android.text.TextUtils
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.product.edit.common.model.edit.*
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef
 import com.tokopedia.product.edit.constant.ProductConditionTypeDef
 import com.tokopedia.product.edit.price.model.*
+import com.tokopedia.product.edit.view.listener.ListenerOnErrorAddProduct
 import com.tokopedia.product.edit.view.model.ProductAddViewModel
 
 fun convertCategory(productCategory: ProductCategory?): ProductCategoryViewModel? {
     val productCategoryViewModel = ProductCategoryViewModel()
-    productCategoryViewModel.categoryId = productCategory?.categoryId?.toLong()?:-1
+    productCategoryViewModel.categoryId = 36/*productCategory?.categoryId?.toLong() ?: -1*/
     productCategoryViewModel.categoryFullName = productCategory?.categoryName
     return productCategoryViewModel
 }
 
 private fun convertCatalog(productCatalog: ProductCatalog?): ProductCatalogViewModel? {
-    val productCatalogViewModel = ProductCatalogViewModel()
-    productCatalogViewModel.catalogId = productCatalog?.catalogId?.toLong()?:-1
-    productCatalogViewModel.catalogName = productCatalog?.catalogName
-    return productCatalogViewModel
+    if (productCatalog != null && productCatalog.catalogId > 1) {
+        val productCatalogViewModel = ProductCatalogViewModel()
+        productCatalogViewModel.catalogId = productCatalog?.catalogId?.toLong() ?: -1
+        productCatalogViewModel.catalogName = productCatalog?.catalogName
+        return productCatalogViewModel
+    }
+    return null
 }
 
 fun ProductAddViewModel.convertToProductViewModel(): ProductViewModel? {
@@ -40,15 +46,19 @@ fun ProductAddViewModel.convertToProductViewModel(): ProductViewModel? {
     productViewModel.isProductMustInsurance = this.productLogistic?.insurance ?: false
     productViewModel.productPictureViewModelList = this.productPictureList
     productViewModel.productEtalase = convertToEtalaseViewModel(this)
-    productViewModel.productCondition = convertToProductCondition(this.productDescription?.isNew?:false)
+    productViewModel.productCondition = convertToProductCondition(this.productDescription?.isNew
+            ?: false)
     productViewModel.productPreorder = convertToProductPreOrder(this.productLogistic?.preOrder
             ?: false,
             this.productLogistic?.processTime, this.productLogistic?.processTimeType)
     productViewModel.productVideo = convertToProductVideo(this.productDescription?.videoIDs)
-    /* todo productViewModel.productPrice =
-            productViewModel.productPriceCurrency =
-            productViewModel.productWholesale = */
-    productViewModel.productId = this.productId
+    productViewModel.productPrice = this.productPrice?.price ?: 0.0
+    productViewModel.productPriceCurrency = this.productPrice?.currencyType?.toLong() ?: CurrencyTypeDef.TYPE_IDR.toLong()
+    productViewModel.productWholesale = this.productPrice?.wholesalePrice
+    productViewModel.productId = if (TextUtils.isEmpty(this.productId)) null else ""
+    productViewModel.productMinOrder = this.productPrice?.minOrder?.toLong() ?: 1
+    productViewModel.productMaxOrder = this.productPrice?.maxOrder?.toLong() ?: 0
+    productViewModel.productVariant = this.productVariantViewModel
     return productViewModel
 }
 
@@ -85,7 +95,31 @@ fun convertToEtalaseViewModel(productAddViewModel: ProductAddViewModel): Product
     return productEtalaseViewModel
 }
 
-fun ProductAddViewModel.isDataValid(): Boolean {
+fun ProductAddViewModel.isDataValid(listenerOnError: ListenerOnErrorAddProduct): Boolean {
+    if (TextUtils.isEmpty(this.productName?.name)) {
+        listenerOnError.onErrorName()
+        return false
+    }
+    if (this.productCategory?.categoryId!! < 0) {
+        listenerOnError.onErrorCategoryEmpty()
+        return false
+    }
+    if (this.etalaseId!! < 0) {
+        listenerOnError.onErrorEtalase()
+        return false
+    }
+    if (this.productPrice?.price!! < 0) {
+        listenerOnError.onErrorPrice()
+        return false
+    }
+    if (this.productLogistic?.weight!! < 0) {
+        listenerOnError.onErrorWeight()
+        return false
+    }
+    if (this.productPictureList?.size!! <= 0) {
+        listenerOnError.onErrorImage()
+        return false
+    }
     return true
 }
 
@@ -93,20 +127,30 @@ fun ProductViewModel.convertToProductAddViewModel(): ProductAddViewModel? {
     val productAddViewModel = ProductAddViewModel()
     productAddViewModel.productPictureList = productPictureViewModelList as ArrayList<ProductPictureViewModel>?
     productAddViewModel.productName = ProductName(this.productName)
-    productAddViewModel.productCategory = ProductCategory(this.productCategory?.categoryId?.toInt() ?: -1, this.productCategory.categoryFullName ?: "")
-    productAddViewModel.productCatalog = ProductCatalog(this.productCatalog?.catalogId?.toInt() ?: -1, this.productCatalog?.catalogName?:"", this.productCatalog?.catalogUrl?:"")
-    productAddViewModel.productDescription = ProductDescription(this.productDescription?:"", "", TextApiUtils.isValueTrue(this.productCondition.toString()))
-    productAddViewModel.productStock = ProductStock(this.isProductStatusActive, this.productStock.toInt() , this.productSku?:"")
-    productAddViewModel.productLogistic = ProductLogistic(this.productWeight.toInt(), this.productWeightUnit.toInt() ,
-            this.isProductMustInsurance, this.isProductFreeReturn, TextApiUtils.isValueTrue(this.productPreorder?.preorderStatus?.toString()?:""),
-            this.productPreorder?.preorderProcessTime?.toInt()?:-1, this.productPreorder?.preorderTimeUnit?.toInt()?:-1)
+    productAddViewModel.productCategory = ProductCategory(this.productCategory?.categoryId?.toInt()
+            ?: -1, this.productCategory?.categoryFullName ?: "")
+    productAddViewModel.productCatalog = ProductCatalog(this.productCatalog?.catalogId?.toInt()
+            ?: -1, this.productCatalog?.catalogName ?: "", this.productCatalog?.catalogUrl ?: "")
+    productAddViewModel.productDescription = ProductDescription(this.productDescription
+            ?: "", "", TextApiUtils.isValueTrue(this.productCondition.toString()))
+    productAddViewModel.productStock = ProductStock(this.isProductStatusActive, this.productStock.toInt(), this.productSku
+            ?: "")
+    productAddViewModel.productLogistic = ProductLogistic(this.productWeight.toInt(), this.productWeightUnit.toInt(),
+            this.isProductMustInsurance, this.isProductFreeReturn, TextApiUtils.isValueTrue(this.productPreorder?.preorderStatus?.toString()
+            ?: ""),
+            this.productPreorder?.preorderProcessTime?.toInt()
+                    ?: -1, this.productPreorder?.preorderTimeUnit?.toInt() ?: -1)
     productAddViewModel.hasOriginalVariantLevel1 = checkOriginalVariantLevel1(this)
     productAddViewModel.hasOriginalVariantLevel2 = checkOriginalVariantLevel2(this)
     productAddViewModel.productSizeChart = this.productSizeChart
     productAddViewModel.productVariantViewModel = this.productVariant
-    productAddViewModel.etalaseName = this.productEtalase.etalaseName
-    productAddViewModel.etalaseId = this.productEtalase.etalaseId.toInt()
+    productAddViewModel.etalaseName = this.productEtalase?.etalaseName
+    productAddViewModel.etalaseId = this.productEtalase?.etalaseId?.toInt()
     productAddViewModel.isProductNameEditable = this.isProductNameEditable
+    productAddViewModel.productId = this.productId ?: ""
+    val productWholesale = this.productWholesale ?: ArrayList<ProductWholesaleViewModel>()
+    productAddViewModel.productPrice = ProductPrice(this.productPrice, this.productPriceCurrency.toInt(),
+            productWholesale as java.util.ArrayList<ProductWholesaleViewModel>, this.productMinOrder.toInt(), this.productMaxOrder.toInt())
     return productAddViewModel
 }
 
@@ -187,7 +231,7 @@ fun ArrayList<String>.convertImageListResult(productAddViewModel: ProductAddView
 
 fun ArrayList<String>.convertImageListResult(): ArrayList<ProductPictureViewModel> {
     val productPictureViewModels = ArrayList<ProductPictureViewModel>()
-    for(pictureViewModel in this){
+    for (pictureViewModel in this) {
         productPictureViewModels.add(convertToPictureViewModel(pictureViewModel))
     }
     return productPictureViewModels
@@ -197,4 +241,16 @@ fun convertToPictureViewModel(imagePath: String): ProductPictureViewModel {
     val productPictureViewModel = ProductPictureViewModel()
     productPictureViewModel.filePath = imagePath
     return productPictureViewModel
+}
+
+fun ProductAddViewModel.isFilledAny(): Boolean {
+    return !TextUtils.isEmpty(this.productName?.name) ||
+            this.productPictureList != null && this.productPictureList!!.size > 0 ||
+            this.productCategory?.categoryId?:0 > 0 ||
+            this.etalaseId?:0 > 0 ||
+            this.productPrice?.price ?: 0.0 > 0 ||
+            !TextUtils.isEmpty(this.productDescription?.description) ||
+            this.productDescription?.videoIDs?.size?:0 > 0 ||
+            this.productLogistic?.weight?:0 > 0 ||
+            !TextUtils.isEmpty(this.productStock?.sku)
 }

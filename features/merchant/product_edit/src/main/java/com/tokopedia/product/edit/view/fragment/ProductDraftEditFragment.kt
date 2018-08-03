@@ -21,7 +21,6 @@ import com.tokopedia.product.edit.view.presenter.ProductDraftView
 open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPresenterImpl, ProductDraftView>(), ProductDraftView{
 
     override var statusUpload = ProductStatus.EDIT
-    protected val DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID"
     private var tkpdProgressDialog: TkpdProgressDialog? = null
     private var draftProductId: Long = 0
 
@@ -36,6 +35,9 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
 
     override fun onSuccessLoadProduct(model: ProductViewModel?) {
         hideLoading()
+        if(model?.productCategory != null){
+            presenter.fetchProductVariantByCat(model.productCategory.categoryId)
+        }
         currentProductAddViewModel = model?.convertToProductAddViewModel()
         populateView(currentProductAddViewModel)
     }

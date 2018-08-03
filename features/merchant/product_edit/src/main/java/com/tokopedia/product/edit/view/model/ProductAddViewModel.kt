@@ -24,7 +24,7 @@ data class ProductAddViewModel(var productCatalog: ProductCatalog? = ProductCata
                                var etalaseName: String? = "",
                                var productVariantByCatModelList: ArrayList<ProductVariantByCatModel> = ArrayList(),
                                var isProductNameEditable: Boolean = true,
-                               val productId: String = "") : Parcelable {
+                               var productId: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(ProductCatalog::class.java.classLoader),
             parcel.readParcelable(ProductCategory::class.java.classLoader),

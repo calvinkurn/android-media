@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.product.edit.common.util.ProductVariantConstant;
+import com.tokopedia.product.edit.constant.ProductExtraConstant;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -49,8 +50,6 @@ import java.util.List;
 
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV1;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV2;
-import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_SIZECHART;
-import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION;
 
 /**
  * Created by hendry on 4/3/17.
@@ -119,11 +118,11 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         defaultSku = activityIntent.getStringExtra(ProductVariantDashboardActivity.EXTRA_DEFAULT_SKU);
 
         if (savedInstanceState == null) {
-            productVariantViewModel = activityIntent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_SELECTION);
-            productSizeChart = activityIntent.getParcelableExtra(EXTRA_PRODUCT_SIZECHART);
+            productVariantViewModel = activityIntent.getParcelableExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+            productSizeChart = activityIntent.getParcelableExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART);
         } else {
-            productVariantViewModel = savedInstanceState.getParcelable(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION);
-            productSizeChart = savedInstanceState.getParcelable(EXTRA_PRODUCT_SIZECHART);
+            productVariantViewModel = savedInstanceState.getParcelable(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+            productSizeChart = savedInstanceState.getParcelable(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART);
         }
         if (productVariantByCatModelList != null) {
             for (int i = 0, sizei = productVariantByCatModelList.size(); i < sizei; i++) {
@@ -657,8 +656,8 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
-        outState.putParcelable(EXTRA_PRODUCT_SIZECHART, productSizeChart);
+        outState.putParcelable(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        outState.putParcelable(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productSizeChart);
     }
 
     @TargetApi(23)
