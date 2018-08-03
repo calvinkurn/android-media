@@ -167,6 +167,7 @@ import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
@@ -833,6 +834,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToGMSubscribe(Context context) {
+        Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
         context.startActivity(intent);
     }
 

@@ -41,4 +41,8 @@ public interface AccountHomeRouter {
     AccountHomeInjection getAccountHomeInjection();
 
     Fragment getFavoriteFragment();
+
+    void gotoTopAdsDashboard(Context context);
+
+    void goToGMSubscribe(Context context);
 }
