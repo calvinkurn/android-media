@@ -132,6 +132,23 @@ public class NetworkErrorHelper {
         ).show();
     }
 
+
+    public static void showRedSnackbar(Activity activity, String message) {
+        SnackbarManager.makeRed(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showRedSnackbar(View view, String message) {
+        SnackbarManager.makeRed(view, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showGreenSnackbar(Activity activity, String message) {
+        SnackbarManager.makeGreen(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showGreenSnackbar(View view, String message) {
+        SnackbarManager.makeGreen(view, message, Snackbar.LENGTH_LONG).show();
+    }
+
     @SuppressWarnings("Range")
     public static void showSnackbar(Activity activity) {
         if (activity != null) {

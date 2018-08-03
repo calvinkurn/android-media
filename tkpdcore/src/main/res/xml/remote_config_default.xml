@@ -215,4 +215,12 @@
         <key>mainapp_digital_smartcard</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>mainapp_is_enabled_new_setting_bank</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_is_enabled_new_setting_bank</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

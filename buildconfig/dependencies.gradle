@@ -323,6 +323,7 @@ ext {
             groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
             profile               : ":features:user:profile",
+            settingbank         : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
             contactUs             : ":features:operational:contact_us",
             otp                   : ":features:user:otp",

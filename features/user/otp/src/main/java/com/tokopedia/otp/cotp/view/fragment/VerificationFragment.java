@@ -272,6 +272,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public void afterTextChanged(Editable s) {
                 if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
                     enableVerifyButton();
+                    presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
+                            .getEmail(), inputOtp.getText().toString());
                 } else {
                     disableVerifyButton();
                 }
