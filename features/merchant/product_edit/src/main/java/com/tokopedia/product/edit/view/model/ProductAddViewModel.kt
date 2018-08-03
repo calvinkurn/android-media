@@ -32,7 +32,9 @@ data class ProductAddViewModel(var productCatalog: ProductCatalog? = ProductCata
             parcel.readParcelable(ProductPrice::class.java.classLoader),
             parcel.readParcelable(ProductDescription::class.java.classLoader),
             parcel.readParcelable(ProductVariantViewModel::class.java.classLoader),
-            parcel.readArrayList(ArrayList::class.java.classLoader) as ArrayList<ProductPictureViewModel>,
+            arrayListOf<ProductPictureViewModel>().apply {
+                parcel.readList(this, ProductPictureViewModel::class.java.classLoader)
+            },
             parcel.readParcelable(ProductStock::class.java.classLoader),
             parcel.readParcelable(ProductPictureViewModel::class.java.classLoader),
             parcel.readValue(Boolean::class.java.classLoader) as? Boolean,

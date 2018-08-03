@@ -175,7 +175,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     currentProductAddViewModel?.productPictureList = currentProductAddViewModel?.let {
                         imageUrlOrPathList?.convertImageListResult(it,
                                 data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE),
-                                data.getSerializableExtra(RESULT_IS_EDITTED) as ArrayList<Boolean>?)
+                                arrayListOf<Boolean>().apply {
+                                    data.getSerializableExtra(RESULT_IS_EDITTED)
+                                })
                     }
                 }
                 REQUEST_CODE_VARIANT ->{

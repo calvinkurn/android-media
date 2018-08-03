@@ -14,8 +14,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
 import com.tkpd.library.utils.CommonUtils.checkCollectionNotNull
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.core.gcm.Constants
 import com.tokopedia.core.gcm.utils.ApplinkUtils
 import com.tokopedia.core.router.SellerAppRouter
@@ -24,7 +22,6 @@ import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.core.util.RequestPermissionUtil
 import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.common.di.component.ProductComponent
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.model.ProductName
