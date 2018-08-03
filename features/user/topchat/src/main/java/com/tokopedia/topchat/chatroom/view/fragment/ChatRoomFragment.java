@@ -649,11 +649,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     .ic_image_avatar_boy);
 
             user.setText(title);
+            String senderTag = getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "");
             if (!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, ""))
-                    && !getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "")
-                    .equals(ListChatViewHolder.USER)) {
+                    && !senderTag.equals(InboxChatConstant.USER_TAG)) {
                 label.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG));
                 label.setVisibility(View.VISIBLE);
+                if(senderTag.equals(InboxChatConstant.SELLER_TAG)){
+                    label.setBackgroundResource(R.drawable.topchat_seller_label);
+                    label.setTextColor(getContext().getResources().getColor(R.color.medium_green));
+                } else {
+                    label.setBackgroundResource(R.drawable.topchat_admin_label);
+                    label.setTextColor(getContext().getResources().getColor(R.color.topchat_admin_label_text_color));
+                }
             } else {
                 label.setVisibility(View.GONE);
             }
