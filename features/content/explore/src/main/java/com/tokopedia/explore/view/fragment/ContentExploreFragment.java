@@ -218,7 +218,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Override
     public void updateCursor(String cursor) {
         canLoadMore = !TextUtils.isEmpty(cursor);
-
         presenter.updateCursor(cursor);
     }
 
@@ -247,7 +246,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
             if (categoryViewModel.isActive()) {
                 categoryViewModel.setActive(false);
                 categoryAdapter.notifyItemChanged(i);
-
                 if (i == position) {
                     isSameCategory = true;
                 }
@@ -345,7 +343,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-
                     int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
                     int visibleThreshold = LOAD_MORE_THRESHOLD * layoutManager.getSpanCount();
                     if (lastVisibleItemPosition + visibleThreshold > imageAdapter.getItemCount()
@@ -357,7 +354,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
                                 ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                                 ContentExloreEventTracking.Action.LOAD_MORE,
                                 ""
-
                         );
                     }
                 }
