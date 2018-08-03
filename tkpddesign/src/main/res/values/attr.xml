@@ -19,6 +19,7 @@
             <flag name="italic" value="2" />
         </attr>
         <attr name="lv_sub_title" format="string" />
+        <attr name="lv_sub_title_text_size" format="dimension" />
         <attr name="lv_content" format="string" />
         <attr name="lv_content_color" format="color" />
         <attr name="lv_content_text_size" format="dimension" />

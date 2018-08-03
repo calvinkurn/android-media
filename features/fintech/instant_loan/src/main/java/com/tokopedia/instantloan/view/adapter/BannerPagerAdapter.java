@@ -12,16 +12,17 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BannerPagerAdapter extends PagerAdapter {
 
-    private List<BannerEntity> banners;
-    LayoutInflater mInflater;
+    private List<BannerEntity> bannerEntityList = new ArrayList<>();
+    private LayoutInflater mInflater;
     private BannerClick bannerClick;
 
-    public BannerPagerAdapter(Context context, List<BannerEntity> images, BannerClick bannerClick) {
-        this.banners = images;
+    public BannerPagerAdapter(Context context, List<BannerEntity> bannerEntities, BannerClick bannerClick) {
+        this.bannerEntityList = bannerEntities;
         mInflater = LayoutInflater.from(context);
         this.bannerClick = bannerClick;
     }
@@ -33,7 +34,11 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return banners.size();
+        return bannerEntityList.size();
+    }
+
+    public List<BannerEntity> getBannerEntityList() {
+        return bannerEntityList;
     }
 
     @Override
@@ -44,18 +49,18 @@ public class BannerPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, final int position) {
         ImageView banner = (ImageView) mInflater.inflate(R.layout.item_pager_banner, view, false);
-        ImageHandler.LoadImage(banner, banners.get(position).getImage());
+        ImageHandler.LoadImage(banner, bannerEntityList.get(position).getImage());
         view.addView(banner);
 
-        banner.setTag(banners.get(position).getLink());
+        banner.setTag(bannerEntityList.get(position).getLink());
         banner.setOnClickListener(view1 -> {
-            bannerClick.onBannerClick(view1);
+            bannerClick.onBannerClick(view1, position);
         });
 
         return banner;
     }
 
     public interface BannerClick {
-        public void onBannerClick(View view);
+        public void onBannerClick(View view, int position);
     }
 }

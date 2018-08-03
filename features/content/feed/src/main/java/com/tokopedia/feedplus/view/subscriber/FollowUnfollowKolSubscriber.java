@@ -3,8 +3,8 @@ package com.tokopedia.feedplus.view.subscriber;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 
 import rx.Subscriber;
@@ -44,7 +44,7 @@ public class FollowUnfollowKolSubscriber extends Subscriber<FollowKolDomain> {
     @Override
     public void onNext(FollowKolDomain followKolDomain) {
         view.finishLoadingProgress();
-        if (followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS)
+        if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS)
             kolListener.onSuccessFollowUnfollowKol(rowNumber);
         else {
             kolListener.onErrorFollowKol(MainApplication.getAppContext().getString(R.string
