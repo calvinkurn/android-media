@@ -5,10 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.TextUtils
+import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.fragment.ProductDuplicateFragment
 import com.tokopedia.product.edit.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
 
 class ProductDuplicateActivity : BaseProductAddEditActivity() {
+
+    override fun getCancelMessageRes(): Int {
+        return R.string.product_draft_dialog_cancel_message
+    }
+
+    override fun needDeleteCacheOnBack(): Boolean {
+        return true
+    }
 
     override fun getNewFragment(): Fragment {
         val productId = intent.getStringExtra(EDIT_PRODUCT_ID)
@@ -23,6 +32,7 @@ class ProductDuplicateActivity : BaseProductAddEditActivity() {
         if (savedInstance == null) {
             inflateFragment()
         }
+
     }
 
     companion object {

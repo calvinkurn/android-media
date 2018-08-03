@@ -19,6 +19,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
@@ -116,14 +117,7 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
 
     private fun goToNext(){
         if(isDataValid()){
-            val builder = ImagePickerBuilder(getString(R.string.product_label_product_picture),
-                    intArrayOf(TYPE_GALLERY, TYPE_CAMERA), GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE),
-                            false, null), null)
-            val intent = ImagePickerActivity.getIntent(context, builder)
-            startActivityForResult(intent, REQUEST_CODE_GET_IMAGES)
+            startActivityForResult(AddProductImagePickerBuilder.createPickerIntentInstagramImport(activity), REQUEST_CODE_GET_IMAGES)
         }
     }
 

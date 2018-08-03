@@ -9,6 +9,7 @@ import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.utils.convertImageListResult
+import com.tokopedia.product.edit.utils.isFilledAny
 import com.tokopedia.product.edit.view.listener.ProductAddView
 import com.tokopedia.product.edit.view.model.ProductAddViewModel
 import com.tokopedia.product.edit.view.presenter.ProductAddPresenterImpl
@@ -50,5 +51,13 @@ class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<Pr
             productAddFragment.arguments =bundle
             return productAddFragment
         }
+    }
+
+    override fun showDialogSaveDraftOnBack(): Boolean {
+        // check if this fragment has any data
+        // will compare will the default value and the current value
+        // if there is the difference, then assume that the data has been added.
+        // will be overriden when not adding product
+        return currentProductAddViewModel?.isFilledAny()?:false
     }
 }

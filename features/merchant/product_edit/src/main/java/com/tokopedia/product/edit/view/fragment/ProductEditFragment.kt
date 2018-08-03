@@ -55,6 +55,7 @@ open class ProductEditFragment : BaseProductAddEditFragment<ProductEditPresenter
     }
 
     private fun fetchInputData() {
+        showLoading()
         presenter.fetchEditProductData(productId)
     }
 
@@ -74,6 +75,9 @@ open class ProductEditFragment : BaseProductAddEditFragment<ProductEditPresenter
 
     override fun onSuccessLoadProduct(model: ProductViewModel?) {
         hideLoading()
+        if(model?.productCategory != null){
+            presenter.fetchProductVariantByCat(model.productCategory.categoryId)
+        }
         currentProductAddViewModel = model?.convertToProductAddViewModel()
         populateView(currentProductAddViewModel)
     }

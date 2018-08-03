@@ -176,4 +176,9 @@
     <string name="product_description_tips_title"><![CDATA[<b>Tips:</b> Penulisan Deskripsi Produk yang menarik lihat di sini.]]></string>
     <string name="product_label_enter_product_description">Tulis dengan lengkap dan jelas deskripsi produk Anda</string>
     <string name="product_label_message_error_upload_image">Gagal mengunggah gambar, silahkan coba lagi.</string>
+    <string name="product_error_product_name_empty">Nama produk harus diisi</string>
+    <string name="product_error_product_category_empty">Kategori harus diisi</string>
+    <string name="product_error_product_etalase_empty">Etalase harus diisi</string>
+    <string name="product_error_product_picture_empty">Gambar harus diisi</string>
+    <string name="product_draft_dialog_edit_cancel_message">Anda belum selesai mengubah produk. Apakah Anda yakin ingin keluar?</string>
 </resources>

@@ -29,6 +29,14 @@ open class ProductDraftAddActivity : BaseProductAddEditActivity() {
         }
     }
 
+    override fun getCancelMessageRes(): Int {
+        return R.string.product_draft_dialog_cancel_message
+    }
+
+    override fun needDeleteCacheOnBack(): Boolean {
+        return false
+    }
+
     companion object {
 
         fun createInstance(context: Context, draftProductId: Long): Intent {

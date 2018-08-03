@@ -36,4 +36,8 @@ class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent>
     override fun getComponent(): ProductComponent {
         return (application as ProductEditModuleRouter).getProductComponent()
     }
+
+    override fun getCancelMessageRes(): Int {
+        return R.string.product_draft_dialog_edit_cancel_message
+    }
 }

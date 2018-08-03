@@ -40,6 +40,13 @@ import permissions.dispatcher.*
 
 @RuntimePermissions
 open class ProductAddActivity : BaseProductAddEditActivity(), ProductAddImageView {
+    override fun getCancelMessageRes(): Int {
+        return R.string.product_draft_dialog_cancel_message
+    }
+
+    override fun needDeleteCacheOnBack(): Boolean {
+        return true
+    }
 
     var tkpdProgressDialog: TkpdProgressDialog? = null
     private var productAddImagePresenter: ProductAddImagePresenter? = null
