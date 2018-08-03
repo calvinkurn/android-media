@@ -101,6 +101,12 @@ public class CustomPushListener extends PushMessageListener {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteView.setOnClickPendingIntent(R.id.image_icon4, pIntent4);
             }
+            PendingIntent pIntent5 =  PendingIntent.getActivity(
+                    context,
+                    0,
+                    new Intent(), // add this
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
             Intent notificationIntent = new Intent(context, ParentIndexHome.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -110,6 +116,7 @@ public class CustomPushListener extends PushMessageListener {
                     .setCustomContentView(remoteView)
                     .setCustomBigContentView(remoteView)
                     .setContentTitle(context.getResources().getString(R.string.app_name))
+                    .setContentIntent(contentIntent)
                     .setAutoCancel(true)
                     .setWhen(when);
         }
