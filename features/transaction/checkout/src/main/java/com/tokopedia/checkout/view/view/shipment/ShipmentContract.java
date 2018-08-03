@@ -56,7 +56,7 @@ public interface ShipmentContract {
 
         void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void renderDataChanged(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderDataChanged();
 
         void renderErrorDataHasChangedAfterCheckout(List<ShipmentCartItemModel> shipmentCartItemModelList);
 

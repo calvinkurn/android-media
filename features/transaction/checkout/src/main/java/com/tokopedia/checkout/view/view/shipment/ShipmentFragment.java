@@ -459,7 +459,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderDataChanged(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public void renderDataChanged() {
         if (getArguments() != null) {
             initializePresenterData(getArguments());
         }

@@ -14,9 +14,6 @@ import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
@@ -354,7 +351,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         if (checkAddressHasChanged(oldRecipientAddressModel, newRecipientAddressModel) ||
                                                 checkShipmentItemHasChanged(oldShipmentCartItemModels, shipmentCartItemModelList)) {
                                             initializePresenterData(cartShipmentAddressFormData);
-                                            getView().renderDataChanged(cartShipmentAddressFormData);
+                                            setShipmentCartItemModelList(shipmentCartItemModelList);
+                                            getView().renderDataChanged();
                                         }
                                     }
                                 }
@@ -369,11 +367,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private boolean checkShipmentItemHasChanged(List<ShipmentCartItemModel> oldShipmentCartItemModelList,
                                                 List<ShipmentCartItemModel> newShipmentCartItemModelList) {
+        List<ShipmentCartItemModel> finalShipmentCartItemModelList = new ArrayList<>(newShipmentCartItemModelList);
         if (oldShipmentCartItemModelList.size() != newShipmentCartItemModelList.size()) {
             return true;
         } else {
             List<ShipmentCartItemModel> equalShipmentCartItemModelList = new ArrayList<>();
-            for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
+            for (int i = 0; i < oldShipmentCartItemModelList.size(); i++) {
+                ShipmentCartItemModel oldShipmentCartItemModel = oldShipmentCartItemModelList.get(i);
                 boolean foundItem = false;
                 for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
                     if (oldShipmentCartItemModel.equals(newShipmentCartItemModel) &&
@@ -385,6 +385,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         oldShopShipment.getShipProds().size() == newShopShipment.getShipProds().size() &&
                                         !equalShipmentCartItemModelList.contains(oldShipmentCartItemModel)) {
                                     equalShipmentCartItemModelList.add(oldShipmentCartItemModel);
+                                    finalShipmentCartItemModelList.set(i, oldShipmentCartItemModel);
                                     foundItem = true;
                                     break;
                                 }
@@ -399,6 +400,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                 }
             }
+
+            newShipmentCartItemModelList.clear();
+            newShipmentCartItemModelList.addAll(finalShipmentCartItemModelList);
 
             return equalShipmentCartItemModelList.size() != newShipmentCartItemModelList.size();
         }
@@ -560,12 +564,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                         getView().hideLoading();
                                                         getView().showToastError(getView().getActivityContext().getString(R.string.error_message_checkout_failed));
                                                         initializePresenterData(cartShipmentAddressFormData);
-                                                        getView().renderDataChanged(cartShipmentAddressFormData);
+                                                        getView().renderDataChanged();
                                                     } else if (checkShipmentItemHasChanged(ShipmentPresenter.this.shipmentCartItemModelList, shipmentCartItemModelList)) {
                                                         getView().hideLoading();
                                                         getView().showToastError(getView().getActivityContext().getString(R.string.error_message_checkout_failed));
                                                         initializePresenterData(cartShipmentAddressFormData);
-                                                        getView().renderDataChanged(cartShipmentAddressFormData);
+                                                        setShipmentCartItemModelList(shipmentCartItemModelList);
+                                                        getView().renderDataChanged();
                                                     } else {
                                                         getView().renderCheckShipmentPrepareCheckoutSuccess();
                                                     }
