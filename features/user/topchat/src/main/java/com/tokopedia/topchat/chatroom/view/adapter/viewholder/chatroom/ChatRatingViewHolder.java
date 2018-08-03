@@ -67,7 +67,7 @@ public class ChatRatingViewHolder extends BaseChatViewHolder<ChatRatingViewModel
         }
         date.setText(time);
 
-        if (element.isShowTime()) {
+        if (element.isShowDate()) {
             date.setVisibility(View.VISIBLE);
         } else {
             date.setVisibility(View.GONE);

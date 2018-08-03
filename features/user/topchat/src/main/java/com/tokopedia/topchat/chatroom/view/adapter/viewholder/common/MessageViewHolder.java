@@ -97,7 +97,8 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
                 && !TextUtils.isEmpty(element.getFromRole())
                 && !element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())
                 && element.isSender()
-                && !element.isDummy()) {
+                && !element.isDummy()
+                && element.isShowRole()) {
             name.setText(element.getFrom());
             label.setText(element.getFromRole());
             name.setVisibility(View.VISIBLE);
@@ -111,19 +112,26 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         }
     }
 
+    private void setNameLabelVisibility(boolean isVisible){
+
+    }
+
     private void setReadStatus(MessageViewModel element) {
         int imageResource;
+        if(element.isShowTime()) {
+            chatStatus.setVisibility(View.VISIBLE);
+            if (element.isRead()) {
+                imageResource = R.drawable.ic_chat_read;
+            } else {
+                imageResource = R.drawable.ic_chat_unread;
+            }
 
-        if (element.isRead()) {
-            imageResource = R.drawable.ic_chat_read;
+            if (element.isDummy()) {
+                imageResource = R.drawable.ic_chat_pending;
+            }
+            chatStatus.setImageResource(imageResource);
         } else {
-            imageResource = R.drawable.ic_chat_unread;
+            chatStatus.setVisibility(View.GONE);
         }
-        if (element.isDummy()) {
-            imageResource = R.drawable.ic_chat_pending;
-        }
-
-        chatStatus.setImageResource(imageResource);
-
     }
 }
