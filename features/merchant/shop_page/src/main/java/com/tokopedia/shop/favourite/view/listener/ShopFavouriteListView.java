@@ -7,4 +7,8 @@ import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 public interface ShopFavouriteListView extends BaseListViewListener<ShopFavouriteViewModel> {
 
     void onSuccessGetShopInfo(ShopInfo shopInfo);
+
+    void onErrorToggleFavourite(Throwable throwable);
+
+    void onSuccessToggleFavourite(boolean successValue);
 }

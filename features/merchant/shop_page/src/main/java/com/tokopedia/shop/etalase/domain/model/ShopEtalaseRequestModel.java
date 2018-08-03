@@ -18,15 +18,9 @@ public class ShopEtalaseRequestModel {
     private String userId;
     private String deviceId;
 
-    public void setShopId(String shopId) {
+    public ShopEtalaseRequestModel(String shopId, String userId, String deviceId) {
         this.shopId = shopId;
-    }
-
-    public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
 

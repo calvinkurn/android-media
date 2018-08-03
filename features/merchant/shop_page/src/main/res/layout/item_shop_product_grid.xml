@@ -32,13 +32,14 @@
         </FrameLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/title"
                 style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="match_parent"
                 android:ellipsize="end"
                 android:lineSpacingExtra="5sp"
                 android:lines="2"
@@ -46,7 +47,13 @@
 
             <include
                 layout="@layout/partial_shop_product_item_price"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8" />
+
+            <include
+                layout="@layout/partial_shop_product_rating"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8" />
 

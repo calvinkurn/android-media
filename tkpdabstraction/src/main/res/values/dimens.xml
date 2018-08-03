@@ -2,4 +2,5 @@
 
     <dimen name="image_no_result">156dp</dimen>
     <dimen name="half_screen">160dp</dimen>
+    <dimen name="dp_half">0.5dp</dimen>
 </resources>
