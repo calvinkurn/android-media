@@ -60,13 +60,12 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     protected void parseAttribute(Context context, AttributeSet attrs) {
-        imagePagerAdapter = new ImagePagerAdapter(context);
+
     }
 
     @Override
     protected void setViewListener() {
-        vpImage.setAdapter(imagePagerAdapter);
-        indicator.setViewPager(vpImage);
+
     }
 
     @Override
@@ -82,8 +81,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        imagePagerAdapter = new ImagePagerAdapter(getContext(), urlTemporary);
+        imagePagerAdapter = new ImagePagerAdapter(listener.getActivityContext(), urlTemporary);
         vpImage.setAdapter(imagePagerAdapter);
+        indicator.setViewPager(vpImage);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
             int resId = R.drawable.product_no_photo_default;
