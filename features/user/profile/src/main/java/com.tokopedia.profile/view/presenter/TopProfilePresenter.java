@@ -47,6 +47,7 @@ public class TopProfilePresenter extends BaseDaggerPresenter<TopProfileActivityL
     @Override
     public void followKol(String userId) {
         int id = Integer.parseInt(userId);
+        followKolPostGqlUseCase.clearRequest();
         followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW));
         followKolPostGqlUseCase.execute(new FollowKolSubscriber(getView()));
     }
@@ -54,6 +55,7 @@ public class TopProfilePresenter extends BaseDaggerPresenter<TopProfileActivityL
     @Override
     public void unfollowKol(String userId) {
         int id = Integer.parseInt(userId);
+        followKolPostGqlUseCase.clearRequest();
         followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW));
         followKolPostGqlUseCase.execute(new FollowKolSubscriber(getView()));
     }

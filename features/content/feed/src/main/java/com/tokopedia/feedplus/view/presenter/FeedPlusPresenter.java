@@ -14,8 +14,8 @@ import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
-import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolGqlSubscriber;
-import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationGqlSubscriber;
+import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
+import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
@@ -209,14 +209,16 @@ public class FeedPlusPresenter
 
     @Override
     public void followKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+        followKolPostGqlUseCase.clearRequest();
         followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW));
-        followKolPostGqlUseCase.execute(new FollowUnfollowKolGqlSubscriber(id, FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber, getView(), kolListener));
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolSubscriber(id, FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber, getView(), kolListener));
     }
 
     @Override
     public void unfollowKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+        followKolPostGqlUseCase.clearRequest();
         followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW));
-        followKolPostGqlUseCase.execute(new FollowUnfollowKolGqlSubscriber(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber, getView(), kolListener));
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolSubscriber(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber, getView(), kolListener));
     }
 
     @Override
@@ -236,18 +238,20 @@ public class FeedPlusPresenter
 
     @Override
     public void followKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
+        followKolPostGqlUseCase.clearRequest();
         followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id,
                 FollowKolPostGqlUseCase.PARAM_FOLLOW));
-        followKolPostGqlUseCase.execute(new FollowUnfollowKolRecommendationGqlSubscriber(id,
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolRecommendationSubscriber(id,
                 FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber, position, getView(), kolListener));
 
     }
 
     @Override
     public void unfollowKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
+        followKolPostGqlUseCase.clearRequest();
         followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id,
                 FollowKolPostGqlUseCase.PARAM_UNFOLLOW));
-        followKolPostGqlUseCase.execute(new FollowUnfollowKolRecommendationGqlSubscriber(id,
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolRecommendationSubscriber(id,
                 FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber, position, getView(), kolListener));
     }
 
