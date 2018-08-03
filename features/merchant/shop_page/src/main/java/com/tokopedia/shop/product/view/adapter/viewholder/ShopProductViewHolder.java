@@ -48,6 +48,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private boolean isFeatured;
     private int deviceWidth;
     private int layoutType;
+    private View vgRating;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
                                  boolean isFixWidth, int deviceWidth, boolean isFeatured, int layoutType) {
@@ -75,6 +76,9 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
         soldOutView = view.findViewById(R.id.sold_out_view);
+        vgRating = view.findViewById(R.id.vg_rating);
+        qualityRatingBar = view.findViewById(R.id.ratingBar);
+        totalReview = view.findViewById(R.id.total_review);
 
     }
 
@@ -116,14 +120,16 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
-        if (totalReview != null && qualityRatingBar != null && !TextUtils.isEmpty(shopProductViewModel.getTotalReview())) {
+        if (TextUtils.isEmpty(shopProductViewModel.getTotalReview()) ||
+                shopProductViewModel.getRating() == 0) {
+            vgRating.setVisibility(View.GONE);
+        } else {
             totalReview.setText(itemView.getResources().getString(R.string.total_point_format,
                     String.valueOf(shopProductViewModel.getTotalReview())));
-            totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
                 qualityRatingBar.setRating((float) shopProductViewModel.getRating());
-                qualityRatingBar.setVisibility(View.VISIBLE);
             }
+            vgRating.setVisibility(View.VISIBLE);
         }
     }
 
