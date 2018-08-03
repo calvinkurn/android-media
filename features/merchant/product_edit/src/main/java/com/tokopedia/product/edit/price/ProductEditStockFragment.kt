@@ -14,6 +14,8 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
 import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
 import android.text.Editable
+import com.tokopedia.core.analytics.AppEventTracking
+import com.tokopedia.core.analytics.UnifyTracking
 
 class ProductEditStockFragment : Fragment() {
 
@@ -53,7 +55,12 @@ class ProductEditStockFragment : Fragment() {
 
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
-            setResult()
+            if(isTotalStockValid()){
+                setResult()
+            } else {
+                decimalInputViewStock.requestFocus()
+                UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS)
+            }
         }
 
         decimalInputViewStock.addTextChangedListener(object : TextWatcher {
@@ -74,11 +81,13 @@ class ProductEditStockFragment : Fragment() {
     }
 
     private fun isTotalStockValid(): Boolean {
-        if (MIN_STOCK.removeCommaToInt() > getTotalStock() || getTotalStock() > MAX_STOCK.removeCommaToInt()) {
-            decimalInputViewStock.setError(getString(R.string.product_error_total_stock_not_valid, MIN_STOCK, MAX_STOCK))
-            return false
+        if(labelRadioButtonStockLimited.isChecked) {
+            if (MIN_STOCK.removeCommaToInt() > getTotalStock() || getTotalStock() > MAX_STOCK.removeCommaToInt()) {
+                decimalInputViewStock.setError(getString(R.string.product_error_total_stock_not_valid, MIN_STOCK, MAX_STOCK))
+                return false
+            }
+            decimalInputViewStock.setError(null)
         }
-        decimalInputViewStock.setError(null)
         return true
     }
 

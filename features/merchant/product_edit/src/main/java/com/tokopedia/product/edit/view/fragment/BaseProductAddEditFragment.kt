@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -248,12 +249,15 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 visibility = View.VISIBLE
                 text = currentProductViewModel.productCatalog?.catalogName
             }
-
         }
+
+        context?.let { ImageHandler.loadImageRounded2(context, imageOne, R.drawable.ic_image_default, 50.0f) }
+        context?.let { ImageHandler.loadImageRounded2(context, imageTwo, R.drawable.ic_image_default, 50.0f) }
+
         if (currentProductViewModel?.productPictureList?.size!! > 0) {
-            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0].uriOrPath)
+            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0].uriOrPath, 50.0f)
             if (currentProductViewModel.productPictureList?.size!! > 1)
-                ImageHandler.loadImageRounded2(context, imageTwo, currentProductViewModel.productPictureList!![1].uriOrPath)
+                ImageHandler.loadImageRounded2(context, imageTwo, currentProductViewModel.productPictureList!![1].uriOrPath, 50.0f)
         }
         labelViewNameProduct.setContent(currentProductViewModel.productName?.name)
         if(!TextUtils.isEmpty(currentProductViewModel.productDescription?.description)) {

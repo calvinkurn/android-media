@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -70,13 +71,11 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         idrTextWatcher = object : CurrencyIdrTextWatcher(spinnerCounterInputViewPrice.counterEditText) {
             override fun onNumberChanged(number: Double) {
                 isPriceValid()
-                validateData()
             }
         }
         usdTextWatcher = object : CurrencyUsdTextWatcher(spinnerCounterInputViewPrice.counterEditText) {
             override fun onNumberChanged(number: Double) {
                 isPriceValid()
-                validateData()
             }
         }
         showDataPrice(productPrice)
@@ -96,7 +95,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 if (isMinOrderValid()) {
                     editTextMinOrder.setError(null)
                 }
-                validateData()
             }
         })
 
@@ -105,7 +103,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 if (isMaxOrderValid()) {
                     editTextMaxOrder.setError(null)
                 }
-                validateData()
             }
         })
 
@@ -152,8 +149,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             editTextMaxOrder.text = productPrice.maxOrder.toString()
             showOrderMaxForm()
         }
-        validateData()
-        spinnerCounterInputViewPrice.setCounterError(null)
     }
 
     private fun getPriceValue(): Double{
@@ -354,14 +349,18 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         return productPrice
     }
 
-    private fun isDataValid() = isPriceValid() && isMinOrderValid() && isMaxOrderValid()
-
-    private fun validateData(){
-        if (isDataValid()) {
-            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.tkpd_main_green))
-        } else {
-            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.font_black_secondary_54))
+    private fun isDataValid(): Boolean{
+        if(!isPriceValid()){
+            spinnerCounterInputViewPrice.requestFocus()
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
+            return false
         }
+        if(!isMinOrderValid()){
+            editTextMinOrder.requestFocus()
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
+            return false
+        }
+        return true
     }
 
     private fun setResult(isMoveToGm: Boolean){

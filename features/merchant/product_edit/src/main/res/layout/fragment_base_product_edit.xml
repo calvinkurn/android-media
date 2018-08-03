@@ -26,19 +26,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/imageTwo"
-                    android:layout_width="@dimen/dp_80"
-                    android:layout_height="@dimen/dp_80"
-                    android:src="@color/colorAccent"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:padding="@dimen/dp_3"
+                    android:background="@drawable/rounded_image_product_add">
+                    <com.tokopedia.core.customView.RoundedCornerImageView
+                        android:id="@+id/imageTwo"
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="@dimen/dp_80"
+                        android:src="@drawable/ic_image_default" />
+                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/imageOne"
-                    android:layout_width="@dimen/dp_80"
-                    android:layout_height="@dimen/dp_80"
-                    android:src="@color/colorAccent"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp_3"
+                    android:background="@drawable/rounded_image_product_add">
+                    <com.tokopedia.core.customView.RoundedCornerImageView
+                        android:id="@+id/imageOne"
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="@dimen/dp_80"
+                        android:src="@drawable/ic_image_default" />
+                </LinearLayout>
 
             </FrameLayout>
 
@@ -204,11 +216,6 @@
             app:lv_sub_title="@string/product_subtitle_product_variant"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@drawable/line_divider"/>
 
         <Button
             android:id="@+id/button_save"
