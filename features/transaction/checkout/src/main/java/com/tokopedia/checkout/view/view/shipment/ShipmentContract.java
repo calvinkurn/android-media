@@ -23,6 +23,7 @@ import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -92,6 +93,8 @@ public interface ShipmentContract {
         ShipmentDataConverter getShipmentDataConverter();
 
         Activity getActivityContext();
+
+        void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap);
     }
 
     interface Presenter extends CustomerPresenter<View> {

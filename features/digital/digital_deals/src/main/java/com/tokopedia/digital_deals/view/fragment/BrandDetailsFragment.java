@@ -185,9 +185,6 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         loadBrandImage(ivHeader, brand.getFeaturedImage());
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
         if (productItems != null && productItems.size() > 0) {
-            for (ProductItem productItem : productItems) {
-                productItem.setBrand(brand);
-            }
             if (count == 0)
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), productItems.size()));
             else

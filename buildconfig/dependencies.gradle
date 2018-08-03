@@ -70,6 +70,7 @@ ext {
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
+    tkpdPaymentManagementSystem = '2.22'
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
@@ -255,6 +256,7 @@ ext {
             shopCommon            : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
             goldMerchantCommon    : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             shopPage              : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
+            shopOpen          : "com.tokopedia.shop:shop-open:${tkpdShopVersion}",
             productEdit           : "com.tokopedia.product:product-edit:${tkpdProductVersion}",
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
@@ -266,7 +268,8 @@ ext {
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
-            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
     ]
 
     tkpdLibDependencies = [
@@ -303,6 +306,7 @@ ext {
             reputation            : ":features:merchant:reputation",
             shopCommon            : ":features:merchant:shop_common",
             shopPage              : ":features:merchant:shop_page",
+            shopOpen            : ":features:merchant:shop_open",
             productEdit           : ":features:merchant:product_edit",
             topAdsManagement      : ":features:top_ads:top_ads_management",
             topAdsManagementCommon    : ":features:top_ads:top_ads_management_common",
@@ -331,7 +335,8 @@ ext {
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
-            digitalDeals          : ":features:digital:digital_deals"
+            digitalDeals          : ":features:digital:digital_deals",
+            paymentManagementSystem     : ":features:payment:pms"
     ]
 
     libraries = [

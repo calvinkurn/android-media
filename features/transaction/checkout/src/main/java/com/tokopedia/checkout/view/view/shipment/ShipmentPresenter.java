@@ -40,10 +40,16 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
@@ -638,7 +644,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(getSubscriberCheckoutCart())
+                            .subscribe(getSubscriberCheckoutCart(checkoutRequest))
             );
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -794,7 +800,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private Subscriber<CheckoutData> getSubscriberCheckoutCart() {
+    private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -813,6 +819,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     getView().sendAnalyticsChoosePaymentMethodSuccess();
+                    getView().sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest));
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
                     getView().sendAnalyticsChoosePaymentMethodFailed();
@@ -820,6 +827,44 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         };
+    }
+
+    private Map<String, Object> generateCheckoutAnalyticsStep2DataLayer(CheckoutRequest checkoutRequest) {
+
+        Map<String, Object> checkoutMapData = new HashMap<>();
+        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+        enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2);
+        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
+
+        EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
+        for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
+            for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                    EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                            new EnhancedECommerceProductCartMapData();
+                    enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
+                    enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
+                    enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
+                    enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
+                    enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
+                    enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
+                    enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
+                    enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
+                    enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
+                    enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
+                    enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
+                    enhancedECommerceProductCartMapData.setAttribution(productDataCheckoutRequest.getProductAttribution());
+                    enhancedECommerceProductCartMapData.setListName(productDataCheckoutRequest.getProductListName());
+                    enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+                }
+            }
+        }
+        enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
+
+        checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
+
+        return checkoutMapData;
     }
 
     @Override

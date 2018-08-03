@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -49,7 +48,6 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
-import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.core.app.MainApplication;
@@ -83,6 +81,7 @@ import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -245,12 +244,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @NonNull
     private View.OnClickListener getOnClickButtonToShipmentListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dPresenter.processToUpdateCartData();
-                sendAnalyticsOnButtonCheckoutClicked();
-            }
+        return view -> {
+            dPresenter.processToUpdateCartData();
+            sendAnalyticsOnButtonCheckoutClicked();
         };
     }
 
@@ -965,6 +961,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     @Override
     public void renderCancelAutoApplyCouponError() {
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToShipment(Map<String, Object> stringObjectMap) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1(stringObjectMap);
     }
 
     @NonNull

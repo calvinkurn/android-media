@@ -1,14 +1,14 @@
 package com.tokopedia.feedplus.view.listener;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,15 @@ import java.util.ArrayList;
 
 public interface FeedPlusDetail {
 
-    interface View extends CustomerView{
+    interface View extends CustomerView {
+
+        Activity getActivity();
+
+        String getString(int resId);
+
+        Resources getResources();
+
+        int getColor(int resId);
 
         void onWishlistClicked(int adapterPosition, Integer productId, boolean wishlist);
 
@@ -32,19 +40,15 @@ public interface FeedPlusDetail {
 
         void showLoading();
 
+        void dismissLoading();
+
+        void showLoadingMore();
+
+        void dismissLoadingMore();
+
         void showLoadingProgress();
 
-        Activity getActivity();
-
-        Context getContext();
-
-        String getString(int resId);
-
         void onGoToProductDetail(String productId, boolean wishlist, int adapterPosition);
-
-        int getColor(int resId);
-
-        Resources getResources();
 
         void onEmptyFeedDetail();
 
@@ -54,9 +58,15 @@ public interface FeedPlusDetail {
 
         void onSuccessGetSingleFeedDetail(FeedDetailHeaderViewModel headerViewModel,
                                           SingleFeedDetailViewModel feedDetailViewModel);
+
+        void setHasNextPage(boolean hasNextPage);
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void attachView(FeedPlusDetail.View view, WishListActionListener wishlistListener);
+
+        void getFeedDetail(String detailId, int page);
+
         void addToWishlist(int adapterPosition, String productId);
 
         void removeFromWishlist(int adapterPosition, String productId);
