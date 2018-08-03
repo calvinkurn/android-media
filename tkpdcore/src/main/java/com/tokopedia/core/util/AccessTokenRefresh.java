@@ -2,6 +2,7 @@ package com.tokopedia.core.util;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -45,13 +47,18 @@ public class AccessTokenRefresh {
         Call<String> responseCall = getRetrofit().create(AccountsBasicApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;
+        String tokenResponseError = null;
         try {
-            tokenResponse = responseCall.clone().execute().body();
+            Response<String> response = responseCall.clone().execute();
+
+            tokenResponseError = response.errorBody().string();
+            checkShowForceLogout(tokenResponseError);
+
+            tokenResponse = response.body();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        checkShowForceLogout(tokenResponse);
 
         TokenModel model = null;
         if (tokenResponse != null) {
@@ -67,6 +74,7 @@ public class AccessTokenRefresh {
     }
 
     private Retrofit getRetrofit() {
+        Gson gson = new Gson();
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())

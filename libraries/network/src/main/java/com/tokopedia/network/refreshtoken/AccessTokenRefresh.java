@@ -15,6 +15,7 @@ import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -41,13 +42,17 @@ public class AccessTokenRefresh {
         Call<String> responseCall = getRetrofit(context, userSession, networkRouter).create(AccountsBasicApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;
+        String tokenResponseError = null;
         try {
-            tokenResponse = responseCall.clone().execute().body();
+            Response<String> response = responseCall.clone().execute();
+
+            tokenResponseError = response.errorBody().string();
+            checkShowForceLogout(tokenResponseError, networkRouter);
+
+            tokenResponse = response.body();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        checkShowForceLogout(tokenResponse, networkRouter);
 
         TokenModel model = null;
         if (tokenResponse != null) {
