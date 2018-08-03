@@ -15,7 +15,7 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 class ProductEditStockActivity : BaseSimpleActivity(){
 
     companion object {
-        fun createIntent(context: Context, productStock: ProductStock, hasVariant: Boolean, isAddStatus: Boolean): Intent {
+        fun createIntent(context: Context, productStock: ProductStock?, hasVariant: Boolean, isAddStatus: Boolean): Intent {
             return Intent(context, ProductEditStockActivity::class.java)
                     .putExtra(EXTRA_STOCK, productStock)
                     .putExtra(EXTRA_HAS_VARIANT, hasVariant)

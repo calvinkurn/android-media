@@ -23,7 +23,7 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        productName = activity!!.intent.getParcelableExtra(EXTRA_NAME)
+        productName = activity!!.intent.getParcelableExtra(EXTRA_NAME)?:ProductName()
         isEditable = activity!!.intent.getBooleanExtra(EXTRA_IS_EDITABLE_NAME, true)
     }
 

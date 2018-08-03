@@ -14,7 +14,7 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 class ProductEditNameActivity : BaseSimpleActivity(){
 
     companion object {
-        fun createIntent(context: Context, productName: ProductName, isEditableName: Boolean): Intent {
+        fun createIntent(context: Context, productName: ProductName?, isEditableName: Boolean): Intent {
             return Intent(context, ProductEditNameActivity::class.java)
                     .putExtra(EXTRA_NAME, productName)
                     .putExtra(EXTRA_IS_EDITABLE_NAME, isEditableName)

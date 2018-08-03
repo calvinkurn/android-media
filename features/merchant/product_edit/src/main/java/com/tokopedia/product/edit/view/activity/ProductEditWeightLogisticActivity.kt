@@ -14,7 +14,7 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 class ProductEditWeightLogisticActivity : BaseSimpleActivity(){
 
     companion object {
-        fun createIntent(context: Context, productLogistic: ProductLogistic, isFreeReturn: Boolean): Intent {
+        fun createIntent(context: Context, productLogistic: ProductLogistic?, isFreeReturn: Boolean): Intent {
             return Intent(context, ProductEditWeightLogisticActivity::class.java)
                     .putExtra(EXTRA_LOGISTIC, productLogistic)
                     .putExtra(EXTRA_IS_FREE_RETURN, isFreeReturn)

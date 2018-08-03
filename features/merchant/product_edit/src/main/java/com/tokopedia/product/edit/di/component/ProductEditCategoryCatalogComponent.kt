@@ -3,6 +3,7 @@ package com.tokopedia.product.edit.di.component
 import com.tokopedia.product.edit.common.di.component.ProductComponent
 import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.di.scope.ProductAddScope
+import com.tokopedia.product.edit.price.ProductAddNameCategoryFragment
 import com.tokopedia.product.edit.price.ProductEditCatalogPickerFragment
 import com.tokopedia.product.edit.price.ProductEditCategoryFragment
 import dagger.Component
@@ -12,4 +13,5 @@ import dagger.Component
 interface ProductEditCategoryCatalogComponent {
     fun inject(fragment: ProductEditCategoryFragment)
     fun inject(fragment: ProductEditCatalogPickerFragment)
+    fun inject(fragment: ProductAddNameCategoryFragment)
 }

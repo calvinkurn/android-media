@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
 import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef
 import com.tokopedia.product.edit.price.model.*
 import java.util.ArrayList
 
@@ -59,6 +60,19 @@ data class ProductAddViewModel(var productCatalog: ProductCatalog? = ProductCata
         parcel.writeString(etalaseName)
         parcel.writeByte(if (isProductNameEditable) 1 else 0)
         parcel.writeString(productId)
+    }
+
+    fun getPrdPriceOrMinVariantProductPrice(): Double {
+        return if (productVariantViewModel?.hasSelectedVariant()?:false) {
+            return productVariantViewModel?.getMinVariantProductPrice()?:0.0
+        } else productPrice?.price?:0.0
+    }
+
+    fun changePriceTo(value: Double) {
+        if (productVariantViewModel?.hasSelectedVariant()?:false) {
+            productVariantViewModel?.changePriceTo(value)
+        }
+        productPrice?.price = value
     }
 
     override fun describeContents(): Int {

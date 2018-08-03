@@ -18,6 +18,7 @@
             android:layout_marginRight="@dimen/dp_16"/>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/titleCategoryRecommendation"
             style="@style/TextView.Title.BlackSecondary"
             android:text="@string/product_label_category_recommendation"
             android:layout_marginTop="@dimen/dp_8"
@@ -31,6 +32,7 @@
            android:layout_height="wrap_content"/>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/labelNotFindCategory"
             style="@style/TextView.Title.Bold"
             android:text="@string/product_label_not_find_category"
             android:layout_marginTop="@dimen/dp_24"
@@ -57,6 +59,7 @@
             android:layout_marginLeft="@dimen/dp_16" />
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/titleCatalog"
             style="@style/TextView.TitleBig.Bold"
             android:text="@string/product_label_choose_product_catalog"
             android:layout_marginTop="@dimen/dp_24"
