@@ -1487,6 +1487,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void showForceLogoutTokenDialog(String response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    }
+
+    @Override
     public void showServerError(Response response) {
         ServerErrorHandler.showServerErrorSnackbar();
         ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
@@ -2105,22 +2111,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isIndicatorVisible() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY);
-    }
-
-    @Override
-    public boolean isEnabledGroupChat() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
-    }
-
-    @Override
-    public boolean isEnabledGroupChatRoom() {
-        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_ROOM);
-    }
-
-    @Override
-    public boolean isEnabledIdleKick() {
-        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_IDLE_KICK);
+        return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
     }
 
     @Override
@@ -2423,7 +2414,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isLoginInactivePhoneLinkEnabled() {
-        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
+        return remoteConfig.getBoolean("mainapp_login_inactive_phone_no_link", true)
                 && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
     }
 

@@ -13,6 +13,9 @@ public class TopBotStatus{
 	@SerializedName("msg_id")
 	private int msgId;
 
+	@SerializedName("welcome_msg")
+	private String welcomeMessge;
+
 	public void setIsActive(boolean isActive){
 		this.isActive = isActive;
 	}
@@ -37,13 +40,22 @@ public class TopBotStatus{
 		return msgId;
 	}
 
+	public String getWelcomeMessge() {
+		return welcomeMessge;
+	}
+
+	public void setWelcomeMessge(String welcomeMessge) {
+		this.welcomeMessge = welcomeMessge;
+	}
+
 	@Override
  	public String toString(){
 		return 
 			"TopBotStatus{" + 
 			"is_active = '" + isActive + '\'' + 
 			",is_success = '" + isSuccess + '\'' + 
-			",msg_id = '" + msgId + '\'' + 
-			"}";
+			",msg_id = '" + msgId + '\'' +
+			", welcomeMessage = '"+ welcomeMessge + '\'' +
+					"}";
 		}
 }
