@@ -59,7 +59,7 @@ public class SellerEmptyAccountFragment extends BaseAccountFragment {
         gmInfo.setMainText(R.string.gold_merchant);
         gmInfo.setSecondaryText(R.string.gold_merchant_desc);
 
-        sellerCenterInfo.setImage(R.drawable.icon_seller_center);
+        sellerCenterInfo.setImage(R.drawable.ic_seller_center);
         sellerCenterInfo.setMainText(R.string.seller_center);
         sellerCenterInfo.setSecondaryText(R.string.seller_center_desc);
 
