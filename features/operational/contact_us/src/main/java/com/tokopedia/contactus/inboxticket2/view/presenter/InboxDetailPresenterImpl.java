@@ -140,6 +140,11 @@ public class InboxDetailPresenterImpl
     }
 
     @Override
+    public void reAttachView() {
+
+    }
+
+    @Override
     public void onSearchSubmitted(String text) {
 
     }

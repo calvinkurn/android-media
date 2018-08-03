@@ -41,6 +41,8 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     abstract int getMenuRes();
 
+    abstract boolean doNeedReattach();
+
     private String BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment";
 
     @Inject
@@ -113,6 +115,14 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
         }
         initView();
         mPresenter.attachView(this);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (doNeedReattach()) {
+            mPresenter.reAttachView();
+        }
     }
 
     @Override

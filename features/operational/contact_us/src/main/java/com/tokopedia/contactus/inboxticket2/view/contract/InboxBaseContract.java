@@ -58,5 +58,7 @@ public interface InboxBaseContract {
         BottomSheetDialogFragment getBottomFragment();
 
         boolean onOptionsItemSelected(MenuItem item);
+
+        void reAttachView();
     }
 }

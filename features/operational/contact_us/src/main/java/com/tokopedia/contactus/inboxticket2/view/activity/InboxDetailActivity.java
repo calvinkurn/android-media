@@ -204,6 +204,11 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
+    boolean doNeedReattach() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imageUploadHandler = ImageUploadHandler.createInstance(this);
@@ -471,5 +476,11 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void onClick() {
         showImagePickerDialog();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
     }
 }

@@ -219,6 +219,11 @@ public class InboxListPresenterImpl
         return false;
     }
 
+    @Override
+    public void reAttachView() {
+        getTicketList();
+    }
+
     private void checkIfToLoad(LinearLayoutManager layoutManager) {
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();

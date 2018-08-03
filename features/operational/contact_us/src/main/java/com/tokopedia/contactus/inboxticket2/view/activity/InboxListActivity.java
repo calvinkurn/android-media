@@ -130,6 +130,11 @@ public class InboxListActivity extends InboxBaseActivity
         return -1;
     }
 
+    @Override
+    boolean doNeedReattach() {
+        return true;
+    }
+
     @OnClick(R2.id.btn_filter)
     void onClickFilter() {
         ((InboxListContract.InboxListPresenter) mPresenter).onClickFilter();
