@@ -101,11 +101,11 @@ public class CustomPushListener extends PushMessageListener {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteView.setOnClickPendingIntent(R.id.image_icon4, pIntent4);
             }
-            PendingIntent pIntent5 =  PendingIntent.getActivity(
+            PendingIntent pIntent5 =  PendingIntent.getBroadcast(
                     context,
                     0,
-                    new Intent(), // add this
-                    PendingIntent.FLAG_UPDATE_CURRENT);
+                    new Intent(),
+                    PendingIntent.FLAG_CANCEL_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
             Intent notificationIntent = new Intent(context, ParentIndexHome.class);

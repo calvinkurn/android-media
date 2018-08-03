@@ -5,7 +5,7 @@
     android:gravity="center_horizontal|center_vertical"
     android:background="@color/gray_background"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_10">
+    android:padding="@dimen/dp_5">
 
     <ImageView
         android:id="@+id/image_icon6"
@@ -23,13 +23,17 @@
         <ImageView
             android:id="@+id/image_icon1"
             android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24" />
+            android:layout_height="@dimen/dp_24"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_3"/>
 
         <TextView
             android:id="@+id/title1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black" />
+            android:textSize="@dimen/sp_10"/>
     </LinearLayout>
 
     <LinearLayout
@@ -43,13 +47,17 @@
         <ImageView
             android:id="@+id/image_icon2"
             android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24" />
+            android:layout_height="@dimen/dp_24"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_2"/>
 
         <TextView
             android:id="@+id/title2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black" />
+            android:textSize="@dimen/sp_10"/>
     </LinearLayout>
 
     <LinearLayout
@@ -63,13 +71,17 @@
         <ImageView
             android:id="@+id/image_icon3"
             android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24" />
+            android:layout_height="@dimen/dp_24"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_2"/>
 
         <TextView
             android:id="@+id/title3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black" />
+            android:textSize="@dimen/sp_10" />
     </LinearLayout>
 
     <LinearLayout
@@ -83,19 +95,24 @@
         <ImageView
             android:id="@+id/image_icon4"
             android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24" />
+            android:layout_height="@dimen/dp_24"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_2"/>
 
         <TextView
             android:id="@+id/title4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black" />
+            android:textSize="@dimen/sp_10" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/image_icon5"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
+        android:padding="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_12"
         android:src="@drawable/ic_close_black" />
