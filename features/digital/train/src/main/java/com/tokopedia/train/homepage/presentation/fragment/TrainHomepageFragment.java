@@ -193,7 +193,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         trainHomepagePresenterImpl.attachView(this);
         trainHomepagePresenterImpl.initialize();
-//        initializePromoList();
     }
 
     private void initializePromoList() {
