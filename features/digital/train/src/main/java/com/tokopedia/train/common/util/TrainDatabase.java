@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.GeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.TkpdTrainGeneratedDatabaseHolder;
 
 /**
  * Created by alvarisi on 3/8/18.
@@ -17,7 +17,7 @@ public class TrainDatabase {
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(applicationContext).build());
         }
-        FlowManager.initModule(GeneratedDatabaseHolder.class);
+        FlowManager.initModule(TkpdTrainGeneratedDatabaseHolder.class);
 
     }
 
