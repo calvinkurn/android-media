@@ -142,6 +142,8 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
+    String DEPOSIT = "tokopedia://saldo";
+
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";

@@ -32,8 +32,11 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     public FirebaseRemoteConfigImpl(Context context) {
         this.firebaseRemoteConfig = getInstance(context);
-        this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
-        this.editor = sharedPrefs.edit();
+
+        if(GlobalConfig.isAllowDebuggingTools() && context != null) {
+            this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
+            this.editor = sharedPrefs.edit();
+        }
     }
 
     private FirebaseRemoteConfig getInstance(Context context) {
@@ -56,7 +59,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public boolean getBoolean(String key, Boolean defaultValue) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
+        if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
             if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
                 return cacheValue.equalsIgnoreCase("true");
@@ -102,7 +105,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public long getLong(String key, long defaultValue) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
+        if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
             if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
                 return Long.parseLong(cacheValue);
@@ -121,7 +124,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public String getString(String key, String defaultValue) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
+        if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, defaultValue);
             if (!cacheValue.equalsIgnoreCase(defaultValue) && !cacheValue.isEmpty()) {
                 return cacheValue;
@@ -135,12 +138,10 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public void setString(String key, String value) {
-        if (!GlobalConfig.isAllowDebuggingTools()) {
+        if (!isDebug()) {
             return;
         }
-        editor
-                .putString(key, value)
-                .apply();
+        editor.putString(key, value).apply();
     }
 
     @Override
@@ -172,5 +173,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    private boolean isDebug() {
+        return GlobalConfig.isAllowDebuggingTools()
+                && sharedPrefs != null
+                && editor != null;
     }
 }

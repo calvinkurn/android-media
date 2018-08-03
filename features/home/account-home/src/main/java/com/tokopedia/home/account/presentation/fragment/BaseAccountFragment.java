@@ -97,4 +97,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public void onAddProductClicked() {
         openApplink(ApplinkConst.PRODUCT_ADD);
     }
+
+    @Override
+    public void onTokopediaPayItemClicked(String applink) {
+        openApplink(applink);
+    }
 }

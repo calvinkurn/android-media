@@ -22,16 +22,21 @@
             android:text="@string/label_tokopedia_pay_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_action"
-            style="@style/TextView.Micro.Green"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layout_action"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_tokopedia_pay_see_all"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@+id/label_tokopedia_pay"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/label_tokopedia_pay" />
+            app:layout_constraintTop_toTopOf="@+id/label_tokopedia_pay">
+            <TextView
+                android:id="@+id/text_action"
+                style="@style/TextView.Micro.Green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_tokopedia_pay_see_all"/>
+        </LinearLayout>
 
        <LinearLayout
            app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay"
@@ -41,6 +46,7 @@
            android:orientation="horizontal">
 
            <LinearLayout
+               android:id="@+id/layout_left"
                android:layout_width="0dp"
                android:layout_weight="1"
                android:layout_height="wrap_content"
@@ -87,6 +93,7 @@
            </LinearLayout>
 
            <LinearLayout
+               android:id="@+id/layout_right"
                android:layout_width="0dp"
                android:layout_weight="1"
                android:layout_height="wrap_content"

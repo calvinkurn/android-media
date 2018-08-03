@@ -146,6 +146,7 @@ public interface Constants {
         String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
         String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
         String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+        String DEPOSIT = "tokopedia://saldo";
 
         String ORDER_LIST = "tokopedia://order";
 
