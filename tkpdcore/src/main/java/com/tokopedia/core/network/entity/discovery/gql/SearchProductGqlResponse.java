@@ -15,7 +15,7 @@ public class SearchProductGqlResponse {
     @Expose
     private SearchProduct searchProduct;
 
-    @SerializedName("dynamicAttribute")
+    @SerializedName("search_filter_product")
     @Expose
     private DynamicFilterModel dynamicFilterModel;
 

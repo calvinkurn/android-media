@@ -8,6 +8,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.R;
@@ -53,18 +54,11 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     @Override
     public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStore) {
         super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
-
-        Map<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("q", searchParameter.getQueryKey());
-        paramsMap.put("start", "0");
-        paramsMap.put("rows", "12");
-        paramsMap.put("uniqueId", searchParameter.getUniqueID());
-        paramsMap.put("source", searchParameter.getSource());
-        paramsMap.put("userId", searchParameter.getUserID());
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, false);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("query", searchParameter.getQueryKey());
-        variables.put("params", UrlParamHelper.generateUrlParamString(paramsMap));
+        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
         variables.put("source", searchParameter.getSource());
 
         GraphqlRequest graphqlRequest = new
