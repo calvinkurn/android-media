@@ -1290,11 +1290,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isEnabledGroupChat() {
-        return false;
-    }
-
-    @Override
     public void sendTrackingGroupChatLeftNavigation() {
     }
 
@@ -1376,11 +1371,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getOrderListIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
         return null;
     }
@@ -1452,7 +1442,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isLoginInactivePhoneLinkEnabled() {
-        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
+        return remoteConfig.getBoolean("sellerapp_login_inactive_phone_no_link", true)
                 && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
     }
 }

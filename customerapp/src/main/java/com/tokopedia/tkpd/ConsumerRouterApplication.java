@@ -2075,21 +2075,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public boolean isEnabledGroupChat() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
-    }
-
-    @Override
-    public boolean isEnabledGroupChatRoom() {
-        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_ROOM);
-    }
-
-    @Override
-    public boolean isEnabledIdleKick() {
-        return remoteConfig.getBoolean(GroupChatModuleRouter.ENABLE_GROUPCHAT_IDLE_KICK);
-    }
-
-    @Override
     public void sendTrackingGroupChatLeftNavigation() {
         getAnalyticTracker().sendEventTracking(GroupChatAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
                 GroupChatAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,
@@ -2358,7 +2343,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isLoginInactivePhoneLinkEnabled() {
-        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
+        return remoteConfig.getBoolean("mainapp_login_inactive_phone_no_link", true)
                 && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
     }
 

@@ -86,9 +86,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((TopChatRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(channelListIntent);
-        }
+        taskStackBuilder.addNextIntent(channelListIntent);
         return taskStackBuilder;
     }
 
@@ -162,11 +160,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
             initTopChatFragment();
         }
 
-    }
-
-    private boolean isEnabledGroupChat() {
-        return getApplicationContext() instanceof TkpdInboxRouter
-                && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat();
     }
 
     private boolean isIndicatorVisible() {
@@ -315,7 +308,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
         }
     }
 
-    public void updateNotifDrawerData(){
+    public void updateNotifDrawerData() {
         updateDrawerData();
     }
 }
