@@ -182,7 +182,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     public void renderBrandDetails(List<ProductItem> productItems, Brand brand, int count) {
         collapsingToolbarLayout.setTitle(brand.getTitle());
         tvExpandableDesc.setText(brand.getDescription());
-        tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null) {
+            tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), location.getName()));
+            locationName = location.getName();
+        }else {
+            tvCityName.setText(getResources().getString(R.string.text_deals));
+        }
         loadBrandImage(ivHeader, brand.getFeaturedImage());
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
         if (productItems != null && productItems.size() > 0) {
@@ -202,7 +208,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             noContent.setVisibility(View.VISIBLE);
             recyclerViewDeals.removeOnScrollListener(rvOnScrollListener);
         }
-        locationName = Utils.getSingletonInstance().getLocation(getContext()).getName();
+
         baseMainContent.setVisibility(View.VISIBLE);
 
     }
@@ -261,7 +267,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
-        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null)
+            requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
         return requestParams;
     }
 
@@ -309,13 +317,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(getActivity()==null)
+        if (getActivity() == null)
             return;
         switch (requestCode) {
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
                     Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (location!=null && !TextUtils.isEmpty(locationName) &&!TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
+                    if (location != null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
                         mPresenter.getBrandDetails(true);
                     } else {
                         mPresenter.getBrandDetails(false);
