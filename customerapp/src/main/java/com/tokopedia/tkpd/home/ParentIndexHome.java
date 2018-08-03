@@ -36,7 +36,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.GsonBuilder;
-import com.moengage.core.ConfigurationProvider;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -100,8 +99,6 @@ import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
-import com.tokopedia.tkpd.utils.CustomPushListener;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
