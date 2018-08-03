@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -68,6 +69,9 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     TextView btnFullPurchaseList;
     @BindView(R2.id.txt_hi_user)
     TextView txtHiUser;
+
+    @BindView(R2.id.txt_user_info)
+     TextView txtUserMessage;
 
     String msgId;
     @BindView(R2.id.pager_indicator)
@@ -184,6 +188,11 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     @Override
     public void setChatBotMessageId(int msgId) {
         this.msgId = String.valueOf(msgId);
+    }
+
+    @Override
+    public void setChatBotMessage(String message) {
+        txtUserMessage.setText(Html.fromHtml(message));
     }
 
     @Override

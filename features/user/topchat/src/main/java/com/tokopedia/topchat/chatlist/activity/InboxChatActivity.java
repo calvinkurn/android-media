@@ -2,6 +2,8 @@ package com.tokopedia.topchat.chatlist.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +24,7 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -86,9 +91,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((TopChatRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(channelListIntent);
-        }
+        taskStackBuilder.addNextIntent(channelListIntent);
         return taskStackBuilder;
     }
 
@@ -162,11 +165,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
             initTopChatFragment();
         }
 
-    }
-
-    private boolean isEnabledGroupChat() {
-        return getApplicationContext() instanceof TkpdInboxRouter
-                && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat();
     }
 
     private boolean isIndicatorVisible() {
@@ -315,7 +313,24 @@ public class InboxChatActivity extends DrawerPresenterActivity
         }
     }
 
-    public void updateNotifDrawerData(){
+    public void updateNotifDrawerData() {
         updateDrawerData();
     }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        menu.add(Menu.NONE, R.id.action_organize, 0, "");
+//        MenuItem menuItem = menu.findItem(R.id.action_reset); // OR THIS
+//        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//        menuItem.setIcon(getDetailMenuItem());
+//        return true;
+//    }
+//
+//    private Drawable getDetailMenuItem() {
+//        TextDrawable drawable = new TextDrawable(this);
+//        drawable.setText(getResources().getString(R.string.option_organize));
+//        drawable.setTextColor(Color.parseColor("#42b549"));
+//        return drawable;
+//    }
 }

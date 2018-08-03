@@ -1,0 +1,46 @@
+query wishlist($user_id: Int, $page: Int, $count: Int){
+  wishlist(user_id: $user_id, page: $page, count: $count){
+
+      has_next_page
+      total_data
+      items {
+        id
+        name
+        url
+        image
+        price
+        condition
+        available
+        status
+        price_formatted
+        minimum_order
+        wholesale_price {
+          minimum
+          maximum
+          price
+        }
+        shop {
+          id
+          name
+          url
+          gold_merchant
+          official_store
+          status
+          location
+
+        }
+        preorder
+        badges {
+          title
+          image_url
+        }
+        labels {
+          title
+          color
+        }
+      }
+      pagination {
+        next_url
+      }
+  }
+}
