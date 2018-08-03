@@ -121,21 +121,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         View confirmPasswordView = getLayoutInflater().inflate(R.layout.layout_confirm_password, null);
         confirmPassword.setContentView(confirmPasswordView);
 
-        final BottomSheetBehavior behavior = BottomSheetBehavior.from(confirmPasswordView);
-
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
-
         bankRecyclerView = view.findViewById(R.id.recycler_view_bank);
         withdrawButton = view.findViewById(R.id.withdraw_button);
         withdrawAll = view.findViewById(R.id.withdraw_all);
