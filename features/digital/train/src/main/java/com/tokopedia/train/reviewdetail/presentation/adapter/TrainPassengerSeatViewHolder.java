@@ -25,6 +25,8 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
     private TextView textDepartureSeat;
     private TextView textReturnSeat;
 
+    private LinearLayout layoutTextNoId;
+    private LinearLayout layoutTextDepartureTrip;
     private LinearLayout layoutTextReturnTrip;
 
     public TrainPassengerSeatViewHolder(View itemView) {
@@ -36,12 +38,16 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
         textDepartureTrip = itemView.findViewById(R.id.text_departure_trip);
         textReturnTrip = itemView.findViewById(R.id.text_returnure_trip);
         textReturnSeat = itemView.findViewById(R.id.text_return_seat);
+        layoutTextNoId = itemView.findViewById(R.id.layout_text_no_id);
+        layoutTextDepartureTrip = itemView.findViewById(R.id.layout_text_departure_trip);
         layoutTextReturnTrip = itemView.findViewById(R.id.layout_text_return_trip);
     }
 
     @Override
     public void bind(TrainReviewPassengerInfoViewModel element) {
         if (element.getPassengerType() == TrainBookingPassenger.ADULT) {
+            layoutTextNoId.setVisibility(View.VISIBLE);
+            layoutTextDepartureTrip.setVisibility(View.VISIBLE);
             textPassengerIndex.setText(itemView.getContext()
                     .getString(R.string.train_review_item_passenger_index, getAdapterPosition() + 1));
             textPassengerName.setText(itemView.getContext().getString(R.string.train_review_item_passenger_name,
@@ -65,9 +71,8 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
                     .getString(R.string.train_review_item_passenger_index, getAdapterPosition() + 1));
             textPassengerName.setText(itemView.getContext().getString(R.string.train_review_item_passenger_name,
                     element.getName(), element.getPassengerTypeStr()));
-            textNumberID.setVisibility(View.GONE);
-            textDepartureSeat.setVisibility(View.GONE);
-            textDepartureTrip.setVisibility(View.GONE);
+            layoutTextNoId.setVisibility(View.GONE);
+            layoutTextDepartureTrip.setVisibility(View.GONE);
             layoutTextReturnTrip.setVisibility(View.GONE);
         }
     }
