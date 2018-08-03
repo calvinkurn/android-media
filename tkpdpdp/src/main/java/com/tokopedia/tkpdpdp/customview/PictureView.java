@@ -125,6 +125,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     }
 
     public void renderTempData(ProductPass productPass) {
+        imagePagerAdapter = new ImagePagerAdapter(listener.getActivityContext(), urlTemporary);
+        vpImage.setAdapter(imagePagerAdapter);
+        indicator.setViewPager(vpImage);
         ProductImage productImage = new ProductImage();
         productImage.setImageSrc300(productPass.getProductImage());
         productImage.setImageSrc(productPass.getProductImage());
