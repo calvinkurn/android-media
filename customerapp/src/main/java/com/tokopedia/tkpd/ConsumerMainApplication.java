@@ -48,6 +48,7 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
+import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
@@ -230,6 +231,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionUrl.CHANGE_PHONE_DOMAIN = ConsumerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        ResolutionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
+        ResolutionUrl.BASE_URL_IMAGE_SERVICE = ConsumerAppBaseUrl.BASE_DOMAIN;
         SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
