@@ -249,6 +249,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             mBannerPager.setClipToPadding(false);
             mBannerPager.setPageMargin(getResources().getDimensionPixelOffset(R.dimen.il_margin_medium));
             mBannerPager.addOnPageChangeListener(mBannerPageChangeListener);
+            sendBannerImpressionEvent(0);
         }
     }
 
