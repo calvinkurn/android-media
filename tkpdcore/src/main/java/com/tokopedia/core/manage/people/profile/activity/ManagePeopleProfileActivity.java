@@ -1,6 +1,7 @@
 package com.tokopedia.core.manage.people.profile.activity;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -100,5 +101,9 @@ public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeo
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    public static Intent createIntent(Context context) {
+        return new Intent(context, ManagePeopleProfileActivity.class);
     }
 }
