@@ -40,6 +40,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         implements TrainBookingPassengerContract.Presenter {
 
     private static final int MAX_CONTACT_NAME = 60;
+    private static final int MIN_PHONE_NUMBER = 9;
+    private static final int MAX_PHONE_NUMBER = 15;
 
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
@@ -68,9 +70,6 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (isViewAttached()) {
-
-                        }
                     }
 
                     @Override
@@ -286,11 +285,11 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     }
 
     private boolean isMinPhoneNumberValid(String phoneNumber) {
-        return phoneNumber.length() >= 9;
+        return phoneNumber.length() >= MIN_PHONE_NUMBER;
     }
 
     private boolean isMaxPhoneNumberValid(String phoneNumber) {
-        return phoneNumber.length() <= 15;
+        return phoneNumber.length() <= MAX_PHONE_NUMBER;
     }
 
     private boolean isNumericOnly(String expression) {

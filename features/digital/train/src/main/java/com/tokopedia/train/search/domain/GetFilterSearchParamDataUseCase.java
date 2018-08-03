@@ -38,7 +38,11 @@ public class GetFilterSearchParamDataUseCase extends UseCase<FilterSearchData> {
                 .map(new Func1<List<TrainScheduleViewModel>, FilterSearchData>() {
                     @Override
                     public FilterSearchData call(List<TrainScheduleViewModel> trainScheduleViewModels) {
-                        long minPrice = trainScheduleViewModels.get(0).getAdultFare();
+                        long minPrice = Integer.MIN_VALUE;
+                        if (trainScheduleViewModels != null && trainScheduleViewModels.size() > 0){
+                            minPrice = trainScheduleViewModels.get(0).getAdultFare();
+                        }
+
                         long maxPrice = minPrice;
                         List<String> trainNameList = new ArrayList<>();
                         LinkedHashSet<String> trainNameSet = new LinkedHashSet<>();
