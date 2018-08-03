@@ -14,7 +14,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -24,8 +23,7 @@ import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.utils.data.RequestBodyAppsFlyer;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -47,7 +45,7 @@ public class DeviceUtil {
                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses();
                      enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
                         return inetAddress.getHostAddress();
                     }
                 }

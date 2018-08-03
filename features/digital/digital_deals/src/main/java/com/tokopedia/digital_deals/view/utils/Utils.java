@@ -12,6 +12,7 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.FilterItem;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ValuesItem;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 
@@ -50,7 +52,7 @@ public class Utils {
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
     public static String BRAND_QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String BRAND_QUERY_PARAM_CITY_ID = "cities";
-    public static final String NEXT_URL="nexturl";
+    public static final String NEXT_URL = "nexturl";
     private float defaultBitmapScale = 0.1f;
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
@@ -67,7 +69,7 @@ public class Utils {
     public ArrayList<CategoryItem> convertIntoCategoryListViewModel(DealsResponse dealsResponse) {
 
         ArrayList<CategoryItem> categoryRespons = new ArrayList<>();
-        if (dealsResponse.getHome()!=null && dealsResponse.getCategoryItems()!= null) {
+        if (dealsResponse.getHome() != null && dealsResponse.getCategoryItems() != null) {
             for (CategoryItem categoryItem : dealsResponse.getCategoryItems()) {
 
                 CategoryItem category = new CategoryItem();
@@ -102,7 +104,7 @@ public class Utils {
     private void applyFilterOnCategories(ArrayList<CategoryItem> categoryRespons, List<FilterItem> filters) {
         Map<Integer, Integer> sortOrder = new HashMap<>();
         if (filters != null) {
-            if(categoryRespons.get(0).getCategoryId()== categoryRespons.get(1).getCategoryId()){
+            if (categoryRespons.get(0).getCategoryId() == categoryRespons.get(1).getCategoryId()) {
                 categoryRespons.get(1).setCategoryId(-1);            //Since carousel and top have same id's
             }
             sortOrder.put(categoryRespons.get(0).getCategoryId(), -1);   //dummy for top or carousel
@@ -114,12 +116,37 @@ public class Utils {
                             sortOrder.put(value.getId(), value.getPriority());
                         }
                     }
-                    if(sortOrder.size()== categoryRespons.size()){
+                    if (sortOrder.size() == categoryRespons.size()) {
                         Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
                     }
                 }
             }
         }
+    }
+
+    public void sortOutletsWithLocation(List<Outlet> outlets, Location location) {
+        if (location == null || outlets == null)
+            return;
+        List<Outlet> outlets1 = new ArrayList<>();
+        List<Outlet> outlets2 = new ArrayList<>();
+        for (Outlet outlet : outlets) {
+
+            if (outlet.getLocationId() == location.getId()) {
+                outlets1.add(outlet);
+            } else {
+                if (!TextUtils.isEmpty(outlet.getSearchName())
+                        && !TextUtils.isEmpty(location.getSearchName())
+                        && outlet.getSearchName().equalsIgnoreCase(location.getSearchName()))
+                    outlets1.add(outlet);
+                else{
+                    outlets2.add(outlet);
+                }
+            }
+        }
+        outlets.clear();
+        outlets.addAll(outlets1);
+        outlets.addAll(outlets2);
+
     }
 
     private class CategoryItemComparator implements Comparator<CategoryItem> {
@@ -253,8 +280,8 @@ public class Utils {
     }
 
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl) {
-        String uri= DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
-        ((DealsModuleRouter)((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl);
+        String uri = DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
+        ((DealsModuleRouter) ((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -273,7 +300,7 @@ public class Utils {
             tmpOut.copyTo(outputBitmap);
 
             return outputBitmap;
-        }else{
+        } else {
             return smallBitmap;
         }
     }
