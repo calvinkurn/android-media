@@ -370,8 +370,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
                 boolean foundItem = false;
                 for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                    if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel) &&
-                            oldShipmentCartItemModel.equals(newShipmentCartItemModel) &&
+                    if (oldShipmentCartItemModel.equals(newShipmentCartItemModel) &&
                             oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
                             oldShipmentCartItemModel.getShopShipmentList().size() == newShipmentCartItemModel.getShopShipmentList().size()) {
                         for (ShopShipment oldShopShipment : oldShipmentCartItemModel.getShopShipmentList()) {
@@ -384,11 +383,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     break;
                                 }
                             }
-                            if(foundItem) {
+                            if (foundItem) {
                                 break;
                             }
                         }
-                        if(foundItem) {
+                        if (foundItem) {
                             break;
                         }
                     }
@@ -448,7 +447,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         List<ShipmentCartItemModel> oldShipmentCartItemModelList = getShipmentCartItemModelList();
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel)) {
+                if (oldShipmentCartItemModel.equals(newShipmentCartItemModel)) {
                     oldShipmentCartItemModel.setError(newShipmentCartItemModel.isError());
                     oldShipmentCartItemModel.setAllItemError(newShipmentCartItemModel.isAllItemError());
                     oldShipmentCartItemModel.setErrorMessage(newShipmentCartItemModel.getErrorMessage());
@@ -492,7 +491,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel) && newShipmentCartItemModel.getSelectedShipmentDetailData() == null) {
+                if (oldShipmentCartItemModel.equals(newShipmentCartItemModel) &&
+                        newShipmentCartItemModel.getSelectedShipmentDetailData() == null) {
                     oldShipmentCartItemModel.setSelectedShipmentDetailData(null);
                     oldShipmentCartItemModel.setShipmentCartData(newShipmentCartItemModel.getShipmentCartData());
                 }
@@ -542,7 +542,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                     cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
                                                 getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
                                             } else {
-                                                if (checkCartHasError(cartShipmentAddressFormData)) {
+                                                if (cartShipmentAddressFormData.isHasError()) {
                                                     prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
                                                 } else {
                                                     RecipientAddressModel newRecipientAddressModel =
@@ -570,30 +570,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             )
             );
         }
-    }
-
-    private boolean checkCartHasError(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        boolean hasError = false;
-        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-            if (groupAddress.isError() || groupAddress.isWarning()) {
-                hasError = true;
-                break;
-            }
-            for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                if (groupShop.isError() || groupShop.isWarning()) {
-                    hasError = true;
-                    break;
-                }
-                for (Product product : groupShop.getProducts()) {
-                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
-                        hasError = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return hasError;
     }
 
     private void prepareDataAfterProcessShipmentPrepareCheckout(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -702,7 +678,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (cartListHasError) {
             for (ShipmentCartItemModel oldShipmentCartItemModel : shipmentCartItemModelList) {
                 for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                    if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel)) {
+                    if (oldShipmentCartItemModel.equals(newShipmentCartItemModel)) {
                         newShipmentCartItemModel.setSelectedShipmentDetailData(oldShipmentCartItemModel.getSelectedShipmentDetailData());
                     }
                 }
@@ -726,23 +702,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return true;
         }
         return false;
-    }
-
-    private boolean isSameCartObject(ShipmentCartItemModel oldShipmentCartItemModel,
-                                     ShipmentCartItemModel newShipmentCartItemModel) {
-
-        if (oldShipmentCartItemModel.getRecipientAddressModel() != null && newShipmentCartItemModel.getRecipientAddressModel() != null) {
-            if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId()) ||
-                    !oldShipmentCartItemModel.getRecipientAddressModel().getLatitude().equals(newShipmentCartItemModel.getRecipientAddressModel().getLatitude()) ||
-                    !oldShipmentCartItemModel.getRecipientAddressModel().getLongitude().equals(newShipmentCartItemModel.getRecipientAddressModel().getLongitude()) ||
-                    !oldShipmentCartItemModel.getRecipientAddressModel().getPostalCode().equalsIgnoreCase(newShipmentCartItemModel.getRecipientAddressModel().getPostalCode()) ||
-                    !oldShipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId().equals(newShipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId())) {
-                return false;
-            }
-        }
-        return oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
-                oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
-                oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
@@ -241,8 +243,34 @@ public class ShipmentMapper implements IShipmentMapper {
                 groupAddressListResult.add(groupAddressResult);
             }
             dataResult.setGroupAddress(groupAddressListResult);
+            dataResult.setHasError(checkCartHasError(dataResult));
         }
 
         return dataResult;
     }
+
+    private boolean checkCartHasError(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        boolean hasError = false;
+        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+            if (groupAddress.isError() || groupAddress.isWarning()) {
+                hasError = true;
+                break;
+            }
+            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                if (groupShop.isError() || groupShop.isWarning()) {
+                    hasError = true;
+                    break;
+                }
+                for (Product product : groupShop.getProducts()) {
+                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                        hasError = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return hasError;
+    }
+
 }
