@@ -97,9 +97,6 @@ public class TextInputView extends BaseCustomView {
         } else {
             textInputLayout.setHint(hintText);
         }
-        if (allowInputManually) {
-
-        }
         textInputLayout.setClickable(allowInputManually);
         etText.setClickable(allowInputManually);
         textInputLayout.setEnabled(allowInputManually);

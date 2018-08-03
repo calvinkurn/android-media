@@ -82,9 +82,9 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     private void updateTitleToolbar() {
         int scheduleType = getIntent().getIntExtra(EXTRA_SCHEDULE_TYPE, 0);
         if (scheduleType == 1) {
-            updateTitle("Pilih Tanggal Pergi");
+            updateTitle(getResources().getString(R.string.train_calendar_label_choose_departure_trip_date));
         } else {
-            updateTitle("Pilih Tanggal Pulang");
+            updateTitle(getResources().getString(R.string.train_calendar_label_choose_return_trip_date));
         }
     }
 
