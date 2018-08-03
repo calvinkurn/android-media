@@ -25,10 +25,22 @@ public class WithdrawContract {
         void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount);
 
         void showError(String throwable);
+
+        void showProgress();
+
+        String getStringResource(int id);
+
+        void showErrorWithdrawal(String stringResource);
+
+        void resetView();
+
+        void showConfirmPassword();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
 
         void getWithdrawForm();
+
+        void doWithdraw(String totalBalance, String totalWithdrawal, BankAccountViewModel selectedBank);
     }
 }

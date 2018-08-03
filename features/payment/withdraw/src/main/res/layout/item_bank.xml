@@ -31,11 +31,11 @@
         tools:text="5678908730 • Alexandra Ronodididi…"
         />
 
-    <RadioButton
+    <ImageView
         android:id="@+id/radio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:button="@drawable/bank_withdraw_radio_button"
+        android:src="@drawable/bank_withdraw_radio_button_default"
         android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

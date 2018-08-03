@@ -1,7 +1,7 @@
 package com.tokopedia.withdraw.domain.model;
 
 
-import com.tokopedia.withdraw.view.model.BankAccount;
+import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class InfoDepositDomainModel {
 
     private int useableDeposit;
     private String useableDepositIdr;
-    private List<BankAccount> bankAccount = null;
+    private List<BankAccountViewModel> bankAccount = null;
 
     public int getUseableDeposit() {
         return useableDeposit;
@@ -28,11 +28,11 @@ public class InfoDepositDomainModel {
         this.useableDepositIdr = useableDepositIdr;
     }
 
-    public List<BankAccount> getBankAccount() {
+    public List<BankAccountViewModel> getBankAccount() {
         return bankAccount;
     }
 
-    public void setBankAccount(List<BankAccount> bankAccount) {
+    public void setBankAccount(List<BankAccountViewModel> bankAccount) {
         this.bankAccount = bankAccount;
     }
 

@@ -19,8 +19,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.withdraw.R;
@@ -58,6 +61,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final String DEFAULT_TOTAL_BALANCE = "Rp.0,-";
     private View info;
     private List<BankAccountViewModel> listBank;
+    private NetworkErrorHelper progressDialog;
+    private BottomSheetDialog confirmPassword;
 
 
     @Override
@@ -112,6 +117,25 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         infoDialog.setContentView(infoDialogView, getActivity().getString(R.string.withdrawal_info));
         infoDialogView.setOnClickListener(null);
 
+        confirmPassword = new BottomSheetDialog(getActivity());
+        View confirmPasswordView = getLayoutInflater().inflate(R.layout.layout_confirm_password, null);
+        confirmPassword.setContentView(confirmPasswordView);
+
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(confirmPasswordView);
+
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
         bankRecyclerView = view.findViewById(R.id.recycler_view_bank);
         withdrawButton = view.findViewById(R.id.withdraw_button);
         withdrawAll = view.findViewById(R.id.withdraw_all);
@@ -137,7 +161,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             @Override
             public void onClick(View v) {
                 KeyboardHandler.hideSoftKeyboard(getActivity());
-//                presenter.onConfirmClicked(bankDialogadapter.hasSelectedItem());
+                presenter.doWithdraw(
+                        totalBalance.getText().toString(),
+                        totalWithdrawal.getText().toString(),
+                        bankAdapter.getSelectedBank()
+                );
             }
         });
 
@@ -164,14 +192,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             }
         });
 
-//        snackBarError = ToasterError.make(view.findViewById(android.R.id.content),
-//                "", BaseToaster.LENGTH_LONG)
-//                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        snackBarError.dismiss();
-//                    }
-//                });
+        snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
+                "", BaseToaster.LENGTH_LONG)
+                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackBarError.dismiss();
+                    }
+                });
 
         presenter.getWithdrawForm();
 
@@ -209,7 +237,35 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
-    public void showError(String throwable) {
+    public void showError(String error) {
+        snackBarError.setText(error);
+        snackBarError.show();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public String getStringResource(int id) {
+        return getActivity().getString(id);
+    }
+
+    @Override
+    public void showErrorWithdrawal(String stringResource) {
+        withdrawError.setText(stringResource);
+        withdrawError.setVisibility(View.VISIBLE);
+        withdrawError.requestFocus();
+    }
+
+    @Override
+    public void resetView() {
+        withdrawError.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showConfirmPassword() {
 
     }
 }

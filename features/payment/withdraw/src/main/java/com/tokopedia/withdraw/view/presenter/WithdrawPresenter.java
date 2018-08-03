@@ -1,10 +1,13 @@
 package com.tokopedia.withdraw.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.domain.model.InfoDepositDomainModel;
 import com.tokopedia.withdraw.domain.usecase.DepositUseCase;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
+import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import javax.inject.Inject;
 
@@ -53,6 +56,24 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
 
             }
         });
+    }
+
+    @Override
+    public void doWithdraw(String totalBalance, String totalWithdrawal, BankAccountViewModel selectedBank) {
+        getView().resetView();
+        int balance = (int) StringUtils.convertToNumeric(totalBalance,false);
+        int withdrawal = (int) StringUtils.convertToNumeric(totalWithdrawal,false);
+        if(balance < withdrawal){
+            getView().showErrorWithdrawal(getView().getStringResource(R.string.error_withdraw_exceed_balance));
+            return;
+        }
+
+        if(selectedBank == null){
+            getView().showError(getView().getStringResource(R.string.has_no_bank));
+            return;
+        }
+
+        getView().showConfirmPassword();
     }
 
     @Override

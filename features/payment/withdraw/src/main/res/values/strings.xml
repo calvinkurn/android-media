@@ -13,6 +13,7 @@
     <string name="choose_bank_account">Pilih Rekening Bank</string>
     <string name="withdrawal_info">Informasi Penarikan Saldo</string>
     <string name="has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
+    <string name="success_add_bank">Rekening baru berhasil ditambahkan</string>
     <string name="dot">•</string>
     <string name="title_account_name">Nama Akun</string>
     <string name="title_account_number_saldo">Nomor Rekening</string>
@@ -32,5 +33,12 @@
     <string name="title_info_withdrawal_3">Waktu Proses Penarikan</string>
     <string name="body_info_withdrawal_3">Semua bank - paling lama 48 jam (tidak termasuk Sabtu/Minggu/libur) </string>
     <string name="title_info_withdrawal_4">Biaya Tambahan Ditanggung Pengguna</string>
+    <string name="exceed_limit_withdraw">Anda telah melewati batas maksimal penarikan dana per hari</string>
+
+    <string name="error_withdraw_exceed_balance">Total penarikan melebihi saldo Anda</string>
+    <string name="withdrawal">Tarik Saldo</string>
+    <string name="confirm_password">Konfirmasi dengan kata sandi akun Tokopedia Anda</string>
+    <string name="tokopedia_password">Kata Sandi Tokopedia</string>
+
 
 </resources>

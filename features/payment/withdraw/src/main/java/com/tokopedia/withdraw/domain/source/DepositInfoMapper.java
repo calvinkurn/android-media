@@ -35,12 +35,12 @@ public class DepositInfoMapper implements Func1<Response<DataResponse<InfoDeposi
         for (int i = 0; i < temp.getBankAccount().size(); i++) {
             BankAccountViewModel item = new BankAccountViewModel();
             BankAccount data = temp.getBankAccount().get(i);
-
             item.setBankAccountName(data.getBankAccountName());
             item.setBankName(data.getBankName());
             list.add(item);
         }
-        model.setBankAccount(temp.getBankAccount());
+        list.get(0).setChecked(true);
+        model.setBankAccount(list);
         return model;
     }
 
