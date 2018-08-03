@@ -125,6 +125,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private final int LIKE_REQUEST_CODE = 1099;
     private ConstraintLayout clRedeemInstuctns;
     private TextView tvDealDetails;
+    private View dividerDesc;
+    private View dividerTnC;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -196,6 +198,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         setCardViewElevation();
         progBar = view.findViewById(R.id.prog_bar);
         clRedeemInstuctns = view.findViewById(R.id.cl_redeem_instructions);
+        dividerDesc = view.findViewById(R.id.divider4);
+        dividerTnC = view.findViewById(R.id.divider5);
         Drawable img = getResources().getDrawable(R.drawable.ic_see_location);
         tvViewMap.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         collapsingToolbarLayout.setTitle(" ");
@@ -362,12 +366,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (!TextUtils.isEmpty(tnc)) {
             String splitArray[] = tnc.split("~");
             StringBuilder tncBuffer = new StringBuilder();
-            tncBuffer.append("<ul>");
             for (int i = 0; i < splitArray.length; i++) {
                 String line = splitArray[i];
-                tncBuffer.append("<li>").append(line.trim()).append("</li>");
+                if (i < splitArray.length - 1)
+                    tncBuffer.append(" ").append("\u2022").append("  ").append(line.trim()).append("<br><br>");
+                else
+                    tncBuffer.append(" ").append("\u2022").append("  ").append(line.trim());
             }
-            tncBuffer.append("</ul>");
             return tncBuffer.toString();
         } else {
             return null;

@@ -69,18 +69,10 @@ public class TncBottomSheetFragment extends BaseDaggerFragment {
             String splitArray[] = tnc.split("~");
             StringBuilder tncBuffer = new StringBuilder();
 
-            if(splitArray.length==1){
-                tncBuffer.append(splitArray[0]);
-                tncBuffer.append("<br>");
-            }else{
-                tncBuffer.append("<ul>");
-                for (int i = 0; i < splitArray.length; i++) {
-                    String line = splitArray[i];
-                    tncBuffer.append("<li>").append(line.trim()).append("</li>");
-                }
-
-                tncBuffer.append("</ul>");
+            for (String line : splitArray) {
+                tncBuffer.append(" ").append("\u2022").append("  ").append(line.trim()).append("<br><br>");
             }
+
             textView.setText(Html.fromHtml(tncBuffer.toString()));
         } else {
 
