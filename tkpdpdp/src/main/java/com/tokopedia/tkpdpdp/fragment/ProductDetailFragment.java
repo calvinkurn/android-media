@@ -833,6 +833,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
+        renderTopAds(15);
     }
 
     private boolean isAllowShowCaseNcf() {
@@ -844,7 +845,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onOtherProductLoaded(List<ProductOther> productOthers) {
         this.productOthers = productOthers;
         otherProductsView.renderOtherProduct(productOthers);
-        renderTopAds(productOthers.size());
     }
 
     @Override
