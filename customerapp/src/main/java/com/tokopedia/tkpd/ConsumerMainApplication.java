@@ -71,6 +71,7 @@ import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
+import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
@@ -232,6 +233,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
+        TopChatUrl.TOPCHAT_JS_API = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
