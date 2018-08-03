@@ -126,7 +126,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                     prevTime = Long.parseLong(prev.getReplyTime());
                 }
 
-                if (prev != null && compareSender(now,prev) && compareHour(myTime,prevTime)) {
+                if (prev != null && compareSender(now,prev,true) && compareHour(myTime,prevTime)) {
                     ((SendableViewModel) list.get(position)).setShowRole(false);
                 } else {
                     ((SendableViewModel) list.get(position)).setShowRole(true);
@@ -146,10 +146,15 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private void showTimeBaseChat(int position){
         if(position != 0) {
             try {
+                boolean isSender = false;
                 BaseChatViewModel now = (BaseChatViewModel) list.get(position);
                 BaseChatViewModel next = (BaseChatViewModel) list.get(position - 1);
                 long myTime = Long.parseLong(now.getReplyTime());
                 long nextItemTime = 0;
+
+                if(now instanceof SendableViewModel) {
+                    isSender = ((SendableViewModel)now).isSender();
+                }
 
                 if (list.get(position - 1) != null && list.get(position - 1) instanceof
                         BaseChatViewModel) {
@@ -160,7 +165,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 if(next != null &&
                         now != null &&
                         compareHour(nextItemTime,myTime) &&
-                        compareSender(now,next)) {
+                        compareSender(now,next,isSender)) {
                     ((BaseChatViewModel) list.get(position)).setShowTime(false);
                 }
                 else {
@@ -192,7 +197,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return (calCurrent/MINUTES == calBefore/MINUTES);
     }
 
-    private boolean compareSender(BaseChatViewModel source, BaseChatViewModel dest){
+    private boolean compareSender(BaseChatViewModel source, BaseChatViewModel dest,
+                                  boolean isSender){
+        if(!isSender){
+            return true;//no need to compare sender if reply is from opponents
+        }
+
         if(source == null || dest == null || source.getFromRole() == null || dest.getFromRole() == null) {
             return false;
         }
