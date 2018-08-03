@@ -34,6 +34,8 @@ public class TrainPromoListView extends FrameLayout {
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_TRAIN =
             "CLIP_DATA_LABEL_VOUCHER_CODE_TRAIN";
 
+    private static final float DP_16 = 16;
+
     private TextView seeAllPromo;
     private RecyclerView recyclerViewPromo;
     private TrainPromoAdapter adapter;
@@ -96,7 +98,7 @@ public class TrainPromoListView extends FrameLayout {
         recyclerViewPromo.setAdapter(adapter);
         if (context.getApplicationContext() instanceof TrainRouter) {
             recyclerViewPromo.addItemDecoration(((TrainRouter) context.getApplicationContext())
-                    .getSpacingItemDecorationHome(convertDpToPixel(16, context), HORIZONTAL));
+                    .getSpacingItemDecorationHome(convertDpToPixel(DP_16, context), HORIZONTAL));
             SnapHelper snapHelper = ((TrainRouter) context.getApplicationContext()).getSnapHelper();
             snapHelper.attachToRecyclerView(recyclerViewPromo);
         }

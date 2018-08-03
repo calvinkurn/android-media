@@ -43,6 +43,9 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     private static final int MIN_PHONE_NUMBER = 9;
     private static final int MAX_PHONE_NUMBER = 15;
 
+    private static final String REGEX_NUMERIC = "^[0-9\\s]*$";
+    private static final String REGEX_ALPHABET_AND_SPACE = "^[0-9\\s]*$";
+
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
     private TrainSoftBookingUseCase trainSoftBookingUseCase;
@@ -293,13 +296,13 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     }
 
     private boolean isNumericOnly(String expression) {
-        Pattern pattern = Pattern.compile(new String("^[0-9\\s]*$"));
+        Pattern pattern = Pattern.compile(new String(REGEX_NUMERIC));
         Matcher matcher = pattern.matcher(expression);
         return matcher.matches();
     }
 
     private boolean isAlphabetAndSpaceOnly(String expression) {
-        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
+        Pattern pattern = Pattern.compile(new String(REGEX_ALPHABET_AND_SPACE));
         Matcher matcher = pattern.matcher(expression);
         return matcher.matches();
     }
