@@ -608,6 +608,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(getActivity()==null)
+            return;
         if (requestCode == LIKE_REQUEST_CODE) {
             UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             if (userSession.isLoggedIn()) {
