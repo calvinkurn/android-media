@@ -10,7 +10,7 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextView.TitleBig.Bold"
+        style="@style/TextView.Title.Bold"
         android:layout_margin="@dimen/dp_8"
         tools:text="Semua Etalase"/>
 
