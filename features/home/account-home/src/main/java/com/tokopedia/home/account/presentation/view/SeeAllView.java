@@ -23,7 +23,7 @@ import java.util.List;
  * @author by alvinatin on 01/08/18.
  */
 
-public class SeeAllView extends BottomSheets {
+public class SeeAllView extends BottomSheets{
 
     private RecyclerView holder;
     private MenuGridAdapter adapter;
@@ -40,12 +40,15 @@ public class SeeAllView extends BottomSheets {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenHeight = displayMetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight(screenHeight / 2);
+        getBottomSheetBehavior().setPeekHeight(screenHeight/2);
     }
 
     @Override
     public void initView(View view) {
         holder = view.findViewById(R.id.holder_all_item);
+
+        List<MenuGridItemViewModel> list = createItems();
+
         adapter = new MenuGridAdapter(listener);
         holder.setAdapter(adapter);
         holder.setLayoutManager(
@@ -54,9 +57,9 @@ public class SeeAllView extends BottomSheets {
                         LinearLayoutManager.VERTICAL,
                         false));
         holder.addItemDecoration(
-                new MenuGridSpacingDecoration(4, 0, false));
+                new MenuGridSpacingDecoration(4,0,false));
 
-        adapter.setNewData(createItems());
+        adapter.setNewData(list);
     }
 
     @Override
@@ -64,11 +67,11 @@ public class SeeAllView extends BottomSheets {
         return getString(R.string.title_menu_other_transaction);
     }
 
-    public void setListener(AccountItemListener listener) {
+    public void setListener(AccountItemListener listener){
         this.listener = listener;
     }
 
-    private List<MenuGridItemViewModel> createItems() {
+    private List<MenuGridItemViewModel> createItems(){
         List<MenuGridItemViewModel> list = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_top_up_bill,
@@ -81,6 +84,7 @@ public class SeeAllView extends BottomSheets {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_train,
                 getContext().getString(R.string.title_menu_train),
+                //TODO change this
                 ApplinkConst.DIGITAL_ORDER,
                 0
         );
@@ -105,7 +109,6 @@ public class SeeAllView extends BottomSheets {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_reksa_dana,
                 getContext().getString(R.string.title_menu_reksadana),
-                //TODO change applink
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
                         AccountConstants.Url.REKSA_DANA_URL),
@@ -150,6 +153,7 @@ public class SeeAllView extends BottomSheets {
                 0
         );
         list.add(gridItem);
+
         return list;
     }
 }
