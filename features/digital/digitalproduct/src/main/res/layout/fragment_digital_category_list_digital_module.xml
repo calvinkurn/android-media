@@ -34,6 +34,12 @@
 
         </LinearLayout>
 
+        <View
+            android:id="@+id/separator_for_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator" />
+
         <include layout="@layout/include_digital_ticker_coupon_applied_view" />
 
         <com.tokopedia.core.customwidget.SwipeToRefresh

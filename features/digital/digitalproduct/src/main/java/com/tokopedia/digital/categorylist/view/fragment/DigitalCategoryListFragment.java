@@ -95,6 +95,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     LinearLayout containerTickerView;
     @BindView(R2.id.ticker_view)
     TickerView tickerView;
+    @BindView(R2.id.separator_for_ticker)
+    View separatorForTicker;
 
     private CompositeSubscription compositeSubscription;
     private DigitalCategoryListAdapter adapter;
@@ -276,9 +278,10 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     public boolean isDigitalOmsEnable() {
-        return remoteConfig.getBoolean(FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY,true);
+        return remoteConfig.getBoolean(FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true);
 
     }
+
     @Override
     protected void setActionVar() {
         presenter.processGetTokoCashData();
@@ -472,7 +475,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data) {
         switch (data.getTypeMenu()) {
             case TRANSACTION:
-                if(isDigitalOmsEnable()) {
+                if (isDigitalOmsEnable()) {
                     startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
                     break;
                 }
@@ -488,6 +491,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     private void showCouponAppliedTicker() {
         containerTickerView.setVisibility(View.VISIBLE);
+        separatorForTicker.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
         tickerView.setListMessage(messages);
@@ -504,11 +508,13 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                         getResources().getDimensionPixelSize(R.dimen.dp_10),
                         getResources().getDimensionPixelSize(R.dimen.dp_15)
                 );
+                tickerView.setTextAppearance(R.style.TextView_Micro);
             }
         }, DEFAULT_DELAY_TIME);
     }
 
     private void hideCouponAppliedTicker() {
         containerTickerView.setVisibility(View.GONE);
+        separatorForTicker.setVisibility(View.GONE);
     }
 }

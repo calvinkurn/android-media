@@ -1351,5 +1351,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
         tickerView.setTickerHeight(getResources().getDimensionPixelSize(R.dimen.dp_75));
         tickerView.buildView();
+
+        tickerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tickerView.setItemPadding(
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15),
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15)
+                );
+                tickerView.setTextAppearance(R.style.TextView_Micro);
+            }
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 }
