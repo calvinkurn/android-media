@@ -143,7 +143,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                 for (DrawerNotification.ChildDrawerNotification child : childs) {
                     if (item.getId() == PEMBELIAN) {
                         if (child.getId() == MENUNGGU_KONFIRMASI) {
-                            child.setBadge(0);
+                            child.setBadge(data.getBuyerOrder().getConfirmed());
                         } else if (child.getId() == PESANAN_DIPROSES) {
                             child.setBadge(data.getBuyerOrder().getProcessed());
                         } else if (child.getId() == SEDANG_DIKIRIM) {

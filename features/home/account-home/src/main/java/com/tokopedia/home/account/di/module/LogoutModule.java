@@ -11,7 +11,7 @@ import com.tokopedia.logout.data.LogoutApi;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.logout.domain.mapper.LogoutMapper;
 import com.tokopedia.logout.domain.usecase.LogoutUseCase;
-import com.tokopedia.navigation_common.WalletPref;
+import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;

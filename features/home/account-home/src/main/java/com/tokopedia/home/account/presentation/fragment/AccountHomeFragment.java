@@ -185,5 +185,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         badgeView.bindTarget(menuNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
+        getActivity().invalidateOptionsMenu();
     }
 }

@@ -215,6 +215,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onViewCreated(view, savedInstanceState);
         if (trace != null)
             trace.stop();
+
+        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
+            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
+        }
     }
 
     @Override
@@ -910,8 +914,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (mainToolbar != null)
+        if (mainToolbar != null) {
             mainToolbar.setNotificationNumber(number);
+        }
     }
 
     public void startShopInfo(String shopId) {
@@ -933,21 +938,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             return null;
         ArrayList<ShowCaseObject> list = new ArrayList<>();
         list.add(new ShowCaseObject(mainToolbar.getBtnNotification(),
-                "Notifikasi tersimpan rapi",
-                "Tak ada yang terlewat, semua notifikasi ada di sini."));
+                getString(R.string.sc_notif_title),
+                getString(R.string.sc_notif_desc)));
         list.add(new ShowCaseObject(mainToolbar.getBtnWishlist(),
-                "Cek Wishlist sangat mudah",
-                ""));
+                getString(R.string.sc_wishlist_title),
+                getString(R.string.sc_wishlist_desc)));
         return list;
     }
-
-//    @Override
-//    public ArrayList<View> viewShowCases() {
-//        if (mainToolbar == null)
-//            return null;
-//        ArrayList<View> list = new ArrayList<>();
-//        list.add(mainToolbar.getBtnNotification());
-//        list.add(mainToolbar.getBtnWishlist());
-//        return list;
-//    }
 }

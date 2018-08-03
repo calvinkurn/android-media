@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.presentation.adapter.BaseListAdapter;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
@@ -77,6 +78,12 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getDrawerNotification());
 
+        adapter.setOnItemClickListener((view1, position) -> {
+            if (getActivity().getApplication() instanceof GlobalNavRouter) {
+                startActivity(((GlobalNavRouter)getActivity().getApplication())
+                        .getSellerInfoCallingIntent(getActivity()));
+            }
+        });
         adapter.setOnNotifClickListener((parent, child) -> {
             Intent intent = getCallingIntent(parent, child);
             if (intent != null) {
@@ -234,9 +241,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                     }
                     break;
             }
-        } else {
-            intent = ((GlobalNavRouter)getActivity().getApplication())
-                    .getSellerInfoCallingIntent(getActivity());
         }
         return intent;
     }

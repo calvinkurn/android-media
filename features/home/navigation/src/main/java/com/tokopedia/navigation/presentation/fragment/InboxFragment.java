@@ -145,7 +145,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         super.setupToolbar(view);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         menuItemNotification = toolbar.findViewById(R.id.action_notification);
-        menuItemNotification.setOnClickListener(v -> startActivity(NotificationActivity.start(getActivity())));
+        menuItemNotification.setOnClickListener(v ->
+                startActivity(NotificationActivity.start(getActivity())));
     }
 
     @Override
@@ -194,9 +195,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void reInitInjector(GlobalNavComponent component) {
-
-    }
+    public void reInitInjector(GlobalNavComponent component) { }
 
     @Override
     public InboxPresenter getPresenter() {
@@ -204,7 +203,5 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void setPresenter(GlobalNavComponent presenter) {
-
-    }
+    public void setPresenter(GlobalNavComponent presenter) { }
 }

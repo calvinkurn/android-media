@@ -22,7 +22,6 @@ import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
-import com.tokopedia.navigation_common.WalletModel;
 
 import java.util.ArrayList;
 import java.util.List;

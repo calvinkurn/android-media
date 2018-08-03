@@ -39,6 +39,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,8 @@ import javax.inject.Inject;
  * Created by meta on 19/06/18.
  */
 public class MainParentActivity extends BaseAppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, HasComponent, MainParentView {
+        NavigationView.OnNavigationItemSelectedListener, HasComponent,
+        MainParentView, ShowCaseListener {
 
     private final static int EXIT_DELAY_MILLIS = 2000;
     public static int HOME_MENU = 0;
@@ -60,8 +62,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private BottomNavigation bottomNavigation;
     private FrameLayout container;
+    private ShowCaseDialog showCaseDialog;
+
+    private List<Fragment> fragmentList;
 
     private Notification notification;
+
+    private Fragment currentFragment;
 
     @Inject
     UserSession userSession;
@@ -72,8 +79,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
 
-    private Fragment currentFragment;
-
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class);
     }
@@ -81,8 +86,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GraphqlClient.init(this);
-        this.initInjector();
+        GraphqlClient.init(this); // initialize graphql
+        this.initInjector(); // initialize di
         presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
 
@@ -91,19 +96,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
+        fragmentList = fragments();
+
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-        }
-
-        currentFragment = adapterViewPager.getFragmentList().get(HOME_MENU);
-    }
-
-    private void setBadgeNotifCounter(Fragment fragment) {
-        if (fragment == null)
-            return;
-
-        if (fragment instanceof NotificationListener && notification != null) {
-            ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
+            this.currentFragment = fragmentList.get(0);
         }
     }
 
@@ -115,37 +112,24 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                 .inject(this);
     }
 
-    private void openFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.addToBackStack(fragment.getClass().getSimpleName());
-        transaction.commit();
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
         int i = item.getItemId();
         if (i == R.id.menu_home) {
-            if (getApplication() instanceof  GlobalNavRouter) {
-                fragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
-            }
+            fragment = fragmentList.get(HOME_MENU);
         } else if (i == R.id.menu_feed) {
-            if (getApplication() instanceof  GlobalNavRouter) {
-                fragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment();
-            }
+            fragment = fragmentList.get(FEED_MENU);
         } else if (i == R.id.menu_inbox) {
-            if (isUserLogin()) {
-                fragment = InboxFragment.newInstance();
+            if (isUserLogin()) { // check session if user logged in
+                fragment = fragmentList.get(INBOX_MENU);
             }
         } else if (i == R.id.menu_cart) {
             if (isUserLogin())
-                if (getApplication() instanceof  GlobalNavRouter) {
-                    fragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment();
-                }
+                fragment = fragmentList.get(CART_MENU);
         } else if (i == R.id.menu_account) {
             if (isUserLogin()) {
-                fragment = AccountHomeFragment.newInstance();
+                fragment = fragmentList.get(ACCOUNT_MENU);
             }
         }
 
@@ -159,6 +143,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private void selectFragment(Fragment fragment) {
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
+    }
+
+    private void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(fragment.getClass().getSimpleName());
+        transaction.commit();
     }
 
     private boolean isUserLogin() {
@@ -193,7 +184,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         presenter.onDestroy();
     }
 
-
     private void reloadPage() {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         if (getApplication() instanceof  GlobalNavRouter) {
@@ -203,7 +193,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
 
-    List<Fragment> createFragments() {
+    private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
@@ -215,10 +205,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return fragmentList;
     }
 
-//    Notification notification;
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public Fragment getFragment(int index){ return ((FragmentAdapter)viewPager.getAdapter()).getItem(index); }
+//    @RestrictTo(RestrictTo.Scope.TESTS)
+//    public Fragment getFragment(int index){ return ((FragmentAdapter)viewPager.getAdapter()).getItem(index); }
 
     @Override
     public void renderNotification(Notification notification) {
@@ -244,17 +232,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return this;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            doubleTapExit();
-        }
-    }
-
     public BaseAppComponent getApplicationComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+    @Override
+    public void onBackPressed() {
+        doubleTapExit();
     }
 
     private void doubleTapExit() {
@@ -267,35 +250,22 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         }
     }
 
-    private ShowCaseDialog showCaseDialog;
+    /**
+     * Notification
+     */
+    private void setBadgeNotifCounter(Fragment fragment) {
+        if (fragment == null)
+            return;
 
-    private void startShowCase() {
-        final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
-//        if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null) {
-//            return;
-//        }
-        showCaseDialog = createShowCase();
-
-        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-        showcases.add(new ShowCaseObject(
-                bottomNavigation,
-                getString(R.string.title_showcase),
-                getString(R.string.desc_showcase),
-                ShowCaseContentPosition.UNDEFINED));
-
-        if (currentFragment != null && currentFragment instanceof ShowCaseListener) {
-            ArrayList<View> views = ((ShowCaseListener) currentFragment).viewShowCases();
-            showcases.add(new ShowCaseObject(views.get(0),
-                    "Notifikasi tersimpan rapi",
-                    "Tak ada yang terlewat, semua notifikasi ada di sini."));
-            showcases.add(new ShowCaseObject(views.get(1),
-                    "Cek Wishlist sangat mudah",
-                    ""));
-
-            showCaseDialog.show(this, showCaseTag, showcases);
+        if (fragment instanceof NotificationListener && notification != null) {
+            ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
+            invalidateOptionsMenu();
         }
     }
 
+    /**
+     * Show Case on boarding
+     */
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
                 .backgroundContentColorRes(R.color.black)
@@ -310,5 +280,26 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                 .clickable(true)
                 .useArrow(true)
                 .build();
+    }
+
+    @Override
+    public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
+        final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
+        if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
+                || showCaseObjects == null) {
+            return;
+        }
+
+        showCaseDialog = createShowCase();
+
+        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+        showcases.add(new ShowCaseObject(
+                bottomNavigation,
+                getString(R.string.title_showcase),
+                getString(R.string.desc_showcase),
+                ShowCaseContentPosition.UNDEFINED));
+        showcases.addAll(showCaseObjects);
+
+        showCaseDialog.show(this, showCaseTag, showcases);
     }
 }

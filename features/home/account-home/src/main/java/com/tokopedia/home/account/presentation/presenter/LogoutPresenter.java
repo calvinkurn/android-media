@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.home.account.presentation.view.LogoutView;
 import com.tokopedia.logout.domain.model.LogoutDomain;
 import com.tokopedia.logout.domain.usecase.LogoutUseCase;
-import com.tokopedia.navigation_common.WalletPref;
+import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.user.session.UserSession;
 
 import rx.Subscriber;
