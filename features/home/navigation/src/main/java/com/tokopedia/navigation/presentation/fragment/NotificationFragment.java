@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;

@@ -23,6 +23,7 @@ import q.rorbin.badgeview.QBadgeView;
 public class MainToolbar extends Toolbar {
 
     private ImageButton btnNotification;
+    private ImageButton btnWishlist;
 
     private QBadgeView badgeView;
 
@@ -61,7 +62,7 @@ public class MainToolbar extends Toolbar {
         inflate(getContext(), R.layout.main_toolbar, this);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
-        ImageButton btnWishlist = findViewById(R.id.btn_wishlist);
+        btnWishlist = findViewById(R.id.btn_wishlist);
         EditText editTextSearch = findViewById(R.id.et_search);
 
         if ((getResources().getConfiguration().screenLayout &
@@ -96,5 +97,13 @@ public class MainToolbar extends Toolbar {
                 RouteManager.route(this.getContext(), ApplinkConst.LOGIN);
             }
         });
+    }
+
+    public ImageButton getBtnNotification() {
+        return btnNotification;
+    }
+
+    public ImageButton getBtnWishlist() {
+        return btnWishlist;
     }
 }

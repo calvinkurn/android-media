@@ -1,4 +1,4 @@
-package com.tokopedia.navigation_common;
+package com.tokopedia.navigation_common.model;
 
 /**
  * Created by meta on 31/07/18.

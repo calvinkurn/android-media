@@ -2,8 +2,8 @@ package com.tokopedia.navigation.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.navigation_common.NotificationsModel;
-import com.tokopedia.navigation_common.UserShopInfoModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.navigation_common.model.UserShopInfoModel;
 
 /**
  * Created by meta on 26/07/18.

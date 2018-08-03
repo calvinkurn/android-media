@@ -1,4 +1,4 @@
-package com.tokopedia.navigation_common;
+package com.tokopedia.navigation_common.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;

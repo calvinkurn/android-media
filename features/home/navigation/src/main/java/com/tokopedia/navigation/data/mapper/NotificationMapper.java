@@ -3,7 +3,7 @@ package com.tokopedia.navigation.data.mapper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import rx.functions.Func1;
 

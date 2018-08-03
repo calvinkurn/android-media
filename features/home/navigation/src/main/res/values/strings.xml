@@ -35,4 +35,9 @@
     <string name="sebagai_pembeli">Sebagai Pembeli</string>
     <string name="sebagai_penjual">Sebagai Penjual</string>
 
+    <string name="title_showcase">Tampilan simpel, navigasi mudah!</string>
+    <string name="desc_showcase">Menu Tokopedia kini tampil lebih rapi. Jelajahi dan buktikan kemudahan navigasinya!</string>
+
+    <string name="previous">Sebelumnya</string>
+    <string name="next">Selanjutnya</string>
 </resources>

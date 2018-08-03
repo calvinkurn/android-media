@@ -1,4 +1,4 @@
-package com.tokopedia.navigation_common;
+package com.tokopedia.navigation_common.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -76,6 +75,7 @@ import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerA
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.topads.sdk.domain.model.Data;

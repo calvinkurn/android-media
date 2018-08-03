@@ -10,13 +10,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -37,7 +39,6 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
@@ -92,7 +93,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
         }
 
-        startShowCase();
+//        startShowCase();
     }
 
     private void setBadgeNotifCounter(Fragment fragment) {
@@ -248,24 +249,37 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 //            return;
 //        }
         showCaseDialog = createShowCase();
-        showCaseDialog.setShowCaseStepListener((previousStep, nextStep, showCaseObject) -> false);
 
-        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-        showCaseObjectList.add(new ShowCaseObject(
+        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+        showcases.add(new ShowCaseObject(
                 bottomNavigation,
-                "Title",
-                "Description",
-                ShowCaseContentPosition.TOP,
-                R.color.tkpd_main_green));
-        showCaseDialog.show(this, showCaseTag, showCaseObjectList);
+                getString(R.string.title_showcase),
+                getString(R.string.desc_showcase),
+                ShowCaseContentPosition.UNDEFINED));
+
+        if (currentFragment != null && currentFragment instanceof ShowCaseListener) {
+            ArrayList<View> views = ((ShowCaseListener) currentFragment).viewShowCases();
+            showcases.add(new ShowCaseObject(views.get(0),
+                    "Notifikasi tersimpan rapi",
+                    "Tak ada yang terlewat, semua notifikasi ada di sini."));
+            showcases.add(new ShowCaseObject(views.get(1),
+                    "Cek Wishlist sangat mudah",
+                    ""));
+
+            showCaseDialog.show(this, showCaseTag, showcases);
+        }
     }
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
                 .titleTextColorRes(R.color.white)
                 .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.next)
+                .prevStringRes(R.string.previous)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)

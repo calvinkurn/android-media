@@ -4,11 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.home.account.di.scope.AccountHomeScope;
-import com.tokopedia.home.account.domain.GetAccountUseCase;
-import com.tokopedia.home.account.presentation.AccountHome;
-import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
-import com.tokopedia.navigation_common.WalletPref;
+import com.tokopedia.navigation_common.model.WalletPref;
 
 import dagger.Module;
 import dagger.Provides;

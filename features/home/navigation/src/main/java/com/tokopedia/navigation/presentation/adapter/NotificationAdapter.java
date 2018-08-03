@@ -6,12 +6,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 
 import java.util.List;
@@ -25,7 +24,6 @@ import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_DIPROSES;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SEDANG_DIKIRIM;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
 import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
 

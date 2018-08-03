@@ -20,7 +20,6 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -30,12 +29,9 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
-import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
@@ -80,7 +76,10 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.searchbar.MainToolbar;
+import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -851,7 +850,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public Observable<TokoPointDrawerData> getTokopoint() {
-        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter){
+        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter) {
             return ((LoyaltyRouter) getActivity().getApplication()).getTokopointUseCase();
         }
         return null;
@@ -862,4 +861,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (mainToolbar != null)
             mainToolbar.setNotificationNumber(number);
     }
+
+    private ArrayList<ShowCaseObject> buildShowCase() {
+        if (mainToolbar == null)
+            return null;
+        ArrayList<ShowCaseObject> list = new ArrayList<>();
+        list.add(new ShowCaseObject(mainToolbar.getBtnNotification(),
+                "Notifikasi tersimpan rapi",
+                "Tak ada yang terlewat, semua notifikasi ada di sini."));
+        list.add(new ShowCaseObject(mainToolbar.getBtnWishlist(),
+                "Cek Wishlist sangat mudah",
+                ""));
+        return list;
+    }
+
+//    @Override
+//    public ArrayList<View> viewShowCases() {
+//        if (mainToolbar == null)
+//            return null;
+//        ArrayList<View> list = new ArrayList<>();
+//        list.add(mainToolbar.getBtnNotification());
+//        list.add(mainToolbar.getBtnWishlist());
+//        return list;
+//    }
 }
