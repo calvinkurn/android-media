@@ -301,8 +301,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 ContentExloreEventTracking.Action.CLICK_GRID_CONTENT,
                 String.format(
                         ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
-                        kolPostViewModel.getContentName(),
-                        kolPostViewModel.getKolImage()
+                        kolPostViewModel.getName(),
+                        kolPostViewModel.getKolId()
                 )
         );
     }
