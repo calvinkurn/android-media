@@ -28,10 +28,6 @@ public class CustomPushListener extends PushMessageListener {
 
         boolean result = super.isNotificationRequired(context,
                 extras);//if SUPER is not not called then it will throw an exception
-        if (result) {
-            //your logic to check whether notification is required or not.
-            //return true or false based on your logic
-        }
         return result;
     }
 
@@ -105,10 +101,6 @@ public class CustomPushListener extends PushMessageListener {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteView.setOnClickPendingIntent(R.id.image_icon4, pIntent4);
             }
-            Intent intent5 = new Intent();
-            PendingIntent pIntent5 = PendingIntent.getActivity(context, 0, intent5,
-                    PendingIntent.FLAG_CANCEL_CURRENT);
-            remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
             Intent notificationIntent = new Intent(context, ParentIndexHome.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
