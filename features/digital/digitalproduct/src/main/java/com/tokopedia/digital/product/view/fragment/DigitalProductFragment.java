@@ -1361,7 +1361,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                         getResources().getDimensionPixelSize(R.dimen.dp_10),
                         getResources().getDimensionPixelSize(R.dimen.dp_15)
                 );
-                tickerView.setTextAppearance(R.style.TextView_Micro);
+                tickerView.setItemTextAppearance(R.style.TextView_Micro);
             }
         }, DEFAULT_POST_DELAYED_VALUE);
     }

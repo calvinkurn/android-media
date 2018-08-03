@@ -508,7 +508,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                         getResources().getDimensionPixelSize(R.dimen.dp_10),
                         getResources().getDimensionPixelSize(R.dimen.dp_15)
                 );
-                tickerView.setTextAppearance(R.style.TextView_Micro);
+                tickerView.setItemTextAppearance(R.style.TextView_Micro);
             }
         }, DEFAULT_DELAY_TIME);
     }

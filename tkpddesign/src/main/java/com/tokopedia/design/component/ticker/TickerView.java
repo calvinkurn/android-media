@@ -377,7 +377,7 @@ public class TickerView extends BaseCustomView {
         tickerAdapter.setPadding(top, right, bottom, left);
     }
 
-    public void setTextAppearance(int appearance) {
+    public void setItemTextAppearance(int appearance) {
         tickerAdapter.setTextAppearance(appearance);
     }
 
