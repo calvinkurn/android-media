@@ -4,12 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -202,9 +200,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     currentProductAddViewModel?.productPictureList = currentProductAddViewModel?.let {
                         imageUrlOrPathList?.convertImageListResult(it,
                                 data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE),
-                                arrayListOf<Boolean>().apply {
-                                    data.getSerializableExtra(RESULT_IS_EDITTED)
-                                })
+                                data.getSerializableExtra(RESULT_IS_EDITTED) as ArrayList<Boolean>?)
                     }
                 }
                 REQUEST_CODE_VARIANT ->{
@@ -223,7 +219,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun goToGoldMerchantPage() {
+    private fun goToGoldMerchantPage() {
         if (appRouter is ProductEditModuleRouter) {
             (appRouter as ProductEditModuleRouter).goToGMSubscribe(activity)
         }
@@ -277,6 +273,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     protected fun populateView(currentProductViewModel: ProductAddViewModel?) {
+        ImageHandler.loadImageRounded2(context, imageOne, R.drawable.product_add_image_default, 20.0f)
+        ImageHandler.loadImageRounded2(context, imageTwo, R.drawable.product_add_image_default, 20.0f)
+
         textViewCategory.text = currentProductViewModel?.productCategory?.categoryName
         if (currentProductViewModel?.productCatalog?.catalogId?:0 >0) {
             textViewCatalog.run {
@@ -285,13 +284,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
         }
 
-        context?.let { ImageHandler.loadImageRounded2(context, imageOne, R.drawable.ic_image_default, 50.0f) }
-        context?.let { ImageHandler.loadImageRounded2(context, imageTwo, R.drawable.ic_image_default, 50.0f) }
-
         if (currentProductViewModel?.productPictureList?.size!! > 0) {
-            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0].uriOrPath, 50.0f)
+            textEditImage.text = getString(R.string.label_edit)
+            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0].uriOrPath, 20.0f)
             if (currentProductViewModel.productPictureList?.size!! > 1)
-                ImageHandler.loadImageRounded2(context, imageTwo, currentProductViewModel.productPictureList!![1].uriOrPath, 50.0f)
+                ImageHandler.loadImageRounded2(context, imageTwo, currentProductViewModel.productPictureList!![1].uriOrPath, 20.0f)
         }
         labelViewNameProduct.setContent(currentProductViewModel.productName?.name)
         if(!TextUtils.isEmpty(currentProductViewModel.productDescription?.description)) {
