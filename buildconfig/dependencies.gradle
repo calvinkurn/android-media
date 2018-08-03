@@ -335,7 +335,7 @@ ext {
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
-            paymentManagementSystem     : ":features:payment:pms"
+            paymentManagementSystem     : ":features:payment:pms",
             updateinactivephone   : ":features:user:updateinactivephone"
     ]
 

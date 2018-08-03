@@ -27,11 +27,9 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.inactivephonenumber.ChangeInactivePhoneNumberWebView;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
@@ -168,7 +166,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                         getChangeInactivePhoneIntent(
                                 getContext()
 //                                SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
-                                );
+                        );
                 startActivity(intent);
             }
 
@@ -262,7 +260,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                 && resultCode == Activity.RESULT_OK) {
 
             ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
-            if(chooseTokoCashAccountViewModel!= null
+            if (chooseTokoCashAccountViewModel != null
                     && chooseTokoCashAccountViewModel.getListAccount().size() == 1) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();

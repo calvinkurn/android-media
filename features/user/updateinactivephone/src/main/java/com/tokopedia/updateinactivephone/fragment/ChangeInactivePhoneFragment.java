@@ -16,18 +16,37 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.updateinactivephone.R;
+import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
+import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
+import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
-public class ChangeInactivePhoneFragment extends BaseDaggerFragment {
+import javax.inject.Inject;
+
+public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements ChangeInactivePhone.View {
     private EditText inputMobileNumber;
     private Button buttonContinue;
     private TextView errorText;
 
+    private TkpdProgressDialog tkpdProgressDialog;
+
+    @Inject
+    ChangeInactivePhonePresenter presenter;
+
     @Override
     protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
 
+        DaggerUpdateInactivePhoneComponent daggerUpdateInactivePhoneComponent = (DaggerUpdateInactivePhoneComponent)
+                DaggerUpdateInactivePhoneComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerUpdateInactivePhoneComponent.inject(this);
     }
 
     @Override
@@ -55,6 +74,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment {
         inputMobileNumber = view.findViewById(R.id.phone_number);
         buttonContinue = view.findViewById(R.id.button_continue);
         errorText = view.findViewById(R.id.error);
+        presenter.attachView(this);
         prepareView();
         return view;
     }
@@ -105,6 +125,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment {
                 errorText.setText("");
 //                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
 //                presenter.loginWithPhoneNumber(inputMobileNumber.getText().toString());
+                presenter.checkPhoneNumberStatus(inputMobileNumber.getText().toString());
             }
         });
 
@@ -113,5 +134,86 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment {
 
     public static Fragment getInstance() {
         return new ChangeInactivePhoneFragment();
+    }
+
+    @Override
+    public void showErrorPhoneNumber(int resId) {
+
+    }
+
+    @Override
+    public void showErrorPhoneNumber(String errorMessage) {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+        if (tkpdProgressDialog != null)
+            tkpdProgressDialog.dismiss();
+    }
+
+    @Override
+    public void showLoading() {
+        if (tkpdProgressDialog == null)
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+
+        tkpdProgressDialog.showDialog();
+    }
+
+    @Override
+    public void onForbidden() {
+
+    }
+
+    @Override
+    public void onPhoneStatusSuccess() {
+
+    }
+
+    @Override
+    public void onPhoneRegisteredWithEmail() {
+
+    }
+
+    @Override
+    public void onPhoneDuplicateRequest() {
+
+    }
+
+    @Override
+    public void onPhoneServerError() {
+
+    }
+
+    @Override
+    public void onPhoneBlackListed() {
+
+    }
+
+    @Override
+    public void onPhoneInvalid() {
+
+    }
+
+    @Override
+    public void onPhoneNotRegistered() {
+
+    }
+
+    @Override
+    public void onPhoneTooShort() {
+
+    }
+
+    @Override
+    public void onPhoneTooLong() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

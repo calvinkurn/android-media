@@ -1,3 +1,5 @@
 <resources>
     <string name="title_change_inactive_phone_number">Nomor Ponsel Sudah Tidak Aktif</string>
+    <string name="phone_number_invalid_min_8">Nomor ponsel tidak benar, minimal 8 angka</string>
+    <string name="phone_number_invalid_max_15">Nomor ponsel tidak benar, maksimal 15 angka.</string>
 </resources>
