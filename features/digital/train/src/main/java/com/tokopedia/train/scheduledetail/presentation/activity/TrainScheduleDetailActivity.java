@@ -8,11 +8,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainAnalytics;
@@ -24,9 +24,6 @@ import com.tokopedia.train.scheduledetail.presentation.fragment.TrainSchedulePri
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.scheduledetail.presentation.presenter.TrainSchedulePresenter;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -60,6 +57,8 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private TextView textHeaderOriginCityName;
     private TextView textHeaderDestinationStationCode;
     private TextView textHeaderDestinationCityName;
+    private RelativeLayout containerViewPager;
+    private ProgressBar progressBar;
 
     private TrainScheduleViewModel trainScheduleViewModel;
 
@@ -105,6 +104,8 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         textHeaderOriginCityName = findViewById(R.id.header_origin_city_name);
         textHeaderDestinationStationCode = findViewById(R.id.header_destination_station_code);
         textHeaderDestinationCityName = findViewById(R.id.header_destination_city_name);
+        containerViewPager = findViewById(R.id.container_view_pager);
+        progressBar = findViewById(R.id.progress_bar);
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -155,6 +156,8 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     public void showScheduleDetail(TrainScheduleViewModel trainScheduleViewModel, TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        containerViewPager.setVisibility(View.VISIBLE);
+
         this.trainScheduleViewModel = trainScheduleViewModel;
 
         Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, VIEWPAGER_INDEX_ZERO);
@@ -180,6 +183,17 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
                 trainScheduleDetailViewModel.getTotalPrice());
     }
 
+    @Override
+    public void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+        containerViewPager.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void stopLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
     protected void initInjector() {
         if (trainScheduleDetailComponent == null) {
             trainScheduleDetailComponent = DaggerTrainScheduleDetailComponent.builder()
@@ -191,6 +205,12 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     @Override
     protected boolean isShowCloseButton() {
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        trainSchedulePresenter.detachView();
     }
 
 }

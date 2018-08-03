@@ -14,6 +14,10 @@ public interface TrainScheduleContract {
 
         void showScheduleDetail(TrainScheduleViewModel trainScheduleViewModel, TrainScheduleDetailViewModel trainScheduleDetailViewModel);
 
+        void showLoading();
+
+        void stopLoading();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
