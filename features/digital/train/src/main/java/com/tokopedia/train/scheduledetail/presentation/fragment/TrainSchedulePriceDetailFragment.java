@@ -57,7 +57,6 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
             textTrip.setText(getString(R.string.train_departure_trip,
                     trainScheduleDetailViewModel.getOriginStationCode(),
                     trainScheduleDetailViewModel.getDestinationStationCode()));
-
         }
         if (trainScheduleDetailViewModel.getNumOfAdultPassenger() > 0) {
             textAdultCountPassenger.setText(getString(R.string.train_label_adult,
