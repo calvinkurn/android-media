@@ -107,7 +107,7 @@ public class SearchProductGqlResponse {
         private String price;
         @SerializedName("price_raw")
         @Expose
-        private int rawPrice;
+        private String rawPrice;
         @SerializedName("price_min")
         @Expose
         private String minPrice;
@@ -116,10 +116,10 @@ public class SearchProductGqlResponse {
         private String maxPrice;
         @SerializedName("price_min_raw")
         @Expose
-        private int rawMinPrice;
+        private String rawMinPrice;
         @SerializedName("price_max_raw")
         @Expose
-        private int rawMaxPrice;
+        private String rawMaxPrice;
         @SerializedName("count_product")
         @Expose
         private int count;
@@ -148,7 +148,7 @@ public class SearchProductGqlResponse {
             return price;
         }
 
-        public int getRawPrice() {
+        public String getRawPrice() {
             return rawPrice;
         }
 
@@ -160,11 +160,11 @@ public class SearchProductGqlResponse {
             return maxPrice;
         }
 
-        public int getRawMinPrice() {
+        public String getRawMinPrice() {
             return rawMinPrice;
         }
 
-        public int getRawMaxPrice() {
+        public String getRawMaxPrice() {
             return rawMaxPrice;
         }
 
