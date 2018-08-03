@@ -6,6 +6,16 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdTrain']
+            }
+        }
+    }
+}
+
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
