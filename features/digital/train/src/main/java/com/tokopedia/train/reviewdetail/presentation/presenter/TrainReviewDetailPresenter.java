@@ -10,6 +10,7 @@ import com.tokopedia.train.checkout.domain.TrainCheckoutUseCase;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.presentation.contract.TrainReviewDetailContract;
@@ -75,9 +76,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     (departureTrainPaxPassenger, returnTrainPaxPassenger)
                             -> {
                         String passengerType = null;
-                        if (departureTrainPaxPassenger.getPaxType() == 1) {
+                        if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT) {
                             passengerType = "Dewasa";
-                        } else if (departureTrainPaxPassenger.getPaxType() == 3) {
+                        } else if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.INFANT) {
                             passengerType = "Infant";
                         }
                         return new TrainReviewPassengerInfoViewModelBuilder()
@@ -100,9 +101,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
             observable = departureTrainPaxPassengerObservable
                     .map(departureTrainPaxPassenger -> {
                         String passengerType = null;
-                        if (departureTrainPaxPassenger.getPaxType() == 1) {
+                        if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT) {
                             passengerType = "Dewasa";
-                        } else if (departureTrainPaxPassenger.getPaxType() == 3) {
+                        } else if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.INFANT) {
                             passengerType = "Infant";
                         }
                         return new TrainReviewPassengerInfoViewModelBuilder()
