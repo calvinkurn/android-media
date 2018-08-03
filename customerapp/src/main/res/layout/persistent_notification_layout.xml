@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/image_icon1"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingLeft="@dimen/dp_5"
@@ -46,8 +46,8 @@
 
         <ImageView
             android:id="@+id/image_icon2"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingLeft="@dimen/dp_5"
@@ -70,8 +70,8 @@
 
         <ImageView
             android:id="@+id/image_icon3"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingLeft="@dimen/dp_5"
@@ -94,8 +94,8 @@
 
         <ImageView
             android:id="@+id/image_icon4"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingLeft="@dimen/dp_5"
@@ -110,8 +110,8 @@
 
     <ImageView
         android:id="@+id/image_icon5"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="@dimen/dp_22"
+        android:layout_height="@dimen/dp_22"
         android:padding="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_12"
