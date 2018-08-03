@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -43,4 +44,6 @@ public interface KolComponent {
     HttpLoggingInterceptor httpLoggingInterceptor();
 
     CacheManager globalCacheManager();
+
+    FollowKolPostGqlUseCase getFollowKolPostGqlUseCase();
 }
