@@ -23,13 +23,20 @@ import retrofit2.Retrofit;
 
 public class AccessTokenRefresh {
 
+    private static final String FORCE_LOGOUT = "forced_logout";
+    private static final String INVALID_REQUEST = "invalid_request";
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String GRANT_TYPE = "grant_type";
+    private static final String REFRESH_TOKEN = "refresh_token";
+
     public String refreshToken(Context context, UserSession userSession, NetworkRouter networkRouter)  {
 
         userSession.clearToken();
         Map<String, String> params = new HashMap<>();
 
-        params.put("grant_type", "refresh_token");
-        params.put("refresh_token", EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
+        params.put(ACCESS_TOKEN, userSession.getAccessToken());
+        params.put(GRANT_TYPE, REFRESH_TOKEN);
+        params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
 
         Call<String> responseCall = getRetrofit(context, userSession, networkRouter).create(AccountsBasicApi.class).getTokenSynchronous(params);
 
@@ -39,6 +46,8 @@ public class AccessTokenRefresh {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        checkShowForceLogout(tokenResponse, networkRouter);
 
         TokenModel model = null;
         if (tokenResponse != null) {
@@ -58,5 +67,15 @@ public class AccessTokenRefresh {
                         new AccountsBasicInterceptor(context, networkRouter, userSession))
                         .build())
                 .build();
+    }
+
+    protected Boolean isRequestDenied(String responseString) {
+        return responseString.toLowerCase().contains(FORCE_LOGOUT);
+    }
+
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter){
+        if (isRequestDenied(response)) {
+            networkRouter.showForceLogoutTokenDialog(response);
+        }
     }
 }

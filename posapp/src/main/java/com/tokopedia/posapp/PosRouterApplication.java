@@ -1,7 +1,6 @@
 package com.tokopedia.posapp;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -50,11 +49,11 @@ import com.tokopedia.posapp.cache.PosCacheHandler;
 import com.tokopedia.posapp.cache.view.service.SchedulerService;
 import com.tokopedia.posapp.di.component.DaggerPosAppComponent;
 import com.tokopedia.posapp.di.component.PosAppComponent;
+import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
+import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.posapp.react.di.component.DaggerPosReactNativeComponent;
 import com.tokopedia.posapp.react.di.component.PosReactNativeComponent;
 import com.tokopedia.posapp.react.di.module.PosReactNativeModule;
-import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
-import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import java.io.IOException;
@@ -625,6 +624,12 @@ public class PosRouterApplication extends MainApplication implements
     public void showForceLogoutDialog(Response response) {
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    }
+
+    @Override
+    public void showForceLogoutTokenDialog(String response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutAnalytics(response);
     }
 
     @Override
