@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment.viewmodel;
 
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class ShipmentCartItemModel implements ShipmentData {
 
+    private boolean allItemError;
     private boolean isError;
     private String errorMessage;
     private boolean isWarning;
@@ -24,6 +26,7 @@ public class ShipmentCartItemModel implements ShipmentData {
     private int shopId;
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
+    private List<ShopShipment> shopShipmentList;
     private String shopName;
 
     private int weightUnit;
@@ -50,6 +53,43 @@ public class ShipmentCartItemModel implements ShipmentData {
     private List<CartItemModel> cartItemModels = new ArrayList<>();
 
     public ShipmentCartItemModel() {
+    }
+
+    public static ShipmentCartItemModel clone(ShipmentCartItemModel shipmentCartItemModel, List<CartItemModel> cartItemModels) {
+        ShipmentCartItemModel newShipmentCartItemModel = new ShipmentCartItemModel();
+        newShipmentCartItemModel.setCartItemModels(cartItemModels);
+        newShipmentCartItemModel.setAllItemError(shipmentCartItemModel.isAllItemError());
+        newShipmentCartItemModel.setErrorMessage(shipmentCartItemModel.getErrorMessage());
+        newShipmentCartItemModel.setError(shipmentCartItemModel.isError());
+        newShipmentCartItemModel.setWeightUnit(shipmentCartItemModel.getWeightUnit());
+        newShipmentCartItemModel.setWarningMessage(shipmentCartItemModel.getWarningMessage());
+        newShipmentCartItemModel.setWarning(shipmentCartItemModel.isWarning());
+        newShipmentCartItemModel.setUnixTime(shipmentCartItemModel.getUnixTime());
+        newShipmentCartItemModel.setTokenPickup(shipmentCartItemModel.getTokenPickup());
+        newShipmentCartItemModel.setStore(shipmentCartItemModel.getStore());
+        newShipmentCartItemModel.setStateDetailSubtotalViewExpanded(shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
+        newShipmentCartItemModel.setStateAllItemViewExpanded(shipmentCartItemModel.isStateAllItemViewExpanded());
+        newShipmentCartItemModel.setStateDropshipperDetailExpanded(shipmentCartItemModel.isStateDropshipperDetailExpanded());
+        newShipmentCartItemModel.setStateDropshipperHasError(shipmentCartItemModel.isStateDropshipperHasError());
+        newShipmentCartItemModel.setShopName(shipmentCartItemModel.getShopName());
+        newShipmentCartItemModel.setShopId(shipmentCartItemModel.getShopId());
+        newShipmentCartItemModel.setProductIsPreorder(shipmentCartItemModel.isProductIsPreorder());
+        newShipmentCartItemModel.setProductFinsurance(shipmentCartItemModel.isProductFinsurance());
+        newShipmentCartItemModel.setProductFcancelPartial(shipmentCartItemModel.isProductFcancelPartial());
+        newShipmentCartItemModel.setDestinationDistrictName(shipmentCartItemModel.getDestinationDistrictName());
+        newShipmentCartItemModel.setDestinationDistrictId(shipmentCartItemModel.getDestinationDistrictId());
+        newShipmentCartItemModel.setRecipientAddressModel(shipmentCartItemModel.getRecipientAddressModel());
+        newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
+
+        return newShipmentCartItemModel;
+    }
+
+    public boolean isAllItemError() {
+        return allItemError;
+    }
+
+    public void setAllItemError(boolean allItemError) {
+        this.allItemError = allItemError;
     }
 
     public boolean isError() {
@@ -234,5 +274,13 @@ public class ShipmentCartItemModel implements ShipmentData {
 
     public void setCartItemModels(List<CartItemModel> cartItemModels) {
         this.cartItemModels = cartItemModels;
+    }
+
+    public List<ShopShipment> getShopShipmentList() {
+        return shopShipmentList;
+    }
+
+    public void setShopShipmentList(List<ShopShipment> shopShipmentList) {
+        this.shopShipmentList = shopShipmentList;
     }
 }

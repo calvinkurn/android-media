@@ -56,6 +56,8 @@ import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.data.mapper.RegisterValidationMapper;
+import com.tokopedia.session.register.data.source.RegisterValidationSource;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.register.registerphonenumber.data.mapper.CheckMsisdnMapper;
@@ -404,4 +406,19 @@ public class SessionModule {
     UserSession provideUserSession(@ApplicationContext Context context){
         return new UserSession(context);
     }
+
+    @SessionScope
+    @Provides
+    RegisterValidationSource provideRegisterValidationSource(AccountsService accountsService,
+                                                             RegisterValidationMapper registerValidationMapper){
+        return new RegisterValidationSource(accountsService, registerValidationMapper);
+    }
+
+    @SessionScope
+    @Provides
+    RegisterValidationMapper provideRegisterValidationMapper(){
+        return new RegisterValidationMapper();
+    }
 }
+
+

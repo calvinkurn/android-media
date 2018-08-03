@@ -1,10 +1,13 @@
 package com.tokopedia.design.button;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ public class BottomActionView extends BaseCustomView {
 
     @DrawableRes
     public static final int DEFAULT_ICON = R.drawable.ic_search_icon;
+    public static final int ANIMATION_DURATION = 400;
 
     private View linearLayoutButton1;
     private View linearLayoutButton2;
@@ -34,6 +38,9 @@ public class BottomActionView extends BaseCustomView {
     private boolean isBav1Display, isBav2Display;
     private ImageView icon2ImageView;
     private ImageView icon1ImageView;
+    private boolean isShow = true;
+    private ObjectAnimator hideAnimator;
+    private ObjectAnimator showAnimator;
 
     public BottomActionView(Context context) {
         super(context);
@@ -138,6 +145,66 @@ public class BottomActionView extends BaseCustomView {
 
     public void setButton2OnClickListener(OnClickListener onClickListener) {
         linearLayoutButton2.setOnClickListener(onClickListener);
+    }
+
+    public void hide(){
+        hide(true);
+    }
+
+    public void hide(boolean isAnimate) {
+        if (isShow) {
+            if (isAnimate) {
+                if (this.getHeight() > 0) {
+                    startHideAnimation();
+                }
+            } else {
+                this.setTranslationY(this.getHeight());
+            }
+        }
+        isShow = false;
+    }
+
+    public void show(){
+        show(true);
+    }
+
+    public void show(boolean isAnimate) {
+        if (!isShow) {
+            if (isAnimate) {
+                if (this.getHeight() > 0) {
+                    startShowAnimation();
+                }
+            } else {
+                this.setTranslationY(0);
+            }
+        }
+        isShow = true;
+    }
+
+    public void startHideAnimation() {
+        if (showAnimator!= null && showAnimator.isRunning()) {
+            showAnimator.cancel();
+            show(false);
+            return;
+        }
+        if (hideAnimator == null) {
+            hideAnimator = ObjectAnimator.ofFloat(this, "translationY", 0, getHeight());
+            hideAnimator.setDuration(ANIMATION_DURATION);
+        }
+        hideAnimator.start();
+    }
+
+    public void startShowAnimation() {
+        if (hideAnimator!= null && hideAnimator.isRunning()) {
+            hideAnimator.cancel();
+            hide(false);
+            return;
+        }
+        if (showAnimator == null) {
+            showAnimator = ObjectAnimator.ofFloat(this, "translationY", getHeight(), 0);
+            showAnimator.setDuration(ANIMATION_DURATION);
+        }
+        showAnimator.start();
     }
 
 }

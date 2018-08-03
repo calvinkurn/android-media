@@ -15,6 +15,7 @@ import android.view.View;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.R;
@@ -27,6 +28,7 @@ import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -182,7 +184,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             finish();
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
-                intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
+                intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getHomeIntent(this);
+            } else if(GlobalConfig.isPosApp()) {
+                intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
             } else {
                 invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
@@ -266,6 +270,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                             Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+                        } else if(GlobalConfig.isPosApp()) {
+                            Intent intent = PosAppRouter.getSplashScreenIntent(getBaseContext(), true);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                         } else {
                             invalidateCategoryCache();
                             Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
@@ -301,6 +309,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         return ((MainApplication) getApplication()).getAppComponent();
     }
 
+    public BaseAppComponent getBaseAppComponent() {
+        return ((MainApplication) getApplication()).getBaseAppComponent();
+    }
+
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
@@ -311,17 +323,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }
     }
 
-    private void registerShake() {
+    protected void registerShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             String screenName = getScreenName();
             if (screenName == null) {
                 screenName = this.getClass().getSimpleName();
             }
-            ((AbstractionRouter) getApplication()).registerShake(screenName);
+            ((AbstractionRouter) getApplication()).registerShake(screenName,this);
         }
     }
 
-    private void unregisterShake() {
+    protected void unregisterShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }

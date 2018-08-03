@@ -28,12 +28,7 @@ import rx.Observable;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-
-    void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
-
-    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
-
-    void removeInstopedToken();
+    String EXTRAS = "extras";
 
     void goToManageProduct(Context context);
 

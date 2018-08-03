@@ -41,7 +41,9 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     private static Context context;
     private CustomCheckBoxPreference optionVibrate;
     private CustomCheckBoxPreference optionPromo;
+    private CustomCheckBoxPreference optionShakeShake;
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
+    public static final String SETTING_NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -77,6 +79,13 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_notification);
 
+        optionShakeShake = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_SHAKE_SHAKE);
+        optionShakeShake.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return true;
+            }
+        });
         optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
         optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -93,6 +102,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
         optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
+
 
     /** {@inheritDoc} */
     /*@Override

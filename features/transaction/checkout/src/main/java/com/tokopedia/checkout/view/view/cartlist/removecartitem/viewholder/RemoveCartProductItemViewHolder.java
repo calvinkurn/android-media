@@ -1,10 +1,8 @@
 package com.tokopedia.checkout.view.view.cartlist.removecartitem.viewholder;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 

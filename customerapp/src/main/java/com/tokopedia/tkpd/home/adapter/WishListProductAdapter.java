@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -238,6 +237,11 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         @Override
         public void onAddFavorite(int position, Data data) {
 
+        }
+
+        @Override
+        public void onAddWishList(int position, Data data) {
+            //TODO: next implement wishlist action
         }
     }
 

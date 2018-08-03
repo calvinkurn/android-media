@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -18,6 +19,9 @@ import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
  */
 
 public class RegisterEmailActivity extends BasePresenterActivity implements HasComponent {
+
+    public static final String EXTRA_PARAM_EMAIL = "email";
+    private String email;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -41,11 +45,16 @@ public class RegisterEmailActivity extends BasePresenterActivity implements HasC
 
     @Override
     protected void initView() {
-
-        RegisterEmailFragment fragment = RegisterEmailFragment.createInstance();
+        RegisterEmailFragment fragment;
+        if (getIntent().getExtras() != null) {
+            fragment = RegisterEmailFragment.createInstanceWithEmail(getIntent().getExtras());
+        } else {
+            fragment = RegisterEmailFragment.createInstance();
+        }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass()
+                    .getSimpleName());
         }
         fragmentTransaction.commit();
     }
@@ -85,6 +94,14 @@ public class RegisterEmailActivity extends BasePresenterActivity implements HasC
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, RegisterEmailActivity.class);
+    }
+
+    public static Intent getCallingIntentWithEmail(@NonNull Context context, @NonNull String email) {
+        Intent intent = new Intent(context, RegisterEmailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_EMAIL, email);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override

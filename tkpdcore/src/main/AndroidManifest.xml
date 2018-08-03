@@ -229,10 +229,6 @@
             android:name=".invoice.activity.InvoiceRendererActivity"
             android:label="@string/title_activity_download_invoice" />
         <activity
-            android:name=".GalleryBrowser"
-            android:label="@string/title_activity_gallery_browser"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".tracking.activity.TrackingActivity"
             android:label="Tracking"
             android:screenOrientation="portrait" />
@@ -353,25 +349,12 @@
             android:name=".manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".newgallery.GalleryActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.seller.opportunity.snapshot.SnapShotProduct"
             android:label="@string/title_activity_snapshot"
             android:screenOrientation="portrait" />
         <activity
             android:name=".gallery.GalleryActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".apprating.nps.FeedbackActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/fb_app_title"/>
-
-        <activity android:name=".apprating.nps.FeedbackThankPageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/fb_app_title"/>
 
         <activity
             android:name=".shopinfo.activity.ShopDiscussionActivity"

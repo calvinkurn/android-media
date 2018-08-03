@@ -42,7 +42,7 @@
     <string name="label_instant_payment_digital">Bayar Instan</string>
     <string name="title_voucher_code">Kode Voucher: </string>
     <string name="title_empty_stock">Stok Habis</string>
-    <string name="button_copy">salin </string>
+    <string name="button_copy">Salin</string>
     <string name="label_title_desc_promo_digital">Keterangan</string>
     <string name="label_title_price_info_digital">Harga</string>
     <string name="error_message_product_inactive_digital_module">Product tidak aktif</string>
@@ -98,15 +98,19 @@
     <string name="status_failed_label">Failed</string>
 
     <string name="emoney_card_info_label_card_number">Nomor Kartu:</string>
-    <string name="emoney_card_info_label_your_balance">Saldo Anda:</string>
-    <string name="emoney_button_check_balance">CEK SALDO</string>
-    <string name="emoney_tap_card_instruction">Tempelkan Kartu pada bagian belakang Smartphone Anda.</string>
+    <string name="emoney_card_info_label_card_balance">Saldo Kartu:</string>
+    <string name="emoney_button_check_balance">Cek Saldo</string>
+    <string name="emoney_tap_card_instruction_title">Tempelkan Kartu Anda</string>
+    <string name="emoney_tap_card_instruction_message">Tempelkan Kartu pada bagian belakang Smartphone Anda.</string>
     <string name="emoney_button_topup">Top-up E-Money</string>
     <string name="emoney_label_check_balance">Silahkan cek sisa saldo Anda</string>
     <string name="activate_nfc">Aktifkan NFC</string>
     <string name="nfc_is_not_activated_label">NFC pada smartphone belum diaktifkan, silakan tekan tombol dibawah</string>
-    <string name="reading_card_label">Sedang membaca kartu… Jangan mengubah posisi kartu hingga selesai</string>
-    <string name="update_card_balance_progress_label">Saldo sedang diperbarui… Jangan mengubah posisi kartu hingga selesai.</string>
+    <string name="reading_card_label_title">Sedang membaca kartu…</string>
+    <string name="reading_card_label_message">Jangan mengubah posisi kartu hingga selesai</string>
+    <string name="update_card_balance_failed_title">Tempelkan Ulang Kartu Anda</string>
+    <string name="update_card_balance_progress_label_title">Saldo sedang diperbarui…</string>
+    <string name="update_card_balance_progress_label_message">Jangan mengubah posisi kartu selama proses berlangsung</string>
     <string name="card_is_not_supported">Kartu tidak didukung</string>
     <string name="update_balance_failed">Pembaruan informasi saldo Gagal, silakan tempelkan ulang kartu Anda.</string>
     <string name="failed_read_card">Gagal membaca kartu</string>
@@ -121,4 +125,6 @@
     <string name="deny_nfc_permission">Tolak</string>
     <string name="nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
 
+    <string name="promo_tab_title">Promo</string>
+    <string name="guide_tab_title">Panduan</string>
 </resources>

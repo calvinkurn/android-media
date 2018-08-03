@@ -314,8 +314,8 @@ public class FlightAnalytics {
                 String.format(getDefaultLocale(),
                         "%d - %s - %s",
                         position + 1,
-                        bannerData.getAttributes().getTitle(),
-                        bannerData.getAttributes().getImgUrl()
+                        bannerData.getAttributes().getDescription(),
+                        bannerData.getAttributes().getLinkUrl()
                 )
         );
     }

@@ -8,6 +8,11 @@
 
     <com.tkpd.library.ui.utilities.CustomCheckBoxPreference
         android:defaultValue="true"
+        android:key="notification_shake_shake"
+        android:title="@string/pref_shake_shake" />
+
+    <com.tkpd.library.ui.utilities.CustomCheckBoxPreference
+        android:defaultValue="true"
         android:key="notification_purchase"
         android:title="@string/pref_receive_purchasing" />
 
@@ -45,5 +50,6 @@
         android:defaultValue="false"
         android:key="notification_group_chat"
         android:title="@string/pref_receive_group_chat" />
+
 
 </PreferenceScreen>

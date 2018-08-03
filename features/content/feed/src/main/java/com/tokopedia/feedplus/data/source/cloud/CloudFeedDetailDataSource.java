@@ -6,10 +6,10 @@ import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.tkpdfeed.feeds.FeedDetail;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

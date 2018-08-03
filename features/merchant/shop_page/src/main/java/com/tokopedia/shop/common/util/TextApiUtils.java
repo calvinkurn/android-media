@@ -12,16 +12,10 @@ public class TextApiUtils {
     private static final String BOOLEAN_VALUE_FALSE = "0";
 
     public static boolean isValueTrue(String text) {
-        if (TextUtils.isEmpty(text)) {
-            return false;
-        }
-        return text.equalsIgnoreCase(BOOLEAN_VALUE_TRUE);
+        return BOOLEAN_VALUE_TRUE.equalsIgnoreCase(text);
     }
 
     public static boolean isTextEmpty(String text) {
-        if (TextUtils.isEmpty(text)) {
-            return true;
-        }
-        return text.equalsIgnoreCase(BOOLEAN_VALUE_FALSE);
+        return TextUtils.isEmpty(text) || BOOLEAN_VALUE_FALSE.equalsIgnoreCase(text);
     }
 }
