@@ -16,6 +16,10 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 public interface InboxBaseContract {
     interface InboxBaseView extends CustomerView {
+        int RESULT_FINISH = 909;
+
+        int REQUEST_DETAILS = 204;
+
         void showMessage(String message);
 
         Activity getActivity();
@@ -45,7 +49,7 @@ public interface InboxBaseContract {
     }
 
     interface InboxBasePresenter extends CustomerPresenter<InboxBaseView> {
-        void onActivityResult(int requestCode,int resultCode,Intent data);
+        void onActivityResult(int requestCode, int resultCode, Intent data);
 
         void onDestroy();
 

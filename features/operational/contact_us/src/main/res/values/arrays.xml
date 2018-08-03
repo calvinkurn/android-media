@@ -2,10 +2,19 @@
 <resources>
     <string-array name="filterarray">
         <item>Semua</item>
-        <!--<item>Belum dibaca</item>-->
-        <!--<item>Belum dinilai</item>-->
+        <item>Belum dibaca</item>
+        <item>Belum dinilai</item>
         <item>Dalam proses</item>
-        <!--<item>Sudah dibaca</item>-->
+        <item>Sudah dibaca</item>
         <item>Ditutup</item>
+    </string-array>
+    <string-array name="bad_reason_array">
+        <item>Respons tidak cepat</item>
+        <item>Solusi tidak menyelesaikan masalah</item>
+        <item>CS tidak memahami keluhan/pertanyaan</item>
+        <item>CS tidak ramah</item>
+        <item>CS tidak kooperatif</item>
+        <item>Jawaban terlalu kaku</item>
+        <item>Lainnya</item>
     </string-array>
 </resources>

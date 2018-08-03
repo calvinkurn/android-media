@@ -28,6 +28,8 @@ public class GetTicketListUseCase extends RestRequestUseCase {
     private String PAGE = "page";
     private String PER_PAGE = "per_page";
     private String STATUS = "status";
+    private String READ = "read";
+    private String RATING = "rating";
     private String mUrl;
 
     @Inject
@@ -49,16 +51,16 @@ public class GetTicketListUseCase extends RestRequestUseCase {
         return tempRequest;
     }
 
-    public void setQueryMap(int page, int per_page, int status) {
+    public void setQueryMap(int status, int read, int rating) {
         if (queryMap == null)
             queryMap = new LinkedHashMap<>();
         queryMap.clear();
-        if (page > 0)
-            queryMap.put(PAGE, page);
-        if (per_page > 0)
-            queryMap.put(PER_PAGE, per_page);
         if (status > 0)
             queryMap.put(STATUS, status);
+        if (read > 0)
+            queryMap.put(READ, read);
+        if (rating > 0)
+            queryMap.put(RATING, rating);
     }
 
     public void setUrl(String Url) {

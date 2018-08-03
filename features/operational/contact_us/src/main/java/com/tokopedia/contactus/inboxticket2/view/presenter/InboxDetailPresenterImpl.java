@@ -14,15 +14,19 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
 import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
 import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
+import com.tokopedia.contactus.inboxticket2.view.adapter.BadReasonAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
+import com.tokopedia.contactus.inboxticket2.view.fragment.BottomSheetFragment;
 import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.ImageUploadResult;
@@ -40,6 +44,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +71,8 @@ public class InboxDetailPresenterImpl
     private String fileUploaded;
     private PostMessageUseCase postMessageUseCase;
     private PostMessageUseCase2 postMessageUseCase2;
+    private PostRatingUseCase postRatingUseCase;
+    private BadReasonAdapter badReasonAdapter;
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
     private static final String TAG = InboxDetailContract.InboxDetailPresenter.class.getSimpleName();
@@ -72,11 +80,16 @@ public class InboxDetailPresenterImpl
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private String rateCommentID;
 
-    public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase, PostMessageUseCase messageUseCase, PostMessageUseCase2 messageUseCase2) {
+    public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase,
+                                    PostMessageUseCase messageUseCase,
+                                    PostMessageUseCase2 messageUseCase2,
+                                    PostRatingUseCase ratingUseCase) {
         mUsecase = useCase;
         postMessageUseCase = messageUseCase;
         postMessageUseCase2 = messageUseCase2;
+        postRatingUseCase = ratingUseCase;
     }
 
     @Override
@@ -112,7 +125,9 @@ public class InboxDetailPresenterImpl
 
     @Override
     public BottomSheetDialogFragment getBottomFragment() {
-        return null;
+        BottomSheetFragment bottomFragment = new BottomSheetFragment();
+        bottomFragment.setAdapter(getBadRatingAdapter());
+        return bottomFragment;
     }
 
     @Override
@@ -386,6 +401,48 @@ public class InboxDetailPresenterImpl
 
     }
 
+    @Override
+    public void clickRate(int id, String commentID) {
+        rateCommentID = commentID;
+        if (id == R.id.btn_yes) {
+            postRatingUseCase.setQueryMap(rateCommentID, "YES", 0, 0, "");
+            mView.showProgressBar();
+            sendRating();
+        } else {
+            if (mTicketDetail.isShowBadCSATReason()) {
+                mView.showBottomFragment();
+            } else {
+                postRatingUseCase.setQueryMap(rateCommentID, "NO", 0, 0, "");
+                mView.showProgressBar();
+                mView.toggleTextToolbar(View.VISIBLE);
+                sendRating();
+            }
+        }
+
+    }
+
+    @Override
+    public void setBadRating(int position) {
+        mView.hideBottomFragment();
+        if (position + 1 > 0 && position + 1 < 7) {
+            postRatingUseCase.setQueryMap(rateCommentID, "NO", 1, position + 1, "");
+            mView.showProgressBar();
+            mView.toggleTextToolbar(View.VISIBLE);
+            sendRating();
+        } else {
+            mView.askCustomReason();
+        }
+
+
+    }
+
+    @Override
+    public void sendCustomReason(String customReason) {
+        mView.showSendProgress();
+        postRatingUseCase.setQueryMap(rateCommentID, "NO", 1, 7, customReason);
+        sendRating();
+    }
+
     private Observable<List<ImageUpload>> uploadFile(final Context context, List<ImageUpload> imageUploads) {
         return Observable
                 .from(imageUploads)
@@ -489,5 +546,46 @@ public class InboxDetailPresenterImpl
             return 0;
         }
         return -1;
+    }
+
+    private void sendRating() {
+        postRatingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                mView.hideProgressBar();
+                mView.hideSendProgress();
+                Type token = new TypeToken<DataResponse<RatingResponse>>() {
+                }.getType();
+                RestResponse res1 = typeRestResponseMap.get(token);
+                DataResponse ticketListResponse = res1.getData();
+                RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
+                if (ratingResponse.getIsSuccess() > 0) {
+                    if (ratingResponse.getData().getRating().equals("YES")) {
+                        mView.showIssueClosed();
+                    } else {
+                        mView.toggleTextToolbar(View.VISIBLE);
+                        getTicketDetails(mTicketDetail.getId());
+                    }
+                }
+            }
+        });
+    }
+
+    private BadReasonAdapter getBadRatingAdapter() {
+        if (badReasonAdapter == null) {
+            List<String> badReasons = new ArrayList<>(Arrays.asList(mView.getActivity().getResources().getStringArray(R.array.bad_reason_array)));
+            badReasonAdapter = new BadReasonAdapter(badReasons, mView.getActivity(), this);
+        }
+        return badReasonAdapter;
     }
 }

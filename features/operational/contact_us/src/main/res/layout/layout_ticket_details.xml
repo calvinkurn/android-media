@@ -187,12 +187,23 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         app:layout_constraintStart_toStartOf="parent" />
 
     <include
-        android:id="@+id/text_yes_no"
+        android:id="@+id/view_help_rate"
         layout="@layout/layout_yes_no"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
-        android:visibility="visible"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <include
+        android:id="@+id/view_link_bottom"
+        layout="@layout/layout_link_bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_8"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

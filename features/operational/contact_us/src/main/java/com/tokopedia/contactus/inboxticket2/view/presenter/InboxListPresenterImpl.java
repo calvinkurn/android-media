@@ -19,7 +19,7 @@ import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
-import com.tokopedia.contactus.inboxticket2.view.fragment.FilterBottomFragment;
+import com.tokopedia.contactus.inboxticket2.view.fragment.BottomSheetFragment;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -40,12 +40,6 @@ public class InboxListPresenterImpl
     private GetTicketListUseCase mUseCase;
     private List<String> filterList;
     private List<TicketsItem> originalList;
-    private final int ALL = 0;
-    private final int UNREAD = 99;
-    private final int NOTRATED = 98;
-    private final int INPROCESS = 1;
-    private final int READ = 97;
-    private final int CLOSED = 2;
     private boolean isLoading;
     private boolean isLastPage;
     private final int PAGE_SIZE = 10;
@@ -120,6 +114,12 @@ public class InboxListPresenterImpl
 
     @Override
     public void setFilter(int position) {
+        final int ALL = 0;
+        final int UNREAD = 1;
+        final int NEEDRATING = 2;
+        final int INPROGRESS = 3;
+        final int READ = 4;
+        final int CLOSED = 5;
         fromFilter = true;
         switch (position) {
             case ALL:
@@ -128,17 +128,23 @@ public class InboxListPresenterImpl
                 filterAdapter.setSelected(ALL);
                 break;
             case UNREAD:
+                mUseCase.setQueryMap(0, 1, 0);
+                getTicketList();
                 break;
-            case NOTRATED:
+            case NEEDRATING:
+                mUseCase.setQueryMap(2, 0, 1);
+                getTicketList();
                 break;
-            case INPROCESS:
-                mUseCase.setQueryMap(0, 0, 1);
+            case INPROGRESS:
+                mUseCase.setQueryMap(1, 0, 0);
                 getTicketList();
                 break;
             case READ:
+                mUseCase.setQueryMap(0, 2, 0);
+                getTicketList();
                 break;
             case CLOSED:
-                mUseCase.setQueryMap(0, 0, 2);
+                mUseCase.setQueryMap(2, 0, 2);
                 getTicketList();
                 break;
         }
@@ -147,11 +153,9 @@ public class InboxListPresenterImpl
 
     @Override
     public void onClickTicket(int index) {
-
-        //InboxTicketDetailActivity.getIntent(mView.getActivity(), originalList.get(index).getId());
         Intent detailIntent = new Intent(mView.getActivity(), InboxDetailActivity.class);
         detailIntent.putExtra("TICKET_ID", originalList.get(index).getId());
-        mView.navigateToActivityRequest(detailIntent, 204);
+        mView.navigateToActivityRequest(detailIntent, InboxListContract.InboxListView.REQUEST_DETAILS);
     }
 
     @Override
@@ -176,7 +180,11 @@ public class InboxListPresenterImpl
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        if (requestCode == InboxBaseContract.InboxBaseView.REQUEST_DETAILS) {
+            if (resultCode == InboxBaseContract.InboxBaseView.RESULT_FINISH) {
+                mView.getActivity().finish();
+            }
+        }
     }
 
     @Override
@@ -197,7 +205,7 @@ public class InboxListPresenterImpl
 
     @Override
     public BottomSheetDialogFragment getBottomFragment() {
-        FilterBottomFragment bottomFragment = new FilterBottomFragment();
+        BottomSheetFragment bottomFragment = new BottomSheetFragment();
         bottomFragment.setAdapter(getFilterAdapter());
         return bottomFragment;
     }

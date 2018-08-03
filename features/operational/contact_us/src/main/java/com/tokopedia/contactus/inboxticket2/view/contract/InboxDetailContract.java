@@ -34,6 +34,11 @@ public interface InboxDetailContract {
 
         void hideSendProgress();
 
+        void toggleTextToolbar(int visibility);
+
+        void askCustomReason();
+
+        void showIssueClosed();
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {
@@ -44,5 +49,11 @@ public interface InboxDetailContract {
         TextWatcher watcher();
 
         void sendMessage();
+
+        void clickRate(int id, String commentID);
+
+        void setBadRating(int position);
+
+        void sendCustomReason(String customReason);
     }
 }

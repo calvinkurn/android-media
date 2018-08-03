@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.view.adapter.AttachmentAdapter;
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter;
@@ -83,11 +84,20 @@ public class InboxDetailActivity extends InboxBaseActivity
     EditText edMessage;
     @BindView(R2.id.send_progress)
     View sendProgress;
+    @BindView(R2.id.view_help_rate)
+    View viewHelpRate;
+    @BindView(R2.id.text_toolbar)
+    View textToolbar;
+    @BindView(R2.id.view_link_bottom)
+    View viewLinkBottom;
 
     private ImageUploadHandler imageUploadHandler;
     private ImageUploadAdapter imageUploadAdapter;
 
+    private String rateCommentID;
+
     private AttachmentAdapter attachmentAdapter;
+    private boolean isCustomReason;
 
 
     @Override
@@ -102,7 +112,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void renderMessageList(Tickets ticketDetail) {
+        List<CommentsItem> commentsItems = ticketDetail.getComments();
         tvTicketTitle.setText(ticketDetail.getSubject());
+
+        if (ticketDetail.isShowRating()) {
+            viewHelpRate.setVisibility(View.VISIBLE);
+            textToolbar.setVisibility(View.GONE);
+            rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
+        }
 
         if (ticketDetail.getStatus().equalsIgnoreCase("solved")) {
             tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_yellow);
@@ -113,16 +130,20 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_grey);
             tvTicketStatus.setTextColor(getResources().getColor(R.color.black_38));
             tvTicketStatus.setText(R.string.closed);
+            showIssueClosed();
         } else if (ticketDetail.isShowRating()) {
             tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_orange);
             tvTicketStatus.setTextColor(getResources().getColor(R.color.red_150));
             tvTicketStatus.setText(R.string.need_rating);
         }
+
         if (!TextUtils.isEmpty(ticketDetail.getInvoice())) {
             tvIdNum.setText(String.format(getString(R.string.invoice_id), ticketDetail.getInvoice()));
             tvIdNum.setVisibility(View.VISIBLE);
         } else
             tvIdNum.setVisibility(View.GONE);
+
+
 
         tvMsgTime.setText(ticketDetail.getCreateTime());
         tvMsgTime.setVisibility(View.VISIBLE);
@@ -321,7 +342,13 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
-        ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
+        if (!isCustomReason)
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
+        else {
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendCustomReason(edMessage.getText().toString().trim());
+            isCustomReason = false;
+            ivUploadImg.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick(R2.id.holder_top)
@@ -330,6 +357,20 @@ public class InboxDetailActivity extends InboxBaseActivity
             toggleTop(View.VISIBLE);
         } else {
             toggleTop(View.GONE);
+        }
+    }
+
+    @OnClick({R2.id.btn_no,
+            R2.id.btn_yes,
+            R2.id.txt_hyper})
+    void onClickRate(View v) {
+        if (v.getId() == R.id.btn_yes) {
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_yes, rateCommentID);
+        } else if (v.getId() == R.id.btn_no) {
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_no, rateCommentID);
+        } else if (v.getId() == R.id.txt_hyper) {
+            setResult(RESULT_FINISH);
+            finish();
         }
     }
 
@@ -376,6 +417,35 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void hideSendProgress() {
         sendProgress.setVisibility(View.GONE);
         ivSendButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void toggleTextToolbar(int visibility) {
+        if (visibility == View.VISIBLE)
+            viewHelpRate.setVisibility(View.GONE);
+        else
+            viewHelpRate.setVisibility(View.VISIBLE);
+        textToolbar.setVisibility(visibility);
+    }
+
+    @Override
+    public void askCustomReason() {
+        ivUploadImg.setVisibility(View.GONE);
+        rvSelectedImages.setVisibility(View.GONE);
+        edMessage.clearComposingText();
+        viewHelpRate.setVisibility(View.GONE);
+        textToolbar.setVisibility(View.VISIBLE);
+        isCustomReason = true;
+    }
+
+    @Override
+    public void showIssueClosed() {
+        viewHelpRate.setVisibility(View.GONE);
+        textToolbar.setVisibility(View.GONE);
+        tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_grey);
+        tvTicketStatus.setTextColor(getResources().getColor(R.color.black_38));
+        tvTicketStatus.setText(R.string.closed);
+        viewLinkBottom.setVisibility(View.VISIBLE);
     }
 
     @Override

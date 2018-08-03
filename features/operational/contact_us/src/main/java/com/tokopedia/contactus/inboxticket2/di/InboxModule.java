@@ -8,6 +8,7 @@ import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCas
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl;
@@ -52,7 +53,8 @@ public class InboxModule {
     @Named("InboxDetailPresenter")
     InboxDetailContract.InboxDetailPresenter provideInboxListPresenter(GetTicketDetailUseCase useCase,
                                                                        PostMessageUseCase messageUseCase,
-                                                                       PostMessageUseCase2 messageUseCase2) {
-        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2);
+                                                                       PostMessageUseCase2 messageUseCase2,
+                                                                       PostRatingUseCase ratingUseCase) {
+        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2, ratingUseCase);
     }
 }
