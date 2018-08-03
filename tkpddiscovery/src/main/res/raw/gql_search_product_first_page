@@ -89,7 +89,7 @@ searchProduct(params: $params) {
      department_id
    }
  }
- search_filter_product(query: $query, source: $source) {
+ search_filter_product(query: $query, source: $source, extraParams: $params) {
       data {
         filter {
           title

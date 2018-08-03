@@ -8,12 +8,14 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -52,11 +54,18 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStore) {
         super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
 
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("q", searchParameter.getQueryKey());
+        paramsMap.put("start", "0");
+        paramsMap.put("rows", "12");
+        paramsMap.put("uniqueId", searchParameter.getUniqueID());
+        paramsMap.put("source", searchParameter.getSource());
+        paramsMap.put("userId", searchParameter.getUserID());
+
         Map<String, Object> variables = new HashMap<>();
-        variables.put("q", searchParameter.getQueryKey());
-        variables.put("start", 0);
-        variables.put("rows", 12);
-        variables.put("uniqueId", searchParameter.getUniqueID());
+        variables.put("query", searchParameter.getQueryKey());
+        variables.put("params", UrlParamHelper.generateUrlParamString(paramsMap));
+        variables.put("source", searchParameter.getSource());
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
