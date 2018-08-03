@@ -20,7 +20,6 @@ public interface TkpdInboxRouter {
     String PRODUCT = "product";
     String PROFILE = "profile";
 
-    String ENABLE_GROUPCHAT = "enable_groupchat";
     String IS_CHAT_BOT = "is_chat_bot";
     String INDICATOR_VISIBILITY = "indicator_groupchat";
 
