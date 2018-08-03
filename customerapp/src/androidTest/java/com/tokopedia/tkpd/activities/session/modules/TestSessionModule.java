@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.activities.session.modules;
 
-import android.support.test.espresso.core.deps.dagger.Module;
+
 
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
+
+import dagger.Module;
 
 import static org.mockito.Mockito.mock;
 

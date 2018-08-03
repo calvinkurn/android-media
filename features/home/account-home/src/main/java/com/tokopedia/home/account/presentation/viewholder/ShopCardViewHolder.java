@@ -37,5 +37,7 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
 
         shopCardView.setOnClickShopAvatar(v -> listener.onShopAvatarClicked(element));
         shopCardView.setOnClickShopName(v -> listener.onShopNameClicked(element));
+
+        shopCardView.setOnClickDeposit(v -> listener.onDepositClicked(element));
     }
 }

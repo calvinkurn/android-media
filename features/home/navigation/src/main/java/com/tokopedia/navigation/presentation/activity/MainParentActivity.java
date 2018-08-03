@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.navigation_common.listener.NotificationListener;
@@ -41,6 +41,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -62,8 +63,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private Notification notification;
 
-    private UserSession userSession;
-    @Inject MainParentPresenter presenter;
+    @Inject
+    UserSession userSession;
+
+    @Inject
+    MainParentPresenter presenter;
 
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
@@ -78,11 +82,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GraphqlClient.init(this);
-        this.intiInjector();
+        this.initInjector();
         presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
-
-        userSession = ((AbstractionRouter) this.getApplication()).getSession();
 
         bottomNavigation = findViewById(R.id.bottomnav);
         container = findViewById(R.id.container);
@@ -93,7 +95,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
         }
 
-//        startShowCase();
+        currentFragment = adapterViewPager.getFragmentList().get(HOME_MENU);
     }
 
     private void setBadgeNotifCounter(Fragment fragment) {
@@ -104,8 +106,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
         }
     }
-    private void intiInjector() {
+
+    private void initInjector() {
         DaggerGlobalNavComponent.builder()
+                .baseAppComponent(getApplicationComponent())
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
@@ -163,6 +167,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return userSession.isLoggedIn();
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setUserSession(UserSession userSession){
+        this.userSession = userSession;
+    }
+
     @Override
     public BaseAppComponent getComponent() {
         return getApplicationComponent();
@@ -193,6 +202,23 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         selectFragment(currentFragment);
         bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
+
+    List<Fragment> createFragments() {
+        List<Fragment> fragmentList = new ArrayList<>();
+        if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment());
+            fragmentList.add(InboxFragment.newInstance());
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
+            fragmentList.add(AccountHomeFragment.newInstance());
+        }
+        return fragmentList;
+    }
+
+//    Notification notification;
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public Fragment getFragment(int index){ return ((FragmentAdapter)viewPager.getAdapter()).getItem(index); }
 
     @Override
     public void renderNotification(Notification notification) {

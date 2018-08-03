@@ -22,6 +22,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.navigation_common.WalletModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +76,18 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
-        tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
-        tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
+        if (!accountModel.getWallet().isLinked()){
+            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
+            tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
+            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_ACTIVATION);
+        } else {
+            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
+            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
+            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_HOME);
+        }
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+        tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
         items.add(tokopediaPayViewModel);
 
         MenuTitleViewModel menuTitle = new MenuTitleViewModel();
@@ -88,13 +97,13 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_waiting_for_payment));
         menuList.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
-        menuList.setApplink(ApplinkConst.PAYMENT_UNPAID);
+        menuList.setApplink(ApplinkConst.PMS);
         items.add(menuList);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_shopping_transaction));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
-        menuGrid.setApplinkUrl(ApplinkConst.ORDER_LIST);
+        menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
 
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
@@ -238,6 +247,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
+        shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
@@ -247,7 +257,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
-        menuGrid.setApplinkUrl(ApplinkConst.SELLER_TRANSACTION);
+        menuGrid.setApplinkUrl(ApplinkConst.SELLER_HISTORY);
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
 
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
@@ -322,13 +332,13 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setApplink(ApplinkConst.SELLER_CENTER);
         items.add(menuList);
 
-        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
-        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
-        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
-        infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
-        // TODO: 7/26/18 oka: set applink mitratoppers
-        infoCardViewModel.setApplink("");
-        items.add(infoCardViewModel);
+//        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
+//        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
+//        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
+//        infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
+//        // TODO: 7/26/18 oka: set applink mitratoppers
+//        infoCardViewModel.setApplink("");
+//        items.add(infoCardViewModel);
 
         sellerViewModel.setItems(items);
         return sellerViewModel;

@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -16,8 +17,9 @@ import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
-import com.tokopedia.navigation.presentation.base.BaseParentFragment;
+import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
@@ -33,25 +35,24 @@ import q.rorbin.badgeview.QBadgeView;
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends BaseParentFragment implements
+public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
         InboxView, NotificationListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
     public static final int HELP_MENU = 3;
+    @Inject
+    InboxPresenter presenter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private InboxAdapter adapter;
+    private ImageButton menuItemNotification;
+    private TextView toolbarTitle;
+    private QBadgeView badgeView;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
     }
-
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    @Inject InboxPresenter presenter;
-    private InboxAdapter adapter;
-
-    private ImageButton menuItemNotification;
-    private TextView toolbarTitle;
 
     @Override
     public int resLayout() {
@@ -91,6 +92,7 @@ public class InboxFragment extends BaseParentFragment implements
 
     private void intiInjector() {
         DaggerGlobalNavComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
@@ -178,8 +180,6 @@ public class InboxFragment extends BaseParentFragment implements
         return getString(R.string.inbox);
     }
 
-    private QBadgeView badgeView;
-
     @Override
     public void onNotifyBadgeNotification(int number) {
         if (menuItemNotification == null)
@@ -191,5 +191,20 @@ public class InboxFragment extends BaseParentFragment implements
         badgeView.bindTarget(menuItemNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
+    }
+
+    @Override
+    public void reInitInjector(GlobalNavComponent component) {
+
+    }
+
+    @Override
+    public InboxPresenter getPresenter() {
+        return null;
+    }
+
+    @Override
+    public void setPresenter(GlobalNavComponent presenter) {
+
     }
 }

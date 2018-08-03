@@ -18,6 +18,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,6 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.Tabs;
@@ -48,7 +48,7 @@ import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDeta
 import com.tokopedia.seller.selling.presenter.ShippingView;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingDelivered;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingReadyToShip;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipped;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
@@ -61,7 +61,8 @@ import java.util.List;
  * @author okasurya on 8/1/18.
  */
 public class CustomerAppSellerTransactionActivity extends BaseTabActivity
-        implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver,
+        implements FragmentSellingTxCenter.OnCenterMenuClickListener,
+        DownloadResultReceiver.Receiver,
         SellingTransaction {
     public static final String FROM_WIDGET_TAG = "from widget";
 
@@ -208,7 +209,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     }
 
     private void setupToolbar() {
-        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -315,8 +316,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
         fragmentList.add(OpportunityListFragment.newInstance(query));
         fragmentList.add(FragmentSellingNewOrder.createInstance());
-        fragmentList.add(FragmentSellingReadyToShip.newInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
+        fragmentList.add(FragmentSellingShipped.newInstance());
         fragmentList.add(FragmentSellingDelivered.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
         mViewPager.setOffscreenPageLimit(fragmentList.size());
@@ -464,7 +465,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 //            menu.findItem(com.tokopedia.core.R.id.action_cart).setIcon(com.tokopedia.core.R.drawable.
 //                    ic_cart_white_new);
 //        }
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     public Fragment getFragmentMainPager(int position) {
