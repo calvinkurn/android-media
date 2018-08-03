@@ -30,4 +30,6 @@ public interface ProductEditModuleRouter {
     Intent getManageProductIntent(Context context);
 
     Intent createIntentProductEtalase(Context context, int etalaseId);
+
+    Intent getCategoryPickerIntent(Context context, int categoryId);
 }

@@ -2,15 +2,17 @@ package com.tokopedia.product.edit.price.viewholder
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.view.View
 import com.tokopedia.product.edit.price.ProductCategoryRecommendationAdapter
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
+import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import kotlinx.android.synthetic.main.partial_product_edit_category.view.*
 
 class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listener, context: Context?): ProductCategoryRecommendationAdapter.Listener{
 
-    private val categoryRecommendationList = ArrayList<ProductCategory>()
+    private val categoryRecommendationList = mutableListOf<ProductCategory>()
     private val productCategoryRecommendationAdapter: ProductCategoryRecommendationAdapter
 
     interface Listener {
@@ -21,19 +23,7 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
 
     init {
         view.labelCatalog.setOnClickListener { listener.onLabelCatalogClicked() }
-
-        categoryRecommendationList.add(ProductCategory().apply {
-            categoryId = 1
-            categoryName = "test"
-        })
-        categoryRecommendationList.add(ProductCategory().apply {
-            categoryId = 2
-            categoryName = "qwe"
-        })
-        categoryRecommendationList.add(ProductCategory().apply {
-            categoryId = 3
-            categoryName = "dsa"
-        })
+        view.labelCategory.setOnClickListener { listener.onLabelCategoryClicked() }
         productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(categoryRecommendationList, this)
         view.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         view.recyclerView.adapter = productCategoryRecommendationAdapter
@@ -46,12 +36,22 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
     }
 
     fun setCategoryChosen(productCategory: ProductCategory){
-        view.labelCategory.setContent(productCategory.categoryName)
+        if (!TextUtils.isEmpty(productCategory.categoryName)) {
+            view.labelCategory.setContent(productCategory.categoryName)
+        }
         productCategoryRecommendationAdapter.setSelectedCategory(productCategory)
     }
 
     fun setCatalogChosen(productCatalog: ProductCatalog){
-        if(productCatalog.catalogName!=null)
+        if(!TextUtils.isEmpty(productCatalog.catalogName)) {
             view.labelCatalog.setContent(productCatalog.catalogName)
+        }
+    }
+
+    fun renderRecommendation(categories: List<ProductCategoryPredictionViewModel>){
+        productCategoryRecommendationAdapter.replaceData(categories.map {ProductCategory().apply {
+            categoryId = it.lastCategoryId
+            categoryName = it.printedString
+        }})
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.product.edit.price.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class ProductCategory(var categoryId : Int = 0, var categoryName : String = ""): Parcelable{
+data class ProductCategory(var categoryId : Int = -1, var categoryName : String = ""): Parcelable{
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString()) {

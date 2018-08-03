@@ -3,26 +3,49 @@ package com.tokopedia.product.edit.price
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.TextView
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.common.di.component.ProductComponent
+import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel
+import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.price.model.ProductCatalog
+import com.tokopedia.product.edit.view.listener.ProductEditCatalogPickerView
+import com.tokopedia.product.edit.view.presenter.ProductEditCatalogPickerPresenter
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
+import javax.inject.Inject
 
-class ProductEditCatalogPickerFragment : Fragment() {
+class ProductEditCatalogPickerFragment : BaseDaggerFragment(), ProductEditCatalogPickerView {
 
-    private lateinit var productCatalogAdapter: ProductCatalogAdapter
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
-    private var productCatalog = ProductCatalog()
+    @Inject lateinit var presenter: ProductEditCatalogPickerPresenter
+    private var productName = ""
+    private var categoryId = -1L
+    private var choosenCatalog: ProductCatalog = ProductCatalog()
+
+    override fun getScreenName(): String? = null
+
+    override fun initInjector() {
+        DaggerProductEditCategoryCatalogComponent.builder()
+                .productComponent(getComponent(ProductComponent::class.java))
+                .productEditCategoryCatalogModule(ProductEditCategoryCatalogModule())
+                .build()
+                .inject(this)
+        presenter.attachView(this)
+    }
+
+    val productCatalogAdapter =  ProductCatalogAdapter(mutableListOf())
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if(activity!!.intent.hasExtra(EXTRA_CATALOG)) {
-            productCatalog = activity!!.intent.getParcelableExtra(EXTRA_CATALOG)
+        arguments?.run {
+            productName = getString(EXTRA_PRODUCT_NAME, "")
+            categoryId = getLong(EXTRA_CATEGORY_ID, -1L)
+            choosenCatalog = getParcelable(EXTRA_CATALOG)
         }
     }
 
@@ -32,50 +55,45 @@ class ProductEditCatalogPickerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dataDummy = ArrayList<ProductCatalog>()
-        dataDummy.add(ProductCatalog().apply {
-            catalogId = 1
-            catalogName = "aw"
-            catalogImage = "url" })
-        dataDummy.add(ProductCatalog().apply {
-            catalogId = 2
-            catalogName = "wo"
-            catalogImage = "url" })
-        dataDummy.add(ProductCatalog().apply {
-            catalogId = 3
-            catalogName = "qw"
-            catalogImage = "url" })
-        dataDummy.add(ProductCatalog().apply {
-            catalogId = 4
-            catalogName = "er"
-            catalogImage = "url" })
-        dataDummy.add(ProductCatalog().apply {
-            catalogId = 5
-            catalogName = "ty"
-            catalogImage = "url" })
-        dataDummy.add(ProductCatalog().apply {
-            catalogId = 6
-            catalogName = "po"
-            catalogImage = "url" })
-        productCatalogAdapter = ProductCatalogAdapter(dataDummy)
+        presenter.getCatalog(productName, categoryId)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = productCatalogAdapter
         recyclerView.setHasFixedSize(true)
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            setResult()
+        texViewMenu?.run {
+            text = getString(R.string.label_save)
+            setOnClickListener { setResult() }
         }
-        productCatalogAdapter.setSelectedCategory(productCatalog)
+
+        productCatalogAdapter.setSelectedCategory(choosenCatalog)
     }
 
     private fun setResult(){
         val intent = Intent()
         intent.putExtra(EXTRA_CATALOG, productCatalogAdapter.getSelectedCatalog())
-        activity!!.setResult(Activity.RESULT_OK, intent)
-        activity!!.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
+    }
+
+    override fun onSuccessLoadCatalog(catalogs: List<ProductCatalog>, totalRecord: Int) {
+        productCatalogAdapter.replaceData(catalogs)
+    }
+
+    override fun onErrorLoadCatalog(throwable: Throwable?) {
+
     }
 
     companion object {
-        fun createInstance() = ProductEditCatalogPickerFragment()
+        private const val EXTRA_PRODUCT_NAME = "product_name"
+        private const val EXTRA_CATEGORY_ID = "category_id"
+        private const val EXTRA_CATALOG = "catalog"
+
+        fun createInstance(productName: String, categoryId: Long, choosenCatalog: ProductCatalog) =
+                ProductEditCatalogPickerFragment().apply {
+                    arguments = Bundle().apply { putString(EXTRA_PRODUCT_NAME, productName)
+                                                putLong(EXTRA_CATEGORY_ID, categoryId)
+                                                putParcelable(EXTRA_CATALOG, choosenCatalog)}
+        }
     }
 }

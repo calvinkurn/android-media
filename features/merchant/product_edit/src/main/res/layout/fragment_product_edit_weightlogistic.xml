@@ -55,6 +55,7 @@
         app:lc_title="@string/product_label_free_return" />
 
     <View
+        android:id="@+id/lineDividerFreeReturn"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@drawable/line_divider"

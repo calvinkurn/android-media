@@ -128,6 +128,8 @@
     <string name="product_error_product_minimum_order_not_valid_2">Minimum pemesanan harus lebih kecil dari Maksimum pemesanan</string>
     <string name="product_error_product_maksimum_order_not_valid_2">Maksimum pemesanan harus lebih besar dari Minimum pemesanan</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
     <string name="product_fix_previous_wholesale">Perbaiki error sebelumnya terlebih dahulu.</string>
     <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
     <string name="product_price_should_be_cheaper_than_main_price">Harga harus lebih murah dari harga utama.</string>

@@ -60,7 +60,7 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
     }
 
     override fun onNameChanged(productName: ProductName) {
-        if (productName.name!!.isNotEmpty()) {
+        if (productName.name.isNotEmpty()) {
             categoryCatalogViewHolder.visibility = View.VISIBLE
         } else {
             categoryCatalogViewHolder.visibility = View.GONE
@@ -80,8 +80,11 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
     }
 
     override fun onLabelCatalogClicked() {
-        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java)
-                .putExtra(EXTRA_CATALOG, productCatalog), REQUEST_CODE_GET_CATALOG)
+        context?.run {
+            startActivityForResult(ProductEditCatalogPickerActivity
+                    .createIntent(this, productName.name, productCategory.categoryId.toLong(), productCatalog),
+                    REQUEST_CODE_GET_CATALOG)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -113,7 +116,7 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
         }
     }
 
-    private fun isDataValid() = productName.name != null && productName.name!!.isNotEmpty() && productCategory.categoryName != null
+    private fun isDataValid() = productName.name.isNotEmpty() && productCategory.categoryName.isNotEmpty()
 
     private fun goToNext(){
         if(isDataValid()){
