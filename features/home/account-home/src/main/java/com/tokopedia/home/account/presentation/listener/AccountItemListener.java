@@ -11,9 +11,8 @@ import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
  * @author okasurya on 7/26/18.
  */
 public interface AccountItemListener {
-    void onBuyerAvatarClicked(BuyerCardViewModel element);
 
-    void onBuyerNameClicked(BuyerCardViewModel element);
+    void onProfileClicked(BuyerCardViewModel element);
 
     void onProfileCompletionClicked(BuyerCardViewModel element);
 

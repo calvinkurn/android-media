@@ -132,6 +132,7 @@ public interface Constants {
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
         String FAVORITE = "tokopedia://home/favorite";
+        String PROFILE_COMPLETION = "tokopedia://profilecompletion";
 
         String EVENTS = "tokopedia://events";
         String EVENTS_HIBURAN = "tokopedia://hiburan";
@@ -146,6 +147,8 @@ public interface Constants {
         String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
         String CONTENT_DETAIL ="tokopedia://content/{post_id}";
         String DEPOSIT = "tokopedia://saldo";
+
+        String ORDER_LIST = "tokopedia://order";
 
 
         interface SellerApp {

@@ -32,28 +32,23 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onBuyerAvatarClicked(BuyerCardViewModel element) {
-        openApplink(ApplinkConst.PROFILE.replace(PARAM_USER_ID, element.getUserId()));
-    }
-
-    @Override
-    public void onBuyerNameClicked(BuyerCardViewModel element) {
+    public void onProfileClicked(BuyerCardViewModel element) {
         openApplink(ApplinkConst.PROFILE.replace(PARAM_USER_ID, element.getUserId()));
     }
 
     @Override
     public void onProfileCompletionClicked(BuyerCardViewModel element) {
-
+        openApplink(ApplinkConst.PROFILE_COMPLETION);
     }
 
     @Override
     public void onBuyerTokopointClicked(BuyerCardViewModel element) {
-
+        openApplink(ApplinkConst.TOKOPOINTS);
     }
 
     @Override
     public void onBuyerVoucherClicked(BuyerCardViewModel element) {
-
+        openApplink(ApplinkConst.COUPON);
     }
 
     @Override
