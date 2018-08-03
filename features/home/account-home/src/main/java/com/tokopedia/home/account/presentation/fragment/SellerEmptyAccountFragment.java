@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.view.InfoCardView;
@@ -64,41 +65,32 @@ public class SellerEmptyAccountFragment extends BaseAccountFragment {
         sellerCenterInfo.setMainText(R.string.seller_center);
         sellerCenterInfo.setSecondaryText(R.string.seller_center_desc);
 
-        topadsInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getContext().getApplicationContext() instanceof AccountHomeRouter){
-                    ((AccountHomeRouter) getContext().getApplicationContext()).
-                            gotoTopAdsDashboard(getContext());
-                }
+        topadsInfo.setOnClickListener(v -> {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                ((AccountHomeRouter) getContext().getApplicationContext()).
+                        gotoTopAdsDashboard(getContext());
             }
         });
 
-        gmInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getContext().getApplicationContext() instanceof AccountHomeRouter){
-                    ((AccountHomeRouter) getContext().getApplicationContext()).
-                            goToGMSubscribe(getContext());
-                }
+        gmInfo.setOnClickListener(v -> {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                ((AccountHomeRouter) getContext().getApplicationContext()).
+                        goToGMSubscribe(getContext());
             }
         });
 
         sellerCenterInfo.setOnClickListener(v ->
                 RouteManager.route(getActivity(), ApplinkConst.SELLER_CENTER));
 
-        btnOpenShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        btnOpenShop.setOnClickListener(v -> {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
+                        getIntentCreateShop(getContext()));
             }
         });
 
-        btnLearnMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        btnLearnMore.setOnClickListener(v -> RouteManager.route(getActivity(), String.format("%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                AccountConstants.Url.MORE_SELLER)));
     }
 }

@@ -8,9 +8,12 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 
 public interface AccountHomeRouter {
+
     void doLogoutAccount(Activity activity);
 
     void goToHelpCenter(Context context);
+
+    Intent getIntentCreateShop(Context context);
 
     Intent getManageProfileIntent(Context context);
 

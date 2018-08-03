@@ -13,10 +13,14 @@ public class AccountConstants {
 
     public static class Url {
 
+        public static final String BASE_SELLER_URL = "https://seller.tokopedia.com/";
 
         public static final String IMAGE_URL = "https://ecs7.tokopedia.net/img/android/others/";
 
+        public static final String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
+
         public class Pulsa {
+
             public static final String BASE_PULSA_URL = "https://pulsa.tokopedia.com/";
 
             public static final String PULSA_SUBSCRIBE = BASE_PULSA_URL + "subscribe/";

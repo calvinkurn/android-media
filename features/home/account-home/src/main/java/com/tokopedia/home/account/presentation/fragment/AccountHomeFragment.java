@@ -87,24 +87,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         return null;
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_account_home, menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.menu_setting) {
-//            startActivity(GeneralSettingActivity.createIntent(getActivity()));
-//            return true;
-//        } else if (item.getItemId() == R.id.menu_notification) {
-//            Toast.makeText(getContext(), "Notif", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     public void renderData(AccountViewModel accountViewModel) {
         if(getContext() != null) {
