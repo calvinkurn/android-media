@@ -15,13 +15,15 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_general_setting;
+    public static final int LAYOUT = R.layout.item_label_view;
 
+    private View layout;
     private LabelView labelView;
     private AccountItemListener listener;
 
     public MenuListViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
+        layout = itemView.findViewById(R.id.container);
         labelView = itemView.findViewById(R.id.labelview);
 
         this.listener = listener;
@@ -29,7 +31,7 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
 
     @Override
     public void bind(MenuListViewModel element) {
-        labelView.setOnClickListener(v -> listener.onMenuListClicked(element));
+        layout.setOnClickListener(v -> listener.onMenuListClicked(element));
         labelView.setTitle(element.getMenu());
         labelView.setSubTitle(element.getMenuDescription());
         labelView.showRightArrow(false);
