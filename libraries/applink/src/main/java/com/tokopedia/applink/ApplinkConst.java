@@ -125,13 +125,13 @@ public interface ApplinkConst {
     String CONTACT_US = "tokopedia://contact-us";
 
     String ORDER_LIST = "tokopedia://order";
-    String PAYMENT_UNPAID = "tokopedia://payment/unpaid";
     String TOKOPOINTS = "tokopedia://tokopoints";
     String COUPON = "tokopedia://tokopoints/coupon";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String NOTIFICATION = "tokopedia://notification";
+    String PMS = "tokopedia://buyer/payment";
     String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
     String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
     String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";

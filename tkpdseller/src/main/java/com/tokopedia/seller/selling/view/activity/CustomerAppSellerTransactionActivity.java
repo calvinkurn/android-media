@@ -18,6 +18,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -208,7 +209,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     }
 
     private void setupToolbar() {
-        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -464,7 +465,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 //            menu.findItem(com.tokopedia.core.R.id.action_cart).setIcon(com.tokopedia.core.R.drawable.
 //                    ic_cart_white_new);
 //        }
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     public Fragment getFragmentMainPager(int position) {

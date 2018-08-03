@@ -85,12 +85,16 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onShopAvatarClicked(ShopCardViewModel element) {
-        openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        if(element != null && !TextUtils.isEmpty(element.getShopId())) {
+            openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        }
     }
 
     @Override
     public void onShopNameClicked(ShopCardViewModel element) {
-        openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        if(element != null && !TextUtils.isEmpty(element.getShopId())) {
+            openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        }
     }
 
     @Override
@@ -101,5 +105,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onTokopediaPayItemClicked(String applink) {
         openApplink(applink);
+    }
+
+    @Override
+    public void onDepositClicked(ShopCardViewModel element) {
+        openApplink(ApplinkConst.DEPOSIT);
     }
 }

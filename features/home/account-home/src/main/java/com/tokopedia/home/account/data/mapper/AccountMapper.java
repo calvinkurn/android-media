@@ -97,7 +97,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_waiting_for_payment));
         menuList.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
-        menuList.setApplink(ApplinkConst.PAYMENT_UNPAID);
+        menuList.setApplink(ApplinkConst.PMS);
         items.add(menuList);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
@@ -247,6 +247,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
+        shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
