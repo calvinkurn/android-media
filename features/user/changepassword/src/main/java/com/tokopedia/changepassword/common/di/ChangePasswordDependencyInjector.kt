@@ -47,12 +47,8 @@ class ChangePasswordDependencyInjector {
 
             val chuckInterceptor = ChuckInterceptor(context)
 
-            val httpLoggingInterceptor = HttpLoggingInterceptor()
-
-            if (GlobalConfig.isAllowDebuggingTools()) {
-                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-            } else {
-                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
+            val httpLoggingInterceptor = HttpLoggingInterceptor().apply{
+                level = if (GlobalConfig.isAllowDebuggingTools()) { HttpLoggingInterceptor.Level.BODY} else { HttpLoggingInterceptor.Level.NONE}
             }
 
             val networkRouter = context as NetworkRouter

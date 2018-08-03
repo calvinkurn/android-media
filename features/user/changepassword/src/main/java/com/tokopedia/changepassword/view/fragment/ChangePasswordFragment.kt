@@ -29,9 +29,8 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     companion object {
 
-        fun newInstance(): ChangePasswordFragment {
-            return ChangePasswordFragment()
-        }
+        fun newInstance() = ChangePasswordFragment()
+
     }
 
     override fun getScreenName(): String {
@@ -39,8 +38,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun initInjector() {
-        presenter = ChangePasswordDependencyInjector.Companion.inject(activity!!.applicationContext)
-        presenter.attachView(this)
+        activity?.let{
+            presenter = ChangePasswordDependencyInjector.Companion.inject(activity!!.applicationContext)
+            presenter.attachView(this)
+        }
 
     }
 
@@ -104,9 +105,11 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun setWrapperHint(wrapper: TkpdHintTextInputLayout?, hint: String?) {
-        wrapper?.setErrorEnabled(false)
-        wrapper?.setHelperEnabled(true)
-        wrapper?.setHelper(hint)
+        wrapper?.run{
+            setErrorEnabled(false)
+            setHelperEnabled(true)
+            setHelper(hint)
+        }
     }
 
     private fun watcherOldPassword(wrapper: TkpdHintTextInputLayout): TextWatcher {
@@ -247,7 +250,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onSuccessChangePassword() {
         hideLoading()
-        if (activity!= null && context!= null && context!!.applicationContext is
+        if (activity != null && context != null && context!!.applicationContext is
                         ChangePasswordRouter) {
             val intent: Intent = (context!!.applicationContext as ChangePasswordRouter)
                     .getHomeIntent(activity!!)

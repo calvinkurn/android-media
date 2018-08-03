@@ -11,5 +11,5 @@ data class ChangePasswordPojo(
 )
 
 data class Data(
-        val is_success: Int? = 0
+        val is_success: Int = 0
 )

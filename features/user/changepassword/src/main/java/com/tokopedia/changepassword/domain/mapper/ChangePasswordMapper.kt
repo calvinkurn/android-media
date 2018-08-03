@@ -22,7 +22,7 @@ class ChangePasswordMapper : Func1<Response<ChangePasswordPojo>,
             val pojo: ChangePasswordPojo = response.body().copy()
 
             if (pojo.data != null
-                    && pojo.message_error?.isEmpty()!!) {
+                    && pojo.message_error?.isEmpty() == true) {
 
                 return ChangePasswordDomain(
                         pojo.data.is_success == IS_SUCCESS)
