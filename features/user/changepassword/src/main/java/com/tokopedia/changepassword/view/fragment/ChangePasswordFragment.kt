@@ -38,7 +38,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun initInjector() {
-        activity?.let{
+        activity?.let {
             presenter = ChangePasswordDependencyInjector.Companion.inject(activity!!.applicationContext)
             presenter.attachView(this)
         }
@@ -105,7 +105,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun setWrapperHint(wrapper: TkpdHintTextInputLayout?, hint: String?) {
-        wrapper?.run{
+        wrapper?.run {
             setErrorEnabled(false)
             setHelperEnabled(true)
             setHelper(hint)
@@ -252,10 +252,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         hideLoading()
         if (activity != null && context != null && context!!.applicationContext is
                         ChangePasswordRouter) {
-            val intent: Intent = (context!!.applicationContext as ChangePasswordRouter)
-                    .getHomeIntent(activity!!)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
+            (context!!.applicationContext as ChangePasswordRouter)
+                    .logoutToHome(activity!!)
+        }else{
             activity!!.finish()
         }
     }
