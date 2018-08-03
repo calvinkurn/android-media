@@ -29,7 +29,6 @@ import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.data.repository.FeedRepositoryImpl;
-import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
@@ -183,9 +182,8 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FeedRepository provideFeedRepository(FeedFactory feedFactory,
-                                         KolSource kolSource) {
-        return new FeedRepositoryImpl(feedFactory, kolSource);
+    FeedRepository provideFeedRepository(FeedFactory feedFactory) {
+        return new FeedRepositoryImpl(feedFactory);
     }
 
     @FeedPlusScope

@@ -1,9 +1,7 @@
 package com.tokopedia.feedplus.data.repository;
 
 import com.tokopedia.feedplus.data.factory.FeedFactory;
-import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.CheckFeedDomain;
-import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -18,13 +16,10 @@ import rx.Observable;
 
 public class FeedRepositoryImpl implements FeedRepository {
 
-    private final KolSource kolSource;
     private FeedFactory feedFactory;
 
-    public FeedRepositoryImpl(FeedFactory feedFactory,
-                              KolSource kolSource) {
+    public FeedRepositoryImpl(FeedFactory feedFactory) {
         this.feedFactory = feedFactory;
-        this.kolSource = kolSource;
     }
 
     @Override
@@ -52,8 +47,4 @@ public class FeedRepositoryImpl implements FeedRepository {
         return feedFactory.createCloudCheckNewFeedDataSource().checkNewFeed(parameters);
     }
 
-    @Override
-    public Observable<FollowKolDomain> followUnfollowKol(RequestParams requestParams) {
-        return kolSource.followKolPost(requestParams);
-    }
 }

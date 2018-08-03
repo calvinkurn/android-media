@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.domain.model;
+package com.tokopedia.kol.feature.post.domain.model;
 
 /**
  * @author by nisie on 11/3/17.

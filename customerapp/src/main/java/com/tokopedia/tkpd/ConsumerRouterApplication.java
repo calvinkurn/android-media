@@ -121,6 +121,9 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
@@ -131,8 +134,6 @@ import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.FeedModuleRouter;
-import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -186,9 +187,9 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
+import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -198,7 +199,6 @@ import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
-import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -243,9 +243,6 @@ import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
-import com.tokopedia.tkpd.content.ContentGetFeedUseCase;
-import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
-import com.tokopedia.tkpd.content.di.DaggerContentConsumerComponent;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -313,9 +310,7 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import retrofit2.Converter;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -381,11 +376,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
-    private DaggerContentConsumerComponent.Builder daggerContentBuilder;
     private EventComponent eventComponent;
     private DealsComponent dealsComponent;
     private FlightConsumerComponent flightConsumerComponent;
-    private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -422,12 +415,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         );
     }
 
-    private ContentConsumerComponent getContentConsumerComponent() {
-        if (contentConsumerComponent == null) {
-            contentConsumerComponent = daggerContentBuilder.build();
-        }
-        return contentConsumerComponent;
-    }
 
     private void initializeDagger() {
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
@@ -446,9 +433,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 DaggerFeedPlusComponent.builder()
                         .kolComponent(KolComponentInstance.getKolComponent(this))
                         .build();
-
-        daggerContentBuilder = DaggerContentConsumerComponent.builder()
-                .feedPlusComponent(feedPlusComponent);
 
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
@@ -1959,34 +1943,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getKolCommentArgsTotalComment() {
         return KolCommentFragment.ARGS_TOTAL_COMMENT;
-    }
-
-    @Override
-    public void doFollowKolPost(int id, FollowKolSubscriber followKolSubscriber) {
-        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_FOLLOW, followKolSubscriber);
-    }
-
-    @Override
-    public void doUnfollowKolPost(int id, FollowKolSubscriber followKolSubscriber) {
-        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_UNFOLLOW, followKolSubscriber);
-    }
-
-    private void followUnfollowKolPost(int id, int action,
-                                       FollowKolSubscriber followKolSubscriber) {
-        FollowKolPostUseCase followKolPostUseCase = ContentGetFeedUseCase
-                .newInstance(getContentConsumerComponent())
-                .inject()
-                .getFollowKolPostUseCase();
-        followKolPostUseCase.createObservable(FollowKolPostUseCase.getParam(id, action))
-                .map(new Func1<FollowKolDomain, Boolean>() {
-                    @Override
-                    public Boolean call(FollowKolDomain followKolDomain) {
-                        return followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(followKolSubscriber);
     }
 
     @Override
