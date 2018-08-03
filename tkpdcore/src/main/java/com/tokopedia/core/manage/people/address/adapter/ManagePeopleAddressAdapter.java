@@ -135,7 +135,7 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void setVisibility(MPAddressViewHolder viewHolder, int position) {
-        if (list.get(position).getAddressStatus() == 1) {
+        if (list != null && list.size() > position && list.get(position).getAddressStatus() == 1) {
             viewHolder.defaultBtn.setVisibility(View.VISIBLE);
         } else {
             viewHolder.defaultBtn.setVisibility(View.GONE);

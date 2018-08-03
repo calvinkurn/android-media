@@ -53,8 +53,8 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     private ImageSearchService imageSearchService;
     private Context context;
 
-    private final int OPTIMUM_WIDTH = 600;
-    private final int OPTIMUM_HEIGHT = 600;
+    private final int OPTIMUM_WIDTH = 300;
+    private final int OPTIMUM_HEIGHT = 300;
 
     private final int MAX_WIDTH = 1280;
     private final int MAX_HEIGHT = 720;

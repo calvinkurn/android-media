@@ -255,6 +255,7 @@ dependencies {
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
@@ -297,6 +298,7 @@ dependencies {
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.train)
 
+    implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)

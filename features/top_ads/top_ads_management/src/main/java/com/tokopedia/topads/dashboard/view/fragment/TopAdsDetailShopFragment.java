@@ -168,7 +168,9 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     }
 
     void onNameClicked() {
-        DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+        if (ad != null) {
+            DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+        }
     }
 
     @Override
