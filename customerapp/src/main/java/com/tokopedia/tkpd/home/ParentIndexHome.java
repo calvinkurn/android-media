@@ -99,6 +99,7 @@ import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
