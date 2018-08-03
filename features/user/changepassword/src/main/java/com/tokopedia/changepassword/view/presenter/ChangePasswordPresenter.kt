@@ -56,9 +56,9 @@ class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordU
     override fun isValidForm(oldPassword: String,
                              newPassword: String,
                              confirmPassword: String): Boolean {
-        return oldPassword.isBlank()
-                && newPassword.isBlank()
-                && confirmPassword.isBlank()
+        return oldPassword.isNotBlank()
+                && newPassword.isNotBlank()
+                && confirmPassword.isNotBlank()
     }
 
     override fun detachView() {
