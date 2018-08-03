@@ -1442,7 +1442,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isLoginInactivePhoneLinkEnabled() {
-        return remoteConfig.getBoolean("sellerapp_login_inactive_phone_no_link", true)
-                && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+        return false;
     }
 }

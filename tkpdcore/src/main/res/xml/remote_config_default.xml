@@ -223,8 +223,4 @@
         <key>mainapp_login_inactive_phone_no_link</key>
         <value>true</value>
     </entry>
-    <entry>
-        <key>sellerapp_login_inactive_phone_no_link</key>
-        <value>true</value>
-    </entry>
 </defaultsMap>
