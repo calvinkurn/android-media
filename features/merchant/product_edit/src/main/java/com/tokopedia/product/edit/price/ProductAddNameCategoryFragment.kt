@@ -79,8 +79,11 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
     }
 
     override fun onLabelCatalogClicked() {
-        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java)
-                .putExtra(EXTRA_CATALOG, productCatalog), REQUEST_CODE_GET_CATALOG)
+        context?.run {
+            startActivityForResult(ProductEditCatalogPickerActivity
+                    .createIntent(this, productName.name, productCategory.categoryId.toLong(), productCatalog),
+                    REQUEST_CODE_GET_CATALOG)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

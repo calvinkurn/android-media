@@ -8,7 +8,7 @@ import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import kotlinx.android.synthetic.main.item_product_edit_catalog.view.*
 
-class ProductCatalogAdapter(private var catalogList: ArrayList<ProductCatalog>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class ProductCatalogAdapter(private val catalogList: MutableList<ProductCatalog>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var selectedPosition = -1
 
@@ -36,8 +36,9 @@ class ProductCatalogAdapter(private var catalogList: ArrayList<ProductCatalog>) 
         return super.getItemId(position)
     }
 
-    fun replaceData(catatogList: ArrayList<ProductCatalog>) {
-        this.catalogList = catatogList
+    fun replaceData(catalogList: List<ProductCatalog>) {
+        this.catalogList.clear()
+        this.catalogList.addAll(catalogList)
         notifyDataSetChanged()
     }
 
@@ -46,10 +47,11 @@ class ProductCatalogAdapter(private var catalogList: ArrayList<ProductCatalog>) 
     }
 
     fun setSelectedCategory(productCatalog: ProductCatalog){
-        for (i in 0 until catalogList.size){
-            if(catalogList[i].catalogName == productCatalog.catalogName){
-                selectedPosition = i
+        for ((index, catalog) in catalogList.withIndex()){
+            if (catalog.catalogName == productCatalog.catalogName){
+                selectedPosition = index
                 notifyDataSetChanged()
+                break
             }
         }
     }
