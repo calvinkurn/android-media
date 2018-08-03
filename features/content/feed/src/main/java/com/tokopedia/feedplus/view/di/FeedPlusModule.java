@@ -22,7 +22,6 @@ import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
 import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
-import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
@@ -31,6 +30,9 @@ import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.data.repository.FeedRepositoryImpl;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
@@ -192,7 +194,6 @@ public class FeedPlusModule {
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
-                                   FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
                                    RecentProductMapper recentProductMapper,
@@ -205,7 +206,6 @@ public class FeedPlusModule {
                 feedResultMapperLocal,
                 feedResultMapperCloud,
                 globalCacheManager,
-                feedDetailListMapper,
                 mojitoService,
                 recentProductMapper,
                 checkNewFeedMapper
@@ -256,11 +256,16 @@ public class FeedPlusModule {
         return new RemoveWishListUseCase(context);
     }
 
-    /*@FeedPlusScope
+    @FeedPlusScope
     @Provides
-    WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
-        return new WishlistRepositoryImpl(wishlistFactory);
+    FeedPlusDetail.Presenter FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
+                                                      AddWishListUseCase addWishlistUseCase,
+                                                      RemoveWishListUseCase removeWishlistUseCase,
+                                                      UserSession userSession) {
+        return new FeedPlusDetailPresenter(getFeedsDetailUseCase,
+                addWishlistUseCase,
+                removeWishlistUseCase,
+                userSession);
     }
-    }*/
 
 }

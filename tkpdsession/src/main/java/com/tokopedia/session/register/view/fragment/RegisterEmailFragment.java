@@ -109,6 +109,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     TkpdProgressDialog progressDialog;
     RegisterEmailPresenter presenter;
+    private RegisterAnalytics analytics;
 
     @Inject
     SessionHandler sessionHandler;
@@ -138,6 +139,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = RegisterEmailDependencyInjector.getPresenter(this);
+        analytics = RegisterAnalytics.initAnalytics(getActivity());
 
     }
 
@@ -489,20 +491,19 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         RegisterEmailFragmentPermissionsDispatcher
                 .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
 
-        registerPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int id, KeyEvent event) {
-                if (id == com.tokopedia.core.R.id.register_button || id == EditorInfo.IME_NULL) {
-                    presenter.onRegisterClicked();
-                    return true;
-                }
-                return false;
+        registerPassword.setOnEditorActionListener((v, id, event) -> {
+            if (id == com.tokopedia.core.R.id.register_button || id == EditorInfo.IME_NULL) {
+                analytics.eventRegisterWithEmail();
+                presenter.onRegisterClicked();
+                return true;
             }
+            return false;
         });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventRegisterWithEmail();
                 presenter.onRegisterClicked();
             }
         });
@@ -793,7 +794,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 }
                 break;
             case REQUEST_AUTO_LOGIN:
-                if (resultCode == Activity.RESULT_OK) {
+                if (getActivity()!= null && resultCode == Activity.RESULT_OK) {
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 } else {
