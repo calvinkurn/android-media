@@ -77,7 +77,10 @@ public class SellerEmptyAccountFragment extends BaseAccountFragment {
         gmInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                    ((AccountHomeRouter) getContext().getApplicationContext()).
+                            goToGMSubscribe(getContext());
+                }
             }
         });
 
