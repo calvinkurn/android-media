@@ -168,47 +168,47 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
     @Override
     public void onPhoneStatusSuccess() {
-
+        errorText.setText("");
     }
 
     @Override
     public void onPhoneRegisteredWithEmail() {
-
+        errorText.setText("");
     }
 
     @Override
     public void onPhoneDuplicateRequest() {
-
+        errorText.setText("");
     }
 
     @Override
     public void onPhoneServerError() {
-
+        errorText.setText("");
     }
 
     @Override
     public void onPhoneBlackListed() {
-
+        errorText.setText("");
     }
 
     @Override
     public void onPhoneInvalid() {
-
+        errorText.setText("");
     }
 
     @Override
     public void onPhoneNotRegistered() {
-
+        errorText.setText("Nomor ponsel belum terdaftar.");
     }
 
     @Override
     public void onPhoneTooShort() {
-
+        errorText.setText("");
     }
 
     @Override
     public void onPhoneTooLong() {
-
+        errorText.setText("");
     }
 
     @Override
