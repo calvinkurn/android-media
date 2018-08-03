@@ -6,5 +6,5 @@ package com.tokopedia.travelcalendar.network;
 
 public class TravelCalendarUrl {
 
-    public static String GQL_BASE_URL = "https://gql-staging.tokopedia.com/";
+    public static String GQL_BASE_URL = "https://gql.tokopedia.com/";
 }
