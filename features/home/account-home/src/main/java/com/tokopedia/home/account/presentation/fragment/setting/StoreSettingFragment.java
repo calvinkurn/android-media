@@ -1,7 +1,12 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
@@ -16,6 +21,13 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
     public static Fragment createInstance() {
         return new StoreSettingFragment();
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+    }
+
     @Override
     protected List<SettingItemViewModel> getSettingItems() {
         List<SettingItemViewModel> settingItems = new ArrayList<>();

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
@@ -43,6 +44,12 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                 .build().inject(this);
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     }
 
     @Override

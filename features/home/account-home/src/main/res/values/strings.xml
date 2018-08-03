@@ -15,10 +15,10 @@
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
     <string name="title_privacy_setting">Kebijakan Privasi</string>
     <string name="title_help_center_setting">Pusat Bantuan</string>
-    <string name="subtitle_account_setting">Atur Data Diri, Kata Sandi dan Alamat</string>
-    <string name="subtitle_shop_setting">Atur Lokasi, Etalase, Pengiriman, dan lainnya</string>
-    <string name="subtitle_tkpd_pay_setting">Atur Kartu Kredit, Akun Bank, dan lainnya</string>
-    <string name="subtitle_notification_setting">Atur Chat, Diskusi, Ulasan, dan Buletin</string>
+    <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
+    <string name="subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
+    <string name="subtitle_tkpd_pay_setting">TokoCash, Kartu Kredit, dan Metode Lainnya</string>
+    <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan Lainnya</string>
     <string name="logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
@@ -38,6 +38,7 @@
     <string name="screentitle_tkpd_pay_setting">Atur Tokopedia Pay</string>
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
+    <string name="header_privacy_account_setting">Keamanan</string>
 
     <string name="label_chat">Chat</string>
     <string name="label_chat_admin">Chat Tokopedia Administrator</string>
@@ -143,6 +144,7 @@
     <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
     <string name="logout_confirmation">Apakah Anda ingin keluar?</string>
     <string name="cancel">Batal</string>
+    <string name="title_app_review_setting">Review Aplikasi</string>
 
 
 </resources>
