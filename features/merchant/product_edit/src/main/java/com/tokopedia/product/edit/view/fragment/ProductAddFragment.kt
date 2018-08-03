@@ -24,7 +24,7 @@ class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<Pr
                 .productComponent(getComponent(ProductComponent::class.java))
                 .build()
                 .inject(this)
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

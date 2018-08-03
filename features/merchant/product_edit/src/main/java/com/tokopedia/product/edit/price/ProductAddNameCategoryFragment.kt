@@ -59,7 +59,7 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
     }
 
     override fun onNameChanged(productName: ProductName) {
-        if (productName.name!!.isNotEmpty()) {
+        if (productName.name.isNotEmpty()) {
             categoryCatalogViewHolder.visibility = View.VISIBLE
         } else {
             categoryCatalogViewHolder.visibility = View.GONE
@@ -112,7 +112,7 @@ class ProductAddNameCategoryFragment : Fragment(), ProductEditNameViewHolder.Lis
         }
     }
 
-    private fun isDataValid() = productName.name != null && productName.name!!.isNotEmpty() && productCategory.categoryName != null
+    private fun isDataValid() = productName.name.isNotEmpty() && productCategory.categoryName.isNotEmpty()
 
     private fun goToNext(){
         if(isDataValid()){

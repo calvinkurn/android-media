@@ -117,7 +117,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startLogisticActivity() {
-        startActivityForResult(ProductEditWeightLogisticActivity.createIntent(activity!!, currentProductAddViewModel?.productLogistic!!), REQUEST_CODE_GET_LOGISTIC)
+        startActivityForResult(ProductEditWeightLogisticActivity.createIntent(activity!!, currentProductAddViewModel?.productLogistic!!, true), REQUEST_CODE_GET_LOGISTIC)
     }
 
     private fun startProductEtalaseActivity() {
@@ -175,7 +175,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     currentProductAddViewModel?.productPictureList = currentProductAddViewModel?.let {
                         imageUrlOrPathList?.convertImageListResult(it,
                                 data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE),
-                                data.getSerializableExtra(RESULT_IS_EDITTED) as ArrayList<Boolean>?)
+                                arrayListOf<Boolean>().apply {
+                                    data.getSerializableExtra(RESULT_IS_EDITTED)
+                                })
                     }
                 }
                 REQUEST_CODE_VARIANT ->{
@@ -275,7 +277,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
             }
         }else{
-            labelViewStockProduct.setContent("Stok Kosong")
+            labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
         }
 
         if(currentProductViewModel.productVariantByCatModelList.size > 0){
@@ -409,6 +411,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val EXTRA_IS_GOLD_MERCHANT = "EXTRA_GOLD_MERCHANT"
         const val EXTRA_IS_MOVE_TO_GM = "EXTRA_IS_MOVE_TO_GM"
         const val EXTRA_IS_STATUS_ADD = "EXTRA_IS_STATUS_ADD"
+        const val EXTRA_IS_FREE_RETURN = "EXTRA_IS_FREE_RETURN"
 
         const val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
     }

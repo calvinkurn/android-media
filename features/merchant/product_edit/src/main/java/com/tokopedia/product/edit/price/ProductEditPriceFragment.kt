@@ -265,7 +265,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             builder.setTitle(R.string.product_title_confirmation_change_wholesale_price)
             builder.setMessage(R.string.product_confirmation_change_wholesale_price)
             builder.setCancelable(true)
-            builder.setPositiveButton(R.string.change) { dialog, id ->
+            builder.setPositiveButton(R.string.change) { dialog, _ ->
                 wholesalePrice.clear()
                 setEditTextPriceState(wholesalePrice)
                 setLabelViewWholesale(wholesalePrice)

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.TextView
+import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
 import com.tokopedia.product.edit.price.model.ProductLogistic
@@ -13,6 +14,7 @@ import com.tokopedia.product.edit.util.ProductEditOptionMenuAdapter
 import com.tokopedia.product.edit.util.ProductEditOptionMenuBottomSheets
 import com.tokopedia.product.edit.util.ProductEditPreOrderTimeType
 import com.tokopedia.product.edit.util.ProductEditWeightType
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_FREE_RETURN
 import kotlinx.android.synthetic.main.fragment_product_edit_weightlogistic.*
 
 class ProductEditWeightLogisticFragment : Fragment() {
@@ -26,13 +28,12 @@ class ProductEditWeightLogisticFragment : Fragment() {
     private var selectedPreOrderTimeType: Int = ProductEditPreOrderTimeType.DAY
 
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    private val isFreeReturn by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_FREE_RETURN, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if(activity!!.intent.hasExtra(EXTRA_LOGISTIC)) {
-            productLogistic = activity!!.intent.getParcelableExtra(EXTRA_LOGISTIC)
-        }
+        productLogistic = activity!!.intent.getParcelableExtra(EXTRA_LOGISTIC)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -49,6 +50,22 @@ class ProductEditWeightLogisticFragment : Fragment() {
             showBottomSheetsPreOrder()
         })
 
+        spinnerCounterInputViewWeight.addTextChangedListener(object : NumberTextWatcher(spinnerCounterInputViewWeight.counterEditText, getString(R.string.product_default_counter_text)) {
+            override fun onNumberChanged(number: Double) {
+                if (isWeightValid()) {
+                    spinnerCounterInputViewProcessTime.setCounterError(null)
+                }
+            }
+        })
+
+        spinnerCounterInputViewProcessTime.addTextChangedListener(object : NumberTextWatcher(spinnerCounterInputViewProcessTime.counterEditText, getString(R.string.product_default_counter_text)) {
+            override fun onNumberChanged(number: Double) {
+                if (isPreOrderValid()) {
+                    spinnerCounterInputViewProcessTime.setCounterError(null)
+                }
+            }
+        })
+
         labelSwitchPreOrder.setOnClickListener {
             labelSwitchPreOrder.isChecked = !labelSwitchPreOrder.isChecked
             if(labelSwitchPreOrder.isChecked)
@@ -59,7 +76,9 @@ class ProductEditWeightLogisticFragment : Fragment() {
 
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
-            setResult()
+            if (isWeightValid() && isPreOrderValid()) {
+                setResult()
+            }
         }
     }
 
@@ -76,25 +95,60 @@ class ProductEditWeightLogisticFragment : Fragment() {
         else
             layoutProcessTime.visibility = View.GONE
 
+        if(isFreeReturn) {
+            labelCheckboxFreeReturn.visibility = View.VISIBLE
+            lineDividerFreeReturn.visibility = View.VISIBLE
+        }
+        else {
+            labelCheckboxFreeReturn.visibility = View.GONE
+            lineDividerFreeReturn.visibility = View.GONE
+        }
+
         selectedPreOrderTimeType = productLogistic.processTimeType
         spinnerCounterInputViewProcessTime.spinnerTextView.editText.setText(getPreOrderTimeTypeTitle(selectedPreOrderTimeType))
         spinnerCounterInputViewProcessTime.counterEditText.setText(productLogistic.processTime.toString())
     }
 
-    private fun saveData(productLogistic: ProductLogistic): ProductLogistic{
-        productLogistic.weightType = selectedWeightType
-        productLogistic.weight = spinnerCounterInputViewWeight.counterEditText.text.toString().replace(",", "").toInt()
-        productLogistic.insurance = labelCheckboxInsurance.isChecked
-        productLogistic.freeReturn = labelCheckboxFreeReturn.isChecked
-        productLogistic.preOrder = labelSwitchPreOrder.isChecked
-        if(labelSwitchPreOrder.isChecked){
-            productLogistic.processTimeType = selectedPreOrderTimeType
-            productLogistic.processTime = spinnerCounterInputViewProcessTime.counterEditText.text.toString().replace(",", "").toInt()
-        } else {
-            productLogistic.processTimeType = ProductEditPreOrderTimeType.DAY
-            productLogistic.processTime = 0
+    private fun getWeight(): Double{
+        return spinnerCounterInputViewWeight.counterValue
+    }
+
+    private fun getPreOrder(): Double{
+        return spinnerCounterInputViewProcessTime.counterValue
+    }
+
+    private fun isWeightValid(): Boolean {
+        var minWeight = MIN_WEIGHT
+        var maxWeight = MAX_WEIGHT_GRAM
+        if (selectedWeightType == ProductEditWeightType.KILOGRAM) {
+            maxWeight = MAX_WEIGHT_KG
         }
-        return productLogistic
+        if (minWeight.removeCommaToInt() > getWeight() || getWeight() > maxWeight.removeCommaToInt()) {
+            spinnerCounterInputViewWeight.setCounterError(getString(R.string.product_error_product_weight_not_valid, minWeight, maxWeight))
+            return false
+        }
+        spinnerCounterInputViewWeight.setCounterError(null)
+        return true
+    }
+
+    private fun isPreOrderValid(): Boolean {
+        if(labelSwitchPreOrder.isChecked){
+            var minPreOrder = MIN_PRE_ORDER
+            var maxPreOrder = MAX_PRE_ORDER_DAY
+            if (selectedPreOrderTimeType == ProductEditPreOrderTimeType.WEEK) {
+                maxPreOrder = MAX_PRE_ORDER_WEEK
+            }
+            if (minPreOrder.removeCommaToInt() > getPreOrder() || getPreOrder() > maxPreOrder.removeCommaToInt()) {
+                spinnerCounterInputViewProcessTime.setCounterError(getString(R.string.product_error_product_weight_not_valid, minPreOrder, maxPreOrder))
+                return false
+            }
+            spinnerCounterInputViewProcessTime.setCounterError(null)
+        }
+        return true
+    }
+
+    private fun String.removeCommaToInt(): Int{
+        return toString().replace(",", "").toInt()
     }
 
     private fun getPreOrderTimeTypeTitle(type: Int): String {
@@ -120,6 +174,8 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 }
                 selectedWeightType = itemId
                 spinnerCounterInputViewWeight.spinnerTextView.editText.setText(getWeightTypeTitle(selectedWeightType))
+                spinnerCounterInputViewWeight.counterValue = getString(R.string.product_default_counter_text).toDouble()
+                spinnerCounterInputViewWeight.counterEditText.setSelection(spinnerCounterInputViewWeight.counterEditText.text.length)
             }
         })
 
@@ -144,6 +200,8 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 }
                 selectedPreOrderTimeType = itemId
                 spinnerCounterInputViewProcessTime.spinnerTextView.editText.setText(getPreOrderTimeTypeTitle(selectedPreOrderTimeType))
+                spinnerCounterInputViewProcessTime.counterValue = getString(R.string.product_default_counter_text).toDouble()
+                spinnerCounterInputViewProcessTime.counterEditText.setSelection(spinnerCounterInputViewProcessTime.counterEditText.text.length)
             }
         })
 
@@ -151,10 +209,24 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 selectedPreOrderTimeType == ProductEditPreOrderTimeType.DAY)
         checkedBottomSheetMenu.addItem(ProductEditPreOrderTimeType.WEEK, getPreOrderTimeTypeTitle(ProductEditPreOrderTimeType.WEEK),
                 selectedPreOrderTimeType == ProductEditPreOrderTimeType.WEEK)
-        checkedBottomSheetMenu.addItem(ProductEditPreOrderTimeType.MONTH, getPreOrderTimeTypeTitle(ProductEditPreOrderTimeType.MONTH),
-                selectedPreOrderTimeType == ProductEditPreOrderTimeType.MONTH)
 
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
+    }
+
+    private fun saveData(productLogistic: ProductLogistic): ProductLogistic{
+        productLogistic.weightType = selectedWeightType
+        productLogistic.weight = getWeight().toInt()
+        productLogistic.insurance = labelCheckboxInsurance.isChecked
+        productLogistic.freeReturn = labelCheckboxFreeReturn.isChecked
+        productLogistic.preOrder = labelSwitchPreOrder.isChecked
+        if(labelSwitchPreOrder.isChecked){
+            productLogistic.processTimeType = selectedPreOrderTimeType
+            productLogistic.processTime = getPreOrder().toInt()
+        } else {
+            productLogistic.processTimeType = ProductEditPreOrderTimeType.DAY
+            productLogistic.processTime = 0
+        }
+        return productLogistic
     }
 
     private fun setResult(){
@@ -165,6 +237,14 @@ class ProductEditWeightLogisticFragment : Fragment() {
     }
 
     companion object {
+
+        const val MIN_WEIGHT = "1"
+        const val MAX_WEIGHT_GRAM = "500,000"
+        const val MAX_WEIGHT_KG = "500"
+
+        const val MIN_PRE_ORDER = "1"
+        const val MAX_PRE_ORDER_DAY = "90"
+        const val MAX_PRE_ORDER_WEEK = "13"
 
         fun getWeightTypeTitle(type: Int): Int {
             var resString = -1

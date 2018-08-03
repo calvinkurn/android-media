@@ -51,7 +51,6 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
     }
 
     fun setCatalogChosen(productCatalog: ProductCatalog){
-        if(productCatalog.catalogName!=null)
-            view.labelCatalog.setContent(productCatalog.catalogName)
+        view.labelCatalog.setContent(productCatalog.catalogName)
     }
 }
