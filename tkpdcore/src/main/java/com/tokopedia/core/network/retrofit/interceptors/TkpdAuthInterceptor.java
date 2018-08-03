@@ -250,7 +250,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             final Buffer buffer = new Buffer();
             request.body().writeTo(buffer);
             return buffer.readUtf8();
-        } catch (final IOException e) {
+        } catch (final Throwable e) {
             return "";
         }
     }
@@ -267,7 +267,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             String status = json.optString("status", "OK");
             return status.equals("UNDER_MAINTENANCE");
         } catch (Throwable e) {
-            e.printStackTrace();
+            // Do nothing
             return false;
         }
     }
