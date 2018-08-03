@@ -1412,6 +1412,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
+    }
 
     @Override
     public FingerprintModel getFingerprintModel() {
