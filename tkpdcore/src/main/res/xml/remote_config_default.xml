@@ -223,4 +223,12 @@
         <key>sellerapp_is_enabled_new_setting_bank</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_new_change_password_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_new_change_password_enabled</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

@@ -2229,5 +2229,6 @@ di Tokopedia Sekarang!</string>
     <string name="referral_welcome_header"><![CDATA[<font color=\'#399c3f\'>Givana</font> memberi kamu Promo Referral.]]></string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
+    <string name="message_success_change_password">Kata sandi berhasil diubah</string>
 
 </resources>
