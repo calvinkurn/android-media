@@ -7,6 +7,7 @@ package com.tokopedia.network;
 public class SessionUrl {
     public static String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
+    public static String CHANGE_PHONE_DOMAIN = "https://m.tokopedia.com/";
 
     public static final String PATH_GET_TOKEN = "token";
     public static final String PATH_GET_INFO = "info";
@@ -82,6 +83,12 @@ public class SessionUrl {
         public static final String PATH_CHANGE_NAME = BASE_UPDATE;
         public static final String PATH_ADD_PASSWORD = BASE_UPDATE;
 
+    }
+
+    public static class ChangePhone {
+        public static final String WEBVIEW_CHANGE_PHONE_NUMBER = "user/activation/inactive-phone";
+        public static final String PATH_WEBVIEW_CHANGE_PHONE_NUMBER =
+                CHANGE_PHONE_DOMAIN + WEBVIEW_CHANGE_PHONE_NUMBER;
     }
 
 }

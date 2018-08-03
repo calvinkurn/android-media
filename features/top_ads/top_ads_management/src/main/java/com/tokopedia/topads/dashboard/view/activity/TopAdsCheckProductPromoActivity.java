@@ -14,7 +14,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
@@ -114,6 +114,6 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
 
     @Override
     public TopAdsComponent getComponent() {
-        return ((TopAdsModuleRouter) getApplication()).getTopAdsComponent();
+        return TopAdsComponentInstance.getComponent(getApplication());
     }
 }

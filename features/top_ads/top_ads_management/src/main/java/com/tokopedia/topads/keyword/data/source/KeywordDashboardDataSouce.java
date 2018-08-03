@@ -19,6 +19,7 @@ import rx.Observable;
  * @author normansyahputa on 5/18/17.
  */
 
+@Deprecated
 public class KeywordDashboardDataSouce {
 
     private DashboardKeywordCloud dashboardKeywordCloud;

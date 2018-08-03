@@ -1,21 +1,17 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.Manifest;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
@@ -25,39 +21,32 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by hangnadi on 10/3/17.
  */
-
-@RuntimePermissions
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
         DiscoverySearchView.ImageSearchClickListener,
         DiscoverySearchView.OnQueryTextListener,
         BottomNavigationListener {
 
+    private static final int REQUEST_CODE_IMAGE = 2390;
     private static final double MIN_SCORE = 10.0;
     private static final String FAILURE = "no matching result found";
     private static final String NO_RESPONSE = "no response";
@@ -71,7 +60,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public MenuItem searchItem;
     private boolean isLastRequestForceSearch;
 
-    private UploadImageDialog uploadDialog;
     private TkpdProgressDialog tkpdProgressDialog;
     private boolean fromCamera;
     private String imagePath;
@@ -427,70 +415,31 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onImageSearchClicked() {
-        uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
-        showUploadDialog();
-    }
-
-    public void showUploadDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.dialog_image_upload_option));
-        builder.setPositiveButton(getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                sendGalleryImageSearchProductGTM();
-                DiscoveryActivityPermissionsDispatcher.actionImagePickerWithCheck(DiscoveryActivity.this);
-
-            }
-        }).setNegativeButton(getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                sendCameraImageSearchProductGTM();
-                DiscoveryActivityPermissionsDispatcher.actionCameraWithCheck(DiscoveryActivity.this);
-            }
-        });
-
-        Dialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
+                null, null);
+        Intent intent = ImagePickerActivity.getIntent(this, builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == UploadImageDialog.REQUEST_CAMERA || requestCode == UploadImageDialog.REQUEST_GALLERY) {
-
-            fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
-
-            if (uploadDialog == null) {
-                uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
-                if (searchView != null) {
-                    searchView.clearFocus();
-                }
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            if (imagePathList == null || imagePathList.size() <= 0) {
+                return;
             }
-
-            uploadDialog.onResult(
-                    requestCode,
-                    resultCode,
-                    data,
-                    new UploadImageDialog.UploadImageDialogListener() {
-                        @Override
-                        public void onSuccess(String imagePath) {
-
-                            File file = new File(imagePath);
-                            if (file.exists()) {
-                                onImagePickedSuccess(imagePath);
-                            } else {
-                                showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
-                            }
-                        }
-
-                        @Override
-                        public void onFailed() {
-                            showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
-                        }
-                    });
-
+            String imagePath = imagePathList.get(0);
+            if (!TextUtils.isEmpty(imagePath)) {
+                onImagePickedSuccess(imagePath);
+            } else {
+                showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+            }
+            if (searchView != null) {
+                searchView.clearFocus();
+            }
         } else if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
@@ -613,78 +562,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         } else {
             NetworkErrorHelper.showSnackbar(this, message);
         }
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        uploadDialog.openImagePicker();
-
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        uploadDialog.openCamera();
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        DiscoveryActivityPermissionsDispatcher.onRequestPermissionsResult(
-                DiscoveryActivity.this, requestCode, grantResults);
-
-    }
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onShowRationale(this, request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onPermissionDenied(this, listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 
     public void setImagePath(String imagePath) {

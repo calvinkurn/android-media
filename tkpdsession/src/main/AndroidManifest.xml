@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
     <application
         android:allowBackup="true"
@@ -192,6 +193,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+
+        <activity android:name=".inactivephonenumber.ChangeInactivePhoneNumberWebView"
+                  android:label="@string/title_change_inactive_phone_number"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/Theme.White"
+                  android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
