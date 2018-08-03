@@ -328,9 +328,6 @@ public class SearchProductGqlResponse {
         @SerializedName("is_preorder")
         @Expose
         private boolean preorder;
-        @SerializedName("cashback")
-        @Expose
-        private String cashback;
         @SerializedName("wishlist")
         @Expose
         private boolean wishlist;
@@ -448,10 +445,6 @@ public class SearchProductGqlResponse {
 
         public boolean isPreorder() {
             return preorder;
-        }
-
-        public String getCashback() {
-            return cashback;
         }
 
         public boolean isWishlist() {
