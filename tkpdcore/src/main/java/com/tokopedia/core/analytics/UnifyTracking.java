@@ -61,7 +61,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-     /* VARIANT */
+    /* VARIANT */
 
 
     public static void eventClickVariant(String eventLabel) {
@@ -265,7 +265,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-     /* CATEGORY IMPROVEMENT*/
+    /* CATEGORY IMPROVEMENT*/
 
     public static void eventHomeTopPicksTitle(String label) {
         sendGTMEvent(new EventTracking(
@@ -1106,13 +1106,13 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventPDPOrientationChanged(String productId) {
-       sendGTMEvent(new EventTracking(
-                       AppEventTracking.Event.VIEW_PDP,
-                       AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
-                       AppEventTracking.Action.LANDSCAPE_VIEW,
-                       String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
-                       ).getEvent());
-        }
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.VIEW_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.LANDSCAPE_VIEW,
+                String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
+        ).getEvent());
+    }
 
     public static void eventPDPCart() {
         sendGTMEvent(new EventTracking(

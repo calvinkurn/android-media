@@ -43,9 +43,12 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -1458,5 +1461,36 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isLoginInactivePhoneLinkEnabled() {
         return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
                 && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return new Intent(context, ContactUsActivity.class);
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return SimpleWebViewWithFilePickerActivity.getIntent(context,
+                url);
+    }
+
+    @Override
+    public Intent getProfileSettingIntent(Context context) {
+        return ManagePeopleProfileActivity.createIntent(context);
     }
 }
