@@ -15,6 +15,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
@@ -139,6 +140,9 @@ public class ChatRoomContract {
         boolean isChatBot();
 
         void onQuickReplyClicked(QuickReplyViewModel quickReply);
+
+        void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable
+                modelToBeRemoved);
 
         void showQuickReplyView(QuickReplyListViewModel model);
 

@@ -11,11 +11,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
@@ -144,7 +144,8 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
+                            intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                                    .getSettingBankIntent(getActivity());
                             startActivity(intent);
                         } else {
                             showNoPasswordDialog();
@@ -191,7 +192,8 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
+                            intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                                    .getSettingBankIntent(getActivity());
                             startActivity(intent);
                         } else {
                             showNoPasswordDialog();

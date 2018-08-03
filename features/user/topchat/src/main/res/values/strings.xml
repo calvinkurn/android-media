@@ -49,6 +49,8 @@ yang ditemukan</string>
     <!-- Chat Room -->
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
         Pesan</string>
+    <string name="chat_yesterday_date">Kemarin</string>
+    <string name="chat_today_date">Hari ini</string>
 
     <!-- Chat Template -->
     <string name="add_template_chat_title">Tambah Template Pesan</string>

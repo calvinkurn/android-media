@@ -59,6 +59,8 @@ import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
+import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -227,6 +229,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionUrl.CHANGE_PHONE_DOMAIN = ConsumerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
+        BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         TopChatUrl.TOPCHAT_JS_API = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
