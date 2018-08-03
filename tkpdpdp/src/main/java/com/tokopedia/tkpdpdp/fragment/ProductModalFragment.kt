@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.network.entity.variant.ProductVariant
 import com.tokopedia.core.product.model.productdetail.ProductDetailData
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -208,13 +209,13 @@ class ProductModalFragment : BaseDaggerFragment() {
     private fun renderProductInfoView() {
         ImageHandler.LoadImage(variant_image_title, productData?.productImages?.get(0)?.imageSrc300)
 
-        variant_product_name.text = productData?.info?.productName
+        variant_product_name.text = MethodChecker.fromHtml(productData?.info?.productName)
         variant_product_price.text = productData?.info?.productPrice
 
         et_remark.setText(selectedRemarkNotes)
 
         activity?.let {
-            text_variant_stock.text = productData?.info?.productStockWording
+            text_variant_stock.text = MethodChecker.fromHtml(productData?.info?.productStockWording)
             text_variant_stock.visibility = View.VISIBLE
             if (productData?.info?.limitedStock!!) {
                 text_variant_stock.setTextColor(ContextCompat.getColor(it, R.color.tkpd_dark_red))
