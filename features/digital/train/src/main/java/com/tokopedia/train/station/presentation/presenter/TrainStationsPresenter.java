@@ -61,6 +61,7 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
 
     @Override
     public void actionOnInitialLoad() {
+        getView().hideSearchView();
         trainGetPopularStationsUseCase.createObservable(trainGetPopularStationsUseCase.createRequest())
                 .onErrorReturn(throwable -> new ArrayList<>()).zipWith(trainGetAllStationsUseCase.createObservable(RequestParams.create()), (trainStations, allStations) -> {
             List<Visitable> visitables = new ArrayList<>();
@@ -82,11 +83,15 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        getView().hideLoading();
+                        if (isViewAttached()){
+                            getView().showSearchView();
+                            getView().hideLoading();
+                        }
                     }
 
                     @Override
                     public void onNext(List<Visitable> visitables) {
+                        getView().showSearchView();
                         getView().hideLoading();
                         getView().renderStationList(visitables);
                     }

@@ -154,6 +154,16 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     }
 
     @Override
+    public void hideSearchView() {
+        searchInputView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSearchView() {
+        searchInputView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onStationClicked(TrainStationViewModel viewModel) {
         TrainStationAndCityViewModel trainStationAndCityViewModel = new TrainStationAndCityViewModel(
                 viewModel.getStationCode(), viewModel.getCityName(), viewModel.getIslandName()

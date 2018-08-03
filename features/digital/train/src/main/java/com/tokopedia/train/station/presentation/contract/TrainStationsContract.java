@@ -24,6 +24,10 @@ public interface TrainStationsContract {
         void hideLoading();
 
         void renderSearchHint();
+
+        void hideSearchView();
+
+        void showSearchView();
     }
 
     interface Presenter extends CustomerPresenter<View> {
