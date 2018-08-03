@@ -27,6 +27,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.base.EmptyStateClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
@@ -60,20 +61,20 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     public static final String SEARCH_NF_VALUE = "1";
     private final int MAX_TOPADS = 4;
     private TopAdsView topAdsView;
-    private TopAdsParams params = new TopAdsParams();
+    private TopAdsParams params;
     private Context context;
     private ImageView noResultImage;
     private TextView emptyTitleTextView;
     private TextView emptyContentTextView;
     private Button emptyButtonItemButton;
-    private final ItemClickListener clickListener;
+    private final EmptyStateClickListener clickListener;
     private TopAdsBannerView topAdsBannerView;
     private RecyclerView selectedFilterRecyclerView;
     private SelectedFilterAdapter selectedFilterAdapter;
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
-    public EmptySearchViewHolder(View view, ItemClickListener clickListener, Config topAdsConfig) {
+    public EmptySearchViewHolder(View view, EmptyStateClickListener clickListener, Config topAdsConfig) {
         super(view);
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
@@ -85,8 +86,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
         selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView);
 
-        params = topAdsConfig.getTopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
+        if (topAdsConfig != null) {
+            params = topAdsConfig.getTopAdsParams();
+            params.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
+        }
         initSelectedFilterRecyclerView();
     }
 
@@ -206,7 +209,9 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         } else {
             selectedFilterRecyclerView.setVisibility(View.GONE);
         }
-        loadBannerAds();
+        if (params != null) {
+            loadBannerAds();
+        }
     }
 
     private CharSequence boldTextBetweenQuotes(String text) {
@@ -274,9 +279,9 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private static class SelectedFilterAdapter extends RecyclerView.Adapter<SelectedFilterItemViewHolder> {
 
         private List<Option> optionList = new ArrayList<>();
-        private ItemClickListener clickListener;
+        private EmptyStateClickListener clickListener;
 
-        public SelectedFilterAdapter(ItemClickListener clickListener) {
+        public SelectedFilterAdapter(EmptyStateClickListener clickListener) {
             this.clickListener = clickListener;
         }
 
@@ -305,10 +310,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
     private static class SelectedFilterItemViewHolder extends RecyclerView.ViewHolder {
         private TextView filterText;
-        private final ItemClickListener clickListener;
+        private final EmptyStateClickListener clickListener;
         private View deleteButton;
 
-        public SelectedFilterItemViewHolder(View itemView, ItemClickListener clickListener) {
+        public SelectedFilterItemViewHolder(View itemView, EmptyStateClickListener clickListener) {
             super(itemView);
             filterText = itemView.findViewById(R.id.filter_text);
             deleteButton = itemView.findViewById(R.id.delete_button);

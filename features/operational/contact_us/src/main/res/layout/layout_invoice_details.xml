@@ -71,16 +71,20 @@
 
     <TextView
         android:id="@+id/txt_ticket_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="13dp"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:includeFontPadding="false"
         android:text="TextView"
         android:textColor="@color/black_55"
         android:textSize="@dimen/font_micro"
-        app:layout_constraintStart_toEndOf="@+id/img_order"
+        app:layout_constraintEnd_toEndOf="@id/cardview_invoice"
+        app:layout_constraintStart_toEndOf="@id/img_order"
         app:layout_constraintTop_toBottomOf="@+id/txt_ticket_invoice"
         tools:text="Helm Cargloss MXC Supertrack Ice Brown" />
 

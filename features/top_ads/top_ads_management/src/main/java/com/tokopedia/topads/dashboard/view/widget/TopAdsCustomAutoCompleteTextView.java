@@ -95,7 +95,7 @@ public class TopAdsCustomAutoCompleteTextView extends AppCompatAutoCompleteTextV
 
     public void setVisibleDrawableRight(boolean isVisible){
         if(isVisible){
-            Drawable drawable = AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_close_green);
+            Drawable drawable = AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_topads_close_green);
             setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
         }else{
             Drawable drawable = AppCompatResources.getDrawable(this.getContext(), R.drawable.ic_arrow_down_wpadding);
