@@ -1,6 +1,8 @@
 package com.tokopedia.product.edit.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel
+import com.tokopedia.product.edit.domain.interactor.FetchCatalogDataUseCase
 import com.tokopedia.product.edit.domain.interactor.GetCategoryRecommUseCase
 import com.tokopedia.product.edit.domain.model.CategoryRecommDomainModel
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
@@ -17,7 +19,8 @@ class ProductEditCategoryPresenter
                 object : Subscriber<CategoryRecommDomainModel>() {
                     override fun onNext(categoryRecommDomainModel: CategoryRecommDomainModel?) {
                         view?.onSuccessLoadRecommendationCategory(
-                                CategoryRecommDomainToViewMapper.mapDomainView(categoryRecommDomainModel))
+                                CategoryRecommDomainToViewMapper.mapDomainView(categoryRecommDomainModel)
+                                        .productCategoryPrediction)
                     }
 
                     override fun onCompleted() {}

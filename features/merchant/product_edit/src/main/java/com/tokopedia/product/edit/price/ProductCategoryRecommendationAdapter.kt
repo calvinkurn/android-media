@@ -8,7 +8,7 @@ import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.ProductCategory
 import kotlinx.android.synthetic.main.item_product_category_recommendation.view.*
 
-class ProductCategoryRecommendationAdapter(private var categoryRecommendationList: ArrayList<ProductCategory>,
+class ProductCategoryRecommendationAdapter(private val categoryRecommendationList: MutableList<ProductCategory>,
                                            var listener: Listener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var selectedPosition = -1
@@ -38,8 +38,9 @@ class ProductCategoryRecommendationAdapter(private var categoryRecommendationLis
         return super.getItemId(position)
     }
 
-    fun replaceData(categoryRecommendationList: ArrayList<ProductCategory>) {
-        this.categoryRecommendationList = categoryRecommendationList
+    fun replaceData(categoryRecommendationList: List<ProductCategory>) {
+        this.categoryRecommendationList.clear()
+        this.categoryRecommendationList.addAll(categoryRecommendationList)
         notifyDataSetChanged()
     }
 

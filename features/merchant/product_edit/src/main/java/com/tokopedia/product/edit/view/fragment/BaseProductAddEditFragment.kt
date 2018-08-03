@@ -95,7 +95,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun startCatalogActivity() {
         activity?.run {
             startActivityForResult(ProductEditCategoryActivity.createIntent(this,
-                    currentProductAddViewModel?.productName?.name, currentProductAddViewModel?.productCategory,
+                    currentProductAddViewModel?.productName?.name , currentProductAddViewModel?.productCategory,
                     currentProductAddViewModel?.productCatalog), REQUEST_CODE_GET_CATALOG_CATEGORY)
         }
 

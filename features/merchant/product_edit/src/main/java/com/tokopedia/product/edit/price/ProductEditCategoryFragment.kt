@@ -1,6 +1,7 @@
 package com.tokopedia.product.edit.price
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -8,16 +9,22 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryComponent
-import com.tokopedia.product.edit.di.module.ProductEditCategoryModule
+import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
+import com.tokopedia.product.edit.util.ProductEditModuleRouter
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
+import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
+import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import com.tokopedia.product.edit.view.presenter.ProductEditCategoryPresenter
 import javax.inject.Inject
 
-class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCatalogViewHolder.Listener{
+class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCatalogViewHolder.Listener,
+        ProductEditCategoryView{
+
+    val appRouter : Context by lazy { activity?.application as Context }
 
     override fun getScreenName(): String? = null
 
@@ -27,11 +34,12 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
 
 
     override fun initInjector() {
-        DaggerProductEditCategoryComponent.builder()
+        DaggerProductEditCategoryCatalogComponent.builder()
                 .productComponent(getComponent(ProductComponent::class.java))
-                .productEditCategoryModule(ProductEditCategoryModule())
+                .productEditCategoryCatalogModule(ProductEditCategoryCatalogModule())
                 .build()
                 .inject(this)
+        presenter.attachView(this)
     }
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
@@ -66,12 +74,19 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
     }
 
     override fun onLabelCategoryClicked() {
-
+        if (appRouter is ProductEditModuleRouter){
+            startActivityForResult((appRouter as ProductEditModuleRouter)
+                    .getCategoryPickerIntent(activity, productCategory.categoryId)
+                    , REQUEST_CODE_GET_CATEGORY)
+        }
     }
 
     override fun onLabelCatalogClicked() {
-        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java)
-                .putExtra(EXTRA_CATALOG, productCatalog), REQUEST_CODE_GET_CATALOG)
+        context?.run {
+            startActivityForResult(ProductEditCatalogPickerActivity
+                    .createIntent(this, productName, productCategory.categoryId.toLong(), productCatalog),
+                    REQUEST_CODE_GET_CATALOG)
+        }
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
@@ -112,10 +127,24 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
 
         fun createInstance(productName: String, category: ProductCategory?, catalog: ProductCatalog?) =
                 ProductEditCategoryFragment().apply {
-                    arguments = Bundle().apply { putString(EXTRA_PRODUCT_NAME, productName)
+                    arguments = Bundle().apply {
+                        putString(EXTRA_PRODUCT_NAME, productName)
                         putParcelable(EXTRA_CATALOG, catalog ?: ProductCatalog())
                         putParcelable(EXTRA_CATEGORY, category ?: ProductCategory())
                 }
         }
+    }
+
+    override fun onDestroyView() {
+        presenter.detachView()
+        super.onDestroyView()
+    }
+
+    override fun onSuccessLoadRecommendationCategory(categories: List<ProductCategoryPredictionViewModel>) {
+        productEditCategoryCatalogViewHolder.renderRecommendation(categories)
+    }
+
+    override fun onErrorLoadRecommendationCategory(throwable: Throwable?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
