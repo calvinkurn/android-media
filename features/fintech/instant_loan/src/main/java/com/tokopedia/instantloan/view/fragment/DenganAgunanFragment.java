@@ -193,10 +193,6 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     }
 
-    public String getScreenNameId() {
-        return InstantLoanEventConstants.Screen.AGUNAN_SCREEN_NAME;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -218,7 +214,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     @Override
     protected String getScreenName() {
-        return getScreenNameId();
+        return InstantLoanEventConstants.Screen.AGUNAN_SCREEN_NAME;
     }
 
     public static DenganAgunanFragment createInstance(int position) {

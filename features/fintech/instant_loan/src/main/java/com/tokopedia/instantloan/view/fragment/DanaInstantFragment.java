@@ -344,10 +344,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         mDialogIntro.dismiss();
     }
 
-    public String getScreenNameId() {
-        return InstantLoanEventConstants.Screen.DANA_INSTAN_SCREEN_NAME;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -369,7 +365,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected String getScreenName() {
-        return getScreenNameId();
+        return InstantLoanEventConstants.Screen.DANA_INSTAN_SCREEN_NAME;
     }
 
     private void sendCariPinjamanClickEvent() {

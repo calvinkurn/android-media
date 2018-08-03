@@ -131,10 +131,6 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
         super.onActivityCreated(savedInstanceState);
     }
 
-    public String getScreenNameId() {
-        return InstantLoanEventConstants.Screen.TANPA_AGUNAN_SCREEN_NAME;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -156,7 +152,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected String getScreenName() {
-        return getScreenNameId();
+        return InstantLoanEventConstants.Screen.TANPA_AGUNAN_SCREEN_NAME;
     }
 
     public static TanpaAgunanFragment createInstance(int position) {
