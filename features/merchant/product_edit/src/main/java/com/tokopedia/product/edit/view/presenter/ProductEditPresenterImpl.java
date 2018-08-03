@@ -46,8 +46,9 @@ public class ProductEditPresenterImpl extends ProductAddPresenterImpl<ProductEdi
     public ProductEditPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     UserSession userSession,
+                                    FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                     GetProductDetailUseCase getProductDetailUseCase) {
-        super(saveDraftProductUseCase, getShopInfoUseCase, userSession);
+        super(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
         this.getProductDetailUseCase = getProductDetailUseCase;
     }
 

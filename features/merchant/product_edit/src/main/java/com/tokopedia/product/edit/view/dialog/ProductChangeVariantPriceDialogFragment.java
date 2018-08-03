@@ -200,24 +200,8 @@ public class ProductChangeVariantPriceDialogFragment extends DialogFragment {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public final void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            onAttachListener(activity);
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public final void onAttach(Context context) {
-        super.onAttach(context);
-        onAttachListener(context);
-    }
-
-    protected void onAttachListener(Context context) {
-        onProductChangeVariantPriceFragmentListener = (OnProductChangeVariantPriceFragmentListener) context;
+    public void attachListener(OnProductChangeVariantPriceFragmentListener OnProductChangeVariantPriceFragmentListener) {
+        onProductChangeVariantPriceFragmentListener = OnProductChangeVariantPriceFragmentListener;
     }
 
     @Override

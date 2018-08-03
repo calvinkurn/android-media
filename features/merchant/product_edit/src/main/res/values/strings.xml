@@ -55,6 +55,7 @@
     <string name="product_label_kilogram">Kilogram</string>
     <string name="product_label_day">Hari</string>
     <string name="product_label_week">Minggu</string>
+    <string name="product_label_month">Bulan</string>
     <string name="product_label_what_do_you_sell">Apa yang Anda jual?</string>
     <string name="product_label_choose_product_category_catalog">Pilih produk yang sesuai dengan yang Anda jual</string>
     <string name="product_label_choose_category_catalog_information">Sesuaikan produk Anda dengan katalog yang tersedia untuk mempercepat pengisian informasi produk</string>
@@ -77,6 +78,7 @@
     <string name="product_label_stock_count">Jumlah Stock</string>
     <string name="product_label_stock_always_available">Stock Selalu Tersedia</string>
     <string name="product_label_stock_limited">Stock Terbatas</string>
+    <string name="product_label_stock_empty">Stock Kosong</string>
     <string name="product_label_insurance">Asuransi Pengiriman</string>
     <string name="product_label_free_return">Free Returns</string>
     <string name="product_label_pre_order">Pre order</string>
@@ -119,7 +121,15 @@
     <string name="product_draft_save_as_draft">Simpan Draft</string>
     <string name="product_draft_dialog_cancel_message">Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?</string>
     <string name="product_wholesale_range_format">≥ %1$s buah</string>
+    <string name="product_count_wholesale">%d Harga</string>
     <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_minimum_order_not_valid">Minimum pemesanan harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_maksimum_order_not_valid">Maksimum pemesanan harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_minimum_order_not_valid_2">Minimum pemesanan harus lebih kecil dari Maksimum pemesanan</string>
+    <string name="product_error_product_maksimum_order_not_valid_2">Maksimum pemesanan harus lebih besar dari Minimum pemesanan</string>
+    <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
     <string name="product_fix_previous_wholesale">Perbaiki error sebelumnya terlebih dahulu.</string>
     <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
     <string name="product_price_should_be_cheaper_than_main_price">Harga harus lebih murah dari harga utama.</string>
@@ -129,6 +139,12 @@
     <string name="product_notification_complete_upload_product">Sukses Mengunggah Produk</string>
     <string name="product_title_notification_upload_product">Mengunggah</string>
     <string name="product_group_notification">com.tokopedia</string>
+    <string name="product_title_confirmation_change_wholesale_price">Harga Produk Terkunci</string>
+    <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus. Anda yakin untuk mengubah harga Produk?</string>
+
+    <string name="product_add_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
+    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
+
     <!-- product score -->
     <string name="product_title_activity_product_score">Skor Produk</string>
     <string name="product_score_label_indicator_title">Indikator Skor Produk</string>

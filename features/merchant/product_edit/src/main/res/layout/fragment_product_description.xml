@@ -11,7 +11,8 @@
         style="@style/LabelLayout"
         android:orientation="horizontal"
         android:divider="@drawable/bg_line_separator"
-        android:showDividers="beginning|end">
+        android:showDividers="beginning|end"
+        android:gravity="center_vertical">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

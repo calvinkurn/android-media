@@ -41,4 +41,8 @@ class ProductEditNameViewHolder(var view: View, listener: Listener){
     fun setName(string: String){
         view.editTextName.setText(string)
     }
+
+    fun setEditableName(isEditableName: Boolean){
+        view.editTextName.isEnabled = isEditableName
+    }
 }

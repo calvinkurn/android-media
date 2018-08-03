@@ -25,5 +25,9 @@ public interface ProductAddView extends CustomerView {
 
     void onErrorLoadShopInfo(String errorMessage);
 
+    void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList);
+
+    void onErrorGetProductVariantByCat(Throwable throwable);
+
     long getProductDraftId();
 }

@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
 import com.tokopedia.product.edit.R;
+import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
 import com.tokopedia.product.edit.view.fragment.ProductAddWholesaleFragment;
 import com.tokopedia.product.edit.common.model.edit.ProductWholesaleViewModel;
 

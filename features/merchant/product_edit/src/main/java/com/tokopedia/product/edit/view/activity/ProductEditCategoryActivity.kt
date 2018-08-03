@@ -26,7 +26,6 @@ class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductCo
         productCatalog = intent.getParcelableExtra(EXTRA_CATALOG)
         productCategory = intent.getParcelableExtra(EXTRA_CATEGORY)
         super.onCreate(savedInstanceState)
-
     }
 
     override fun getNewFragment(): Fragment{

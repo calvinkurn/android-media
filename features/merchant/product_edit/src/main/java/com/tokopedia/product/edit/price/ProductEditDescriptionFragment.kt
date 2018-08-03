@@ -11,6 +11,8 @@ import android.widget.TextView
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_DESCRIPTION
 import com.tokopedia.product.edit.price.model.ProductDescription
+import com.tokopedia.product.edit.view.activity.ProductAddDescriptionPickerActivity
+import com.tokopedia.product.edit.view.activity.ProductAddDescriptionPickerActivity.PRODUCT_DESCRIPTION
 import com.tokopedia.product.edit.view.activity.ProductAddVideoActivity
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_VIDEOS_LINKS
@@ -48,11 +50,17 @@ class ProductEditDescriptionFragment : Fragment() {
             startActivityForResult(Intent(context, ProductAddVideoActivity::class.java)
                 .putExtra(EXTRA_VIDEOS_LINKS, videoIDsTemp)
                     .putExtra(EXTRA_KEYWORD, keyword), REQUEST_CODE_GET_VIDEO) }
+
+        editTextDescription.setOnClickListener { goToProductDescriptionPicker(editTextDescription.text.toString()) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
+                REQUEST_CODE_GET_DESCRIPTION -> {
+                    val description = data!!.getStringExtra(PRODUCT_DESCRIPTION)
+                    editTextDescription.setText(description)
+                }
                 REQUEST_CODE_GET_VIDEO -> {
                     videoIDsTemp = data!!.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
                     setLabelViewVideo(videoIDsTemp)
@@ -63,18 +71,18 @@ class ProductEditDescriptionFragment : Fragment() {
     }
 
     private fun setDataDescription(productDescription: ProductDescription){
-        if(productDescription.description!= null) editTextDescription.setText(productDescription.description)
-        if(productDescription.feature!= null) editTextFeature.setText(productDescription.feature)
+        editTextDescription.setText(productDescription.description)
+        editTextFeature.setText(productDescription.feature)
         labelSwitchNewCondition.isChecked = productDescription.isNew
-        setLabelViewVideo(productDescription.videoIDs)
         videoIDsTemp = productDescription.videoIDs
+        setLabelViewVideo(productDescription.videoIDs)
     }
 
     private fun setLabelViewVideo(videoList: ArrayList<String>){
         if (videoList.size == 0)
             labelViewVideoProduct.setContent(getString(R.string.label_add))
         else
-            labelViewVideoProduct.setContent(getString(R.string.product_count_video, videoIDsTemp.size))
+            labelViewVideoProduct.setContent(getString(R.string.product_count_video, videoList.size))
     }
 
     private fun saveData(productDescription: ProductDescription): ProductDescription{
@@ -92,7 +100,12 @@ class ProductEditDescriptionFragment : Fragment() {
         activity!!.finish()
     }
 
+    private fun goToProductDescriptionPicker(description: String) {
+        startActivityForResult(ProductAddDescriptionPickerActivity.start(activity, description), REQUEST_CODE_GET_DESCRIPTION)
+    }
+
     companion object {
+        const val REQUEST_CODE_GET_DESCRIPTION = 0
         const val REQUEST_CODE_GET_VIDEO = 1
         fun createInstance() = ProductEditDescriptionFragment()
     }

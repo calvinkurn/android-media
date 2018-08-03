@@ -1,5 +1,6 @@
 package com.tokopedia.product.edit.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -49,15 +50,19 @@ public class ProductAddDescriptionPickerFragment extends TkpdBaseV4Fragment {
         View view = inflater.inflate(R.layout.fragment_product_description, container, false);
         TextView tvTitleTips = view.findViewById(R.id.tv_title_tips);
         tvTitleTips.setText(MethodChecker.fromHtml(getString(R.string.product_description_tips_title)));
+        tipsView = view.findViewById(R.id.linear_layout_tips);
+        tipsView.setOnClickListener(view12 -> startActivity(new Intent(getActivity(), ProductAddDescriptionInfoActivity.class)));
 
         descriptionEditText = view.findViewById(R.id.edit_text_description);
-        tipsView = view.findViewById(R.id.linear_layout_tips);
-        tipsView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ProductAddDescriptionInfoActivity.class));
-            }
+        TextView texViewMenu = getActivity().findViewById(R.id.texViewMenu);
+        texViewMenu.setText(getString(R.string.label_save));
+        texViewMenu.setOnClickListener(view1 -> {
+            Intent intent = new Intent();
+            intent.putExtra(PRODUCT_DESCRIPTION, getDescriptionText());
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
         });
+
         return view;
     }
 

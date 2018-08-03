@@ -36,10 +36,8 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
 
     override fun onSuccessLoadProduct(model: ProductViewModel?) {
         hideLoading()
-        if (currentProductAddViewModel == null) {
-            currentProductAddViewModel = ProductAddViewModel()
-        }
-        populateView(model?.convertToProductAddViewModel())
+        currentProductAddViewModel = model?.convertToProductAddViewModel()
+        populateView(currentProductAddViewModel)
     }
 
     override fun onErrorLoadProduct(throwable: Throwable?) {
@@ -51,6 +49,7 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
     override fun onCreate(savedInstanceState: Bundle?) {
         draftProductId = arguments?.getLong(DRAFT_PRODUCT_ID)!!
         super.onCreate(savedInstanceState)
+        presenter.attachView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

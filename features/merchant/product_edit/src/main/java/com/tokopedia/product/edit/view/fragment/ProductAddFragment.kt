@@ -8,8 +8,9 @@ import com.tokopedia.product.edit.di.module.ProductAddModule
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.model.ProductName
+import com.tokopedia.product.edit.utils.convertImageListResult
 import com.tokopedia.product.edit.view.listener.ProductAddView
-import com.tokopedia.product.edit.view.presenter.ProductAddPresenter
+import com.tokopedia.product.edit.view.model.ProductAddViewModel
 import com.tokopedia.product.edit.view.presenter.ProductAddPresenterImpl
 import java.util.ArrayList
 
@@ -23,19 +24,23 @@ class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<Pr
                 .productComponent(getComponent(ProductComponent::class.java))
                 .build()
                 .inject(this)
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        currentProductAddViewModel?.productCatalog = arguments?.get(EXTRA_CATALOG) as ProductCatalog
-        currentProductAddViewModel?.productCategory = arguments?.get(EXTRA_CATEGORY) as ProductCategory
-        currentProductAddViewModel?.productName = arguments?.get(EXTRA_NAME) as ProductName
-        currentProductAddViewModel?.productPictureList = arguments?.getStringArrayList(EXTRA_IMAGES)
+        presenter.attachView(this)
+        if(currentProductAddViewModel == null){
+            currentProductAddViewModel = ProductAddViewModel()
+        }
+        currentProductAddViewModel?.productCatalog = arguments?.get(EXTRA_CATALOG) as ProductCatalog?
+        currentProductAddViewModel?.productCategory = arguments?.get(EXTRA_CATEGORY) as ProductCategory?
+        currentProductAddViewModel?.productName = arguments?.get(EXTRA_NAME) as ProductName?
+        currentProductAddViewModel?.productPictureList = arguments?.getStringArrayList(EXTRA_IMAGES)?.convertImageListResult()
     }
 
     companion object {
-        fun createInstance(productCatalog: ProductCatalog, productCategory: ProductCategory, productName: ProductName, productImages: ArrayList<String>) : ProductAddFragment{
+        fun createInstance(productCatalog: ProductCatalog?, productCategory: ProductCategory?, productName: ProductName?, productImages: ArrayList<String>?) : ProductAddFragment{
             val productAddFragment = ProductAddFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_CATALOG, productCatalog)

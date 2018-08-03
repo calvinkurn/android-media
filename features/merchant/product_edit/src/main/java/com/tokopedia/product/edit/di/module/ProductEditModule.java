@@ -3,6 +3,7 @@ package com.tokopedia.product.edit.di.module;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
 import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.product.edit.data.mapper.EditProductFormMapper;
 import com.tokopedia.product.edit.data.source.EditProductFormDataSource;
@@ -36,8 +37,9 @@ public class ProductEditModule{
     ProductEditPresenterImpl provideProductEditPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                                              GetShopInfoUseCase getShopInfoUseCase,
                                                              UserSession userSession,
+                                                             FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                                              GetProductDetailUseCase getProductDetailUseCase){
-        return new ProductEditPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, getProductDetailUseCase);
+        return new ProductEditPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, getProductDetailUseCase);
     }
 
     @ProductAddScope
