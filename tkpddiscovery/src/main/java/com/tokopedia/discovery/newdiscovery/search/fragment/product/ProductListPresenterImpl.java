@@ -19,6 +19,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCa
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
@@ -156,10 +157,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         removeDefaultCategoryParam(requestParams);
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("q", searchParameter.getQueryKey());
-        variables.put("start", searchParameter.getStartRow());
-        variables.put("rows", 12);
-        variables.put("uniqueId", searchParameter.getUniqueID());
+        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
@@ -282,10 +280,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         removeDefaultCategoryParam(requestParams);
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("q", searchParameter.getQueryKey());
-        variables.put("start", 0);
-        variables.put("rows", 12);
-        variables.put("uniqueId", searchParameter.getUniqueID());
+        variables.put("query", searchParameter.getQueryKey());
+        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
+        variables.put("source", searchParameter.getSource());
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),

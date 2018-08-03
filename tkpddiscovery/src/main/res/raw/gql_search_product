@@ -1,19 +1,15 @@
 query SearchProduct(
- $q: String,
- $start: Int,
- $rows: Int,
- $ob: Int,
- $uniqueId: String
+ $params: String
 ) {
- searchProduct(q: $q, start: $start, rows: $rows, ob: $ob, uniqueId: $uniqueId) {
-   query
+searchProduct(params: $params) {
+  query
    source
    shareUrl
    isFilter
-   count
-   redirection {
-     redirectUrl
-     departmentId
+  count
+  redirection {
+     redirect_url
+     department_id
    }
    suggestion {
      currentKeyword
@@ -29,42 +25,66 @@ query SearchProduct(
      name
      childs
      url
-     imageUrl
-     imageUrlLarge
+     image_url
+     image_url_700
      price
+     whole_sale_price {
+      quantity_min
+      quantity_max
+      price
+     }
+     courier_count
+     condition
+     category_id
+     category_name
+     category_breadcrumb
+     department_id
+     department_name
+     labels {
+      title
+      color
+     }
+     badges {
+       title
+       image_url
+     }
+     is_featured
      rating
-     countReview
-     preorder
-     cashback
-     wishlist
-     gaKey
-     catId
+     count_review
+     original_price
+     discount_expired_time
+     discount_start_time
+     discount_percentage
+     sku
+     stock
+     ga_key
+     is_preorder
      shop {
        id
        name
        url
+       is_gold_shop
        location
        city
        reputation
        clover
-       goldmerchant
-       official
+       is_official
      }
    }
    catalogs {
      id
      name
      price
-     rawPrice
-     minPrice
-     maxPrice
-     rawMinPrice
-     rawMaxPrice
-     count
+     price_min
+     price_max
+     price_raw
+     price_min_raw
+     price_max_raw
+     count_product
      description
-     imageUrl
+     image_url
      url
-     departmentId
+     department_id
    }
  }
 }
