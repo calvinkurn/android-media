@@ -135,6 +135,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onDetach() {
+        if (getActivity() != null && getCartDataList() != null && getCartDataList().size() > 0) {
+            Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
+            service.putParcelableArrayListExtra(UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getCartDataList()));
+            getActivity().startService(service);
+        }
+        super.onDetach();
+    }
+
+    @Override
     public void onDestroy() {
         cartListAdapter.unsubscribeSubscription();
         dPresenter.detachView();
@@ -590,6 +600,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartItemPromoHolderData.setDefaultSelectedTabString(cartListData.getDefaultPromoDialogTab());
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
 
+        if (cartListData.getCartPromoSuggestion().isVisible()) {
+            cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
+        }
+
         if (cartListData.isError()) {
             cartListAdapter.addCartTickerError(
                     new CartItemTickerErrorHolderData.Builder()
@@ -597,9 +611,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                             .build()
             );
         }
-        if (cartListData.getCartPromoSuggestion().isVisible()) {
-            cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
-        }
+
         cartListAdapter.addDataList(cartListData.getCartItemDataList());
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
 
