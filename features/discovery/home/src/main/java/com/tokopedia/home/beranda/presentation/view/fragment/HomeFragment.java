@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,7 +21,6 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -30,12 +30,9 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
-import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
@@ -53,6 +50,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -80,7 +78,10 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.searchbar.MainToolbar;
+import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -154,6 +155,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         component.inject(presenter);
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(BerandaComponent component){
+        component.inject(this);
+        component.inject(presenter);
+        presenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public HomePresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(HomePresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void clearAll(){
+        adapter.clearItems();
+        adapter.notifyDataSetChanged();
+    }
+
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
@@ -193,6 +215,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onViewCreated(view, savedInstanceState);
         if (trace != null)
             trace.stop();
+
+        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
+            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
+        }
     }
 
     @Override
@@ -615,6 +641,31 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void showNetworkError() {
+        if (isAdded() && getActivity() != null) {
+            if (adapter.getItemCount() > 0) {
+                if (messageSnackbar == null) {
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            onRefresh();
+                        }
+                    });
+                }
+                messageSnackbar.showRetrySnackbar();
+            } else {
+                NetworkErrorHelper.showEmptyState(getActivity(), root, getString(R.string.msg_network_error),
+                        new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                onRefresh();
+                            }
+                        });
+            }
+        }
+    }
+
+    @Override
     public void onDynamicChannelClicked(String actionLink, String trackingAttribution) {
         onActionLinkClicked(actionLink, trackingAttribution);
     }
@@ -771,6 +822,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    public void openWebViewURL(String url) {
+        openWebViewURL(url, getActivity());
+    }
+
     @Override
     public void onReceivedTokoCashData(DrawerTokoCash tokoCashData) {
         presenter.updateHeaderTokoCashData(tokoCashData.getHomeHeaderWalletAction());
@@ -859,6 +914,35 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        mainToolbar.setNotificationNumber(number);
+        if (mainToolbar != null) {
+            mainToolbar.setNotificationNumber(number);
+        }
+    }
+
+    public void startShopInfo(String shopId) {
+        if(getActivity() != null
+                && getActivity().getApplication() != null
+                && getActivity().getApplication() instanceof IHomeRouter){
+            IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
+            startActivity(homeRouter.getShopPageIntent(getActivity(), shopId));
+        }
+    }
+
+    @Override
+    public void startDeeplinkShopInfo(String url) {
+        if(getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+    }
+
+    private ArrayList<ShowCaseObject> buildShowCase() {
+        if (mainToolbar == null)
+            return null;
+        ArrayList<ShowCaseObject> list = new ArrayList<>();
+        list.add(new ShowCaseObject(mainToolbar.getBtnNotification(),
+                getString(R.string.sc_notif_title),
+                getString(R.string.sc_notif_desc)));
+        list.add(new ShowCaseObject(mainToolbar.getBtnWishlist(),
+                getString(R.string.sc_wishlist_title),
+                getString(R.string.sc_wishlist_desc)));
+        return list;
     }
 }

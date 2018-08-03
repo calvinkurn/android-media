@@ -1,4 +1,6 @@
 <resources>
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+
     <string name="inbox">Inbox</string>
 
     <string name="chat">Chat</string>
@@ -13,7 +15,6 @@
     <string name="pesan_bantuan">Pesan Bantuan</string>
     <string name="pesan_bantuan_desc">Pantau status bantuan dari Tokopedia</string>
 
-
     <string name="notifications">Notifikasi</string>
 
     <string name="info_penjual">Info Penjual</string>
@@ -22,12 +23,21 @@
     <string name="pembelian">Pembelian</string>
     <string name="komplain_saya">Komplain Saya</string>
 
-    <string name="belum_dibayar">Belum Dibayar</string>
-    <string name="sedang_dikirim">Sedang Dikirim</string>
-    <string name="sampai_tujuan">Sampai Tujuan</string>
+    <string name="menunggu_konfirmasi">Menunggu Konfirmasi</string>
+    <string name="pesanan_diproses">Pesanan Diproses</string>
+
     <string name="pesanan_baru">Pesanan Baru</string>
     <string name="siap_dikirim">Siap Dikirim</string>
+
+    <string name="sedang_dikirim">Sedang Dikirim</string>
+    <string name="sampai_tujuan">Sampai Tujuan</string>
+
     <string name="sebagai_pembeli">Sebagai Pembeli</string>
     <string name="sebagai_penjual">Sebagai Penjual</string>
 
+    <string name="title_showcase">Tampilan simpel, navigasi mudah!</string>
+    <string name="desc_showcase">Menu Tokopedia kini tampil lebih rapi. Jelajahi dan buktikan kemudahan navigasinya!</string>
+
+    <string name="previous">Sebelumnya</string>
+    <string name="next">Selanjutnya</string>
 </resources>

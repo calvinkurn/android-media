@@ -44,7 +44,6 @@ import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRou
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION;
 
-
 /**
  * @author by anggaprasetiyo on 8/26/16.
  */
@@ -82,7 +81,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink("tokopedia://buyer/confirmed")
+    @DeepLink(ApplinkConst.PURCHASE_CONFIRMED)
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -91,7 +90,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink("tokopedia://buyer/processed")
+    @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
     public static Intent getProcessedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -100,7 +99,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink("tokopedia://buyer/shipped")
+    @DeepLink(ApplinkConst.PURCHASE_SHIPPED)
     public static Intent getShippedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -109,7 +108,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink("tokopedia://buyer/delivered")
+    @DeepLink(ApplinkConst.PURCHASE_DELIVERED)
     public static Intent getDeliveredIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -118,26 +117,8 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(TransactionAppLink.PURCHASE_ORDER)
-    public static Intent getCallingIntentPurchaseStatus(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_STATUS_ORDER)
-                .putExtras(extras);
-    }
-
-    @DeepLink(TransactionAppLink.PURCHASE_SHIPPING_CONFIRM)
-    public static Intent getCallingIntentPurchaseShipping(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVER_ORDER)
-                .putExtras(extras);
-    }
-
-    @DeepLink(TransactionAppLink.PURCHASE_HISTORY)
-    public static Intent getCallingIntentPurchaseHistory(Context context, Bundle extras) {
+    @DeepLink(ApplinkConst.PURCHASE_HISTORY)
+    public static Intent getHistoryIntent(Context context, Bundle extras){
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
                 .setData(uri.build())
@@ -203,8 +184,6 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @Override
     protected void initVar() {
         tabContents = new ArrayList<>();
-        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY,
-                getString(R.string.title_tab_purchase_summary));
         tabContents.add(TAB_POSITION_PURCHASE_CONFIRMED, getString(R.string.label_tx_confirmed));
         tabContents.add(TAB_POSITION_PURCHASE_PROCESSED, getString(R.string.label_tx_processed));
         tabContents.add(TAB_POSITION_PURCHASE_SHIPPED, getString(R.string.label_tx_shipped));

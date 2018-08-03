@@ -167,6 +167,7 @@ import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
@@ -295,6 +296,7 @@ import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
+import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -836,6 +838,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void goToGMSubscribe(Context context) {
+        Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
+        context.startActivity(intent);
+    }
+
+    @Override
     public void goToCreateMerchantRedirect(Context context) {
         Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
@@ -929,12 +937,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeHotlistIntent(Context context) {
-        return ParentIndexHome.getHomeHotlistIntent(context);
+//        return ParentIndexHome.getHomeHotlistIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
     public Intent getHomeFeedIntent(Context context) {
-        return ParentIndexHome.getHomeFeedIntent(context);
+//        return ParentIndexHome.getHomeFeedIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
@@ -1064,13 +1074,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeIntent(Context context) {
-        return ParentIndexHome.getHomeIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
     public Intent getHomePageIntent(Context context) {
-        // Force navigation to home tab
-        return ParentIndexHome.getHomeIntent(context);
+        return MainParentActivity.start(context);
     }
 
     @Override
@@ -2600,6 +2609,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getFavoriteFragment() {
+        return FragmentFavorite.newInstance();
+    }
+
     public void doLogoutAccount(Activity activity) {
         new GlobalCacheManager().deleteAll();
         Router.clearEtalase(activity);

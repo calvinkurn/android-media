@@ -25,13 +25,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiModule {
 
     @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return logging;
-    }
-
-    @Provides
     HomeDataApi homeDataApi(@HomeGraphQLQualifier Retrofit retrofit){
         return retrofit.create(HomeDataApi.class);
     }

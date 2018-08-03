@@ -38,6 +38,8 @@ public interface HomeContract {
 
         void showNetworkError(String message);
 
+        void showNetworkError();
+
         void removeNetworkError();
 
         String getString(@StringRes int res);
@@ -45,6 +47,8 @@ public interface HomeContract {
         Context getContext();
 
         void openWebViewURL(String url, Context context);
+
+        void openWebViewURL(String url);
 
         Activity getActivity();
 
@@ -57,6 +61,10 @@ public interface HomeContract {
         Observable<PendingCashback> getTokocashPendingCashback();
 
         Observable<TokoPointDrawerData> getTokopoint();
+
+        void startShopInfo(String shopId);
+
+        void startDeeplinkShopInfo(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {

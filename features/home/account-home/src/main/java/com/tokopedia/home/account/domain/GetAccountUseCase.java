@@ -8,8 +8,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
-import com.tokopedia.navigation_common.WalletModel;
-import com.tokopedia.navigation_common.WalletPref;
+import com.tokopedia.navigation_common.model.WalletModel;
+import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

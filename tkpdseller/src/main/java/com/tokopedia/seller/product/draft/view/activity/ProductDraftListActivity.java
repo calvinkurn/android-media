@@ -13,6 +13,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -36,7 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 @DeepLink(ApplinkConst.PRODUCT_DRAFT)
-public class ProductDraftListActivity extends DrawerPresenterActivity
+public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
         implements HasComponent<ProductComponent>, ProductDraftSaveBulkView,
         ProductDraftListFragment.OnProductDraftListFragmentListener {
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();

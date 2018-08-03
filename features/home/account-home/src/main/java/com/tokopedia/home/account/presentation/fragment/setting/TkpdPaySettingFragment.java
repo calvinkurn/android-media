@@ -18,8 +18,8 @@ import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.DaggerTkpdPaySettingComponent;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
-import com.tokopedia.navigation_common.WalletModel;
-import com.tokopedia.navigation_common.WalletPref;
+import com.tokopedia.navigation_common.model.WalletModel;
+import com.tokopedia.navigation_common.model.WalletPref;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
@@ -22,7 +22,7 @@ import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFrag
  * Created by zulfikarrahman on 9/25/17.
  */
 @DeepLink(ApplinkConst.PRODUCT_MANAGE)
-public class ProductManageActivity extends DrawerPresenterActivity implements HasComponent<ProductComponent> {
+public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
 

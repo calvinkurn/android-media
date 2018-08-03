@@ -62,36 +62,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image_shop" />
 
-        <ImageView
-            android:id="@+id/image_saldo"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+        <LinearLayout
+            android:id="@+id/layout_deposit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_saldo_green"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/separator" />
-
-        <TextView
-            android:id="@+id/text_saldo_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:text="@string/title_saldo_setting"
-            app:layout_constraintBottom_toBottomOf="@+id/image_saldo"
-            app:layout_constraintStart_toEndOf="@+id/image_saldo"
-            app:layout_constraintTop_toTopOf="@+id/image_saldo"
-            style="@style/TextView.Micro"/>
-
-        <TextView
-            android:id="@+id/text_saldo_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="viewEnd"
-            app:layout_constraintBottom_toBottomOf="@+id/text_saldo_label"
+            android:orientation="horizontal"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_saldo_label"
-            style="@style/TextView.Small.Bold"
-            tools:text="Rp 2.000.000" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/separator">
+
+            <ImageView
+                android:id="@+id/image_saldo"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:src="@drawable/ic_saldo_green" />
+
+            <TextView
+                android:id="@+id/text_saldo_label"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/title_saldo_setting" />
+
+            <TextView
+                android:id="@+id/text_saldo_amount"
+                style="@style/TextView.Small.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                tools:text="Rp 2.000.000" />
+        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

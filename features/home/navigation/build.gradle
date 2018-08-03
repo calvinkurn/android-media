@@ -26,6 +26,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.badge
     implementation rootProject.ext.miscDependencies.multiDex
 
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

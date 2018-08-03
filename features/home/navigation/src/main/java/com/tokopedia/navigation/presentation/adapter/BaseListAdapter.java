@@ -41,10 +41,10 @@ public abstract class BaseListAdapter<T, VH extends BaseViewHolder> extends Recy
 
     @NonNull
     @Override
-    public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
+    public abstract VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType);
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
+    public void onBindViewHolder(@NonNull VH holder, int position) {
         if (items != null && items.size() > 0) holder.bind(items.get(position));
     }
 

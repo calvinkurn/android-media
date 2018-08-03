@@ -6,8 +6,10 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
@@ -21,6 +23,7 @@ import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
+    SeeAllView seeAllView;
 
     protected void openApplink(String applink) {
         if(getContext() != null && !TextUtils.isEmpty(applink)) {
@@ -29,28 +32,23 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onBuyerAvatarClicked(BuyerCardViewModel element) {
-        openApplink(ApplinkConst.PROFILE.replace(PARAM_USER_ID, element.getUserId()));
-    }
-
-    @Override
-    public void onBuyerNameClicked(BuyerCardViewModel element) {
+    public void onProfileClicked(BuyerCardViewModel element) {
         openApplink(ApplinkConst.PROFILE.replace(PARAM_USER_ID, element.getUserId()));
     }
 
     @Override
     public void onProfileCompletionClicked(BuyerCardViewModel element) {
-
+        openApplink(ApplinkConst.PROFILE_COMPLETION);
     }
 
     @Override
     public void onBuyerTokopointClicked(BuyerCardViewModel element) {
-
+        openApplink(ApplinkConst.TOKOPOINTS);
     }
 
     @Override
     public void onBuyerVoucherClicked(BuyerCardViewModel element) {
-
+        openApplink(ApplinkConst.COUPON);
     }
 
     @Override
@@ -62,6 +60,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuGridItemClicked(MenuGridItemViewModel item) {
+        if (TextUtils.equals(item.getApplink(), AccountConstants.KEY_SEE_ALL)){
+            seeAllView = new SeeAllView();
+            seeAllView.setListener(this);
+            seeAllView.show(getActivity().getSupportFragmentManager(), "Tes");
+        }
         openApplink(item.getApplink());
     }
 
@@ -82,16 +85,30 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onShopAvatarClicked(ShopCardViewModel element) {
-        openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        if(element != null && !TextUtils.isEmpty(element.getShopId())) {
+            openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        }
     }
 
     @Override
     public void onShopNameClicked(ShopCardViewModel element) {
-        openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        if(element != null && !TextUtils.isEmpty(element.getShopId())) {
+            openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
+        }
     }
 
     @Override
     public void onAddProductClicked() {
         openApplink(ApplinkConst.PRODUCT_ADD);
+    }
+
+    @Override
+    public void onTokopediaPayItemClicked(String applink) {
+        openApplink(applink);
+    }
+
+    @Override
+    public void onDepositClicked(ShopCardViewModel element) {
+        openApplink(ApplinkConst.DEPOSIT);
     }
 }

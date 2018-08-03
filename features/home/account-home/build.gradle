@@ -27,10 +27,14 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.logout)
 
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
     implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.badge
+    implementation rootProject.ext.networkDependencies.glide
 }

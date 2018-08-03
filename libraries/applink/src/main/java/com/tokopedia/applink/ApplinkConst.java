@@ -84,7 +84,7 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
-
+    String PROFILE_COMPLETION = "tokopedia://profilecompletion";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
@@ -117,6 +117,7 @@ public interface ApplinkConst {
 
     String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String TOPADS = "tokopedia://topads";
@@ -124,12 +125,24 @@ public interface ApplinkConst {
     String CONTACT_US = "tokopedia://contact-us";
 
     String ORDER_LIST = "tokopedia://order";
-    String PAYMENT_UNPAID = "tokopedia://payment/unpaid";
     String TOKOPOINTS = "tokopedia://tokopoints";
+    String COUPON = "tokopedia://tokopoints/coupon";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String NOTIFICATION = "tokopedia://notification";
+    String PMS = "tokopedia://buyer/payment";
+    String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
+    String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
+    String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
+    String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
+    String PURCHASE_HISTORY = "tokopedia://buyer/history";
+
+    String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
+    String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
+    String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
+
+    String DEPOSIT = "tokopedia://saldo";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

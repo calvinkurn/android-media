@@ -17,14 +17,13 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
@@ -88,24 +87,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         return null;
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_account_home, menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.menu_setting) {
-//            startActivity(GeneralSettingActivity.createIntent(getActivity()));
-//            return true;
-//        } else if (item.getItemId() == R.id.menu_notification) {
-//            Toast.makeText(getContext(), "Notif", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     public void renderData(AccountViewModel accountViewModel) {
         if(getContext() != null) {
@@ -118,6 +99,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             if (accountViewModel.isSeller()) {
                 item = new AccountFragmentItem();
                 item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
+                item.setTitle(getContext().getString(R.string.label_account_seller));
+                fragmentItems.add(item);
+            } else {
+                item = new AccountFragmentItem();
+                item.setFragment(SellerEmptyAccountFragment.newInstance());
                 item.setTitle(getContext().getString(R.string.label_account_seller));
                 fragmentItems.add(item);
             }
@@ -181,5 +167,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         badgeView.bindTarget(menuNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
+        getActivity().invalidateOptionsMenu();
     }
 }

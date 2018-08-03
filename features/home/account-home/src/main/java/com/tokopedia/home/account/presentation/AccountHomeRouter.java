@@ -3,13 +3,17 @@ package com.tokopedia.home.account.presentation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.home.account.di.AccountHomeInjection;
 
 public interface AccountHomeRouter {
+
     void doLogoutAccount(Activity activity);
 
     void goToHelpCenter(Context context);
+
+    Intent getIntentCreateShop(Context context);
 
     Intent getManageProfileIntent(Context context);
 
@@ -38,4 +42,10 @@ public interface AccountHomeRouter {
     void goToSaldo(Context context);
 
     AccountHomeInjection getAccountHomeInjection();
+
+    Fragment getFavoriteFragment();
+
+    void gotoTopAdsDashboard(Context context);
+
+    void goToGMSubscribe(Context context);
 }

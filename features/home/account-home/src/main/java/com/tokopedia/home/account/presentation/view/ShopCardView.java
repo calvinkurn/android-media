@@ -1,17 +1,14 @@
 package com.tokopedia.home.account.presentation.view;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -23,6 +20,7 @@ import com.tokopedia.home.account.R;
  * @author okasurya on 7/26/18.
  */
 public class ShopCardView extends BaseCustomView {
+    private LinearLayout layoutDeposit;
     private ImageView imageShop;
     private ImageView badge;
     private TextView textShopName;
@@ -46,6 +44,7 @@ public class ShopCardView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_shop_card, this);
+        layoutDeposit = view.findViewById(R.id.layout_deposit);
         imageShop = view.findViewById(R.id.image_shop);
         badge = view.findViewById(R.id.image_badge);
         textShopName = view.findViewById(R.id.text_shop_name);
@@ -54,14 +53,14 @@ public class ShopCardView extends BaseCustomView {
     }
 
     public void setShopImage(String url) {
-        if(!TextUtils.isEmpty(url)) {
-            ImageHandler.loadImage(getContext(), imageShop, url, new ColorDrawable(ContextCompat.getColor(getContext(), R.color.grey_500)));
+        if (!TextUtils.isEmpty(url)) {
+            ImageHandler.loadImageCircle2(getContext(), imageShop, url);
         }
     }
 
     public void setBadgeImage(String url) {
-        if(!TextUtils.isEmpty(url)) {
-            ImageHandler.loadImage(getContext(), badge, url, new ColorDrawable(ContextCompat.getColor(getContext(), R.color.grey_500)));
+        if (!TextUtils.isEmpty(url)) {
+            ImageHandler.loadImageCircle2(getContext(), badge, url);
             badge.setVisibility(VISIBLE);
         } else {
             badge.setVisibility(GONE);
@@ -69,7 +68,7 @@ public class ShopCardView extends BaseCustomView {
     }
 
     public void setBadgeImage(@DrawableRes int resource) {
-        if(resource != 0) {
+        if (resource != 0) {
             badge.setImageResource(resource);
             badge.setVisibility(VISIBLE);
         } else {
@@ -96,5 +95,9 @@ public class ShopCardView extends BaseCustomView {
 
     public void setOnClickShopName(View.OnClickListener listener) {
         textShopName.setOnClickListener(listener);
+    }
+
+    public void setOnClickDeposit(View.OnClickListener listener) {
+        layoutDeposit.setOnClickListener(listener);
     }
 }

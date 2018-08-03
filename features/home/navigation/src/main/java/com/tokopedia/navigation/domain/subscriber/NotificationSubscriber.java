@@ -23,7 +23,7 @@ public class NotificationSubscriber extends Subscriber<NotificationEntity> {
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper(e.getMessage());
+
     }
 
     @Override

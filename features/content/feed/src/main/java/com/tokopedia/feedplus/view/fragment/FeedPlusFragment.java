@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +26,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -57,6 +57,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.AddFeedViewHol
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
@@ -76,6 +77,7 @@ import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerA
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -212,6 +214,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
+    }
+
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(FeedPlusComponent component){
+        component.inject(this);
+        presenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public FeedPlusPresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void resetToFirstTime(){
+        isLoadedOnce = false;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(FeedPlusPresenter presenter) {
+        this.presenter = presenter;
     }
 
     @Nullable
