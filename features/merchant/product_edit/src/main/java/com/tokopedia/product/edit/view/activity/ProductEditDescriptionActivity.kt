@@ -14,7 +14,7 @@ import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companio
 class ProductEditDescriptionActivity : BaseSimpleActivity(){
 
     companion object {
-        fun createIntent(context: Context, productDescription: ProductDescription, keyword: String): Intent {
+        fun createIntent(context: Context, productDescription: ProductDescription?, keyword: String?): Intent {
             return Intent(context, ProductEditDescriptionActivity::class.java)
                     .putExtra(EXTRA_DESCRIPTION, productDescription)
                     .putExtra(EXTRA_KEYWORD, keyword)

@@ -54,4 +54,14 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
             categoryName = it.printedString
         }})
     }
+
+    fun setVisiblityCatalog(isVisible: Boolean) {
+        if(isVisible){
+            view.titleCatalog.visibility = View.VISIBLE
+            view.labelCatalog.visibility = View.VISIBLE
+        }else{
+            view.titleCatalog.visibility = View.GONE
+            view.labelCatalog.visibility = View.GONE
+        }
+    }
 }

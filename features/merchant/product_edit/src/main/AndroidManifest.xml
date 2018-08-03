@@ -31,7 +31,7 @@
 
         <activity
             android:name=".view.activity.ProductEditCategoryActivity"
-            android:label="@string/product_label_product_category"
+            android:label=""
             android:theme="@style/Theme.White" />
 
         <activity

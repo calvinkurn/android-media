@@ -55,7 +55,7 @@ fun ProductAddViewModel.convertToProductViewModel(): ProductViewModel? {
     productViewModel.productPrice = this.productPrice?.price ?: 0.0
     productViewModel.productPriceCurrency = this.productPrice?.currencyType?.toLong() ?: CurrencyTypeDef.TYPE_IDR.toLong()
     productViewModel.productWholesale = this.productPrice?.wholesalePrice
-    productViewModel.productId = if (TextUtils.isEmpty(this.productId)) null else ""
+    productViewModel.productId = if (TextUtils.isEmpty(this.productId)) null else this.productId
     productViewModel.productMinOrder = this.productPrice?.minOrder?.toLong() ?: 1
     productViewModel.productMaxOrder = this.productPrice?.maxOrder?.toLong() ?: 0
     productViewModel.productVariant = this.productVariantViewModel
@@ -100,23 +100,25 @@ fun ProductAddViewModel.isDataValid(listenerOnError: ListenerOnErrorAddProduct):
         listenerOnError.onErrorName()
         return false
     }
-    if (this.productCategory?.categoryId!! < 0) {
+    if (this.productCategory?.categoryId?:0 <= 0) {
         listenerOnError.onErrorCategoryEmpty()
         return false
     }
-    if (this.etalaseId!! < 0) {
-        listenerOnError.onErrorEtalase()
-        return false
-    }
-    if (this.productPrice?.price!! < 0) {
+    if (this.productPrice?.price?:0.0 <= 0) {
         listenerOnError.onErrorPrice()
         return false
     }
-    if (this.productLogistic?.weight!! < 0) {
+    if (this.productLogistic?.weight?:0 <= 0) {
         listenerOnError.onErrorWeight()
         return false
     }
-    if (this.productPictureList?.size!! <= 0) {
+    if (this.etalaseId?:0 <= 0) {
+        listenerOnError.onErrorEtalase()
+        return false
+    }
+    if ( this.productCatalog?.catalogId?:0 <= 0 &&
+            !this.productStock?.isActive!! &&
+            this.productPictureList?.size?:0 <= 0) {
         listenerOnError.onErrorImage()
         return false
     }
