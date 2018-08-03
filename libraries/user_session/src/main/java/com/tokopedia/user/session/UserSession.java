@@ -115,6 +115,11 @@ public class UserSession {
         return sharedPrefs.getString(GCM_ID, "");
     }
 
+    public String getEmail() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(EMAIL, "");
+    }
+
     public String getTempEmail() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(TEMP_EMAIL, "");
