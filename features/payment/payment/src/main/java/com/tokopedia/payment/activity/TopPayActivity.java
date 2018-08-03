@@ -1,6 +1,7 @@
 package com.tokopedia.payment.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
+import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.payment.BuildConfig;
@@ -58,7 +61,7 @@ import javax.inject.Inject;
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister {
+public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
@@ -74,6 +77,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final long FORCE_TIMEOUT = 90000L;
+
+    public final static int ATTACH_FILE_REQUEST = 1;
 
     @Inject
     TopPayPresenter presenter;
@@ -91,6 +96,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private FingerPrintDialogPayment fingerPrintDialogPayment;
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
+    private CommonWebViewClient webChromeWebviewClient;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -134,6 +140,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         initVar();
         setViewListener();
         setActionVar();
+        webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
     @Override
@@ -170,7 +177,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         webSettings.setDisplayZoomControls(true);
         webSettings.setAppCacheEnabled(true);
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
-        scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
+        scroogeWebView.setWebChromeClient(webChromeWebviewClient);
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
         btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -642,5 +649,13 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         fingerPrintDialogPayment.stopListening();
         fingerPrintDialogPayment.dismiss();
         scroogeWebView.loadUrl(String.format("%1$s?%2$s", url, paramEncode));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == ATTACH_FILE_REQUEST){
+            webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 }
