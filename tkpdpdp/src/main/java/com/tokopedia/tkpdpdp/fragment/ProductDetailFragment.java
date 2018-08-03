@@ -1759,6 +1759,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
+    public Context getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         ProductPageTracking.eventAppsFlyer(
