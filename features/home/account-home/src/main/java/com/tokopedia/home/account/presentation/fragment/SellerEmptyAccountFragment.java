@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.view.InfoCardView;
 
 /**
@@ -66,7 +67,10 @@ public class SellerEmptyAccountFragment extends BaseAccountFragment {
         topadsInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                    ((AccountHomeRouter) getContext().getApplicationContext()).
+                            gotoTopAdsDashboard(getContext());
+                }
             }
         });
 
