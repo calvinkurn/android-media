@@ -49,6 +49,7 @@ public class GetAccountUseCase extends UseCase<AccountViewModel> {
 
                     if(!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest request = new GraphqlRequest(query, AccountModel.class, variables);
+                        graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
                         return graphqlUseCase.createObservable(null);
                     }

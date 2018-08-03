@@ -153,6 +153,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         adapter = new AccountHomePagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
     }
 
     private QBadgeView badgeView;
