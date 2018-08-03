@@ -30,6 +30,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
@@ -92,7 +93,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return KolEventTracking.Screen.SCREEN_KOL_POST_DETAIL;
     }
 
     @Nullable
@@ -148,6 +149,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         presenter.attachView(this);
         presenter.getCommentFirstTime(postId);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
     }
 
     @Override

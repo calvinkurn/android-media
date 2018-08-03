@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
+import com.tokopedia.explore.analytics.ContentExloreEventTracking;
 import com.tokopedia.explore.di.DaggerExploreComponent;
 import com.tokopedia.explore.view.activity.ContentExploreActivity;
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
@@ -67,6 +69,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Inject
     ExploreImageAdapter imageAdapter;
 
+    private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
     private int categoryId;
     private boolean canLoadMore;
@@ -79,7 +82,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return ContentExloreEventTracking.Screen.SCREEN_CONTENT_STREAM;
     }
 
     @Override
@@ -114,6 +117,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
         initVar();
         presenter.attachView(this);
         presenter.getExploreData(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
     }
 
     private void initView() {
@@ -156,6 +165,13 @@ public class ContentExploreFragment extends BaseDaggerFragment
                     ContentExploreActivity.DEFAULT_CATEGORY)
             );
             presenter.updateCategoryId(categoryId);
+        }
+
+        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
+            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
+        } else {
+            throw new IllegalStateException("Application must be an instance of " +
+                    AbstractionRouter.class.getSimpleName());
         }
     }
 
@@ -279,6 +295,16 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 String.valueOf(kolPostViewModel.getKolId())
         );
         startActivity(intent);
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                ContentExloreEventTracking.Event.EXPLORE,
+                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                ContentExloreEventTracking.Action.CLICK_GRID_CONTENT,
+                String.format(
+                        ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
+                        kolPostViewModel.getContentName(),
+                        kolPostViewModel.getKolImage()
+                )
+        );
     }
 
     @Override
@@ -326,6 +352,13 @@ public class ContentExploreFragment extends BaseDaggerFragment
                             && canLoadMore
                             && !isLoading()) {
                         presenter.getExploreData(false);
+                        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                                ContentExloreEventTracking.Event.EXPLORE,
+                                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                                ContentExloreEventTracking.Action.LOAD_MORE,
+                                ""
+
+                        );
                     }
                 }
             };
