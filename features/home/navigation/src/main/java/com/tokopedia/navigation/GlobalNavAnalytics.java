@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.*;
+
 /**
  * Created by meta on 03/08/18.
  */
@@ -11,17 +13,42 @@ public class GlobalNavAnalytics {
 
     private AnalyticTracker analyticTracker;
 
-    @Inject
-    public GlobalNavAnalytics(AnalyticTracker analyticTracker) {
+    @Inject GlobalNavAnalytics(AnalyticTracker analyticTracker) {
         this.analyticTracker = analyticTracker;
     }
 
-    public void eventWishlistClick() {
+    public void eventBottomNavigation(String name) {
+        if (analyticTracker == null)
+            return;
+
         analyticTracker.sendEventTracking(
-                GlobalNavConstant.Analytics.CLICK_TOP_NAV,
-                GlobalNavConstant.Analytics.TOP_NAV,
-                String.format("%s %s", GlobalNavConstant.Analytics.CLICK,
-                        GlobalNavConstant.Analytics.WISHLIST),
+                CLICK_HOMEPAGE,
+                String.format("%s %s %s", HOME_PAGE, BOTTOM, NAV),
+                String.format("%s %s %s", CLICK, name, NAV),
+                ""
+        );
+    }
+
+    public void eventNotificationPage(String section, String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                CLICK_HOMEPAGE,
+                String.format("%s %s", NOTIFICATION, PAGE),
+                String.format("%s - %s - %s", CLICK, section, item),
+                ""
+        );
+    }
+
+    public void eventInboxPage(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                CLICK_HOMEPAGE,
+                String.format("%s %s", INBOX, PAGE),
+                String.format("%s - %s", CLICK, item),
                 ""
         );
     }

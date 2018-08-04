@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -65,6 +66,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private ShowCaseDialog showCaseDialog;
 
     private List<Fragment> fragmentList;
+    private List<String> titles;
 
     private Notification notification;
 
@@ -75,6 +77,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     @Inject
     MainParentPresenter presenter;
+
+    @Inject
+    GlobalNavAnalytics globalNavAnalytics;
 
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
@@ -96,6 +101,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
+        titles = titles();
         fragmentList = fragments();
 
         if (savedInstanceState == null) {
@@ -116,23 +122,26 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
         int i = item.getItemId();
+        int position = 0;
         if (i == R.id.menu_home) {
-            fragment = fragmentList.get(HOME_MENU);
+            position = HOME_MENU;
         } else if (i == R.id.menu_feed) {
-            fragment = fragmentList.get(FEED_MENU);
+            position = FEED_MENU;
         } else if (i == R.id.menu_inbox) {
-            if (isUserLogin()) { // check session if user logged in
-                fragment = fragmentList.get(INBOX_MENU);
-            }
+            position = INBOX_MENU;
         } else if (i == R.id.menu_cart) {
-            if (isUserLogin())
-                fragment = fragmentList.get(CART_MENU);
+            position = CART_MENU;
         } else if (i == R.id.menu_account) {
-            if (isUserLogin()) {
-                fragment = fragmentList.get(ACCOUNT_MENU);
-            }
+            position = ACCOUNT_MENU;
         }
 
+        globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
+
+        if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
+            if (!isUserLogin())
+                return false;
+
+        fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
@@ -203,6 +212,16 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             fragmentList.add(AccountHomeFragment.newInstance());
         }
         return fragmentList;
+    }
+
+    private List<String> titles() {
+        List<String> titles = new ArrayList<>();
+        titles.add(getString(R.string.home));
+        titles.add(getString(R.string.feed));
+        titles.add(getString(R.string.inbox));
+        titles.add(getString(R.string.keranjang));
+        titles.add(getString(R.string.akun));
+        return titles;
     }
 
 //    @RestrictTo(RestrictTo.Scope.TESTS)

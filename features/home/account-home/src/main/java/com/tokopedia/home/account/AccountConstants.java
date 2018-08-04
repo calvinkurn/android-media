@@ -6,6 +6,7 @@ import com.tokopedia.network.constant.TkpdBaseURL;
  * @author okasurya on 7/20/18.
  */
 public class AccountConstants {
+
     public static final String QUERY = "query";
     public static final String VARIABLES = "variables";
     public static final String KEY_SEE_ALL = "lihat_semua";
@@ -31,7 +32,16 @@ public class AccountConstants {
         }
 
         public static final String REKSA_DANA_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/";
-        public static final String EMAS_URL = TkpdBaseURL.WEB_DOMAIN + "emas/";
 
+        public static final String EMAS_URL = TkpdBaseURL.WEB_DOMAIN + "emas/";
+    }
+
+    public static class Analytics {
+
+        static final String CLICK_HOME_PAGE = "clickHomePage";
+
+        static final String AKUN_SAYA = "akun saya";
+
+        static final String CLICK = "click";
     }
 }

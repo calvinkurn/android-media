@@ -7,63 +7,21 @@ public class GlobalNavConstant {
 
     public class Analytics {
 
-        public static final String CLICK_TOP_NAV = "clickTopNav";
+        static final String CLICK_HOMEPAGE = "clickHomePage";
 
-        public static final String TOP_NAV = "top nav";
+        static final String HOME_PAGE = "homepage";
 
-        public static final String CLICK = "click";
+        public static final String BOTTOM = "bottom";
 
-        public static final String WISHLIST = "wishlist";
+        static final String NAV = "nav";
 
-        public static final String NOTIFICATION = "notification";
+        static final String CLICK = "click";
 
-        public static final String CLICK_HOMEPAGE = "clickHomePage";
+        static final String PAGE = "page";
 
-        public static final String SCAN_QR = "scan qr";
+        static final String INBOX = "inbox";
 
-        public static final String PAGE = "page";
-
-        public static final String INBOX = "inbox";
-
-        public static final String INFO_PENJUAL = "info penjual";
-
-        public static final String PEMBELIAN = "pembelian";
-
-        public static final String PENJUALAN = "penjualan";
-
-        public static final String KOMPLAIN = "komplain";
-
-        public static final String BELUM = "belum";
-
-        public static final String DIBAYAR = "dibayar";
-
-        public static final String SEDANG = "sedang";
-
-        public static final String DIKIRIM = "dikirim";
-
-        public static final String SAMPAI = "sampai";
-
-        public static final String TUJUAN = "tujuan";
-
-        public static final String PESANAN = "pesanan";
-
-        public static final String BARU = "baru";
-
-        public static final String SIAP = "siap";
-
-        public static final String SEBAGAI = "sebagai";
-
-        public static final String PEMBELI = "pembeli";
-
-        public static final String PENJUAL = "penjual";
-
-        public static final String CHAT = "chat";
-
-        public static final String DISKUSI = "diskusi";
-
-        public static final String ULASAN = "ulasan";
-
-        public static final String PUSAT_BANTUAN = "pusat bantuan";
+        static final String NOTIFICATION = "notification";
 
     }
 

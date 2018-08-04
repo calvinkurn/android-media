@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 
 public interface AccountHomeRouter {
+
+    AnalyticTracker getAnalyticTracker();
 
     void doLogoutAccount(Activity activity);
 

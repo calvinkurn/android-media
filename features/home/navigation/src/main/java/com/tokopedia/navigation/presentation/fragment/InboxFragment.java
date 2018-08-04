@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
@@ -42,8 +43,15 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
     public static final int HELP_MENU = 3;
+
     @Inject
     InboxPresenter presenter;
+
+    @Inject
+    GlobalNavAnalytics globalNavAnalytics;
+
+    private List<Inbox> inboxes;
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
     private ImageButton menuItemNotification;
@@ -64,6 +72,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.intiInjector();
         presenter.setView(this);
 
+        inboxes = getData();
+
         adapter = new InboxAdapter(getActivity());
 
         swipeRefreshLayout = view.findViewById(R.id.swipe);
@@ -73,12 +83,25 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
-        adapter.addAll(getData());
+        adapter.addAll(inboxes);
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
+            Inbox inbox = inboxes.get(position);
+            if (inbox == null)
+                return;
+
+            globalNavAnalytics.eventInboxPage(inbox.getTitle().toString().toLowerCase());
             getCallingIntent(position);
         });
+    }
+
+    private void intiInjector() {
+        DaggerGlobalNavComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .globalNavModule(new GlobalNavModule())
+                .build()
+                .inject(this);
     }
 
     private List<Inbox> getData() {
@@ -90,21 +113,13 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         return inboxList;
     }
 
-    private void intiInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
-                .inject(this);
-    }
-
     private void getCallingIntent(int position) {
         switch (position) {
             case CHAT_MENU:
                 RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
                 break;
             case DISCUSSION_MENU:
-//                RouteManager.route(getActivity(), ApplinkConst.TALK);
+                //RouteManager.route(getActivity(), ApplinkConst.TALK);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTalkCallingIntent(getActivity()));
@@ -114,7 +129,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-//                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+                //RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTicketCallingIntent(getActivity()));

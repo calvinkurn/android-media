@@ -1,7 +1,12 @@
 <resources>
+    <string name="home">Home</string>
+    <string name="feed">Feed</string>
+    <string name="inbox">Inbox</string>
+    <string name="keranjang">Keranjang</string>
+    <string name="akun">Akun</string>
+
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
 
-    <string name="inbox">Inbox</string>
 
     <string name="chat">Chat</string>
     <string name="chat_desc">Percakapan pribadi Anda</string>

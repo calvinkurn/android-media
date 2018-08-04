@@ -9,6 +9,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -48,6 +49,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     private NotificationAdapter adapter;
 
     @Inject NotificationPresenter presenter;
+    @Inject GlobalNavAnalytics globalNavAnalytics;
 
     @Override
     public int resLayout() {
@@ -79,11 +81,15 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
         adapter.setOnItemClickListener((view1, position) -> {
             if (getActivity().getApplication() instanceof GlobalNavRouter) {
+
+                sendTracking(position, 0);
                 startActivity(((GlobalNavRouter)getActivity().getApplication())
                         .getSellerInfoCallingIntent(getActivity()));
             }
         });
         adapter.setOnNotifClickListener((parent, child) -> {
+
+            sendTracking(parent, child);
             Intent intent = getCallingIntent(parent, child);
             if (intent != null) {
                 startActivity(intent);
@@ -91,6 +97,24 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         });
 
         adapter.addAll(getData());
+    }
+
+    private void sendTracking(int parent, int child) {
+        DrawerNotification parentItem = adapter.getItem(parent);
+        if (parentItem == null)
+            return;
+
+        DrawerNotification.ChildDrawerNotification childItem =
+                parentItem.getChilds().get(child);
+        if (childItem == null)
+            return;
+
+        String section = "";
+        if (parentItem.getTitle() != null)
+            section = parentItem.getTitle();
+
+        globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
+                childItem.getTitle().toLowerCase());
     }
 
     @Override

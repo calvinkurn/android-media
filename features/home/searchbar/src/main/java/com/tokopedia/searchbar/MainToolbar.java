@@ -29,6 +29,8 @@ public class MainToolbar extends Toolbar {
 
     private UserSession userSession;
 
+    private SearchBarAnalytics searchBarAnalytics;
+
     public MainToolbar(Context context) {
         super(context);
         init();
@@ -58,6 +60,7 @@ public class MainToolbar extends Toolbar {
     private void init() {
 
         userSession = ((AbstractionRouter) this.getContext().getApplicationContext()).getSession();
+        searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
         inflate(getContext(), R.layout.main_toolbar, this);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
@@ -71,11 +74,14 @@ public class MainToolbar extends Toolbar {
             editTextSearch.setTextSize(18);
         }
 
-        btnQrCode.setOnClickListener(v ->
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoQrScannerPage(getContext())));
+        btnQrCode.setOnClickListener(v -> {
+            searchBarAnalytics.eventTrackingSqanQr();
+            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                    .gotoQrScannerPage(getContext()));
+        });
 
         btnWishlist.setOnClickListener(v -> {
+            searchBarAnalytics.eventTrackingWishlist();
             if (userSession.isLoggedIn()) {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoWishlistPage(getContext()));
@@ -90,6 +96,7 @@ public class MainToolbar extends Toolbar {
         });
 
         btnNotification.setOnClickListener(v -> {
+            searchBarAnalytics.eventTrackingNotification();
             if (userSession.isLoggedIn()) {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoNotificationPage(getContext()));
