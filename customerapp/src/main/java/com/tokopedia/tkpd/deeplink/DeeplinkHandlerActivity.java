@@ -75,6 +75,8 @@ import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
+import com.tokopedia.train.applink.TrainApplinkModule;
+import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
@@ -103,6 +105,7 @@ import io.branch.referral.BranchError;
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
+        TrainApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
@@ -141,6 +144,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new SessionApplinkModuleLoader(),
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
+                new TrainApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),

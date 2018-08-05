@@ -75,6 +75,7 @@ ext {
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
+    tkpdTrainVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -341,7 +342,8 @@ ext {
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
-            paymentManagementSystem     : ":features:payment:pms"
+            paymentManagementSystem     : ":features:payment:pms",
+            train                 : ":features:digital:train"
     ]
 
     libraries = [
@@ -368,6 +370,7 @@ ext {
             graphql           : ":libraries:graphql",
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
-            youtubeutil       : ":libraries:youtubeutil"
+            youtubeutil       : ":libraries:youtubeutil",
+            travelCalendar  : ":libraries:travel_calendar"
     ]
 }

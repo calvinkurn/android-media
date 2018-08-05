@@ -15,6 +15,7 @@ public class ErrorNetworkModel implements Visitable<AdapterTypeFactory> {
     private int iconDrawableRes;
     private String errorMessage;
     private OnRetryListener onRetryListener;
+    private String subErrorMessage;
 
     @Override
     public int type(AdapterTypeFactory adapterTypeFactory) {
@@ -35,6 +36,14 @@ public class ErrorNetworkModel implements Visitable<AdapterTypeFactory> {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getSubErrorMessage() {
+        return subErrorMessage;
+    }
+
+    public void setSubErrorMessage(String subErrorMessage) {
+        this.subErrorMessage = subErrorMessage;
     }
 
     public void setOnRetryListener(OnRetryListener onRetryListener) {
