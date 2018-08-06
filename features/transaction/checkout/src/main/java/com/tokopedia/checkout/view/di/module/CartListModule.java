@@ -54,26 +54,21 @@ public class CartListModule {
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                                                 ResetCartUseCase resetCartUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                                  CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         return new CartListPresenter(
-                cartListView, getCartListUseCase, deleteCartUseCase,
-                deleteCartGetCartListUseCase, updateCartUseCase,
-                resetCartGetCartListUseCase, resetCartUseCase,
-                checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
+                cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
+                updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
         );
     }
 
     @Provides
     @CartListScope
-    RecyclerView.ItemDecoration provideCartItemDecoration(Context context) {
-        return new CartItemDecoration(
-                (int) context.getResources().getDimension(R.dimen.dp_4),
-                false, 0);
+    RecyclerView.ItemDecoration provideCartItemDecoration() {
+        return new CartItemDecoration();
     }
 
     @Provides

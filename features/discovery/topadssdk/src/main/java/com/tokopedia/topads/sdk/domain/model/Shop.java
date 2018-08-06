@@ -46,6 +46,7 @@ public class Shop {
     private List<ImageProduct> imageProduct = new ArrayList<>();
     private String ownerId;
     private boolean isOwner;
+    private boolean loaded;
     private List<Badge> badges = new ArrayList<>();
 
     public Shop() {
@@ -250,5 +251,13 @@ public class Shop {
 
     public void setAdId(String adId) {
         this.adId = adId;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
     }
 }

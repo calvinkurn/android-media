@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_header_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    tools:showIn="@layout/fragment_train_schedule_detail">
+
+    <LinearLayout
+        android:id="@+id/container_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/trip"
+                android:layout_marginBottom="@dimen/dp_24"
+                tools:text="Perjalan Pergi"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_16"/>
+
+            <TextView
+                android:id="@+id/train_name"
+                style="@style/TextView.Small"
+                tools:text="Argo Dwipangga 10" />
+
+            <TextView
+                android:id="@+id/train_class"
+                style="@style/TextView.Micro.BlackSecondary"
+                tools:text="Eksekutif (B)" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/date"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:textSize="@dimen/sp_10"
+            tools:text="Jum, 29 Ags 2018" />
+
+    </LinearLayout>
+
+</RelativeLayout>

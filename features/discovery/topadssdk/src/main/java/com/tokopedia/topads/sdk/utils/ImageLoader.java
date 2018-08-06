@@ -1,6 +1,8 @@
 package com.tokopedia.topads.sdk.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,12 +10,16 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.imageutils.ImageCache;
 import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
 import com.tokopedia.topads.sdk.imageutils.ImageWorker;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+
 import android.graphics.Bitmap;
 
 import java.util.List;
@@ -45,6 +51,48 @@ public class ImageLoader {
         loadImage(ecs, null, imageView);
     }
 
+    public void loadImage(Product product, final ImageView imageView, int pos) {
+        loadImage(product, imageView, pos,null);
+    }
+
+    public void loadImage(Product product, final ImageView imageView, int pos,
+                          TopAdsItemImpressionListener impressionListener) {
+        Glide.with(context)
+                .load(product.getImage().getS_ecs())
+                .asBitmap()
+                .placeholder(R.drawable.loading_page)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imageView.setImageBitmap(resource);
+                        if (!product.isLoaded() && isVisible(imageView)) {
+                            product.setLoaded(true);
+                            new ImpresionTask().execute(product.getImage().getXs_url());
+                            if(impressionListener!=null){
+                                impressionListener.onImpressionProductAdsItem(pos, product);
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void loadImage(Shop shop, final ImageView imageView) {
+        Glide.with(context)
+                .load(shop.getImageShop().getXsEcs())
+                .asBitmap()
+                .placeholder(R.drawable.loading_page)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imageView.setImageBitmap(resource);
+                        if (!shop.isLoaded() && isVisible(imageView)) {
+                            shop.setLoaded(true);
+                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                        }
+                    }
+                });
+    }
+
     public void loadImage(String ecs, final String url, final ImageView imageView) {
         Glide.with(context)
                 .load(ecs)
@@ -54,7 +102,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (url!=null && url.contains(PATH_VIEW)) {
+                        if (url!=null && url.contains(PATH_VIEW) && isVisible(imageView)) {
                             new ImpresionTask().execute(url);
                         }
                     }
@@ -100,6 +148,27 @@ public class ImageLoader {
             default:
                 return R.drawable.ic_star_none;
         }
+    }
+
+    public static boolean isVisible(final View view) {
+        if (view == null) {
+            return false;
+        }
+        if (!view.isShown()) {
+            return false;
+        }
+        final Rect actualPosition = new Rect();
+        view.getGlobalVisibleRect(actualPosition);
+        final Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
+        return actualPosition.intersect(screen);
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
 }
