@@ -13,7 +13,6 @@ public class GroupChatViewModel implements Parcelable {
     private ChannelInfoViewModel channelInfoViewModel;
     private long timeStampBeforePause = 0;
     private int channelPosition;
-    private String videoUrl = "";
 
     public GroupChatViewModel(String channelUuid, int channelPosition) {
         this.channelUuid = channelUuid;
@@ -104,13 +103,5 @@ public class GroupChatViewModel implements Parcelable {
         dest.writeParcelable(channelInfoViewModel, flags);
         dest.writeLong(timeStampBeforePause);
         dest.writeInt(channelPosition);
-    }
-
-    public String getVideoUrl() {
-        return "Dwx8VqtAs7E";
-    }
-
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
     }
 }

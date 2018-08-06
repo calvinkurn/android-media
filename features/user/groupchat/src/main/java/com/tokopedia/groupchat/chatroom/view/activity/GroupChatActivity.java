@@ -268,34 +268,39 @@ public class GroupChatActivity extends BaseSimpleActivity
         initInjector();
         initData();
         initPreference();
-        initVideoFragment();
     }
 
-    private void initVideoFragment() {
-        videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
+    private void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
+        if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
+            videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
 
-        if (videoFragment == null)
-            return;
+            if (videoFragment == null)
+                return;
 
-        videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
-                if (!wasRestored) {
-                    youTubePlayer = player;
+            videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+                    if (!wasRestored) {
+                        youTubePlayer = player;
 
-                    //set the player style default
-                    youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                        //set the player style default
+                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
 
-                    //cue the 1st video by default
-                    youTubePlayer.cueVideo(viewModel.getVideoUrl());
+                        //cue the 1st video by default
+                        youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                    }
                 }
-            }
 
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                Log.e(GroupChatActivity.class.getSimpleName(), "Youtube Player View initialization failed");
-            }
-        });
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    Log.e(GroupChatActivity.class.getSimpleName(), "Youtube Player View initialization failed");
+                }
+            });
+
+            sponsorLayout.setVisibility(View.GONE);
+        }else{
+            findViewById(R.id.video_container).setVisibility(View.GONE);
+        }
     }
 
     private boolean isEnabledGroupChatRoom() {
@@ -787,6 +792,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                 exitDialog = createAlertDialog().create();
                 exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             }
+
+            initVideoFragment(channelInfoViewModel);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1318,19 +1326,19 @@ public class GroupChatActivity extends BaseSimpleActivity
         setVisibilityHeader(View.VISIBLE);
         setToolbarPlain();
         setChannelNotFoundView(View.VISIBLE);
-        if(findViewById(R.id.tab) != null) {
+        if (findViewById(R.id.tab) != null) {
             findViewById(R.id.tab).setVisibility(View.GONE);
         }
-        if(findViewById(R.id.sponsor_layout) != null) {
+        if (findViewById(R.id.sponsor_layout) != null) {
             findViewById(R.id.sponsor_layout).setVisibility(View.GONE);
         }
-        if(findViewById(R.id.shadow_layer) != null) {
+        if (findViewById(R.id.shadow_layer) != null) {
             findViewById(R.id.shadow_layer).setVisibility(View.GONE);
         }
     }
 
-    private void setChannelNotFoundView(int visibility){
-        if(findViewById(R.id.card_retry) != null){
+    private void setChannelNotFoundView(int visibility) {
+        if (findViewById(R.id.card_retry) != null) {
             findViewById(R.id.card_retry).setVisibility(visibility);
             findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1394,8 +1402,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             vibratePhone();
         } else if (map instanceof AdsViewModel) {
             updateAds((AdsViewModel) map);
-        } else if(map instanceof GroupChatQuickReplyViewModel){
-            updateQuickReply(((GroupChatQuickReplyViewModel)map).getList());
+        } else if (map instanceof GroupChatQuickReplyViewModel) {
+            updateQuickReply(((GroupChatQuickReplyViewModel) map).getList());
         }
 
         if (currentFragmentIsChat()) {
