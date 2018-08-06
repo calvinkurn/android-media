@@ -13,7 +13,8 @@ class ProductEditCatalogPickerPresenter
     @Inject constructor(private val fetchCatalogDataUseCase: FetchCatalogDataUseCase)
     : BaseDaggerPresenter<ProductEditCatalogPickerView>(){
 
-    fun getCatalog(productName: String, categoryId: Long, start: Int = 0, rows: Int = 20){
+    fun getCatalog(productName: String, categoryId: Long, page: Int = 0, rows: Int = 20){
+        val start = (page - 1) * rows
         fetchCatalogDataUseCase.unsubscribe()
         fetchCatalogDataUseCase.execute(FetchCatalogDataUseCase.createRequestParams(productName, categoryId, start, rows),
                 object : Subscriber<CatalogDataModel>() {
@@ -21,7 +22,7 @@ class ProductEditCatalogPickerPresenter
                         catalogDataModel?.run {
                             fun Catalog.toProductCatalog() = ProductCatalog(catalogId, catalogName, catalogImage300)
                             view?.onSuccessLoadCatalog(result.catalogs.map { it.toProductCatalog() },
-                                    result.totalRecord)
+                                    start+rows < result.totalRecord)
                         }
                     }
 

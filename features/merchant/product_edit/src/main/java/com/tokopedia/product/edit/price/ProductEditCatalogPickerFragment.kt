@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.TextView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel
 import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
 import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.price.model.ProductCatalog
+import com.tokopedia.product.edit.view.adapter.ProductCatalogTypeFactory
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
@@ -21,14 +22,34 @@ import com.tokopedia.product.edit.view.presenter.ProductEditCatalogPickerPresent
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
 import javax.inject.Inject
 
-class ProductEditCatalogPickerFragment : BaseDaggerFragment(), ProductEditCatalogPickerView {
+class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, ProductCatalogTypeFactory>(),
+        ProductEditCatalogPickerView, ProductCatalogTypeFactory.OnCatalogClickedListener {
+
+    override fun isItemSelected(position: Int) = selectedPosCatalog == position
+
+    override fun onSelected(catalog: ProductCatalog, position: Int) {
+        selectedPosCatalog = position
+        choosenCatalog = catalog
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun getAdapterTypeFactory() = ProductCatalogTypeFactory().also { it.setCatalogClickedListener(this) }
+
+    override fun onItemClicked(t: ProductCatalog?) {}
+
+    override fun getScreenName(): String? = null
+
+    override fun loadData(page: Int) {
+        presenter.getCatalog(productName, categoryId, page)
+    }
 
     @Inject lateinit var presenter: ProductEditCatalogPickerPresenter
     private var productName = ""
     private var categoryId = -1L
     private var choosenCatalog: ProductCatalog = ProductCatalog()
+    private var selectedPosCatalog = -1
 
-    override fun getScreenName(): String? = null
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
@@ -38,9 +59,6 @@ class ProductEditCatalogPickerFragment : BaseDaggerFragment(), ProductEditCatalo
                 .inject(this)
         presenter.attachView(this)
     }
-
-    val productCatalogAdapter =  ProductCatalogAdapter(mutableListOf())
-    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,29 +76,35 @@ class ProductEditCatalogPickerFragment : BaseDaggerFragment(), ProductEditCatalo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.getCatalog(productName, categoryId)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = productCatalogAdapter
-        recyclerView.setHasFixedSize(true)
+        recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recycler_view.setHasFixedSize(true)
         texViewMenu?.run {
             text = getString(R.string.label_save)
             setOnClickListener { setResult() }
         }
 
-        productCatalogAdapter.setSelectedCategory(choosenCatalog)
+        add_no_catalog.setOnClickListener { activity?.finish() }
     }
+
+    override fun getEndlessLayoutManagerListener() = EndlessLayoutManagerListener { recycler_view.layoutManager }
 
     private fun setResult(){
         val intent = Intent()
-        intent.putExtra(EXTRA_CATALOG, productCatalogAdapter.getSelectedCatalog())
+        intent.putExtra(EXTRA_CATALOG, choosenCatalog)
         activity?.run {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }
 
-    override fun onSuccessLoadCatalog(catalogs: List<ProductCatalog>, totalRecord: Int) {
-        productCatalogAdapter.replaceData(catalogs)
+    override fun onSuccessLoadCatalog(catalogs: List<ProductCatalog>, hasNextData: Boolean) {
+        catalogs.forEachIndexed { index, productCatalog ->
+            if (productCatalog.catalogName.toLowerCase() == choosenCatalog.catalogName.toLowerCase()){
+                selectedPosCatalog = index
+                return@forEachIndexed
+            }
+        }
+        super.renderList(catalogs, hasNextData)
     }
 
     override fun onErrorLoadCatalog(throwable: Throwable?) {

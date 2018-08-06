@@ -5,5 +5,5 @@ import com.tokopedia.product.edit.price.model.ProductCatalog
 
 interface ProductEditCatalogPickerView: CustomerView{
     fun onErrorLoadCatalog(throwable: Throwable?)
-    fun onSuccessLoadCatalog(catalogs: List<ProductCatalog>, totalRecord: Int)
+    fun onSuccessLoadCatalog(catalogs: List<ProductCatalog>, hasNextData: Boolean)
 }
