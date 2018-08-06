@@ -27,6 +27,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.updateinactivephone.R;
+import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
 import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
@@ -67,11 +68,6 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
         ScreenTracking.screen(getScreenName());
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
@@ -190,7 +186,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
     @Override
     public void onPhoneStatusSuccess() {
         setErrorText("");
-        // TODO: 8/3/18 goto ktp screen / email input page
+        startActivity(ChangeInactiveFormRequestActivity.getChangeInactivePhoneIntent(getContext()));
     }
 
     @Override

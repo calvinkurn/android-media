@@ -4,4 +4,9 @@
     <string name="phone_number_invalid_max_15">Nomor ponsel tidak benar, maksimal 15 angka.</string>
     <string name="registered_email_dialog_message">Silakan masuk dengan email atau sosial media yang terhubung ke akun Anda untuk mengubah nomor ponsel di menu pengaturan.</string>
     <string name="registered_email_dialog_title">Akun Anda Terhubung dengan Email</string>
+    <string name="title_change_inactive_form_request" >Pengajuan Ubah Nomor Ponsel</string>
+    <string name="foto_ktp_title">Foto KTP</string>
+    <string name="foto_ktp_desc">Pastikan data KTP Anda terlihat jelas di foto dan sesuai dengan informasi akun Tokopedia Anda.</string>
+    <string name="foto_payment_title">Foto Buku Tabungan / Bukti Pembayaran</string>
+    <string name="foto_payment_desc">Lampirkan halaman pertama buku tabungan atau bukti pembayaran di Tokopedia. Pastikan foto terlihat jelas dan sesuai dengan informasi akun Tokopedia.</string>
 </resources>

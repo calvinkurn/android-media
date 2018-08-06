@@ -12,6 +12,12 @@
             android:label="Masuk"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+
+        <activity
+            android:name=".activity.ChangeInactiveFormRequestActivity"
+            android:label="Masuk"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
     </application>
 
 </manifest>
