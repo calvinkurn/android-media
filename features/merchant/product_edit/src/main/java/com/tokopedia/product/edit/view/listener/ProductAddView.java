@@ -1,6 +1,6 @@
 package com.tokopedia.product.edit.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
@@ -15,18 +15,6 @@ import java.util.List;
 
 public interface ProductAddView extends CustomerView {
 
-    void onSuccessLoadScoringProduct(DataScoringProductView dataScoringProductView);
-
-    void onErrorLoadScoringProduct(String errorMessage);
-
-    void onSuccessLoadCatalog(String keyword, long departmentId, List<Catalog> catalogViewModelList);
-
-    void onErrorLoadCatalog(String errorMessage);
-
-    void onSuccessLoadRecommendationCategory(List<ProductCategoryPredictionViewModel> categoryPredictionList);
-
-    void onErrorLoadRecommendationCategory(String errorMessage);
-
     void onSuccessStoreProductToDraft(long productId, boolean isUploading);
 
     void onErrorStoreProductToDraftWhenUpload(String errorMessage);
@@ -37,17 +25,9 @@ public interface ProductAddView extends CustomerView {
 
     void onErrorLoadShopInfo(String errorMessage);
 
-    void populateCategory(List<String> categorys);
-
-    void onSuccessStoreProductAndAddToDraft(Long productId);
-
-    void onErrorStoreProductAndAddToDraft(String errorMessage);
-
-    long getProductDraftId();
-
     void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList);
 
     void onErrorGetProductVariantByCat(Throwable throwable);
 
-    void onSuccessLoadProduct(ProductViewModel model);
+    long getProductDraftId();
 }

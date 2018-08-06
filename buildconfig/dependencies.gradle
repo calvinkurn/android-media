@@ -325,7 +325,8 @@ ext {
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
-            tokopoints            : ":features:promo:tokopoints"
+            tokopoints            : ":features:promo:tokopoints",
+            productDraftDatabase  : ":features:merchant:product_draft_database"
     ]
 
     libraries = [
@@ -350,7 +351,6 @@ ext {
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
-            commonNetwork     : ":libraries:common_network",
-            productDraftDatabase : ":libraries:product_draft_database"
+            commonNetwork     : ":libraries:common_network"
     ]
 }

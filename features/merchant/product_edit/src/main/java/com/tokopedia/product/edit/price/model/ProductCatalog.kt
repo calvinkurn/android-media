@@ -2,16 +2,18 @@ package com.tokopedia.product.edit.price.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.product.edit.view.adapter.ProductCatalogTypeFactory
 
-class ProductCatalog(): Parcelable{
-    var catalogId: Int = 0
-    var catalogName: String? = null
-    var catalogImage: String? = null
+data class ProductCatalog(var catalogId : Int = 0, var catalogName : String = "", var catalogImage : String = "")
+    : Parcelable, Visitable<ProductCatalogTypeFactory>{
 
-    constructor(parcel: Parcel) : this() {
-        catalogId = parcel.readInt()
-        catalogName = parcel.readString()
-        catalogImage = parcel.readString()
+    override fun type(typeFactory: ProductCatalogTypeFactory): Int = typeFactory.type(this)
+
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

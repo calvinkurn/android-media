@@ -3,6 +3,10 @@ package com.tokopedia.product.edit.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
@@ -39,39 +43,71 @@ import com.tokopedia.product.edit.domain.CatalogRepository;
 import com.tokopedia.product.edit.domain.CategoryRecommRepository;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.product.edit.domain.ProductScoreRepository;
-import com.tokopedia.product.edit.common.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.product.edit.domain.interactor.FetchCatalogDataUseCase;
-import com.tokopedia.product.edit.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
-import com.tokopedia.product.edit.view.presenter.ProductAddPresenter;
+import com.tokopedia.product.edit.view.listener.ProductAddView;
 import com.tokopedia.product.edit.view.presenter.ProductAddPresenterImpl;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
+import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
+import com.tokopedia.shop.common.di.ShopCommonModule;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
  * @author sebastianuskh on 4/13/17.
  */
 @ProductAddScope
-@Module
+@Module(includes = ShopCommonModule.class)
 public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductAddPresenter provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                   FetchCatalogDataUseCase fetchCatalogDataUseCase,
-                                                   GetCategoryRecommUseCase getCategoryRecommUseCase,
-                                                   ProductScoringUseCase productScoringUseCase,
-                                                   AddProductShopInfoUseCase addProductShopInfoUseCase,
-                                                   FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase,
-                                                   FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
-        return new ProductAddPresenterImpl(saveDraftProductUseCase,
-                fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase,
-                addProductShopInfoUseCase, fetchCategoryDisplayUseCase, fetchProductVariantByCatUseCase);
+    ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
+                                                                       GetShopInfoUseCase getShopInfoUseCase, UserSession userSession,
+                                                                       FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
+        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
+    }
+
+    @ProductAddScope
+    @Provides
+    UserSession userSession(AbstractionRouter abstractionRouter){
+        if(abstractionRouter!=null){
+            return abstractionRouter.getSession();
+        }
+        return null;
+    }
+
+    @ProductAddScope
+    @Provides
+    AbstractionRouter abstractionRouter(@ApplicationContext Context context){
+        if(context instanceof AbstractionRouter){
+            return (AbstractionRouter) context;
+        }
+        return null;
+    }
+
+    @ProductAddScope
+    @Provides
+    HttpLoggingInterceptor httpLoggingInterceptor(){
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
+        return logging;
+    }
+
+    @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+    @Provides
+    Context context(@ApplicationContext Context context){
+        return context;
     }
 
     @ProductAddScope

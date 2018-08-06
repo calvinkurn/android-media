@@ -20,8 +20,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
 import com.tokopedia.product.edit.common.model.edit.ProductWholesaleViewModel;
+import com.tokopedia.product.edit.util.ProductEditCurrencyType;
 import com.tokopedia.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.view.activity.ProductAddWholesaleActivity;
@@ -56,7 +56,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
     private double productPrice;
     private boolean officialStore;
     private boolean hasVariant;
-    @CurrencyTypeDef
+    @ProductEditCurrencyType
     private int currencyType;
 
     public static ProductAddWholesaleFragment newInstance() {
@@ -118,13 +118,13 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                 WholesaleModel lastItem = wholesaleAdapter.getLastItem();
                 WholesaleModel newWholesale;
                 switch (currencyType) {
-                    case CurrencyTypeDef.TYPE_USD:
+                    case ProductEditCurrencyType.USD:
                         newWholesale = new WholesaleModel(DEFAULT_QTY_WHOLESALE, productPrice - DEFAULT_LESS_PRICE_USD);
                         if (lastItem != null)
                             newWholesale = new WholesaleModel(lastItem.getQtyMin() + DEFAULT_ADD_QTY, lastItem.getQtyPrice() - DEFAULT_LESS_PRICE_USD);
                         break;
                     default:
-                    case CurrencyTypeDef.TYPE_IDR:
+                    case ProductEditCurrencyType.RUPIAH:
                         newWholesale = new WholesaleModel(DEFAULT_QTY_WHOLESALE, productPrice - DEFAULT_LESS_PRICE_RP);
                         if (lastItem != null)
                             newWholesale = new WholesaleModel(lastItem.getQtyMin() + DEFAULT_ADD_QTY, lastItem.getQtyPrice() - DEFAULT_LESS_PRICE_RP);
@@ -192,11 +192,11 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         String currencyString = CurrencyFormatUtil.convertPriceValue(productPrice, true);
         setWholesalePrice(productWholesaleViewModelArrayList);
         switch (currencyType) {
-            case CurrencyTypeDef.TYPE_USD:
+            case ProductEditCurrencyType.USD:
                 mainPriceTextView.setText(getString(R.string.usd_format, currencyString));
                 break;
             default:
-            case CurrencyTypeDef.TYPE_IDR:
+            case ProductEditCurrencyType.RUPIAH:
                 mainPriceTextView.setText(getString(R.string.rupiah_format, currencyString));
                 break;
 
@@ -208,14 +208,14 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         return currencyType;
     }
 
-    private void initCurrency(@CurrencyTypeDef int currencyType) {
+    private void initCurrency(@ProductEditCurrencyType int currencyType) {
         switch (currencyType) {
-            case CurrencyTypeDef.TYPE_USD:
-                this.currencyType = CurrencyTypeDef.TYPE_USD;
+            case ProductEditCurrencyType.USD:
+                this.currencyType = ProductEditCurrencyType.USD;
                 break;
             default:
-            case CurrencyTypeDef.TYPE_IDR:
-                this.currencyType = CurrencyTypeDef.TYPE_IDR;
+            case ProductEditCurrencyType.RUPIAH:
+                this.currencyType = ProductEditCurrencyType.RUPIAH;
                 break;
         }
     }

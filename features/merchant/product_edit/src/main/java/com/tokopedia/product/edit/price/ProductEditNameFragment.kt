@@ -7,21 +7,24 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.*
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import android.widget.TextView
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_EDITABLE_NAME
 
 
 class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
 
     private var productName = ProductName()
+    private var isEditable = true
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        productName = activity!!.intent.getParcelableExtra(EXTRA_NAME)
+        productName = activity!!.intent.getParcelableExtra(EXTRA_NAME)?:ProductName()
+        isEditable = activity!!.intent.getBooleanExtra(EXTRA_IS_EDITABLE_NAME, true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -30,7 +33,9 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ProductEditNameViewHolder(view, this).setName(productName.name!!)
+        val productEditNameViewHolder = ProductEditNameViewHolder(view, this)
+        productEditNameViewHolder.setName(productName.name)
+        productEditNameViewHolder.setEditableName(isEditable)
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
             setResult()
@@ -38,7 +43,7 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
     }
 
     override fun onNameChanged(productName: ProductName) {
-        if (productName.name!!.isNotEmpty()) {
+        if (productName.name.isNotEmpty()) {
             texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.tkpd_main_green))
         } else {
             texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.font_black_secondary_54))
@@ -47,7 +52,7 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
     }
 
     private fun isDataValid(): Boolean{
-        return productName.name!!.isNotEmpty()
+        return productName.name.isNotEmpty()
     }
 
     private fun setResult(){

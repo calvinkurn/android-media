@@ -3,13 +3,10 @@ package com.tokopedia.product.edit.price.model
 import android.os.Parcel
 import android.os.Parcelable
 
-class ProductCategory(): Parcelable{
-    var categoryId: Int = 0
-    var categoryName: String? = null
-
-    constructor(parcel: Parcel) : this() {
-        categoryId = parcel.readInt()
-        categoryName = parcel.readString()
+data class ProductCategory(var categoryId : Int = -1, var categoryName : String = ""): Parcelable{
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -30,4 +27,5 @@ class ProductCategory(): Parcelable{
             return arrayOfNulls(size)
         }
     }
+
 }

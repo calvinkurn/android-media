@@ -1,21 +1,56 @@
 package com.tokopedia.product.edit.price
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.view.*
 import android.widget.TextView
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.edit.common.di.component.ProductComponent
+import com.tokopedia.product.edit.constant.ProductExtraConstant
+import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog
+import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
+import com.tokopedia.product.edit.util.ProductEditModuleRouter
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
+import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
+import com.tokopedia.product.edit.view.presenter.ProductEditCategoryPresenter
+import kotlinx.android.synthetic.main.partial_product_edit_category.*
+import javax.inject.Inject
 
-class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHolder.Listener{
+class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCatalogViewHolder.Listener,
+        ProductEditCategoryView{
+
+    @Inject
+    lateinit var presenter: ProductEditCategoryPresenter
+
+    val appRouter : Context by lazy { activity?.application as Context }
+
+    override fun getScreenName(): String? = null
+
+    private var productName: String = ""
+    private var isCategoryLocked: Boolean = false
+
+    override fun initInjector() {
+        DaggerProductEditCategoryCatalogComponent.builder()
+                .productComponent(getComponent(ProductComponent::class.java))
+                .productEditCategoryCatalogModule(ProductEditCategoryCatalogModule())
+                .build()
+                .inject(this)
+        presenter.attachView(this)
+    }
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
@@ -25,9 +60,11 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        productCategory = activity!!.intent.getParcelableExtra(EXTRA_CATEGORY)
-        if(activity!!.intent.hasExtra(EXTRA_CATALOG)) {
-            productCatalog = activity!!.intent.getParcelableExtra(EXTRA_CATALOG)
+        arguments?.run {
+            productCategory = getParcelable(EXTRA_CATEGORY)
+            productCatalog = getParcelable(EXTRA_CATALOG)
+            productName = getString(EXTRA_NAME, "")
+            isCategoryLocked = getBoolean(EXTRA_CATEGORY_LOCKED)
         }
     }
 
@@ -44,18 +81,55 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
         texViewMenu.setOnClickListener {
             setResult()
         }
+        if(isCategoryLocked){
+            titleCategoryRecommendation.visibility = View.GONE
+            recyclerView.visibility = View.GONE
+            labelNotFindCategory.visibility = View.GONE
+        }else{
+            titleCategoryRecommendation.visibility = View.VISIBLE
+            recyclerView.visibility = View.VISIBLE
+            labelNotFindCategory.visibility = View.VISIBLE
+            presenter.getCategoryRecommendation(productName)
+            if(productCategory.categoryId > 0) {
+                presenter.fetchCatalogData(productName, productCategory.categoryId.toLong(), 0, 1)
+            }
+        }
+
     }
 
     override fun onLabelCategoryClicked() {
+        if (isCategoryLocked) {
+            val builder = AlertDialog.Builder(activity!!,
+                    R.style.AppCompatAlertDialogStyle)
+            builder.setTitle(R.string.product_category_locked)
+            builder.setMessage(R.string.product_category_locked_description)
+            builder.setCancelable(true)
+            builder.setNegativeButton(R.string.close) { dialog, id -> dialog.cancel() }
+
+            val alert = builder.create()
+            alert.show()
+        } else {
+            if (appRouter is ProductEditModuleRouter){
+                startActivityForResult((appRouter as ProductEditModuleRouter)
+                        .getCategoryPickerIntent(activity, productCategory.categoryId)
+                        , REQUEST_CODE_GET_CATEGORY)
+            }
+        }
 
     }
 
     override fun onLabelCatalogClicked() {
-        startActivityForResult(Intent(context, ProductEditCatalogPickerActivity::class.java)
-                .putExtra(EXTRA_CATALOG, productCatalog), REQUEST_CODE_GET_CATALOG)
+        context?.run {
+            startActivityForResult(ProductEditCatalogPickerActivity
+                    .createIntent(this, productName, productCategory.categoryId.toLong(), productCatalog),
+                    REQUEST_CODE_GET_CATALOG)
+        }
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
+        if(this.productCategory.categoryId != productCategory.categoryId) {
+            presenter.fetchCatalogData(productName, productCategory.categoryId.toLong(), 0, 1)
+        }
         this.productCategory = productCategory
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
     }
@@ -68,8 +142,12 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
                     productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
-                    productCategory = data!!.getParcelableExtra(EXTRA_CATEGORY)
-                    productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
+                    val newCategoryId = data!!.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()
+                    if(productCategory.categoryId != newCategoryId){
+                        presenter.fetchCatalogData(productName, newCategoryId.toLong(), 0, 1)
+                    }
+                    productCategory.categoryId = newCategoryId
+                    presenter.fetchCategory(productCategory.categoryId.toLong())
                 }
             }
         }
@@ -87,6 +165,60 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
     companion object {
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
-        fun createInstance() = ProductEditCategoryFragment()
+
+        fun createInstance(productName: String, category: ProductCategory?, catalog: ProductCatalog?, isCategoryLocked : Boolean) =
+                ProductEditCategoryFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(EXTRA_NAME, productName)
+                        putBoolean(EXTRA_CATEGORY_LOCKED, isCategoryLocked)
+                        putParcelable(EXTRA_CATALOG, catalog ?: ProductCatalog())
+                        putParcelable(EXTRA_CATEGORY, category ?: ProductCategory())
+                }
+        }
+    }
+
+    override fun onDestroyView() {
+        presenter.detachView()
+        super.onDestroyView()
+    }
+
+    override fun onSuccessLoadRecommendationCategory(categories: List<ProductCategoryPredictionViewModel>) {
+        productEditCategoryCatalogViewHolder.renderRecommendation(categories)
+    }
+
+    override fun onErrorLoadRecommendationCategory(throwable: Throwable?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun populateCategory(strings: List<String>) {
+        var category = ""
+        var i = 0
+        val sizei = strings.size
+        while (i < sizei) {
+            val categoryName = strings.get(i)
+            if (TextUtils.isEmpty(categoryName)) {
+                i++
+                continue
+            }
+            category += categoryName
+            if (i < sizei - 1) {
+                category += "/"
+            }
+            i++
+        }
+        productEditCategoryCatalogViewHolder.setCategoryChosen(ProductCategory(categoryName = category))
+    }
+
+
+    override fun onSuccessLoadCatalog(keyword: String, departmentId: Long, catalogs: List<Catalog>) {
+        if (catalogs.size < 1) {
+            productEditCategoryCatalogViewHolder.setVisiblityCatalog(false)
+        } else {
+            productEditCategoryCatalogViewHolder.setVisiblityCatalog(true)
+        }
+    }
+
+    override fun onErrorLoadCatalog(errorMessage: String?) {
+        productCatalog.catalogId = -1
     }
 }

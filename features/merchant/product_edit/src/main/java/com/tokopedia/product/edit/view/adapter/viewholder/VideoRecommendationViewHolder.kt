@@ -11,7 +11,7 @@ import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
 import kotlinx.android.synthetic.main.item_product_add_video_recommendation.view.*
 
 class VideoRecommendationViewHolder(itemView: View,
-                                    var videoRecommendationListener: VideoRecommendationListener) : AbstractViewHolder<VideoRecommendationViewModel>(itemView) {
+                                    private var videoRecommendationListener: VideoRecommendationListener) : AbstractViewHolder<VideoRecommendationViewModel>(itemView) {
 
     init {
         setViews()
@@ -29,6 +29,10 @@ class VideoRecommendationViewHolder(itemView: View,
         itemView.textDuration.text = YoutubeUtil.convertYoutubeTimeFormattoHHMMSS(videoRecommendationViewModel.duration)
         ImageHandler.loadImageRounded2(itemView.imageThumbnail.context, itemView.imageThumbnail, videoRecommendationViewModel.thumbnailUrl)
         itemView.checkboxChosen.isChecked = videoRecommendationViewModel.chosen
+        itemView.setOnClickListener({
+            itemView.checkboxChosen.isChecked = !itemView.checkboxChosen.isChecked
+            videoRecommendationListener.onCheckboxClicked(adapterPosition, itemView.checkboxChosen.isChecked)
+        })
     }
 
     companion object {

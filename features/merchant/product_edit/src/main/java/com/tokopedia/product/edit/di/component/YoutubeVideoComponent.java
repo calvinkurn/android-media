@@ -3,7 +3,6 @@ package com.tokopedia.product.edit.di.component;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.product.edit.di.module.YoutubeVideoModule;
-//import com.tokopedia.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.product.edit.view.activity.ProductAddVideoActivity;
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment;
 
@@ -15,7 +14,6 @@ import dagger.Component;
 @ActivityScope
 @Component(modules = YoutubeVideoModule.class, dependencies = ProductComponent.class)
 public interface YoutubeVideoComponent {
-//    void inject(ProductAddActivity productAddActivity);
 
     void inject(ProductAddVideoActivity youtubeAddVideoActivity);
 

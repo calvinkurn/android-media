@@ -22,22 +22,54 @@
             android:orientation="horizontal">
 
             <FrameLayout
+                android:id="@+id/containerImageProduct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/imageTwo"
-                    android:layout_width="@dimen/dp_80"
-                    android:layout_height="@dimen/dp_80"
-                    android:src="@color/colorAccent"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_12"/>
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:padding="@dimen/dp_2"
+                    android:background="@drawable/rounded_image_product_add"
+                    android:elevation="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:layout_marginRight="@dimen/dp_2">
+                    <ImageView
+                        android:id="@+id/imageTwo"
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="@dimen/dp_80" />
+                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/imageOne"
-                    android:layout_width="@dimen/dp_80"
-                    android:layout_height="@dimen/dp_80"
-                    android:src="@color/colorAccent"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp_2"
+                    android:background="@drawable/rounded_image_product_add"
+                    android:elevation="@dimen/dp_2"
+                    android:layout_margin="@dimen/dp_2">
+                    <ImageView
+                        android:id="@+id/imageOne"
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="@dimen/dp_80" />
+
+                    <TextView
+                        android:id="@+id/textEditImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_grey_text_edit_image"
+                        android:paddingLeft="@dimen/dp_6"
+                        android:paddingRight="@dimen/dp_6"
+                        android:paddingTop="@dimen/dp_2"
+                        android:paddingBottom="@dimen/dp_2"
+                        android:textColor="@color/white"
+                        android:layout_margin="@dimen/dp_4"
+                        android:layout_gravity="center"
+                        android:text="@string/label_add"
+                        android:elevation="@dimen/dp_2"
+                        style="@style/TextView.Small" />
+                </FrameLayout>
 
             </FrameLayout>
 
@@ -203,11 +235,6 @@
             app:lv_sub_title="@string/product_subtitle_product_variant"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@drawable/line_divider"/>
 
         <Button
             android:id="@+id/button_save"

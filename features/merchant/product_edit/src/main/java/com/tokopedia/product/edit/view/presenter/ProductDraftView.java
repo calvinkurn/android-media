@@ -1,5 +1,6 @@
 package com.tokopedia.product.edit.view.presenter;
 
+import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
 import com.tokopedia.product.edit.view.listener.ProductAddView;
 
 /**
@@ -9,5 +10,7 @@ import com.tokopedia.product.edit.view.listener.ProductAddView;
 public interface ProductDraftView extends ProductAddView {
 
     void onErrorLoadProduct(Throwable throwable);
+
+    void onSuccessLoadProduct(ProductViewModel model);
 
 }

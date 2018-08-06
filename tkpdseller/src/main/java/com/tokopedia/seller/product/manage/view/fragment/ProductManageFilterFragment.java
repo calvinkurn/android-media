@@ -17,6 +17,7 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.product.edit.constant.ProductExtraConstant;
 import com.tokopedia.seller.R;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -227,8 +228,8 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                 break;
             case ProductManageConstant.REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK) {
-                    int etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
-                    String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+                    int etalaseId = data.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1);
+                    String etalaseName = data.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME);
                     productManageFilterModel.setEtalaseProductOption(etalaseId);
                     productManageFilterModel.setEtalaseProductOptionName(etalaseName);
                     updateFilterView();

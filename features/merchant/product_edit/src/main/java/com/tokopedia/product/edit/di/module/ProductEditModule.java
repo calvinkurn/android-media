@@ -1,7 +1,10 @@
 package com.tokopedia.product.edit.di.module;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
+import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.product.edit.data.mapper.EditProductFormMapper;
 import com.tokopedia.product.edit.data.source.EditProductFormDataSource;
 import com.tokopedia.product.edit.data.source.FetchVideoEditProductDataSource;
@@ -12,7 +15,10 @@ import com.tokopedia.product.edit.data.repository.ProductRepositoryImpl;
 import com.tokopedia.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.product.edit.domain.EditProductFormRepository;
 import com.tokopedia.product.edit.domain.ProductRepository;
+import com.tokopedia.product.edit.domain.interactor.GetProductDetailUseCase;
 import com.tokopedia.product.edit.domain.mapper.ProductUploadMapper;
+import com.tokopedia.product.edit.view.presenter.ProductEditPresenterImpl;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,8 +29,18 @@ import retrofit2.Retrofit;
  */
 
 @ProductAddScope
-@Module
-public class ProductEditModule extends ProductDraftModule {
+@Module(includes = ProductAddModule.class)
+public class ProductEditModule{
+
+    @ProductAddScope
+    @Provides
+    ProductEditPresenterImpl provideProductEditPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
+                                                             GetShopInfoUseCase getShopInfoUseCase,
+                                                             UserSession userSession,
+                                                             FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
+                                                             GetProductDetailUseCase getProductDetailUseCase){
+        return new ProductEditPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, getProductDetailUseCase);
+    }
 
     @ProductAddScope
     @Provides
