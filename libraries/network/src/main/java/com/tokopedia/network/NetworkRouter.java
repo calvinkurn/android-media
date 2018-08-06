@@ -20,6 +20,8 @@ public interface NetworkRouter {
 
     void showForceLogoutDialog(Response response);
 
+    void showForceLogoutTokenDialog(String response);
+
     void showServerError(Response response);
 
     void showForceHockeyAppDialog();
@@ -29,5 +31,4 @@ public interface NetworkRouter {
     FingerprintModel getFingerprintModel();
 
     void doRelogin(String newAccessToken);
-
 }

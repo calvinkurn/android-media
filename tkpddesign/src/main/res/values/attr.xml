@@ -19,6 +19,7 @@
             <flag name="italic" value="2" />
         </attr>
         <attr name="lv_sub_title" format="string" />
+        <attr name="lv_sub_title_text_size" format="dimension" />
         <attr name="lv_content" format="string" />
         <attr name="lv_content_color" format="color" />
         <attr name="lv_content_text_size" format="dimension" />
@@ -236,6 +237,15 @@
         <attr name="npc_max_value" format="integer" />
         <attr name="npc_value" format="integer" />
         <attr name="npc_enabled" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CardWithActionView">
+        <attr name="cmv_title" format="string" />
+        <attr name="cmv_content" format="string" />
+        <attr name="cmv_content_info" format="string" />
+        <attr name="cmw_subcontent" format="string" />
+        <attr name="cmw_subcontent_info" format="string" />
+        <attr name="cmw_action" format="string" />
     </declare-styleable>
 
 </resources>

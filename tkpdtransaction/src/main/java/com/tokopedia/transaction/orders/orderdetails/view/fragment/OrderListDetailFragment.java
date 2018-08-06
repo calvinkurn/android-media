@@ -335,7 +335,16 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        if (getActivity() != null)
+            return getActivity().getApplicationContext();
+        else
+            return null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override

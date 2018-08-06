@@ -451,4 +451,5 @@
     <string name="flight_detail_facility_label">Fasilitas</string>
     <string name="flight_detail_facility_separator">:</string>
     <string name="flight_cancellation_support_docs_description">Harap unggah bukti identitas yang valid. Jika bukti identitas salah, pengembalian dana Anda tidak akan diproses</string>
+    <string name="flight_change_search_content_button">Ganti Pencarian</string>
 </resources>

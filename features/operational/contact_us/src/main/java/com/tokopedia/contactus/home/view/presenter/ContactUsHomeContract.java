@@ -27,6 +27,8 @@ public interface ContactUsHomeContract {
 
         void setChatBotMessageId(int msgId);
 
+        void setChatBotMessage(String message);
+
         void setHighMessageUserName(String userName);
     }
 
