@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.TextView
+import com.tokopedia.core.analytics.AppEventTracking
+import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
@@ -76,8 +78,16 @@ class ProductEditWeightLogisticFragment : Fragment() {
 
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
-            if (isWeightValid() && isPreOrderValid()) {
-                setResult()
+            when {
+                !isWeightValid() -> {
+                    spinnerCounterInputViewWeight.requestFocus()
+                    UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
+                }
+                !isPreOrderValid() -> {
+                    spinnerCounterInputViewProcessTime.requestFocus()
+                    UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER)
+                }
+                else -> setResult()
             }
         }
     }

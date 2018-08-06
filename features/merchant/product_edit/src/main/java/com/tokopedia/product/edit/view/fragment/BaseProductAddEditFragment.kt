@@ -238,7 +238,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         }
     }
 
-    fun goToGoldMerchantPage() {
+    private fun goToGoldMerchantPage() {
         if (appRouter is ProductEditModuleRouter) {
             (appRouter as ProductEditModuleRouter).goToGMSubscribe(activity)
         }
@@ -292,18 +292,22 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     protected fun populateView(currentProductViewModel: ProductAddViewModel?) {
+        ImageHandler.loadImageRounded2(context, imageOne, R.drawable.product_add_image_default, 20.0f)
+        ImageHandler.loadImageRounded2(context, imageTwo, R.drawable.product_add_image_default, 20.0f)
+
         textViewCategory.text = currentProductViewModel?.productCategory?.categoryName
         if (currentProductViewModel?.productCatalog?.catalogId ?: 0 > 0) {
             textViewCatalog.run {
                 visibility = View.VISIBLE
                 text = currentProductViewModel?.productCatalog?.catalogName
             }
-
         }
+
         if (currentProductViewModel?.productPictureList?.size!! > 0) {
-            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0].uriOrPath)
+            textEditImage.text = getString(R.string.label_edit)
+            ImageHandler.loadImageRounded2(context, imageOne, currentProductViewModel.productPictureList!![0].uriOrPath, 20.0f)
             if (currentProductViewModel.productPictureList?.size!! > 1)
-                ImageHandler.loadImageRounded2(context, imageTwo, currentProductViewModel.productPictureList!![1].uriOrPath)
+                ImageHandler.loadImageRounded2(context, imageTwo, currentProductViewModel.productPictureList!![1].uriOrPath, 20.0f)
         }
         labelViewNameProduct.setContent(currentProductViewModel.productName?.name)
         if (!TextUtils.isEmpty(currentProductViewModel.productDescription?.description)) {
