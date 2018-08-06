@@ -21,23 +21,15 @@ class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent>
         return ProductEditFragment.createInstance(productId)
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_product_edit_with_menu
-    }
+    override fun getLayoutRes() = R.layout.activity_product_edit_with_menu
 
     companion object {
-        fun createInstance(context: Context?, productId: String ): Intent {
-            val intent = Intent(context, ProductEditActivity::class.java)
-            intent.putExtra(EDIT_PRODUCT_ID, productId)
-            return intent
-        }
+        fun createInstance(context: Context?, productId: String ) = Intent(context, ProductEditActivity::class.java).apply {
+                putExtra(EDIT_PRODUCT_ID, productId)
+            }
     }
 
-    override fun getComponent(): ProductComponent {
-        return (application as ProductEditModuleRouter).getProductComponent()
-    }
+    override fun getComponent() = (application as ProductEditModuleRouter).getProductComponent()
 
-    override fun getCancelMessageRes(): Int {
-        return R.string.product_draft_dialog_edit_cancel_message
-    }
+    override fun getCancelMessageRes() = R.string.product_draft_dialog_edit_cancel_message
 }

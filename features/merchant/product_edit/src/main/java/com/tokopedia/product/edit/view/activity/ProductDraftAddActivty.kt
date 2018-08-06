@@ -1,6 +1,5 @@
 package com.tokopedia.product.edit.view.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,20 +28,14 @@ open class ProductDraftAddActivity : BaseProductAddEditActivity() {
         }
     }
 
-    override fun getCancelMessageRes(): Int {
-        return R.string.product_draft_dialog_cancel_message
-    }
+    override fun getCancelMessageRes() = R.string.product_draft_dialog_cancel_message
 
-    override fun needDeleteCacheOnBack(): Boolean {
-        return false
-    }
+    override fun needDeleteCacheOnBack() = false
 
     companion object {
 
-        fun createInstance(context: Context, draftProductId: Long): Intent {
-            val intent = Intent(context, ProductDraftAddActivity::class.java)
-            intent.putExtra(DRAFT_PRODUCT_ID, draftProductId)
-            return intent
-        }
+        fun createInstance(context: Context, draftProductId: Long) = Intent(context, ProductDraftAddActivity::class.java).apply {
+                putExtra(DRAFT_PRODUCT_ID, draftProductId)
+            }
     }
 }
