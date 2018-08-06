@@ -272,10 +272,10 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
                 if (tokenDetail.getSumToken() == 0) {
                     getView().findViewById(R.id.text_token_count).setVisibility(View.GONE);
-                    getView().findViewById(R.id.text_token_title).setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                            getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                            getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                            getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                    getView().findViewById(R.id.text_token_title).setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_xlarge),
+                            getResources().getDimensionPixelSize(R.dimen.dp_10),
+                            getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
+                            getResources().getDimensionPixelSize(R.dimen.dp_10));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
