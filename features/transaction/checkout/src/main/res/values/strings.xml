@@ -179,5 +179,7 @@
     <string name="label_change_address">Ganti Alamat</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="note_counter_format" formatted="false">%d/%d</string>
+    <string name="title_bottomsheet_shipment_duration">Pilih Durasi Pengiriman</string>
+    <string name="title_shipment_courier_bottomsheet">Pilih Kurir Pengiriman</string>
 
 </resources>

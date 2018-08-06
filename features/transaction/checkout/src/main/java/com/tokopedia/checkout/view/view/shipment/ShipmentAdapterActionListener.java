@@ -22,6 +22,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
                           RecipientAddressModel recipientAddressModel);
 
+    void onChooseShipmentDuration();
+
     void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
 
     void onClearPickupPoint(RecipientAddressModel addressAdapterData);

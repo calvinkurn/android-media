@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_shipment_recommendation_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,6 +42,109 @@
             android:paddingTop="@dimen/dp_9"
             android:text="Pilih"
             android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_selected_shipment_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_selected_duration_recommendation_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8">
+
+            <TextView
+                android:id="@+id/tv_selected_duration_recommendation"
+                style="@style/TextMidMediumBlack70"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_16"
+                android:text="8 jam" />
+
+            <TextView
+                android:id="@+id/tv_change_selected_duration"
+                style="@style/TextSmallNormalBlack54"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="@drawable/bg_grey_round"
+                android:foreground="?selectableItemBackground"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dp_9"
+                android:paddingLeft="@dimen/dp_27"
+                android:paddingRight="@dimen/dp_27"
+                android:paddingTop="@dimen/dp_9"
+                android:text="Ubah Durasi"
+                android:textColor="@color/black_54" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_selected_courier_recommendation_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_16">
+
+                <TextView
+                    android:id="@+id/tv_selected_courier_recommendation"
+                    style="@style/TextMidMediumBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Grab Parcel" />
+
+                <TextView
+                    android:id="@+id/tv_selected_price_recommendation"
+                    style="@style/TextSmallNormalBlack54"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp20.000" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_change_selected_courier_recommendation"
+                style="@style/TextSmallMedium"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="@drawable/bg_grey_round"
+                android:foreground="?selectableItemBackground"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dp_9"
+                android:paddingLeft="@dimen/dp_27"
+                android:paddingRight="@dimen/dp_27"
+                android:paddingTop="@dimen/dp_9"
+                android:text="Ubah Kurir"
+                android:textColor="@color/black_54" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

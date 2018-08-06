@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.view.shipment;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,6 +51,7 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
+import com.tokopedia.checkout.view.view.shippingrecommendation.ShipmentRecommendationDurationBottomsheet;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -100,7 +100,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private TextView tvTotalPayment;
     private TextView tvSelectPaymentMethod;
     private TkpdProgressDialog progressDialogNormal;
+    // For regular shipment
     private CourierBottomsheet courierBottomsheet;
+    // For shipment recommendation
+    private ShipmentRecommendationDurationBottomsheet shipmentRecommendationDurationBottomsheet;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -887,6 +890,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentDetailData != null) {
             showCourierChoiceBottomSheet(shipmentDetailData, shipmentCartItemModel.getShopShipmentList(),
                     recipientAddressModel, position);
+        }
+    }
+
+    @Override
+    public void onChooseShipmentDuration() {
+        if (shipmentRecommendationDurationBottomsheet == null) {
+            shipmentRecommendationDurationBottomsheet = new ShipmentRecommendationDurationBottomsheet();
+        }
+
+        if (getActivity() != null) {
+            shipmentRecommendationDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
         }
     }
 

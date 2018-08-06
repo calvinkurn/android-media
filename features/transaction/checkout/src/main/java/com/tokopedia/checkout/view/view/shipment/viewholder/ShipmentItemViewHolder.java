@@ -12,9 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -154,6 +156,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout llShipmentRecommendationContainer;
     private LinearLayout llSelectShipmentRecommendation;
     private TextView tvChooseDuration;
+    private LinearLayout llSelectedShipmentRecommendation;
+    private LinearLayout llSelectedDurationRecommendationContainer;
+    private TextView tvSelectedDurationRecommendation;
+    private TextView tvChangeSelectedDuration;
+    private LinearLayout llSelectedCourierRecommendationContainer;
+    private TextView tvSelectedCourierRecommendation;
+    private TextView tvSelectedPriceRecommendation;
+    private TextView tvChangeSelectedCourierRecommendation;
+    private LinearLayout llShipmentInfoTicker;
+    private TextView tvTickerInfo;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -248,6 +260,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         llShipmentRecommendationContainer = itemView.findViewById(R.id.ll_shipment_recommendation_container);
         llSelectShipmentRecommendation = itemView.findViewById(R.id.ll_select_shipment_recommendation);
         tvChooseDuration = itemView.findViewById(R.id.tv_choose_duration);
+        llSelectedShipmentRecommendation = itemView.findViewById(R.id.ll_selected_shipment_recommendation);
+        llSelectedDurationRecommendationContainer = itemView.findViewById(R.id.ll_selected_duration_recommendation_container);
+        tvSelectedDurationRecommendation = itemView.findViewById(R.id.tv_selected_duration_recommendation);
+        tvChangeSelectedDuration = itemView.findViewById(R.id.tv_change_selected_duration);
+        llSelectedCourierRecommendationContainer = itemView.findViewById(R.id.ll_selected_courier_recommendation_container);
+        tvSelectedCourierRecommendation = itemView.findViewById(R.id.tv_selected_courier_recommendation);
+        tvSelectedPriceRecommendation = itemView.findViewById(R.id.tv_selected_price_recommendation);
+        tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_change_selected_courier_recommendation);
+        tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {
@@ -384,6 +405,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
 
+        String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
+        String boldText = "pk 14:00";
+        tvTickerInfo.setText(tickerInfo);
+
+        int startSpan = tvTickerInfo.getText().toString().indexOf(boldText);
+        int endSpan = tvTickerInfo.getText().toString().indexOf(boldText) + boldText.length();
+
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(tvTickerInfo.getText().toString());
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvTickerInfo.setText(spannableStringBuilder);
+
         if (isCourierSelected) {
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
@@ -429,12 +461,37 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvChooseDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mActionListener.onChooseShipmentDuration();
+            }
+        });
+
+        tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        tvChangeSelectedCourierRecommendation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
 
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
+
+        String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
+        String boldText = "pk 14:00";
+        tvTickerInfo.setText(tickerInfo);
+
+        int startSpan = tvTickerInfo.getText().toString().indexOf(boldText);
+        int endSpan = tvTickerInfo.getText().toString().indexOf(boldText) + boldText.length();
+
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(tvTickerInfo.getText().toString());
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvTickerInfo.setText(spannableStringBuilder);
 
         if (isCourierSelected) {
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
