@@ -216,7 +216,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
                     List<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapper.mergeEtalaseList(
                             etalaseModelList, etalaseViewModelList, ShopPageConstant.ETALASE_TO_SHOW);
-                    getView().onSuccessGetEtalaseList(shopEtalaseViewModelList, shopProductRequestModel.getEtalaseId(), selectedEtalaseName);
+                    getView().onSuccessGetEtalaseList(shopEtalaseViewModelList, shopProductRequestModel.getEtalaseId(), selectedEtalaseName,
+                            shopProductRequestModel.isUseAce());
                     getShopProductWithWishList(shopProductRequestModel);
                 }
             });
