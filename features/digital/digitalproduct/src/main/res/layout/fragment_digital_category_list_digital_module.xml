@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,28 +12,35 @@
             android:id="@+id/header_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/digital_padding_10">
+            android:orientation="horizontal">
 
             <com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder
                 android:id="@+id/header_my_transaction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder
                 android:id="@+id/header_subscription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder
                 android:id="@+id/header_fav_number"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
+
+        <View
+            android:id="@+id/separator_for_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator" />
+
+        <include layout="@layout/include_digital_ticker_coupon_applied_view" />
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
@@ -45,7 +52,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_digital_category"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </com.tokopedia.core.customwidget.SwipeToRefresh>
     </LinearLayout>

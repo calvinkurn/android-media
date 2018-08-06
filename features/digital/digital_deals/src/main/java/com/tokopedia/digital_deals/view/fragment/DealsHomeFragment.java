@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -48,6 +47,7 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
+import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
@@ -68,7 +68,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private Menu mMenu;
     @Inject
     public DealsHomePresenter mPresenter;
-    private TouchViewPager viewPager;
+    private WrapContentHeightViewPager viewPager;
     private CirclePageIndicator circlePageIndicator;
     private CoordinatorLayout mainContent;
     private View progressBarLayout;

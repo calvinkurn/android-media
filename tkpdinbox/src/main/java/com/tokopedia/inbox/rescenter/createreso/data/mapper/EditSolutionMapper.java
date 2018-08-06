@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditFreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponse;
@@ -10,9 +9,12 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Amou
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
+import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -21,15 +23,18 @@ import rx.functions.Func1;
  * Created by yoasfs on 24/08/17.
  */
 
-public class EditSolutionMapper implements Func1<Response<TkpdResponse>, EditSolutionResponseDomain> {
+public class EditSolutionMapper implements Func1<Response<ResolutionResponse<EditSolutionResponseResponse>>, EditSolutionResponseDomain> {
+
+    @Inject
+    public EditSolutionMapper() {
+    }
 
     @Override
-    public EditSolutionResponseDomain call(Response<TkpdResponse> response) {
+    public EditSolutionResponseDomain call(Response<ResolutionResponse<EditSolutionResponseResponse>> response) {
         return mappingResponse(response);
     }
 
-
-    private EditSolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
+    private EditSolutionResponseDomain mappingResponse(Response<ResolutionResponse<EditSolutionResponseResponse>> response) {
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -42,7 +47,7 @@ public class EditSolutionMapper implements Func1<Response<TkpdResponse>, EditSol
             throw new RuntimeException(String.valueOf(response.code()));
         }
         EditSolutionResponseResponse editSolutionResponseResponse =
-                response.body().convertDataObj(EditSolutionResponseResponse.class);
+                response.body().getData();
         return new EditSolutionResponseDomain(
                 editSolutionResponseResponse.getSolution().size() != 0 ?
                         mappingSolutionDomain(editSolutionResponseResponse.getSolution()) :

@@ -27,7 +27,7 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
 
     public static final int LAYOUT = R.layout.kol_comment_item;
     private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-    private final KolComment.View viewListener;
+    private final KolComment.View.ViewHolder viewListener;
 
     private View mainView;
     private TextView comment;
@@ -35,7 +35,7 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
     private ImageView avatar;
     private ImageView badge;
 
-    public KolCommentViewHolder(View itemView, final KolComment.View viewListener) {
+    public KolCommentViewHolder(View itemView, final KolComment.View.ViewHolder viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         avatar = itemView.findViewById(R.id.avatar);

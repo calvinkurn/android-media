@@ -178,6 +178,6 @@ public interface ConstantTransactionAnalytics {
         String MULTI_ADDRESS_PAGE = "/cart/shipment/multiple";
         String EDIT_MULTIPLE_ADDRESS_PAGE = "/cart/shipment/multiple/edit";
         String ADDRESS_LIST_PAGE = "/cart/address";
-        String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
+        String ADD_NEW_ADDRESS_PAGE = "/cart/address/create/cart";
     }
 }
