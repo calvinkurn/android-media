@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 public class KolAuthInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
-    private static final String HEADER_OS_TYPE = "os_type";
+    private static final String HEADER_OS_VERSION = "os_version";
 
     @Inject
     public KolAuthInterceptor(@ApplicationContext Context context,
@@ -43,7 +43,7 @@ public class KolAuthInterceptor extends TkpdAuthInterceptor {
                 userSession.getUserId(),
                 userSession.getDeviceId());
         headerMap.put(HEADER_TKPD_USER_ID, userSession.getUserId());
-        headerMap.put(HEADER_OS_TYPE, Build.VERSION.RELEASE);
+        headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
         return headerMap;
     }
 }

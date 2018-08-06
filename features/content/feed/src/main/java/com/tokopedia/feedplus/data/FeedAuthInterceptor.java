@@ -22,7 +22,7 @@ public class FeedAuthInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     private static final String HEADER_ACC_AUTH = "Accounts-Authorization";
     private static final String BEARER = "Bearer ";
-    private static final String HEADER_OS_TYPE = "os_type";
+    private static final String HEADER_OS_VERSION = "os_version";
 
     @Inject
     public FeedAuthInterceptor(@ApplicationContext Context context,
@@ -47,7 +47,7 @@ public class FeedAuthInterceptor extends TkpdAuthInterceptor {
                 userSession.getDeviceId());
         headerMap.put(HEADER_TKPD_USER_ID, userSession.getUserId());
         headerMap.put(HEADER_ACC_AUTH, BEARER + userSession.getAccessToken());
-        headerMap.put(HEADER_OS_TYPE, Build.VERSION.RELEASE);
+        headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
         return headerMap;
     }
 }
