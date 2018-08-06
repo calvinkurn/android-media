@@ -93,7 +93,9 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tabAutoCompleteListener.onAdapterReady(instanceIndex, adapter);
+        if (tabAutoCompleteListener != null) {
+            tabAutoCompleteListener.onAdapterReady(instanceIndex, adapter);
+        }
     }
 
     @Override
