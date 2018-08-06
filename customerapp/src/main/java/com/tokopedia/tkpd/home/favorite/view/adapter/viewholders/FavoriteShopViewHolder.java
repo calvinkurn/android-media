@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +12,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 

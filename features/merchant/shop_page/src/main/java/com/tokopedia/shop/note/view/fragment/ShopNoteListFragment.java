@@ -14,7 +14,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
 import com.tokopedia.shop.note.di.module.ShopNoteModule;
 import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity;
-import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
+import com.tokopedia.shop.note.view.adapter.OldShopNoteAdapterTypeFactory;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.shop.note.view.presenter.ShopNoteListPresenter;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/5/18.
  */
 
-public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, ShopNoteAdapterTypeFactory> implements ShopNoteListView, EmptyViewHolder.Callback {
+public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, OldShopNoteAdapterTypeFactory> implements ShopNoteListView, EmptyViewHolder.Callback {
 
     public static ShopNoteListFragment createInstance() {
         ShopNoteListFragment shopNoteListFragment = new ShopNoteListFragment();
@@ -45,8 +45,8 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
     }
 
     @Override
-    protected ShopNoteAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopNoteAdapterTypeFactory(this);
+    protected OldShopNoteAdapterTypeFactory getAdapterTypeFactory() {
+        return new OldShopNoteAdapterTypeFactory(this);
     }
 
     @Override

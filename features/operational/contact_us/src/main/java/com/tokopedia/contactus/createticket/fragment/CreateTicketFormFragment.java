@@ -30,14 +30,17 @@ import com.tokopedia.contactus.createticket.model.ImageUpload;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenter;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
+import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
@@ -45,19 +48,13 @@ import java.util.UUID;
 
 import butterknife.BindView;
 
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-
 /**
  * Created by Tkpd_Eka on 8/13/2015.
  */
 public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicketFormFragmentPresenter>
         implements CreateTicketFormFragmentView, ContactUsConstant {
 
-    private static final int REQUEST_CODE_IMAGE_TICKET = 4231;
+    private static final int REQUEST_CODE_IMAGE = 1001;
     @BindView(R2.id.main_category)
     EditText mainCategory;
     @BindView(R2.id.detail)
@@ -245,13 +242,12 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     private void openImagePicker() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                null
-                , null);
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.contactus.R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
+                null, null);
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-        startActivityForResult(intent, REQUEST_CODE_IMAGE_TICKET);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
     @Override
@@ -366,18 +362,21 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_IMAGE_TICKET && resultCode == Activity.RESULT_OK && data!= null) {
-            int position = imageAdapter.getList().size();
-            ImageUpload image = new ImageUpload();
-            image.setPosition(position);
-            image.setImageId("image" + UUID.randomUUID().toString());
-            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-            if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
-                image.setFileLoc(imageUrlOrPathList.get(0));
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            if (imagePathList == null || imagePathList.size() <= 0) {
+                return;
             }
-            imageAdapter.addImage(image);
+            String imagePath = imagePathList.get(0);
+            if (!TextUtils.isEmpty(imagePath)) {
+                int position = imageAdapter.getList().size();
+                ImageUpload image = new ImageUpload();
+                image.setPosition(position);
+                image.setImageId("image" + UUID.randomUUID().toString());
+                image.setFileLoc(imagePath);
+                imageAdapter.addImage(image);
+            }
         }
-
     }
 
     public void setFinishContactUsListener(FinishContactUsListener finishContactUsListener) {

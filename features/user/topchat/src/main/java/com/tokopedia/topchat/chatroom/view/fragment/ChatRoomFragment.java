@@ -39,7 +39,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -47,13 +46,11 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -889,31 +886,27 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     adapter.addReply(temp);
                 }
                 break;
-
             case REQUEST_CODE_CHAT_IMAGE:
-                if (resultCode != Activity.RESULT_OK || data == null) {
-                    return;
-                }
-                ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
-                if (imagePathList == null || imagePathList.size() <= 0) {
-                    return;
-                }
-                String imagePath = imagePathList.get(0);
-                List<ImageUploadViewModel> list = new ArrayList<>();
-                if (!TextUtils.isEmpty(imagePath)) {
-                    ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
-                    list.add(temp);
-                } else {
-                    ArrayList<String> imagePaths = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                    if (imagePaths != null) {
-                        for (int i = 0; i < imagePaths.size(); i++) {
-                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePaths.get(i));
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+                    if (imagePathList == null || imagePathList.size() <= 0) {
+                        return;
+                    }
+                    String imagePath = imagePathList.get(0);
+                    List<ImageUploadViewModel> list = new ArrayList<>();
+
+                    if (!TextUtils.isEmpty(imagePath)) {
+                        ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
+                        list.add(temp);
+                    } else {
+                        for (int i = 0; i < imagePathList.size(); i++) {
+                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePathList.get(i));
                             list.add(temp);
                         }
                     }
+                    adapter.addReply(list);
+                    presenter.startUpload(list, networkType);
                 }
-                adapter.addReply(list);
-                presenter.startUpload(list, networkType);
                 break;
             case AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE:
                 if (data == null)

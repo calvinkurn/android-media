@@ -20,10 +20,6 @@ public interface ImageUploadFragmentPresenter {
 
     void onSubmitImageUpload(ArrayList<ImageUpload> list);
 
-    void openImageGallery();
-
-    void openCamera();
-
     String getCameraFileLoc();
 
     void setCameraFileLoc(String cameraFileLoc);
