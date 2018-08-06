@@ -117,6 +117,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         if (position != list.size() - 1) {
             try {
                 SendableViewModel now = (SendableViewModel) list.get(position);
+                if(!now.isSender()) {
+                    now.setShowRole(false);
+                    return;
+                }
+                
                 SendableViewModel prev = null;
                 long myTime = Long.parseLong(now.getReplyTime());
                 long prevTime = 0;
@@ -127,8 +132,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 }
 
                 if (prev != null
-                        && !now.isSender()
-                        && compareSender(now,prev)
                         && compareHour(myTime, prevTime)) {
                     ((SendableViewModel) list.get(position)).setShowRole(false);
                 } else {
