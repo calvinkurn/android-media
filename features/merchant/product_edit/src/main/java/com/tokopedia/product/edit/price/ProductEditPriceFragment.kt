@@ -144,6 +144,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         setLabelViewWholesale(wholesalePrice)
         if(productPrice.minOrder > 0)
             editTextMinOrder.text = productPrice.minOrder.toString()
+        else
+            editTextMinOrder.text = MIN_ORDER
         editTextMaxOrder.text = productPrice.maxOrder.toString()
         if(productPrice.maxOrder > 0) {
             editTextMaxOrder.text = productPrice.maxOrder.toString()

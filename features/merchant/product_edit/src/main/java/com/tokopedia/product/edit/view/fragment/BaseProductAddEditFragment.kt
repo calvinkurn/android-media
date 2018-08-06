@@ -273,8 +273,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     protected fun populateView(currentProductViewModel: ProductAddViewModel?) {
-        ImageHandler.loadImageRounded2(context, imageOne, R.drawable.product_add_image_default, 20.0f)
-        ImageHandler.loadImageRounded2(context, imageTwo, R.drawable.product_add_image_default, 20.0f)
+        ImageHandler.loadImageRounded2(context, imageOne, R.drawable.product_add_image_default, 15.0f)
+        ImageHandler.loadImageRounded2(context, imageTwo, R.drawable.product_add_image_default, 15.0f)
 
         textViewCategory.text = currentProductViewModel?.productCategory?.categoryName
         if (currentProductViewModel?.productCatalog?.catalogId?:0 >0) {
