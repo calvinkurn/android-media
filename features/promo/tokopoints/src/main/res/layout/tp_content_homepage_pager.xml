@@ -45,5 +45,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tab_layout_promos"
         app:layout_constraintEnd_toEndOf="@+id/tab_layout_promos"
+        app:layout_constraintStart_toStartOf="@+id/text_token_title"
         app:layout_constraintTop_toTopOf="@+id/tab_layout_promos" />
 </android.support.constraint.ConstraintLayout>
