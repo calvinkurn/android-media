@@ -15,10 +15,10 @@
     <string name="tp_label_use_coupon">Gunakan Kupon</string>
     <string name="tp_label_check_storepoints">Cek TokoPoints</string>
     <string name="tp_label_know_tokopoints">Apa itu TokoPoints?</string>
-    <string name="tp_label_my_membership">Membership saya</string>
+    <string name="tp_label_my_membership">Membership Saya</string>
     <string name="tp_label_see_membership">Lihat Status Membership</string>
-    <string name="tp_label_see_loyalty">Loyalty saya</string>
-    <string name="tp_label_see_point">Points saya</string>
+    <string name="tp_label_see_loyalty">Loyalty Saya</string>
+    <string name="tp_label_see_point">Points Saya</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
