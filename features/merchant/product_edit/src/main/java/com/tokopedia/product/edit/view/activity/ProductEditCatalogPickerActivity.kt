@@ -44,8 +44,4 @@ class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<Prod
             .createInstance(productName, categoryId, choosenCatalog)
 
     override fun getLayoutRes() = R.layout.activity_product_edit_with_menu
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 }
