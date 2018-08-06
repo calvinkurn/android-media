@@ -171,7 +171,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 if(next != null &&
                         now != null &&
                         compareHour(nextItemTime,myTime) &&
-                        (compareSender(now,next) && isSender)) {
+                        (compareSender(now,next) || !isSender)) {
                     ((BaseChatViewModel) list.get(position)).setShowTime(false);
                 }
                 else {
