@@ -22,6 +22,7 @@ class LabelSwitch : BaseCustomView {
     private lateinit var switchStatus: SwitchCompat
     private lateinit var summaryTextView: TextView
 
+    private var listener: CompoundButton.OnCheckedChangeListener? = null
     private var titleText: String? = null
     private var switchEnable: Boolean = false
     private var titleTextSize: Float = 0.toFloat()
@@ -94,6 +95,11 @@ class LabelSwitch : BaseCustomView {
         if(subTitleText!=null)
             subTitleText(subTitleText!!)
         switchStatus.isEnabled = switchEnable
+        switchStatus.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (listener != null) {
+                listener!!.onCheckedChanged(buttonView, isChecked)
+            }
+        }
         this.rootView.isClickable = true
         this.rootView.setOnClickListener { switchStatus.isChecked = !switchStatus.isChecked }
         invalidate()
@@ -115,5 +121,9 @@ class LabelSwitch : BaseCustomView {
             summaryTextView.text = summaryText
             summaryTextView.visibility = View.VISIBLE
         }
+    }
+
+    fun setListenerValue(listener: CompoundButton.OnCheckedChangeListener) {
+        this.listener = listener
     }
 }

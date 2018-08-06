@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import android.widget.CompoundButton
 import android.widget.TextView
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
@@ -68,13 +69,9 @@ class ProductEditWeightLogisticFragment : Fragment() {
             }
         })
 
-        labelSwitchPreOrder.setOnClickListener {
-            labelSwitchPreOrder.isChecked = !labelSwitchPreOrder.isChecked
-            if(labelSwitchPreOrder.isChecked)
-                layoutProcessTime.visibility = View.VISIBLE
-            else
-                layoutProcessTime.visibility = View.GONE
-        }
+        labelSwitchPreOrder.setListenerValue(CompoundButton.OnCheckedChangeListener {
+            compoundButton: CompoundButton, b: Boolean -> populatePreorder()
+        })
 
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
@@ -90,6 +87,13 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 else -> setResult()
             }
         }
+    }
+
+    private fun populatePreorder() {
+        if (labelSwitchPreOrder.isChecked)
+            layoutProcessTime.visibility = View.VISIBLE
+        else
+            layoutProcessTime.visibility = View.GONE
     }
 
     private fun setDataLogistic(productLogistic: ProductLogistic){

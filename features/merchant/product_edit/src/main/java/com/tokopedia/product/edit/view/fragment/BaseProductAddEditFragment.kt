@@ -35,10 +35,7 @@ import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImage
 import com.tokopedia.product.edit.price.ProductEditWeightLogisticFragment
 import com.tokopedia.product.edit.price.model.*
 import com.tokopedia.product.edit.util.ProductEditModuleRouter
-import com.tokopedia.product.edit.utils.convertImageListResult
-import com.tokopedia.product.edit.utils.convertToListImageString
-import com.tokopedia.product.edit.utils.convertToProductViewModel
-import com.tokopedia.product.edit.utils.isDataValid
+import com.tokopedia.product.edit.utils.*
 import com.tokopedia.product.edit.view.activity.*
 import com.tokopedia.product.edit.view.listener.ListenerOnErrorAddProduct
 import com.tokopedia.product.edit.view.listener.ProductAddView
@@ -100,7 +97,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
         button_save.setOnClickListener {
-            if (currentProductAddViewModel?.isDataValid(this)!!) {
+            if (currentProductAddViewModel?.isDataValid(this) == true) {
                 saveDraft(true)
             }
         }
@@ -169,6 +166,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_NAME -> {
                     val productName: ProductName = data!!.getParcelableExtra(EXTRA_NAME)
+                    if(productName.name != currentProductAddViewModel?.productName?.name){
+                        currentProductAddViewModel?.resetCatalog()
+                    }
                     currentProductAddViewModel?.productName = productName
                 }
                 REQUEST_CODE_GET_LOGISTIC -> {

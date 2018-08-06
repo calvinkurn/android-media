@@ -26,6 +26,8 @@ import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.util.ProductEditModuleRouter
 import com.tokopedia.product.edit.view.activity.ProductAddActivity
 import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
 import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import com.tokopedia.product.edit.view.presenter.ProductEditCategoryPresenter
@@ -42,11 +44,13 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
     private var productCatalog = ProductCatalog()
     private var productName = ProductName()
     private var productCategory = ProductCategory()
+    private var productPictureList : ArrayList<String>? = ArrayList()
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        productPictureList = arguments?.getStringArrayList(EXTRA_IMAGES)
     }
 
     override fun onSuccessLoadRecommendationCategory(categories: List<ProductCategoryPredictionViewModel>) {
@@ -136,8 +140,8 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
                     presenter.fetchCategory(productCategory.categoryId.toLong())
                 }
                 REQUEST_CODE_GET_IMAGES -> {
-                    val imageUrlOrPathList = data!!.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                    startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, imageUrlOrPathList))
+                    productPictureList = data!!.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, productPictureList?:ArrayList()))
                     activity?.finish()
                 }
             }
@@ -188,7 +192,7 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
 
     private fun goToNext(){
         if(isDataValid()){
-            startActivityForResult(AddProductImagePickerBuilder.createPickerIntentPrimary(activity, ArrayList()), REQUEST_CODE_GET_IMAGES)
+            startActivityForResult(AddProductImagePickerBuilder.createPickerIntentPrimary(activity, productPictureList), REQUEST_CODE_GET_IMAGES)
         }
     }
 
@@ -196,6 +200,12 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
-        fun createInstance() = ProductAddNameCategoryFragment()
+        fun createInstance(imageUrls: ArrayList<String>?) : ProductAddNameCategoryFragment{
+            val productAddNameCategoryFragment = ProductAddNameCategoryFragment()
+            val bundle = Bundle()
+            bundle.putStringArrayList(BaseProductAddEditFragment.EXTRA_IMAGES, imageUrls)
+            productAddNameCategoryFragment.arguments =bundle
+            return productAddNameCategoryFragment
+        }
     }
 }
