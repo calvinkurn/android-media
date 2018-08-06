@@ -31,6 +31,8 @@ import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.analytics.Analytics;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
+import com.tokopedia.changepassword.data.ChangePasswordUrl;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -43,10 +45,12 @@ import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
+import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
@@ -59,6 +63,8 @@ import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
+import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -67,11 +73,14 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
+import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.vote.data.VoteUrl;
+import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
 import io.hansel.hanselsdk.Hansel;
 
@@ -117,6 +126,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initSendbird();
         createCustomSoundNotificationChannel();
         Hansel.init(this);
+        GraphqlClient.init(getApplicationContext());
+        NetworkClient.init(getApplicationContext());
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -226,6 +237,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionUrl.CHANGE_PHONE_DOMAIN = ConsumerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        ResolutionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
+        ResolutionUrl.BASE_URL_IMAGE_SERVICE = ConsumerAppBaseUrl.BASE_DOMAIN;
+        SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
+        BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
+        ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
+        TopChatUrl.TOPCHAT_JS_API = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
+        TravelCalendarUrl.GQL_BASE_URL = ConsumerAppBaseUrl.TRAVEL_CALENDAR_BASE_URL;
+        TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
@@ -359,10 +380,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
-    @Override
-    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
-        return isSupportedDelegateDeepLink(url);
-    }
 
     @Override
     public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {

@@ -51,6 +51,6 @@ public class VerificationMethodMapper implements Func1<Response<DataResponse<Lis
                     modePojo.getPopUpBody()
             ));
         }
-        return new ListVerificationMethod(list);
+        return new ListVerificationMethod(list, pojo.getLinkType());
     }
 }

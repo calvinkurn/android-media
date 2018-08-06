@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.network.apiservices.etc.HomeService;
 import com.tokopedia.core.network.apiservices.etc.apis.home.FavoriteApi;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.FavoriteSendData;
@@ -19,18 +19,27 @@ import com.tokopedia.core.network.entity.home.ShopItemData;
 import com.tokopedia.core.network.entity.home.TopAdsData;
 import com.tokopedia.core.network.entity.home.TopAdsHome;
 import com.tokopedia.core.network.entity.home.WishlistData;
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.ShopItem;
+import com.tokopedia.graphql.data.ObservableFactory;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.model.params.WishlistFromNetworkParams;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.model.FavoriteTransformData;
 import com.tokopedia.tkpd.home.model.HorizontalShopList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -43,6 +52,9 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.tkpd.home.favorite.presenter.Favorite.FAVORITE_ISFAVORITE_VALUE;
 import static com.tokopedia.tkpd.home.favorite.presenter.Favorite.TOP_ADS_AD_SHOP_VALUE;
+import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
+import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
+import static com.tokopedia.tkpd.home.presenter.WishListImpl.PARAM_USER_ID;
 
 /**
  * @author Kulomady on 11/11/16.
@@ -111,10 +123,10 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
             return;
         }
 
-        mCompositeSubscription.add(mojitoAuthService.getApi().getWishlist(SessionHandler.getLoginID(mContext), 4, 1)
-                .map(new Func1<Response<com.tokopedia.core.network.entity.wishlist.WishlistData>, WishlistData>() {
+        mCompositeSubscription.add(getWishListObservable(SessionHandler.getLoginID(mContext), 4, 1)
+                .map(new Func1<GraphqlResponse, WishlistData>() {
                     @Override
-                    public WishlistData call(Response<com.tokopedia.core.network.entity.wishlist.WishlistData> response) {
+                    public WishlistData call(GraphqlResponse response) {
                         return getWishlistData(response);
                     }
                 })
@@ -151,6 +163,30 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber)
         );
+    }
+
+    private Observable<GraphqlResponse> getWishListObservable(String userId, int page, int count) {
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(PARAM_USER_ID, userId);
+        variables.put(PAGE_NO, page);
+        variables.put(ITEM_COUNT, count);
+
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.query_get_wishlist),
+                GqlWishListDataResponse.class,
+                variables);
+
+        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
+        graphqlRequestList.add(graphqlRequest);
+
+        GraphqlCacheStrategy graphqlCacheStrategy =
+                new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
+
+        return ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy);
+
     }
 
     @Override
@@ -211,12 +247,16 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
     }
 
     @NonNull
-    private WishlistData getWishlistData(Response<com.tokopedia.core.network.entity.wishlist.WishlistData> response) {
+    private WishlistData getWishlistData(GraphqlResponse graphqlResponse) {
         WishlistData wishlistData = new WishlistData();
-        if (response.body() != null) {
+
+        if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
+
+            GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
+
             ProductItemData itemData = new ProductItemData();
             ArrayList<ProductItem> items = new ArrayList<>();
-            for (com.tokopedia.core.network.entity.wishlist.Wishlist data : response.body().getWishlist()){
+            for (com.tokopedia.core.network.entity.wishlist.Wishlist data : gqlWishListDataResponse.getGqlWishList().getWishlistDataList()) {
                 ProductItem item = new ProductItem();
                 item.setBadges(data.getBadges());
                 item.setId(data.getId());
@@ -232,7 +272,7 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
             itemData.setList(items);
             wishlistData.setData(itemData);
         } else {
-            new RetrofitUtils.DefaultErrorHandler(response.code());
+            new RetrofitUtils.DefaultErrorHandler(1);
         }
         return wishlistData;
     }

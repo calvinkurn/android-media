@@ -19,4 +19,7 @@ public interface IPromoCodeView extends IBaseView {
     void onPromoCodeError(String errorMessage);
 
     Context getContext();
+
+    void sendTrackingOnCheckTrainVoucherError(String errorMessage);
+
 }

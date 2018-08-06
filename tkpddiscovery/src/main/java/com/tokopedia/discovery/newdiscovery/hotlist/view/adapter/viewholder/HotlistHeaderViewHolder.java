@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.view.TopAdsBannerView;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

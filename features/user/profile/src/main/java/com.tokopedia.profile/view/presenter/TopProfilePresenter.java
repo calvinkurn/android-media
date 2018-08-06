@@ -1,6 +1,7 @@
 package com.tokopedia.profile.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.profile.usecase.GetTopProfileDataUseCase;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
@@ -14,9 +15,12 @@ public class TopProfilePresenter extends BaseDaggerPresenter<TopProfileActivityL
         implements TopProfileActivityListener.Presenter {
 
     private final GetTopProfileDataUseCase getTopProfileDataUseCase;
+    private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
 
-    public TopProfilePresenter(GetTopProfileDataUseCase getTopProfileDataUseCase){
+    public TopProfilePresenter(GetTopProfileDataUseCase getTopProfileDataUseCase,
+                               FollowKolPostGqlUseCase followKolPostGqlUseCase){
         this.getTopProfileDataUseCase = getTopProfileDataUseCase;
+        this.followKolPostGqlUseCase = followKolPostGqlUseCase;
     }
 
     @Override
@@ -37,21 +41,22 @@ public class TopProfilePresenter extends BaseDaggerPresenter<TopProfileActivityL
     public void detachView() {
         super.detachView();
         getTopProfileDataUseCase.unsubscribe();
+        followKolPostGqlUseCase.unsubscribe();
     }
 
     @Override
     public void followKol(String userId) {
-        getView().getProfileRouter().doFollowKolPost(
-                Integer.valueOf(userId),
-                new FollowKolSubscriber(getView())
-        );
+        int id = Integer.parseInt(userId);
+        followKolPostGqlUseCase.clearRequest();
+        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW));
+        followKolPostGqlUseCase.execute(new FollowKolSubscriber(getView()));
     }
 
     @Override
     public void unfollowKol(String userId) {
-        getView().getProfileRouter().doUnfollowKolPost(
-                Integer.valueOf(userId),
-                new FollowKolSubscriber(getView())
-        );
+        int id = Integer.parseInt(userId);
+        followKolPostGqlUseCase.clearRequest();
+        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW));
+        followKolPostGqlUseCase.execute(new FollowKolSubscriber(getView()));
     }
 }
