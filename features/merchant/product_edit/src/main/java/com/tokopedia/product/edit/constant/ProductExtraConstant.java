@@ -13,4 +13,5 @@ public class ProductExtraConstant {
     public static final String EXTRA_ETALASE_NAME = "EXTRA_ETALASE_NAME";
     public static final String EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION";
     public static final String EXTRA_PRODUCT_SIZECHART = "EXTRA_PRODUCT_SIZECHART";
+    public static final String CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID";
 }

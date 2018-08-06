@@ -13,11 +13,13 @@ import com.tokopedia.product.edit.price.ProductEditCategoryFragment
 import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.util.ProductEditModuleRouter
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
 
 class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductComponent>{
     private var productName: String = ""
     private var productCatalog: ProductCatalog? = null
     private var productCategory: ProductCategory? = null
+    private var isCategoryLocked: Boolean? = false
 
     override fun getComponent(): ProductComponent = (application as ProductEditModuleRouter).getProductComponent()
 
@@ -25,11 +27,12 @@ class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductCo
         productName = intent.getStringExtra(EXTRA_PRODUCT_NAME) ?: ""
         productCatalog = intent.getParcelableExtra(EXTRA_CATALOG)
         productCategory = intent.getParcelableExtra(EXTRA_CATEGORY)
+        isCategoryLocked = intent.getBooleanExtra(EXTRA_CATEGORY_LOCKED, false)
         super.onCreate(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment{
-        return ProductEditCategoryFragment.createInstance(productName, productCategory, productCatalog)
+        return ProductEditCategoryFragment.createInstance(productName, productCategory, productCatalog, isCategoryLocked?:false)
     }
 
     override fun getLayoutRes(): Int {
@@ -45,11 +48,12 @@ class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductCo
         private const val EXTRA_CATALOG = "extra_catalog"
         private const val EXTRA_CATEGORY = "extra_category"
 
-        fun createIntent(context: Context, productName: String?, category: ProductCategory?, catalog: ProductCatalog?) =
+        fun createIntent(context: Context, productName: String?, category: ProductCategory?, catalog: ProductCatalog?, isCategoryLocked : Boolean) =
                 Intent(context, ProductEditCategoryActivity::class.java).apply {
                     putExtra(EXTRA_PRODUCT_NAME, productName)
                     putExtra(EXTRA_CATALOG, catalog)
                     putExtra(EXTRA_CATEGORY, category)
+                    putExtra(EXTRA_CATEGORY_LOCKED, isCategoryLocked)
                 }
     }
 }

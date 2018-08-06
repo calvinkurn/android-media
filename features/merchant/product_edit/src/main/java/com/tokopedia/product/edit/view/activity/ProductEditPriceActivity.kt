@@ -16,7 +16,7 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 class ProductEditPriceActivity : BaseSimpleActivity(){
 
     companion object {
-        fun createIntent(context: Context, productPrice: ProductPrice, isOfficialStore: Boolean, hasVariant: Boolean, isGoldMerchant: Boolean): Intent {
+        fun createIntent(context: Context, productPrice: ProductPrice?, isOfficialStore: Boolean, hasVariant: Boolean, isGoldMerchant: Boolean): Intent {
             return Intent(context, ProductEditPriceActivity::class.java)
                     .putExtra(EXTRA_PRICE, productPrice)
                     .putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore)

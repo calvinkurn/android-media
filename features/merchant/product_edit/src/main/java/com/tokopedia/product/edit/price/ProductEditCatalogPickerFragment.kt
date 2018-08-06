@@ -13,6 +13,9 @@ import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDat
 import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
 import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.price.model.ProductCatalog
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.view.listener.ProductEditCatalogPickerView
 import com.tokopedia.product.edit.view.presenter.ProductEditCatalogPickerPresenter
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
@@ -43,8 +46,8 @@ class ProductEditCatalogPickerFragment : BaseDaggerFragment(), ProductEditCatalo
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         arguments?.run {
-            productName = getString(EXTRA_PRODUCT_NAME, "")
-            categoryId = getLong(EXTRA_CATEGORY_ID, -1L)
+            productName = getString(EXTRA_NAME, "")
+            categoryId = getLong(EXTRA_CATEGORY, -1L)
             choosenCatalog = getParcelable(EXTRA_CATALOG)
         }
     }
@@ -85,14 +88,11 @@ class ProductEditCatalogPickerFragment : BaseDaggerFragment(), ProductEditCatalo
     }
 
     companion object {
-        private const val EXTRA_PRODUCT_NAME = "product_name"
-        private const val EXTRA_CATEGORY_ID = "category_id"
-        private const val EXTRA_CATALOG = "catalog"
 
         fun createInstance(productName: String, categoryId: Long, choosenCatalog: ProductCatalog) =
                 ProductEditCatalogPickerFragment().apply {
-                    arguments = Bundle().apply { putString(EXTRA_PRODUCT_NAME, productName)
-                                                putLong(EXTRA_CATEGORY_ID, categoryId)
+                    arguments = Bundle().apply { putString(EXTRA_NAME, productName)
+                                                putLong(EXTRA_CATEGORY, categoryId)
                                                 putParcelable(EXTRA_CATALOG, choosenCatalog)}
         }
     }

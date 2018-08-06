@@ -1,6 +1,13 @@
 package com.tokopedia.product.edit.di.module
 
+import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl
+import com.tokopedia.core.common.category.data.source.CategoryDataSource
+import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource
+import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource
+import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi
+import com.tokopedia.core.common.category.domain.CategoryRepository
 import com.tokopedia.core.network.di.qualifier.AceQualifier
+import com.tokopedia.core.network.di.qualifier.HadesQualifier
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier
 import com.tokopedia.product.edit.data.repository.CatalogRepositoryImpl
 import com.tokopedia.product.edit.data.repository.CategoryRecommRepositoryImpl
@@ -33,6 +40,20 @@ class ProductEditCategoryCatalogModule{
     @Provides
     fun provideCatalogRepository(catalogDataSource: CatalogDataSource): CatalogRepository {
         return CatalogRepositoryImpl(catalogDataSource)
+    }
+
+    @ProductAddScope
+    @Provides
+    fun provideCategoryRepository(categoryVersionDataSource: CategoryVersionDataSource,
+                                           categoryDataSource: CategoryDataSource,
+                                           fetchCategoryDataSource: FetchCategoryDataSource): CategoryRepository {
+        return CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource)
+    }
+
+    @ProductAddScope
+    @Provides
+    fun provideHadesCategoryApi(@HadesQualifier retrofit: Retrofit): HadesCategoryApi {
+        return retrofit.create(HadesCategoryApi::class.java)
     }
 
     @ProductAddScope
