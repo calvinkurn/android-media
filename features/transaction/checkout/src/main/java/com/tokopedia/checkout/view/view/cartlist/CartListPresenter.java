@@ -230,9 +230,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         for (int i = 0; i < dataList.size(); i++) {
             if (dataList.get(i).getCartItemData() != null && dataList.get(i).getCartItemData().getOriginData() != null) {
-                if (dataList.get(i).getCartItemData().getOriginData().getWholesalePrice() != null &&
-                        dataList.get(i).getCartItemData().getOriginData().getWholesalePrice().size() > 0 &&
-                        dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
+                if (dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
                     dataList.get(i).getCartItemData().getOriginData().setParentId(String.valueOf(i + 1));
                 }
             }
