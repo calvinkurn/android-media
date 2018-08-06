@@ -13,6 +13,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
@@ -170,6 +172,8 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.home.beranda.helper.StartSnapHelper;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -279,6 +283,7 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
+import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -298,6 +303,14 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
+import com.tokopedia.train.common.TrainRouter;
+import com.tokopedia.train.common.constant.TrainUrl;
+import com.tokopedia.train.common.di.DaggerTrainComponent;
+import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.common.util.TrainAnalytics;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -382,7 +395,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DealsModuleRouter,
         OmsModuleRouter,
         BankRouter,
-        ChangePasswordRouter{
+        ChangePasswordRouter,
+        TrainRouter{
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -807,6 +821,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         AccountsService accountsService = new AccountsService(bundle);
 
+
         ProfileSourceFactory profileSourceFactory =
                 new ProfileSourceFactory(
                         this,
@@ -832,8 +847,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<ProfileBuyerInfo> getProfileInfo() {
+        return getProfile().map(new TrainGetBuyerProfileInfoMapper());
+    }
+
+    @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public Intent getTrainOrderListIntent(Context context) {
+        return DigitalWebActivity.newInstance(context, TrainUrl.TRAIN_ORDER_LIST);
+    }
+
+    @Override
+    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
+                                                          String reservationId, String reservationCode) {
+        return LoyaltyActivity.newInstanceTrainCouponNotActive(activity, platform, "",
+                reservationId, reservationCode);
     }
 
     @Override
@@ -1548,6 +1580,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public SnapHelper getSnapHelper() {
+        return new StartSnapHelper();
+    }
+
+    @Override
+    public RecyclerView.ItemDecoration getSpacingItemDecorationHome(int spacing, int displayMode) {
+        return new SpacingItemDecoration(spacing, displayMode);
+    }
+
+    @Override
     public Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel) {
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
@@ -1556,6 +1598,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         paymentPassData.setCallbackFailedUrl(flightCheckoutViewModel.getCallbackFailedUrl());
         paymentPassData.setCallbackSuccessUrl(flightCheckoutViewModel.getCallbackSuccessUrl());
         paymentPassData.setQueryString(flightCheckoutViewModel.getQueryString());
+        return TopPayActivity.createInstance(activity, paymentPassData);
+    }
+
+    @Override
+    public Intent getTopPayIntent(Activity activity, TrainCheckoutViewModel trainCheckoutViewModel) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setPaymentId(trainCheckoutViewModel.getTransactionId());
+        paymentPassData.setTransactionId(trainCheckoutViewModel.getTransactionId());
+        paymentPassData.setRedirectUrl(trainCheckoutViewModel.getRedirectURL());
+        paymentPassData.setCallbackFailedUrl(trainCheckoutViewModel.getCallbackURLFailed());
+        paymentPassData.setCallbackSuccessUrl(trainCheckoutViewModel.getCallbackURLSuccess());
+        paymentPassData.setQueryString(trainCheckoutViewModel.getQueryString());
         return TopPayActivity.createInstance(activity, paymentPassData);
     }
 
@@ -1577,6 +1631,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getBannerWebViewIntent(Activity activity, String url) {
         return BannerWebView.getCallingIntent(activity, url);
+    }
+
+    @Override
+    public boolean isTrainNativeEnable() {
+        return remoteConfig.getBoolean(TrainRouter.TRAIN_ENABLE_REMOTE_CONFIG);
     }
 
     @Override
@@ -2220,6 +2279,37 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return voucherViewModel;
                     }
                 });
+    }
+
+    @Override
+    public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
+                                                          String trainReservationCode,
+                                                          String galaCode) {
+        TrainRepository trainRepository = DaggerTrainComponent.builder().baseAppComponent(
+                this.getBaseAppComponent()).build().trainRepository();
+        TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
+        return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
+                trainReservationId, trainReservationCode, galaCode
+        )).map(trainCheckVoucherModel -> new VoucherViewModel(
+                true,
+                trainCheckVoucherModel.getMessage(),
+                null,
+                trainCheckVoucherModel.getVoucherCode(),
+                ((long) trainCheckVoucherModel.getDiscountAmountPlain()),
+                ((long) trainCheckVoucherModel.getCashbackAmountPlain())
+        ));
+    }
+
+    @Override
+    public void trainSendTrackingOnClickUseVoucherCode(String voucherCode) {
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        trainAnalytics.eventClickUseVoucherCode(voucherCode);
+    }
+
+    @Override
+    public void trainSendTrackingOnCheckVoucherCodeError(String errorMessage) {
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        trainAnalytics.eventVoucherError(errorMessage);
     }
 
     @Override

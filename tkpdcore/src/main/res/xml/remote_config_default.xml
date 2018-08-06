@@ -239,4 +239,8 @@
         <key>mainapp_login_inactive_phone_no_link</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_kai_native_enable</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

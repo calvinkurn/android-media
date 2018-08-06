@@ -62,5 +62,6 @@
     <color name="gray_background">#fff2f3f4</color>
 
     <color name="pinkish_grey">#bdbdbd</color>
+    <color name="widget_card_with_action_separator">#cfcfcf</color>
 
 </resources>

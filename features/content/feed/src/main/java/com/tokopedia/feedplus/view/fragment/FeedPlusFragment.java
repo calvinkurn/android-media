@@ -128,6 +128,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
+    private View tabExplore;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
@@ -145,6 +146,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private int loginIdInt;
 
     boolean hasLoadedOnce = false;
+
+    public static FeedPlusFragment newInstance() {
+        FeedPlusFragment fragment = new FeedPlusFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected String getScreenName() {
@@ -224,6 +232,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        tabExplore = parentView.findViewById(R.id.tab_explore);
 
         prepareView();
         GraphqlClient.init(getActivity());
@@ -942,10 +951,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
-            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
-        }
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        //TODO milhamj revert remote config
+//        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
+//            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
+//        }
+        feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override

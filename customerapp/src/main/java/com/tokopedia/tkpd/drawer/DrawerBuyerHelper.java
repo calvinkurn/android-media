@@ -353,6 +353,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
+
         return buyerMenu;
     }
 

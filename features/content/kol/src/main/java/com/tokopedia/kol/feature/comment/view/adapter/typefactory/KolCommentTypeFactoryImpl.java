@@ -18,9 +18,12 @@ public class KolCommentTypeFactoryImpl extends BaseAdapterTypeFactory
         implements KolCommentTypeFactory {
 
     private final KolComment.View viewListener;
+    private final KolComment.View.ViewHolder viewHolderListener;
 
-    public KolCommentTypeFactoryImpl(KolComment.View viewListener) {
+    public KolCommentTypeFactoryImpl(KolComment.View viewListener,
+                                     KolComment.View.ViewHolder viewHolderListener) {
         this.viewListener = viewListener;
+        this.viewHolderListener = viewHolderListener;
     }
 
     @Override
@@ -39,7 +42,7 @@ public class KolCommentTypeFactoryImpl extends BaseAdapterTypeFactory
         AbstractViewHolder viewHolder;
 
         if (type == KolCommentViewHolder.LAYOUT)
-            viewHolder = new KolCommentViewHolder(view, viewListener);
+            viewHolder = new KolCommentViewHolder(view, viewHolderListener);
         else if (type == KolCommentHeaderViewHolder.LAYOUT)
             viewHolder = new KolCommentHeaderViewHolder(view, viewListener);
         else viewHolder = super.createViewHolder(view, type);
