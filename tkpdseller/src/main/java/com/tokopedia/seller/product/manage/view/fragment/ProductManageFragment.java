@@ -46,7 +46,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.product.edit.view.activity.ProductEditActivity;
@@ -248,7 +248,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             item.getSubMenu().findItem(R.id.label_view_add_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    openImagePickerToAddProduct();
+                    startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
                     UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return true;
                 }
@@ -267,11 +267,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void openImagePickerToAddProduct(){
-        Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(), null);
-        startActivityForResult(intent, REQUEST_CODE_ADD_IMAGE);
     }
 
     @NonNull
@@ -323,15 +318,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
-            case REQUEST_CODE_ADD_IMAGE:
-                if (resultCode == Activity.RESULT_OK &&
-                        intent != null) {
-                    ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        startActivity(ProductAddActivity.Companion.createInstance(getActivity(), imageUrlOrPathList));
-                    }
-                }
-                break;
             case INSTAGRAM_SELECT_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK &&
                         intent != null) {

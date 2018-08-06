@@ -75,9 +75,7 @@ class ProductEditOptionMenuBottomSheets : BottomSheets() {
         btnClose.setOnClickListener { dismiss() }
     }
 
-    override fun title(): String {
-        return title
-    }
+    override fun title() =  title
 
     fun addItem(id: Int, title: String, isSelected: Boolean) {
         if (isSelected) {

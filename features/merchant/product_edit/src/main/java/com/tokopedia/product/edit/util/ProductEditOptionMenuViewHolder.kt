@@ -8,10 +8,6 @@ class ProductEditOptionMenuViewHolder(itemView: View) : RecyclerView.ViewHolder(
 
     fun onBind(optionMenu: ProductEditOptionMenu, isSelected: Boolean) {
         itemView.titleTextView.text = optionMenu.title
-        if (isSelected) {
-            itemView.checkImageView.visibility = View.VISIBLE
-        } else {
-            itemView.checkImageView.visibility = View.GONE
-        }
+        itemView.checkImageView.visibility = if (isSelected) View.VISIBLE else View.GONE
     }
 }
