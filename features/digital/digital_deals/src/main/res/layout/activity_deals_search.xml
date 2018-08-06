@@ -95,13 +95,10 @@
 
                 <TextView
                     android:id="@+id/tv_location"
+                    style="@style/TextView.Small.FontMedium.BlackPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:fontFamily="sans-serif-medium"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                     app:layout_constraintLeft_toRightOf="@+id/iv_map"
                     app:layout_constraintTop_toTopOf="@+id/iv_map"
@@ -109,14 +106,11 @@
 
                 <TextView
                     android:id="@+id/tv_change_city"
+                    style="@style/TextView.Micro.FontMedium.Green"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:fontFamily="sans-serif-medium"
                     android:text="@string/change_location"
-                    android:textColor="@color/medium_green"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_location"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/tv_location"
@@ -182,26 +176,20 @@
                 app:srcCompat="@drawable/empty_search_illustration_big" />
 
             <TextView
+                style="@style/TextView.Medium.FontMedium.BlackPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
-                android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
-                android:text="@string/empty_search_text_upper"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_17"
-                android:textStyle="normal" />
+                android:text="@string/empty_search_text_upper" />
 
             <TextView
+                style="@style/TextView.Small.Black38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:text="@string/empty_search_text_lower"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal" />
+                android:text="@string/empty_search_text_lower" />
 
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>

@@ -23,6 +23,7 @@ public class SendableViewModel extends BaseChatViewModel {
     private boolean isRead;
     private boolean isDummy;
     private boolean isSender;
+    private boolean isShowRole = true;
 
     /**
      * Constructor for WebSocketResponse / API Response
@@ -73,6 +74,14 @@ public class SendableViewModel extends BaseChatViewModel {
 
     public void setDummy(boolean dummy) {
         isDummy = dummy;
+    }
+
+    public boolean isShowRole() {
+        return isShowRole;
+    }
+
+    public void setShowRole(boolean showRole) {
+        isShowRole = showRole;
     }
 
     public static String generateStartTime() {

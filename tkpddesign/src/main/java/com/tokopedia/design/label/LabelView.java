@@ -54,6 +54,7 @@ public class LabelView extends BaseCustomView {
     private int maxLines;
     private float titleTextSize;
     private float subTitleTextSize;
+    private float subtitleTextSize;
     private float contentTextSize;
     private float contentMaxWidthPercentage;
     private int minTitleWidth;
@@ -98,7 +99,7 @@ public class LabelView extends BaseCustomView {
             contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
             contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.LabelView_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT);
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, contentTextSize);
-            subTitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_sub_title_text_size, getResources().getDimension(R.dimen.sp_12));
+            subtitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_sub_title_text_size, contentTextSize);
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
             isArrowShown = styledAttributes.getBoolean(R.styleable.LabelView_lv_show_arrow, false);
         } finally {
@@ -137,6 +138,7 @@ public class LabelView extends BaseCustomView {
         subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTitleTextSize);
         if (!TextUtils.isEmpty(subTitleText)) {
             subTitleTextView.setText(subTitleText);
+            subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subtitleTextSize);
             subTitleTextView.setVisibility(View.VISIBLE);
         } else {
             subTitleTextView.setVisibility(View.GONE);

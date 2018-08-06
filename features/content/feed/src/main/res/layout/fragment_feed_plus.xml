@@ -23,11 +23,57 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shadow_bottom"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tab_feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/dp_16"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/title_my_feed" />
+
+        <View
+            android:layout_width="@dimen/tab_feed_indicator"
+            android:layout_height="@dimen/dp_3"
+            android:background="@color/tkpd_main_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tab_feed"
+            app:layout_constraintStart_toStartOf="@id/tab_feed" />
+
+        <TextView
+            android:id="@+id/tab_explore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/dp_16"
+            android:textColor="@color/font_black_disabled_38"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            app:layout_constraintStart_toEndOf="@id/tab_feed"
+            android:text="@string/title_explore" />
+    </android.support.constraint.ConstraintLayout>
+
     <com.tokopedia.core.customwidget.SwipeToRefresh
-        android:layout_below="@+id/appbar"
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tab_layout">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -54,7 +100,8 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_5"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="visible"
+        android:layout_below="@id/tab_layout">
 
         <ImageView
             android:id="@+id/imageView"
