@@ -23,8 +23,7 @@
         android:layout_alignBottom="@+id/user_avatar"
         android:layout_alignEnd="@+id/user_avatar"
         android:layout_alignRight="@+id/user_avatar"
-        app:srcCompat="@drawable/dot_notification"
-        android:visibility="gone"
+        app:srcCompat="@drawable/status_indicator_offline"
         tools:visibility="visible"/>
 
     <android.support.constraint.ConstraintLayout
@@ -79,7 +78,6 @@
 
         <TextView
             android:id="@+id/subtitle"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"

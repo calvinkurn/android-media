@@ -10,11 +10,11 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.ResponseErrorException;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
+import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
@@ -25,29 +25,32 @@ import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author anggaprasetiyo on 27/11/17.
  */
 
 public class PromoCodePresenter implements IPromoCodePresenter {
+
     private static final String PARAM_CARTS = "carts";
     private static final String PARAM_PROMO_CODE = "promo_code";
     private static final String PARAM_SUGGESTED = "suggested";
     private static final String PARAM_LANG = "lang";
+
     private final IPromoCodeView view;
     private final IPromoCodeInteractor promoCodeInteractor;
     private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
+    private TrainCheckVoucherUseCase trainCheckVoucherUseCase;
 
     @Inject
     public PromoCodePresenter(IPromoCodeView view,
                               IPromoCodeInteractor interactor,
-                              FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
+                              FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+                              TrainCheckVoucherUseCase trainCheckVoucherUseCase) {
         this.view = view;
         this.promoCodeInteractor = interactor;
         this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
+        this.trainCheckVoucherUseCase = trainCheckVoucherUseCase;
     }
 
     @Override
@@ -115,7 +118,6 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                             view.hideProgressLoading();
                             view.checkVoucherSuccessfull(voucherViewModel);
                         }
-
                     }
                 }
 
@@ -188,7 +190,6 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
     @Override
     public void processCheckDealPromoCode(String voucherId, JsonObject requestBody, boolean flag) {
-
         view.showProgressLoading();
         requestBody.addProperty("promocode", voucherId);
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
@@ -242,6 +243,16 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 });
     }
 
+    @Override
+    public void processCheckTrainPromoCode(Activity activity, String trainReservationId,
+                                           String trainReservationCode, String voucherCode) {
+        view.showProgressLoading();
+        trainCheckVoucherUseCase.execute(
+                trainCheckVoucherUseCase.createVoucherRequest(trainReservationId, trainReservationCode, voucherCode),
+                checkTrainVoucherSubscriber()
+        );
+    }
+
     @NonNull
     private Subscriber<VoucherViewModel> checkFlightVoucherSubscriber() {
         return new Subscriber<VoucherViewModel>() {
@@ -252,6 +263,34 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    view.onPromoCodeError(e.getMessage());
+                } else if (e instanceof MessageErrorException) {
+                    view.onGetGeneralError(e.getMessage());
+                } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                view.hideProgressLoading();
+                view.checkDigitalVoucherSucessful(voucherViewModel);
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<VoucherViewModel> checkTrainVoucherSubscriber() {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {

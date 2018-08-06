@@ -39,10 +39,12 @@ public class Campaign implements Parcelable {
     @SerializedName("original_price_fmt")
     @Expose
     private String originalPriceFmt;
-
     @SerializedName(value = "campaign_short_name", alternate = "campaign_type_name")
     @Expose
     private String campaignShortName;
+    @SerializedName("applinks")
+    @Expose
+    private String applinks;
 
     public String getCampaignShortName() {
         return campaignShortName;
@@ -124,6 +126,14 @@ public class Campaign implements Parcelable {
         this.originalPriceFmt = originalPriceFmt;
     }
 
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
+    }
+
     protected Campaign(Parcel in) {
         byte isActiveVal = in.readByte();
         isActive = isActiveVal == 0x02 ? null : isActiveVal != 0x00;
@@ -136,6 +146,7 @@ public class Campaign implements Parcelable {
         originalPrice = in.readString();
         originalPriceFmt = in.readString();
         campaignShortName = in.readString();
+        applinks = in.readString();
     }
 
     @Override
@@ -159,6 +170,7 @@ public class Campaign implements Parcelable {
         dest.writeString(originalPrice);
         dest.writeString(originalPriceFmt);
         dest.writeString(campaignShortName);
+        dest.writeString(applinks);
     }
 
     @SuppressWarnings("unused")
@@ -173,4 +185,6 @@ public class Campaign implements Parcelable {
             return new Campaign[size];
         }
     };
+
+
 }

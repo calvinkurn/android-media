@@ -419,7 +419,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
         rvOrderAddressList.setAdapter(multipleAddressAdapter);
         if (isInitialSetup) {
-            rvOrderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+            rvOrderAddressList.addItemDecoration(new CartItemDecoration());
         }
         if (itemPosition != 0) {
             rvOrderAddressList.scrollToPosition(itemPosition);

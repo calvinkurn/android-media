@@ -9,6 +9,13 @@
             android:theme="@style/Theme.White"
             />
 
+        <activity android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
+            android:label="@string/title_kol_post_detail"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White"
+            />
+
         <activity
             android:name="com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity"
             android:label="@string/title_following_kol"
