@@ -8,4 +8,5 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.commonNetwork)
 
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }
