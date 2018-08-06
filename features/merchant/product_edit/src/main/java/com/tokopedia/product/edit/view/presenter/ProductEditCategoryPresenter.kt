@@ -1,7 +1,6 @@
 package com.tokopedia.product.edit.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase
 import com.tokopedia.product.edit.common.util.ViewUtils
 import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel
@@ -11,6 +10,9 @@ import com.tokopedia.product.edit.domain.model.CategoryRecommDomainModel
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
 import com.tokopedia.product.edit.view.mapper.CategoryRecommDomainToViewMapper
 import rx.Subscriber
+import rx.subjects.BehaviorSubject
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductEditCategoryPresenter
@@ -18,6 +20,16 @@ class ProductEditCategoryPresenter
                         val fetchCategoryDisplayUseCase : FetchCategoryDisplayUseCase,
                         val fetchCatalogDataUseCase: FetchCatalogDataUseCase):
         BaseDaggerPresenter<ProductEditCategoryView>(){
+
+    var categoryId = -1L
+
+    val onProductName: BehaviorSubject<String> = BehaviorSubject.create()
+    val subscriptionProductName = onProductName.debounce(300, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { productName ->
+                getCategoryRecommendation(productName)
+                fetchCatalogData(productName, categoryId, 0, 1)
+            }
 
     fun getCategoryRecommendation(productName: String, limitRow: Int = 3){
         getCategoryRecommUseCase.execute(GetCategoryRecommUseCase.createRequestParams(productName, limitRow),
@@ -62,6 +74,10 @@ class ProductEditCategoryPresenter
                 })
     }
 
+    fun onProductNameChange(productName: String){
+        onProductName.onNext(productName)
+    }
+
     private inner class FetchCategoryDisplaySubscriber : Subscriber<List<String>>() {
         override fun onCompleted() {
 
@@ -84,5 +100,6 @@ class ProductEditCategoryPresenter
         super.detachView()
         getCategoryRecommUseCase.unsubscribe()
         fetchCategoryDisplayUseCase.unsubscribe()
+        subscriptionProductName.unsubscribe()
     }
 }

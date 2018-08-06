@@ -37,12 +37,12 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
     @Inject
     lateinit var presenter: ProductEditCategoryPresenter
 
-    val appRouter : Context by lazy { activity?.application as Context }
+    val appRouter : Context? by lazy { activity?.application as? Context }
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
     private var productName = ProductName()
     private var productCategory = ProductCategory()
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,13 +53,10 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
         productEditCategoryCatalogViewHolder.renderRecommendation(categories)
     }
 
-    override fun onErrorLoadRecommendationCategory(throwable: Throwable?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onErrorLoadRecommendationCategory(throwable: Throwable?) {}
 
-    override fun getScreenName(): String? {
-        return null
-    }
+    override fun getScreenName(): String? = null
+
 
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
@@ -78,20 +75,17 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
         super.onViewCreated(view, savedInstanceState)
         ProductEditNameViewHolder(view, this)
         productEditCategoryCatalogViewHolder = ProductEditCategoryCatalogViewHolder(view, this, context)
-        texViewMenu.text = getString(R.string.label_next)
-        texViewMenu.setOnClickListener { goToNext() }
+        texViewMenu?.run {
+            text = getString(R.string.label_next)
+            setOnClickListener { goToNext() }
+        }
         validateData()
     }
 
     override fun onNameChanged(productName: ProductName) {
-        if (productName.name.isNotEmpty()) {
-            categoryCatalogViewHolder.visibility = View.VISIBLE
-        } else {
-            categoryCatalogViewHolder.visibility = View.GONE
-        }
+        categoryCatalogViewHolder.visibility = if (productName.name.isNotEmpty()) View.VISIBLE else View.GONE
         this.productName = productName
-        presenter.getCategoryRecommendation(productName.name)
-        presenter.fetchCatalogData(productName.name, productCategory.categoryId.toLong(), 0, 1)
+        presenter.onProductNameChange(productName.name)
         validateData()
     }
 
@@ -101,11 +95,12 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
         }
         this.productCategory = productCategory
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
+        presenter.categoryId = productCategory.categoryId.toLong()
         validateData()
     }
 
     override fun onLabelCategoryClicked() {
-        if (appRouter is ProductEditModuleRouter){
+        if (appRouter != null && appRouter is ProductEditModuleRouter){
             startActivityForResult((appRouter as ProductEditModuleRouter)
                     .getCategoryPickerIntent(activity, productCategory.categoryId)
                     , ProductEditCategoryFragment.REQUEST_CODE_GET_CATEGORY)
@@ -121,22 +116,23 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
-                    productCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
+                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
                     productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
-                    val newCategoryId = data!!.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()
+                    val newCategoryId = data.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()
                     if(productCategory.categoryId != newCategoryId){
                         presenter.fetchCatalogData(productName.name, newCategoryId.toLong(), 0, 1)
                     }
                     productCategory.categoryId = newCategoryId
+                    presenter.categoryId = newCategoryId.toLong()
                     presenter.fetchCategory(productCategory.categoryId.toLong())
                 }
                 REQUEST_CODE_GET_IMAGES -> {
-                    val imageUrlOrPathList = data!!.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
                     startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, imageUrlOrPathList))
                     activity?.finish()
                 }
@@ -146,38 +142,18 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
     }
 
     override fun populateCategory(strings: List<String>) {
-        var category = ""
-        var i = 0
-        val sizei = strings.size
-        while (i < sizei) {
-            val categoryName = strings.get(i)
-            if (TextUtils.isEmpty(categoryName)) {
-                i++
-                continue
-            }
-            category += categoryName
-            if (i < sizei - 1) {
-                category += "\n"
-            }
-            i++
-        }
+        val category = strings.filter { !TextUtils.isEmpty(it) }.joinToString(separator = " / ")
         productEditCategoryCatalogViewHolder.setCategoryChosen(ProductCategory(categoryName = category))
     }
 
     private fun validateData(){
-        if (isDataValid()) {
-            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.tkpd_main_green))
-        } else {
-            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.font_black_secondary_54))
+        texViewMenu?.run {
+            setTextColor(ContextCompat.getColor(context, if (isDataValid()) R.color.tkpd_main_green else R.color.font_black_secondary_54))
         }
     }
 
     override fun onSuccessLoadCatalog(keyword: String, departmentId: Long, catalogs: List<Catalog>) {
-        if (catalogs.size < 1) {
-            productEditCategoryCatalogViewHolder.setVisiblityCatalog(false)
-        } else {
-            productEditCategoryCatalogViewHolder.setVisiblityCatalog(true)
-        }
+        productEditCategoryCatalogViewHolder.setVisiblityCatalog(!catalogs.isEmpty())
     }
 
     override fun onErrorLoadCatalog(errorMessage: String?) {

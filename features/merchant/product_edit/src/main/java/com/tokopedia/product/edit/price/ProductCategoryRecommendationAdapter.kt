@@ -35,7 +35,7 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
     override fun getItemCount() = categoryRecommendationList.size
 
     override fun getItemId(position: Int): Long {
-        return super.getItemId(position)
+        return categoryRecommendationList[position].categoryId.toLong()
     }
 
     fun replaceData(categoryRecommendationList: List<ProductCategory>) {
@@ -49,10 +49,11 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
     }
 
     fun setSelectedCategory(productCategory: ProductCategory){
-        for (i in 0 until categoryRecommendationList.size){
-            if(categoryRecommendationList[i].categoryName == productCategory.categoryName){
-                selectedPosition = i
+        for ((index, value) in categoryRecommendationList.withIndex()){
+            if(value.categoryName == productCategory.categoryName){
+                selectedPosition = index
                 notifyDataSetChanged()
+                break
             }
         }
     }

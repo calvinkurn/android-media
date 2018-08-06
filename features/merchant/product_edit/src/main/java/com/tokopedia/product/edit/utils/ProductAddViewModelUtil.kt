@@ -12,7 +12,7 @@ import com.tokopedia.product.edit.view.model.ProductAddViewModel
 
 fun convertCategory(productCategory: ProductCategory?): ProductCategoryViewModel? {
     val productCategoryViewModel = ProductCategoryViewModel()
-    productCategoryViewModel.categoryId = 36/*productCategory?.categoryId?.toLong() ?: -1*/
+    productCategoryViewModel.categoryId = productCategory?.categoryId?.toLong() ?: -1
     productCategoryViewModel.categoryFullName = productCategory?.categoryName
     return productCategoryViewModel
 }
@@ -20,14 +20,14 @@ fun convertCategory(productCategory: ProductCategory?): ProductCategoryViewModel
 private fun convertCatalog(productCatalog: ProductCatalog?): ProductCatalogViewModel? {
     if (productCatalog != null && productCatalog.catalogId > 1) {
         val productCatalogViewModel = ProductCatalogViewModel()
-        productCatalogViewModel.catalogId = productCatalog?.catalogId?.toLong() ?: -1
-        productCatalogViewModel.catalogName = productCatalog?.catalogName
+        productCatalogViewModel.catalogId = productCatalog.catalogId.toLong()
+        productCatalogViewModel.catalogName = productCatalog.catalogName
         return productCatalogViewModel
     }
     return null
 }
 
-fun ProductAddViewModel.convertToProductViewModel(): ProductViewModel? {
+fun ProductAddViewModel.convertToProductViewModel(): ProductViewModel {
     val productViewModel = ProductViewModel()
     productViewModel.productCatalog = convertCatalog(this.productCatalog)
     productViewModel.productCategory = convertCategory(this.productCategory)
@@ -72,28 +72,20 @@ fun convertToProductVideo(videoIDs: ArrayList<String>?): MutableList<ProductVide
     return productVideos
 }
 
-fun convertToProductPreOrder(preOrder: Boolean, processTime: Int?, processTimeType: Int?): ProductPreOrderViewModel? {
-    val productPreOrderViewModel = ProductPreOrderViewModel()
-    productPreOrderViewModel.preorderProcessTime = processTime?.toLong() ?: 0
-    productPreOrderViewModel.preorderStatus = if (preOrder) 1 else 0
-    productPreOrderViewModel.preorderTimeUnit = processTimeType?.toLong() ?: 1
-    return productPreOrderViewModel
-}
-
-fun convertToProductCondition(isNew: Boolean): Long {
-    if (isNew) {
-        return ProductConditionTypeDef.TYPE_NEW.toLong()
-    } else {
-        return ProductConditionTypeDef.TYPE_RECON.toLong()
+fun convertToProductPreOrder(preOrder: Boolean, processTime: Int?, processTimeType: Int?) =
+    ProductPreOrderViewModel().apply {
+        preorderProcessTime = processTime?.toLong() ?: 0
+        preorderStatus = if (preOrder) 1 else 0
+        preorderTimeUnit = processTimeType?.toLong() ?: 1
     }
-}
 
-fun convertToEtalaseViewModel(productAddViewModel: ProductAddViewModel): ProductEtalaseViewModel? {
-    val productEtalaseViewModel = ProductEtalaseViewModel()
-    productEtalaseViewModel.etalaseId = productAddViewModel.etalaseId?.toLong() ?: 0
-    productEtalaseViewModel.etalaseName = productAddViewModel.etalaseName
-    return productEtalaseViewModel
-}
+fun convertToProductCondition(isNew: Boolean) = if (isNew) ProductConditionTypeDef.TYPE_NEW.toLong() else ProductConditionTypeDef.TYPE_RECON.toLong()
+
+fun convertToEtalaseViewModel(productAddViewModel: ProductAddViewModel) = ProductEtalaseViewModel()
+        .apply {
+            etalaseId = productAddViewModel.etalaseId?.toLong() ?: 0
+            etalaseName = productAddViewModel.etalaseName
+        }
 
 fun ProductAddViewModel.isDataValid(listenerOnError: ListenerOnErrorAddProduct): Boolean {
     if (TextUtils.isEmpty(this.productName?.name)) {

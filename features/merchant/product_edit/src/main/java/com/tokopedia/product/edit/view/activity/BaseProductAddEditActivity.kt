@@ -14,9 +14,7 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
 
 abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<ProductComponent> {
 
-    override fun getComponent(): ProductComponent {
-        return (application as ProductEditModuleRouter).productComponent
-    }
+    override fun getComponent() = (application as ProductEditModuleRouter).productComponent
 
     protected abstract fun getCancelMessageRes(): Int
 
@@ -58,7 +56,7 @@ abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<P
         // save newly added product ToDraft
         val fragment = getFragment()
         if (fragment != null && fragment is BaseProductAddEditFragment<*, *>) {
-            (fragment).saveDraft(false)
+            fragment.saveDraft(false)
             return true
         }
         return false
@@ -66,9 +64,7 @@ abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<P
 
     fun getBaseProductAddFragment(): BaseProductAddEditFragment<*, *>? {
         val fragment = getFragment()
-        return if (fragment != null && fragment is BaseProductAddEditFragment<*,*>) {
-            fragment as BaseProductAddEditFragment<*, *>
-        } else null
+        return fragment as? BaseProductAddEditFragment<*, *>
     }
 
     private fun backPressedHandleTaskRoot() {

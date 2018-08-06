@@ -36,7 +36,7 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
     @Inject
     lateinit var presenter: ProductEditCategoryPresenter
 
-    val appRouter : Context by lazy { activity?.application as Context }
+    val appRouter : Context? by lazy { activity?.application as? Context }
 
     override fun getScreenName(): String? = null
 
@@ -55,7 +55,7 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
     private var productCategory = ProductCategory()
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +77,9 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
         productEditCategoryCatalogViewHolder = ProductEditCategoryCatalogViewHolder(view, this, context)
         productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            setResult()
+        texViewMenu?.run {
+            text = getString(R.string.label_save)
+            setOnClickListener {setResult() }
         }
         if(isCategoryLocked){
             titleCategoryRecommendation.visibility = View.GONE
@@ -109,7 +109,7 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
             val alert = builder.create()
             alert.show()
         } else {
-            if (appRouter is ProductEditModuleRouter){
+            if (appRouter != null && appRouter is ProductEditModuleRouter){
                 startActivityForResult((appRouter as ProductEditModuleRouter)
                         .getCategoryPickerIntent(activity, productCategory.categoryId)
                         , REQUEST_CODE_GET_CATEGORY)
@@ -155,11 +155,13 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
     }
 
     private fun setResult(){
-        val intent = Intent()
-        intent.putExtra(EXTRA_CATALOG, productCatalog)
-        intent.putExtra(EXTRA_CATEGORY, productCategory)
-        activity!!.setResult(Activity.RESULT_OK, intent)
-        activity!!.finish()
+        activity?.let {
+            val intent = Intent().apply { putExtra(EXTRA_CATALOG, productCatalog)
+                putExtra(EXTRA_CATEGORY, productCategory)}
+
+            it.setResult(Activity.RESULT_OK, intent)
+            it.finish()
+        }
     }
 
     companion object {
@@ -186,36 +188,16 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
         productEditCategoryCatalogViewHolder.renderRecommendation(categories)
     }
 
-    override fun onErrorLoadRecommendationCategory(throwable: Throwable?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onErrorLoadRecommendationCategory(throwable: Throwable?) {}
 
     override fun populateCategory(strings: List<String>) {
-        var category = ""
-        var i = 0
-        val sizei = strings.size
-        while (i < sizei) {
-            val categoryName = strings.get(i)
-            if (TextUtils.isEmpty(categoryName)) {
-                i++
-                continue
-            }
-            category += categoryName
-            if (i < sizei - 1) {
-                category += "/"
-            }
-            i++
-        }
+        val category = strings.filter { !TextUtils.isEmpty(it) }.joinToString(separator = " / ")
         productEditCategoryCatalogViewHolder.setCategoryChosen(ProductCategory(categoryName = category))
     }
 
 
     override fun onSuccessLoadCatalog(keyword: String, departmentId: Long, catalogs: List<Catalog>) {
-        if (catalogs.size < 1) {
-            productEditCategoryCatalogViewHolder.setVisiblityCatalog(false)
-        } else {
-            productEditCategoryCatalogViewHolder.setVisiblityCatalog(true)
-        }
+        productEditCategoryCatalogViewHolder.setVisiblityCatalog(!catalogs.isEmpty())
     }
 
     override fun onErrorLoadCatalog(errorMessage: String?) {
