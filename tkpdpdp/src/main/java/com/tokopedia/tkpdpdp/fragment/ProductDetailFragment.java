@@ -99,9 +99,11 @@ import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.tkpdpdp.ProductModalActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
+import com.tokopedia.tkpdpdp.constant.ConstantKey;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
 import com.tokopedia.tkpdpdp.customview.FlingBehavior;
@@ -158,6 +160,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
@@ -175,8 +178,10 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_STATE_RESULT_VARIANT;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP;
+import static com.tokopedia.tkpdpdp.constant.ConstantKey.ARGS_STATE_RESULT_PDP_MODAL;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
+
 
 /**
  * ProductDetailFragment
@@ -200,6 +205,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
     public static final int REQUEST_VARIANT = 99;
+    public static final int REQUEST_PRODUCT_MODAL = 101;
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
@@ -551,7 +557,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 buttonBuyView.changeToLoading();
             }
         } else {
-            onProductBuySessionLogin(createProductCartPass(source));
+            openProductModalActivity(generateStateVariant(source));
         }
     }
 
@@ -602,6 +608,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
 
         return pass;
+    }
+
+    private int generateStateProductModal(String source) {
+        switch (source) {
+            case ProductDetailView.SOURCE_BUTTON_BUY_PDP:
+                return ConstantKey.STATE_BUTTON_BUY;
+            case ProductDetailView.SOURCE_BUTTON_CART_PDP:
+                return ConstantKey.STATE_BUTTON_CART;
+            default:
+                return ConstantKey.STATE_VARIANT_DEFAULT;
+        }
     }
 
     @Override
@@ -717,6 +734,23 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(0, 0);
+    }
+
+    public void openProductModalActivity(int state) {
+        if (getActivity() != null) {
+            startActivityForResult(
+                ProductModalActivity.Companion.createActivity(
+                        getActivity(),
+                        productVariant,
+                        productData,
+                        selectedQuantity,
+                        state,
+                        selectedRemarkNotes
+                ),
+                REQUEST_PRODUCT_MODAL
+            );
+            getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+        }
     }
 
     @Override
@@ -1238,6 +1272,33 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 videoDescriptionLayout.refreshVideo();
                 if (SessionHandler.isV4Login(getActivity()))
                     presenter.requestProductDetail(getActivity(), productPass, RE_REQUEST, true, useVariant);
+                break;
+            case REQUEST_PRODUCT_MODAL:
+                if (resultCode == RESULT_OK) {
+                    selectedQuantity = data.getIntExtra(ConstantKey.ARGS_RESULT_QUANTITY_PDP_MODAL, 1);
+                    selectedRemarkNotes = data.getStringExtra(ConstantKey.ARGS_RESULT_REMARK_PDP_MODAL);
+                    switch (data.getIntExtra(ARGS_STATE_RESULT_PDP_MODAL, 0)) {
+                        case ConstantKey.SELECTED_VARIANT_RESULT_SKIP_TO_CART:
+                            if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_PDP));
+                            }
+                            break;
+                        case ConstantKey.SELECTED_VARIANT_RESULT_STAY_IN_PDP:
+                            if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_PDP));
+                            }
+                            break;
+                        case ConstantKey.KILL_PDP_BACKGROUND:
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                } else if (resultCode == RESULT_CANCELED) {
+
+                }
                 break;
             case REQUEST_VARIANT:
                 if (resultCode == RESULT_OK) {
