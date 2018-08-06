@@ -44,7 +44,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     private static final int MAX_PHONE_NUMBER = 15;
 
     private static final String REGEX_NUMERIC = "^[0-9\\s]*$";
-    private static final String REGEX_ALPHABET_AND_SPACE = "^[0-9\\s]*$";
+    private static final String REGEX_ALPHABET_AND_SPACE = "^[a-zA-Z\\s]*$";
 
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
