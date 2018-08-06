@@ -9,14 +9,14 @@ import dagger.Component;
 /**
  * Created by meta on 19/06/18.
  */
-public abstract class TestableTkpdBaseV4Fragment<F, T extends F, E extends BaseDaggerPresenter>  extends TkpdBaseV4Fragment {
+public abstract class TestableTkpdBaseV4Fragment<F, E extends BaseDaggerPresenter>  extends TkpdBaseV4Fragment {
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public abstract void reInitInjector(T component);
+    public abstract void reInitInjector(F component);
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     public abstract E getPresenter();
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public abstract void setPresenter(T presenter);
+    public abstract void setPresenter(F presenter);
 }

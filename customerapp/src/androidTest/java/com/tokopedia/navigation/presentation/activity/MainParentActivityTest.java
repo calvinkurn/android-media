@@ -175,6 +175,30 @@ public class MainParentActivityTest {
 
 
         onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+        //TODO mock data for keranjang.
+        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+    }
+
+    @Test
+    public void test_load_inbox_first_time_without_login(){
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+        doReturn(true).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+
+        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         // reset all inbox state
         TestGlobalNavComponent navComponent = DaggerTestGlobalNavComponent.builder()
