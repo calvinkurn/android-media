@@ -153,8 +153,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private void showTimeBaseChat(int position){
         if(position != 0) {
             try {
+                boolean isSender = true;
                 BaseChatViewModel now = (BaseChatViewModel) list.get(position);
                 BaseChatViewModel next = (BaseChatViewModel) list.get(position - 1);
+                if(now instanceof SendableViewModel) {
+                    isSender = ((SendableViewModel) now).isSender();
+                }
                 long myTime = Long.parseLong(now.getReplyTime());
                 long nextItemTime = 0;
 
@@ -167,7 +171,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 if(next != null &&
                         now != null &&
                         compareHour(nextItemTime,myTime) &&
-                        compareSender(now,next)) {
+                        (compareSender(now,next) && isSender)) {
                     ((BaseChatViewModel) list.get(position)).setShowTime(false);
                 }
                 else {
