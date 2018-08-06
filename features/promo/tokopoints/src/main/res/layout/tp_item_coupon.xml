@@ -14,12 +14,16 @@
         <ImageView
             android:id="@+id/img_banner"
             android:layout_width="match_parent"
-            android:layout_height="104dp" />
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text_quota_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_small"
             android:layout_marginTop="@dimen/tp_margin_small"
             android:background="@drawable/bg_tp_remaining_exchange"
             android:paddingBottom="@dimen/tp_padding_xxsmall"
@@ -28,7 +32,6 @@
             android:paddingTop="@dimen/tp_padding_xxsmall"
             android:textColor="@color/black_54"
             android:textSize="@dimen/tp_text_size_xxsmall"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
