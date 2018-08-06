@@ -22,7 +22,6 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
 
     private RecyclerView recyclerView;
     private ShopProductAdapter shopProductAdapter;
-    private Parcelable recyclerViewState;
     private boolean isDataSizeSmall;
 
     @LayoutRes
@@ -43,14 +42,13 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
 
     @Override
     public void bind(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
-        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+        Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
 
         shopProductAdapter.replaceProductList(shopProductFeaturedViewModel.getShopProductFeaturedViewModelList());
         shopProductAdapter.notifyDataSetChanged();
 
         if (recyclerViewState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-            recyclerViewState = null;
         }
     }
 
