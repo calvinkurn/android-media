@@ -9,7 +9,7 @@
     <string name="label_user_voucher">Kupon Saya</string>
     <string name="title_account_setting">Akun</string>
     <string name="title_shop_setting">Toko</string>
-    <string name="title_tkpd_pay_setting">Tokopedia Pay</string>
+    <string name="title_tkpd_pay_setting">Pembayaran</string>
     <string name="title_notification_setting">Notifikasi</string>
     <string name="title_touch_id_setting">Touch ID</string>
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
@@ -35,7 +35,7 @@
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
-    <string name="screentitle_tkpd_pay_setting">Atur Tokopedia Pay</string>
+    <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
@@ -120,7 +120,7 @@
     <string name="title_menu_gold">Emas</string>
     <string name="title_menu_zakat">Zakat</string>
     <string name="title_menu_donation">Donasi</string>
-    <string name="title_menu_show_all">Lihat Semua</string>
+    <string name="title_menu_show_all">Lihat\nSemua</string>
     <string name="title_menu_sales">Penjualan</string>
     <string name="label_menu_new_order">Pesanan Baru</string>
     <string name="label_menu_ready_to_ship">Siap Dikirim</string>

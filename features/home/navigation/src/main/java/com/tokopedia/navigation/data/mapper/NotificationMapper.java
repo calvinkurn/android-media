@@ -45,6 +45,7 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
             total += entity.getBuyerOrder().getShipped();
             total += entity.getBuyerOrder().getArriveAtDestination();
             total += entity.getSellerOrder().getNewOrder();
+            total += entity.getSellerOrder().getShipped();
             total += entity.getSellerOrder().getReadyToShip();
             total += entity.getSellerOrder().getArriveAtDestination();
             total += entity.getResolution().getBuyer();

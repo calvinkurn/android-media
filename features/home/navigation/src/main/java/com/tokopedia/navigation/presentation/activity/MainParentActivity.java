@@ -62,7 +62,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public static int ACCOUNT_MENU = 4;
 
     private BottomNavigation bottomNavigation;
-    private FrameLayout container;
     private ShowCaseDialog showCaseDialog;
 
     private List<Fragment> fragmentList;
@@ -97,7 +96,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
-        container = findViewById(R.id.container);
+        FrameLayout container = findViewById(R.id.container);
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
@@ -120,7 +119,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
+        Fragment fragment;
         int i = item.getItemId();
         int position = 0;
         if (i == R.id.menu_home) {
@@ -155,10 +154,25 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     private void openFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.addToBackStack(fragment.getClass().getSimpleName());
-        transaction.commit();
+        String backStateName =  fragment.getClass().getName();
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+
+        Fragment currentFrag = manager.findFragmentByTag(backStateName);
+        if (currentFrag != null && manager.getFragments().size() > 0) {
+            for (int i = 0; i < manager.getFragments().size(); i++){
+                Fragment frag = manager.getFragments().get(i);
+                if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                    ft.show(frag); // only show fragment what you want to show
+                } else {
+                    ft.hide(frag); // hide all fragment
+                }
+            }
+        } else {
+            ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
+        }
+        ft.commit();
     }
 
     private boolean isUserLogin() {
@@ -224,8 +238,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return titles;
     }
 
-//    @RestrictTo(RestrictTo.Scope.TESTS)
-//    public Fragment getFragment(int index){ return ((FragmentAdapter)viewPager.getAdapter()).getItem(index); }
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public Fragment getFragment(int index){ return getSupportFragmentManager().findFragmentById(R.id.container); }
 
     @Override
     public void renderNotification(Notification notification) {

@@ -119,7 +119,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
                 break;
             case DISCUSSION_MENU:
-                //RouteManager.route(getActivity(), ApplinkConst.TALK);
+//                RouteManager.route(getActivity(), ApplinkConst.TALK);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTalkCallingIntent(getActivity()));
@@ -129,7 +129,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-                //RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+//                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTicketCallingIntent(getActivity()));
@@ -198,7 +198,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (menuItemNotification == null)
+        if (menuItemNotification == null || getActivity() == null)
             return;
 
         if (badgeView == null)
@@ -210,7 +210,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void reInitInjector(GlobalNavComponent component) { }
+    public void reInitInjector(GlobalNavComponent component) {
+        component.inject(this);
+        presenter.setView(this);
+    }
 
     @Override
     public InboxPresenter getPresenter() {

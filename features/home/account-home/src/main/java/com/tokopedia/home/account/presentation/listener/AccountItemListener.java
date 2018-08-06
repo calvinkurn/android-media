@@ -6,6 +6,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 
 /**
  * @author okasurya on 7/26/18.
@@ -36,7 +37,7 @@ public interface AccountItemListener {
 
     void onAddProductClicked();
 
-    void onTokopediaPayItemClicked(String applink);
+    void onTokopediaPayItemClicked(String label, String applink);
 
     void onDepositClicked(ShopCardViewModel element);
 }

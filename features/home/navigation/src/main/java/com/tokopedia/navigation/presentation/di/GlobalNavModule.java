@@ -10,6 +10,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 import javax.inject.Named;
 
