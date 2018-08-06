@@ -13,13 +13,13 @@ import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
 public class ChallengesHomeActivity extends BaseTabActivity {
 
 
-    @Deeplink("sdsd")
-    public static Intent getCallingReferral(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ChallengesHomeActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
+//    @Deeplink("sdsd")
+//    public static Intent getCallingReferral(Context context, Bundle extras) {
+//        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+//        return new Intent(context, ChallengesHomeActivity.class)
+//                .setData(uri.build())
+//                .putExtras(extras);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
