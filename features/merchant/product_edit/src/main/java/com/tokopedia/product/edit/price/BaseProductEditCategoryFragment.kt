@@ -51,8 +51,8 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         arguments?.run {
-            productCategory = getParcelable(EXTRA_CATEGORY)
-            productCatalog = getParcelable(EXTRA_CATALOG)
+            productCategory = getParcelable(EXTRA_CATEGORY)?: ProductCategory()
+            productCatalog = getParcelable(EXTRA_CATALOG)?:ProductCatalog()
             name = getString(EXTRA_NAME, "")
             isCategoryLocked = getBoolean(EXTRA_CATEGORY_LOCKED)
         }

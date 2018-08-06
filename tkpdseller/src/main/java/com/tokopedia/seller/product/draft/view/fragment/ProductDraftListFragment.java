@@ -23,7 +23,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.product.edit.view.activity.ProductDraftEditActivity;
@@ -179,7 +179,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             item.getSubMenu().findItem(R.id.label_view_add_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    openImagePickerToAddProduct();
+                    startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
                     return true;
                 }
             });
@@ -193,11 +193,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             });
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void openImagePickerToAddProduct(){
-        Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(), null);
-        startActivityForResult(intent, REQUEST_CODE_ADD_IMAGE);
     }
 
     @Override
@@ -225,17 +220,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     }
                 }
                 break;
-            case REQUEST_CODE_ADD_IMAGE:
-            {
-                if (resultCode == Activity.RESULT_OK &&
-                        intent != null) {
-                    ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        startActivity(ProductAddActivity.Companion.createInstance(getActivity(), imageUrlOrPathList));
-                    }
-                }
-            }
-            break;
         }
     }
 

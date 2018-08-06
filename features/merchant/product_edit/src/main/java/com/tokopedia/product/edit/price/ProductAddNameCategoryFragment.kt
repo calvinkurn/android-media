@@ -18,12 +18,15 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.ProductAddActivity
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
 class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryView {
 
     private var productName = ProductName()
+    private var productPictureList : ArrayList<String>? = ArrayList()
 
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
@@ -32,6 +35,11 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
                 .build()
                 .inject(this)
         presenter.attachView(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        productPictureList = arguments?.getStringArrayList(EXTRA_IMAGES)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -73,8 +81,8 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
                     presenter.fetchCategory(productCategory.categoryId.toLong())
                 }
                 REQUEST_CODE_GET_IMAGES -> {
-                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                    startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, imageUrlOrPathList))
+                    productPictureList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, productPictureList?:ArrayList()))
                     activity?.finish()
                 }
             }
@@ -97,7 +105,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
 
     private fun goToNext(){
         if(isDataValid()){
-            startActivityForResult(AddProductImagePickerBuilder.createPickerIntentPrimary(activity, ArrayList()), REQUEST_CODE_GET_IMAGES)
+            startActivityForResult(AddProductImagePickerBuilder.createPickerIntentPrimary(activity, productPictureList), REQUEST_CODE_GET_IMAGES)
         }
     }
 
@@ -105,6 +113,12 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
-        fun createInstance() = ProductAddNameCategoryFragment()
+        fun createInstance(imageUrls: ArrayList<String>?) : ProductAddNameCategoryFragment{
+            val productAddNameCategoryFragment = ProductAddNameCategoryFragment()
+            val bundle = Bundle()
+            bundle.putStringArrayList(BaseProductAddEditFragment.EXTRA_IMAGES, imageUrls)
+            productAddNameCategoryFragment.arguments =bundle
+            return productAddNameCategoryFragment
+        }
     }
 }

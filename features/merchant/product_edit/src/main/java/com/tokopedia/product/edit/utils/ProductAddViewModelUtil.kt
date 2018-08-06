@@ -248,3 +248,7 @@ fun ProductAddViewModel.isFilledAny(): Boolean {
             this.productLogistic?.weight?:0 > 0 ||
             !TextUtils.isEmpty(this.productStock?.sku)
 }
+
+fun ProductAddViewModel?.resetCatalog() {
+    this?.productCatalog = ProductCatalog(-1, "")
+}

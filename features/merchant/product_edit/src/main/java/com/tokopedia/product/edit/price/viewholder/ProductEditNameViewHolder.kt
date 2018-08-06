@@ -3,7 +3,9 @@ package com.tokopedia.product.edit.price.viewholder
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.price.model.ProductName
+import kotlinx.android.synthetic.main.fragment_product_edit_description.view.*
 import kotlinx.android.synthetic.main.partial_product_edit_name.view.*
 
 class ProductEditNameViewHolder(var view: View, listener: Listener){
@@ -20,7 +22,7 @@ class ProductEditNameViewHolder(var view: View, listener: Listener){
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                view.textInputLayoutName.error = if (s.isNotEmpty()) null else "Error Nama"
+                view.textInputLayoutName.error = if (s.isNotEmpty()) null else view.context.getString(R.string.product_error_product_name_empty)
 
                 productName.name = view.editTextName.text.toString()
                 listener.onNameChanged(productName)
