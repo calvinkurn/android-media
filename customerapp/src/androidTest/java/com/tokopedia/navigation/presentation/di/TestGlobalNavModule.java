@@ -2,6 +2,8 @@ package com.tokopedia.navigation.presentation.di;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -22,6 +24,13 @@ import static org.mockito.Mockito.mock;
 
 @Module
 public class TestGlobalNavModule {
+
+    private AnalyticTracker analyticTracker;
+
+    @Provides
+    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
+        return analyticTracker == null ? analyticTracker = mock(AnalyticTracker.class)  : analyticTracker;
+    }
 
     private GetDrawerNotificationUseCase getDrawerNotificationUseCase;
 
