@@ -53,6 +53,11 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);

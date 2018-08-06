@@ -1179,7 +1179,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (mainToolbar == null)
+        if (mainToolbar == null || getActivity() == null)
             return;
         mainToolbar.setNotificationNumber(number);
     }

@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
 import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
+import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
@@ -177,6 +178,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         buyer.setTitle(getString(R.string.pembelian));
 
         List<DrawerNotification.ChildDrawerNotification> childBuyer = new ArrayList<>();
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_PEMBAYARAN, getString(R.string.menunggu_pembayaran)));
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI, getString(R.string.menunggu_konfirmasi)));
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES, getString(R.string.pesanan_diproses)));
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM, getString(R.string.sedang_dikirim)));
@@ -233,8 +235,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                     .getItem(parentPosition).getChilds().get(childPosition);
             switch (item.getId()) {
                 case PEMBELIAN:
-                    if (child.getId() == MENUNGGU_KONFIRMASI) {
+                    if (child.getId() == MENUNGGU_PEMBAYARAN) {
                         RouteManager.route(getActivity(), "tokopedia://buyer/payment");
+                    } else if (child.getId() == MENUNGGU_KONFIRMASI) {
+                    RouteManager.route(getActivity(), "tokopedia://buyer/payment");
                     } else if (child.getId() == PESANAN_DIPROSES){
                         RouteManager.route(getActivity(), "tokopedia://buyer/payment");
                     } else if (child.getId() == SEDANG_DIKIRIM){

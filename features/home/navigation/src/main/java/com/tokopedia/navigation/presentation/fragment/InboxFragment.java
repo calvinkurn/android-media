@@ -198,7 +198,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (menuItemNotification == null)
+        if (menuItemNotification == null || getActivity() == null)
             return;
 
         if (badgeView == null)
