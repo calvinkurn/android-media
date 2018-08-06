@@ -27,6 +27,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Gu
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.GraphqlConstant;
 import com.tokopedia.graphql.data.model.CacheType;
@@ -186,6 +187,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 getView().removeLoading();
                                 list.addAll(productViewModel.getProductList());
+                                list.add(new TopAdsViewModel());
                                 getView().setProductList(list);
                                 if (getView().isEvenPage()) {
                                     getView().addGuidedSearch();
@@ -334,6 +336,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
                                 list.add(headerViewModel);
                                 list.addAll(productViewModel.getProductList());
+                                list.add(new TopAdsViewModel());
                                 getView().removeLoading();
                                 getView().setProductList(list);
                                 getView().addLoading();

@@ -18,6 +18,7 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.AdsItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
+//        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
+//                .getDimensionPixelSize(R.dimen.dp_16)));
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }

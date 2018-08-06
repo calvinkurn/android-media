@@ -463,6 +463,7 @@ public class ProductListFragment extends SearchSectionFragment
                 if (adapter.isEmptyItem(position) ||
                         adapter.isHeaderBanner(position) ||
                         adapter.isGuidedSearch(position) ||
+                        adapter.isTopAds(position) ||
                         adapter.isLoading(position)) {
                     return spanCount;
                 } else {

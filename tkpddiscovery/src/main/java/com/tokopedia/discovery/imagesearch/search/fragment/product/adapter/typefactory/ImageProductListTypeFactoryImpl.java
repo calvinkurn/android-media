@@ -14,10 +14,12 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.view
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ImageEmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ListProductItemViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 
 /**
@@ -50,6 +52,11 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
     }
 
     @Override
+    public int type(TopAdsViewModel topAdsViewModel) {
+        return TopAdsViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(ProductItem productItem) {
         switch (getRecyclerViewItem()) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
@@ -79,6 +86,8 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
             viewHolder = new ImageEmptySearchViewHolder(view, itemClickListener, topAdsConfig);
         } else if (type == GuidedSearchViewHolder.LAYOUT) {
             viewHolder = new GuidedSearchViewHolder(view, itemClickListener);
+        } else if (type == TopAdsViewHolder.LAYOUT) {
+            viewHolder = new TopAdsViewHolder(view);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

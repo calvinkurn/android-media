@@ -18,6 +18,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Em
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
@@ -229,6 +230,11 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     public boolean isGuidedSearch(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof GuidedSearchViewModel;
     }
+
+    public boolean isTopAds(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof TopAdsViewModel;
+    }
+    
 
     public boolean hasGuidedSearch() {
         return guidedSearch != null;
