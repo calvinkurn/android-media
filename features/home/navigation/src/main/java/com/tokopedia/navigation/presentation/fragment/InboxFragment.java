@@ -210,7 +210,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void reInitInjector(GlobalNavComponent component) { }
+    public void reInitInjector(GlobalNavComponent component) {
+        component.inject(this);
+        presenter.setView(this);
+    }
 
     @Override
     public InboxPresenter getPresenter() {

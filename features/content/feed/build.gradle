@@ -39,9 +39,9 @@ dependencies {
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.searchbar)
-    implementation project(rootProject.ext.features.navigationCommon)
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
