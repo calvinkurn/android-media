@@ -1,6 +1,7 @@
 package com.tokopedia.kol.common.data.source;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 
 public class KolAuthInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
+    private static final String HEADER_OS_TYPE = "os_type";
 
     @Inject
     public KolAuthInterceptor(@ApplicationContext Context context,
@@ -41,6 +43,7 @@ public class KolAuthInterceptor extends TkpdAuthInterceptor {
                 userSession.getUserId(),
                 userSession.getDeviceId());
         headerMap.put(HEADER_TKPD_USER_ID, userSession.getUserId());
+        headerMap.put(HEADER_OS_TYPE, Build.VERSION.RELEASE);
         return headerMap;
     }
 }
