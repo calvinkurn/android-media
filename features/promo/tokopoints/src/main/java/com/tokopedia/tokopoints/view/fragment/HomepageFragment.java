@@ -45,6 +45,7 @@ import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.List;
 
@@ -213,6 +214,11 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         } else {
             mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon);
         }
+
+        TabUtil.wrapTabIndicatorToTitle(mTabLayoutPromo,
+                (int) getResources().getDimension(R.dimen.tp_margin_medium),
+                (int) getResources().getDimension(R.dimen.tp_margin_regular));
+
     }
 
     @Override
@@ -426,11 +432,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPagerPromos.setAdapter(new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons));
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
         mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
-
-        //Check for coupons and make sure user coupon get selected if he has any number.
-        if (coupons != null && !coupons.isEmpty()) {
-            mPagerPromos.setCurrentItem(1);
-        }
     }
 
     private void decorateDialog(AlertDialog dialog) {

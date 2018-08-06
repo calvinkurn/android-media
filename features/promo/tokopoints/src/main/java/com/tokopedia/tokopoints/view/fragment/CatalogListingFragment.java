@@ -32,6 +32,7 @@ import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,6 +188,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
         //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
         mPagerSortType.postDelayed(() -> refreshTab(getSelectedCategoryId()), CommonConstant.TAB_SETUP_DELAY_MS);
+
+        //excluding extra padding from tabs
+        TabUtil.wrapTabIndicatorToTitle(mTabSortType,
+                (int) getResources().getDimension(R.dimen.tp_margin_medium),
+                (int) getResources().getDimension(R.dimen.tp_margin_regular));
     }
 
 
