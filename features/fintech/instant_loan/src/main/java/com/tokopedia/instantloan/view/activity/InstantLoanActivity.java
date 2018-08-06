@@ -16,8 +16,10 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -27,6 +29,8 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -57,12 +61,28 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
 
+    public static final String TAB_NAME = "tab_name";
+    private static final String TAB_INSTAN = "instan";
+    private static final String TAB_TANPA_AGUNAN = "tanpaagunan";
+    private static final String TAB_AGUNAN = "agunan";
+
     private TabLayout tabLayout;
-    private HeightWrappingViewPager viewPager;
+    private HeightWrappingViewPager heightWrappingViewPager;
+    private int activeTabPosition = 0;
+    private boolean instantLoanEnabled = true;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
     }
+
+
+    @DeepLink({ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB})
+    public static Intent getInstantLoanCallingIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, InstantLoanActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -80,8 +100,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     private void loadSection() {
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true)) {
+        if (instantLoanEnabled) {
             populateThreeTabItem();
         } else {
             populateTwoTabItem();
@@ -89,8 +108,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         InstantLoanPagerAdapter instantLoanPagerAdapter =
                 new InstantLoanPagerAdapter(getSupportFragmentManager());
         instantLoanPagerAdapter.setData(instantLoanItemList);
-        viewPager.setAdapter(instantLoanPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+        heightWrappingViewPager.setAdapter(instantLoanPagerAdapter);
+        tabLayout.setupWithViewPager(heightWrappingViewPager);
         setActiveTab();
     }
 
@@ -113,12 +132,12 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
 
     private void setActiveTab() {
-        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(
+        heightWrappingViewPager.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        viewPager.setCurrentItem(0);
+                        heightWrappingViewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        heightWrappingViewPager.setCurrentItem(activeTabPosition);
                     }
                 });
     }
@@ -139,6 +158,53 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     protected void onCreate(Bundle savedInstanceState) {
         NetworkClient.init(this);
         super.onCreate(savedInstanceState);
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        instantLoanEnabled = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
+
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+            String tabName = bundle.getString(TAB_NAME);
+
+            if (tabName != null) {
+                switch (tabName) {
+                    case TAB_INSTAN:
+                        if (instantLoanEnabled) {
+                            activeTabPosition = 0;
+                        } else {
+                            finish();
+                        }
+
+                        break;
+
+                    case TAB_TANPA_AGUNAN:
+                        if (instantLoanEnabled) {
+                            activeTabPosition = 1;
+                        } else {
+                            activeTabPosition = 0;
+                        }
+
+                        break;
+                    case TAB_AGUNAN:
+                        if (instantLoanEnabled) {
+                            activeTabPosition = 2;
+                        } else {
+                            activeTabPosition = 1;
+                        }
+
+                        break;
+                    default:
+                        activeTabPosition = 0;
+                }
+            }
+        } else {
+            activeTabPosition = 0;
+        }
+
+        TabLayout.Tab tab = tabLayout.getTabAt(activeTabPosition);
+        if (tab != null) {
+            tab.select();
+        }
     }
 
     @Override
@@ -183,6 +249,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             mBannerPager.setClipToPadding(false);
             mBannerPager.setPageMargin(getResources().getDimensionPixelOffset(R.dimen.il_margin_medium));
             mBannerPager.addOnPageChangeListener(mBannerPageChangeListener);
+            sendBannerImpressionEvent(0);
         }
     }
 
@@ -224,8 +291,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     private void initializeView() {
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        viewPager = findViewById(R.id.pager);
+        tabLayout = findViewById(R.id.tabs);
+        heightWrappingViewPager = findViewById(R.id.pager);
         mBtnNextBanner = findViewById(R.id.button_next);
         mBtnPreviousBanner = findViewById(R.id.button_previous);
     }
@@ -257,6 +324,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        sendPermissionDeniedGTMEvent(permissions, grantResults);
         DDCollectorManager.getsInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -283,6 +351,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
                 mBtnNextBanner.show();
                 mBtnPreviousBanner.show();
             }
+            sendBannerImpressionEvent(position);
         }
 
         @Override
@@ -291,13 +360,27 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         }
     };
 
+    private void sendBannerImpressionEvent(int position) {
+        BannerPagerAdapter bannerPagerAdapter = (BannerPagerAdapter) mBannerPager.getAdapter();
+
+        if (bannerPagerAdapter != null &&
+                bannerPagerAdapter.getBannerEntityList() != null &&
+                bannerPagerAdapter.getBannerEntityList().get(position) != null) {
+            String eventLabel = bannerPagerAdapter.getBannerEntityList().get(position).getLink()
+                    + " - " + String.valueOf(position);
+            InstantLoanEventTracking.eventLoanBannerImpression(eventLabel);
+        }
+    }
+
     private CharSequence getPageTitle(int position) {
         return getResources().getStringArray(R.array.values_title)[position];
     }
 
     @Override
-    public void onBannerClick(View view) {
+    public void onBannerClick(View view, int position) {
         String url = (String) view.getTag();
+        String eventLabel = url + " - " + String.valueOf(position);
+        InstantLoanEventTracking.eventLoanBannerClick(eventLabel);
         if (!TextUtils.isEmpty(url)) {
             openWebView(url);
         }
@@ -306,6 +389,16 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     public void openWebView(String url) {
         Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, PINJAMAN_TITLE);
         startActivity(intent);
+    }
+
+    private void sendPermissionDeniedGTMEvent(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        StringBuilder eventLabel = new StringBuilder(InstantLoanEventConstants.EventLabel.PL_PERMISSION_DENIED);
+        for (int i = 0; i < permissions.length; i++) {
+            if (grantResults[i] == -1) {
+                eventLabel.append(permissions[i]).append(", ");
+            }
+        }
+        InstantLoanEventTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
     }
 }
 

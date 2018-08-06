@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -40,6 +42,16 @@ public class CartItemModel implements Parcelable {
 
     private boolean isError;
     private String errorMessage;
+
+    private AnalyticsProductCheckoutData analyticsProductCheckoutData;
+
+    public AnalyticsProductCheckoutData getAnalyticsProductCheckoutData() {
+        return analyticsProductCheckoutData;
+    }
+
+    public void setAnalyticsProductCheckoutData(AnalyticsProductCheckoutData analyticsProductCheckoutData) {
+        this.analyticsProductCheckoutData = analyticsProductCheckoutData;
+    }
 
     public long getCartId() {
         return cartId;
@@ -217,76 +229,8 @@ public class CartItemModel implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.cartId);
-        dest.writeString(this.shopId);
-        dest.writeString(this.shopName);
-        dest.writeInt(this.productId);
-        dest.writeString(this.name);
-        dest.writeDouble(this.price);
-        dest.writeInt(this.currency);
-        dest.writeInt(this.weightUnit);
-        dest.writeDouble(this.weight);
-        dest.writeString(this.weightFmt);
-        dest.writeInt(this.quantity);
-        dest.writeString(this.noteToSeller);
-        dest.writeString(this.imageUrl);
-        dest.writeString(this.cashback);
-        dest.writeString(this.freeReturnLogo);
-        dest.writeByte(this.isCashback ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isPreOrder ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.fInsurance ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.fCancelPartial ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
-        dest.writeString(this.errorMessage);
-    }
-
     public CartItemModel() {
     }
-
-    protected CartItemModel(Parcel in) {
-        this.cartId = in.readLong();
-        this.shopId = in.readString();
-        this.shopName = in.readString();
-        this.productId = in.readInt();
-        this.name = in.readString();
-        this.price = in.readDouble();
-        this.currency = in.readInt();
-        this.weightUnit = in.readInt();
-        this.weight = in.readDouble();
-        this.weightFmt = in.readString();
-        this.quantity = in.readInt();
-        this.noteToSeller = in.readString();
-        this.imageUrl = in.readString();
-        this.cashback = in.readString();
-        this.freeReturnLogo = in.readString();
-        this.isCashback = in.readByte() != 0;
-        this.isPreOrder = in.readByte() != 0;
-        this.isFreeReturn = in.readByte() != 0;
-        this.fInsurance = in.readByte() != 0;
-        this.fCancelPartial = in.readByte() != 0;
-        this.isError = in.readByte() != 0;
-        this.errorMessage = in.readString();
-    }
-
-    public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {
-        @Override
-        public CartItemModel createFromParcel(Parcel source) {
-            return new CartItemModel(source);
-        }
-
-        @Override
-        public CartItemModel[] newArray(int size) {
-            return new CartItemModel[size];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {
@@ -349,4 +293,74 @@ public class CartItemModel implements Parcelable {
                 .append(getErrorMessage())
                 .toHashCode();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.cartId);
+        dest.writeString(this.shopId);
+        dest.writeString(this.shopName);
+        dest.writeInt(this.productId);
+        dest.writeString(this.name);
+        dest.writeDouble(this.price);
+        dest.writeInt(this.currency);
+        dest.writeInt(this.weightUnit);
+        dest.writeDouble(this.weight);
+        dest.writeString(this.weightFmt);
+        dest.writeInt(this.quantity);
+        dest.writeString(this.noteToSeller);
+        dest.writeString(this.imageUrl);
+        dest.writeString(this.cashback);
+        dest.writeString(this.freeReturnLogo);
+        dest.writeByte(this.isCashback ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isPreOrder ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.fInsurance ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.fCancelPartial ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
+        dest.writeParcelable(this.analyticsProductCheckoutData, flags);
+    }
+
+    protected CartItemModel(Parcel in) {
+        this.cartId = in.readLong();
+        this.shopId = in.readString();
+        this.shopName = in.readString();
+        this.productId = in.readInt();
+        this.name = in.readString();
+        this.price = in.readDouble();
+        this.currency = in.readInt();
+        this.weightUnit = in.readInt();
+        this.weight = in.readDouble();
+        this.weightFmt = in.readString();
+        this.quantity = in.readInt();
+        this.noteToSeller = in.readString();
+        this.imageUrl = in.readString();
+        this.cashback = in.readString();
+        this.freeReturnLogo = in.readString();
+        this.isCashback = in.readByte() != 0;
+        this.isPreOrder = in.readByte() != 0;
+        this.isFreeReturn = in.readByte() != 0;
+        this.fInsurance = in.readByte() != 0;
+        this.fCancelPartial = in.readByte() != 0;
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
+        this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
+    }
+
+    public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {
+        @Override
+        public CartItemModel createFromParcel(Parcel source) {
+            return new CartItemModel(source);
+        }
+
+        @Override
+        public CartItemModel[] newArray(int size) {
+            return new CartItemModel[size];
+        }
+    };
 }

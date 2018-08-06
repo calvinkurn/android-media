@@ -103,6 +103,8 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse data = restResponse.getData();
                 dealsDetailsResponse = (DealsDetailsResponse) data.getData();
+                if (dealsDetailsResponse != null )
+                    Utils.getSingletonInstance().sortOutletsWithLocation(dealsDetailsResponse.getOutlets(), Utils.getSingletonInstance().getLocation(getView().getActivity()));
                 getView().hideProgressBar();
                 getView().showShareButton();
                 getView().showCollapsingHeader();

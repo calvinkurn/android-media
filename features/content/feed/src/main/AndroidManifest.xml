@@ -27,11 +27,6 @@
             android:name=".view.activity.KolProfileWebViewActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ReactNativeExplorePageActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ReactNativeContentDetailsActivity"
-            android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>

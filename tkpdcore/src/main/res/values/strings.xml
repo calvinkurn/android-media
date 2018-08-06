@@ -291,7 +291,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <!-- Strings related Navigation Drawer -->
     <string name="title_myshop">Toko Saya</string>
     <string name="title_create_shop">Buka Toko</string>
-    <string name="title_bank">Akun Bank</string>
+    <string name="title_bank">Rekening Bank</string>
     <string name="title_address">Alamat</string>
     <string name="title_prod_list">Daftar Produk</string>
     <string name="title_inbox">Kotak Masuk</string>
@@ -1587,6 +1587,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_fill_street_address">Mohon isi Alamat Jalan Anda</string>
     <string name="toggle_rpx_next_day_i_drop">RPX Next Day Package dan IDrop tidak dapat dipilih bersamaan</string>
     <string name="title_delivery_location">Lokasi Pickup (Opsional)</string>
+    <string name="title_delivery_location_pickup">Lokasi Pengiriman (Opsional)</string>
     <string name="title_delivery_location_cart">Lokasi Pengiriman</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
     <string name="choose_location">Pilih Lokasi</string>
@@ -2211,7 +2212,7 @@ di Tokopedia Sekarang!</string>
     <string name="copy">Salin Link</string>
     <string name="referral_tnc"><![CDATA[<ol> <li>Toppers akan mendapatkan bonus TokoCash Rp20.000 setelah Teman berhasil melakukan transaksi pertama via Aplikasi Tokopedia dengan menggunakan kode referral.</li> <li>Untuk mendapatkan bonus TokoCash, transaksi Teman harus berhasil, tidak boleh dibatalkan atau dikembalikan.</li> <li>Anda akan menerima bonus TokoCash dalam waktu maksimum 2x24 jam , terhitung sejak transaksi pertama yang dilakukan teman Anda berhasil.</li> <li>Apabila Anda berpartisipasi sebagai Toppers, bonus TokoCash akan diberikan untuk setiap referral yang berhasil.Artinya, bonus tidak langsung bertambah sesuai dengan jumlah</li> <li> Teman yang membuat akun di Tokopedia, karena bonus baru akan diberikan apabila Teman berhasil melakukan transaksi.</li> <li>Perlu kami informasikan bahwa nama yang Anda gunakan untuk membuat akun Tokopedia dapat ditambahkan ke dalam kode referral Anda.</li> <li>Dengan berpartisipasi, Anda setuju untuk: Mengirim kode referral hanya pada orang-orang yang Anda kenal; dan Tidak terlibat dalam kegiatan apapun yang dapat dianggap sebagai penipuan, pelanggaran privasi, atau spamming.</li> </ol>]]></string>
     <string name="referral_help_tell"><![CDATA[Minta teman untuk mendaftar & bertransaksi]]></string>
-    <string name="referral_help_receive"><![CDATA[Dapatkan cashback ke <font color=\'#42b549\'>Tokocash</font>]]></string>
+    <string name="referral_help_receive">Dapatkan TokoCash</string>
     <string name="copied">Tersalin</string>
     <string name="fiends_invited_lable">teman diajak</string>
     <string name="referral_title_desc">Ajak teman belanja di Tokopedia dan dapatkan hingga Rp1.000.000 </string>
@@ -2228,5 +2229,6 @@ di Tokopedia Sekarang!</string>
     <string name="referral_welcome_header"><![CDATA[<font color=\'#399c3f\'>Givana</font> memberi kamu Promo Referral.]]></string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
+    <string name="message_success_change_password">Kata sandi berhasil diubah</string>
 
 </resources>

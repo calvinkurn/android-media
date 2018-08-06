@@ -121,25 +121,27 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     public void updateHeight() {
         actionDismiss = false;
         behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED && actionDismiss) {
-                    CourierBottomsheet.this.dismiss();
+        if (behavior != null) {
+            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED && actionDismiss) {
+                        CourierBottomsheet.this.dismiss();
+                    }
                 }
-            }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 
-            }
-        });
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
+                }
+            });
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;
 
-        behavior.setPeekHeight(height);
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setPeekHeight(height);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 
     private void initializeData(ShipmentDetailData shipmentDetailData) {

@@ -99,7 +99,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(ApplinkConst.PURCHASE_SHIPPED)
+    @DeepLink({ApplinkConst.PURCHASE_SHIPPED, TransactionAppLink.PURCHASE_ORDER})
     public static Intent getShippedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
