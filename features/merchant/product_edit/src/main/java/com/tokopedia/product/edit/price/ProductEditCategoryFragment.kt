@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.*
 import android.widget.TextView
@@ -27,16 +28,18 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
 import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import com.tokopedia.product.edit.view.presenter.ProductEditCategoryPresenter
-import kotlinx.android.synthetic.main.partial_product_edit_category.*
+import kotlinx.android.synthetic.main.fragment_product_edit_category.*
 import javax.inject.Inject
 
 class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCatalogViewHolder.Listener,
-        ProductEditCategoryView{
+        ProductEditCategoryView, ProductCategoryRecommendationAdapter.Listener{
 
     @Inject
     lateinit var presenter: ProductEditCategoryPresenter
 
-    val appRouter : Context by lazy { activity?.application as Context }
+    private val appRouter : Context by lazy { activity?.application as Context }
+
+    private lateinit var productCategoryRecommendationAdapter: ProductCategoryRecommendationAdapter
 
     override fun getScreenName(): String? = null
 
@@ -52,7 +55,6 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
         presenter.attachView(this)
     }
 
-    private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
     private var productCategory = ProductCategory()
     private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
@@ -74,9 +76,13 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productEditCategoryCatalogViewHolder = ProductEditCategoryCatalogViewHolder(view, this, context)
-        productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
-        productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
+        productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(mutableListOf(), this)
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = productCategoryRecommendationAdapter
+        recyclerView.setHasFixedSize(true)
+        recyclerView.isNestedScrollingEnabled = false
+        labelCatalog.setOnClickListener { onLabelCatalogClicked() }
+        labelCategory.setOnClickListener { onLabelCategoryClicked() }
         texViewMenu.text = getString(R.string.label_save)
         texViewMenu.setOnClickListener {
             setResult()
@@ -85,6 +91,8 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
             titleCategoryRecommendation.visibility = View.GONE
             recyclerView.visibility = View.GONE
             labelNotFindCategory.visibility = View.GONE
+            setCatalogChosen(productCatalog)
+            setCategoryChosen(productCategory)
         }else{
             titleCategoryRecommendation.visibility = View.VISIBLE
             recyclerView.visibility = View.VISIBLE
@@ -94,17 +102,16 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
                 presenter.fetchCatalogData(productName, productCategory.categoryId.toLong(), 0, 1)
             }
         }
-
     }
 
-    override fun onLabelCategoryClicked() {
+    private fun onLabelCategoryClicked() {
         if (isCategoryLocked) {
             val builder = AlertDialog.Builder(activity!!,
                     R.style.AppCompatAlertDialogStyle)
             builder.setTitle(R.string.product_category_locked)
             builder.setMessage(R.string.product_category_locked_description)
             builder.setCancelable(true)
-            builder.setNegativeButton(R.string.close) { dialog, id -> dialog.cancel() }
+            builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
 
             val alert = builder.create()
             alert.show()
@@ -115,10 +122,9 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
                         , REQUEST_CODE_GET_CATEGORY)
             }
         }
-
     }
 
-    override fun onLabelCatalogClicked() {
+    private fun onLabelCatalogClicked() {
         context?.run {
             startActivityForResult(ProductEditCatalogPickerActivity
                     .createIntent(this, productName, productCategory.categoryId.toLong(), productCatalog),
@@ -131,7 +137,7 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
             presenter.fetchCatalogData(productName, productCategory.categoryId.toLong(), 0, 1)
         }
         this.productCategory = productCategory
-        productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
+        setCategoryChosen(productCategory)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -139,7 +145,7 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
                     productCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
-                    productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog)
+                    setCatalogChosen(productCatalog)
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
                     val newCategoryId = data!!.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()
@@ -183,11 +189,24 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
     }
 
     override fun onSuccessLoadRecommendationCategory(categories: List<ProductCategoryPredictionViewModel>) {
-        productEditCategoryCatalogViewHolder.renderRecommendation(categories)
+        renderRecommendation(categories)
     }
 
     override fun onErrorLoadRecommendationCategory(throwable: Throwable?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        setCatalogChosen(productCatalog)
+        setCategoryChosen(productCategory)
+    }
+
+    override fun onSuccessLoadCatalog(keyword: String, departmentId: Long, catalogs: List<Catalog>) {
+        if (catalogs.isEmpty()) {
+            setVisibilityCatalog(false)
+        } else {
+            setVisibilityCatalog(true)
+        }
+    }
+
+    override fun onErrorLoadCatalog(errorMessage: String?) {
+        productCatalog.catalogId = -1
     }
 
     override fun populateCategory(strings: List<String>) {
@@ -206,19 +225,38 @@ class ProductEditCategoryFragment : BaseDaggerFragment(), ProductEditCategoryCat
             }
             i++
         }
-        productEditCategoryCatalogViewHolder.setCategoryChosen(ProductCategory(categoryName = category))
+        setCategoryChosen(ProductCategory(categoryName = category))
     }
 
+    private fun setCategoryChosen(productCategory: ProductCategory){
+        if (!TextUtils.isEmpty(productCategory.categoryName)) {
+            labelCategory.setContent(productCategory.categoryName)
+        }
+        productCategoryRecommendationAdapter.setSelectedCategory(productCategory)
+    }
 
-    override fun onSuccessLoadCatalog(keyword: String, departmentId: Long, catalogs: List<Catalog>) {
-        if (catalogs.size < 1) {
-            productEditCategoryCatalogViewHolder.setVisiblityCatalog(false)
-        } else {
-            productEditCategoryCatalogViewHolder.setVisiblityCatalog(true)
+    private fun setCatalogChosen(productCatalog: ProductCatalog){
+        if(!TextUtils.isEmpty(productCatalog.catalogName)) {
+            labelCatalog.setContent(productCatalog.catalogName)
         }
     }
 
-    override fun onErrorLoadCatalog(errorMessage: String?) {
-        productCatalog.catalogId = -1
+    private fun renderRecommendation(categories: List<ProductCategoryPredictionViewModel>){
+        productCategoryRecommendationAdapter.replaceData(categories.map {ProductCategory().apply {
+            categoryId = it.lastCategoryId
+            categoryName = it.printedString
+        }})
+        setCatalogChosen(productCatalog)
+        setCategoryChosen(productCategory)
+    }
+
+    private fun setVisibilityCatalog(isVisible: Boolean) {
+        if(isVisible){
+            titleCatalog.visibility = View.VISIBLE
+            labelCatalog.visibility = View.VISIBLE
+        }else{
+            titleCatalog.visibility = View.GONE
+            labelCatalog.visibility = View.GONE
+        }
     }
 }

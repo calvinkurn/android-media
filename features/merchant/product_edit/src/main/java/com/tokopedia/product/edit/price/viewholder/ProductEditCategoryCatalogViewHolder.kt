@@ -17,13 +17,9 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
 
     interface Listener {
         fun onCategoryRecommendationChoosen(productCategory: ProductCategory)
-        fun onLabelCatalogClicked()
-        fun onLabelCategoryClicked()
     }
 
     init {
-        view.labelCatalog.setOnClickListener { listener.onLabelCatalogClicked() }
-        view.labelCategory.setOnClickListener { listener.onLabelCategoryClicked() }
         productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(categoryRecommendationList, this)
         view.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         view.recyclerView.adapter = productCategoryRecommendationAdapter

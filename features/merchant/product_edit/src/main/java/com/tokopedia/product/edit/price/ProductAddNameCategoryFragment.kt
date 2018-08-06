@@ -37,7 +37,6 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
     @Inject
     lateinit var presenter: ProductEditCategoryPresenter
 
-    val appRouter : Context by lazy { activity?.application as Context }
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
     private var productCatalog = ProductCatalog()
     private var productName = ProductName()
@@ -102,22 +101,6 @@ class ProductAddNameCategoryFragment : BaseDaggerFragment(), ProductEditNameView
         this.productCategory = productCategory
         productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory)
         validateData()
-    }
-
-    override fun onLabelCategoryClicked() {
-        if (appRouter is ProductEditModuleRouter){
-            startActivityForResult((appRouter as ProductEditModuleRouter)
-                    .getCategoryPickerIntent(activity, productCategory.categoryId)
-                    , ProductEditCategoryFragment.REQUEST_CODE_GET_CATEGORY)
-        }
-    }
-
-    override fun onLabelCatalogClicked() {
-        context?.run {
-            startActivityForResult(ProductEditCatalogPickerActivity
-                    .createIntent(this, productName.name, productCategory.categoryId.toLong(), productCatalog),
-                    REQUEST_CODE_GET_CATALOG)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
