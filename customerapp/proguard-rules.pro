@@ -15,7 +15,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep class com.tokopedia.settingbank.banklist.domain.pojo.** { *; }
--keep class com.tokopedia.settingbank.addeditaccount.domain.pojo.** { *; }
--keep class com.tokopedia.settingbank.choosebank.domain.pojo.** { *; }
--keep class com.tokopedia.changepassword.domain.pojo.** { *; }
