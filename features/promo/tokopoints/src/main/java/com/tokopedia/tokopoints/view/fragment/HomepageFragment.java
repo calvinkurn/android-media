@@ -268,7 +268,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 textCount.setText(String.valueOf(tokenDetail.getSumToken()));
                 this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
-                ImageHandler.loadImageFit2(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
+                ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
                 if (tokenDetail.getSumToken() == 0) {
                     getView().findViewById(R.id.text_token_count).setVisibility(View.GONE);
