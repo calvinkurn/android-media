@@ -71,8 +71,6 @@ public class CheckPhoneNumberStatusSubscriber extends Subscriber<GraphqlResponse
             view.onPhoneNotRegistered();
         } else if (PHONE_WITH_REGISTERED_EMAIL.equalsIgnoreCase(error)) {
             view.onPhoneRegisteredWithEmail();
-        } else if (PHONE_NOT_REGISTERED.equalsIgnoreCase(error)) {
-            view.onPhoneNotRegistered();
         } else if (PHONE_WITH_PENDING_REQUEST.equalsIgnoreCase(error)) {
             view.onPhoneDuplicateRequest();
         } else if (SERVER_ERROR.equalsIgnoreCase(error)) {

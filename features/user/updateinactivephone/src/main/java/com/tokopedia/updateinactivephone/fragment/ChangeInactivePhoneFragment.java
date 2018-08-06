@@ -1,17 +1,21 @@
 package com.tokopedia.updateinactivephone.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,9 +23,12 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
+import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
 import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
@@ -89,6 +96,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                setErrorText("");
                 if (charSequence.toString().length() == 0) {
                     buttonContinue.setEnabled(false);
                     buttonContinue.setClickable(false);
@@ -122,14 +130,27 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                errorText.setText("");
+                setErrorText("");
 //                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
 //                presenter.loginWithPhoneNumber(inputMobileNumber.getText().toString());
                 presenter.checkPhoneNumberStatus(inputMobileNumber.getText().toString());
+                hideKeyboard(v);
             }
         });
+    }
 
+    public void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
+    private void setErrorText(String text) {
+        if (TextUtils.isEmpty(text)) {
+            errorText.setVisibility(View.INVISIBLE);
+        } else {
+            errorText.setText(text);
+            errorText.setVisibility(View.VISIBLE);
+        }
     }
 
     public static Fragment getInstance() {
@@ -168,47 +189,63 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
     @Override
     public void onPhoneStatusSuccess() {
-        errorText.setText("");
+        setErrorText("");
+        // TODO: 8/3/18 goto ktp screen / email input page
     }
 
     @Override
     public void onPhoneRegisteredWithEmail() {
-        errorText.setText("");
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.registered_email_dialog_title));
+        dialog.setDesc(getString(R.string.registered_email_dialog_message));
+        dialog.setBtnOk(getString(R.string.drawer_title_login));
+        dialog.setOnOkClickListener(v -> {
+            Intent intent = ((ChangeInactivePhoneRouter) MainApplication.getAppContext())
+                    .getLoginIntent(getContext());
+            startActivity(intent);
+        });
+        dialog.setBtnCancel(getString(R.string.title_cancel));
+        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        dialog.show();
+
+        dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_54));
+        dialog.getBtnOk().setTextColor(getResources().getColor(R.color.tkpd_main_green));
     }
 
     @Override
     public void onPhoneDuplicateRequest() {
-        errorText.setText("");
+        setErrorText("");
+        // TODO: 8/3/18 goto form submitted page
     }
 
     @Override
     public void onPhoneServerError() {
-        errorText.setText("");
+        setErrorText("");
     }
 
     @Override
     public void onPhoneBlackListed() {
-        errorText.setText("");
+        setErrorText("Phone BlackListed");
     }
 
     @Override
     public void onPhoneInvalid() {
-        errorText.setText("");
+        setErrorText("Invalid Phone");
     }
 
     @Override
     public void onPhoneNotRegistered() {
-        errorText.setText("Nomor ponsel belum terdaftar.");
+        setErrorText("Nomor ponsel belum terdaftar.");
     }
 
     @Override
     public void onPhoneTooShort() {
-        errorText.setText("");
+        setErrorText(getString(R.string.phone_number_invalid_min_8));
     }
 
     @Override
     public void onPhoneTooLong() {
-        errorText.setText("");
+        setErrorText(getString(R.string.phone_number_invalid_max_15));
     }
 
     @Override

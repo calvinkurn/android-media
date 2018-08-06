@@ -294,6 +294,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 import com.tokopedia.usecase.UseCase;
 
 import java.io.File;
@@ -368,6 +369,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpModuleRouter,
         UnifiedOrderRouter,
         DealsModuleRouter,
+        ChangeInactivePhoneRouter,
         OmsModuleRouter {
 
     @Inject
