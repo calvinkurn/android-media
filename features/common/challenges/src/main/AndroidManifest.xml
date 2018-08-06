@@ -3,7 +3,7 @@
     package="com.tokopedia.challenges">
 
     <application>
-        <activity android:name=".view.activity.HomeActivity"></activity>
+        <activity android:name=".view.activity.ChallengesHomeActivity"></activity>
     </application>
 
 </manifest>
