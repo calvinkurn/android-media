@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +61,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     public void onBindViewHolder(CouponListAdapter.ViewHolder holder, int position) {
         final CouponValueEntity item = mItems.get(position);
         holder.description.setText(item.getTitle());
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(),holder.imgBanner, item.getThumbnailUrlMobile());
+        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
 
         if (item.getUsage() != null) {
             holder.imgLabel.setImageResource(R.drawable.ic_tp_time);
@@ -74,6 +75,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         }
 
         holder.btnContinue.setBackgroundResource(R.drawable.bg_button_green);
+        holder.value.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.medium_green));
+        holder.imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
 
         holder.btnContinue.setOnClickListener(v -> mPresenter.showRedeemCouponDialog(item.getCta(), item.getCode(), item.getTitle()));
         holder.imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(CommonConstant.WebLink.SEE_COUPON + mItems.get(position).getCode()));
