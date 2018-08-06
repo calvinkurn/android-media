@@ -1,17 +1,18 @@
 package com.tokopedia.seller.selling.view.fragment;
 
-import android.os.Bundle;
-
 /**
  * @author okasurya on 8/1/18.
  */
-public class FragmentSellingDelivered extends FragmentSellingTransaction {
+public class FragmentSellingDelivered extends FragmentSellingShipped {
+
+    public static final String STATUS_DELIVERED = "7";
+
     public static FragmentSellingDelivered newInstance() {
         return new FragmentSellingDelivered();
     }
 
     @Override
     public String getFilter() {
-        return "7";
+        return STATUS_DELIVERED;
     }
 }

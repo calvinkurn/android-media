@@ -11,14 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.DaggerTkpdPaySettingComponent;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
-import com.tokopedia.navigation_common.WalletModel;
-import com.tokopedia.navigation_common.WalletPref;
+import com.tokopedia.navigation_common.model.WalletModel;
+import com.tokopedia.navigation_common.model.WalletPref;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,12 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                 .build().inject(this);
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     }
 
     @Override
@@ -83,10 +90,16 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                     break;
                 case SettingConstant.SETTING_TOKOCASH_ID:
                     WalletModel walletModel = walletPref.retrieveWallet();
-                    if (walletModel != null && walletModel.getAction() != null){
-                        router.goToTokoCash(walletModel.getAction().getApplink(),
-                                walletModel.getAction().getRedirectUrl(),
-                                getActivity());
+                    if (walletModel != null){
+                        if (walletModel.isLinked()){
+                            router.goToTokoCash(walletModel.getApplink(),
+                                    walletModel.getRedirectUrl(),
+                                    getActivity());
+                        } else {
+                            router.goToTokoCash(walletModel.getAction().getApplink(),
+                                    walletModel.getAction().getRedirectUrl(),
+                                    getActivity());
+                        }
                     }
                     break;
                 case SettingConstant.SETTING_SALDO_ID:

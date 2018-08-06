@@ -5,12 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 
 public interface AccountHomeRouter {
+
+    AnalyticTracker getAnalyticTracker();
+
     void doLogoutAccount(Activity activity);
 
     void goToHelpCenter(Context context);
+
+    Intent getIntentCreateShop(Context context);
 
     Intent getManageProfileIntent(Context context);
 
@@ -41,4 +47,8 @@ public interface AccountHomeRouter {
     AccountHomeInjection getAccountHomeInjection();
 
     Fragment getFavoriteFragment();
+
+    void gotoTopAdsDashboard(Context context);
+
+    void goToGMSubscribe(Context context);
 }

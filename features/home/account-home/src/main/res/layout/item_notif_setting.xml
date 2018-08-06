@@ -33,22 +33,13 @@
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintEnd_toEndOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintBottom_toBottomOf="@+id/separator"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Switch style="@style/Switch"
         android:id="@+id/switchWidget"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/separator"/>
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@drawable/bg_list_separator"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -80,6 +82,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         baseSettingView = view.findViewById(R.id.setting_layout);
         adapter.setSwitchSettingListener(this);
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         TextView appVersion = view.findViewById(R.id.text_view_app_version);
         appVersion.setText(getString(R.string.application_version_fmt, GlobalConfig.VERSION_NAME));
     }
@@ -104,6 +107,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 getString(R.string.title_tnc_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_PRIVACY_ID,
                 getString(R.string.title_privacy_setting)));
+        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_APP_REVIEW_ID,
+                getString(R.string.title_app_review_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_HELP_CENTER_ID,
                 getString(R.string.title_help_center_setting)));
 
@@ -145,6 +150,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             case SettingConstant.SETTING_PRIVACY_ID:
                 gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting));
                 break;
+            case SettingConstant.SETTING_APP_REVIEW_ID:
+                goToPlaystore();
+                break;
             case SettingConstant.SETTING_HELP_CENTER_ID:
                 Application application = getActivity().getApplication();
                 if (application instanceof AccountHomeRouter){
@@ -160,6 +168,20 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 }
                 break;
             default: break;
+        }
+    }
+
+    private void goToPlaystore() {
+
+        Uri uri = Uri.parse("market://details?id=" + getActivity().getApplication().getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            getActivity().startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(SettingConstant.PLAYSTORE_URL
+                            + getActivity().getApplication().getPackageName())));
         }
     }
 
@@ -272,5 +294,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         if (getActivity().getApplication() instanceof AccountHomeRouter){
             ((AccountHomeRouter) getActivity().getApplication()).doLogoutAccount(getActivity());
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
     }
 }

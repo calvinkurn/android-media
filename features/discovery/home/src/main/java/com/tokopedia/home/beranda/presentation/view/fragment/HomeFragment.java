@@ -21,7 +21,6 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -79,7 +78,10 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.searchbar.MainToolbar;
+import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -213,6 +215,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onViewCreated(view, savedInstanceState);
         if (trace != null)
             trace.stop();
+
+        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
+            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
+        }
     }
 
     @Override
@@ -908,10 +914,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (mainToolbar != null)
+        if (mainToolbar != null) {
             mainToolbar.setNotificationNumber(number);
+        }
     }
-          
+
     public void startShopInfo(String shopId) {
         if(getActivity() != null
                 && getActivity().getApplication() != null
@@ -924,5 +931,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void startDeeplinkShopInfo(String url) {
         if(getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+    }
+
+    private ArrayList<ShowCaseObject> buildShowCase() {
+        if (mainToolbar == null)
+            return null;
+        ArrayList<ShowCaseObject> list = new ArrayList<>();
+        list.add(new ShowCaseObject(mainToolbar.getBtnNotification(),
+                getString(R.string.sc_notif_title),
+                getString(R.string.sc_notif_desc)));
+        list.add(new ShowCaseObject(mainToolbar.getBtnWishlist(),
+                getString(R.string.sc_wishlist_title),
+                getString(R.string.sc_wishlist_desc)));
+        return list;
     }
 }

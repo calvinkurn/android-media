@@ -26,6 +26,7 @@ public class BuyerCardView extends BaseCustomView {
     private TextView textTokopointAmount;
     private TextView textVoucherAmount;
     private ProgressBar progressBar;
+    private View nameHolder;
 
     public BuyerCardView(@NonNull Context context) {
         super(context);
@@ -50,6 +51,7 @@ public class BuyerCardView extends BaseCustomView {
         textTokopointAmount = view.findViewById(R.id.text_tokopoint_amount);
         textVoucherAmount = view.findViewById(R.id.text_voucher_amount);
         progressBar = view.findViewById(R.id.circular_progress_bar);
+        nameHolder = view.findViewById(R.id.holder_title);
     }
 
     public void setName(String name) {
@@ -80,12 +82,8 @@ public class BuyerCardView extends BaseCustomView {
         }
     }
 
-    public void setOnClickName(View.OnClickListener listener) {
-        textUsername.setOnClickListener(listener);
-    }
-
-    public void setOnClickAvatar(View.OnClickListener listener) {
-        imageProfile.setOnClickListener(listener);
+    public void setOnClickProfile(View.OnClickListener listener) {
+        nameHolder.setOnClickListener(listener);
     }
 
     public void setOnClickProfileCompletion(View.OnClickListener listener) {

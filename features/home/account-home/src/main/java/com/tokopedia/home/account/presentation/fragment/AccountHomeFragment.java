@@ -14,18 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
@@ -88,24 +86,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     protected String getScreenName() {
         return null;
     }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_account_home, menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.menu_setting) {
-//            startActivity(GeneralSettingActivity.createIntent(getActivity()));
-//            return true;
-//        } else if (item.getItemId() == R.id.menu_notification) {
-//            Toast.makeText(getContext(), "Notif", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     public void renderData(AccountViewModel accountViewModel) {
@@ -173,6 +153,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         adapter = new AccountHomePagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
     }
 
     private QBadgeView badgeView;
@@ -187,5 +169,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         badgeView.bindTarget(menuNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
+        getActivity().invalidateOptionsMenu();
     }
 }
