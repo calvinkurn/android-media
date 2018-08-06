@@ -42,7 +42,8 @@
     </style>
 
     <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
     </style>
 
     <style name="successTextAppearance" parent="TextAppearance.Design.Error">
@@ -158,6 +159,11 @@
         <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
+        <item name="android:background">@color/white</item>
+    </style>
 
     <style name="BottomSheetBuilder.BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/white</item>

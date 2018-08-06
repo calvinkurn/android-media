@@ -12,6 +12,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -24,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -533,6 +535,21 @@ public class AuthUtil {
         return params;
     }
 
+    public static RequestParams generateRequestParamsNetwork(Context context) {
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String userId = SessionHandler.getLoginID(context);
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams params = RequestParams.create();
+
+        params.putString(PARAM_USER_ID, userId);
+        params.putString(PARAM_DEVICE_ID, deviceId);
+        params.putString(PARAM_HASH, hash);
+        params.putString(PARAM_OS_TYPE, "1");
+        params.putString(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        return params;
+    }
+
     public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
                                                                            TKPDMapParam<String, Object>
                                                                                    params,
@@ -550,7 +567,7 @@ public class AuthUtil {
         return params;
     }
 
-    private static String calculateRFC2104HMAC(String authString, String authKey) {
+    public static String calculateRFC2104HMAC(String authString, String authKey) {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
             Mac mac = Mac.getInstance(MAC_ALGORITHM);
@@ -562,6 +579,28 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public static String calculateHmacSHA1(String authString, String authKey) {
+        try {
+            SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
+            Mac mac = Mac.getInstance(MAC_ALGORITHM);
+            mac.init(signingKey);
+            return toHexString(mac.doFinal(authString.getBytes()));
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static String toHexString(byte[] bytes) {
+        Formatter formatter = new Formatter();
+
+        for (byte b : bytes) {
+            formatter.format("%02x", b);
+        }
+
+        return formatter.toString().trim();
     }
 
     private static String generateContentMd5(String s) {
@@ -583,7 +622,7 @@ public class AuthUtil {
                 hexString.append(String.format("%02x", b & 0xff));
             }
             return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return "";
         }

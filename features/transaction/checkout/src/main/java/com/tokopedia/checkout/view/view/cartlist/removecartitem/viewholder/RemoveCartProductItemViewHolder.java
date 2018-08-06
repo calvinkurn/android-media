@@ -1,10 +1,9 @@
 package com.tokopedia.checkout.view.view.cartlist.removecartitem.viewholder;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,28 +23,30 @@ public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
 
     private RemoveCartItemAdapter removeCartItemAdapter;
 
-    private CheckBox mCbRemoveProduct;
-    private TextView mTvSenderName;
-    private ImageView mIvProductImage;
-    private TextView mTvProductName;
-    private TextView mTvProductPrice;
-    private TextView mTvTotalProductItem;
-    private TextView mTvCashback;
-    private TextView mTvPreOrder;
-    private ImageView mIvFreeReturnIcon;
+    private CheckBox cbRemoveProduct;
+    private TextView tvSenderName;
+    private ImageView ivProductImage;
+    private TextView tvProductName;
+    private TextView tvProductPrice;
+    private TextView tvTotalProductItem;
+    private TextView tvCashback;
+    private TextView tvPreOrder;
+    private ImageView imgFreeReturnIcon;
+    private ImageView imgShopBadge;
 
     public RemoveCartProductItemViewHolder(View itemView, RemoveCartItemAdapter removeCartItemAdapter) {
         super(itemView);
         this.removeCartItemAdapter = removeCartItemAdapter;
-        mCbRemoveProduct = itemView.findViewById(R.id.cb_remove_product);
-        mTvSenderName = itemView.findViewById(R.id.tv_shop_name);
-        mIvProductImage = itemView.findViewById(R.id.iv_product_image);
-        mTvProductName = itemView.findViewById(R.id.tv_product_name);
-        mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
-        mTvTotalProductItem = itemView.findViewById(R.id.tv_product_total_item);
-        mTvCashback = itemView.findViewById(R.id.tv_cashback);
-        mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
-        mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
+        cbRemoveProduct = itemView.findViewById(R.id.cb_remove_product);
+        tvSenderName = itemView.findViewById(R.id.tv_shop_name);
+        ivProductImage = itemView.findViewById(R.id.iv_product_image);
+        tvProductName = itemView.findViewById(R.id.tv_product_name);
+        tvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        tvTotalProductItem = itemView.findViewById(R.id.tv_product_total_item);
+        tvCashback = itemView.findViewById(R.id.tv_cashback);
+        tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
+        imgFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
+        imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
     }
 
     public void bindData(CartProductItemViewModel cartProductItemViewModel) {
@@ -59,42 +60,52 @@ public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View view) {
                 removeCartItemAdapter.updateCheckedCartId(getAdapterPosition(),
                         String.valueOf(cartProductItemViewModel.getCartItemData().getOriginData().getCartId()),
-                        !mCbRemoveProduct.isChecked());
+                        !cbRemoveProduct.isChecked());
             }
         });
     }
 
     private void renderItemView(CartProductItemViewModel cartProductItemViewModel) {
+        if (cartProductItemViewModel.getCartItemData().getOriginData().isOfficialStore()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else if (cartProductItemViewModel.getCartItemData().getOriginData().isGoldMerchant()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else {
+            imgShopBadge.setVisibility(View.GONE);
+        }
+
         if (removeCartItemAdapter.getCheckedCartIds().contains(String.valueOf(
                 cartProductItemViewModel.getCartItemData().getOriginData().getCartId()))) {
-            mCbRemoveProduct.setChecked(true);
+            cbRemoveProduct.setChecked(true);
         } else {
-            mCbRemoveProduct.setChecked(false);
+            cbRemoveProduct.setChecked(false);
         }
-        mCbRemoveProduct.setClickable(false);
-        mTvSenderName.setText(cartProductItemViewModel.getCartItemData().getOriginData().getShopName());
-        mTvProductName.setText(cartProductItemViewModel.getCartItemData().getOriginData().getProductName());
-        mTvProductPrice.setText(cartProductItemViewModel.getCartItemData().getOriginData().getPriceFormatted());
-        mTvTotalProductItem.setText(String.valueOf(cartProductItemViewModel.getCartItemData().getUpdatedData().getQuantity()));
-        ImageHandler.LoadImage(mIvProductImage, cartProductItemViewModel.getCartItemData().getOriginData().getProductImage());
+        cbRemoveProduct.setClickable(false);
+        tvSenderName.setText(cartProductItemViewModel.getCartItemData().getOriginData().getShopName());
+        tvProductName.setText(cartProductItemViewModel.getCartItemData().getOriginData().getProductName());
+        tvProductPrice.setText(cartProductItemViewModel.getCartItemData().getOriginData().getPriceFormatted());
+        tvTotalProductItem.setText(String.valueOf(cartProductItemViewModel.getCartItemData().getUpdatedData().getQuantity()));
+        ImageHandler.LoadImage(ivProductImage, cartProductItemViewModel.getCartItemData().getOriginData().getProductImage());
 
         if (cartProductItemViewModel.getCartItemData().getOriginData().isFreeReturn()) {
-            mIvFreeReturnIcon.setVisibility(View.VISIBLE);
+            imgFreeReturnIcon.setVisibility(View.VISIBLE);
         } else {
-            mIvFreeReturnIcon.setVisibility(View.GONE);
+            imgFreeReturnIcon.setVisibility(View.GONE);
         }
 
         if (cartProductItemViewModel.getCartItemData().getOriginData().isPreOrder()) {
-            mTvPreOrder.setVisibility(View.VISIBLE);
+            tvPreOrder.setVisibility(View.VISIBLE);
         } else {
-            mTvPreOrder.setVisibility(View.GONE);
+            tvPreOrder.setVisibility(View.GONE);
         }
 
         if (cartProductItemViewModel.getCartItemData().getOriginData().isCashBack()) {
-            mTvCashback.setText(cartProductItemViewModel.getCartItemData().getOriginData().getCashBackInfo());
-            mTvCashback.setVisibility(View.VISIBLE);
+            tvCashback.setText(cartProductItemViewModel.getCartItemData().getOriginData().getCashBackInfo());
+            tvCashback.setVisibility(View.VISIBLE);
         } else {
-            mTvCashback.setVisibility(View.GONE);
+            tvCashback.setVisibility(View.GONE);
         }
     }
 

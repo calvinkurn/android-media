@@ -8,6 +8,7 @@ package com.tokopedia.tkpd;
 public class ConsumerAppBaseUrl {
 
     public static final String BASE_TOKOPEDIA_WEBSITE = "https://www.tokopedia.com/";
+    public static final String BASE_TOKOPEDIA_GQL = "https://gql.tokopedia.com";
     public static final String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace.tokopedia.com/";
@@ -46,6 +47,11 @@ public class ConsumerAppBaseUrl {
     public static final String TOPPROFILE_DOMAIN = GRAPHQL_DOMAIN;
     public static final String CHATBOT_DOMAIN = BASE_API_DOMAIN;
     public static final String GAMIFICATION_BASE_URL = "https://gql.tokopedia.com/";
+    public static final String TRAVEL_CALENDAR_BASE_URL = "https://gql.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
+    public static final String OMS_DOMAIN = "https://omscart.tokopedia.com/";
+    public static final String DEALS_DOMAIN = "https://booking.tokopedia.com/";
+    public static final String CHANGE_PHONE_DOMAIN = BASE_MOBILE_DOMAIN;
+    public static final String KAI_WEB_DOMAIN = "https://tiket.tokopedia.com/";
 }

@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -28,10 +29,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details;
-    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
-
-    private static final int GRAM = 0;
-    private static final int KILOGRAM = 1;
 
     private RelativeLayout mRlShipmentCostLayout;
     private TextView mTvTotalItemLabel;
@@ -43,9 +40,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvSellerCostAdditionLabel;
     private TextView mTvSellerCostAdditionFee;
     private TextView mTvInsuranceFeeLabel;
-    private TextView mTvPromoLabel;
-
+    private TextView mTvPromoOrCouponLabel;
     private TextView mTvPromoMessage;
+    private TextView mTvDonationLabel;
+    private TextView mTvDonationPrice;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -64,26 +62,35 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvSellerCostAdditionLabel = itemView.findViewById(R.id.tv_seller_cost_addition);
         mTvSellerCostAdditionFee = itemView.findViewById(R.id.tv_seller_cost_addition_fee);
         mTvInsuranceFeeLabel = itemView.findViewById(R.id.tv_insurance_fee_label);
-        mTvPromoLabel = itemView.findViewById(R.id.tv_promo_label);
+        mTvPromoOrCouponLabel = itemView.findViewById(R.id.tv_promo_or_coupon_label);
+        mTvDonationLabel = itemView.findViewById(R.id.tv_donation_label);
+        mTvDonationPrice = itemView.findViewById(R.id.tv_donation_price);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
 
-    public void bindViewHolder(ShipmentCostModel shipmentCost) {
+    public void bindViewHolder(ShipmentCostModel shipmentCost, CartItemPromoHolderData promo) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
         mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
-                CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCost.getTotalItemPrice(), true));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), true));
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
-        mTvPromoDiscount.setText(getPriceFormat(mTvPromoLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
+        mTvPromoDiscount.setText(getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
-
+        mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
             mTvPromoMessage.setVisibility(View.VISIBLE);
+            if (promo != null) {
+                if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_coupon));
+                } else if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_promo));
+                }
+            }
         } else {
             mTvPromoMessage.setVisibility(View.GONE);
         }
@@ -100,7 +107,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
         formattedPromoMessage.setSpan(new ClickableSpan() {
             @Override
             public void updateDrawState(TextPaint textPaint) {
@@ -121,11 +127,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         return String.format(context.getString(R.string.label_item_count_summary_with_format), totalItem);
     }
 
-    private String getTotalWeightLabel(Context context, double weight, int weightUnit) {
-        String unit = weightUnit == GRAM ? context.getString(R.string.weight_unit_gram) : context.getString(R.string.weight_unit_kilogram);
-        return String.format(context.getString(R.string.label_shipping_price_format), String.valueOf((int) weight), unit);
-    }
-
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, double price) {
         if (price == 0) {
             textViewLabel.setVisibility(View.GONE);
@@ -134,12 +135,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) price, true);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, true);
         }
-    }
-
-    private void togglePromoText() {
-        mTvPromoMessage.setVisibility(View.GONE);
     }
 
 }

@@ -76,6 +76,7 @@ import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.util.ArrayList;
 
@@ -212,7 +213,7 @@ public class LoginFragment extends BaseDaggerFragment
         if (getActivity() != null) {
             drawable = new TextDrawable(getActivity());
             drawable.setText(getResources().getString(R.string.register));
-            drawable.setTextColor(R.color.black_70b);
+            drawable.setTextColor(getResources().getColor(R.color.colorGreen));
         }
         return drawable;
     }
@@ -505,13 +506,11 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.discoverLogin();
             }
         }).showRetrySnackbar();
-        loginButton.setEnabled(false);
     }
 
     @Override
     public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> listProvider) {
-        loginButton.setEnabled(true);
-        listProvider.add(2, getLoginPhoneNumberBean());
+        if (!GlobalConfig.isSellerApp()) listProvider.add(2, getLoginPhoneNumberBean());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 20, 0, 15);
@@ -542,7 +541,9 @@ public class LoginFragment extends BaseDaggerFragment
         return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
             @Override
             public void onErrorGetFacebookCredential(String errorMessage) {
-                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                if (isAdded() && getActivity() != null) {
+                    NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                }
             }
 
             @Override

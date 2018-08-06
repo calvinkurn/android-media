@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class CartShipmentAddressFormData implements Parcelable {
+    private boolean hasError;
     private boolean isError;
     private String errorMessage;
 
@@ -20,6 +21,15 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String keroToken;
     private String keroDiscomToken;
     private int keroUnixTime;
+    private Donation donation;
+
+    public boolean isHasError() {
+        return hasError;
+    }
+
+    public void setHasError(boolean hasError) {
+        this.hasError = hasError;
+    }
 
     public boolean isError() {
         return isError;
@@ -85,7 +95,42 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.keroUnixTime = keroUnixTime;
     }
 
+    public Donation getDonation() {
+        return donation;
+    }
+
+    public void setDonation(Donation donation) {
+        this.donation = donation;
+    }
+
     public CartShipmentAddressFormData() {
+    }
+
+    protected CartShipmentAddressFormData(Parcel in) {
+        hasError = in.readByte() != 0;
+        isError = in.readByte() != 0;
+        errorMessage = in.readString();
+        errorCode = in.readInt();
+        isMultiple = in.readByte() != 0;
+        groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
+        keroToken = in.readString();
+        keroDiscomToken = in.readString();
+        keroUnixTime = in.readInt();
+        donation = in.readParcelable(Donation.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (hasError ? 1 : 0));
+        dest.writeByte((byte) (isError ? 1 : 0));
+        dest.writeString(errorMessage);
+        dest.writeInt(errorCode);
+        dest.writeByte((byte) (isMultiple ? 1 : 0));
+        dest.writeTypedList(groupAddress);
+        dest.writeString(keroToken);
+        dest.writeString(keroDiscomToken);
+        dest.writeInt(keroUnixTime);
+        dest.writeParcelable(donation, flags);
     }
 
     @Override
@@ -93,33 +138,10 @@ public class CartShipmentAddressFormData implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
-        dest.writeString(this.errorMessage);
-        dest.writeInt(this.errorCode);
-        dest.writeByte(this.isMultiple ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.groupAddress);
-        dest.writeString(this.keroToken);
-        dest.writeString(this.keroDiscomToken);
-        dest.writeInt(this.keroUnixTime);
-    }
-
-    protected CartShipmentAddressFormData(Parcel in) {
-        this.isError = in.readByte() != 0;
-        this.errorMessage = in.readString();
-        this.errorCode = in.readInt();
-        this.isMultiple = in.readByte() != 0;
-        this.groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
-        this.keroToken = in.readString();
-        this.keroDiscomToken = in.readString();
-        this.keroUnixTime = in.readInt();
-    }
-
     public static final Creator<CartShipmentAddressFormData> CREATOR = new Creator<CartShipmentAddressFormData>() {
         @Override
-        public CartShipmentAddressFormData createFromParcel(Parcel source) {
-            return new CartShipmentAddressFormData(source);
+        public CartShipmentAddressFormData createFromParcel(Parcel in) {
+            return new CartShipmentAddressFormData(in);
         }
 
         @Override

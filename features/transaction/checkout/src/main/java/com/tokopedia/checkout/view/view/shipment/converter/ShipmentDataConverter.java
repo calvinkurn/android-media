@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +27,23 @@ public class ShipmentDataConverter {
     private static final int PRIME_ADDRESS = 2;
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
-        return createRecipientAddressModel(userAddress);
+        if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
+            UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
+            return createRecipientAddressModel(userAddress);
+        }
+        return null;
     }
 
     public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
         return createRecipientAddressModel(userAddress);
+    }
+
+    public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
+        shipmentDonationModel.setChecked(false);
+        shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
+
+        return shipmentDonationModel;
     }
 
     @NonNull
@@ -41,13 +53,13 @@ public class ShipmentDataConverter {
         recipientAddress.setId(String.valueOf(userAddress.getAddressId()));
         recipientAddress.setAddressStatus(userAddress.getStatus());
         recipientAddress.setAddressName(userAddress.getAddressName());
-        recipientAddress.setAddressCountryName(userAddress.getCountry());
-        recipientAddress.setAddressProvinceName(userAddress.getProvinceName());
+        recipientAddress.setCountryName(userAddress.getCountry());
+        recipientAddress.setProvinceName(userAddress.getProvinceName());
         recipientAddress.setDestinationDistrictName(userAddress.getDistrictName());
-        recipientAddress.setAddressCityName(userAddress.getCityName());
+        recipientAddress.setCityName(userAddress.getCityName());
         recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
-        recipientAddress.setAddressStreet(userAddress.getAddress());
-        recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+        recipientAddress.setStreet(userAddress.getAddress());
+        recipientAddress.setPostalCode(userAddress.getPostalCode());
         recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
         recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
 
@@ -74,6 +86,7 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel = new ShipmentCartItemModel();
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
+                    setCartItemModelError(shipmentCartItemModel);
                     shipmentCartItemModels.add(shipmentCartItemModel);
                 }
             }
@@ -83,11 +96,20 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel = new ShipmentCartItemModel();
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
+                setCartItemModelError(shipmentCartItemModel);
                 shipmentCartItemModels.add(shipmentCartItemModel);
             }
         }
 
         return shipmentCartItemModels;
+    }
+
+    private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isAllItemError()) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                cartItemModel.setError(true);
+            }
+        }
     }
 
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
@@ -97,14 +119,33 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setRecipientAddressModel(getRecipientAddressModel(userAddress));
         }
 
+        shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
+        if (shipmentCartItemModel.isError()) {
+            shipmentCartItemModel.setAllItemError(true);
+        }
         shipmentCartItemModel.setErrorMessage(groupShop.getErrorMessage());
         shipmentCartItemModel.setWarning(groupShop.isWarning());
         shipmentCartItemModel.setWarningMessage(groupShop.getWarningMessage());
 
+        if (!shipmentCartItemModel.isError()) {
+            int productErrorCounter = 0;
+            for (Product product : groupShop.getProducts()) {
+                if (product.isError()) {
+                    productErrorCounter++;
+                }
+            }
+            if (productErrorCounter > 0) {
+                shipmentCartItemModel.setError(true);
+                shipmentCartItemModel.setErrorMessage("Terdapat kendala pada " + productErrorCounter + " produk");
+            }
+        }
+
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
         shipmentCartItemModel.setShopName(shop.getShopName());
+        shipmentCartItemModel.setOfficialStore(shop.isOfficial());
+        shipmentCartItemModel.setGoldMerchant(shop.isGold());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -153,7 +194,10 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
         cartItemModel.setfInsurance(product.isProductFcancelPartial());
         cartItemModel.setfCancelPartial(product.isProductFinsurance());
+        cartItemModel.setError(product.isError());
+        cartItemModel.setErrorMessage(product.getErrorMessage());
 
+        cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;
     }
 

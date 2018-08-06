@@ -3,6 +3,11 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -34,6 +39,19 @@ public class CartItemModel implements Parcelable {
 
     private boolean fInsurance;
     private boolean fCancelPartial;
+
+    private boolean isError;
+    private String errorMessage;
+
+    private AnalyticsProductCheckoutData analyticsProductCheckoutData;
+
+    public AnalyticsProductCheckoutData getAnalyticsProductCheckoutData() {
+        return analyticsProductCheckoutData;
+    }
+
+    public void setAnalyticsProductCheckoutData(AnalyticsProductCheckoutData analyticsProductCheckoutData) {
+        this.analyticsProductCheckoutData = analyticsProductCheckoutData;
+    }
 
     public long getCartId() {
         return cartId;
@@ -195,6 +213,87 @@ public class CartItemModel implements Parcelable {
         this.fCancelPartial = fCancelPartial;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public CartItemModel() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof CartItemModel)) return false;
+
+        CartItemModel that = (CartItemModel) o;
+
+        return new EqualsBuilder()
+                .append(getCartId(), that.getCartId())
+                .append(getProductId(), that.getProductId())
+                .append(getPrice(), that.getPrice())
+                .append(getCurrency(), that.getCurrency())
+                .append(getWeightUnit(), that.getWeightUnit())
+                .append(getWeight(), that.getWeight())
+                .append(getQuantity(), that.getQuantity())
+                .append(isCashback(), that.isCashback())
+                .append(isPreOrder(), that.isPreOrder())
+                .append(isFreeReturn(), that.isFreeReturn())
+                .append(isfInsurance(), that.isfInsurance())
+                .append(isfCancelPartial(), that.isfCancelPartial())
+                .append(isError(), that.isError())
+                .append(getShopId(), that.getShopId())
+                .append(getShopName(), that.getShopName())
+                .append(getName(), that.getName())
+                .append(getWeightFmt(), that.getWeightFmt())
+                .append(getNoteToSeller(), that.getNoteToSeller())
+                .append(getImageUrl(), that.getImageUrl())
+                .append(isCashback(), that.isCashback())
+                .append(getFreeReturnLogo(), that.getFreeReturnLogo())
+                .append(getErrorMessage(), that.getErrorMessage())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getCartId())
+                .append(getShopId())
+                .append(getShopName())
+                .append(getProductId())
+                .append(getName())
+                .append(getPrice())
+                .append(getCurrency())
+                .append(getWeightUnit())
+                .append(getWeight())
+                .append(getWeightFmt())
+                .append(getQuantity())
+                .append(getNoteToSeller())
+                .append(getImageUrl())
+                .append(isCashback())
+                .append(getFreeReturnLogo())
+                .append(isCashback())
+                .append(isPreOrder())
+                .append(isFreeReturn())
+                .append(isfInsurance())
+                .append(isfCancelPartial())
+                .append(isError())
+                .append(getErrorMessage())
+                .toHashCode();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -222,9 +321,9 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.fInsurance ? (byte) 1 : (byte) 0);
         dest.writeByte(this.fCancelPartial ? (byte) 1 : (byte) 0);
-    }
-
-    public CartItemModel() {
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
+        dest.writeParcelable(this.analyticsProductCheckoutData, flags);
     }
 
     protected CartItemModel(Parcel in) {
@@ -248,6 +347,9 @@ public class CartItemModel implements Parcelable {
         this.isFreeReturn = in.readByte() != 0;
         this.fInsurance = in.readByte() != 0;
         this.fCancelPartial = in.readByte() != 0;
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
+        this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {
@@ -261,5 +363,4 @@ public class CartItemModel implements Parcelable {
             return new CartItemModel[size];
         }
     };
-
 }

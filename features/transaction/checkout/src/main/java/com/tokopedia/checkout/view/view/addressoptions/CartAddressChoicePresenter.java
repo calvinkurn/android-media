@@ -59,7 +59,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     }
 
     @Override
-    public void getAddressShortedList(Context context, final RecipientAddressModel currentAddress) {
+    public void getAddressShortedList(Context context, final RecipientAddressModel currentAddress, boolean isNewlyCreatedAddress) {
         getView().showLoading();
         mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase.getRequestParams(
                 context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
@@ -78,15 +78,15 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                             if (throwable instanceof UnknownHostException
                                     || throwable instanceof ConnectException
                                     || throwable instanceof SocketTimeoutException) {
-                                message = getView().getActivity().getResources().getString(
+                                message = getView().getActivityContext().getResources().getString(
                                         R.string.msg_no_connection);
                             } else if (throwable instanceof UnProcessableHttpException) {
                                 message = TextUtils.isEmpty(throwable.getMessage()) ?
-                                        getView().getActivity().getResources().getString(
+                                        getView().getActivityContext().getResources().getString(
                                                 R.string.msg_no_connection) :
                                         throwable.getMessage();
                             } else {
-                                message = getView().getActivity().getResources().getString(
+                                message = getView().getActivityContext().getResources().getString(
                                         R.string.default_request_error_unknown);
                             }
                             getView().showNoConnection(message);
@@ -98,10 +98,10 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                         if (!peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
                             if (isViewAttached()) {
                                 getView().hideLoading();
+                                getView().setToken(peopleAddressModel.getToken());
                                 getView().renderRecipientData(
                                         shortList(peopleAddressModel.getRecipientAddressModelList(),
-                                                currentAddress));
-                                getView().setToken(peopleAddressModel.getToken());
+                                                currentAddress), isNewlyCreatedAddress);
                             }
                         } else {
                             if (isViewAttached()) {
@@ -124,13 +124,24 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
         return mSelectedRecipientAddress;
     }
 
-    private List<RecipientAddressModel> shortList(final List<RecipientAddressModel> addressList,
+    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> addressList,
                                                   RecipientAddressModel currentAddress) {
 
         if (currentAddress != null) {
             for (RecipientAddressModel recipientAddressModel : addressList) {
                 if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId())) {
                     recipientAddressModel.setSelected(true);
+                    setSelectedRecipientAddress(recipientAddressModel);
+                    break;
+                } else if (recipientAddressModel.getAddressName().equals(currentAddress.getAddressName()) &&
+                        recipientAddressModel.getDestinationDistrictId().equals(currentAddress.getDestinationDistrictId()) &&
+                        recipientAddressModel.getCityId().equals(currentAddress.getCityId()) &&
+                        recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
+                        recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()) &&
+                        recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
+                        recipientAddressModel.getStreet().equals(currentAddress.getStreet())) {
+                    recipientAddressModel.setSelected(true);
+                    setSelectedRecipientAddress(recipientAddressModel);
                     break;
                 }
             }

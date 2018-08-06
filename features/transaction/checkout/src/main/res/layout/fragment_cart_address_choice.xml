@@ -35,7 +35,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_shadow"
+                    android:background="@drawable/bg_checkout_shadow"
                     android:orientation="vertical">
 
                     <android.support.v7.widget.RecyclerView
@@ -76,33 +76,23 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_send_to_multiple_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:background="@drawable/bg_shadow"
-                    android:foreground="?selectableItemBackground"
+                    android:background="@drawable/bg_checkout_shadow"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_send_to_multiple_address"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_send_to_multiple_address" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tint="@color/grey_550"
-                        app:srcCompat="@drawable/ic_chevron_right_grey_checkout_module"
-                        tools:ignore="ContentDescription" />
+                        android:foreground="?selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/dp_16"
+                        android:text="@string/label_send_to_multiple_address"
+                        app:drawableRightCompat="@drawable/ic_chevron_right_grey_checkout_module" />
 
                 </LinearLayout>
 

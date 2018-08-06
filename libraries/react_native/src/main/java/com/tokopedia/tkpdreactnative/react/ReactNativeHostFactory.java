@@ -19,9 +19,12 @@ import java.util.List;
  */
 
 public class ReactNativeHostFactory {
+    private static ReactNativeHostFactory instance;
 
+    protected ReactNativeHostFactory() {}
 
     public static ReactNativeHost init(Application application) {
+        if(instance == null) instance = new ReactNativeHostFactory();
         /*reactInstanceManager = ReactInstanceManager.builder()
                 .setApplication(application)
                 .setBundleAssetName("index.android.bundle")
@@ -32,11 +35,10 @@ public class ReactNativeHostFactory {
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();*/
 
-        return createReactNativeHost(application);
-
+        return instance.createReactNativeHost(application);
     }
 
-    private static ReactNativeHost createReactNativeHost(final Application application) {
+    private ReactNativeHost createReactNativeHost(final Application application) {
         return new ReactNativeHost(application) {
             @Override
             protected String getJSBundleFile() {
@@ -55,7 +57,7 @@ public class ReactNativeHostFactory {
         };
     }
 
-    private static ReactNativeHost createReactNativeHostDev(final Application application) {
+    private ReactNativeHost createReactNativeHostDev(final Application application) {
         return new ReactNativeHost(application) {
             @Override
             public boolean getUseDeveloperSupport() {
@@ -79,7 +81,7 @@ public class ReactNativeHostFactory {
         };
     }
 
-    private static List<ReactPackage> getListPackages(Application application) {
+    protected List<ReactPackage> getListPackages(Application application) {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),

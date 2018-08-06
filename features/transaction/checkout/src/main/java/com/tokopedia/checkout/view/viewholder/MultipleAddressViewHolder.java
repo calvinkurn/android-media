@@ -2,11 +2,14 @@ package com.tokopedia.checkout.view.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -24,6 +27,8 @@ import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by kris on 3/14/18. Tokopedia
  */
@@ -31,55 +36,35 @@ import java.util.ArrayList;
 public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private Context context;
-
     private TextView senderName;
-
     private ImageView productImage;
-
     private TextView productName;
-
     private TextView productPrice;
-
     private RecyclerView shippingDestinationList;
-
     private ImageView imgFreeReturn;
-
     private TextView tvFreeReturnLabel;
-
     private TextView tvPreOrder;
-
     private TextView tvCashback;
-
-    private View marginHeader;
-
     private Button btAddNewShipment;
+    private LinearLayout rlProductPoliciesLayout;
+    private ImageView imgShopBadge;
 
     public MultipleAddressViewHolder(Context context, View itemView) {
         super(itemView);
 
         this.context = context;
-
         senderName = itemView.findViewById(R.id.sender_name);
-
         productImage = itemView.findViewById(R.id.product_image);
-
         productName = itemView.findViewById(R.id.product_name);
-
         productPrice = itemView.findViewById(R.id.product_price);
-
         shippingDestinationList = itemView.findViewById(R.id.shipping_destination_list);
-
         imgFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
-
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
-
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
-
         tvCashback = itemView.findViewById(R.id.tv_cashback);
-
-        marginHeader = itemView.findViewById(R.id.margin_header);
-
         btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
+        rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
 
     }
 
@@ -88,39 +73,38 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             MultipleAddressAdapterData data,
             MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
             MultipleAddressAdapter.MultipleAddressAdapterListener addressListener,
+            CompositeSubscription compositeSubscription,
             boolean firstItemPosition
     ) {
+        if (data.isOfficialStore()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else if (data.isGoldMerchant()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else {
+            imgShopBadge.setVisibility(View.GONE);
+        }
+
         senderName.setText(data.getSenderName());
         productName.setText(data.getProductName());
         productPrice.setText(data.getProductPrice());
         ImageHandler.LoadImage(productImage, data.getProductImageUrl());
-        shippingDestinationList
-                .setLayoutManager(new LinearLayoutManager(context));
+        shippingDestinationList.setLayoutManager(new LinearLayoutManager(context));
         shippingDestinationList.setAdapter(
-                new MultipleAddressItemAdapter(data, data.getItemListData(), listener)
+                new MultipleAddressItemAdapter(
+                        getAdapterPosition(), data, data.getItemListData(), listener, compositeSubscription)
         );
-        btAddNewShipment.setOnClickListener(
-                onAddAddressClickedListener(
-                        data.getItemListData().size(),
-                        dataList,
-                        data,
-                        data.getItemListData().get(0),
-                        addressListener
-                )
-        );
+        ((SimpleItemAnimator) shippingDestinationList.getItemAnimator()).setSupportsChangeAnimations(false);
+        btAddNewShipment.setOnClickListener(onAddAddressClickedListener(dataList, addressListener));
         if (firstItemPosition) {
-            marginHeader.setVisibility(View.VISIBLE);
             setShowCase();
-        } else {
-            marginHeader.setVisibility(View.GONE);
         }
 
         if (data.isFreeReturn()) {
             imgFreeReturn.setVisibility(View.VISIBLE);
-            tvFreeReturnLabel.setVisibility(View.VISIBLE);
         } else {
             imgFreeReturn.setVisibility(View.GONE);
-            tvFreeReturnLabel.setVisibility(View.GONE);
         }
 
         if (data.isCashBack()) {
@@ -134,6 +118,12 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);
+        }
+
+        if (data.isCashBack() || data.isFreeReturn() || data.isPreOrder()) {
+            rlProductPoliciesLayout.setVisibility(View.VISIBLE);
+        } else {
+            rlProductPoliciesLayout.setVisibility(View.GONE);
         }
     }
 
@@ -176,15 +166,12 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
     }
 
     private View.OnClickListener onAddAddressClickedListener(
-            final int latestPositionToAdd,
             final ArrayList<MultipleAddressAdapterData> dataList,
-            final MultipleAddressAdapterData data,
-            final MultipleAddressItemData firstItemData,
             final MultipleAddressAdapter.MultipleAddressAdapterListener addressListener) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addressListener.onAddNewShipmentAddress(latestPositionToAdd, dataList, data, firstItemData);
+                addressListener.onAddNewShipmentAddress(dataList, getAdapterPosition());
             }
         };
     }

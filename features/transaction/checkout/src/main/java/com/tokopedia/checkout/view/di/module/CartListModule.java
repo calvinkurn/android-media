@@ -11,8 +11,8 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
-import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
+import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.view.cartlist.CartFragment;
@@ -52,29 +52,23 @@ public class CartListModule {
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
-                                                 UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase,
-                                                 GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                 UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                                                 ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                                  CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         return new CartListPresenter(
-                cartListView, getCartListUseCase, deleteCartUseCase,
-                deleteCartGetCartListUseCase, updateCartGetShipmentAddressFormUseCase,
-                getShipmentAddressFormUseCase, resetCartGetCartListUseCase,
-                resetCartGetShipmentFormUseCase, checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
+                cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
+                updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
         );
     }
 
     @Provides
     @CartListScope
-    RecyclerView.ItemDecoration provideCartItemDecoration(Context context) {
-        return new CartItemDecoration(
-                (int) context.getResources().getDimension(R.dimen.new_margin_med),
-                false, 0);
+    RecyclerView.ItemDecoration provideCartItemDecoration() {
+        return new CartItemDecoration();
     }
 
     @Provides

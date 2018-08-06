@@ -75,7 +75,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
@@ -111,7 +111,6 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
 import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_CART_ITEM;
@@ -581,6 +580,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onAddFavorite(int position, Data shopData) {
         //TODO: this listener not used in this sprint
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
     }
 
     @Override

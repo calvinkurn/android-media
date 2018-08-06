@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.loyalty.R;
@@ -34,8 +34,9 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,15 @@ import javax.inject.Named;
 
 import butterknife.BindView;
 
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
 
@@ -53,7 +63,7 @@ import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.E
  */
 
 public class LoyaltyActivity extends BasePresenterActivity
-        implements HasComponent<AppComponent>,
+        implements HasComponent<BaseAppComponent>,
         PromoCodeFragment.ManualInsertCodeListener,
         PromoCouponFragment.ChooseCouponListener {
 
@@ -72,9 +82,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Named("coupon_not_active")
     List<LoyaltyPagerItem> loyaltyPagerItemListCouponNotActive;
     @Inject
-    CheckoutAnalyticsCartPage checkoutAnalyticsCartPage;
+    CheckoutAnalyticsCart checkoutAnalyticsCart;
     @Inject
-    CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
+    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
 
     private boolean isCouponActive;
     private String platformString;
@@ -85,6 +95,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     private int productId;
     private String cartIdString;
     private String additionalDataString;
+    private String trainReservationId;
+    private String trainReservationCode;
 
     public boolean isCouponActive() {
         return isCouponActive;
@@ -122,6 +134,14 @@ public class LoyaltyActivity extends BasePresenterActivity
         return additionalDataString;
     }
 
+    public String getTrainReservationId() {
+        return trainReservationId;
+    }
+
+    public String getTrainReservationCode() {
+        return trainReservationCode;
+    }
+
     private OnTabSelectedForTrackingCheckoutMarketPlace onTabSelectedForTrackingCheckoutMarketPlace;
 
     @Override
@@ -132,22 +152,22 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         this.isCouponActive = extras.getBoolean(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE
+                EXTRA_COUPON_ACTIVE
         );
         this.platformString = extras.getString(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, ""
+                EXTRA_PLATFORM, ""
         );
         this.platformPageString = extras.getString(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM_PAGE, ""
         );
         this.defaultSelectedTabString = extras.getString(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB, ""
+                EXTRA_SELECTED_TAB, ""
         );
         this.cartIdString = extras.getString(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, ""
+                EXTRA_CART_ID, ""
         );
         this.categoryString = extras.getString(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""
+                EXTRA_CATEGORY, ""
         );
         this.categoryId = extras.getInt(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID
@@ -156,11 +176,18 @@ public class LoyaltyActivity extends BasePresenterActivity
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID
         );
         this.cartIdString = extras.getString(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, ""
+                EXTRA_CART_ID, ""
         );
         this.additionalDataString = extras.getString(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA, ""
         );
+        this.trainReservationId = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID, ""
+        );
+        this.trainReservationCode = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE, ""
+        );
+
     }
 
     @Override
@@ -218,9 +245,9 @@ public class LoyaltyActivity extends BasePresenterActivity
         if (IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING.equalsIgnoreCase(platformString))
             indicator.addOnTabSelectedListener(onTabSelectedForTrackingCheckoutMarketPlace);
         setShowCase();
-        if (getIntent().hasExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB)) {
+        if (getIntent().hasExtra(EXTRA_SELECTED_TAB)) {
             viewPager.setCurrentItem(getIntent().getIntExtra(
-                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
+                    EXTRA_SELECTED_TAB,
                     IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_TAB));
         }
     }
@@ -270,9 +297,10 @@ public class LoyaltyActivity extends BasePresenterActivity
 
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
+
 
     @Override
     public void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount) {
@@ -310,7 +338,12 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     public void onUsePromoCodeClicked() {
-        checkoutAnalyticsCartPage.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+        if (platformPageString.equalsIgnoreCase(PLATFORM_PAGE_MARKETPLACE_CART_LIST)) {
+            checkoutAnalyticsCart.eventClickAtcCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+        } else {
+            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon();
+        }
+
     }
 
 
@@ -351,17 +384,96 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
-    public void onCouponItemClicked() {
-        checkoutAnalyticsCartPage.eventClickCartClickKuponFromGunakanPromoAtauKupon();
+    public void sendAnalyticsOnCouponItemClickedCartListPage() {
+        checkoutAnalyticsCart.eventClickAtcCartClickKuponFromGunakanKodePromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClicked(String couponName) {
+        checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickKuponFromKuponSaya(couponName);
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClickedCartShipmentPage() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsImpressionCouponEmptyCartListPage() {
+        checkoutAnalyticsCart.eventViewAtcCartImpressionOnPopUpKupon();
+    }
+
+    @Override
+    public void sendAnalyticsImpressionCouponEmptyShipmentPage() {
+        checkoutAnalyticsCourierSelection.eventViewAtcCourierSelectionImpressionOnPopUpKupon();
+    }
+
+    @Override
+    public void sendAnalyticsScreenNameCoupon() {
+        if (platformString.equalsIgnoreCase(MARKETPLACE_STRING)) {
+            switch (platformPageString) {
+                case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    checkoutAnalyticsCart.sendScreenName(this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CART_TAB_COUPON
+                    );
+                    break;
+                case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    checkoutAnalyticsCourierSelection.sendScreenName(
+                            this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON
+                    );
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void sendAnalyticsScreenNamePromoCode() {
+        if (platformString.equalsIgnoreCase(MARKETPLACE_STRING)) {
+            switch (platformPageString) {
+                case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    checkoutAnalyticsCart.sendScreenName(this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CART_TAB_PROMO
+                    );
+                    break;
+                case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    checkoutAnalyticsCourierSelection.sendScreenName(
+                            this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO
+                    );
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorGetPromoCode(String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventViewPromoCourierSelectionValidationErrorVoucherPromoFromGunakanKodePromoAtauKupon(errorMessage);
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
         Intent intent = new Intent(activity, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, categoryId);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, cartId);
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, categoryId);
+        bundle.putString(EXTRA_CART_ID, cartId);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceCouponActiveAndSelected(Context context, String platform, String categoryId, String cartId) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putInt(EXTRA_SELECTED_TAB, COUPON_TAB);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, categoryId);
+        bundle.putString(EXTRA_CART_ID, cartId);
         intent.putExtras(bundle);
         return intent;
     }
@@ -388,11 +500,11 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceCouponActiveAndSelected(Context context, String platform, String categoryId) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
-        bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, categoryId);
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putInt(EXTRA_SELECTED_TAB,
+                COUPON_TAB);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, categoryId);
         intent.putExtras(bundle);
         return intent;
     }
@@ -401,9 +513,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceCouponActive(Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
         intent.putExtras(bundle);
         return intent;
     }
@@ -411,12 +523,12 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceCouponActive(Context context, String platform, String category, String defaultSelectedTab) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
         if (!TextUtils.isEmpty(defaultSelectedTab) && defaultSelectedTab.contains(DEFAULT_COUPON_TAB_SELECTED)) {
-            bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
-                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
+            bundle.putInt(EXTRA_SELECTED_TAB,
+                    COUPON_TAB);
         }
         intent.putExtras(bundle);
         return intent;
@@ -425,9 +537,22 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceCouponNotActive(Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, false);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceTrainCouponNotActive(Context context, String platform, String category,
+                                                         String trainReservationId, String trainReservationCode) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
+        bundle.putString(EXTRA_TRAIN_RESERVATION_ID, trainReservationId);
+        bundle.putString(EXTRA_TRAIN_RESERVATION_CODE, trainReservationCode);
         intent.putExtras(bundle);
         return intent;
     }
@@ -435,8 +560,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceNewCheckoutCartListCouponNotActive(Context context, String additionalStringData) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, false);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM_PAGE,
                 PLATFORM_PAGE_MARKETPLACE_CART_LIST);
@@ -451,16 +576,16 @@ public class LoyaltyActivity extends BasePresenterActivity
     ) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM_PAGE,
                 PLATFORM_PAGE_MARKETPLACE_CART_LIST);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA,
                 additionalStringData);
         if (!TextUtils.isEmpty(defaultSelectedTab) && defaultSelectedTab.contains(DEFAULT_COUPON_TAB_SELECTED)) {
-            bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
-                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
+            bundle.putInt(EXTRA_SELECTED_TAB,
+                    COUPON_TAB);
         }
         intent.putExtras(bundle);
         return intent;
@@ -469,8 +594,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceNewCheckoutCartShipmentCouponNotActive(Context context, String additionalStringData) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, false);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM_PAGE,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT);
@@ -485,16 +610,16 @@ public class LoyaltyActivity extends BasePresenterActivity
     ) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM_PAGE,
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA,
                 additionalStringData);
         if (!TextUtils.isEmpty(defaultSelectedTab) && defaultSelectedTab.contains(DEFAULT_COUPON_TAB_SELECTED)) {
-            bundle.putInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB,
-                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB);
+            bundle.putInt(EXTRA_SELECTED_TAB,
+                    COUPON_TAB);
         }
         intent.putExtras(bundle);
         return intent;
@@ -526,6 +651,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (platformString.equalsIgnoreCase(MARKETPLACE_STRING))
+            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon();
         UnifyTracking.eventCouponPageClosed();
     }
 
@@ -543,19 +670,19 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 1) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCartPage.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKuponSayaFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKuponSayaFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 } else {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }
@@ -563,10 +690,10 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 0) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }

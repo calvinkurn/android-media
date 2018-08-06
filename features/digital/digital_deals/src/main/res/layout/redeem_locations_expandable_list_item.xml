@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:background="@color/deals_backgroud_color">
+
+    <TextView
+
+        android:id="@+id/tv_location_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        tools:text="Pacific Place"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/TextView.Small.BlackPrimary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_location_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="2sp"
+        android:layout_marginLeft="@dimen/dp_16"
+        tools:text="PACIFIC PLACE MALL, 4th Floor…"
+        style="@style/TextView.Small"
+        android:textColor="@color/black_38"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="50dp"
+        app:layout_constraintRight_toLeftOf="@+id/iv_map"
+        app:layout_constraintTop_toBottomOf="@id/tv_location_name" />
+
+    <ImageView
+        android:id="@+id/iv_map"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_16"
+        app:srcCompat="@drawable/ic_see_location"
+        app:layout_constraintBottom_toBottomOf="@id/tv_location_address"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_location_name" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/divider_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_location_address" />
+
+
+</android.support.constraint.ConstraintLayout>

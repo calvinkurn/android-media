@@ -31,6 +31,7 @@
     <style name="LabelLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/dp_64</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:background">@android:color/white</item>
         <item name="android:paddingTop">@dimen/margin_sm</item>
@@ -222,7 +223,8 @@
     </style>
 
     <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
     </style>
 
     <style name="successTextAppearance" parent="TextAppearance.Design.Error">

@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.analytics.RegisterAnalytics;
@@ -28,6 +28,7 @@ public class ActivationActivity extends BasePresenterActivity {
 
     public static final String INTENT_EXTRA_PARAM_EMAIL = "email";
     public static final String INTENT_EXTRA_PARAM_PW = "pw";
+    private RegisterAnalytics analytics;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -67,6 +68,12 @@ public class ActivationActivity extends BasePresenterActivity {
         fragmentTransaction.commit();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics = RegisterAnalytics.initAnalytics(this);
+    }
+
     private void setToolbar() {
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
@@ -77,8 +84,8 @@ public class ActivationActivity extends BasePresenterActivity {
             toolbar.setElevation(10);
         }
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -119,4 +126,9 @@ public class ActivationActivity extends BasePresenterActivity {
         return callingIntent;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        analytics.eventClickBackEmailActivation();
+    }
 }

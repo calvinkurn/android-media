@@ -4,8 +4,10 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.BigGridProductViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.GridProductViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.HotlistHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.ListProductViewHolder;
@@ -14,6 +16,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderView
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 
 /**
  * Created by hangnadi on 10/8/17.
@@ -35,11 +38,17 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
     }
 
     @Override
+    public int type(EmptySearchModel emptySearchModel) {
+        return EmptyViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(HotlistProductViewModel product) {
         switch (getRecyclerViewItem()) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
                 return ListProductViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return BigGridProductViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
                 return GridProductViewHolder.LAYOUT;
@@ -56,6 +65,8 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
         AbstractViewHolder viewHolder;
         if (type == HotlistHeaderViewHolder.LAYOUT) {
             viewHolder = new HotlistHeaderViewHolder(parent, mItemClickListener, searchQuery);
+        } else if (type == BigGridProductViewHolder.LAYOUT) {
+            viewHolder = new BigGridProductViewHolder(parent, mItemClickListener);
         } else if (type == GridProductViewHolder.LAYOUT) {
             viewHolder = new GridProductViewHolder(parent, mItemClickListener);
         } else if (type == ListProductViewHolder.LAYOUT) {

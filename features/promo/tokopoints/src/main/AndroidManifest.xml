@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.tokopoints">
+
+    <application>
+        <activity
+            android:name=".view.activity.TokoPointsHomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".view.activity.CatalogListingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".view.activity.MyCouponListingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+    </application>
+
+</manifest>

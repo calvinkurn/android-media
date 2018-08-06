@@ -24,9 +24,15 @@ public class PromoAttributes implements Parcelable{
     @SerializedName("short_desc_html")
     @Expose
     private String shortDescHtml;
+    @SerializedName("short_desc")
+    @Expose
+    private String shortDesc;
     @SerializedName("short_cond_html")
     @Expose
     private String shortCondHtml;
+    @SerializedName("applinks")
+    @Expose
+    private String applinks;
 
     //below two attributes is used only for caching
     @SerializedName("target_type")
@@ -37,6 +43,9 @@ public class PromoAttributes implements Parcelable{
     private String userId;
 
     private String shopType;
+    @SerializedName("custom_promo_id")
+    @Expose
+    private String customPromoId;
 
     public PromoAttributes() {
     }
@@ -105,15 +114,28 @@ public class PromoAttributes implements Parcelable{
         this.shopType = shopType;
     }
 
-    protected PromoAttributes(Parcel in) {
-        code = in.readString();
-        codeHtml = in.readString();
-        targetUrl = in.readString();
-        shortDescHtml = in.readString();
-        shortCondHtml = in.readString();
-        targetType = in.readString();
-        userId = in.readString();
-        shopType = in.readString();
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
+    }
+
+    public void setCustomPromoId(String customPromoId) {
+        this.customPromoId = customPromoId;
+    }
+
+    public String getCustomPromoId() {
+        return customPromoId;
+    }
+
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
     }
 
     @Override
@@ -123,21 +145,37 @@ public class PromoAttributes implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(code);
-        dest.writeString(codeHtml);
-        dest.writeString(targetUrl);
-        dest.writeString(shortDescHtml);
-        dest.writeString(shortCondHtml);
-        dest.writeString(targetType);
-        dest.writeString(userId);
-        dest.writeString(shopType);
+        dest.writeString(this.code);
+        dest.writeString(this.codeHtml);
+        dest.writeString(this.targetUrl);
+        dest.writeString(this.shortDescHtml);
+        dest.writeString(this.shortDesc);
+        dest.writeString(this.shortCondHtml);
+        dest.writeString(this.targetType);
+        dest.writeString(this.userId);
+        dest.writeString(this.shopType);
+        dest.writeString(this.customPromoId);
+        dest.writeString(this.applinks);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<PromoAttributes> CREATOR = new Parcelable.Creator<PromoAttributes>() {
+    protected PromoAttributes(Parcel in) {
+        this.code = in.readString();
+        this.codeHtml = in.readString();
+        this.targetUrl = in.readString();
+        this.shortDescHtml = in.readString();
+        this.shortDesc = in.readString();
+        this.shortCondHtml = in.readString();
+        this.targetType = in.readString();
+        this.userId = in.readString();
+        this.shopType = in.readString();
+        this.customPromoId = in.readString();
+        this.applinks = in.readString();
+    }
+
+    public static final Creator<PromoAttributes> CREATOR = new Creator<PromoAttributes>() {
         @Override
-        public PromoAttributes createFromParcel(Parcel in) {
-            return new PromoAttributes(in);
+        public PromoAttributes createFromParcel(Parcel source) {
+            return new PromoAttributes(source);
         }
 
         @Override

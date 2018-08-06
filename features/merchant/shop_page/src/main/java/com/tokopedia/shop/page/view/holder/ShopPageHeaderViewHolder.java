@@ -18,6 +18,7 @@ import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
+import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
@@ -56,6 +57,8 @@ public class ShopPageHeaderViewHolder {
         void onShopNameClicked();
 
         void onShopInfoClicked();
+
+        void goToHelpCenter(String url);
     }
 
     private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
@@ -93,7 +96,7 @@ public class ShopPageHeaderViewHolder {
     private Button buttonAlreadyFavouriteShop;
     private ImageView shopInfo;
 
-    private boolean favouriteShop;
+    private boolean favouriteShop, myShop;
     private Listener listener;
 
     public boolean isFavouriteShop() {
@@ -215,7 +218,7 @@ public class ShopPageHeaderViewHolder {
 
     public void renderData(ShopInfo shopInfo, boolean myShop) {
         updateShopInfo(shopInfo, myShop);
-        updateViewShopOpen(shopInfo);
+        updateViewShopOpen(shopInfo, myShop);
     }
 
     public void renderData(ReputationSpeed reputationSpeed) {
@@ -223,6 +226,7 @@ public class ShopPageHeaderViewHolder {
     }
 
     public void updateShopInfo(ShopInfo shopInfo, boolean myShop) {
+        this.myShop = myShop;
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
         shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
 
@@ -356,16 +360,24 @@ public class ShopPageHeaderViewHolder {
         }
     }
 
-    private void updateViewShopOpen(ShopInfo shopInfo) {
+    private void updateViewShopOpen(ShopInfo shopInfo, boolean isMyShop) {
         switch ((int) shopInfo.getInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
                 showShopClosed(shopInfo);
+                shopWarningTickerView.setOnClickListener(null);
                 break;
             case ShopStatusDef.MODERATED:
                 showShopModerated(shopInfo);
+                shopWarningTickerView.setOnClickListener(null);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
                 showShopNotActive(shopInfo);
+                if (isMyShop){
+                    shopWarningTickerView.setOnClickListener(view ->
+                        listener.goToHelpCenter(ShopUrl.SHOP_HELP_CENTER));
+                } else {
+                    shopWarningTickerView.setOnClickListener(null);
+                }
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);
@@ -390,9 +402,15 @@ public class ShopPageHeaderViewHolder {
     }
 
     private void showShopNotActive(ShopInfo shopInfo) {
+        String description;
+        if (myShop) {
+            description = shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description_seller);
+        } else {
+            description = shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description_buyer);
+        }
         showShopStatusTicker(R.drawable.ic_info_inactive,
                 shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_title),
-                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description),
+                description,
                 R.color.yellow_ticker);
     }
 

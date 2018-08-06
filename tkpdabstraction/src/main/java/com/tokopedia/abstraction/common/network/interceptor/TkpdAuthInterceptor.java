@@ -28,6 +28,7 @@ import okio.Buffer;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
+@Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
@@ -361,7 +362,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
@@ -373,17 +374,17 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             if (isNeedGcmUpdate(response)) {
                 refreshTokenAndGcmUpdate();
+                Request newestRequest;
                 if (finalRequest.header(HEADER_PARAM_AUTHORIZATION).contains(HEADER_PARAM_BEARER)) {
-                    Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                    return checkShowForceLogout(chain, newestRequest);
+                    newestRequest = recreateRequestWithNewAccessToken(chain);
                 } else {
-                    Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                    return checkShowForceLogout(chain, newestRequest);
+                    newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
                 }
+                return chain.proceed(newestRequest);
             } else if (isUnauthorized(finalRequest, response)) {
                 refreshToken();
                 Request newest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newest);
+                return chain.proceed(newest);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 abstractionRouter.logInvalidGrant(response);
                 return response;
@@ -398,18 +399,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
-    }
-
-
-    private Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
-        Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
-            abstractionRouter.showForceLogoutDialog(response);
-        }
-        return response;
     }
 }

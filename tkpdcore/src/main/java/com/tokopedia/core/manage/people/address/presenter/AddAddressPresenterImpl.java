@@ -106,6 +106,16 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     }
 
     @Override
+    public void onEditProvinceSelected(int pos) {
+        viewListener.resetRegency();
+        viewListener.hideSubDistrict();
+        viewListener.resetSubDistrict();
+        if (pos != 0) {
+            provinceChanged(viewListener.getProvinceAdapter().getList().get(pos - 1));
+        }
+    }
+
+    @Override
     public void onRegencySelected(int pos) {
         viewListener.resetSubDistrict();
         if (pos != 0) {
@@ -146,6 +156,41 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
                         viewListener.showErrorSnackbar("");
                     }
 
+                });
+    }
+
+    @Override
+    public void provinceChanged(Province province) {
+        viewListener.showLoadingRegency();
+        viewListener.setActionsEnabled(false);
+        networkInteractor.getListCity(
+                viewListener.context(),
+                province.getProvinceId(),
+                new AddAddressRetrofitInteractor.GetListCityListener() {
+                    @Override
+                    public void onSuccess(FormAddressDomainModel model) {
+                        viewListener.setActionsEnabled(true);
+                        viewListener.changeProvince(model.getCities());
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        viewListener.finishLoading();
+                        viewListener.setActionsEnabled(true);
+                        viewListener.showErrorSnackbar(error);
+                    }
+
+                    @Override
+                    public void onNullData() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
                 });
     }
 
@@ -191,31 +236,35 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
                     address.setAddressId(address_id);
                     viewListener.setAddress(address);
                 }
-
+                viewListener.successSaveAddress();
                 viewListener.finishActivity();
             }
 
             @Override
             public void onTimeout() {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar("");
             }
 
             @Override
             public void onError(String error) {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar(error);
             }
 
             @Override
             public void onNullData() {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar("");
             }
 
             @Override
             public void onNoNetworkConnection() {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar("");
             }
         };

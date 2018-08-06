@@ -15,11 +15,13 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
+import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,6 +31,9 @@ import javax.inject.Inject;
  */
 
 public class CartMapper implements ICartMapper {
+    private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+    private static final String SHOP_TYPE_REGULER = "reguler";
     private final IMapperUtil mapperUtil;
 
     @Inject
@@ -81,6 +86,8 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setProductId(String.valueOf(data.getProduct().getProductId()));
             cartItemDataOrigin.setPriceFormatted(data.getProduct().getProductPriceFmt());
             cartItemDataOrigin.setPricePlan(data.getProduct().getProductPrice());
+            cartItemDataOrigin.setPricePlanInt(data.getProduct().getProductPrice());
+            cartItemDataOrigin.setShopType(generateShopType(data.getShop()));
             cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
             cartItemDataOrigin.setFavorite(false);
@@ -93,10 +100,13 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
             }
             cartItemDataOrigin.setCashBack(!mapperUtil.isEmpty(data.getProduct().getProductCashback()));
+            cartItemDataOrigin.setProductCashBack(data.getProduct().getProductCashback());
             cartItemDataOrigin.setCashBackInfo("Cashback " + data.getProduct().getProductCashback());
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
             cartItemDataOrigin.setCategory(data.getProduct().getCategory());
             cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
+            cartItemDataOrigin.setGoldMerchant(data.getShop().getIsGold() == 1);
+            cartItemDataOrigin.setOfficialStore(data.getShop().getIsOfficial() == 1);
             if (data.getProduct().getWholesalePrice() != null) {
                 List<WholesalePrice> wholesalePrices = new ArrayList<>();
                 for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
@@ -110,6 +120,7 @@ public class CartMapper implements ICartMapper {
 
                     wholesalePrices.add(wholesalePriceDomainModel);
                 }
+                Collections.reverse(wholesalePrices);
                 cartItemDataOrigin.setWholesalePrice(wholesalePrices);
             }
 
@@ -151,14 +162,6 @@ public class CartMapper implements ICartMapper {
         cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
         cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
 
-
-//        cartPromoSuggestion.setCta("Gunakan Sekarang!");
-//        cartPromoSuggestion.setCtaColor("#42b549");
-//        cartPromoSuggestion.setPromoCode("ajicash");
-//        cartPromoSuggestion.setText("[iOS] Cashback hingga 25% menggunakan Promo <b>TOKOCASH</b> !");
-//        cartPromoSuggestion.setVisible(true);
-
-
         cartListData.setCartItemDataList(cartItemDataList);
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
@@ -174,6 +177,14 @@ public class CartMapper implements ICartMapper {
         cartListData.setAutoApplyData(autoApplyData);
 
         return cartListData;
+    }
+
+    private String generateShopType(Shop shop) {
+        if (shop.getIsOfficial() == 1)
+            return SHOP_TYPE_OFFICIAL_STORE;
+        else if (shop.getIsGold() == 1)
+            return SHOP_TYPE_GOLD_MERCHANT;
+        else return SHOP_TYPE_REGULER;
     }
 
     @Override

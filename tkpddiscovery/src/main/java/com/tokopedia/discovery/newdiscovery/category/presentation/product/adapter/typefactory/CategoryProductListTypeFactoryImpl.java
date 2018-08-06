@@ -4,10 +4,12 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.BigGridProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.CategoryDefaultHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.CategoryLifestyleHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.CategoryRevampHeaderViewHolder;
@@ -16,7 +18,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.topads.sdk.base.Config;
 
 /**
@@ -48,6 +50,7 @@ public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactory
             case TkpdState.RecyclerView.VIEW_PRODUCT:
                 return ListProductItemViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return BigGridProductItemViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
                 return GridProductItemViewHolder.LAYOUT;
@@ -67,6 +70,11 @@ public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactory
     }
 
     @Override
+    public int type(EmptySearchModel emptySearchModel) {
+        return EmptyViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -79,6 +87,8 @@ public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactory
             viewHolder = new ListProductItemViewHolder(view, itemClickListener);
         } else if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, itemClickListener);
+        } else if (type == BigGridProductItemViewHolder.LAYOUT) {
+            viewHolder = new BigGridProductItemViewHolder(view, itemClickListener);
         } else if (type == CategoryLifestyleHeaderViewHolder.LAYOUT) {
             viewHolder = new CategoryLifestyleHeaderViewHolder(view, categoryRevampListener);
         } else {

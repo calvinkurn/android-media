@@ -67,7 +67,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
 
 import org.parceler.Parcels;
 
@@ -276,6 +276,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         @Override
         public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
 
+        }
+
+        @Override
+        public void onAddWishList(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
+            //TODO: next implement wishlist action
         }
     }
 

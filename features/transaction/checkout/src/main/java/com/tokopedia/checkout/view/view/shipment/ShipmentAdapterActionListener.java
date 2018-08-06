@@ -4,7 +4,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.List;
@@ -15,7 +15,9 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener extends CartAdapterActionListener {
 
-    void onAddOrChangeAddress();
+    void onChangeAddress();
+
+    void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel);
 
     void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
                           RecipientAddressModel recipientAddressModel);
@@ -26,7 +28,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onEditPickupPoint(RecipientAddressModel addressAdapterData);
 
-    void onTotalPaymentChange(ShipmentCostModel shipmentCostModel);
+    void onTotalPaymentChange(String totalPayment);
 
     void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> data, List<DataCheckoutRequest> checkoutRequest);
 
@@ -47,4 +49,9 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onDropshipCheckedForTrackingAnalytics();
 
     void onInsuranceCheckedForTrackingAnalytics();
+
+    void onChoosePaymentMethodButtonClicked();
+
+    void onDonationChecked(boolean checked);
+
 }

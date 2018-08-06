@@ -61,7 +61,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-     /* VARIANT */
+    /* VARIANT */
 
 
     public static void eventClickVariant(String eventLabel) {
@@ -265,7 +265,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-     /* CATEGORY IMPROVEMENT*/
+    /* CATEGORY IMPROVEMENT*/
 
     public static void eventHomeTopPicksTitle(String label) {
         sendGTMEvent(new EventTracking(
@@ -1106,13 +1106,13 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventPDPOrientationChanged(String productId) {
-       sendGTMEvent(new EventTracking(
-                       AppEventTracking.Event.VIEW_PDP,
-                       AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
-                       AppEventTracking.Action.LANDSCAPE_VIEW,
-                       String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
-                       ).getEvent());
-        }
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.VIEW_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.LANDSCAPE_VIEW,
+                String.format(AppEventTracking.EventLabel.PRODUCT_ID_VALUE, productId)
+        ).getEvent());
+    }
 
     public static void eventPDPCart() {
         sendGTMEvent(new EventTracking(
@@ -1720,60 +1720,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.EDIT_PRODUCT_IMAGE,
                 AppEventTracking.Action.CLICK_SAVE_EDIT,
                 editSequence
-        ).getEvent());
-    }
-
-    public static void eventClickPopularSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_POPULAR,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickRecentSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_RECENT,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickHotListSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_HOTLIST,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAutoCompleteSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_AUTOCOMPLETE,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAutoCompleteShopSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAutoCompleteCategory(String catName, String catId, String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_PRODUCT_SUGGESTION,
-                label + " | " + label + " | " + catName + " | " + catId
         ).getEvent());
     }
 
@@ -3120,7 +3066,7 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventClickChangePhoneNumber() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
-                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Category.PROFILE_PAGE,
                 AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
                 ""
         ).getEvent());
@@ -3233,6 +3179,14 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.QUICK_FILTER,
                 filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
         ).setUserId().getEvent());
+    }
+
+    private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
+        List<String> filterList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
+            filterList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        return TextUtils.join("&", filterList);
     }
 
     public static void eventBeliLongClick() {

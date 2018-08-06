@@ -55,7 +55,7 @@ public class EventReviewTicketsContractor {
         boolean validateAllFields();
     }
 
-    public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
+    public interface Presenter extends CustomerPresenter<EventReviewTicketsView> {
 
         void onDestroy();
 

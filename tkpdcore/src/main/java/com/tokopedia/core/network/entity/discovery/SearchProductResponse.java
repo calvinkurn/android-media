@@ -2,6 +2,7 @@ package com.tokopedia.core.network.entity.discovery;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -282,6 +283,8 @@ public class SearchProductResponse {
             private String imageUrl700;
             @SerializedName("price")
             private String price;
+            @SerializedName("price_range")
+            private String priceRange;
             @SerializedName("shop")
             private Shop shop;
             @SerializedName("condition")
@@ -306,6 +309,10 @@ public class SearchProductResponse {
             private List<Badges> badges;
             @SerializedName("is_featured")
             private int isFeatured;
+            @SerializedName("top_label")
+            private List<String> topLabel;
+            @SerializedName("bottom_label")
+            private List<String> bottomLabel;
 
             public String getId() {
                 return id;
@@ -353,6 +360,14 @@ public class SearchProductResponse {
 
             public void setPrice(String price) {
                 this.price = price;
+            }
+
+            public String getPriceRange() {
+                return priceRange;
+            }
+
+            public void setPriceRange(String priceRange) {
+                this.priceRange = priceRange;
             }
 
             public Shop getShop() {
@@ -450,6 +465,22 @@ public class SearchProductResponse {
 
             public void setIsFeatured(int isFeatured) {
                 this.isFeatured = isFeatured;
+            }
+
+            public List<String> getTopLabel() {
+                return topLabel;
+            }
+
+            public void setTopLabel(List<String> topLabel) {
+                this.topLabel = topLabel;
+            }
+
+            public List<String> getBottomLabel() {
+                return bottomLabel;
+            }
+
+            public void setBottomLabel(List<String> bottomLabel) {
+                this.bottomLabel = bottomLabel;
             }
 
             public static class Shop {
@@ -607,6 +638,8 @@ public class SearchProductResponse {
                 private String title;
                 @SerializedName("image_url")
                 private String imageUrl;
+                @SerializedName("show")
+                private boolean isShown;
 
                 public String getTitle() {
                     return title;
@@ -622,6 +655,14 @@ public class SearchProductResponse {
 
                 public void setImageUrl(String imageUrl) {
                     this.imageUrl = imageUrl;
+                }
+
+                public boolean isShown() {
+                    return isShown;
+                }
+
+                public void setShown(boolean shown) {
+                    isShown = shown;
                 }
             }
         }

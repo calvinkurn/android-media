@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 
+
 /**
  * modified by m.normansyah
  *
@@ -45,6 +46,8 @@ import io.branch.referral.BranchError;
  * fetch some data from server in order to worked around.
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
+
+
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
@@ -209,30 +212,39 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         if (branch == null) {
             moveToHome();
         } else {
-            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
-            branch.initSession(new Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject referringParams, BranchError error) {
-                    if (error == null) {
-                        try {
-                            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,SplashScreen.this);
-
-                            String deeplink = referringParams.getString("$android_deeplink_path");
-                            Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(uri);
-                            startActivity(intent);
-                            finish();
-
-                        } catch (JSONException e) {
-                            moveToHome();
-
+            try {
+                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+                branch.initSession(new Branch.BranchReferralInitListener() {
+                    @Override
+                    public void onInitFinished(JSONObject referringParams, BranchError error) {
+                        if (isFinishing()) {
+                            return;
                         }
-                    } else {
-                        moveToHome();
+
+                        if (error == null) {
+                            try {
+                                BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
+
+                                String deeplink = referringParams.getString("$android_deeplink_path");
+                                Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(uri);
+                                startActivity(intent);
+                                finish();
+
+                            } catch (JSONException e) {
+                                moveToHome();
+
+                            }
+                        } else {
+                            moveToHome();
+                        }
+
                     }
-                }
-            }, this.getIntent().getData(), this);
+                }, this.getIntent().getData(), this);
+            } catch (Exception e) {
+                // Do nothing
+            }
         }
     }
 

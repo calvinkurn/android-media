@@ -17,8 +17,9 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.share.ShareBottomSheet;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
@@ -136,6 +137,14 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra(DetailProductRouter.EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(com.tokopedia.discovery.R.menu.menu_catalog_detail, menu);
@@ -146,7 +155,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == com.tokopedia.discovery.R.id.action_share_prod) {
             if (shareData != null)
-                ShareBottomSheet.show(getSupportFragmentManager(), shareData);
+                new DefaultShare(this, shareData).show();
             else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
             return true;
         }

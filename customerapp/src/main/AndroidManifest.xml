@@ -7,6 +7,7 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -27,7 +28,8 @@
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
-        android:icon="@drawable/qc_launcher"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
@@ -68,7 +70,7 @@
             tools:replace="android:value"/>
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
-            android:value="@drawable/qc_launcher"
+            android:value="@mipmap/ic_launcher"
             tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
@@ -278,7 +280,6 @@
 
 
         <activity android:name=".campaign.view.activity.ShakeDetectCampaignActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Translucent"/>
 
@@ -310,6 +311,9 @@
         </provider>
 
 
+        <activity
+            android:name=".home.TkpdYoutubeVideoActivity"
+            android:screenOrientation="sensor"/>
     </application>
 
 </manifest>

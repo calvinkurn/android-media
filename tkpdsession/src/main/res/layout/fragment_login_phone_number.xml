@@ -81,4 +81,19 @@
         android:textStyle="bold"
         />
 
+    <TextView
+        android:id="@+id/change_inactive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/black_38"
+        android:lineSpacingExtra="6sp"
+        android:gravity="center_horizontal"
+        android:text="@string/change_inactive_number"
+        />
+
 </LinearLayout>

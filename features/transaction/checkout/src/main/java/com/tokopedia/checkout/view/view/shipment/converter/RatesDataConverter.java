@@ -39,11 +39,11 @@ public class RatesDataConverter {
                                                     RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
         ShipmentCartData shipmentCartData = shipmentCartItemModel.getShipmentCartData();
-        shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
+        shipmentCartData.setDestinationAddress(recipientAddressModel.getStreet());
         shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
         shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
         shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
-        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
+        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getPostalCode());
         shipmentDetailData.setShipmentCartData(shipmentCartData);
         int totalQuantity = 0;
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
@@ -145,6 +145,7 @@ public class RatesDataConverter {
     }
 
     public ShipmentDetailData getShipmentDetailData(ShipmentDetailData shipmentDetailData,
+                                                    List<ShopShipment> shopShipmentList,
                                                     RatesResponse ratesResponse) {
         if (shipmentDetailData == null) {
             shipmentDetailData = new ShipmentDetailData();
@@ -173,8 +174,31 @@ public class RatesDataConverter {
             }
         }
 
+        for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
+            List<CourierItemData> activeCourierItemDataList = new ArrayList<>();
+            for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                if (isCourierActive(shopShipmentList, courierItemData)) {
+                    activeCourierItemDataList.add(courierItemData);
+                }
+            }
+            shipmentItemData.setCourierItemData(activeCourierItemDataList);
+        }
+
         shipmentDetailData.setShipmentItemData(shipmentItemDataList);
         return shipmentDetailData;
+    }
+
+    private boolean isCourierActive(List<ShopShipment> shopShipmentList, CourierItemData courierItemData) {
+        for (ShopShipment shopShipment : shopShipmentList) {
+            if (shopShipment.getShipId() == courierItemData.getShipperId()) {
+                for (ShipProd shipProd : shopShipment.getShipProds()) {
+                    if (shipProd.getShipProdId() == courierItemData.getShipperProductId()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private List<ShipmentItemData> getShipmentItemDataList(RatesResponse ratesResponse) {
@@ -208,7 +232,7 @@ public class RatesDataConverter {
                                                ShipmentItemData shipmentItemData) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
-        courierItemData.setName(product.getShipperName() + " " + product.getShipperProductName());
+        courierItemData.setName(product.getShipperName());
         courierItemData.setShipperId(product.getShipperId());
         courierItemData.setShipperProductId(product.getShipperProductId());
         courierItemData.setInsuranceUsedInfo(product.getInsuranceUsedInfo());
@@ -217,11 +241,13 @@ public class RatesDataConverter {
         courierItemData.setInsuranceUsedDefault(product.getInsuranceUsedDefault());
         courierItemData.setCourierInfo(product.getShipperProductDesc());
         courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
-        courierItemData.setDeliveryPrice(product.getShipperPrice());
+        courierItemData.setShipperPrice(product.getShipperPrice());
         courierItemData.setEstimatedTimeDelivery(product.getShipperEtd());
         courierItemData.setMinEtd(product.getMinEtd());
         courierItemData.setMaxEtd(product.getMaxEtd());
-        courierItemData.setShipmentItemData(shipmentItemData);
+        courierItemData.setShipmentItemDataEtd(shipmentItemData.getDeliveryTimeRange());
+        courierItemData.setShipmentItemDataType(shipmentItemData.getType());
+        courierItemData.setShipperFormattedPrice(product.getShipperFormattedPrice());
 
         return courierItemData;
     }

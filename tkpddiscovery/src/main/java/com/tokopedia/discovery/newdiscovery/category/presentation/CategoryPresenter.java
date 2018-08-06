@@ -96,7 +96,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity)getView()).onHandleResponseError();
+            ((DiscoveryActivity) getView()).onHandleResponseError();
         }
 
         @Override
@@ -143,13 +143,13 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity)getView()).onHandleResponseError();
+            ((DiscoveryActivity) getView()).onHandleResponseError();
         }
 
         @Override
         public void onNext(SearchResultModel searchResultModel) {
             ProductViewModel productViewModel
-                    = CategoryModelHelper.convertToProductViewModel(searchResultModel,categoryHeaderModel);
+                    = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
             getView().prepareFragment(productViewModel);
 
         }

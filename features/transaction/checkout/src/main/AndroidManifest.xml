@@ -15,25 +15,28 @@
         <activity
             android:name=".view.view.addressoptions.CartAddressChoiceActivity"
             android:label="@string/checkout_module_title_shipping_dest"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.view.multipleaddressform.MultipleAddressFormActivity"
-            android:label="@string/checkout_module_title_shipping_dest"
-            android:launchMode="singleTask"
+            android:label="@string/checkout_module_title_send_to_multiple_address"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".view.view.multipleaddressform.AddShipmentAddressActivity"
-            android:label="@string/checkout_module_title_activity_people_tx_details"
-            android:theme="@style/Theme.White"/>
+            android:label="@string/checkout_module_title_shipping_dest"
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".view.view.shipment.ShipmentActivity"
             android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <service
+            android:name=".view.view.cartlist.UpdateCartIntentService"
+            android:exported="false" />
 
     </application>
 

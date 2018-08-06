@@ -1,10 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.catalog;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,8 +14,6 @@ import android.widget.ProgressBar;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -28,10 +24,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -238,7 +235,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void setOnCatalogClicked(String catalogID, String catalogName) {
-        SearchTracking.eventSearchResultCatalogClick(query, catalogName);
+        SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
@@ -248,6 +245,11 @@ public class CatalogFragment extends SearchSectionFragment implements
         if (!TextUtils.isEmpty(appLink)) {
             ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
         }
+    }
+
+    @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
     }
 
     @Override
@@ -356,8 +358,8 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            String message = String.format(getString(R.string.empty_search_content_template), query);
-            catalogAdapter.showEmptyState(message);
+            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -457,7 +459,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog();
+                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getActivity());
                         openFilterActivity();
                         return true;
                     case 2:
@@ -528,6 +530,11 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     public void onAddFavorite(int position, Data data) {
 
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
     }
 
     @Override

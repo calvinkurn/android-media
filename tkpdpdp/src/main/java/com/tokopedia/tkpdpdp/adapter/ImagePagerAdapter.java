@@ -23,19 +23,19 @@ import java.util.List;
  */
 public class ImagePagerAdapter extends PagerAdapter {
     private Context context;
-    private List<ProductImage> productImages = new ArrayList<>();
+    private List<ProductImage> productImages;
 
     private OnActionListener actionListener;
     private String urlTemporary;
 
-    public ImagePagerAdapter(Context context, ArrayList<ProductImage> productImages) {
+    public ImagePagerAdapter(Context context) {
         this.context = context;
-        this.productImages = productImages;
+        this.productImages = new ArrayList<>();
     }
 
-    public ImagePagerAdapter(Context context, ArrayList<ProductImage> productImages, String urlTemporary) {
+    public ImagePagerAdapter(Context context, String urlTemporary) {
         this.context = context;
-        this.productImages = productImages;
+        this.productImages = new ArrayList<>();
         this.urlTemporary = urlTemporary;
     }
 
@@ -54,14 +54,14 @@ public class ImagePagerAdapter extends PagerAdapter {
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setAdjustViewBounds(true);
             if (!TextUtils.isEmpty(urlTemporary) && position==0) {
-                Glide.with(context.getApplicationContext())
+                Glide.with(context)
                         .load(urlImage)
                         .dontAnimate()
                         .dontTransform()
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .thumbnail(
-                                Glide.with(context.getApplicationContext())
+                                Glide.with(context)
                                         .load(urlTemporary)
                                         .dontAnimate()
                                         .dontTransform()
@@ -72,9 +72,9 @@ public class ImagePagerAdapter extends PagerAdapter {
             } else{
                 if(!TextUtils.isEmpty(urlImage)){
                     if (!TextUtils.isEmpty(urlTemporary) && urlImage.equals(urlTemporary)) {
-                        ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlTemporary);
+                        ImageHandler.loadImageSourceSizeFitCenter(context, imageView, urlTemporary);
                     } else {
-                        ImageHandler.loadImageSourceSizeFitCenter(context.getApplicationContext(),imageView, urlImage);
+                        ImageHandler.loadImageSourceSizeFitCenter(context, imageView, urlImage);
                     }
                 }
             }
@@ -83,14 +83,14 @@ public class ImagePagerAdapter extends PagerAdapter {
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setAdjustViewBounds(true);
             if (!TextUtils.isEmpty(urlTemporary) && position==0) {
-                Glide.with(context.getApplicationContext())
+                Glide.with(context)
                         .load(urlImage)
                         .dontAnimate()
                         .dontTransform()
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .thumbnail(
-                                Glide.with(context.getApplicationContext())
+                                Glide.with(context)
                                         .load(urlTemporary)
                                         .dontAnimate()
                                         .dontTransform()
@@ -99,9 +99,9 @@ public class ImagePagerAdapter extends PagerAdapter {
                         .into(imageView);
 
             } else if (!TextUtils.isEmpty(urlTemporary) && urlImage.equals(urlTemporary)) {
-                ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlTemporary);
+                ImageHandler.loadImageSourceSizeCenterCrop(context, imageView, urlTemporary);
             } else {
-                ImageHandler.loadImageSourceSizeCenterCrop(context.getApplicationContext(),imageView, urlImage);
+                ImageHandler.loadImageSourceSizeCenterCrop(context, imageView, urlImage);
             }
         }
         imageView.setOnClickListener(new OnClickImage(position));
@@ -128,6 +128,12 @@ public class ImagePagerAdapter extends PagerAdapter {
                 return rhs.getImagePrimary().compareTo(lhs.getImagePrimary());
             }
         });
+        notifyDataSetChanged();
+    }
+
+    public void addAllWithoutSort(List<ProductImage> productImages) {
+        this.productImages.clear();
+        this.productImages.addAll(productImages);
         notifyDataSetChanged();
     }
 

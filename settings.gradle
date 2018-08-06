@@ -1,3 +1,4 @@
+include ':settingbank'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -20,7 +21,6 @@ apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
 include 'customerapp'
-include 'tkpdhome'
 include 'tkpdloyalty'
 include 'tkpdride'
 include 'tkpdfeed'
@@ -29,7 +29,6 @@ include 'tkpdinbox'
 include 'tkpddiscovery'
 include 'tkpdtransaction'
 include 'tkpdsession'
-include 'tkpdtopadssdk'
 include 'tkpdpdp'
 include 'tkpddesign'
 include 'sellerapp'
@@ -45,3 +44,4 @@ include 'tkpdgm-common'
 include 'tkpdreputation-common'
 include 'tkpdwishlist-common'
 include 'tkpdtransaction-common'
+include 'posapp'
