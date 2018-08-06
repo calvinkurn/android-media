@@ -14,13 +14,11 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
@@ -29,9 +27,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.He
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.GraphqlConstant;
-import com.tokopedia.graphql.data.model.CacheType;
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -90,11 +85,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        if (isUsingFilterV4) {
-            getDynamicFilterV4UseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
-        } else {
-            getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
-        }
+
     }
 
     @Override
@@ -130,7 +121,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void requestDynamicFilter() {
-        requestDynamicFilter(new HashMap<String, String>());
+
     }
 
     @Override
