@@ -190,7 +190,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 String.valueOf(activityCardViewModel.getTotalProduct()),
                 this.positionInFeed,
                 "-",
-                activityCardViewModel.getHeader().getShopId(),
+                Integer.valueOf(activityCardViewModel.getFeedId()),
                 SHOP.replace(SHOP_ID_BRACKETS, shopId)
         ));
         TrackingUtils.eventTrackingEnhancedEcommerce(

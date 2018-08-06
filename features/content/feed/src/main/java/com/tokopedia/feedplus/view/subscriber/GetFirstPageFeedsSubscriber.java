@@ -19,7 +19,6 @@ import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.LabelDomain;
@@ -293,7 +292,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     String.valueOf(model.getTotalProduct()),
                                     currentPosition,
                                     FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
-                                    model.getHeader().getShopId(),
+                                    Integer.valueOf(model.getFeedId()),
                                     SHOP.replace(SHOP_ID_BRACKETS, shopId)
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(
