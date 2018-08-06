@@ -11,6 +11,7 @@ import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Compa
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 
+
 class ProductEditCategoryFragment : BaseProductEditCategoryFragment() {
 
     override fun initInjector() {
@@ -33,4 +34,5 @@ class ProductEditCategoryFragment : BaseProductEditCategoryFragment() {
                 }
         }
     }
+
 }

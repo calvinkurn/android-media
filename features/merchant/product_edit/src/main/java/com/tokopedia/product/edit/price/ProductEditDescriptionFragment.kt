@@ -24,15 +24,17 @@ class ProductEditDescriptionFragment : Fragment() {
     private var videoIDsTemp: ArrayList<String> = ArrayList()
     private var productDescription = ProductDescription()
     private lateinit var keyword: String
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if(activity!!.intent.hasExtra(EXTRA_DESCRIPTION)) {
-            productDescription = activity!!.intent.getParcelableExtra(EXTRA_DESCRIPTION)
+        activity?.run {
+            if(intent.hasExtra(EXTRA_DESCRIPTION)) {
+                productDescription = intent.getParcelableExtra(EXTRA_DESCRIPTION)
+            }
+            keyword = intent.getStringExtra(EXTRA_KEYWORD)
         }
-        keyword = activity!!.intent.getStringExtra(EXTRA_KEYWORD)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -42,10 +44,11 @@ class ProductEditDescriptionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDataDescription(productDescription)
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            setResult()
-        }
+        texViewMenu?.run {
+            text = getString(R.string.label_save)
+            setOnClickListener {
+                setResult()
+            }}
         labelViewVideoProduct.setOnClickListener {
             startActivityForResult(Intent(context, ProductAddVideoActivity::class.java)
                 .putExtra(EXTRA_VIDEOS_LINKS, videoIDsTemp)
@@ -55,14 +58,14 @@ class ProductEditDescriptionFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_DESCRIPTION -> {
-                    val description = data!!.getStringExtra(PRODUCT_DESCRIPTION)
+                    val description = data.getStringExtra(PRODUCT_DESCRIPTION)
                     editTextDescription.setText(description)
                 }
                 REQUEST_CODE_GET_VIDEO -> {
-                    videoIDsTemp = data!!.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
+                    videoIDsTemp = data.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
                     setLabelViewVideo(videoIDsTemp)
                 }
             }
@@ -79,25 +82,22 @@ class ProductEditDescriptionFragment : Fragment() {
     }
 
     private fun setLabelViewVideo(videoList: ArrayList<String>){
-        if (videoList.size == 0)
-            labelViewVideoProduct.setContent(getString(R.string.label_add))
-        else
-            labelViewVideoProduct.setContent(getString(R.string.product_count_video, videoList.size))
+        labelViewVideoProduct.setContent(if (videoList.size == 0) getString(R.string.label_add) else getString(R.string.product_count_video, videoList.size))
     }
 
-    private fun saveData(productDescription: ProductDescription): ProductDescription{
-        productDescription.description = editTextDescription.text.toString()
-        productDescription.feature = editTextFeature.text.toString()
-        productDescription.isNew = labelSwitchNewCondition.isChecked
-        productDescription.videoIDs = videoIDsTemp
-        return productDescription
-    }
+    private fun saveData(productDescription: ProductDescription) = productDescription.apply {
+            description = editTextDescription.text.toString()
+            feature = editTextFeature.text.toString()
+            isNew = labelSwitchNewCondition.isChecked
+            videoIDs = videoIDsTemp
+        }
+
 
     private fun setResult(){
-        val intent = Intent()
-        intent.putExtra(EXTRA_DESCRIPTION, saveData(productDescription))
-        activity!!.setResult(Activity.RESULT_OK, intent)
-        activity!!.finish()
+        activity?.let {
+            it.setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_DESCRIPTION, saveData(productDescription)) })
+            it.finish()
+        }
     }
 
     private fun goToProductDescriptionPicker(description: String) {

@@ -18,13 +18,15 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
 
     private var productName = ProductName()
     private var isEditable = true
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        productName = activity!!.intent.getParcelableExtra(EXTRA_NAME)?:ProductName()
-        isEditable = activity!!.intent.getBooleanExtra(EXTRA_IS_EDITABLE_NAME, true)
+        activity?.let {
+            productName = it.intent.getParcelableExtra(EXTRA_NAME)?:ProductName()
+            isEditable = it.intent.getBooleanExtra(EXTRA_IS_EDITABLE_NAME, true)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -36,17 +38,16 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
         val productEditNameViewHolder = ProductEditNameViewHolder(view, this)
         productEditNameViewHolder.setName(productName.name)
         productEditNameViewHolder.setEditableName(isEditable)
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            setResult()
-        }
+        texViewMenu?.run{text = getString(R.string.label_save)
+            setOnClickListener {
+                setResult()
+            }}
     }
 
     override fun onNameChanged(productName: ProductName) {
-        if (productName.name.isNotEmpty()) {
-            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.tkpd_main_green))
-        } else {
-            texViewMenu.setTextColor(ContextCompat.getColor(texViewMenu.context, R.color.font_black_secondary_54))
+        texViewMenu?.run {
+            setTextColor(ContextCompat.getColor(context, if (productName.name.isNotEmpty()) R.color.tkpd_main_green
+            else R.color.font_black_secondary_54))
         }
         this.productName = productName
     }
@@ -57,10 +58,10 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
 
     private fun setResult(){
         if(isDataValid()) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_NAME, productName)
-            activity!!.setResult(Activity.RESULT_OK, intent)
-            activity!!.finish()
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {putExtra(EXTRA_NAME, productName) })
+                finish()
+            }
         }
     }
 

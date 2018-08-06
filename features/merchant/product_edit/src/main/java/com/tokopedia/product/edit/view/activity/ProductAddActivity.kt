@@ -37,13 +37,9 @@ import permissions.dispatcher.*
 
 @RuntimePermissions
 open class ProductAddActivity : BaseProductAddEditActivity(), ProductAddImageView {
-    override fun getCancelMessageRes(): Int {
-        return R.string.product_draft_dialog_cancel_message
-    }
+    override fun getCancelMessageRes() =  R.string.product_draft_dialog_cancel_message
 
-    override fun needDeleteCacheOnBack(): Boolean {
-        return true
-    }
+    override fun needDeleteCacheOnBack() = true
 
     var tkpdProgressDialog: TkpdProgressDialog? = null
     private var productAddImagePresenter: ProductAddImagePresenter? = null
@@ -52,7 +48,7 @@ open class ProductAddActivity : BaseProductAddEditActivity(), ProductAddImageVie
     val IMAGE = "image/"
     val IMAGE_OR_VIDEO = "*/"
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val productCatalog = intent.getParcelableExtra<ProductCatalog>(EXTRA_CATALOG)
         val productCategory = intent.getParcelableExtra<ProductCategory>(EXTRA_CATEGORY)
         val productName = intent.getParcelableExtra<ProductName>(EXTRA_NAME)
