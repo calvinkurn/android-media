@@ -1,12 +1,16 @@
 package com.tokopedia.home.account.presentation.fragment;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -16,6 +20,9 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
+
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 
 /**
  * @author okasurya on 7/26/18.
@@ -24,6 +31,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     SeeAllView seeAllView;
+
+    private AccountAnalytics accountAnalytics;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        accountAnalytics = new AccountAnalytics(getActivity());
+    }
 
     protected void openApplink(String applink) {
         if(getContext() != null && !TextUtils.isEmpty(applink)) {
@@ -54,6 +69,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onTokopediaPayLinkClicked() {
         if(getActivity() != null) {
+            sendTracking(PEMBELI,
+                    getString(R.string.title_tkpd_pay_setting),
+                    getString(R.string.label_tokopedia_pay_see_all));
             getActivity().startActivity(new Intent(getContext(), TkpdPaySettingActivity.class));
         }
     }
@@ -103,12 +121,26 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onTokopediaPayItemClicked(String applink) {
+    public void onTokopediaPayItemClicked(String label, String applink) {
+        sendTracking(PEMBELI, getString(R.string.title_tkpd_pay_setting), label);
         openApplink(applink);
     }
 
     @Override
     public void onDepositClicked(ShopCardViewModel element) {
         openApplink(ApplinkConst.DEPOSIT);
+    }
+
+    private void sendTracking(String title, String section, String item) {
+        if (accountAnalytics == null)
+            return;
+
+        if (title == null || section == null || item == null)
+            return;
+
+        accountAnalytics.eventClickAccount(
+                title.toLowerCase(),
+                section.toLowerCase(),
+                item.toLowerCase());
     }
 }

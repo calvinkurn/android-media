@@ -43,5 +43,11 @@ public class AccountConstants {
         static final String AKUN_SAYA = "akun saya";
 
         static final String CLICK = "click";
+
+        public static final String PEMBELI = "pembeli";
+
+        public static final String PENJUAL = "penjual";
+
+
     }
 }
