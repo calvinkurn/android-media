@@ -286,13 +286,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             String shopId = String.valueOf(model.getHeader().getShopId());
                             List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                             list.add(new FeedEnhancedTracking.Promotion(
-                                    model.getHeader().getShopId(),
+                                    Integer.valueOf(model.getFeedId()),
                                     FeedEnhancedTracking.Promotion.createContentNameProductUpload(
                                             model.getTotalProduct()),
                                     String.valueOf(model.getTotalProduct()),
                                     currentPosition,
                                     FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
-                                    Integer.valueOf(model.getFeedId()),
+                                    model.getHeader().getShopId(),
                                     SHOP.replace(SHOP_ID_BRACKETS, shopId)
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(

@@ -184,13 +184,13 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         String shopId = String.valueOf(activityCardViewModel.getHeader().getShopId());
         List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
         list.add(new FeedEnhancedTracking.Promotion(
-                activityCardViewModel.getHeader().getShopId(),
+                Integer.valueOf(activityCardViewModel.getFeedId()),
                 FeedEnhancedTracking.Promotion.createContentNameProductUpload(
                         activityCardViewModel.getTotalProduct()),
                 String.valueOf(activityCardViewModel.getTotalProduct()),
                 this.positionInFeed,
                 "-",
-                Integer.valueOf(activityCardViewModel.getFeedId()),
+                activityCardViewModel.getHeader().getShopId(),
                 SHOP.replace(SHOP_ID_BRACKETS, shopId)
         ));
         TrackingUtils.eventTrackingEnhancedEcommerce(
