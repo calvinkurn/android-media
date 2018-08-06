@@ -20,7 +20,7 @@
         android:layout_marginRight="@dimen/dp_16"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -43,6 +43,7 @@
             android:layout_marginTop="@dimen/dp_24"/>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/add_no_catalog"
             style="@style/TextView.Title.Green"
             android:text="@string/product_label_choose_category_catalog_without_catalog"
             android:layout_marginTop="@dimen/dp_8"
