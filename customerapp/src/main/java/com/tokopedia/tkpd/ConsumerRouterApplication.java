@@ -2589,11 +2589,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getSellerInfoCallingIntent(Context context) {
-        return new Intent(context, SellerInfoActivity.class);
-    }
-
-    @Override
     public String getStringRemoteConfig(String key) {
         return remoteConfig.getString(key, "");
     }
