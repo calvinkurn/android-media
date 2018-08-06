@@ -9,9 +9,10 @@ import android.view.View;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
@@ -25,18 +26,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
-import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.MENUNGGU_KONFIRMASI;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_DIPROSES;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SEDANG_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
+import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
+import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
+import static com.tokopedia.navigation.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
+import static com.tokopedia.navigation.GlobalNavConstant.SELLER_INFO;
+import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.SEDANG_DIKIRIM;
 
 /**
  * Created by meta on 24/07/18.
@@ -48,6 +49,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     private NotificationAdapter adapter;
 
     @Inject NotificationPresenter presenter;
+    @Inject GlobalNavAnalytics globalNavAnalytics;
 
     @Override
     public int resLayout() {
@@ -77,7 +79,17 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getDrawerNotification());
 
+        adapter.setOnItemClickListener((view1, position) -> {
+            if (getActivity().getApplication() instanceof GlobalNavRouter) {
+
+                sendTracking(position, 0);
+                startActivity(((GlobalNavRouter)getActivity().getApplication())
+                        .getSellerInfoCallingIntent(getActivity()));
+            }
+        });
         adapter.setOnNotifClickListener((parent, child) -> {
+
+            sendTracking(parent, child);
             Intent intent = getCallingIntent(parent, child);
             if (intent != null) {
                 startActivity(intent);
@@ -85,6 +97,24 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         });
 
         adapter.addAll(getData());
+    }
+
+    private void sendTracking(int parent, int child) {
+        DrawerNotification parentItem = adapter.getItem(parent);
+        if (parentItem == null)
+            return;
+
+        DrawerNotification.ChildDrawerNotification childItem =
+                parentItem.getChilds().get(child);
+        if (childItem == null)
+            return;
+
+        String section = "";
+        if (parentItem.getTitle() != null)
+            section = parentItem.getTitle();
+
+        globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
+                childItem.getTitle().toLowerCase());
     }
 
     @Override
@@ -234,9 +264,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                     }
                     break;
             }
-        } else {
-            intent = ((GlobalNavRouter)getActivity().getApplication())
-                    .getSellerInfoCallingIntent(getActivity());
         }
         return intent;
     }

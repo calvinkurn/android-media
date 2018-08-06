@@ -3,7 +3,7 @@ package com.tokopedia.navigation.data.mapper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import rx.functions.Func1;
 
@@ -40,7 +40,8 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
         Integer total = 0;
         try {
             total += entity.getSellerInfo().getNotification();
-//            total += entity.getBuyerOrder().getConfirmed(); // TODO: belum dibayar
+            total += entity.getBuyerOrder().getConfirmed();
+            total += entity.getBuyerOrder().getProcessed();
             total += entity.getBuyerOrder().getShipped();
             total += entity.getBuyerOrder().getArriveAtDestination();
             total += entity.getSellerOrder().getNewOrder();

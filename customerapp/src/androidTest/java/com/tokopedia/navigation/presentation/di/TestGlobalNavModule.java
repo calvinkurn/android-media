@@ -5,10 +5,8 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavRouter;
-import com.tokopedia.navigation.data.mapper.DrawerNotificationMapper;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
-import com.tokopedia.navigation.domain.GetNotificationUseCase;
 import com.tokopedia.navigation.presentation.fragment.EmptyFragment;
 
 import javax.inject.Named;
@@ -25,7 +23,6 @@ import static org.mockito.Mockito.mock;
 @Module
 public class TestGlobalNavModule {
 
-    private GetNotificationUseCase getNotificationUseCase;
     private GetDrawerNotificationUseCase getDrawerNotificationUseCase;
 
     @Provides
@@ -34,17 +31,8 @@ public class TestGlobalNavModule {
     }
 
     @Provides
-    GetNotificationUseCase provideGetNotificationUseCase(GraphqlUseCase graphqlUseCase) {
-        return getNotificationUseCase == null ? getNotificationUseCase = mock(GetNotificationUseCase.class) : getNotificationUseCase;
-    }
-
-    @Provides
     GetDrawerNotificationUseCase provideGetDrawerNotificationUseCase(GraphqlUseCase graphqlUseCase) {
         return getDrawerNotificationUseCase == null ? getDrawerNotificationUseCase = mock(GetDrawerNotificationUseCase.class) : getDrawerNotificationUseCase;
-    }
-
-    public GetNotificationUseCase getGetNotificationUseCase() {
-        return getNotificationUseCase;
     }
 
     public GetDrawerNotificationUseCase getGetDrawerNotificationUseCase() {

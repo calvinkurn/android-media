@@ -6,28 +6,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 
 import java.util.List;
 
-import static com.tokopedia.navigation.data.GlobalNavConstant.BUYER;
-import static com.tokopedia.navigation.data.GlobalNavConstant.KOMPLAIN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.MENUNGGU_KONFIRMASI;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PENJUALAN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_BARU;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PESANAN_DIPROSES;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SAMPAI_TUJUAN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SEDANG_DIKIRIM;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SELLER_INFO;
-import static com.tokopedia.navigation.data.GlobalNavConstant.PEMBELIAN;
-import static com.tokopedia.navigation.data.GlobalNavConstant.SIAP_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
+import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
+import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
+import static com.tokopedia.navigation.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.GlobalNavConstant.SEDANG_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
+import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
 
 /**
  * Created by meta on 03/07/18.
@@ -145,7 +143,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                 for (DrawerNotification.ChildDrawerNotification child : childs) {
                     if (item.getId() == PEMBELIAN) {
                         if (child.getId() == MENUNGGU_KONFIRMASI) {
-                            child.setBadge(0);
+                            child.setBadge(data.getBuyerOrder().getConfirmed());
                         } else if (child.getId() == PESANAN_DIPROSES) {
                             child.setBadge(data.getBuyerOrder().getProcessed());
                         } else if (child.getId() == SEDANG_DIKIRIM) {

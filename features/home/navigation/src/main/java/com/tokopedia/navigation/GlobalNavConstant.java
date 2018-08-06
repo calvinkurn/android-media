@@ -1,9 +1,29 @@
-package com.tokopedia.navigation.data;
+package com.tokopedia.navigation;
 
 /**
  * Created by meta on 25/07/18.
  */
 public class GlobalNavConstant {
+
+    public class Analytics {
+
+        static final String CLICK_HOMEPAGE = "clickHomePage";
+
+        static final String HOME_PAGE = "homepage";
+
+        public static final String BOTTOM = "bottom";
+
+        static final String NAV = "nav";
+
+        static final String CLICK = "click";
+
+        static final String PAGE = "page";
+
+        static final String INBOX = "inbox";
+
+        static final String NOTIFICATION = "notification";
+
+    }
 
     public static final String QUERY = "Query";
     

@@ -1,6 +1,6 @@
 package com.tokopedia.navigation.presentation.view;
 
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 
 /**
  * Created by meta on 25/07/18.

@@ -4,19 +4,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.listener.NotificationListener;
+import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -24,28 +18,25 @@ import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
-import com.tokopedia.navigation.presentation.base.BaseParentFragment;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
 import q.rorbin.badgeview.QBadgeView;
-import dagger.Component;
 
 /**
  * Created by meta on 19/06/18.
  */
-public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter>  implements
+public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
         InboxView, NotificationListener {
 
     public static final int CHAT_MENU = 0;
@@ -53,17 +44,23 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int REVIEW_MENU = 2;
     public static final int HELP_MENU = 3;
 
+    @Inject
+    InboxPresenter presenter;
+
+    @Inject
+    GlobalNavAnalytics globalNavAnalytics;
+
+    private List<Inbox> inboxes;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private InboxAdapter adapter;
+    private ImageButton menuItemNotification;
+    private TextView toolbarTitle;
+    private QBadgeView badgeView;
+
     public static InboxFragment newInstance() {
         return new InboxFragment();
     }
-
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    @Inject InboxPresenter presenter;
-    private InboxAdapter adapter;
-
-    private ImageButton menuItemNotification;
-    private TextView toolbarTitle;
 
     @Override
     public int resLayout() {
@@ -75,6 +72,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.intiInjector();
         presenter.setView(this);
 
+        inboxes = getData();
+
         adapter = new InboxAdapter(getActivity());
 
         swipeRefreshLayout = view.findViewById(R.id.swipe);
@@ -84,12 +83,25 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
-        adapter.addAll(getData());
+        adapter.addAll(inboxes);
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
+            Inbox inbox = inboxes.get(position);
+            if (inbox == null)
+                return;
+
+            globalNavAnalytics.eventInboxPage(inbox.getTitle().toString().toLowerCase());
             getCallingIntent(position);
         });
+    }
+
+    private void intiInjector() {
+        DaggerGlobalNavComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .globalNavModule(new GlobalNavModule())
+                .build()
+                .inject(this);
     }
 
     private List<Inbox> getData() {
@@ -101,21 +113,13 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         return inboxList;
     }
 
-    private void intiInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
-                .inject(this);
-    }
-
     private void getCallingIntent(int position) {
         switch (position) {
             case CHAT_MENU:
                 RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
                 break;
             case DISCUSSION_MENU:
-//                RouteManager.route(getActivity(), ApplinkConst.TALK);
+                //RouteManager.route(getActivity(), ApplinkConst.TALK);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTalkCallingIntent(getActivity()));
@@ -125,7 +129,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-//                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
+                //RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTicketCallingIntent(getActivity()));
@@ -156,7 +160,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         super.setupToolbar(view);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         menuItemNotification = toolbar.findViewById(R.id.action_notification);
-        menuItemNotification.setOnClickListener(v -> startActivity(NotificationActivity.start(getActivity())));
+        menuItemNotification.setOnClickListener(v ->
+                startActivity(NotificationActivity.start(getActivity())));
     }
 
     @Override
@@ -191,8 +196,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         return getString(R.string.inbox);
     }
 
-    private QBadgeView badgeView;
-
     @Override
     public void onNotifyBadgeNotification(int number) {
         if (menuItemNotification == null)
@@ -204,11 +207,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         badgeView.bindTarget(menuItemNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
-      
-    @Override
-    public void reInitInjector(GlobalNavComponent component) {
-
     }
+
+    @Override
+    public void reInitInjector(GlobalNavComponent component) { }
 
     @Override
     public InboxPresenter getPresenter() {
@@ -216,7 +218,5 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void setPresenter(GlobalNavComponent presenter) {
-
-    }
+    public void setPresenter(GlobalNavComponent presenter) { }
 }
