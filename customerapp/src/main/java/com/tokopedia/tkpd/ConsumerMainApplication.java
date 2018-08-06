@@ -32,6 +32,7 @@ import com.tokopedia.analytics.Analytics;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -44,6 +45,7 @@ import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
@@ -125,6 +127,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initSendbird();
         createCustomSoundNotificationChannel();
         Hansel.init(this);
+        GraphqlClient.init(getApplicationContext());
+        NetworkClient.init(getApplicationContext());
     }
 
     private void createCustomSoundNotificationChannel() {
