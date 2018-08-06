@@ -35,8 +35,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_margin="18dp"
-                android:src="@drawable/info_icon" />
+                android:padding="18dp"
+                android:src="@drawable/ic_info_dark" />
 
         </RelativeLayout>
 
