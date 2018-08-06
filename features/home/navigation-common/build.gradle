@@ -13,4 +13,7 @@ buildscript {
 }
 
 dependencies {
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 }
