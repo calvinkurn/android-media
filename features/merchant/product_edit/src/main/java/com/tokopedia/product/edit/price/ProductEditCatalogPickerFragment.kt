@@ -83,7 +83,10 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
             setOnClickListener { setResult() }
         }
 
-        add_no_catalog.setOnClickListener { activity?.finish() }
+        add_no_catalog.setOnClickListener {
+            choosenCatalog = ProductCatalog()
+            setResult()
+        }
     }
 
     override fun getEndlessLayoutManagerListener() = EndlessLayoutManagerListener { recycler_view.layoutManager }
