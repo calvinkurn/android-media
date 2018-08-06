@@ -33,19 +33,19 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: ProductEditCategoryPresenter
 
-    private val appRouter : Context by lazy { activity?.application as Context }
+    private val appRouter : Context? by lazy { activity?.application as? Context }
 
     private lateinit var productCategoryRecommendationAdapter: ProductCategoryRecommendationAdapter
 
     override fun getScreenName(): String? = null
 
-    private var productName: String = ""
     private var isCategoryLocked: Boolean = false
 
+    var name: String = ""
     var productCatalog = ProductCatalog()
     var productCategory = ProductCategory()
 
-    val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         arguments?.run {
             productCategory = getParcelable(EXTRA_CATEGORY)?: ProductCategory()
             productCatalog = getParcelable(EXTRA_CATALOG)?:ProductCatalog()
-            productName = getString(EXTRA_NAME, "")
+            name = getString(EXTRA_NAME, "")
             isCategoryLocked = getBoolean(EXTRA_CATEGORY_LOCKED)
         }
     }
@@ -71,10 +71,10 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         recyclerView.isNestedScrollingEnabled = false
         labelCatalog.setOnClickListener { onLabelCatalogClicked() }
         labelCategory.setOnClickListener { onLabelCategoryClicked() }
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            setResult()
-        }
+        texViewMenu?.run {  text = getString(R.string.label_save)
+            setOnClickListener {
+                setResult()
+            }}
         if(isCategoryLocked){
             titleCategoryRecommendation.visibility = View.GONE
             recyclerView.visibility = View.GONE
@@ -85,9 +85,9 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             titleCategoryRecommendation.visibility = View.VISIBLE
             recyclerView.visibility = View.VISIBLE
             labelNotFindCategory.visibility = View.VISIBLE
-            presenter.getCategoryRecommendation(productName)
+            presenter.getCategoryRecommendation(name)
             if(productCategory.categoryId > 0) {
-                presenter.fetchCatalogData(productName, productCategory.categoryId.toLong(), 0, 1)
+                presenter.fetchCatalogData(name, productCategory.categoryId.toLong(), 0, 1)
             }
         }
     }
@@ -104,7 +104,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             val alert = builder.create()
             alert.show()
         } else {
-            if (appRouter is ProductEditModuleRouter){
+            if (appRouter != null && appRouter is ProductEditModuleRouter){
                 startActivityForResult((appRouter as ProductEditModuleRouter)
                         .getCategoryPickerIntent(activity, productCategory.categoryId)
                         , REQUEST_CODE_GET_CATEGORY)
@@ -115,30 +115,31 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     private fun onLabelCatalogClicked() {
         context?.run {
             startActivityForResult(ProductEditCatalogPickerActivity
-                    .createIntent(this, productName, productCategory.categoryId.toLong(), productCatalog),
+                    .createIntent(this, name, productCategory.categoryId.toLong(), productCatalog),
                     REQUEST_CODE_GET_CATALOG)
         }
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
         if(this.productCategory.categoryId != productCategory.categoryId) {
-            presenter.fetchCatalogData(productName, productCategory.categoryId.toLong(), 0, 1)
+            presenter.fetchCatalogData(name, productCategory.categoryId.toLong(), 0, 1)
         }
         this.productCategory = productCategory
+        presenter.categoryId = productCategory.categoryId.toLong()
         setCategoryChosen(productCategory)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
-                    productCatalog = data!!.getParcelableExtra(EXTRA_CATALOG)
+                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
                     setCatalogChosen(productCatalog)
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
-                    val newCategoryId = data!!.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()
+                    val newCategoryId = data.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()
                     if(productCategory.categoryId != newCategoryId){
-                        presenter.fetchCatalogData(productName, newCategoryId.toLong(), 0, 1)
+                        presenter.fetchCatalogData(name, newCategoryId.toLong(), 0, 1)
                     }
                     productCategory.categoryId = newCategoryId
                     presenter.fetchCategory(productCategory.categoryId.toLong())
@@ -149,11 +150,13 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     }
 
     private fun setResult(){
-        val intent = Intent()
-        intent.putExtra(EXTRA_CATALOG, productCatalog)
-        intent.putExtra(EXTRA_CATEGORY, productCategory)
-        activity!!.setResult(Activity.RESULT_OK, intent)
-        activity!!.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_CATALOG, productCatalog)
+                putExtra(EXTRA_CATEGORY, productCategory)
+            })
+            finish()
+        }
     }
 
     companion object {
@@ -188,21 +191,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     }
 
     override fun populateCategory(strings: List<String>) {
-        var category = ""
-        var i = 0
-        val sizei = strings.size
-        while (i < sizei) {
-            val categoryName = strings.get(i)
-            if (TextUtils.isEmpty(categoryName)) {
-                i++
-                continue
-            }
-            category += categoryName
-            if (i < sizei - 1) {
-                category += "/"
-            }
-            i++
-        }
+        val category = strings.filter { !TextUtils.isEmpty(it) }.joinToString(separator = " / ")
         setCategoryChosen(ProductCategory(categoryName = category))
     }
 
@@ -216,16 +205,25 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     fun setCatalogChosen(productCatalog: ProductCatalog){
         if(!TextUtils.isEmpty(productCatalog.catalogName)) {
             labelCatalog.setContent(productCatalog.catalogName)
+        } else {
+            labelCatalog.setContent(getString(R.string.label_choose))
         }
     }
 
     private fun renderRecommendation(categories: List<ProductCategoryPredictionViewModel>){
+        resetCategoryCatalog()
         productCategoryRecommendationAdapter.replaceData(categories.map {ProductCategory().apply {
             categoryId = it.lastCategoryId
             categoryName = it.printedString
         }})
         setCatalogChosen(productCatalog)
         setCategoryChosen(productCategory)
+    }
+
+    private fun resetCategoryCatalog(){
+        productCategoryRecommendationAdapter.selectedPosition = -1
+        productCatalog = ProductCatalog()
+        productCategory = ProductCategory()
     }
 
     private fun setVisibilityCatalog(isVisible: Boolean) {

@@ -12,6 +12,7 @@ import com.tokopedia.product.edit.constant.ProductExtraConstant
 import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
 import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
+import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.edit.price.model.ProductName
@@ -59,6 +60,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         categoryCatalogSection.visibility = if (productName.name.isNotEmpty()) View.VISIBLE else View.GONE
         this.productName = productName
         presenter.onProductNameChange(productName.name)
+        name = productName.name
         validateData()
     }
 

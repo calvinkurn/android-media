@@ -11,13 +11,9 @@ import com.tokopedia.product.edit.view.fragment.ProductEditFragment.Companion.ED
 
 class ProductDuplicateActivity : BaseProductAddEditActivity() {
 
-    override fun getCancelMessageRes(): Int {
-        return R.string.product_draft_dialog_cancel_message
-    }
+    override fun getCancelMessageRes() = R.string.product_draft_dialog_cancel_message
 
-    override fun needDeleteCacheOnBack(): Boolean {
-        return true
-    }
+    override fun needDeleteCacheOnBack() = true
 
     override fun getNewFragment(): Fragment {
         val productId = intent.getStringExtra(EDIT_PRODUCT_ID)
@@ -37,10 +33,8 @@ class ProductDuplicateActivity : BaseProductAddEditActivity() {
 
     companion object {
 
-        fun createInstance(context: Context, productId: String): Intent {
-            val intent = Intent(context, ProductDuplicateActivity::class.java)
-            intent.putExtra(EDIT_PRODUCT_ID, productId)
-            return intent
-        }
+        fun createInstance(context: Context, productId: String) = Intent(context, ProductDuplicateActivity::class.java).apply {
+                putExtra(EDIT_PRODUCT_ID, productId)
+            }
     }
 }

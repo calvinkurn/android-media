@@ -44,22 +44,12 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         super.onCreate(savedInstanceState)
         supportActionBar?.title =""
     }
+  
+    override fun getComponent() = (application as ProductEditModuleRouter).productComponent
 
-    override fun getComponent(): ProductComponent {
-        return (application as ProductEditModuleRouter).productComponent
-    }
+    override fun getNewFragment(): Fragment = ProductAddNameCategoryFragment.createInstance()
 
-    override fun getNewFragment(): Fragment{
-        return ProductAddNameCategoryFragment.createInstance(imageUrls)
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_product_edit_with_menu
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
+    override fun getLayoutRes() =  R.layout.activity_product_edit_with_menu
 
     protected fun createProductAddFragment() {
         if (fragment != null) {
