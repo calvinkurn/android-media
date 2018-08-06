@@ -63,7 +63,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onBuyerVoucherClicked(BuyerCardViewModel element) {
-        openApplink(ApplinkConst.COUPON);
+        openApplink(ApplinkConst.COUPON_LISTING);
     }
 
     @Override
