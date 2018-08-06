@@ -224,8 +224,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return titles;
     }
 
-//    @RestrictTo(RestrictTo.Scope.TESTS)
-//    public Fragment getFragment(int index){ return ((FragmentAdapter)viewPager.getAdapter()).getItem(index); }
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public Fragment getFragment(int index){ return getSupportFragmentManager().findFragmentById(R.id.container); }
 
     @Override
     public void renderNotification(Notification notification) {
