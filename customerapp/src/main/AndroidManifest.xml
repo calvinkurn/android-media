@@ -22,6 +22,8 @@
         android:name="android.permission.WRITE_CONTACTS"
         tools:node="remove"/>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
@@ -294,6 +296,18 @@
         <activity
             android:name=".home.ReactNativeBrandListOsActivity"
             android:screenOrientation="portrait" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.tokopedia.tkpd.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
 
     </application>
