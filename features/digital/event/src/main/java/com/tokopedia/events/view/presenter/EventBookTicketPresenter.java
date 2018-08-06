@@ -315,7 +315,7 @@ public class EventBookTicketPresenter
     }
 
     private void scrollToLastIfNeeded() {
-        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 2) {
+        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 1) {
             mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
             if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
                 mChildFragment.scrollToLast();
