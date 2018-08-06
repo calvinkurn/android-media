@@ -353,8 +353,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    protected void renderCourier(ShipmentCartItemModel shipmentCartItemModel, ShipmentDetailData shipmentDetailData,
-                                 RecipientAddressModel recipientAddressModel) {
+    private void renderCourier(ShipmentCartItemModel shipmentCartItemModel, ShipmentDetailData shipmentDetailData,
+                               RecipientAddressModel recipientAddressModel) {
         chooseCourierButton.setOnClickListener(getSelectShippingOptionListener(getAdapterPosition(),
                 shipmentCartItemModel, recipientAddressModel));
         tvChangeCourier.setOnClickListener(getSelectShippingOptionListener(getAdapterPosition(),
@@ -395,6 +395,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             llSelectedCourier.setVisibility(View.GONE);
             llShipmentOptionViewLayout.setVisibility(View.VISIBLE);
         }
+
+    }
+
+    private void renderCourierRecommendation() {
 
     }
 

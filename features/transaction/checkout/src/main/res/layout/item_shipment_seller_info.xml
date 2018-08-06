@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/tv_text_sent_by"
+        style="@style/TextSmallMediumBlack38"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_5"
+        android:text="@string/label_seller" />
+
+    <TextView
+        android:id="@+id/tv_shop_name"
+        style="@style/TextSmallMediumBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_toEndOf="@id/tv_text_sent_by"
+        android:layout_toRightOf="@id/tv_text_sent_by"
+        android:lineSpacingExtra="5sp"
+        tools:text="Adidas" />
+
+    <ImageView
+        android:id="@+id/img_shop_badge"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_toRightOf="@+id/tv_shop_name"
+        tools:src="@drawable/ic_badge_official" />
+
+</RelativeLayout>
