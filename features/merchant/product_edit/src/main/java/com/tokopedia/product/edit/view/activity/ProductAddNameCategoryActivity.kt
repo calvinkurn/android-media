@@ -10,19 +10,9 @@ import com.tokopedia.product.edit.price.ProductAddNameCategoryFragment
 import com.tokopedia.product.edit.util.ProductEditModuleRouter
 
 class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<ProductComponent>{
-    override fun getComponent(): ProductComponent {
-        return (application as ProductEditModuleRouter).productComponent
-    }
+    override fun getComponent() = (application as ProductEditModuleRouter).productComponent
 
-    override fun getNewFragment(): Fragment{
-        return ProductAddNameCategoryFragment.createInstance()
-    }
+    override fun getNewFragment(): Fragment = ProductAddNameCategoryFragment.createInstance()
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_product_edit_with_menu
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
+    override fun getLayoutRes() =  R.layout.activity_product_edit_with_menu
 }

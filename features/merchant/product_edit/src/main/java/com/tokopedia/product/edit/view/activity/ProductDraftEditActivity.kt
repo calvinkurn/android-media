@@ -14,12 +14,9 @@ class ProductDraftEditActivity : ProductDraftAddActivity() {
     }
 
     companion object {
-
-        fun createInstance(context: Context, draftProductId: Long): Intent {
-            val intent = Intent(context, ProductDraftEditActivity::class.java)
-            intent.putExtra(DRAFT_PRODUCT_ID, draftProductId)
-            return intent
-        }
+        fun createInstance(context: Context, draftProductId: Long) = Intent(context, ProductDraftEditActivity::class.java).apply {
+                putExtra(DRAFT_PRODUCT_ID, draftProductId)
+            }
     }
 
 }

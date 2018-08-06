@@ -21,15 +21,7 @@ class ProductEditWeightLogisticActivity : BaseSimpleActivity(){
         }
     }
 
-    override fun getNewFragment(): Fragment{
-        return ProductEditWeightLogisticFragment.createInstance()
-    }
+    override fun getNewFragment(): Fragment = ProductEditWeightLogisticFragment.createInstance()
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_product_edit_with_menu
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
+    override fun getLayoutRes() = R.layout.activity_product_edit_with_menu
 }
