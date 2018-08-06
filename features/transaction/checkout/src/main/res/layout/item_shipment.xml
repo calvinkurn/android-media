@@ -35,6 +35,10 @@
         tools:visibility="visible" />
 
     <include
+        layout="@layout/item_shipment_shipping_options"
+        tools:visibility="visible" />
+
+    <include
         layout="@layout/item_shipment_subtotal"
         tools:visibility="visible" />
 

@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_shipment_recommendation_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_select_shipment_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8">
+
+        <TextView
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:text="Durasi Pengiriman" />
+
+        <TextView
+            android:id="@+id/tv_choose_duration"
+            style="@style/TextSmallMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/green_button_rounded_unify"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="@dimen/dp_9"
+            android:paddingLeft="@dimen/dp_27"
+            android:paddingRight="@dimen/dp_27"
+            android:paddingTop="@dimen/dp_9"
+            android:text="Pilih"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey_300" />
 
 </LinearLayout>
