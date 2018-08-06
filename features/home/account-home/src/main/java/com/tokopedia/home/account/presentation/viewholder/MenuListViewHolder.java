@@ -15,7 +15,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_general_setting;
+    public static final int LAYOUT = R.layout.item_label_view;
 
     private View layout;
     private LabelView labelView;

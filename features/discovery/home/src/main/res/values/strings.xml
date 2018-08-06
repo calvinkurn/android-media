@@ -36,4 +36,10 @@
     <string name="home_header_tokopoint_new_label">Baru</string>
     <string name="cek_recomendasi">Cek Rekomendasi</string>
     <string name="hampir_habis">Hampir Habis</string>
+
+    <string name="sc_notif_title">Notifikasi tersimpan rapi</string>
+    <string name="sc_notif_desc">Tak ada yang terlewat, semua notifikasi ada di sini. </string>
+    
+    <string name="sc_wishlist_title">Cek Wishlist sangat mudah</string>
+    <string name="sc_wishlist_desc">Produk Wishlist tersimpan di sini. Siap dipindahkan ke keranjang belanja kapan pun.</string>
 </resources>

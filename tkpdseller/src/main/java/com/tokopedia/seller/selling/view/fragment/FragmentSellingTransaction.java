@@ -79,11 +79,11 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     private Dialog editRefDialog;
     private TkpdProgressDialog progressDialog;
     private DatePickerV2 datePicker;
-    private EditText startDate;
-    private EditText endDate;
-    private SearchView searchTxt;
-    private Spinner spinnerFilter;
-    private TextView searchbtn;
+    protected EditText startDate;
+    protected EditText endDate;
+    protected SearchView searchTxt;
+    protected Spinner spinnerFilter;
+    protected TextView searchbtn;
     private View filterView;
     private BottomSheetDialog bottomSheetDialog;
     protected boolean inhibit_spinner = true;

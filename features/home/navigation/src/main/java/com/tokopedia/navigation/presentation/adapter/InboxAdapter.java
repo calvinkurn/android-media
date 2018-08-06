@@ -10,7 +10,7 @@ import com.tokopedia.navigation.R;
 
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
-import com.tokopedia.navigation_common.NotificationsModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 
 
 /**

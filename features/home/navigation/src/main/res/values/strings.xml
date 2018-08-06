@@ -1,5 +1,12 @@
 <resources>
+    <string name="home">Home</string>
+    <string name="feed">Feed</string>
     <string name="inbox">Inbox</string>
+    <string name="keranjang">Keranjang</string>
+    <string name="akun">Akun</string>
+
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+
 
     <string name="chat">Chat</string>
     <string name="chat_desc">Percakapan pribadi Anda</string>
@@ -33,4 +40,9 @@
     <string name="sebagai_pembeli">Sebagai Pembeli</string>
     <string name="sebagai_penjual">Sebagai Penjual</string>
 
+    <string name="title_showcase">Tampilan simpel, navigasi mudah!</string>
+    <string name="desc_showcase">Menu Tokopedia kini tampil lebih rapi. Jelajahi dan buktikan kemudahan navigasinya!</string>
+
+    <string name="previous">Sebelumnya</string>
+    <string name="next">Selanjutnya</string>
 </resources>
