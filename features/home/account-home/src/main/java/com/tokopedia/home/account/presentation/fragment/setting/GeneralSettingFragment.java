@@ -154,10 +154,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 goToPlaystore();
                 break;
             case SettingConstant.SETTING_HELP_CENTER_ID:
-                Application application = getActivity().getApplication();
-                if (application instanceof AccountHomeRouter){
-                    ((AccountHomeRouter) application).goToHelpCenter(getActivity());
-                }
+                RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
                 break;
             case SettingConstant.SETTING_OUT_ID:
                 showDialogLogout();
