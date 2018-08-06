@@ -19,23 +19,16 @@ class ProductEditNameViewHolder(var view: View, listener: Listener){
 
     init {
         nameTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    view.textInputLayoutName.error = null
-                } else {
-                    view.textInputLayoutName.error = view.context.getString(R.string.product_error_product_name_empty)
-                }
+                view.textInputLayoutName.error = if (s.isNotEmpty()) null else view.context.getString(R.string.product_error_product_name_empty)
+
                 productName.name = view.editTextName.text.toString()
                 listener.onNameChanged(productName)
             }
 
-            override fun afterTextChanged(s: Editable?) {
-
-            }
+            override fun afterTextChanged(s: Editable?) {}
         }
         view.editTextName.addTextChangedListener(nameTextWatcher)
     }

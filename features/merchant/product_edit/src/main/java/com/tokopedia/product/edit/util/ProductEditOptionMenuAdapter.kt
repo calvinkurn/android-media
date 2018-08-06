@@ -39,9 +39,7 @@ class ProductEditOptionMenuAdapter(mode: Int, private val optionMenus: List<Prod
                 selectedId = position
                 notifyDataSetChanged()
             }
-            if (onMenuItemSelected != null) {
-                onMenuItemSelected?.onItemSelected(optionMenu.id)
-            }
+            onMenuItemSelected?.onItemSelected(optionMenu.id)
         })
     }
 

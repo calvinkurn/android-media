@@ -21,14 +21,14 @@ class ProductEditStockFragment : Fragment() {
 
     private var productStock = ProductStock()
 
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
-    private val hasVariant by lazy { activity!!.intent.getBooleanExtra(EXTRA_HAS_VARIANT, false) }
-    private val isAddStatus by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_STATUS_ADD, false) }
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
+    private val hasVariant by lazy { activity?.intent?.getBooleanExtra(EXTRA_HAS_VARIANT, false) ?: false }
+    private val isAddStatus by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_STATUS_ADD, false) ?: false }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        productStock = activity!!.intent.getParcelableExtra(EXTRA_STOCK)
+        activity?.let { productStock = it.intent.getParcelableExtra(EXTRA_STOCK) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -53,15 +53,15 @@ class ProductEditStockFragment : Fragment() {
             setVisibleStockTextInputLayout()
         }
 
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            if(isTotalStockValid()){
-                setResult()
-            } else {
-                decimalInputViewStock.requestFocus()
-                UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS)
-            }
-        }
+        texViewMenu?.run {  text = getString(R.string.label_save)
+            setOnClickListener {
+                if(isTotalStockValid()){
+                    setResult()
+                } else {
+                    decimalInputViewStock.requestFocus()
+                    UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS)
+                }
+            }}
 
         decimalInputViewStock.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
@@ -72,13 +72,9 @@ class ProductEditStockFragment : Fragment() {
         })
     }
 
-    private fun String.removeCommaToInt(): Int{
-        return toString().replace(",", "").toInt()
-    }
+    private fun String.removeCommaToInt() = toString().replace(",", "").toInt()
 
-    private fun getTotalStock(): Int{
-        return decimalInputViewStock.text.toString().replace(",", "").toInt()
-    }
+    private fun getTotalStock() = decimalInputViewStock.text.toString().replace(",", "").toInt()
 
     private fun isTotalStockValid(): Boolean {
         if(labelRadioButtonStockLimited.isChecked) {
@@ -127,25 +123,24 @@ class ProductEditStockFragment : Fragment() {
         }
     }
 
-    private fun saveData(productStock: ProductStock): ProductStock{
-        productStock.isActive = !labelRadioButtonStockEmpty.isChecked
-        if(labelRadioButtonStockLimited.isChecked) {
-            if(getTotalStock() > 0)
-                productStock.stockCount = getTotalStock()
-            else
-                decimalInputViewStock.setError("Jumlah Stok harus lebih dari 0, atau pilih Stock Kosong")
-        } else {
-            productStock.stockCount = 0
+    private fun saveData(productStock: ProductStock) = productStock.apply {
+            isActive = !labelRadioButtonStockEmpty.isChecked
+            if(labelRadioButtonStockLimited.isChecked) {
+                if(getTotalStock() > 0)
+                    stockCount = getTotalStock()
+                else
+                    decimalInputViewStock.setError("Jumlah Stok harus lebih dari 0, atau pilih Stock Kosong")
+            } else {
+                stockCount = 0
+            }
+            sku = editTextSku.text.toString()
         }
-        productStock.sku = editTextSku.text.toString()
-        return productStock
-    }
 
     private fun setResult(){
-        val intent = Intent()
-        intent.putExtra(EXTRA_STOCK, saveData(productStock))
-        activity!!.setResult(Activity.RESULT_OK, intent)
-        activity!!.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_STOCK, saveData(productStock)) })
+            finish()
+        }
     }
 
     companion object {

@@ -30,13 +30,13 @@ class ProductEditWeightLogisticFragment : Fragment() {
     @ProductEditPreOrderTimeType
     private var selectedPreOrderTimeType: Int = ProductEditPreOrderTimeType.DAY
 
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
-    private val isFreeReturn by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_FREE_RETURN, false) }
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
+    private val isFreeReturn by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_FREE_RETURN, false) ?: false }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        productLogistic = activity!!.intent.getParcelableExtra(EXTRA_LOGISTIC)
+        activity?.let { productLogistic = it.intent.getParcelableExtra(EXTRA_LOGISTIC) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -46,12 +46,8 @@ class ProductEditWeightLogisticFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDataLogistic(productLogistic)
-        spinnerCounterInputViewWeight.spinnerTextView.editText.setOnClickListener({
-            showBottomSheetsWeight()
-        })
-        spinnerCounterInputViewProcessTime.spinnerTextView.editText.setOnClickListener({
-            showBottomSheetsPreOrder()
-        })
+        spinnerCounterInputViewWeight.spinnerTextView.editText.setOnClickListener({ showBottomSheetsWeight() })
+        spinnerCounterInputViewProcessTime.spinnerTextView.editText.setOnClickListener({ showBottomSheetsPreOrder() })
 
         spinnerCounterInputViewWeight.addTextChangedListener(object : NumberTextWatcher(spinnerCounterInputViewWeight.counterEditText, getString(R.string.product_default_counter_text)) {
             override fun onNumberChanged(number: Double) {
@@ -73,27 +69,24 @@ class ProductEditWeightLogisticFragment : Fragment() {
             compoundButton: CompoundButton, b: Boolean -> populatePreorder()
         })
 
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            when {
-                !isWeightValid() -> {
-                    spinnerCounterInputViewWeight.requestFocus()
-                    UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
+        texViewMenu?.run {  text = getString(R.string.label_save)
+            setOnClickListener {
+                when {
+                    !isWeightValid() -> {
+                        spinnerCounterInputViewWeight.requestFocus()
+                        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
+                    }
+                    !isPreOrderValid() -> {
+                        spinnerCounterInputViewProcessTime.requestFocus()
+                        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER)
+                    }
+                    else -> setResult()
                 }
-                !isPreOrderValid() -> {
-                    spinnerCounterInputViewProcessTime.requestFocus()
-                    UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER)
-                }
-                else -> setResult()
-            }
-        }
+            }}
     }
 
     private fun populatePreorder() {
-        if (labelSwitchPreOrder.isChecked)
-            layoutProcessTime.visibility = View.VISIBLE
-        else
-            layoutProcessTime.visibility = View.GONE
+        layoutProcessTime.visibility = if(labelSwitchPreOrder.isChecked) View.VISIBLE else View.GONE
     }
 
     private fun setDataLogistic(productLogistic: ProductLogistic){
@@ -123,16 +116,12 @@ class ProductEditWeightLogisticFragment : Fragment() {
         spinnerCounterInputViewProcessTime.counterEditText.setText(productLogistic.processTime.toString())
     }
 
-    private fun getWeight(): Double{
-        return spinnerCounterInputViewWeight.counterValue
-    }
+    private fun getWeight() = spinnerCounterInputViewWeight.counterValue
 
-    private fun getPreOrder(): Double{
-        return spinnerCounterInputViewProcessTime.counterValue
-    }
+    private fun getPreOrder() = spinnerCounterInputViewProcessTime.counterValue
 
     private fun isWeightValid(): Boolean {
-        var minWeight = MIN_WEIGHT
+        val minWeight = MIN_WEIGHT
         var maxWeight = MAX_WEIGHT_GRAM
         if (selectedWeightType == ProductEditWeightType.KILOGRAM) {
             maxWeight = MAX_WEIGHT_KG
@@ -147,7 +136,7 @@ class ProductEditWeightLogisticFragment : Fragment() {
 
     private fun isPreOrderValid(): Boolean {
         if(labelSwitchPreOrder.isChecked){
-            var minPreOrder = MIN_PRE_ORDER
+            val minPreOrder = MIN_PRE_ORDER
             var maxPreOrder = MAX_PRE_ORDER_DAY
             if (selectedPreOrderTimeType == ProductEditPreOrderTimeType.WEEK) {
                 maxPreOrder = MAX_PRE_ORDER_WEEK
@@ -161,19 +150,16 @@ class ProductEditWeightLogisticFragment : Fragment() {
         return true
     }
 
-    private fun String.removeCommaToInt(): Int{
-        return toString().replace(",", "").toInt()
-    }
+    private fun String.removeCommaToInt() = toString().replace(",", "").toInt()
 
-    private fun getPreOrderTimeTypeTitle(type: Int): String {
-        var resString = -1
+    private fun getPreOrderTimeTypeTitle(type: Int) = getString(
         when (type) {
-            ProductEditPreOrderTimeType.DAY -> resString = R.string.product_label_day
-            ProductEditPreOrderTimeType.WEEK -> resString = R.string.product_label_week
-            ProductEditPreOrderTimeType.MONTH -> resString = R.string.product_label_month
-        }
-        return getString(resString)
-    }
+            ProductEditPreOrderTimeType.DAY ->  R.string.product_label_day
+            ProductEditPreOrderTimeType.WEEK ->  R.string.product_label_week
+            ProductEditPreOrderTimeType.MONTH ->  R.string.product_label_month
+            else -> -1
+        })
+
 
     private fun showBottomSheetsWeight() {
         val checkedBottomSheetMenu = ProductEditOptionMenuBottomSheets()
@@ -227,27 +213,27 @@ class ProductEditWeightLogisticFragment : Fragment() {
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }
 
-    private fun saveData(productLogistic: ProductLogistic): ProductLogistic{
-        productLogistic.weightType = selectedWeightType
-        productLogistic.weight = getWeight().toInt()
-        productLogistic.insurance = labelCheckboxInsurance.isChecked
-        productLogistic.freeReturn = labelCheckboxFreeReturn.isChecked
-        productLogistic.preOrder = labelSwitchPreOrder.isChecked
-        if(labelSwitchPreOrder.isChecked){
-            productLogistic.processTimeType = selectedPreOrderTimeType
-            productLogistic.processTime = getPreOrder().toInt()
-        } else {
-            productLogistic.processTimeType = ProductEditPreOrderTimeType.DAY
-            productLogistic.processTime = 0
+    private fun saveData(productLogistic: ProductLogistic) =  productLogistic.apply {
+            weightType = selectedWeightType
+            weight = getWeight().toInt()
+            insurance = labelCheckboxInsurance.isChecked
+            freeReturn = labelCheckboxFreeReturn.isChecked
+            preOrder = labelSwitchPreOrder.isChecked
+            if(labelSwitchPreOrder.isChecked){
+                processTimeType = selectedPreOrderTimeType
+                processTime = getPreOrder().toInt()
+            } else {
+                processTimeType = ProductEditPreOrderTimeType.DAY
+                processTime = 0
+            }
         }
-        return productLogistic
-    }
+
 
     private fun setResult(){
-        val intent = Intent()
-        intent.putExtra(EXTRA_LOGISTIC, saveData(productLogistic))
-        activity!!.setResult(Activity.RESULT_OK, intent)
-        activity!!.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_LOGISTIC, saveData(productLogistic)) })
+            finish()
+        }
     }
 
     companion object {
@@ -260,14 +246,12 @@ class ProductEditWeightLogisticFragment : Fragment() {
         const val MAX_PRE_ORDER_DAY = "90"
         const val MAX_PRE_ORDER_WEEK = "13"
 
-        fun getWeightTypeTitle(type: Int): Int {
-            var resString = -1
+        fun getWeightTypeTitle(type: Int) =
             when (type) {
-                ProductEditWeightType.GRAM -> resString = R.string.product_label_gram
-                ProductEditWeightType.KILOGRAM -> resString = R.string.product_label_kilogram
+                ProductEditWeightType.GRAM ->  R.string.product_label_gram
+                ProductEditWeightType.KILOGRAM ->  R.string.product_label_kilogram
+                else -> -1
             }
-            return resString
-        }
 
         fun createInstance() = ProductEditWeightLogisticFragment()
     }

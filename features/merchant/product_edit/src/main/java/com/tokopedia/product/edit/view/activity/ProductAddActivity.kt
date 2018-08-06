@@ -18,13 +18,9 @@ import com.tokopedia.product.edit.view.presenter.ProductAddImageView
 import permissions.dispatcher.*
 
 open class ProductAddActivity : BaseProductAddEditActivity(){
-    override fun getCancelMessageRes(): Int {
-        return R.string.product_draft_dialog_cancel_message
-    }
+    override fun getCancelMessageRes() =  R.string.product_draft_dialog_cancel_message
 
-    override fun needDeleteCacheOnBack(): Boolean {
-        return true
-    }
+    override fun needDeleteCacheOnBack() = true
 
     override fun getNewFragment(): Fragment? {
         val productCatalog = intent.getParcelableExtra<ProductCatalog>(EXTRA_CATALOG)

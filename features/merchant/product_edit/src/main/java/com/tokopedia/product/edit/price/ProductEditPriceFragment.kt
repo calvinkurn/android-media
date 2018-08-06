@@ -39,15 +39,15 @@ import kotlinx.android.synthetic.main.fragment_product_edit_price.*
 
 class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFragment.OnProductChangeVariantPriceFragmentListener {
 
-    private val texViewMenu: TextView by lazy { activity!!.findViewById(R.id.texViewMenu) as TextView }
+    private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
 
     @CurrencyTypeDef
     private var selectedCurrencyType: Int = CurrencyTypeDef.TYPE_IDR
 
     private var productPrice = ProductPrice()
-    private val isOfficialStore by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false) }
-    private val hasVariant by lazy { activity!!.intent.getBooleanExtra(EXTRA_HAS_VARIANT, false) }
-    private val isGoldMerchant by lazy { activity!!.intent.getBooleanExtra(EXTRA_IS_GOLD_MERCHANT, false) }
+    private val isOfficialStore by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false) ?: false }
+    private val hasVariant by lazy { activity?.intent?.getBooleanExtra(EXTRA_HAS_VARIANT, false) ?: false }
+    private val isGoldMerchant by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_GOLD_MERCHANT, false) ?: false}
 
     private var wholesalePrice: ArrayList<ProductWholesaleViewModel> = ArrayList()
 
@@ -57,9 +57,9 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if(activity!!.intent.hasExtra(EXTRA_PRICE)) {
-            productPrice = activity!!.intent.getParcelableExtra(EXTRA_PRICE)
-        }
+        activity?.run { if(intent.hasExtra(EXTRA_PRICE)) {
+            productPrice = intent.getParcelableExtra(EXTRA_PRICE)
+        } }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -79,12 +79,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             }
         }
         showDataPrice(productPrice)
-        texViewMenu.text = getString(R.string.label_save)
-        texViewMenu.setOnClickListener {
-            if(isDataValid()){
-                setResult(false)
-            }
-        }
+        texViewMenu?.run {  text = getString(R.string.label_save)
+            setOnClickListener {
+                if(isDataValid()){
+                    setResult(false)
+                }
+            }}
 
         spinnerCounterInputViewPrice.spinnerTextView.editText.setOnClickListener({
             showBottomSheetsCurrency()
@@ -106,23 +106,22 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             }
         })
 
-        textAddMaksimumBuy.setOnClickListener({
-            showOrderMaxForm()
-        })
+        textAddMaksimumBuy.setOnClickListener{showOrderMaxForm()}
 
-        imageViewEdit.setOnClickListener {
-            showEditPriceDialog()
-        }
+        imageViewEdit.setOnClickListener {showEditPriceDialog()}
 
         labelViewWholesale.setOnClickListener {
-            startActivityForResult(ProductAddWholesaleActivity.getIntent(context, wholesalePrice, selectedCurrencyType, spinnerCounterInputViewPrice.counterEditText.text.toString().replace(",", "").toDouble(), true, true), REQUEST_CODE_GET_WHOLESALE) }
+            startActivityForResult(ProductAddWholesaleActivity
+                    .getIntent(context, wholesalePrice, selectedCurrencyType, spinnerCounterInputViewPrice
+                            .counterEditText.text.toString().replace(",", "").toDouble(),
+                            true, true), REQUEST_CODE_GET_WHOLESALE) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_WHOLESALE -> {
-                    wholesalePrice = data!!.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE)
+                    wholesalePrice = data.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE)
                     setEditTextPriceState(wholesalePrice)
                     setLabelViewWholesale(wholesalePrice)
                 }
@@ -144,6 +143,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         setLabelViewWholesale(wholesalePrice)
         if(productPrice.minOrder > 0)
             editTextMinOrder.text = productPrice.minOrder.toString()
+        else
+            editTextMinOrder.text = MIN_ORDER
         editTextMaxOrder.text = productPrice.maxOrder.toString()
         if(productPrice.maxOrder > 0) {
             editTextMaxOrder.text = productPrice.maxOrder.toString()
@@ -151,21 +152,13 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
-    private fun getPriceValue(): Double{
-        return spinnerCounterInputViewPrice.counterValue
-    }
+    private fun getPriceValue() = spinnerCounterInputViewPrice.counterValue
 
-    private fun getMinOrderValue(): Int{
-        return editTextMinOrder.text.removeCommaToInt()
-    }
+    private fun getMinOrderValue() = editTextMinOrder.text.removeCommaToInt()
 
-    private fun getMaxOrderValue(): Int{
-        return editTextMaxOrder.text.removeCommaToInt()
-    }
+    private fun getMaxOrderValue() = editTextMaxOrder.text.removeCommaToInt()
 
-    private fun String.removeCommaToInt(): Int{
-        return toString().replace(",", "").toInt()
-    }
+    private fun String.removeCommaToInt() = toString().replace(",", "").toInt()
 
     private fun isPriceValid(): Boolean {
         if (!ProductPriceRangeUtils.isPriceValid(getPriceValue(), selectedCurrencyType, isOfficialStore) || getPriceValue() == DEFAULT_PRICE) {
@@ -204,14 +197,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         return true
     }
 
-    private fun getCurrencyTypeTitle(type: Int): String {
-        var resString = -1
-        when (type) {
-            CurrencyTypeDef.TYPE_IDR -> resString = R.string.product_label_rupiah
-            CurrencyTypeDef.TYPE_USD -> resString = R.string.product_label_usd
-        }
-        return getString(resString)
-    }
+    private fun getCurrencyTypeTitle(type: Int) =  getString(
+            when (type) {
+                CurrencyTypeDef.TYPE_IDR -> R.string.product_label_rupiah
+                CurrencyTypeDef.TYPE_USD -> R.string.product_label_usd
+                else -> -1
+            })
 
     private fun showBottomSheetsCurrency() {
         val checkedBottomSheetMenu = ProductEditOptionMenuBottomSheets()
@@ -316,11 +307,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     }
 
     private fun setLabelViewWholesale(wholesaleList: ArrayList<ProductWholesaleViewModel>){
-        if (wholesaleList.size == 0) {
-            labelViewWholesale.setContent(getString(R.string.label_add))
-        } else {
-            labelViewWholesale.setContent(getString(R.string.product_count_wholesale, wholesaleList.size))
-        }
+        labelViewWholesale.setContent(if (wholesaleList.size == 0) getString(R.string.label_add) else getString(R.string.product_count_wholesale, wholesaleList.size))
     }
 
     private fun setEditTextPriceState(wholesaleList: ArrayList<ProductWholesaleViewModel>){
@@ -334,20 +321,16 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun setEnablePriceForm(isEnabled : Boolean){
         spinnerCounterInputViewPrice.isEnabled = isEnabled
-        if(isEnabled)
-            imageViewEdit.visibility = View.GONE
-        else
-            imageViewEdit.visibility = View.VISIBLE
+        imageViewEdit.visibility = if(isEnabled) View.GONE else View.VISIBLE
     }
 
-    private fun saveData(productPrice: ProductPrice): ProductPrice{
-        productPrice.currencyType = selectedCurrencyType
-        productPrice.price = getPriceValue()
-        productPrice.wholesalePrice = wholesalePrice
-        productPrice.minOrder = getMinOrderValue()
-        productPrice.maxOrder = getMaxOrderValue()
-        return productPrice
-    }
+    private fun saveData(productPrice: ProductPrice) = productPrice.apply {
+            currencyType = selectedCurrencyType
+            price = getPriceValue()
+            wholesalePrice = wholesalePrice
+            minOrder = getMinOrderValue()
+            maxOrder = getMaxOrderValue()
+        }
 
     private fun isDataValid(): Boolean{
         if(!isPriceValid()){
@@ -364,11 +347,13 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     }
 
     private fun setResult(isMoveToGm: Boolean){
-        val intent = Intent()
-        intent.putExtra(EXTRA_PRICE, saveData(productPrice))
-        intent.putExtra(EXTRA_IS_MOVE_TO_GM, isMoveToGm)
-        activity!!.setResult(Activity.RESULT_OK, intent)
-        activity!!.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_PRICE, saveData(productPrice))
+                putExtra(EXTRA_IS_MOVE_TO_GM, isMoveToGm)
+            })
+            finish()
+        }
     }
 
     companion object {
