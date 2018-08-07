@@ -284,3 +284,5 @@
 
 #Branch.io settings
 -keep class com.google.android.gms.ads.identifier.** { *; }
+
+
