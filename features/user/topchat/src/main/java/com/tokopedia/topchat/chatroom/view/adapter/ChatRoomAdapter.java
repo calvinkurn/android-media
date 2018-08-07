@@ -171,7 +171,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 if(next != null &&
                         now != null &&
                         compareHour(nextItemTime,myTime) &&
-                        (compareSender(now,next) || !isSender)) {
+                        (compareSender(now,next))) {
                     ((BaseChatViewModel) list.get(position)).setShowTime(false);
                 }
                 else {
@@ -203,27 +203,23 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return (calCurrent/MINUTES == calBefore/MINUTES);
     }
 
-    private boolean compareSender(BaseChatViewModel source, BaseChatViewModel dest){
+    private boolean compareSender(BaseChatViewModel current, BaseChatViewModel compare){
 
-        if(source == null || dest == null ) return false;
+        if(current == null || compare == null ) return false;
 
-        boolean sourceSender = false;
-        boolean destSender = false;
-        if(source instanceof SendableViewModel){
-            sourceSender = ((SendableViewModel) source).isSender();
+        boolean currentIsSender = false;
+        boolean compareIsSender = false;
+        if(current instanceof SendableViewModel && compare instanceof SendableViewModel){
+            currentIsSender = ((SendableViewModel) current).isSender();
+            compareIsSender = ((SendableViewModel) compare).isSender();
+            if(!currentIsSender) return currentIsSender == compareIsSender;
         }
 
-        if(dest instanceof SendableViewModel){
-            destSender = ((SendableViewModel) dest).isSender();
-        }
-
-        if(sourceSender != destSender) return false;
-
-        if(source.getFromRole() == null || dest.getFromRole() == null) {
+        if(current.getFromRole() == null || compare.getFromRole() == null) {
             return false;
         }
         else {
-            return source.getFromRole().equals(dest.getFromRole());
+            return current.getFromRole().equals(compare.getFromRole());
         }
     }
 
