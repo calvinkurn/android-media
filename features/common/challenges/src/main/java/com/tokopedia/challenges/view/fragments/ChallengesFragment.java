@@ -8,27 +8,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.domain.usecase.GetChallengesUseCase;
+import com.tokopedia.challenges.view.presenter.ChallengeHomePresenter;
+import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
+
+import javax.inject.Inject;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChallengesFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChallengesFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by ashwanityagi on 06/08/18.
  */
-public class ChallengesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class ChallengesFragment extends BaseDaggerFragment implements ChallengesBaseContract.View {
+
+    @Inject
+    public ChallengeHomePresenter challengeHomePresenter;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+  //  private OnFragmentInteractionListener mListener;
 
     public ChallengesFragment() {
         // Required empty public constructor
@@ -62,34 +65,47 @@ public class ChallengesFragment extends Fragment {
     }
 
     @Override
+    protected void initInjector() {
+        getComponent(ChallengesComponent.class).inject(this);
+        challengeHomePresenter.attachView(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_challenges, container, false);
+        View view =inflater.inflate(R.layout.fragment_challenges, container, false);
+        challengeHomePresenter.getOpenChallenges();
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction(uri);
+//        }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+       //mListener = null;
     }
 
     /**

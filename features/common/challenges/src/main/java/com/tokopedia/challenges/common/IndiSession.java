@@ -3,6 +3,11 @@ package com.tokopedia.challenges.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+
+import javax.inject.Inject;
+
 /**
  * @author vishal.gupta 06/08/2018
  */
@@ -14,7 +19,8 @@ public class IndiSession {
 
     private Context context;
 
-    public IndiSession(Context context) {
+    @Inject
+    public IndiSession(@ApplicationContext Context context) {
         this.context = context;
     }
 
