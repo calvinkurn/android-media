@@ -84,9 +84,6 @@ import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
-//import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.product.edit.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
@@ -661,29 +658,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, messageTAG + "onResume");
-        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-            @Override
-            public void onSuccess(ArrayList<String> imageUrls) {
-                startActivity(ProductAddNameCategoryActivity.Companion.createInstance(ParentIndexHome.this, imageUrls));
-            }
-
-            @Override
-            public void onSuccess(String path) {
-                ArrayList<String> imageUrls = new ArrayList<>();
-                imageUrls.add(path);
-                startActivity(ProductAddNameCategoryActivity.Companion.createInstance(ParentIndexHome.this, imageUrls));
-            }
-
-            @Override
-            public void onFailed(String message) {
-                Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public Context getContext() {
-                return ParentIndexHome.this;
-            }
-        }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
