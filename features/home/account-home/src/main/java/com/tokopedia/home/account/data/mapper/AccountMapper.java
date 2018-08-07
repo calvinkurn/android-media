@@ -173,7 +173,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
-                AccountConstants.KEY_SEE_ALL,
+                AccountConstants.Navigation.SEE_ALL,
                 0
         );
         menuGridItems.add(gridItem);
@@ -199,7 +199,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_favorite_shops));
         menuList.setMenuDescription(context.getString(R.string.label_menu_favorite_shops));
-        menuList.setApplink(ApplinkConst.FAVORITE_SHOPS);
+        menuList.setApplink(ApplinkConst.FAVORITE);
         items.add(menuList);
 
         menuList = new MenuListViewModel();
@@ -322,7 +322,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_topads));
         menuList.setMenuDescription(context.getString(R.string.label_menu_topads));
-        menuList.setApplink(AccountConstants.NAVIGATION_KEY_TOPADS);
+        menuList.setApplink(AccountConstants.Navigation.TOPADS);
         items.add(menuList);
 
         menuList = new MenuListViewModel();

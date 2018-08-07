@@ -79,10 +79,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuGridItemClicked(MenuGridItemViewModel item) {
-        if (TextUtils.equals(item.getApplink(), AccountConstants.KEY_SEE_ALL)){
+        if (TextUtils.equals(item.getApplink(), AccountConstants.Navigation.SEE_ALL)){
             seeAllView = new SeeAllView();
             seeAllView.setListener(this);
             seeAllView.show(getActivity().getSupportFragmentManager(), "Tes");
+        } else if(TextUtils.equals(item.getApplink(), AccountConstants.Navigation.TRAIN_ORDER_LIST)) {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                ((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent(getContext());
+            }
         }
         openApplink(item.getApplink());
     }
@@ -99,7 +103,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
-        if(item.getApplink().equals(AccountConstants.NAVIGATION_KEY_TOPADS)) {
+        if(item.getApplink().equals(AccountConstants.Navigation.TOPADS)) {
             if(getContext().getApplicationContext() instanceof AccountHomeRouter){
                 ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
             }
