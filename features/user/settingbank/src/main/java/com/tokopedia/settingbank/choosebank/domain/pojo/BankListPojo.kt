@@ -1,5 +1,4 @@
 package com.tokopedia.settingbank.choosebank.domain.pojo
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
