@@ -8,18 +8,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.domain.usecase.GetChallengesUseCase;
+import com.tokopedia.challenges.view.presenter.ChallengeHomePresenter;
+
+import javax.inject.Inject;
 
 /**
  * Created by ashwanityagi on 06/08/18.
  */
-public class ChallengesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class ChallengesFragment extends BaseDaggerFragment {
+
+    @Inject
+    public ChallengeHomePresenter challengeHomePresenter;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -57,6 +63,12 @@ public class ChallengesFragment extends Fragment {
     }
 
     @Override
+    protected void initInjector() {
+        getComponent(ChallengesComponent.class).inject(this);
+        challengeHomePresenter.attachView(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -69,6 +81,11 @@ public class ChallengesFragment extends Fragment {
 //        if (mListener != null) {
 //            mListener.onFragmentInteraction(uri);
 //        }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
