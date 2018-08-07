@@ -59,7 +59,6 @@ public class TestCartListModule {
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                                                 ResetCartUseCase resetCartUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -68,7 +67,7 @@ public class TestCartListModule {
         return new CartListPresenter(
                 getGetCartListUseCase(), deleteCartUseCase,
                 deleteCartGetCartListUseCase, updateCartUseCase,
-                resetCartGetCartListUseCase, resetCartUseCase,
+                resetCartGetCartListUseCase,
                 checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
         );
@@ -81,9 +80,7 @@ public class TestCartListModule {
     @Provides
     @CartListScope
     RecyclerView.ItemDecoration provideCartItemDecoration(Context context) {
-        return new CartItemDecoration(
-                (int) context.getResources().getDimension(R.dimen.dp_4),
-                false, 0);
+        return new CartItemDecoration();
     }
 
     @Provides

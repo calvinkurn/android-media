@@ -89,7 +89,7 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         this(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase, updateCartUseCase,
-                resetCartGetCartListUseCase, resetCartUseCase, checkPromoCodeCartListUseCase,
+                resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase);
         this.view = cartListView;
     }
@@ -100,7 +100,6 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                              DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                             ResetCartUseCase resetCartUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
