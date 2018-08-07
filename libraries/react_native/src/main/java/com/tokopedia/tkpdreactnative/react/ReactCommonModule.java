@@ -13,6 +13,7 @@ import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.tkpdreactnative.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
         shareIntent.setType("image/*");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
-            Intent chooserIntent = Intent.createChooser(shareIntent, "Open With");
+            Intent chooserIntent = Intent.createChooser(shareIntent, context.getString(R.string.share_dialog_title));
             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(chooserIntent);
         } catch (Exception ex) {
