@@ -37,16 +37,6 @@
     <string name="train_select_passenger_toolbar_title">Pilih Penumpang</string>
     <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
 
-    <string name="train_calender_label_day_name_sunday">Min</string>
-    <string name="train_calender_label_day_name_monday">Min</string>
-    <string name="train_calender_label_day_name_tuesday">Min</string>
-    <string name="train_calender_label_day_name_wednesday">Min</string>
-    <string name="train_calender_label_day_name_thursday">Min</string>
-    <string name="train_calender_label_day_name_friday">Min</string>
-    <string name="train_calender_label_day_name_saturday">Min</string>
-    <string name="train_calendar_label_choose_departure_trip_date">Pilih Tanggal Pergi</string>
-    <string name="train_calendar_label_choose_return_trip_date">Pilih Tanggal Pulang</string>
-
     <!-- search -->
     <string name="train_search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
     <string name="train_search_reset_button">Ganti Pencarian</string>
