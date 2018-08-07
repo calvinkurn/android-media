@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -36,7 +35,7 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
     public ExploreImageAdapter(@ApplicationContext Context context) {
         this.list = new ArrayList<>();
         this.loadingMoreModel = new LoadingMoreModel();
-        this.emptyModel = new EmptyResultViewModel();
+        this.emptyModel = new EmptyModel();
         this.emptyModel.setIconRes(com.tokopedia.design.R.drawable.ic_empty_search);
         this.emptyModel.setContent(context.getString(R.string.explore_empty_result));
     }
