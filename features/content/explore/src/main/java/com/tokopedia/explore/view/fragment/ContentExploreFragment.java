@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -153,6 +154,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
                     return IMAGE_SPAN_SINGLE;
                 } else if (imageAdapter.getList().get(position) instanceof LoadingMoreModel) {
                     return IMAGE_SPAN_COUNT;
+                } else if (imageAdapter.getList().get(position) instanceof EmptyModel) {
+                    return IMAGE_SPAN_COUNT;
                 }
                 return 0;
             }
@@ -275,6 +278,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void showEmpty() {
+        imageAdapter.showEmpty();
     }
 
     @Override

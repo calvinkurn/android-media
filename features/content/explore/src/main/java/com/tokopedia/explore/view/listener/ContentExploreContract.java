@@ -36,6 +36,8 @@ public interface ContentExploreContract {
 
         void dismissLoading();
 
+        void showEmpty();
+
         void goToKolPostDetail(KolPostViewModel kolPostViewModel);
 
         void dropKeyboard();
