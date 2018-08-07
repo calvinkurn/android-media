@@ -60,18 +60,18 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     }
 
     @Override
-    public void likeKol(int id, int rowNumber, KolPostListener.View kolListener) {
+    public void likeKol(int id, int rowNumber, KolPostListener.View.Like likeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                new LikeKolPostSubscriber(getView(), rowNumber)
+                new LikeKolPostSubscriber(likeListener, rowNumber)
         );
     }
 
     @Override
-    public void unlikeKol(int id, int rowNumber, KolPostListener.View kolListener) {
+    public void unlikeKol(int id, int rowNumber, KolPostListener.View.Like likeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                new LikeKolPostSubscriber(getView(), rowNumber)
+                new LikeKolPostSubscriber(likeListener, rowNumber)
         );
     }
 }

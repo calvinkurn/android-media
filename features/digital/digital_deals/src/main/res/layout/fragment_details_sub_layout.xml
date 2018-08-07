@@ -121,125 +121,137 @@
         app:layout_constraintVertical_bias="0.5"
         tools:text="Berlaku hingga tanggal 1 Juni 2018" />
 
-    <View
-        android:id="@+id/divider2"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_outlets"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/divider_color"
-        app:layout_constraintTop_toBottomOf="@+id/iv_clock" />
-
-    <TextView
-        android:id="@+id/tv_popular"
-        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/redeem_locations"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_clock">
 
-    <TextView
-        android:id="@+id/tv_number_of_locations"
-        style="@style/TextView.Medium.FontMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:textColor="@color/black_38"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
-        app:layout_constraintLeft_toRightOf="@+id/tv_popular"
-        app:layout_constraintTop_toTopOf="@+id/tv_popular"
-        app:layout_constraintVertical_bias="0.5"
-        tools:text="(25)" />
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/divider_color" />
 
-    <TextView
-        android:id="@+id/tv_see_all_locations"
-        style="@style/TextView.Micro.Green"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lineSpacingExtra="6sp"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:text="@string/see_all_locations"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_number_of_locations"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_number_of_locations" />
+        <TextView
+            android:id="@+id/tv_popular"
+            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/redeem_locations"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
-    <LinearLayout
-        android:id="@+id/ll_brand"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/background_brand_logo"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_popular">
+        <TextView
+            android:id="@+id/tv_number_of_locations"
+            style="@style/TextView.Medium.FontMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:textColor="@color/black_38"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
+            app:layout_constraintLeft_toRightOf="@+id/tv_popular"
+            app:layout_constraintTop_toTopOf="@+id/tv_popular"
+            app:layout_constraintVertical_bias="0.5"
+            tools:text="(25)" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_image_view"
-            android:layout_width="@dimen/image_width_brand"
-            android:layout_height="@dimen/image_width_brand"
-            android:layout_margin="@dimen/border_width"
-            app:cardCornerRadius="@dimen/dp_8"
-            app:cardElevation="0dp">
+        <TextView
+            android:id="@+id/tv_see_all_locations"
+            style="@style/TextView.Micro.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="6sp"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:text="@string/see_all_locations"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_number_of_locations"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_number_of_locations" />
 
-            <ImageView
-                android:id="@+id/image_view_brand"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitCenter"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/background_brand_logo"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_popular">
 
-    <TextView
-        android:id="@+id/tv_brand_name"
-        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        app:layout_constraintLeft_toRightOf="@+id/ll_brand"
-        app:layout_constraintTop_toTopOf="@+id/ll_brand"
-        tools:text="Bakerzin" />
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_image_view"
+                android:layout_width="@dimen/image_width_brand"
+                android:layout_height="@dimen/image_width_brand"
+                android:layout_margin="@dimen/border_width"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardElevation="0dp">
 
-    <TextView
-        android:id="@+id/tv_brand_venue"
-        style="@style/TextView.Micro.FontMedium.BlackPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_brand_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
-        tools:text="PIK Avenue - Food Hall" />
+                <ImageView
+                    android:id="@+id/image_view_brand"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_brand_address"
-        style="@style/TextView.Micro"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:maxLines="2"
-        android:textColor="@color/black_38"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_brand_venue"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_brand_venue"
-        tools:text="PIK Avenue Ground Floor - B16, Jl. Pantai Indah Kapuk Boulevard, Kapuk Muara" />
+        <TextView
+            android:id="@+id/tv_brand_name"
+            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            app:layout_constraintLeft_toRightOf="@+id/ll_brand"
+            app:layout_constraintTop_toTopOf="@+id/ll_brand"
+            tools:text="Bakerzin" />
+
+        <TextView
+            android:id="@+id/tv_brand_venue"
+            style="@style/TextView.Micro.FontMedium.BlackPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_brand_name"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
+            tools:text="PIK Avenue - Food Hall" />
+
+        <TextView
+            android:id="@+id/tv_brand_address"
+            style="@style/TextView.Micro"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_2"
+            android:maxLines="2"
+            android:textColor="@color/black_38"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_brand_venue"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_brand_venue"
+            tools:text="PIK Avenue Ground Floor - B16, Jl. Pantai Indah Kapuk Boulevard, Kapuk Muara" />
 
 
-    <TextView
-        android:id="@+id/tv_view_map"
-        style="@style/TextView.Micro.FontMedium.Green"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:drawablePadding="@dimen/dp_8"
-        android:text="@string/see_on_map"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_brand_address"
-        app:layout_constraintTop_toBottomOf="@+id/tv_brand_address" />
+        <TextView
+            android:id="@+id/tv_view_map"
+            style="@style/TextView.Micro.FontMedium.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:drawablePadding="@dimen/dp_8"
+            android:text="@string/see_on_map"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_brand_address"
+            app:layout_constraintTop_toBottomOf="@+id/tv_brand_address" />
+
+    </android.support.constraint.ConstraintLayout>
 
 
     <View
@@ -248,137 +260,147 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/tv_view_map" />
+        app:layout_constraintTop_toBottomOf="@+id/cl_outlets" />
 
 
-    <TextView
-        android:id="@+id/tv_description"
-        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_description"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/show_description"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
-
-    <com.tokopedia.digital_deals.view.customview.ExpandableTextView
-        android:id="@+id/tv_expandable_description"
-        style="@style/TextView.Small"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:textColor="@color/expandable_text_color"
-        app:animation_duration="300"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_description"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_description"
-        tools:text="@string/bigcontent" />
-
-    <LinearLayout
-        android:id="@+id/expand_view_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_description"
-        app:layout_constraintTop_toBottomOf="@+id/tv_expandable_description">
+        app:layout_constraintTop_toBottomOf="@+id/divider3">
 
         <TextView
-            android:id="@+id/seemorebutton_description"
-            style="@style/TextView.Micro.Green"
+            android:id="@+id/tv_description"
+            style="@style/TextView.Medium.FontMedium.BlackPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/expand" />
-
-        <ImageView
-            android:id="@+id/down_arrow_description"
-            android:layout_width="@dimen/dp_8"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/sp_12"
-            android:tint="@color/green_250"
-            app:srcCompat="@drawable/ic_arrow_down" />
-    </LinearLayout>
-
-
-    <View
-        android:id="@+id/divider4"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/expand_view_description" />
-
-
-    <TextView
-        android:id="@+id/tv_tnc"
-        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/show_tnc"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider4" />
-
-    <com.tokopedia.digital_deals.view.customview.ExpandableTextView
-        android:id="@+id/tv_expandable_tnc"
-        style="@style/TextView.Small"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:text="@string/bigcontent"
-        android:textColor="@color/expandable_text_color"
-        app:animation_duration="300"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_tnc" />
-
-    <LinearLayout
-        android:id="@+id/expand_view_tnc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
-        app:layout_constraintTop_toBottomOf="@+id/tv_expandable_tnc">
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/show_description"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/seemorebutton_tnc"
-            style="@style/TextView.Micro.Green"
+            android:id="@+id/tv_expandable_description"
+            style="@style/TextView.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="10"
+            android:textColor="@color/expandable_text_color"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_description"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_description"
+            tools:text="@string/bigcontent" />
+
+        <LinearLayout
+            android:id="@+id/expand_view_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/expand" />
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_description"
+            app:layout_constraintTop_toBottomOf="@+id/tv_expandable_description">
 
-        <ImageView
-            android:id="@+id/down_arrow_tnc"
-            android:layout_width="@dimen/dp_8"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/sp_12"
-            android:tint="@color/green_250"
-            app:srcCompat="@drawable/ic_arrow_down" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/seemorebutton_description"
+                style="@style/TextView.Micro.Green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/expand" />
+
+            <ImageView
+                android:id="@+id/down_arrow_description"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/sp_12"
+                android:tint="@color/green_250"
+                app:srcCompat="@drawable/ic_arrow_down" />
+        </LinearLayout>
 
 
-    <View
-        android:id="@+id/divider5"
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/grey_300"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@+id/expand_view_description" />
+    </android.support.constraint.ConstraintLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_tnc"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/expand_view_tnc" />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/cl_description">
+
+        <TextView
+            android:id="@+id/tv_tnc"
+            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/show_tnc"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_expandable_tnc"
+            style="@style/TextView.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="10"
+            android:textColor="@color/expandable_text_color"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_tnc"
+            tools:text="@string/bigcontent" />
+
+        <LinearLayout
+            android:id="@+id/expand_view_tnc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
+            app:layout_constraintTop_toBottomOf="@+id/tv_expandable_tnc">
+
+            <TextView
+                android:id="@+id/seemorebutton_tnc"
+                style="@style/TextView.Micro.Green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/expand" />
+
+            <ImageView
+                android:id="@+id/down_arrow_tnc"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/sp_12"
+                android:tint="@color/green_250"
+                app:srcCompat="@drawable/ic_arrow_down" />
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/grey_300"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@+id/expand_view_tnc" />
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_redeem_instructions"
@@ -386,7 +408,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
 
-        app:layout_constraintTop_toBottomOf="@+id/divider5">
+        app:layout_constraintTop_toBottomOf="@+id/cl_tnc">
 
         <ImageView
             android:id="@+id/iv_how_to_redeem"

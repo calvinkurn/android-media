@@ -164,10 +164,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/et_notes_for_seller"
+            android:layout_below="@id/v_notes_separator"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="0sp"
-            android:visibility="gone"
             tools:text="60/140" />
 
     </RelativeLayout>

@@ -4,7 +4,7 @@
     android:id="@+id/rl_shipment_recipient_address_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shadow">
+    android:background="@drawable/bg_checkout_shadow">
 
     <RelativeLayout
         android:id="@+id/rl_image_address_container"

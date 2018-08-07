@@ -38,7 +38,8 @@ import javax.inject.Inject;
 
 public class KolPostFragment extends BaseDaggerFragment implements
         KolPostListener.View,
-        KolPostListener.View.ViewHolder {
+        KolPostListener.View.ViewHolder,
+        KolPostListener.View.Like {
 
     public static final String PARAM_IS_LIKED = "is_liked";
     public static final String PARAM_TOTAL_LIKES = "total_likes";

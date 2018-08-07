@@ -49,6 +49,7 @@ import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 
 import java.util.ArrayList;
@@ -346,8 +347,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 sendAnalyticsOnInputPhoneClicked();
             return false;
         });
-
-
 
 
         saveButton.setOnClickListener(view -> {
@@ -714,6 +713,21 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            return ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
+        }
+        return super.getScreenName();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        sendAnalyticsScreenName(getScreenName());
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {
@@ -1097,5 +1111,11 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
             else
                 checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsScreenName(String screenName) {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
     }
 }
