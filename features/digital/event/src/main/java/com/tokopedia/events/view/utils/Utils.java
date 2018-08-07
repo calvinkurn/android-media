@@ -232,8 +232,7 @@ public class Utils {
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
         Date date = new Date(epochTime);
-        String dateString = sdf.format(date);
-        return dateString;
+        return sdf.format(date);
     }
 
     public void setTopEvents(List<CategoryItemsViewModel> topEvents) {
@@ -325,11 +324,8 @@ public class Utils {
     public static class Constants {
         public final static String EXTRA_EVENT_CALENDAR = "EVENTCALENDAR";
         public final static String THEMEPARK = "hiburan";
-        public final static String TOP = "top";
-        public final static String EXTRA_SECTION = "extra_section";
         public final static String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
         public final static String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-        public final static String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
         public final static String TOP_EVENTS = "TOP EVENTS";
         public final static String CHECKOUTDATA = "checkoutdata";
         public final static String PRODUCTID = "product_id";
@@ -341,5 +337,12 @@ public class Utils {
         public static final int SELECT_TICKET_REQUEST = 1902;
         public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
         public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
+        static String PROMOCODE = "promocode";
+        static String PROMOCODE_DISCOUNT = "promocode_discount";
+        static String PROMO_CASHBACK = "promocode_cashback";
+        static String PROMO_FAILURE = "promocode_failure_message";
+        static String PROMO_SUCCESS = "promocode_success_message";
+        static String PROMO_STATUS = "promocode_status";
+        public static String EVENT_OMS = "event_oms_android";
     }
 }

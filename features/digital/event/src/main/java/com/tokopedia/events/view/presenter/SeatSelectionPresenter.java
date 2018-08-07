@@ -214,7 +214,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                     Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
                     reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
                     reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
-                    getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                    getView().navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
 
                 }
 
@@ -339,7 +339,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
     private boolean isEventOmsEnabled() {
-        return remoteConfig.getBoolean("event_oms_android", false);
+        return remoteConfig.getBoolean(Utils.Constants.EVENT_OMS, false);
     }
 
 }

@@ -24,12 +24,12 @@ public class VerifyCartWrapper {
             @Override
             public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
                 TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
-                resultMap.put("promocode", verifyCartResponse.getCart().getPromocode());
-                resultMap.put("promocode_discount", verifyCartResponse.getCart().getPromocodeDiscount());
-                resultMap.put("promocode_cashback", verifyCartResponse.getCart().getPromocodeCashback());
-                resultMap.put("promocode_failure_message", verifyCartResponse.getCart().getPromocodeFailureMessage());
-                resultMap.put("promocode_success_message", verifyCartResponse.getCart().getPromocodeSuccessMessage());
-                resultMap.put("promocode_status", verifyCartResponse.getCart().getPromocodeStatus());
+                resultMap.put(Utils.Constants.PROMOCODE, verifyCartResponse.getCart().getPromocode());
+                resultMap.put(Utils.Constants.PROMOCODE_DISCOUNT, verifyCartResponse.getCart().getPromocodeDiscount());
+                resultMap.put(Utils.Constants.PROMO_CASHBACK, verifyCartResponse.getCart().getPromocodeCashback());
+                resultMap.put(Utils.Constants.PROMO_FAILURE, verifyCartResponse.getCart().getPromocodeFailureMessage());
+                resultMap.put(Utils.Constants.PROMO_SUCCESS, verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                resultMap.put(Utils.Constants.PROMO_STATUS, verifyCartResponse.getCart().getPromocodeStatus());
                 return resultMap;
             }
         });

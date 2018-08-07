@@ -650,7 +650,7 @@ public class EventReviewTicketPresenter
     }
 
     private boolean isEventOmsEnabled() {
-        return remoteConfig.getBoolean("event_oms_android", false);
+        return remoteConfig.getBoolean(Utils.Constants.EVENT_OMS, false);
     }
 
 

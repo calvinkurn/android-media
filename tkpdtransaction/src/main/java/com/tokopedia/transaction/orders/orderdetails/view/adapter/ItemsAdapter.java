@@ -177,7 +177,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         }
 
-        public void bindData(final Items item, int itemType) {
+        void bindData(final Items item, int itemType) {
 
             MetaDataInfo metaDataInfo = null;
 
@@ -203,8 +203,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                         validDate.setText(" " .concat(metaDataInfo.getEndDate()));
-                        validDate.setVisibility(View.VISIBLE);
-                        tvValidTill.setVisibility(View.VISIBLE);
                         llValid.setVisibility(View.VISIBLE);
                     } else {
                         llValid.setVisibility(View.GONE);
