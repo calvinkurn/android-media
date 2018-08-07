@@ -17,5 +17,6 @@ public class ChallengesUrl {
     public interface PRIVATE {
         String ME = "private/me";
         String OPEN_CHALLENGES = "private/" + CHANNEL_ID + "/challenges/open?start=0&size=50";
+        String PAST_CHALLENGES = "private/" + CHANNEL_ID + "/challenges/closed?start=0&size=50";
     }
 }

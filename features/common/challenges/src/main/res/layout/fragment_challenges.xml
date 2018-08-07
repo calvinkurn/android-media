@@ -26,7 +26,7 @@
             android:text="Active Challenges" />
 
         <TextView
-            android:id="@+id/tv_post_challenges"
+            android:id="@+id/tv_past_challenges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_15"
