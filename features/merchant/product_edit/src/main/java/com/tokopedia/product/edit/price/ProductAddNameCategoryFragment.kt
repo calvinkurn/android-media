@@ -105,7 +105,11 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
 
     private fun goToNext(){
         if(isDataValid()){
-            startActivityForResult(AddProductImagePickerBuilder.createPickerIntentPrimary(activity, productPictureList), REQUEST_CODE_GET_IMAGES)
+            var catalogId = ""
+            if (productCatalog.catalogId > 0) {
+                catalogId = productCatalog.catalogId.toString()
+            }
+            startActivityForResult(AddProductImagePickerBuilder.createPickerIntentWithCatalog(activity, productPictureList, catalogId), REQUEST_CODE_GET_IMAGES)
         }
     }
 

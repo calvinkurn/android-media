@@ -223,7 +223,6 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     private fun resetCategoryCatalog(){
         productCategoryRecommendationAdapter.selectedPosition = -1
         productCatalog = ProductCatalog()
-        productCategory = ProductCategory()
     }
 
     private fun setVisibilityCatalog(isVisible: Boolean) {

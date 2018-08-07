@@ -47,7 +47,7 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
   
     override fun getComponent() = (application as ProductEditModuleRouter).productComponent
 
-    override fun getNewFragment(): Fragment = ProductAddNameCategoryFragment.createInstance()
+    override fun getNewFragment(): Fragment = ProductAddNameCategoryFragment.createInstance(imageUrls)
 
     override fun getLayoutRes() =  R.layout.activity_product_edit_with_menu
 
