@@ -12,6 +12,8 @@ public interface SearchBarRouter {
 
     AnalyticTracker getAnalyticTracker();
 
+    Intent getLoginIntent(Context context);
+
     Intent gotoWishlistPage(Context context);
 
     Intent gotoNotificationPage(Context context);
