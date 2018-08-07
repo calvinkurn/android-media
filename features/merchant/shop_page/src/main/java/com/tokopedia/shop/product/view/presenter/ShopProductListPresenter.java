@@ -178,32 +178,28 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                     }
 
                     // id might come from deeplink
-                    // So, if the selected name is empty, we know that the id might come from deeplink
-                    // If the selectedName is not empty, we don't need to do find name anymore.
                     String selectedEtalaseName = getView().getSelectedEtalaseName();
-                    if (TextUtils.isEmpty(selectedEtalaseName)) { // name is empty, id might be from deeplink, or from other activity
+                    for (EtalaseModel etalaseModel : etalaseModelListTemp) {
+                        if (selectedEtalaseId.equalsIgnoreCase(etalaseModel.getEtalaseId())) {
+                            selectedEtalaseName = etalaseModel.getEtalaseName();
+                            shopProductRequestModel.setUseAce((etalaseModel.isUseAce()));
+                            break;
+                        }
+                    }
+                    // If etalase Id not found, then we check the selectedEtalaseId with name.
+                    if (TextUtils.isEmpty(selectedEtalaseName)) {
+                        String cleanedSelectedEtalaseId = cleanString(selectedEtalaseId);
                         for (EtalaseModel etalaseModel : etalaseModelListTemp) {
-                            if (selectedEtalaseId.equalsIgnoreCase(etalaseModel.getEtalaseId())) {
+                            String cleanedEtalaseName = cleanString(etalaseModel.getEtalaseName());
+                            if (cleanedSelectedEtalaseId.equalsIgnoreCase(cleanedEtalaseName)) {
+                                shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
                                 selectedEtalaseName = etalaseModel.getEtalaseName();
                                 shopProductRequestModel.setUseAce((etalaseModel.isUseAce()));
                                 break;
                             }
                         }
-                        // If etalase Id not found, then we check the selectedEtalaseId with name.
                         if (TextUtils.isEmpty(selectedEtalaseName)) {
-                            String cleanedSelectedEtalaseId = cleanString(selectedEtalaseId);
-                            for (EtalaseModel etalaseModel : etalaseModelListTemp) {
-                                String cleanedEtalaseName = cleanString(etalaseModel.getEtalaseName());
-                                if (cleanedSelectedEtalaseId.equalsIgnoreCase(cleanedEtalaseName)) {
-                                    shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
-                                    selectedEtalaseName = etalaseModel.getEtalaseName();
-                                    shopProductRequestModel.setUseAce((etalaseModel.isUseAce()));
-                                    break;
-                                }
-                            }
-                            if (TextUtils.isEmpty(selectedEtalaseName)) {
-                                shopProductRequestModel.setEtalaseId("");
-                            }
+                            shopProductRequestModel.setEtalaseId("");
                         }
                     }
 
@@ -216,7 +212,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
                     List<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapper.mergeEtalaseList(
                             etalaseModelList, etalaseViewModelList, ShopPageConstant.ETALASE_TO_SHOW);
-                    getView().onSuccessGetEtalaseList(shopEtalaseViewModelList, shopProductRequestModel.getEtalaseId(), selectedEtalaseName);
+                    getView().onSuccessGetEtalaseList(shopEtalaseViewModelList, shopProductRequestModel.getEtalaseId(), selectedEtalaseName,
+                            shopProductRequestModel.isUseAce());
                     getShopProductWithWishList(shopProductRequestModel);
                 }
             });

@@ -24,7 +24,7 @@ public interface ShopProductDedicatedListView extends BaseListViewListener<BaseS
     void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);
 
     void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList, String selectedEtalaseId,
-                                 String selectedEtalaseName);
+                                 String selectedEtalaseName, boolean useAce);
 
     void onErrorGetEtalaseList(Throwable e);
 
