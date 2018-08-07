@@ -55,8 +55,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Inject
     public CatalogListingPresenter mPresenter;
 
-    public static Fragment newInstance() {
-        return new CatalogListingFragment();
+    public static Fragment newInstance(Bundle extras) {
+        Fragment fragment = new CatalogListingFragment();
+        fragment.setArguments(extras);
+        return fragment;
     }
 
     @Override
@@ -245,6 +247,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type);
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
+
+        if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
+            view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);
+        }
     }
 
     private void initListener() {

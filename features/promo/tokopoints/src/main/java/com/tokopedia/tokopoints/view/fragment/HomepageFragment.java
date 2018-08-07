@@ -48,6 +48,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -64,6 +65,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     public HomepagePresenter mPresenter;
 
     private int mSumToken;
+    private int mCouponCount;
 
     StartPurchaseBottomSheet mStartPurchaseBottomSheet;
 
@@ -188,7 +190,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void gotoCatalog() {
-        startActivity(CatalogListingActivity.getCallingIntent(getActivityContext()));
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, mCouponCount);
+        startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
     }
 
     @Override
@@ -198,9 +202,13 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onSuccessPromos(@NonNull TokoPointPromosEntity data) {
-        initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons());
+        initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons(), data.getCoupon().getEmptyMessage());
 
-        if (data.getCoupon() != null && data.getCoupon().getCoupons() != null) {
+        TabUtil.wrapTabIndicatorToTitle(mTabLayoutPromo,
+                (int) getResources().getDimension(R.dimen.tp_margin_medium),
+                (int) getResources().getDimension(R.dimen.tp_margin_regular));
+
+        if (data.getCoupon() != null && data.getCoupon().getCoupons() != null && !data.getCoupon().getCoupons().isEmpty()) {
             TextView counterCoupon = getView().findViewById(R.id.text_count);
             if (data.getCoupon().getCoupons().size() > CommonConstant.MAX_COUPON_TO_SHOW_COUNT) {
                 counterCoupon.setVisibility(View.VISIBLE);
@@ -211,14 +219,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             }
 
             mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon_space);
+            mCouponCount = data.getCoupon().getCoupons().size();
         } else {
             mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon);
+            TabUtil.removedPaddingAtLast(mTabLayoutPromo,
+                    (int) getResources().getDimension(R.dimen.tp_margin_medium));
         }
-
-        TabUtil.wrapTabIndicatorToTitle(mTabLayoutPromo,
-                (int) getResources().getDimension(R.dimen.tp_margin_medium),
-                (int) getResources().getDimension(R.dimen.tp_margin_regular));
-
     }
 
     @Override
@@ -428,8 +434,10 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         decorateDialog(dialog);
     }
 
-    private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons) {
-        mPagerPromos.setAdapter(new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons));
+    private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons, Map<String, String> emptyMessages) {
+        HomepagePagerAdapter homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
+        homepagePagerAdapter.setEmptyMessages(emptyMessages);
+        mPagerPromos.setAdapter(homepagePagerAdapter);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
         mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
     }

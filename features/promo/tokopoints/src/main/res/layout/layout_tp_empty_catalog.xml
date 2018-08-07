@@ -10,9 +10,9 @@
 
         <ImageView
             android:id="@+id/img_error"
-            android:layout_width="180dp"
-            android:layout_height="102dp"
-            android:layout_marginTop="@dimen/tp_margin_medium"
+            android:layout_width="202dp"
+            android:layout_height="117dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/ic_tp_empty_catalog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,11 @@
             android:id="@+id/text_title_error"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/tp_margin_small"
+            android:layout_marginEnd="@dimen/tp_margin_medium"
+            android:layout_marginLeft="@dimen/tp_margin_medium"
+            android:layout_marginRight="@dimen/tp_margin_medium"
+            android:layout_marginStart="@dimen/tp_margin_medium"
+            android:layout_marginTop="@dimen/tp_margin_large"
             android:gravity="center_horizontal"
             android:text="@string/tp_label_prepare_catalog"
             android:textColor="@color/black_70"
@@ -35,7 +39,11 @@
             android:id="@+id/text_label_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/tp_margin_xsmall"
+            android:layout_marginEnd="@dimen/tp_margin_medium"
+            android:layout_marginLeft="@dimen/tp_margin_medium"
+            android:layout_marginRight="@dimen/tp_margin_medium"
+            android:layout_marginStart="@dimen/tp_margin_medium"
+            android:padding="@dimen/tp_padding_small"
             android:gravity="center_horizontal"
             android:text="@string/tp_label_go_shopping"
             android:textColor="@color/black_54"
@@ -43,6 +51,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_title_error" />
+
+
+        <TextView
+            android:id="@+id/button_continue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/tp_margin_medium"
+            android:layout_marginLeft="@dimen/tp_margin_medium"
+            android:layout_marginRight="@dimen/tp_margin_medium"
+            android:layout_marginStart="@dimen/tp_margin_medium"
+            android:layout_marginTop="@dimen/tp_margin_large"
+            android:background="@drawable/bg_button_green"
+            android:gravity="center"
+            android:padding="@dimen/tp_padding_medium"
+            android:text="@string/tp_label_exchange_point"
+            android:textColor="@color/white"
+            android:textSize="@dimen/tp_text_size_xsmall"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_label_error" />
 
         <Button
             android:id="@+id/text_empty_action"
@@ -57,7 +87,7 @@
             android:textSize="@dimen/tp_text_size_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_label_error" />
+            app:layout_constraintTop_toBottomOf="@+id/button_continue" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
