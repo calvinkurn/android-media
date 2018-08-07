@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.modules.core.PermissionAwareActivity;
@@ -73,7 +74,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
         return intent;
     }
     // For allowing native permission in react native
-    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void requestPermissions(String[] permissions, int requestCode, PermissionListener listener) {
         mPermissionListener = listener;
         requestPermissions(permissions, requestCode);
