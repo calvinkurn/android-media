@@ -161,7 +161,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (menuNotification == null)
+        if (menuNotification == null || getActivity() == null)
             return;
         if (badgeView == null)
             badgeView = new QBadgeView(getActivity());
@@ -169,6 +169,5 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         badgeView.bindTarget(menuNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
-        getActivity().invalidateOptionsMenu();
     }
 }

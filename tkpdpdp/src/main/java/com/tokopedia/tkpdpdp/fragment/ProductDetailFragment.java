@@ -34,11 +34,17 @@ import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -118,13 +124,23 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.Xparams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsProductDetailPage;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -159,6 +175,8 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_STATE_RESULT_VARIANT;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
 
 /**
  * ProductDetailFragment
@@ -167,7 +185,7 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, ITransactionAnalyticsProductDetailPage, WishListActionListener {
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener, ITransactionAnalyticsProductDetailPage, WishListActionListener {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -221,6 +239,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
     private LatestTalkView latestTalkView;
+    private TopAdsCarouselView topAds;
     private ProgressBar progressBar;
     private NestedScrollView nestedScrollView;
 
@@ -261,6 +280,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ShowCaseDialog showCaseDialog;
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
     private String lastStateOnClickBuyWhileRequestVariant;
+    private RemoteConfig firebaseRemoteConfig;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -280,20 +300,25 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     public ProductDetailFragment() {
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (remoteConfig.getBoolean(ENABLE_VARIANT) == false) {
-            useVariant = false;
-        }
-        cacheInteractor = new CacheInteractorImpl();
-        localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
-        localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
-        localCacheHandler.applyEditor();
 
     }
 
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
+            useVariant = false;
+        }
+        cacheInteractor = new CacheInteractorImpl();
+        localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
+        localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
+        localCacheHandler.applyEditor();
     }
 
     @Override
@@ -337,6 +362,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         nestedScrollView = view.findViewById(R.id.nested_scroll_pdp);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
+        topAds = view.findViewById(R.id.topads);
         collapsingToolbarLayout
                 = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         transactionDetailView
@@ -457,13 +483,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
+        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
         loading.setCancelable(false);
-        loading.setMessage("Loading");
+        loading.setMessage(getString(R.string.title_loading));
         if (presenter != null)
             presenter.initRetrofitInteractor();
         else
             initialPresenter();
+
     }
 
     private AnalyticTracker getAnalyticTracker() {
@@ -806,6 +834,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
+        renderTopAds(15);
     }
 
     private boolean isAllowShowCaseNcf() {
@@ -1422,8 +1451,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPromoAdsClicked() {
-        presenter.onPromoAdsClicked(getActivity(), productData.getShopInfo().getShopId(),
-                productData.getInfo().getProductId(), SessionHandler.getLoginID(getActivity()));
+        ((PdpRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),
+                String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
+                GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP :
+                        TopAdsSourceOption.MA_PDP);
     }
 
     @Override
@@ -1464,7 +1495,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             int defaultChild = productVariant.getParentId() == productData.getInfo().getProductId()
                     ? productVariant.getDefaultChild() : productData.getInfo().getProductId();
             if (productVariant.getChildFromProductId(defaultChild).isEnabled()) {
-                productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
+                productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWordingHtml());
                 productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
                 headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                         productData.getInfo());
@@ -1485,7 +1516,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void addProductStock(Child productStock) {
         productStockNonVariant = productStock;
         if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
-            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
+            productData.getInfo().setProductStockWording(productStockNonVariant.getStockWordingHtml());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                     productData.getInfo());
@@ -1752,6 +1783,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
+    public Context getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         ProductPageTracking.eventAppsFlyer(
@@ -1803,20 +1839,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceProductCartMapData.setShopType(generateShopType(productData.getShopInfo()));
         enhancedECommerceProductCartMapData.setShopName(productData.getShopInfo().getShopName());
         enhancedECommerceProductCartMapData.setCategoryId(generateCategoryId(productData.getBreadcrumb()));
-        enhancedECommerceProductCartMapData.setDimension38(
-                TextUtils.isEmpty(productPass.getTrackerAttribution())
-                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                        : productPass.getTrackerAttribution()
-        );
         enhancedECommerceProductCartMapData.setAttribution(
                 TextUtils.isEmpty(productPass.getTrackerAttribution())
                         ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                         : productPass.getTrackerAttribution()
-        );
-        enhancedECommerceProductCartMapData.setDimension40(
-                TextUtils.isEmpty(productPass.getTrackerListName())
-                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                        : productPass.getTrackerListName()
         );
         enhancedECommerceProductCartMapData.setListName(
                 TextUtils.isEmpty(productPass.getTrackerListName())
@@ -1950,8 +1976,86 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartClickBayarOnAtcSuccess();
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(cartMap, eventLabel, eventAction);
     }
+
     @Override
     public void refreshData() {
         presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+    }
+    private void renderTopAds(int itemSize) {
+        if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
+            return;
+        try {
+            Xparams xparams = new Xparams();
+            xparams.setProduct_id(productData.getInfo().getProductId());
+            xparams.setProduct_name(productData.getInfo().getProductName());
+            xparams.setSource_shop_id(Integer.parseInt(productData.getShopInfo().getShopId()));
+            if (productData.getBreadcrumb().size() > 2) {
+                xparams.setChild_cat_id(Integer.parseInt(productData.getBreadcrumb().get(2).getDepartmentId()));
+            }
+            TopAdsParams params = new TopAdsParams();
+            params.getParam().put(TopAdsParams.KEY_SRC, SRC_PDP_VALUE);
+            params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
+            params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(itemSize));
+            params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
+
+            Config config = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                    .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .topAdsParams(params)
+                    .build();
+
+            topAds.setAdsItemClickListener(this);
+            topAds.setAdsListener(this);
+            topAds.setAdsItemImpressionListener(this);
+            topAds.setConfig(config);
+            topAds.loadTopAds();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        topAds.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        topAds.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onProductItemClicked(int position, Product product) {
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+        ProductPageTracking.eventTopAdsClicked(getActivity(), position, product);
+    }
+
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
+    }
+
+    @Override
+    public void onShopItemClicked(int position, Shop shop) {
+
+    }
+
+    @Override
+    public void onAddFavorite(int position, Data data) {
+
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+
     }
 }

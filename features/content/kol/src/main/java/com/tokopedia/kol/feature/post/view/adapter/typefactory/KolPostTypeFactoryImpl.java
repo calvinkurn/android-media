@@ -20,6 +20,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 
 public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements KolPostTypeFactory {
     private final KolPostListener.View.ViewHolder viewListener;
+    private KolPostViewHolder.Type type = KolPostViewHolder.Type.PROFILE;
 
     public KolPostTypeFactoryImpl(KolPostListener.View.ViewHolder viewListener) {
         this.viewListener = viewListener;
@@ -51,7 +52,7 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
         if (viewType == KolPostViewHolder.LAYOUT) {
             abstractViewHolder = new KolPostViewHolder(view,
                     viewListener,
-                    KolPostViewHolder.Type.PROFILE);
+                    type);
         } else if (viewType == KolPostYoutubeViewHolder.LAYOUT) {
             abstractViewHolder = new KolPostYoutubeViewHolder(view,
                     viewListener,
@@ -64,5 +65,9 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
         else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;
+    }
+
+    public void setType(KolPostViewHolder.Type type) {
+        this.type = type;
     }
 }

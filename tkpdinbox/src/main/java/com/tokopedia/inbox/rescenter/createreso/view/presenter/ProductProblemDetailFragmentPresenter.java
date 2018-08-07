@@ -2,9 +2,9 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
@@ -22,14 +22,14 @@ import java.util.List;
  */
 
 public class ProductProblemDetailFragmentPresenter
-        extends BaseDaggerPresenter<ProductProblemDetailFragment.View>
-        implements ProductProblemDetailFragment.Presenter {
+        extends BaseDaggerPresenter<ProductProblemDetailFragmentListener.View>
+        implements ProductProblemDetailFragmentListener.Presenter {
 
     public static final int RESULT_SAVE = 2001;
     public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
 
     private Context context;
-    private ProductProblemDetailFragment.View mainView;
+    private ProductProblemDetailFragmentListener.View mainView;
     private ProblemResult problemResult;
     private ProductProblemViewModel productProblemViewModel;
     private HashMap<String, Integer> troubleHashMap = new HashMap<>();
@@ -42,7 +42,7 @@ public class ProductProblemDetailFragmentPresenter
     }
 
     @Override
-    public void attachView(ProductProblemDetailFragment.View view) {
+    public void attachView(ProductProblemDetailFragmentListener.View view) {
         this.mainView = view;
         super.attachView(view);
     }

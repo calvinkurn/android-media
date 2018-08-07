@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.BigGridProductViewHolder;
@@ -15,6 +16,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderView
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 
 /**
  * Created by hangnadi on 10/8/17.
@@ -33,6 +35,11 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
     @Override
     public int type(HotlistHeaderViewModel header) {
         return HotlistHeaderViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(EmptySearchModel emptySearchModel) {
+        return EmptyViewHolder.LAYOUT;
     }
 
     @Override

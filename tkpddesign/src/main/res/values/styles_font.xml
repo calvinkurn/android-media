@@ -101,6 +101,9 @@
     <style name="TextView.Small.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="TextView.Small.BlackPrimary">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
     <style name="TextView.Small.Bold.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
@@ -155,6 +158,15 @@
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
     <style name="TextView.Micro.Green.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextView.Micro.BlackPrimary">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
+    <style name="TextView.Micro.Orange">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+    <style name="TextView.Micro.Orange.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.BlackSecondary">

@@ -1,9 +1,7 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.List;
 import java.util.Map;
@@ -25,17 +23,11 @@ public interface ICartListPresenter {
 
     void processToUpdateCartData();
 
-//    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
-
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
 
-//    void processToShipmentForm(boolean toAddressChoice);
-
     void processResetAndRefreshCartData();
-
-    void processResetCart();
 
     void processCancelAutoApply();
 

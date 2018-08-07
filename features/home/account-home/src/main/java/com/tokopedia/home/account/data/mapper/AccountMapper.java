@@ -232,7 +232,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_resolution_center));
         menuList.setMenuDescription(context.getString(R.string.label_menu_resolution_center));
-        menuList.setApplink(ApplinkConst.CONTACT_US);
+        menuList.setApplink(ApplinkConst.CONTACT_US_NATIVE);
         items.add(menuList);
 
         model.setItems(items);

@@ -12,7 +12,7 @@ public class CatalogFilterBase {
     private ArrayList<CatalogCategory> categories;
 
     @Expose
-    @SerializedName("sort_type")
+    @SerializedName("sortType")
     private List<CatalogSortType> sortType;
 
     public ArrayList<CatalogCategory> getCategories() {

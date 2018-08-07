@@ -12,28 +12,26 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
@@ -64,10 +62,9 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> implements ICartListPresenter {
+    private static final float PERCENTAGE = 100.0f;
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
-    private static final String PARAM_CARTS = "carts";
-    private static final String PARAM_IS_RESET = "isReset";
     private static final String PARAM_STEP = "step";
     private ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
@@ -76,7 +73,6 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
     private final DeleteCartGetCartListUseCase deleteCartGetCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
-    private final ResetCartUseCase resetCartUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
@@ -88,7 +84,6 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                              DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                             ResetCartUseCase resetCartUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -116,7 +111,6 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
         this.deleteCartGetCartListUseCase = deleteCartGetCartListUseCase;
         this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
-        this.resetCartUseCase = resetCartUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
@@ -138,9 +132,9 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(getSubscriberInitialCartListData())
         );
     }
@@ -162,9 +156,9 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                 view.getGeneratedAuthParamNetwork(param));
         compositeSubscription.add(
                 deleteCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberDeleteCart(cartItemData, addWishList))
         );
     }
@@ -196,7 +190,7 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
@@ -208,9 +202,9 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
 
         compositeSubscription.add(
                 deleteCartGetCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberDeleteAndRefreshCart())
         );
     }
@@ -229,7 +223,7 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
@@ -237,70 +231,28 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberToShipmentSingleAddress())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList))
         );
     }
-
-
-//    @SuppressWarnings("deprecation")
-//    @Override
-//    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
-//        view.showProgressLoading();
-//        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-//        param.put(PARAM_LANG, "id");
-//        param.put(PARAM_IS_RESET, "false");
-//        RequestParams requestParams = RequestParams.create();
-//        requestParams.putObject(
-//                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING, view.getGeneratedAuthParamNetwork(param)
-//        );
-//        compositeSubscription.add(
-//                getCartListUseCase.createObservable(requestParams)
-//                        .subscribeOn(Schedulers.newThread())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .unsubscribeOn(Schedulers.newThread())
-//                        .subscribe(new Subscriber<CartListData>() {
-//                            @Override
-//                            public void onCompleted() {
-//
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                view.hideProgressLoading();
-//                                e.printStackTrace();
-//                                handleErrorCheckoutToMultipleAddress(e);
-//                            }
-//
-//                            @Override
-//                            public void onNext(CartListData cartListData) {
-//                                view.hideProgressLoading();
-//                                if (!cartListData.isError())
-//                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
-//                                else
-//                                    view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
-//                            }
-//                        })
-//        );
-//    }
 
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         for (int i = 0; i < dataList.size(); i++) {
             if (dataList.get(i).getCartItemData() != null && dataList.get(i).getCartItemData().getOriginData() != null) {
-                if (dataList.get(i).getCartItemData().getOriginData().getWholesalePrice() != null &&
-                        dataList.get(i).getCartItemData().getOriginData().getWholesalePrice().size() > 0 &&
-                        dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
+                if (dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
                     dataList.get(i).getCartItemData().getOriginData().setParentId(String.valueOf(i + 1));
                 }
             }
         }
+        double cashback = 0;
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
+        Map<String, Double> cashbackWholesalePriceMap = new HashMap<>();
         Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
-        List<String> parentIds = new ArrayList<>();
+        Map<String, CartItemHolderData> cartItemParentIdMap = new HashMap<>();
         for (CartItemHolderData data : dataList) {
             if (data.getCartItemData() != null && data.getCartItemData().getOriginData() != null) {
                 String parentId = data.getCartItemData().getOriginData().getParentId();
@@ -322,8 +274,8 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                 boolean hasCalculateWholesalePrice = false;
                 if (wholesalePrices != null && wholesalePrices.size() > 0) {
                     double subTotalWholesalePrice = 0;
-                    for (WholesalePrice wholesalePrice : wholesalePrices) {
-                        if (itemQty >= wholesalePrice.getQtyMin() && itemQty <= wholesalePrice.getQtyMax()) {
+                    double itemCashback = 0;for (WholesalePrice wholesalePrice : wholesalePrices) {
+                        if (itemQty >= wholesalePrice.getQtyMin() ) {
                             subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
                             hasCalculateWholesalePrice = true;
                             data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
@@ -339,27 +291,63 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                             data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                         }
                     }
+                    if (data.getCartItemData().getOriginData().isCashBack()) {
+                        String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
+                        double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
+                        itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice;
+                    }
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
                         subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
                     }
-                } else {
-                    if (!parentIds.contains(data.getCartItemData().getOriginData().getParentId())) {
-                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                        parentIds.add(data.getCartItemData().getOriginData().getParentId());
+                    if (!cashbackWholesalePriceMap.containsKey(parentId)) {
+                        cashbackWholesalePriceMap.put(parentId, itemCashback);
+                    }} else {
+                    if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
+                        double itemPrice =itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                        if (data.getCartItemData().getOriginData().isCashBack()) {
+                            String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
+                            double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
+                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
+                            cashback = cashback + itemCashback;
+                        }
+                        subtotalPrice = subtotalPrice + itemPrice;data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
+                    } else {
+                        CartItemHolderData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
+                        if (calculatedHolderData.getCartItemData().getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
+                            double itemPrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                            if (data.getCartItemData().getOriginData().isCashBack()) {
+                                String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
+                                double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
+                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
+                                cashback = cashback + itemCashback;
+                            }
+                            subtotalPrice = subtotalPrice + itemPrice;
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
                     }
                 }
             }
-
-            if (!subtotalWholesalePriceMap.isEmpty()) {
-                for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
-                    subtotalPrice += item.getValue();
-                }
-            }
-
-            view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) subtotalPrice), true));
         }
+
+        if (!subtotalWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                subtotalPrice += item.getValue();
+            }
+        }
+
+        if (!cashbackWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {
+                cashback += item.getValue();
+            }
+        }
+
+        view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) subtotalPrice), true));
+        if (cashback > 0) {
+            view.updateCashback(cashback);
+        }
+
     }
 
     @Override
@@ -393,9 +381,9 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
 
         compositeSubscription.add(
                 checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
         );
     }
@@ -419,61 +407,11 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
 
         compositeSubscription.add(
                 resetCartGetCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberResetRefreshCart())
         );
-    }
-
-    @Override
-    public void processResetCart() {
-        view.showProgressLoading();
-        TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
-        paramResetCart.put(PARAM_LANG, "id");
-        paramResetCart.put(PARAM_STEP, "4");
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(ResetCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_RESET_CART,
-                view.getGeneratedAuthParamNetwork(paramResetCart));
-
-        compositeSubscription.add(
-                resetCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberResetCart())
-        );
-    }
-
-    @NonNull
-    private Subscriber<ResetCartData> getSubscriberResetCart() {
-        return new Subscriber<ResetCartData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.hideProgressLoading();
-                handleErrorGetShipmentForm(e);
-            }
-
-            @Override
-            public void onNext(ResetCartData data) {
-                view.hideProgressLoading();
-//                if (data.isSuccess()) {
-//                    view.renderToShipmentFormSuccess(data.getCartShipmentAddressFormData());
-//                } else {
-//                    String messageError = !data.getCartShipmentAddressFormData().getErrorMessage().isEmpty()
-//                            ? data.getCartShipmentAddressFormData().getErrorMessage()
-//                            : data.getResetCartData().getMessage();
-//                    view.renderErrorToShipmentForm(messageError);
-//                }
-            }
-        };
     }
 
     @NonNull
@@ -501,66 +439,6 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                 }
             }
         };
-    }
-
-    private void handleErrorCheckoutToMultipleAddress(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            /* Ini kalau ga ada internet */
-            view.renderErrorNoConnectionToShipmentMultipleAddress(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            /* Ini kalau timeout */
-            view.renderErrorTimeoutConnectionToShipmentMultipleAddress(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
-            view.renderErrorToShipmentMultipleAddress(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-            view.renderErrorToShipmentMultipleAddress(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-            code http errornya bisa diambil
-            e.getErrorCode */
-            view.renderErrorHttpToShipmentMultipleAddress(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorToShipmentMultipleAddress(e.getMessage());
-        } else {
-            /* Ini diluar dari segalanya hahahaha */
-            view.renderErrorHttpToShipmentMultipleAddress(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
-    }
-
-    private void handleErrorGetShipmentForm(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            /* Ini kalau ga ada internet */
-            view.renderErrorNoConnectionToShipmentForm(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            /* Ini kalau timeout */
-            view.renderErrorTimeoutConnectionToShipmentForm(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
-            view.renderErrorToShipmentForm(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-            view.renderErrorToShipmentForm(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
-            view.renderErrorHttpToShipmentForm(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorToShipmentForm(e.getMessage());
-        } else {
-            /* Ini diluar dari segalanya hahahaha */
-            view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
     }
 
     private void handleErrorinitCartList(Throwable e) {
@@ -687,7 +565,7 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
     }
 
     @NonNull
-    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress() {
+    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -710,6 +588,7 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                 } else {
                     view.renderToShipmentFormSuccess();
                 }
+                view.sendAnalyticsOnSuccessToShipment(generateCheckoutDataAnalytics(cartItemDataList));
             }
         };
     }
@@ -776,9 +655,9 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
     @Override
     public void processCancelAutoApply() {
         compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -824,42 +703,7 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
 
         for (CartItemData cartItemData : cartItemDataList) {
-            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
-                    new EnhancedECommerceProductCartMapData();
-            enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
-            enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
-            enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
-            enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
-            enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
-                    ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                    : cartItemData.getOriginData().getCategoryForAnalytics());
-            enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
-            enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
-            enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
-            enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
-            enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
-            enhancedECommerceProductCartMapData.setDimension38(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerAttribution()
-            );
-            enhancedECommerceProductCartMapData.setAttribution(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerAttribution()
-            );
-            enhancedECommerceProductCartMapData.setDimension40(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerListName()
-            );
-            enhancedECommerceProductCartMapData.setListName(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerListName()
-            );
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = getEnhancedECommerceProductCartMapData(cartItemData);
             enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
 
@@ -867,5 +711,56 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
         enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
 
         return enhancedECommerceCartMapData.getCartMap();
+    }
+
+    @NonNull
+    private EnhancedECommerceProductCartMapData getEnhancedECommerceProductCartMapData(CartItemData cartItemData) {
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                new EnhancedECommerceProductCartMapData();
+        enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
+        enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
+        enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+        enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                : cartItemData.getOriginData().getCategoryForAnalytics());
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
+        enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
+        enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
+        enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
+        enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
+        enhancedECommerceProductCartMapData.setAttribution(
+                TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : cartItemData.getOriginData().getTrackerAttribution()
+        );
+        enhancedECommerceProductCartMapData.setListName(
+                TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : cartItemData.getOriginData().getTrackerListName()
+        );
+        return enhancedECommerceProductCartMapData;
+    }
+
+    private Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList) {
+        Map<String, Object> checkoutMapData = new HashMap<>();
+        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+        enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_1);
+        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CART_PAGE_LOADED);
+
+        EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
+        for (CartItemData cartItemData : cartItemDataList) {
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData
+                    = getEnhancedECommerceProductCartMapData(cartItemData);
+            enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+        }
+        enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
+
+        checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
+
+        return checkoutMapData;
     }
 }

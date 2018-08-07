@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +7,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
 import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
+import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
@@ -50,6 +51,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     @Inject NotificationPresenter presenter;
     @Inject GlobalNavAnalytics globalNavAnalytics;
+
+    private boolean isHasAdded = false;
 
     @Override
     public int resLayout() {
@@ -80,41 +83,19 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getDrawerNotification());
 
         adapter.setOnItemClickListener((view1, position) -> {
-            if (getActivity().getApplication() instanceof GlobalNavRouter) {
-
-                sendTracking(position, 0);
-                startActivity(((GlobalNavRouter)getActivity().getApplication())
-                        .getSellerInfoCallingIntent(getActivity()));
-            }
+            sendTracking(position, 0);
+            DrawerNotification item = adapter.getItem(position);
+            DrawerNotification.ChildDrawerNotification child = item.getChilds().get(0);
+            RouteManager.route(getActivity(), child.getApplink());
         });
         adapter.setOnNotifClickListener((parent, child) -> {
-
             sendTracking(parent, child);
-            Intent intent = getCallingIntent(parent, child);
-            if (intent != null) {
-                startActivity(intent);
-            }
+            DrawerNotification item = adapter.getItem(parent);
+            DrawerNotification.ChildDrawerNotification childItem = item.getChilds().get(child);
+            RouteManager.route(getActivity(), childItem.getApplink());
         });
 
         adapter.addAll(getData());
-    }
-
-    private void sendTracking(int parent, int child) {
-        DrawerNotification parentItem = adapter.getItem(parent);
-        if (parentItem == null)
-            return;
-
-        DrawerNotification.ChildDrawerNotification childItem =
-                parentItem.getChilds().get(child);
-        if (childItem == null)
-            return;
-
-        String section = "";
-        if (parentItem.getTitle() != null)
-            section = parentItem.getTitle();
-
-        globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
-                childItem.getTitle().toLowerCase());
     }
 
     @Override
@@ -154,8 +135,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         return getString(R.string.notifications);
     }
 
-    boolean isHasAdded = false;
-
     @Override
     public void renderNotification(NotificationsModel data, boolean isHasShop) {
         if (!isHasAdded) {
@@ -177,10 +156,16 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         buyer.setTitle(getString(R.string.pembelian));
 
         List<DrawerNotification.ChildDrawerNotification> childBuyer = new ArrayList<>();
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI, getString(R.string.menunggu_konfirmasi)));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES, getString(R.string.pesanan_diproses)));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM, getString(R.string.sedang_dikirim)));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN, getString(R.string.sampai_tujuan)));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_PEMBAYARAN,
+                getString(R.string.menunggu_pembayaran), ApplinkConst.PMS));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
+                getString(R.string.menunggu_konfirmasi), ApplinkConst.PURCHASE_CONFIRMED));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
+                getString(R.string.pesanan_diproses), ApplinkConst.PURCHASE_PROCESSED));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
+                getString(R.string.sedang_dikirim), ApplinkConst.PURCHASE_SHIPPED));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
+                getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
         buyer.setChilds(childBuyer);
         notifications.add(buyer);
 
@@ -193,9 +178,11 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         complain.setTitle(getString(R.string.komplain_saya));
 
         List<DrawerNotification.ChildDrawerNotification> childComplain = new ArrayList<>();
-        childComplain.add(new DrawerNotification.ChildDrawerNotification(BUYER, getString(R.string.sebagai_pembeli)));
+        childComplain.add(new DrawerNotification.ChildDrawerNotification(BUYER,
+                getString(R.string.sebagai_pembeli), ApplinkConst.RESCENTER_BUYER));
         if (isHasShop) {
-            childComplain.add(new DrawerNotification.ChildDrawerNotification(SELLER, getString(R.string.sebagai_penjual)));
+            childComplain.add(new DrawerNotification.ChildDrawerNotification(SELLER,
+                    getString(R.string.sebagai_penjual), ApplinkConst.RESCENTER_SELLER));
         }
         complain.setChilds(childComplain);
 
@@ -217,54 +204,33 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         seller.setTitle(getString(R.string.penjualan));
 
         List<DrawerNotification.ChildDrawerNotification> childSeller = new ArrayList<>();
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(PESANAN_BARU, getString(R.string.pesanan_baru)));
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(SIAP_DIKIRIM, getString(R.string.siap_dikirim)));
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM, getString(R.string.sedang_dikirim)));
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN, getString(R.string.sampai_tujuan)));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(PESANAN_BARU,
+                getString(R.string.pesanan_baru), ApplinkConst.SELLER_NEW_ORDER));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SIAP_DIKIRIM,
+                getString(R.string.siap_dikirim), ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
+                getString(R.string.sedang_dikirim), ApplinkConst.SELLER_PURCHASE_SHIPPED));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
+                getString(R.string.sampai_tujuan), ApplinkConst.SELLER_PURCHASE_DELIVERED));
         seller.setChilds(childSeller);
         return seller;
     }
 
-    private Intent getCallingIntent(int parentPosition, int childPosition) {
-        Intent intent = null;
-        DrawerNotification item = adapter.getItem(parentPosition);
-        if (item != null && item.getId() != null) {
-            DrawerNotification.ChildDrawerNotification child = adapter
-                    .getItem(parentPosition).getChilds().get(childPosition);
-            switch (item.getId()) {
-                case PEMBELIAN:
-                    if (child.getId() == MENUNGGU_KONFIRMASI) {
-                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
-                    } else if (child.getId() == PESANAN_DIPROSES){
-                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
-                    } else if (child.getId() == SEDANG_DIKIRIM){
-                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
-                    } else if (child.getId() == SAMPAI_TUJUAN){
-                        RouteManager.route(getActivity(), "tokopedia://buyer/payment");
-                    }
-                    break;
-                case PENJUALAN:
-                    if (child.getId() == PESANAN_BARU) {
-                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
-                    } else if (child.getId() == SIAP_DIKIRIM){
-                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
-                    } else if (child.getId() == SEDANG_DIKIRIM){
-                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
-                    } else if (child.getId() == SAMPAI_TUJUAN){
-                        RouteManager.route(getActivity(), "tokopedia://seller/payment");
-                    }
-                    break;
-                case KOMPLAIN:
-                    if (child.getId() == BUYER) {
-                        intent = ((GlobalNavRouter)getActivity().getApplication())
-                                .getResolutionCenterIntentBuyer(getActivity());
-                    } else if (child.getId()  == SELLER) {
-                        intent = ((GlobalNavRouter)getActivity().getApplication())
-                                .getResolutionCenterIntentSeller(getActivity());
-                    }
-                    break;
-            }
-        }
-        return intent;
+    private void sendTracking(int parent, int child) {
+        DrawerNotification parentItem = adapter.getItem(parent);
+        if (parentItem == null)
+            return;
+
+        DrawerNotification.ChildDrawerNotification childItem =
+                parentItem.getChilds().get(child);
+        if (childItem == null)
+            return;
+
+        String section = "";
+        if (parentItem.getTitle() != null)
+            section = parentItem.getTitle();
+
+        globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
+                childItem.getTitle().toLowerCase());
     }
 }
