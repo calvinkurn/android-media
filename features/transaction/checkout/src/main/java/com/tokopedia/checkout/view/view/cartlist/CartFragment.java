@@ -158,6 +158,7 @@ public class CartFragment extends BaseCheckoutFragment implements
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         cartListComponent.inject(this);
+        dPresenter.attachView(this);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

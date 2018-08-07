@@ -81,7 +81,7 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
 
-    @Inject
+
     public CartListPresenter(ICartListView cartListView,
                              GetCartListUseCase getCartListUseCase,
                              DeleteCartUseCase deleteCartUseCase,
@@ -93,7 +93,23 @@ public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> imple
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+        this(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase, updateCartUseCase,
+                resetCartGetCartListUseCase, resetCartUseCase, checkPromoCodeCartListUseCase,
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase);
         this.view = cartListView;
+    }
+
+    public CartListPresenter(
+                             GetCartListUseCase getCartListUseCase,
+                             DeleteCartUseCase deleteCartUseCase,
+                             DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                             UpdateCartUseCase updateCartUseCase,
+                             ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                             ResetCartUseCase resetCartUseCase,
+                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
+                             CompositeSubscription compositeSubscription,
+                             CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;

@@ -17,12 +17,25 @@ import android.view.View;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.mapper.CartMapper;
+import com.tokopedia.checkout.domain.mapper.MapperUtil;
+import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.TestAppModule;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.checkout.view.di.component.DaggerTestCartListComponent;
+import com.tokopedia.checkout.view.di.component.TestCartListComponent;
+import com.tokopedia.checkout.view.di.module.CartListModule;
+import com.tokopedia.checkout.view.di.module.TestCartListModule;
+import com.tokopedia.checkout.view.di.module.TestTrackingAnalyticsModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
@@ -105,6 +118,7 @@ import static org.mockito.Mockito.when;
 import static rx.Observable.just;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import retrofit2.Response;
@@ -158,7 +172,7 @@ public class MainParentActivityTest {
     }
 
     @Test
-    public void test_load_inbox_first_time_without_login(){
+    public void test_load_cart_first_time_without_login() throws Exception{
         UserSession userSession = baseAppComponent.userSession();
 
         doReturn(false).when(userSession).isLoggedIn();
@@ -177,7 +191,28 @@ public class MainParentActivityTest {
         onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
         onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
-        //TODO mock data for keranjang.
+        CartFragment fragment = (CartFragment) mIntentsRule.getActivity().getFragment(3);
+
+        // reset all inbox state
+        TestCartListComponent navComponent = DaggerTestCartListComponent.builder()
+                .cartComponent(CartComponentInjector.newInstance(mIntentsRule.getActivity().getApplication()).getCartApiServiceComponent())
+                .testCartListModule(new TestCartListModule(fragment))
+                .testTrackingAnalyticsModule(new TestTrackingAnalyticsModule())
+                .build();
+
+        if(fragment != null && fragment.isVisible()){
+            fragment.reInitInjector(navComponent);
+
+            mIntentsRule.getActivity().runOnUiThread(() -> {
+                fragment.renderEmptyCartData(
+                        provideGetCartListUseCase(mIntentsRule.getActivity())
+                );
+            });
+        }
+
+        Thread.sleep(5_000);
+
+
         onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
     }
 
@@ -406,6 +441,14 @@ public class MainParentActivityTest {
             onView(allOf(withId(R.id.list), withTagValue(is("home_list")), isCompletelyDisplayed()))
                     .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
         }
+    }
+
+    private CartListData provideGetCartListUseCase(Context context){
+        CartDataListResponse cartDataListResponse = CacheUtil.convertStringToModel(
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource("empty_cart.json")
+                , CartDataListResponse.class);
+        CartMapper cartMapper = new CartMapper(new MapperUtil());
+        return cartMapper.convertToCartItemDataList(context, cartDataListResponse);
     }
 
     private NotificationEntity provideNotificationEntity(){
