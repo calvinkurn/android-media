@@ -48,7 +48,7 @@ import javax.inject.Inject;
 
 public class ContentExploreFragment extends BaseDaggerFragment
         implements ContentExploreContract.View, SearchInputView.Listener,
-        SwipeToRefresh.OnRefreshListener {
+        SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
@@ -129,6 +129,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void initView() {
         dropKeyboard();
         searchInspiration.setListener(this);
+        searchInspiration.setResetListener(this);
         searchInspiration.getSearchTextView().setOnClickListener(v -> {
             searchInspiration.getSearchTextView().setCursorVisible(true);
         });
@@ -315,6 +316,14 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Override
     public void onSearchTextChanged(String text) {
 
+    }
+
+    @Override
+    public void onSearchReset() {
+        resetDataParam();
+        setAllCategoriesInactive();
+        imageAdapter.clearData();
+        presenter.getExploreData(true);
     }
 
     @Override
