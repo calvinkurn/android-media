@@ -345,7 +345,7 @@ ext {
             digitalDeals          : ":features:digital:digital_deals",
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
-            updateinactivephone   : ":features:user:updateinactivephone
+            updateinactivephone   : ":features:user:updateinactivephone"
     ]
 
     libraries = [
