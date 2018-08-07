@@ -327,7 +327,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun saveData(productPrice: ProductPrice) = productPrice.apply {
             currencyType = selectedCurrencyType
             price = getPriceValue()
-            wholesalePrice = wholesalePrice
+            wholesalePrice = this@ProductEditPriceFragment.wholesalePrice
             minOrder = getMinOrderValue()
             maxOrder = getMaxOrderValue()
         }

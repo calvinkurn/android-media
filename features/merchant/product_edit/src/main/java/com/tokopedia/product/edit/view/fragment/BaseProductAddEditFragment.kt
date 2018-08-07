@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -62,7 +63,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     val appRouter: Context? by lazy { activity?.application as? Context }
     protected var currentProductAddViewModel: ProductAddViewModel? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstancurrentProductAddViewModelceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -70,6 +71,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         presenter.getShopInfo()
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_VIEW_MODEL)) {
+                currentProductAddViewModel = savedInstanceState.getParcelable(SAVED_PRODUCT_VIEW_MODEL)
+                populateView(currentProductAddViewModel)
+            }
+        }
         if (currentProductAddViewModel == null) {
             currentProductAddViewModel = ProductAddViewModel()
         }
@@ -100,9 +107,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         button_save.setOnClickListener{ saveDraft(currentProductAddViewModel?.isDataValid(this) == true) }
     }
 
+
+
     private fun startCatalogActivity() {
         activity?.run {
-            startActivityForResult(ProductEditCategoryActivity.createIntent(this,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditCategoryActivity.createIntent(this,
                     currentProductAddViewModel?.productName?.name, currentProductAddViewModel?.productCategory,
                     currentProductAddViewModel?.productCatalog, currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()
                     ?: false), REQUEST_CODE_GET_CATALOG_CATEGORY)
@@ -111,7 +120,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startNameActivity() {
         activity?.run {
-            startActivityForResult(ProductEditNameActivity.createIntent(this,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditNameActivity.createIntent(this,
                     currentProductAddViewModel?.productName, currentProductAddViewModel?.isProductNameEditable
                     ?: true), REQUEST_CODE_GET_NAME)
         }
@@ -119,7 +128,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startPriceActivity() {
         activity?.run {
-            startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, officialStore,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, officialStore,
                     currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()
                             ?: false, isGoldMerchant), REQUEST_CODE_GET_PRICE)
         }
@@ -127,14 +136,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startDescriptionActivity() {
         activity?.run {
-            startActivityForResult(ProductEditDescriptionActivity.createIntent(this, currentProductAddViewModel?.productDescription,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditDescriptionActivity.createIntent(this, currentProductAddViewModel?.productDescription,
                     currentProductAddViewModel?.productName?.name), REQUEST_CODE_GET_DESCRIPTION)
         }
     }
 
     private fun startStockActivity() {
         activity?.run {
-            startActivityForResult(ProductEditStockActivity.createIntent(this, currentProductAddViewModel?.productStock,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditStockActivity.createIntent(this, currentProductAddViewModel?.productStock,
                     currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()
                             ?: false, isAddStatus()), REQUEST_CODE_GET_STOCK)
         }
@@ -142,7 +151,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startLogisticActivity() {
         activity?.run {
-            startActivityForResult(ProductEditWeightLogisticActivity.createIntent(this,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditWeightLogisticActivity.createIntent(this,
                     currentProductAddViewModel?.productLogistic, isFreeReturn), REQUEST_CODE_GET_LOGISTIC)
         }
     }
@@ -180,7 +189,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_LOGISTIC -> {
                     val productLogistic: ProductLogistic = data.getParcelableExtra(EXTRA_LOGISTIC)
-                    currentProductAddViewModel?.productLogistic = productLogistic
+                    ?.productLogistic = productLogistic
                 }
                 REQUEST_CODE_GET_STOCK -> {
                     val productStock: ProductStock = data.getParcelableExtra(EXTRA_STOCK)

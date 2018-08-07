@@ -24,7 +24,7 @@ class ProductEditCategoryPresenter
     var categoryId = -1L
 
     private val onProductName: BehaviorSubject<String> = BehaviorSubject.create()
-    private val subscriptionProductName = onProductName.debounce(300, TimeUnit.MILLISECONDS)
+    private val subscriptionProductName = onProductName.debounce(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { productName ->
                 getCategoryRecommendation(productName)
