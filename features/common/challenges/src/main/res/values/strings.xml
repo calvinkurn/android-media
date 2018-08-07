@@ -6,4 +6,7 @@
     <string name="collapse">Sembunyikan</string>
     <string name="expand">Selengkapnya</string>
     <string name="append_0">0%d</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
