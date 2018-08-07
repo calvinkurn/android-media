@@ -21,15 +21,7 @@ class ProductEditDescriptionActivity : BaseSimpleActivity(){
         }
     }
 
-    override fun getNewFragment(): Fragment{
-        return ProductEditDescriptionFragment.createInstance()
-    }
+    override fun getNewFragment(): Fragment = ProductEditDescriptionFragment.createInstance()
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_product_edit_with_menu
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
+    override fun getLayoutRes() = R.layout.activity_product_edit_with_menu
 }

@@ -17,19 +17,19 @@ import javax.inject.Inject
 
 class ProductEditCategoryPresenter
     @Inject constructor(private val getCategoryRecommUseCase: GetCategoryRecommUseCase,
-                        val fetchCategoryDisplayUseCase : FetchCategoryDisplayUseCase,
-                        val fetchCatalogDataUseCase: FetchCatalogDataUseCase):
+                        private val fetchCategoryDisplayUseCase : FetchCategoryDisplayUseCase,
+                        private val fetchCatalogDataUseCase: FetchCatalogDataUseCase):
         BaseDaggerPresenter<ProductEditCategoryView>(){
 
     var categoryId = -1L
 
-    val onProductName: BehaviorSubject<String> = BehaviorSubject.create()
-    val subscriptionProductName = onProductName.debounce(300, TimeUnit.MILLISECONDS)
+    private val onProductName: BehaviorSubject<String> = BehaviorSubject.create()
+    private val subscriptionProductName = onProductName.debounce(300, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { productName ->
                 getCategoryRecommendation(productName)
                 fetchCatalogData(productName, categoryId, 0, 1)
-            }
+            }!!
 
     fun getCategoryRecommendation(productName: String, limitRow: Int = 3){
         getCategoryRecommUseCase.execute(GetCategoryRecommUseCase.createRequestParams(productName, limitRow),

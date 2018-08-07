@@ -31,17 +31,10 @@ class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductCo
         super.onCreate(savedInstanceState)
     }
 
-    override fun getNewFragment(): Fragment{
-        return ProductEditCategoryFragment.createInstance(productName, productCategory, productCatalog, isCategoryLocked?:false)
-    }
+    override fun getNewFragment(): Fragment = ProductEditCategoryFragment
+            .createInstance(productName, productCategory, productCatalog, isCategoryLocked?:false)
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_product_edit_with_menu
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
+    override fun getLayoutRes() = R.layout.activity_product_edit_with_menu
 
     companion object {
         private const val EXTRA_PRODUCT_NAME = "extra_product_name"
