@@ -103,7 +103,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         if (item.getItemId() == R.id.menu_add_address) {
             checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickPlusIconFromTujuanPengiriman();
-            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(getActivity(), token),
+            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(
+                    getActivity(),null,  token, false, false
+                    ),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
@@ -245,7 +247,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 getString(R.string.checkout_module_subtitle_error_empty_address),
                 getString(R.string.checkout_module_label_button_retry_error_empty_address),
                 R.drawable.ic_empty_state,
-                () -> startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(getActivity(), token),
+                () -> startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(
+                        getActivity(), null, token, false, false
+                        ),
                         ManageAddressConstant.REQUEST_CODE_PARAM_CREATE));
     }
 
@@ -357,7 +361,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(getActivity(), mapper.transform(model), token);
+        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(
+                getActivity(), mapper.transform(model), token, true, false
+        );
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
