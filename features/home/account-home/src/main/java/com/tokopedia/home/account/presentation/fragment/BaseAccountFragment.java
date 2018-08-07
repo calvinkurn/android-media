@@ -48,6 +48,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onProfileClicked(BuyerCardViewModel element) {
+        sendTracking(PEMBELI, AKUN_SAYA,
+                String.format("%s %s", CLICK, PROFILE));
         openApplink(ApplinkConst.PROFILE.replace(PARAM_USER_ID, element.getUserId()));
     }
 
@@ -58,11 +60,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onBuyerTokopointClicked(BuyerCardViewModel element) {
+        sendTracking(PEMBELI, AKUN_SAYA, TOKOPOINTS);
         openApplink(ApplinkConst.TOKOPOINTS);
     }
 
     @Override
     public void onBuyerVoucherClicked(BuyerCardViewModel element) {
+        sendTracking(PEMBELI, AKUN_SAYA, MY_COUPON);
         openApplink(ApplinkConst.COUPON);
     }
 
@@ -81,23 +85,32 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         if (TextUtils.equals(item.getApplink(), AccountConstants.KEY_SEE_ALL)){
             seeAllView = new SeeAllView();
             seeAllView.setListener(this);
-            seeAllView.show(getActivity().getSupportFragmentManager(), "Tes");
+            seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
+        } else {
+            sendTracking(item.getTitleTrack(),
+                    item.getSectionTrack(),
+                    item.getDescription());
+            openApplink(item.getApplink());
         }
-        openApplink(item.getApplink());
     }
 
     @Override
     public void onMenuGridLinkClicked(MenuGridViewModel item) {
+        sendTracking(item.getTitleTrack(),
+                item.getSectionTrack(),
+                item.getLinkText());
         openApplink(item.getApplinkUrl());
     }
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMainText());
         openApplink(item.getApplink());
     }
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
         openApplink(item.getApplink());
     }
 
@@ -122,7 +135,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onTokopediaPayItemClicked(String label, String applink) {
-        sendTracking(PEMBELI, getString(R.string.title_tkpd_pay_setting), label);
+        sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
         openApplink(applink);
     }
 

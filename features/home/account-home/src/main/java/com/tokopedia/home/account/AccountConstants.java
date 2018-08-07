@@ -40,9 +40,15 @@ public class AccountConstants {
 
         static final String CLICK_HOME_PAGE = "clickHomePage";
 
-        static final String AKUN_SAYA = "akun saya";
+        public static final String AKUN_SAYA = "akun saya";
 
-        static final String CLICK = "click";
+        public static final String CLICK = "click";
+
+        public static final String PROFILE = "profile";
+
+        public static final String TOKOPOINTS = "tokopoints";
+
+        public static final String MY_COUPON = "kupon saya";
 
         public static final String PEMBELI = "pembeli";
 

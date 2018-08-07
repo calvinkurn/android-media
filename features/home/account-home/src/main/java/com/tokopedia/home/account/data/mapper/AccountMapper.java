@@ -30,6 +30,8 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+
 /**
  * @author okasurya on 7/20/18.
  */
@@ -97,11 +99,15 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setMenu(context.getString(R.string.title_menu_waiting_for_payment));
         menuList.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
         menuList.setApplink(ApplinkConst.PMS);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
         items.add(menuList);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_shopping_transaction));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
+        menuGrid.setTitleTrack(PEMBELI);
+        menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
         menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
 
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
@@ -109,15 +115,18 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 R.drawable.ic_waiting_for_confirmation,
                 context.getString(R.string.label_menu_waiting_confirmation),
                 ApplinkConst.PURCHASE_CONFIRMED,
-                accountModel.getNotifications().getBuyerOrder().getConfirmed()
-        );
+                accountModel.getNotifications().getBuyerOrder().getConfirmed(),
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction));
         menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_order_processed,
                 context.getString(R.string.label_menu_order_processed),
                 ApplinkConst.PURCHASE_PROCESSED,
-                accountModel.getNotifications().getBuyerOrder().getProcessed()
+                accountModel.getNotifications().getBuyerOrder().getProcessed(),
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
 
@@ -125,7 +134,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipping),
                 ApplinkConst.PURCHASE_SHIPPED,
-                accountModel.getNotifications().getBuyerOrder().getShipped()
+                accountModel.getNotifications().getBuyerOrder().getShipped(),
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
 
@@ -133,7 +144,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_delivered),
                 ApplinkConst.PURCHASE_DELIVERED,
-                accountModel.getNotifications().getBuyerOrder().getArriveAtDestination()
+                accountModel.getNotifications().getBuyerOrder().getArriveAtDestination(),
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
 
@@ -144,6 +157,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setMenu(context.getString(R.string.title_menu_complaint));
         menuList.setMenuDescription(context.getString(R.string.label_menu_complaint));
         menuList.setApplink(ApplinkConst.RESCENTER_BUYER);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
         items.add(menuList);
 
         menuGrid = new MenuGridViewModel();
@@ -153,28 +168,36 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
                 ApplinkConst.DIGITAL_ORDER,
-                0
+                0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_deals,
                 context.getString(R.string.title_menu_deals),
                 ApplinkConst.DEALS_ORDER,
-                0
+                0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
-                0
+                0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
                 AccountConstants.KEY_SEE_ALL,
-                0
+                0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
         menuGrid.setItems(menuGridItems);
@@ -188,18 +211,24 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setMenu(context.getString(R.string.title_menu_last_seen));
         menuList.setMenuDescription(context.getString(R.string.label_menu_last_seen));
         menuList.setApplink(ApplinkConst.RECENT_VIEW);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_wishlist));
         menuList.setMenuDescription(context.getString(R.string.label_menu_wishlist));
         menuList.setApplink(ApplinkConst.WISHLIST);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_favorite_shops));
         menuList.setMenuDescription(context.getString(R.string.label_menu_favorite_shops));
         menuList.setApplink(ApplinkConst.FAVORITE_SHOPS);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
@@ -208,6 +237,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
                 AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
@@ -216,6 +247,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
                 AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
         items.add(menuList);
 
         InfoCardViewModel infoCard = new InfoCardViewModel();
@@ -223,6 +256,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         infoCard.setMainText(context.getString(R.string.title_menu_wallet_referral));
         infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
         infoCard.setApplink(ApplinkConst.REFERRAL);
+        infoCard.setTitleTrack(PEMBELI);
+        infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
         items.add(infoCard);
 
         menuTitle = new MenuTitleViewModel();
@@ -233,6 +268,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setMenu(context.getString(R.string.title_menu_resolution_center));
         menuList.setMenuDescription(context.getString(R.string.label_menu_resolution_center));
         menuList.setApplink(ApplinkConst.CONTACT_US_NATIVE);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_help));
         items.add(menuList);
 
         model.setItems(items);
@@ -257,13 +294,17 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
         menuGrid.setApplinkUrl(ApplinkConst.SELLER_HISTORY);
+        menuGrid.setTitleTrack(PENJUAL);
+        menuGrid.setSectionTrack(context.getString(R.string.title_menu_sales));
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
 
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_new_order,
                 context.getString(R.string.label_menu_new_order),
                 ApplinkConst.SELLER_NEW_ORDER,
-                accountModel.getNotifications().getSellerOrder().getNewOrder()
+                accountModel.getNotifications().getSellerOrder().getNewOrder(),
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
         );
         menuGridItems.add(gridItem);
 
@@ -271,7 +312,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 R.drawable.ic_ready_to_ship,
                 context.getString(R.string.label_menu_ready_to_ship),
                 ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP,
-                accountModel.getNotifications().getSellerOrder().getReadyToShip()
+                accountModel.getNotifications().getSellerOrder().getReadyToShip(),
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
         );
         menuGridItems.add(gridItem);
 
@@ -279,7 +322,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipped),
                 ApplinkConst.SELLER_PURCHASE_SHIPPED,
-                accountModel.getNotifications().getSellerOrder().getShipped()
+                accountModel.getNotifications().getSellerOrder().getShipped(),
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
         );
         menuGridItems.add(gridItem);
 
@@ -287,7 +332,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
                 R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_arrive_at_destination),
                 ApplinkConst.SELLER_PURCHASE_DELIVERED,
-                accountModel.getNotifications().getSellerOrder().getArriveAtDestination()
+                accountModel.getNotifications().getSellerOrder().getArriveAtDestination(),
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
         );
         menuGridItems.add(gridItem);
         menuGrid.setItems(menuGridItems);
