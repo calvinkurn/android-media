@@ -63,7 +63,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     val appRouter: Context? by lazy { activity?.application as? Context }
     protected var currentProductAddViewModel: ProductAddViewModel? = null
 
-    override fun onCreate(savedInstancurrentProductAddViewModelceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -74,7 +74,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_VIEW_MODEL)) {
                 currentProductAddViewModel = savedInstanceState.getParcelable(SAVED_PRODUCT_VIEW_MODEL)
-                populateView(currentProductAddViewModel)
             }
         }
         if (currentProductAddViewModel == null) {
@@ -104,7 +103,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewEtalaseProduct.setOnClickListener { startProductEtalaseActivity() }
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
-        button_save.setOnClickListener{ saveDraft(currentProductAddViewModel?.isDataValid(this) == true) }
+        button_save.setOnClickListener{
+            if (currentProductAddViewModel?.isDataValid(this) == true) {
+                saveDraft(true)
+            }
+        }
     }
 
 
@@ -189,7 +192,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_LOGISTIC -> {
                     val productLogistic: ProductLogistic = data.getParcelableExtra(EXTRA_LOGISTIC)
-                    ?.productLogistic = productLogistic
+                    currentProductAddViewModel?.productLogistic = productLogistic
                 }
                 REQUEST_CODE_GET_STOCK -> {
                     val productStock: ProductStock = data.getParcelableExtra(EXTRA_STOCK)
