@@ -9,4 +9,10 @@
     <string name="foto_ktp_desc">Pastikan data KTP Anda terlihat jelas di foto dan sesuai dengan informasi akun Tokopedia Anda.</string>
     <string name="foto_payment_title">Foto Buku Tabungan / Bukti Pembayaran</string>
     <string name="foto_payment_desc">Lampirkan halaman pertama buku tabungan atau bukti pembayaran di Tokopedia. Pastikan foto terlihat jelas dan sesuai dengan informasi akun Tokopedia.</string>
+    <string name="submission_sent">Pengajuan Anda Telah Terkirim</string>
+    <string name="submission_sent_desc">Kami akan memproses data yang Anda unggah pada hari kerja (09.00-18.00), mohon menunggu maksimal 1x24 jam.</string>
+    <string name="duplicate_submission_desc">Hasil pengajuan Anda akan dikirim melalui SMS dan juga email.</string>
+    <string name="new_request_submission_desc">Hasil pengajuan Anda akan diberitahukan melalui SMS ke:</string>
+    <string name="email">dan email:</string>
+    <string name="goto_home">Kembali ke Beranda</string>
 </resources>

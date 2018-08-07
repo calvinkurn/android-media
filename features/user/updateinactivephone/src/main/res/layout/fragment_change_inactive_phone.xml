@@ -11,10 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/dp_6"
         android:text="Masukkan nomor ponsel yang terhubung dengan akun Anda."
         android:textColor="@color/black_38"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp_14"
         android:textStyle="normal" />
 
 
@@ -23,10 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_large"
         android:fontFamily="sans-serif"
-        android:lineSpacingExtra="2sp"
+        android:lineSpacingExtra="@dimen/dp_2"
         android:text="Nomor Ponsel"
         android:textColor="@color/black_56"
-        android:textSize="12sp"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal" />
 
 
@@ -41,10 +41,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:lineSpacingExtra="5sp"
+        android:lineSpacingExtra="@dimen/dp_5"
         android:text="Contoh: 08xxxxxxxxxx"
         android:textColor="@color/black_56"
-        android:textSize="12sp"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal" />
 
     <TextView
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:lineSpacingExtra="4sp"
+        android:lineSpacingExtra="@dimen/dp_4"
         android:text="Nomor ponsel belum terdaftar"
         android:textColor="@color/red_500"
         android:textSize="@dimen/text_size_small"
@@ -62,7 +62,7 @@
     <Button
         android:id="@+id/button_continue"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/dp_48"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_32"
         android:background="@drawable/login_button_selector"

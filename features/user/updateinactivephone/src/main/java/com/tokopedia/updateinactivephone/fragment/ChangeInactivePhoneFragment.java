@@ -28,12 +28,15 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
+import com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneRequestSubmittedActivity;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
 import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
 import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneRequestSubmittedActivity.IS_DUPLICATE_REQUEST;
 
 public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements ChangeInactivePhone.View {
     private EditText inputMobileNumber;
@@ -211,7 +214,10 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
     @Override
     public void onPhoneDuplicateRequest() {
         setErrorText("");
-        // TODO: 8/3/18 goto form submitted page
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DUPLICATE_REQUEST, true);
+        Intent intent = ChangeInactivePhoneRequestSubmittedActivity.createNewIntent(getContext(), bundle);
+        startActivity(intent);
     }
 
     @Override

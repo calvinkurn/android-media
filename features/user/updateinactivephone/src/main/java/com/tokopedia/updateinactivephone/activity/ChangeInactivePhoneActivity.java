@@ -29,7 +29,6 @@ public class ChangeInactivePhoneActivity extends BaseSimpleActivity implements H
 
     @Override
     protected Fragment getNewFragment() {
-
         return ChangeInactivePhoneFragment.getInstance();
     }
 
