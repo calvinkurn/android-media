@@ -381,28 +381,4 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
 
-    @Override
-    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        actionNavigateByApplinksUrl(activity, applinks, bundle);
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
-    }
-
-    @Override
-    public Intent getInstantLoanIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getInstantLoanActivityIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Fragment getFlightOrderListFragment() {
-        return FlightOrderListFragment.createInstance();
-    }
 }
