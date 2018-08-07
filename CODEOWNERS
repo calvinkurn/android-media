@@ -25,9 +25,9 @@
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 
 /features/digital/flight/               @tokopedia/minion-mark
+/features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob

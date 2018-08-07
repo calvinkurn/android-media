@@ -18,6 +18,7 @@ import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
+import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
@@ -56,6 +57,8 @@ public class ShopPageHeaderViewHolder {
         void onShopNameClicked();
 
         void onShopInfoClicked();
+
+        void goToHelpCenter(String url);
     }
 
     private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
@@ -215,7 +218,7 @@ public class ShopPageHeaderViewHolder {
 
     public void renderData(ShopInfo shopInfo, boolean myShop) {
         updateShopInfo(shopInfo, myShop);
-        updateViewShopOpen(shopInfo);
+        updateViewShopOpen(shopInfo, myShop);
     }
 
     public void renderData(ReputationSpeed reputationSpeed) {
@@ -357,16 +360,24 @@ public class ShopPageHeaderViewHolder {
         }
     }
 
-    private void updateViewShopOpen(ShopInfo shopInfo) {
+    private void updateViewShopOpen(ShopInfo shopInfo, boolean isMyShop) {
         switch ((int) shopInfo.getInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
                 showShopClosed(shopInfo);
+                shopWarningTickerView.setOnClickListener(null);
                 break;
             case ShopStatusDef.MODERATED:
                 showShopModerated(shopInfo);
+                shopWarningTickerView.setOnClickListener(null);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
                 showShopNotActive(shopInfo);
+                if (isMyShop){
+                    shopWarningTickerView.setOnClickListener(view ->
+                        listener.goToHelpCenter(ShopUrl.SHOP_HELP_CENTER));
+                } else {
+                    shopWarningTickerView.setOnClickListener(null);
+                }
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);

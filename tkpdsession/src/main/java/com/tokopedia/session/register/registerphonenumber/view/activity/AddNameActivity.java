@@ -1,22 +1,17 @@
 package com.tokopedia.session.register.registerphonenumber.view.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changename.view.fragment.ChangeNameFragment;
 import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameFragment;
-import com.tokopedia.session.register.registerphonenumber.view.fragment.RegisterPhoneNumberFragment;
 
 /**
  * @author by yfsx on 22/03/18.
@@ -25,6 +20,7 @@ import com.tokopedia.session.register.registerphonenumber.view.fragment.Register
 public class AddNameActivity extends BasePresenterActivity implements HasComponent {
 
     public static final String PARAM_PHONE = "param_phone";
+    private RegisterAnalytics analytics;
 
     public static Intent newInstance(Context context, String phoneNumber) {
         Intent intent = new Intent(context, AddNameActivity.class);
@@ -76,6 +72,12 @@ public class AddNameActivity extends BasePresenterActivity implements HasCompone
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics = RegisterAnalytics.initAnalytics(this);
+    }
+
+    @Override
     protected void setViewListener() {
 
     }
@@ -93,5 +95,11 @@ public class AddNameActivity extends BasePresenterActivity implements HasCompone
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        analytics.eventClickBackAddName();
+        super.onBackPressed();
     }
 }

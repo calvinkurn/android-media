@@ -16,6 +16,7 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.digital_deals.view.fragment.TncBottomSheetFragment;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
@@ -89,6 +90,18 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     }
 
     @Override
+    public void replaceFragment(String text, String toolBarText, int flag) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Bundle bundle = new Bundle();
+        bundle.putString(TncBottomSheetFragment.TOOLBAR_TITLE, toolBarText);
+        bundle.putString(TncBottomSheetFragment.TEXT, text);
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
+        transaction.add(R.id.parent_view, TncBottomSheetFragment.createInstance(bundle));
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
     public List<Outlet> getOutlets() {
         return this.outlets;
     }
@@ -100,7 +113,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
 
     @Override
     public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()<1) {
+        if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
             setResult(RESULT_OK);
         }
         super.onBackPressed();

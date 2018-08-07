@@ -307,7 +307,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         }
     }
 
-    private void setUICounter() {
+    void setUICounter() {
         TextViewCompat.setTextAppearance(mTvCounter, mCounterTextAppearance);
         if (mCounterEnabled) {
             updateCounter();

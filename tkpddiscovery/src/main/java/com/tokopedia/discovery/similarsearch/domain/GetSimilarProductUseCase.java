@@ -57,6 +57,9 @@ public class GetSimilarProductUseCase extends UseCase<List<ProductsItem>> {
         }).flatMap(new Func1<List<ProductsItem>, Observable<List<ProductsItem>>>() {
             @Override
             public Observable<List<ProductsItem>> call(List<ProductsItem> productsItems) {
+                if(productsItems == null || productsItems.size() <= 0) {
+                    return Observable.just(null);
+                }
                 List<String> productIdList = generateProductIdList(productsItems);
                 return Observable.zip(Observable.just(productsItems), getWishList(requestParams.getString("userId", ""), productIdList), new Func2<List<ProductsItem>, Response<WishlistCheckResult>, List<ProductsItem>>() {
                     @Override
