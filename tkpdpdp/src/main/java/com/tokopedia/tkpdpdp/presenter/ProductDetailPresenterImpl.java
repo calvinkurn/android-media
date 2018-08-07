@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -73,10 +74,13 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.estimasiongkir.GetRateEstimationUseCase;
+import com.tokopedia.tkpdpdp.estimasiongkir.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
@@ -142,6 +146,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     DateFormat df;
 
     private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
+    private GetRateEstimationUseCase getRateEstimationUseCase;
 
     public ProductDetailPresenterImpl(ProductDetailView viewListener,
                                       WishListActionListener wishListActionListener) {
@@ -157,21 +162,34 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         this.retrofitInteractor = new RetrofitInteractorImpl();
     }
 
+    /* context for testing only since API hasn't been ready yet */
+    @Override
+    public void initGetRateEstimationUseCase(Context context){
+        getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase(), context);
+    }
+
     @Override
     public void processDataPass(@NonNull ProductPass productPass) {
         if (productPass.haveBasicData()) viewListener.renderTempProductData(productPass);
     }
 
-    public void getCostEstimation(String shippingService, String shippingName, String origin, String dest,
-                                  float weigth, String rawQuery){
-        HashMap<String, Object> variables = new HashMap<>();
-        variables.put("service", shippingService);
-        variables.put("names", shippingName);
-        variables.put("from", origin);
-        variables.put("to", dest);
-        variables.put("weight", weigth+"");
+    @Override
+    public void getCostEstimation(String rawQuery, String productId, String userId){
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productId, userId),
+                new Subscriber<RatesModel>() {
+                    @Override
+                    public void onCompleted() { }
 
-        GraphqlRequest request = new GraphqlRequest(rawQuery, variables);
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(RatesModel ratesModel) {
+                        viewListener.onSuccesLoadRateEstimaion(ratesModel);
+                    }
+                });
     }
 
     @Override

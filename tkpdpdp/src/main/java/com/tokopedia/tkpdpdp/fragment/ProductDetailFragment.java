@@ -39,6 +39,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -114,6 +115,7 @@ import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
+import com.tokopedia.tkpdpdp.estimasiongkir.RatesModel;
 import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
@@ -304,6 +306,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this, this);
+        this.presenter.initGetRateEstimationUseCase(getActivity());
     }
 
     @Override
@@ -1125,6 +1128,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else {
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+            presenter.getCostEstimation(GraphqlHelper.loadRawString(getResources(), R.raw.gql_pdp_estimasi_ongkir),
+                    productPass.getProductId(), userSession.getUserId());
         }
     }
 
@@ -1958,5 +1963,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void refreshData() {
         presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+        presenter.getCostEstimation(GraphqlHelper.loadRawString(getResources(), R.raw.gql_pdp_estimasi_ongkir),
+                productPass.getProductId(), userSession.getUserId());
+    }
+
+    @Override
+    public void onSuccesLoadRateEstimaion(RatesModel ratesModel) {
+        priceSimulationView.updateRateEstimation(ratesModel);
     }
 }
