@@ -47,7 +47,7 @@ public class CheckPhoneNumberStatusSubscriber extends Subscriber<GraphqlResponse
                     graphqlResponse.getData(GqlCheckPhoneStatusResponse.class);
 
             if (gqlCheckPhoneStatusResponse.getValidateInactivePhone().isSuccess()) {
-                view.onPhoneStatusSuccess();
+                view.onPhoneStatusSuccess(gqlCheckPhoneStatusResponse.getValidateInactivePhone().getUserId());
             } else {
                 resolveError(gqlCheckPhoneStatusResponse.getValidateInactivePhone().getError());
             }

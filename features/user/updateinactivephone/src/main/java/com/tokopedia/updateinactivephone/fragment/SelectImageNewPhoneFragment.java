@@ -1,6 +1,7 @@
 package com.tokopedia.updateinactivephone.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,19 +24,15 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.updateinactivephone.R;
-import com.tokopedia.updateinactivephone.presenter.ChangeInactiveFormRequestPresenter;
-import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest;
 import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
-public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implements ChangeInactiveFormRequest.View {
+public class SelectImageNewPhoneFragment extends BaseDaggerFragment {
 
     private static final int REQUEST_CODE_PHOTO_ID = 1001;
     private static final int MAX_IMAGE_SIZE_IN_KB = 10 * 1024 * 1024;
@@ -45,15 +42,13 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
     private ImagePickerBuilder imagePickerBuilder;
 
     public static Fragment getInstance() {
-        return new ChangeInactiveFormRequestFragment();
+        return new SelectImageNewPhoneFragment();
     }
-
-    @Inject
-    ChangeInactiveFormRequestPresenter presenter;
 
     private ImageView uploadIdPhoto;
     private ImageView uploadPaymentPhoto;
     private Button continueButton;
+    private SelectImageInterface selectImageInterface;
 
     @Override
     protected void initInjector() {
@@ -73,6 +68,15 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
         ScreenTracking.screen(getScreenName());
     }
 
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        try {
+            selectImageInterface = (SelectImageInterface) context;
+        } catch (Exception e) {
+
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
@@ -88,7 +92,6 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
         accountViewRelativeLayout = view.findViewById(R.id.upload_account_book_view);
         accountPhotoView = view.findViewById(R.id.account_book);
 
-        presenter.attachView(this);
         prepareView();
         return view;
     }
@@ -98,27 +101,25 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
         uploadIdPhoto.setOnClickListener(onUploadPhotoId());
         accountViewRelativeLayout.setOnClickListener(onUploadAccountBook());
         idPhotoViewRelativeLayout.setOnClickListener(onUploadPhotoId());
+
+        continueButton.setOnClickListener(view -> {
+            selectImageInterface.onContinueButtonClick();
+        });
     }
 
     private View.OnClickListener onUploadPhotoId() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImagePickerBuilder builder = getImagePickerBuilder();
-                Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-                startActivityForResult(intent, REQUEST_CODE_PHOTO_ID);
-            }
+        return v -> {
+            ImagePickerBuilder builder = getImagePickerBuilder();
+            Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+            startActivityForResult(intent, REQUEST_CODE_PHOTO_ID);
         };
     }
 
     private View.OnClickListener onUploadAccountBook() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImagePickerBuilder builder = getImagePickerBuilder();
-                Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-                startActivityForResult(intent, REQUEST_CODE_PAYMENT_PROOF);
-            }
+        return v -> {
+            ImagePickerBuilder builder = getImagePickerBuilder();
+            Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+            startActivityForResult(intent, REQUEST_CODE_PAYMENT_PROOF);
         };
     }
 
@@ -147,8 +148,8 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
                         idPhotoViewRelativeLayout.setVisibility(View.VISIBLE);
                         loadImageToImageView(idPhotoView, imagePath);
 
-                        presenter.setPhotoIdImagePath(imagePath);
-                        presenter.uploadPhotoIdImage();
+                        selectImageInterface.setPhotoIdImagePath(imagePath);
+                        selectImageInterface.uploadPhotoIdImage();
                     }
                 }
                 break;
@@ -160,7 +161,7 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
                         uploadPaymentPhoto.setVisibility(View.GONE);
                         accountViewRelativeLayout.setVisibility(View.VISIBLE);
                         loadImageToImageView(accountPhotoView, imagePath);
-                        presenter.setAccountPhotoImagePath(imagePath);
+                        selectImageInterface.setAccountPhotoImagePath(imagePath);
                     }
                 }
                 break;
@@ -169,7 +170,7 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
     }
 
     private void setSubmitButton() {
-        if (presenter.isValidPhotoIdPath()) {
+        if (selectImageInterface.isValidPhotoIdPath()) {
             MethodChecker.setBackground(continueButton,
                     MethodChecker.getDrawable(getActivity(),
                             R.drawable.green_button_rounded
@@ -188,19 +189,15 @@ public class ChangeInactiveFormRequestFragment extends BaseDaggerFragment implem
         return "";
     }
 
-    @Override
-    public void dismissLoading() {
+    public interface SelectImageInterface {
+        void onContinueButtonClick();
 
+        boolean isValidPhotoIdPath();
+
+        void setAccountPhotoImagePath(String imagePath);
+
+        void setPhotoIdImagePath(String imagePath);
+
+        void uploadPhotoIdImage();
     }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void onForbidden() {
-
-    }
-
 }

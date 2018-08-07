@@ -184,7 +184,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
     }
 
     @Override
-    public void onPhoneStatusSuccess() {
+    public void onPhoneStatusSuccess(String userid) {
         setErrorText("");
         startActivity(ChangeInactiveFormRequestActivity.getChangeInactivePhoneIntent(getContext()));
     }

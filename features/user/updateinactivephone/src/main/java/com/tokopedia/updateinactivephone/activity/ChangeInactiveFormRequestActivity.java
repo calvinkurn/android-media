@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,9 +19,21 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.updateinactivephone.R;
-import com.tokopedia.updateinactivephone.fragment.ChangeInactiveFormRequestFragment;
+import com.tokopedia.updateinactivephone.fragment.SelectImageNewPhoneFragment;
+import com.tokopedia.updateinactivephone.presenter.ChangeInactiveFormRequestPresenter;
+import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest;
 
-public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
+import javax.inject.Inject;
+
+public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implements
+        HasComponent<AppComponent>, ChangeInactiveFormRequest.View, SelectImageNewPhoneFragment.SelectImageInterface {
+
+    @Inject
+    ChangeInactiveFormRequestPresenter presenter;
+
+    private String userId;
+    private String oldPhoneNumber;
+
 
     public static Intent getChangeInactivePhoneIntent(Context context) {
         return new Intent(context, ChangeInactiveFormRequestActivity.class);
@@ -28,7 +41,7 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
 
     @Override
     protected Fragment getNewFragment() {
-        return ChangeInactiveFormRequestFragment.getInstance();
+        return SelectImageNewPhoneFragment.getInstance();
     }
 
     @Override
@@ -43,16 +56,23 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
         return R.layout.change_inactive_form_layout;
     }
 
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        presenter.attachView(this);
+        return super.onCreateView(name, context, attrs);
+    }
+
     private void initView() {
 
         Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null)
+        if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
+        }
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                (ChangeInactiveFormRequestFragment.class.getSimpleName());
+                (SelectImageNewPhoneFragment.class.getSimpleName());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
-            fragment = ChangeInactiveFormRequestFragment.getInstance();
+            fragment = SelectImageNewPhoneFragment.getInstance();
         }
         fragmentTransaction.replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
@@ -85,5 +105,46 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
     @Override
     public AppComponent getComponent() {
         return ((MainApplication) getApplication()).getAppComponent();
+    }
+
+    @Override
+    public void onContinueButtonClick() {
+        // TODO: 8/7/18 move to input new phone fragment
+
+    }
+
+    @Override
+    public boolean isValidPhotoIdPath() {
+        return presenter.isValidPhotoIdPath();
+    }
+
+    @Override
+    public void setAccountPhotoImagePath(String imagePath) {
+        presenter.setAccountPhotoImagePath(imagePath);
+    }
+
+    @Override
+    public void setPhotoIdImagePath(String imagePath) {
+        presenter.setPhotoIdImagePath(imagePath);
+    }
+
+    @Override
+    public void uploadPhotoIdImage() {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void onForbidden() {
+
     }
 }

@@ -17,7 +17,7 @@ public class ChangeInactivePhone {
 
         void onForbidden();
 
-        void onPhoneStatusSuccess();
+        void onPhoneStatusSuccess(String userId);
 
         void onPhoneRegisteredWithEmail();
 
