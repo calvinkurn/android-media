@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -98,6 +99,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
+        if(item.getApplink().equals(AccountConstants.NAVIGATION_KEY_TOPADS)) {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
+            }
+        }
+
         openApplink(item.getApplink());
     }
 

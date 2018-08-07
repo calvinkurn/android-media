@@ -10,6 +10,7 @@ public class AccountConstants {
     public static final String QUERY = "query";
     public static final String VARIABLES = "variables";
     public static final String KEY_SEE_ALL = "lihat_semua";
+    public static final String NAVIGATION_KEY_TOPADS = "topads";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
 
     public static class Url {
