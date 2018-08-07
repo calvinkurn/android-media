@@ -178,8 +178,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                     }
 
                     // id might come from deeplink
-                    // So, if the selected name is empty, we know that the id might come from deeplink
-                    // If the selectedName is not empty, we don't need to do find name anymore.
                     String selectedEtalaseName = getView().getSelectedEtalaseName();
                     for (EtalaseModel etalaseModel : etalaseModelListTemp) {
                         if (selectedEtalaseId.equalsIgnoreCase(etalaseModel.getEtalaseId())) {
