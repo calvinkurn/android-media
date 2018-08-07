@@ -5,5 +5,7 @@ package com.tokopedia.settingbank.banklist.domain.pojo
  */
 
 data class DeleteBankAccountPojo(
+        @Expose
+        @SerializedName("is_success")
         val is_success: Boolean? = false
 )
