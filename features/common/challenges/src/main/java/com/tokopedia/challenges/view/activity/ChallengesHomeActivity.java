@@ -9,15 +9,21 @@ import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
+import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
 
 /**
  * Created by ashwanityagi on 06/08/18.
  */
 
-public class ChallengesHomeActivity extends BaseActivity {
+public class ChallengesHomeActivity extends BaseActivity implements HasComponent<ChallengesComponent>{
 private TabLayout tabLayout;
 private ViewPager viewPager;
 
@@ -47,4 +53,10 @@ private ViewPager viewPager;
         setTitle("Home");
     }
 
+    @Override
+    public ChallengesComponent getComponent() {
+        return DaggerChallengesComponent.builder()
+                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
+                .build();
+    }
 }

@@ -3,12 +3,16 @@ package com.tokopedia.challenges.data;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
+import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -28,7 +32,8 @@ public class IndiAuthInterceptor implements Interceptor {
     protected UserSession userSession;
     private IndiSession indiSession;
 
-    public IndiAuthInterceptor(Context context,
+    @Inject
+    public IndiAuthInterceptor(@ApplicationContext Context context,
                                IndiSession indiSession) {
         this.context = context;
         this.userSession = new UserSession(context);
