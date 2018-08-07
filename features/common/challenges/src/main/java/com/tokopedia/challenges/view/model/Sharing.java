@@ -1,29 +1,29 @@
 
-package com.tokopedia.challenges.domain.model;
+package com.tokopedia.challenges.view.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthProvider {
+public class Sharing {
 
-    private String network;
-    private String id;
+    private MetaTags metaTags;
+    private Assets assets;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public String getNetwork() {
-        return network;
+    public MetaTags getMetaTags() {
+        return metaTags;
     }
 
-    public void setNetwork(String network) {
-        this.network = network;
+    public void setMetaTags(MetaTags metaTags) {
+        this.metaTags = metaTags;
     }
 
-    public String getId() {
-        return id;
+    public Assets getAssets() {
+        return assets;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setAssets(Assets assets) {
+        this.assets = assets;
     }
 
     public Map<String, Object> getAdditionalProperties() {

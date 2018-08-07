@@ -45,7 +45,6 @@ private ViewPager viewPager;
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         setTitle("Home");
-        viewPager.setCurrentItem(1);
     }
 
 }

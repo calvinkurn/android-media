@@ -1,5 +1,5 @@
 
-package com.tokopedia.challenges.domain.model;
+package com.tokopedia.challenges.view.model;
 
 import java.util.HashMap;
 import java.util.Map;
