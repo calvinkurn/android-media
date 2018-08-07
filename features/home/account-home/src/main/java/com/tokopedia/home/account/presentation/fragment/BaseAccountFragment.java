@@ -130,6 +130,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onAddProductClicked() {
+        sendTracking(PENJUAL, getString(R.string.title_menu_product),
+                getString(R.string.label_button_add_product));
         openApplink(ApplinkConst.PRODUCT_ADD);
     }
 

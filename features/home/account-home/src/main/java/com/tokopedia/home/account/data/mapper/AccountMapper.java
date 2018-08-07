@@ -349,12 +349,16 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setMenu(context.getString(R.string.title_menu_product_list));
         menuList.setMenuDescription(context.getString(R.string.label_menu_product_list));
         menuList.setApplink(ApplinkConst.PRODUCT_MANAGE);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_product));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_product_draft));
         menuList.setMenuDescription(context.getString(R.string.label_menu_product_draft));
         menuList.setApplink(ApplinkConst.PRODUCT_DRAFT);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_product));
         items.add(menuList);
 
         menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_other_features));
@@ -364,18 +368,24 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setMenu(context.getString(R.string.title_menu_opportunity));
         menuList.setMenuDescription(context.getString(R.string.label_menu_opportunity));
         menuList.setApplink(ApplinkConst.SELLER_OPPORTUNITY);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_topads));
         menuList.setMenuDescription(context.getString(R.string.label_menu_topads));
         menuList.setApplink(ApplinkConst.TOPADS);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_seller_center));
         menuList.setMenuDescription(context.getString(R.string.label_menu_seller_center));
         menuList.setApplink(ApplinkConst.SELLER_CENTER);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
 
 //        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
