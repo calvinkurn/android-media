@@ -7,9 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.nps.data.source.ChallengesUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
