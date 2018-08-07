@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.edit.utils;
+package com.tokopedia.product.edit.utils;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.data.exception.ImageUploadErrorException;
 
 /**

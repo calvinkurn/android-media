@@ -26,6 +26,7 @@ import com.tokopedia.product.edit.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.product.edit.di.module.AddProductserviceModule;
 import com.tokopedia.product.edit.domain.listener.ProductSubmitNotificationListener;
 import com.tokopedia.product.edit.util.ProductEditModuleRouter;
+import com.tokopedia.product.edit.utils.ErrorHandlerAddProduct;
 import com.tokopedia.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.product.edit.view.presenter.AddProductServiceListener;
@@ -113,7 +114,7 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public void onFailedAddProduct(Throwable t, ProductSubmitNotificationListener productSubmitNotificationListener) {
-        String errorMessage = ErrorHandler.getErrorMessage(getApplicationContext(), t);
+        String errorMessage = ErrorHandlerAddProduct.getErrorMessage(getApplicationContext(), t);
         Notification notification = buildFailedNotification(errorMessage, productSubmitNotificationListener.getId(), productSubmitNotificationListener.getSubmitStatus());
         notificationManager.notify(TAG, productSubmitNotificationListener.getId(), notification);
         removeNotificationFromList(productSubmitNotificationListener.getId());

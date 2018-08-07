@@ -71,9 +71,18 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         presenter.getShopInfo()
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(SAVED_PRODUCT_VIEW_MODEL)) {
-                currentProductAddViewModel = savedInstanceState.getParcelable(SAVED_PRODUCT_VIEW_MODEL)
+        savedInstanceState?.run {
+            if (containsKey(SAVED_PRODUCT_VIEW_MODEL)) {
+                currentProductAddViewModel = getParcelable(SAVED_PRODUCT_VIEW_MODEL)
+            }
+            if(containsKey(EXTRA_IS_OFFICIAL_STORE)){
+                officialStore = getBoolean(EXTRA_IS_OFFICIAL_STORE)
+            }
+            if(containsKey(EXTRA_IS_FREE_RETURN)){
+                isFreeReturn = getBoolean(EXTRA_IS_FREE_RETURN)
+            }
+            if(containsKey(EXTRA_IS_GOLD_MERCHANT)){
+                isGoldMerchant = getBoolean(EXTRA_IS_GOLD_MERCHANT)
             }
         }
         if (currentProductAddViewModel == null) {
@@ -109,8 +118,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
         }
     }
-
-
 
     private fun startCatalogActivity() {
         activity?.run {
@@ -169,6 +176,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(SAVED_PRODUCT_VIEW_MODEL, currentProductAddViewModel)
+        outState.putBoolean(EXTRA_IS_GOLD_MERCHANT, isGoldMerchant)
+        outState.putBoolean(EXTRA_IS_OFFICIAL_STORE, officialStore)
+        outState.putBoolean(EXTRA_IS_FREE_RETURN, isFreeReturn)
     }
 
     override fun getScreenName(): String? = null

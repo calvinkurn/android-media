@@ -20,6 +20,7 @@ import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.ProductAddActivity
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
@@ -44,6 +45,18 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_product_add_name_category, container, false)
+    }
+
+    override fun restoreSaveInstance(savedInstanceState: Bundle?){
+        super.restoreSaveInstance(savedInstanceState)
+        savedInstanceState?.run {
+            if(containsKey(EXTRA_PRODUCT_NAME)){
+                productName = getParcelable(EXTRA_PRODUCT_NAME)
+            }
+            if (containsKey(EXTRA_IMAGES)){
+                productPictureList = getStringArrayList(EXTRA_IMAGES)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,6 +103,12 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_PRODUCT_NAME, productName)
+        outState.putStringArrayList(EXTRA_IMAGES, productPictureList)
+    }
+
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
         super.onCategoryRecommendationChoosen(productCategory)
         validateData()
@@ -114,6 +133,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
     }
 
     companion object {
+        const val EXTRA_PRODUCT_NAME = "EXTRA_PRODUCT_NAME"
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
