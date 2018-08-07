@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.analytics.ContentExloreEventTracking;
@@ -126,7 +128,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     private void initView() {
+        dropKeyboard();
         searchInspiration.setListener(this);
+        searchInspiration.getSearchTextView().setOnClickListener(v -> {
+            searchInspiration.getSearchTextView().setCursorVisible(true);
+        });
         swipeToRefresh.setOnRefreshListener(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
@@ -307,6 +313,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchSubmitted(String text) {
+        dropKeyboard();
         updateSearch(text);
         imageAdapter.clearData();
         presenter.getExploreData(true);
@@ -322,6 +329,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
         clearData();
         presenter.updateCursor("");
         presenter.refreshExploreData();
+    }
+
+    @Override
+    public void dropKeyboard() {
+        searchInspiration.getSearchTextView().setCursorVisible(false);
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
