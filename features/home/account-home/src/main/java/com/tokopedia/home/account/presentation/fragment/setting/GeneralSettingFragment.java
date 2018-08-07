@@ -184,7 +184,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
     private void showDialogLogout() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity())
-                .setIcon(R.drawable.launch_screen)
+                .setIcon(R.mipmap.ic_launcher)
                 .setTitle(getString(R.string.logout)+" dari Tokopedia")
                 .setMessage(R.string.logout_confirmation)
                 .setPositiveButton(R.string.logout, (dialogInterface, i) -> {

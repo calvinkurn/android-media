@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -167,6 +168,13 @@ public class CartFragment extends BaseCheckoutFragment implements
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         cartListComponent.inject(this);
+        dPresenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(CartListComponent component){
+        component.inject(this);
+        dPresenter.attachView(this);
     }
 
     @Override

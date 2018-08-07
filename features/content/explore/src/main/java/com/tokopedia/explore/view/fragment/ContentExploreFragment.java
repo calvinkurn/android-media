@@ -238,7 +238,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCategoryClicked(int position, int categoryId) {
+    public void onCategoryClicked(int position, int categoryId, String categoryName) {
         boolean isSameCategory = false;
 
         for (int i = 0; i < categoryAdapter.getList().size(); i++) {
@@ -255,8 +255,21 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
         if (isSameCategory) {
             updateCategoryId(0);
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    ContentExloreEventTracking.Event.EXPLORE,
+                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                    ContentExloreEventTracking.Action.DESELECT_CATEGORY,
+                    categoryName
+            );
+
         } else {
             updateCategoryId(categoryId);
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    ContentExloreEventTracking.Event.EXPLORE,
+                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                    ContentExloreEventTracking.Action.FILTER_CATEGORY,
+                    categoryName
+            );
 
             if (position > 0) {
                 categoryAdapter.getList().get(position).setActive(true);

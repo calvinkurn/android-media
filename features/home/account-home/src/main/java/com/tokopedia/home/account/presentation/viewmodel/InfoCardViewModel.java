@@ -17,6 +17,9 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
     private String secondaryText;
     private String applink;
 
+    private String titleTrack;
+    private String sectionTrack;
+
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -62,6 +65,21 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.applink = applink;
     }
 
+    public String getTitleTrack() {
+        return titleTrack;
+    }
+
+    public void setTitleTrack(String titleTrack) {
+        this.titleTrack = titleTrack;
+    }
+
+    public String getSectionTrack() {
+        return sectionTrack;
+    }
+
+    public void setSectionTrack(String sectionTrack) {
+        this.sectionTrack = sectionTrack;
+    }
 
     @Override
     public int describeContents() {
@@ -75,6 +93,8 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
         dest.writeString(this.mainText);
         dest.writeString(this.secondaryText);
         dest.writeString(this.applink);
+        dest.writeString(this.titleTrack);
+        dest.writeString(this.sectionTrack);
     }
 
     public InfoCardViewModel() {
@@ -86,6 +106,8 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.mainText = in.readString();
         this.secondaryText = in.readString();
         this.applink = in.readString();
+        this.titleTrack = in.readString();
+        this.sectionTrack = in.readString();
     }
 
     public static final Creator<InfoCardViewModel> CREATOR = new Creator<InfoCardViewModel>() {

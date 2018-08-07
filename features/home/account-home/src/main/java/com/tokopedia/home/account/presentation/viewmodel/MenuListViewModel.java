@@ -14,6 +14,9 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
     private String menuDescription;
     private String applink;
 
+    private String titleTrack;
+    private String sectionTrack;
+
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -43,6 +46,22 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
         this.applink = applink;
     }
 
+    public String getTitleTrack() {
+        return titleTrack;
+    }
+
+    public void setTitleTrack(String titleTrack) {
+        this.titleTrack = titleTrack;
+    }
+
+    public String getSectionTrack() {
+        return sectionTrack;
+    }
+
+    public void setSectionTrack(String sectionTrack) {
+        this.sectionTrack = sectionTrack;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -53,6 +72,8 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
         dest.writeString(this.menu);
         dest.writeString(this.menuDescription);
         dest.writeString(this.applink);
+        dest.writeString(this.titleTrack);
+        dest.writeString(this.sectionTrack);
     }
 
     public MenuListViewModel() {
@@ -62,6 +83,8 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
         this.menu = in.readString();
         this.menuDescription = in.readString();
         this.applink = in.readString();
+        this.titleTrack = in.readString();
+        this.sectionTrack = in.readString();
     }
 
     public static final Creator<MenuListViewModel> CREATOR = new Creator<MenuListViewModel>() {
