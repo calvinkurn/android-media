@@ -144,11 +144,6 @@ public class GmSubscribeHomeActivity
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return false;
-    }
-
-    @Override
     public void onBackPressed() {
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
             Intent homeIntent = null;

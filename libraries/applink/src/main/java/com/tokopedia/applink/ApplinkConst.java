@@ -124,6 +124,7 @@ public interface ApplinkConst {
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String FAVORITE_SHOPS = "tokopedia://favorite-shops";
     String CONTACT_US = "tokopedia://contact-us";
+    String CONTACT_US_NATIVE = "tokopedia://contactus";
 
     String ORDER_LIST = "tokopedia://order";
     String TOKOPOINTS = "tokopedia://tokopoints";
