@@ -63,7 +63,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     val appRouter: Context? by lazy { activity?.application as? Context }
     protected var currentProductAddViewModel: ProductAddViewModel? = null
 
-    override fun onCreate(savedInstancurrentProductAddViewModelceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -189,7 +189,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_LOGISTIC -> {
                     val productLogistic: ProductLogistic = data.getParcelableExtra(EXTRA_LOGISTIC)
-                    ?.productLogistic = productLogistic
+                    currentProductAddViewModel?.productLogistic = productLogistic
                 }
                 REQUEST_CODE_GET_STOCK -> {
                     val productStock: ProductStock = data.getParcelableExtra(EXTRA_STOCK)
