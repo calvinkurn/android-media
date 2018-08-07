@@ -50,6 +50,9 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
+import com.tokopedia.home.account.di.component.DaggerTestAccountHomeComponent;
+import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -169,6 +172,34 @@ public class MainParentActivityTest {
         baseAppComponent = null;
         testAppModule = null;
         TestAppModule.userSession = null;
+    }
+
+    @Test
+    public void test_load_account_home_first_time_without_login() throws Exception{
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+        doReturn(true).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+
+        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+        AccountHomeFragment fragment = (AccountHomeFragment) mIntentsRule.getActivity().getFragment(4);
+
+//        DaggerTestAccountHomeComponent.builder()
+//                .
+
     }
 
     @Test
