@@ -50,6 +50,7 @@ public class RatesDataConverter {
             totalQuantity += cartItemModel.getQuantity();
         }
         shipmentDetailData.setTotalQuantity(totalQuantity);
+        shipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
         return shipmentDetailData;
     }
 

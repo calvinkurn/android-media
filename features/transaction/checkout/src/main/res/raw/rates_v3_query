@@ -1,0 +1,102 @@
+{
+  ratesV3 (input: {
+      spids:"$spids"
+      shop_id:"$shop_id"
+      origin:"$origin"
+      destination:"$destination"
+      weight:"$weight"
+      token:"$token"
+      ut:"$ut"
+  }) {
+  ratesv3 {
+    id
+    type
+    services {
+        service_name
+        service_id
+        service_order
+        status
+        range_price {
+            min_price
+            max_price
+        }
+        etd {
+            min_etd
+            max_etd
+        }
+        texts {
+            text_range_price
+            text_etd
+            text_notes
+        }
+        products {
+            shipper_name
+            shipper_id
+            shipper_product_id
+            shipper_product_name
+            shipper_product_desc
+            is_show_map
+            shipper_weight
+            status
+            recommend
+            checksum
+            ut
+            price {
+                price
+                formatted_price
+            }
+            etd {
+                min_etd
+                max_etd
+            }
+            texts {
+                text_price
+                text_etd
+            }
+            insurance {
+                insurance_price
+                insurance_type
+                insurance_type_info
+                insurance_used_type
+                insurance_used_info
+                insurance_used_default
+            }
+            error {
+                error_id
+                error_message
+            }
+        }
+    }
+    recommendations {
+        service_name
+        shipping_id
+        shipping_product_id
+        price {
+            price
+            formatted_price
+        }
+        etd {
+            min_etd
+            max_etd
+        }
+        texts {
+            text_range_price
+            text_etd
+            text_notes
+        }
+        insurance {
+            insurance_price
+            insurance_type
+            insurance_type_info
+            insurance_used_type
+            insurance_used_info
+            insurance_used_default
+        }
+        error {
+            error_id
+            error_message
+        }
+    }
+  }
+}
+}

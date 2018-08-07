@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Irfan Khoirul on 02/08/18.
  */
 
-public class RatesData {
+public class GetCourierRecommendationData {
 
     @SerializedName("id")
     @Expose
@@ -21,7 +21,7 @@ public class RatesData {
     @Expose
     private List<ServiceData> services;
 
-    public RatesData() {
+    public GetCourierRecommendationData() {
     }
 
     public String getId() {

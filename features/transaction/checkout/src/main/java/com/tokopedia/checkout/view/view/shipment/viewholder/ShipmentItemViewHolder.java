@@ -461,7 +461,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvChooseDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionListener.onChooseShipmentDuration();
+                mActionListener.onChooseShipmentDuration(shipmentCartItemModel, recipientAddressModel);
             }
         });
 

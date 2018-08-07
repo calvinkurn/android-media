@@ -869,10 +869,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateCheckoutButtonData("-");
     }
 
-    @Override
-    public void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
-                                 RecipientAddressModel recipientAddressModel) {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourier();
+    private ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
+                                                     RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData;
         ShipmentDetailData oldShipmentDetailData = null;
         if (recipientAddressModel == null) {
@@ -887,6 +885,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (oldShipmentDetailData != null && oldShipmentDetailData.getSelectedCourier() != null) {
             shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
         }
+
+        return shipmentDetailData;
+    }
+
+    @Override
+    public void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
+                                 RecipientAddressModel recipientAddressModel) {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourier();
+        ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
+                recipientAddressModel);
         if (shipmentDetailData != null) {
             showCourierChoiceBottomSheet(shipmentDetailData, shipmentCartItemModel.getShopShipmentList(),
                     recipientAddressModel, position);
@@ -894,13 +902,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChooseShipmentDuration() {
-        if (shipmentRecommendationDurationBottomsheet == null) {
-            shipmentRecommendationDurationBottomsheet = new ShipmentRecommendationDurationBottomsheet();
-        }
+    public void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
+                                         RecipientAddressModel recipientAddressModel) {
+        ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
+                recipientAddressModel);
+        if (shipmentDetailData != null) {
+            if (shipmentRecommendationDurationBottomsheet == null) {
+                shipmentRecommendationDurationBottomsheet =
+                        ShipmentRecommendationDurationBottomsheet.newInstance(shipmentDetailData);
+            }
 
-        if (getActivity() != null) {
-            shipmentRecommendationDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+            if (getActivity() != null) {
+                shipmentRecommendationDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+            }
         }
     }
 

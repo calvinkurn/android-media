@@ -24,6 +24,7 @@ public class ShipmentDetailData implements Parcelable {
     private String dropshipperPhone;
     private boolean dropshipperNameValid;
     private boolean dropshipperPhoneValid;
+    private String shopId;
 
     public ShipmentDetailData() {
     }
@@ -43,6 +44,7 @@ public class ShipmentDetailData implements Parcelable {
         dropshipperPhone = in.readString();
         dropshipperNameValid = in.readByte() != 0;
         dropshipperPhoneValid = in.readByte() != 0;
+        shopId = in.readString();
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -161,6 +163,14 @@ public class ShipmentDetailData implements Parcelable {
         this.totalQuantity = totalQuantity;
     }
 
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -181,5 +191,6 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeString(dropshipperPhone);
         dest.writeByte((byte) (dropshipperNameValid ? 1 : 0));
         dest.writeByte((byte) (dropshipperPhoneValid ? 1 : 0));
+        dest.writeString(shopId);
     }
 }
