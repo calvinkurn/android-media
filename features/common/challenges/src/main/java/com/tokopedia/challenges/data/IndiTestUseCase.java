@@ -2,6 +2,7 @@ package com.tokopedia.challenges.data;
 
 import android.content.Context;
 
+import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
