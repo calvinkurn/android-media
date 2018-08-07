@@ -74,7 +74,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_VIEW_MODEL)) {
                 currentProductAddViewModel = savedInstanceState.getParcelable(SAVED_PRODUCT_VIEW_MODEL)
-                populateView(currentProductAddViewModel)
             }
         }
         if (currentProductAddViewModel == null) {
