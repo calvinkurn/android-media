@@ -1,19 +1,86 @@
-query SearchProduct(
- $q: String,
- $start: Int,
- $rows: Int,
- $ob: Int,
- $uniqueId: String
-) {
- searchProduct(q: $q, start: $start, rows: $rows, ob: $ob, uniqueId: $uniqueId) {
-   query
+query searchProduct($input: TopAdsDisplayParams, $params: String) {
+  displayAdsV3(input: $input) {
+      status {
+        error_code
+        message
+      }
+    header {
+      process_time
+      total_data
+    }
+    data{
+      id
+      ad_ref_key
+      redirect
+      sticker_id
+      sticker_image
+      product_click_url
+      product_wishlist_url
+      shop_click_url
+      product{
+        id
+        name
+        image{
+          m_url
+          s_url
+          xs_url
+          m_ecs
+          s_ecs
+          xs_ecs
+        }
+        uri
+        relative_uri
+        price_format
+        wholesale_price {
+          price_format
+          quantity_max_format
+          quantity_min_format
+        }
+        count_talk_format
+        count_review_format
+        category {
+          id
+        }
+        product_preorder
+        product_wholesale
+        free_return
+        product_cashback
+        product_new_label
+        product_cashback_rate
+        product_rating
+        top_label
+        bottom_label
+      }
+      shop{
+        id
+        name
+        domain
+        location
+        city
+        gold_shop
+        gold_shop_badge
+        lucky_shop
+        uri
+        owner_id
+        is_owner
+        badges{
+          title
+          image_url
+          show
+        }
+      }
+      applinks
+    }
+  }
+  searchProduct(params: $params) {
+  query
    source
    shareUrl
    isFilter
-   count
-   redirection {
-     redirectUrl
-     departmentId
+  count
+  redirection {
+     redirect_url
+     department_id
    }
    suggestion {
      currentKeyword
@@ -29,95 +96,66 @@ query SearchProduct(
      name
      childs
      url
-     imageUrl
-     imageUrlLarge
+     image_url
+     image_url_700
      price
+     whole_sale_price {
+      quantity_min
+      quantity_max
+      price
+     }
+     courier_count
+     condition
+     category_id
+     category_name
+     category_breadcrumb
+     department_id
+     department_name
+     labels {
+      title
+      color
+     }
+     badges {
+       title
+       image_url
+     }
+     is_featured
      rating
-     countReview
-     preorder
-     cashback
-     wishlist
-     gaKey
-     catId
+     count_review
+     original_price
+     discount_expired_time
+     discount_start_time
+     discount_percentage
+     sku
+     stock
+     ga_key
+     is_preorder
      shop {
        id
        name
        url
+       is_gold_shop
        location
        city
        reputation
        clover
-       goldmerchant
-       official
+       is_official
      }
    }
    catalogs {
      id
      name
      price
-     rawPrice
-     minPrice
-     maxPrice
-     rawMinPrice
-     rawMaxPrice
-     count
+     price_min
+     price_max
+     price_raw
+     price_min_raw
+     price_max_raw
+     count_product
      description
-     imageUrl
+     image_url
      url
-     departmentId
+     department_id
    }
  }
- dynamicAttribute(source: "search_product") {
-     data {
-       filter {
-         title
-         search {
-           searchable
-           placeholder
-         }
-         options {
-           name
-           key
-           icon
-           value
-           inputType
-           totalData
-           valMax
-           valMin
-           hexColor
-           child {
-             key
-             value
-             name
-             icon
-             inputType
-             totalData
-             child {
-               key
-               value
-               name
-               icon
-               inputType
-               totalData
-               child {
-                 key
-                 value
-                 name
-                 icon
-                 inputType
-                 totalData
-               }
-             }
-           }
-           isPopular
-         }
-       }
-       sort {
-         name
-         key
-         value
-         inputType
-       }
-     }
-   }
 }

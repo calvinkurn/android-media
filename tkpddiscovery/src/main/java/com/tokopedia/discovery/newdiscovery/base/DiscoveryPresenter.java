@@ -53,10 +53,22 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("q", searchParameter.getQueryKey());
-        variables.put("start", 0);
-        variables.put("rows", 12);
-        variables.put("uniqueId", searchParameter.getUniqueID());
+//        variables.put("q", searchParameter.getQueryKey());
+//        variables.put("start", 0);
+//        variables.put("rows", 12);
+//        variables.put("uniqueId", searchParameter.getUniqueID());
+
+        variables.put("input", "{ \n" +
+                "    \"ep\":\"product\",\n" +
+                "    \"page\":1,\n" +
+                "    \"item\":10,\n" +
+                "    \"src\":\"search\",\n" +
+                "    \"user_id\":5512373,\n" +
+                "    \"device\": \"android\",\n" +
+                "    \"dep_id\": \"24\",\n" +
+                "    \"q\": \"xiaomi\"\n" +
+                "  }");
+        variables.put("params", "q=samsung&source=null&userId=null&device=android&rows=1&start=0");
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
