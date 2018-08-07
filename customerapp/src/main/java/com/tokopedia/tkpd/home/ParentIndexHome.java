@@ -426,6 +426,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         adapter = new PagerAdapter(getSupportFragmentManager());
         setupViewPager();
+        adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
+
         mViewPager.setOffscreenPageLimit(4);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -627,11 +629,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onResume() {
-        Log.d(TAG, messageTAG + "onResume");
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) ) {
+            if ( isUserFirstTimeLogin) {
+            adapter.notifyDataSetChanged();}
             updateCartNotification();
         }
 
@@ -689,6 +692,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             initStateFragment = INIT_STATE_FRAGMENT_HOME;
             adapter = new PagerAdapter(getSupportFragmentManager());
             setupViewPager();
+            adapter.notifyDataSetChanged();
         }
     }
 
