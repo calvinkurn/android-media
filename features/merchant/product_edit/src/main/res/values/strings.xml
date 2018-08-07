@@ -75,9 +75,9 @@
     <string name="product_label_minimum_buy">Pemesanan Minimum</string>
     <string name="product_label_maksimum_buy">Pemesanan Maksimum</string>
     <string name="product_label_add_maksimum_buy">+Tambah Pemesanan Maksimum</string>
-    <string name="product_label_stock_count">Jumlah Stock</string>
+    <string name="product_label_stock_count">Jumlah Stok</string>
     <string name="product_label_stock_always_available">Stok Selalu Tersedia</string>
-    <string name="product_label_stock_limited">Stock Terbatas</string>
+    <string name="product_label_stock_limited">Stok Terbatas</string>
     <string name="product_label_stock_empty">Stok Kosong</string>
     <string name="product_label_insurance">Asuransi Pengiriman</string>
     <string name="product_label_free_return">Free Returns</string>
@@ -94,7 +94,7 @@
     <string name="product_label_feature_product">Fitur Produk</string>
     <string name="product_label_condition_product">Kondisi Baru</string>
 
-    <string name="product_label_product_stock">Status Stock</string>
+    <string name="product_label_product_stock">Status Stok</string>
     <string name="product_label_product_sku">SKU Produk</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_logistic_product">Berat &amp; Pengiriman</string>
@@ -107,7 +107,7 @@
     <string name="product_hint_feature_product">Contoh: Tahan air, berbahan alami</string>
 
     <string name="product_subtitle_product_price">Isi harga satuan, grosir, dan min. pesanan</string>
-    <string name="product_subtitle_product_description">Tambah keterangan produk dan pengaturan pengiriman</string>
+    <string name="product_subtitle_product_description">Tambah keterangan produk, kondisi dan video</string>
     <string name="product_subtitle_product_logistic">Tulis berat produk dan pengaturan pengiriman</string>
     <string name="product_subtitle_product_etalase">Atur produk di etalase yang sesuai</string>
     <string name="product_subtitle_product_variant">Tambah jika produk memiliki berbagai variasi</string>
