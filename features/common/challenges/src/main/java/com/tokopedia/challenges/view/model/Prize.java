@@ -1,17 +1,26 @@
 
 package com.tokopedia.challenges.view.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Prize {
 
+    @SerializedName("Type")
+    @Expose
     private String type;
+    @SerializedName("Title")
+    @Expose
     private String title;
+    @SerializedName("Prize")
+    @Expose
     private String prize;
+    @SerializedName("Description")
+    @Expose
     private String description;
+    @SerializedName("Index")
+    @Expose
     private Integer index;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getType() {
         return type;
@@ -51,14 +60,6 @@ public class Prize {
 
     public void setIndex(Integer index) {
         this.index = index;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

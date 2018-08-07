@@ -1,15 +1,20 @@
 
 package com.tokopedia.challenges.view.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class MetaTags {
 
+    @SerializedName("og:title")
+    @Expose
     private String ogTitle;
+    @SerializedName("og:description")
+    @Expose
     private String ogDescription;
+    @SerializedName("og:image")
+    @Expose
     private String ogImage;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getOgTitle() {
         return ogTitle;
@@ -33,14 +38,6 @@ public class MetaTags {
 
     public void setOgImage(String ogImage) {
         this.ogImage = ogImage;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

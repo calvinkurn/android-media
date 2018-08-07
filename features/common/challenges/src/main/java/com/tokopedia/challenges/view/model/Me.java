@@ -1,15 +1,20 @@
 
 package com.tokopedia.challenges.view.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Me {
 
+    @SerializedName("Id")
+    @Expose
     private String id;
+    @SerializedName("SubmissionCounts")
+    @Expose
     private SubmissionCounts submissionCounts;
+    @SerializedName("AuthProvider")
+    @Expose
     private AuthProvider authProvider;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getId() {
         return id;
@@ -33,14 +38,6 @@ public class Me {
 
     public void setAuthProvider(AuthProvider authProvider) {
         this.authProvider = authProvider;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

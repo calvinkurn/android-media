@@ -1,25 +1,48 @@
 
 package com.tokopedia.challenges.view.model;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Result {
 
+    @SerializedName("Id")
+    @Expose
     private String id;
+    @SerializedName("Type")
+    @Expose
     private String type;
+    @SerializedName("Title")
+    @Expose
     private String title;
+    @SerializedName("Description")
+    @Expose
     private String description;
+    @SerializedName("SubmissionCount")
+    @Expose
     private Integer submissionCount;
+    @SerializedName("EndDate")
+    @Expose
     private String endDate;
+    @SerializedName("ThumbnailUrl")
+    @Expose
     private String thumbnailUrl;
+    @SerializedName("HashTag")
+    @Expose
     private String hashTag;
+    @SerializedName("Prizes")
+    @Expose
     private List<Prize> prizes = null;
+    @SerializedName("Sharing")
+    @Expose
     private Sharing sharing;
+    @SerializedName("Channel")
+    @Expose
     private Channel channel;
+    @SerializedName("Me")
+    @Expose
     private Me me;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getId() {
         return id;
@@ -115,14 +138,6 @@ public class Result {
 
     public void setMe(Me me) {
         this.me = me;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

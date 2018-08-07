@@ -1,19 +1,30 @@
 
 package com.tokopedia.challenges.view.model;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Challenge {
 
+    @SerializedName("Start")
+    @Expose
     private Integer start;
+    @SerializedName("Size")
+    @Expose
     private Integer size;
+    @SerializedName("Found")
+    @Expose
     private Integer found;
+    @SerializedName("Count")
+    @Expose
     private Integer count;
+    @SerializedName("Results")
+    @Expose
     private List<Result> results = null;
+    @SerializedName("Channel")
+    @Expose
     private Channel_ channel;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public Integer getStart() {
         return start;
@@ -61,14 +72,6 @@ public class Challenge {
 
     public void setChannel(Channel_ channel) {
         this.channel = channel;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

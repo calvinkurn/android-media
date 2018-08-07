@@ -1,14 +1,17 @@
 
 package com.tokopedia.challenges.view.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Sharing {
 
+    @SerializedName("MetaTags")
+    @Expose
     private MetaTags metaTags;
+    @SerializedName("Assets")
+    @Expose
     private Assets assets;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public MetaTags getMetaTags() {
         return metaTags;
@@ -24,14 +27,6 @@ public class Sharing {
 
     public void setAssets(Assets assets) {
         this.assets = assets;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

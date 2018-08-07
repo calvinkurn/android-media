@@ -22,8 +22,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
         this.getChallengesUseCase = getChallengesUseCase;
     }
 
-    private void getOpenChallenges() {
-
+    public void getOpenChallenges() {
         getChallengesUseCase.execute(new Subscriber<Map<Type,RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -40,8 +39,8 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 //Success scenario e.g. HTTP 200 OK
                 RestResponse res1 = restResponse.get(Challenge.class);
                 int responseCodeOfResponse1 = res1.getCode();
+                Challenge mainDataObject = res1.getData();
 
-                CommonUtils.dumper("Indi user id" + res1);
             }
         });
     }

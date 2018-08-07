@@ -1,16 +1,23 @@
 
 package com.tokopedia.challenges.view.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Channel_ {
 
+    @SerializedName("Id")
+    @Expose
     private String id;
+    @SerializedName("Title")
+    @Expose
     private String title;
+    @SerializedName("CreateDate")
+    @Expose
     private String createDate;
+    @SerializedName("ThumbnailImage")
+    @Expose
     private String thumbnailImage;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getId() {
         return id;
@@ -42,14 +49,6 @@ public class Channel_ {
 
     public void setThumbnailImage(String thumbnailImage) {
         this.thumbnailImage = thumbnailImage;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

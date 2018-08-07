@@ -75,6 +75,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_challenges, container, false);
+        challengeHomePresenter.getOpenChallenges();
         return view;
     }
 

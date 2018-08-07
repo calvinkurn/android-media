@@ -7,10 +7,6 @@
             android:name=".view.activity.ChallengesHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent" />
-        <activity
-            android:name=".view.activity.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
