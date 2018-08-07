@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
+import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
@@ -35,6 +36,7 @@ import com.tokopedia.product.edit.constant.ProductExtraConstant
 import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.edit.price.ProductEditWeightLogisticFragment
 import com.tokopedia.product.edit.price.model.*
+import com.tokopedia.product.edit.util.ProductEditCurrencyType
 import com.tokopedia.product.edit.util.ProductEditModuleRouter
 import com.tokopedia.product.edit.utils.*
 import com.tokopedia.product.edit.view.activity.*
@@ -340,8 +342,13 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         }
         labelViewNameProduct.setContent(currentProductViewModel.productName?.name)
         if ((currentProductViewModel.productPrice?.price ?: 0.0) > 0) {
-            labelViewPriceProduct.setContent(CurrencyFormatUtil.convertPriceValueToIdrFormat(currentProductViewModel.productPrice?.price ?: 0.00, true))
             labelViewPriceProduct.setSubTitle("")
+            val currencyString = CurrencyFormatUtil.convertPriceValue(currentProductViewModel.productPrice?.price?:0.0, true)
+            when (currentProductViewModel.productPrice?.currencyType) {
+                CurrencyTypeDef.TYPE_USD -> labelViewPriceProduct.setContent(getString(R.string.usd_format, currencyString))
+                CurrencyTypeDef.TYPE_IDR -> labelViewPriceProduct.setContent(getString(R.string.rupiah_format, currencyString))
+                else -> labelViewPriceProduct.setContent(getString(R.string.rupiah_format, currencyString))
+            }
         }
         labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
         if (currentProductViewModel.productLogistic?.weight ?: 0 > 0) {

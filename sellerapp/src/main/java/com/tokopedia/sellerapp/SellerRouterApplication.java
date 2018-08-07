@@ -876,7 +876,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
-            startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
+            activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
         }
     }
 
