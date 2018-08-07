@@ -148,8 +148,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         trainScheduleBookingPassData.setAdultPassenger(adultPassenger);
         trainScheduleBookingPassData.setInfantPassenger(infantPassenger);
 
-        presenter.getTrainSchedules();
         setUpButtonActionView(view);
+        presenter.getTrainSchedules();
+
     }
 
     @Override
@@ -184,16 +185,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected abstract int getScheduleVariant();
 
     protected abstract void getDataFromFragment();
-
-    private void setCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        textView.setLayoutParams(layoutParams);
-    }
-
-    private void removeCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0);
-        textView.setLayoutParams(layoutParams);
-    }
 
     private void setUpButtonActionView(View view) {
         filterAndSortBottomAction = view.findViewById(R.id.bottom_action_filter_sort);
