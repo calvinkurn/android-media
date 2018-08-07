@@ -103,7 +103,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewEtalaseProduct.setOnClickListener { startProductEtalaseActivity() }
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
-        button_save.setOnClickListener{ saveDraft(currentProductAddViewModel?.isDataValid(this) == true) }
+        button_save.setOnClickListener{
+            if (currentProductAddViewModel?.isDataValid(this) == true) {
+                saveDraft(true)
+            }
+        }
     }
 
 
