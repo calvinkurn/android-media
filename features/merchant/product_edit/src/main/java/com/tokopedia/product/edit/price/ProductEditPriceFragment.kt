@@ -142,8 +142,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun showDataPrice(productPrice: ProductPrice){
         selectedCurrencyType = productPrice.currencyType
-        spinnerCounterInputViewPrice.counterValue = productPrice.price
         setPriceTextChangedListener()
+        spinnerCounterInputViewPrice.counterValue = productPrice.price
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
         setLabelViewWholesale(wholesalePrice)
