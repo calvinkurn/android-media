@@ -12,37 +12,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_24"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16">
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_24">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/trip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/trip"
                 android:layout_marginBottom="@dimen/dp_24"
-                tools:text="Perjalan Pergi"
-                android:textColor="@color/black"
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="@dimen/sp_17"
                 android:textStyle="bold"
-                android:textSize="@dimen/sp_16"/>
+                tools:text="Perjalan Pergi" />
 
             <TextView
                 android:id="@+id/train_name"
-                style="@style/TextView.Small"
+                style="@style/TextView.Small.BlackPrimary"
                 tools:text="Argo Dwipangga 10" />
 
             <TextView
                 android:id="@+id/train_class"
-                style="@style/TextView.Micro.BlackSecondary"
+                style="@style/TextView.Micro.BlackDisabled"
                 tools:text="Eksekutif (B)" />
 
         </LinearLayout>
@@ -54,7 +54,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
-            android:textSize="@dimen/sp_10"
+            android:textSize="@dimen/sp_12"
             tools:text="Jum, 29 Ags 2018" />
 
     </LinearLayout>
