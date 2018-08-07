@@ -203,6 +203,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 trainAnalytics.eventClickFilterOnBottomBar();
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
                         arrivalScheduleSelected, getScheduleVariant(), filterSearchData), FILTER_SEARCH_REQUEST_CODE);
+                getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
