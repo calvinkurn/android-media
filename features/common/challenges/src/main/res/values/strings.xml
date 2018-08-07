@@ -3,4 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="collapse">Sembunyikan</string>
+    <string name="expand">Selengkapnya</string>
+    <string name="append_0">0%d</string>
 </resources>

@@ -4,6 +4,7 @@
 
     <application>
         <activity android:name=".view.activity.HomeActivity"></activity>
+        <activity android:name=".view.activity.ChallengeDetailActivity"></activity>
     </application>
 
 </manifest>
