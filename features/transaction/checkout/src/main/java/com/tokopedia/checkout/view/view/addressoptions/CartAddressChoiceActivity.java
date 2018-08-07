@@ -136,7 +136,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(
-                        this, null, token, false, false
+                        this, null, token, false, true
                         ),
                         REQUEST_CODE_PARAM_CREATE);
                 break;
