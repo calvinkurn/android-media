@@ -7,6 +7,7 @@ import com.tokopedia.product.edit.common.model.edit.*
 import com.tokopedia.product.edit.common.util.CurrencyTypeDef
 import com.tokopedia.product.edit.constant.ProductConditionTypeDef
 import com.tokopedia.product.edit.price.model.*
+import com.tokopedia.product.edit.util.ProductEditPreOrderTimeType
 import com.tokopedia.product.edit.view.listener.ListenerOnErrorAddProduct
 import com.tokopedia.product.edit.view.model.ProductAddViewModel
 
@@ -133,7 +134,7 @@ fun ProductViewModel.convertToProductAddViewModel(): ProductAddViewModel? {
             this.isProductMustInsurance, this.isProductFreeReturn, TextApiUtils.isValueTrue(this.productPreorder?.preorderStatus?.toString()
             ?: ""),
             this.productPreorder?.preorderProcessTime?.toInt()
-                    ?: -1, this.productPreorder?.preorderTimeUnit?.toInt() ?: -1)
+                    ?: ProductEditPreOrderTimeType.DAY, this.productPreorder?.preorderTimeUnit?.toInt() ?: ProductEditPreOrderTimeType.DAY)
     productAddViewModel.hasOriginalVariantLevel1 = checkOriginalVariantLevel1(this)
     productAddViewModel.hasOriginalVariantLevel2 = checkOriginalVariantLevel2(this)
     productAddViewModel.productSizeChart = this.productSizeChart

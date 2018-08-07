@@ -29,6 +29,11 @@ class ProductEditStockFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         activity?.let { productStock = it.intent.getParcelableExtra(EXTRA_STOCK) }
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_STOCK)) {
+                productStock = savedInstanceState.getParcelable(SAVED_PRODUCT_STOCK)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -143,7 +148,13 @@ class ProductEditStockFragment : Fragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SAVED_PRODUCT_STOCK, saveData(productStock))
+    }
+
     companion object {
+        const val SAVED_PRODUCT_STOCK = "SAVED_PRODUCT_STOCK"
         const val MIN_STOCK = "1"
         const val MAX_STOCK = "10,000"
         const val DEFAULT_PARENT_STOCK = "1"

@@ -35,6 +35,11 @@ class ProductEditDescriptionFragment : Fragment() {
             }
             keyword = intent.getStringExtra(EXTRA_KEYWORD)
         }
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_DESCRIPTION)) {
+                productDescription = savedInstanceState.getParcelable(SAVED_PRODUCT_DESCRIPTION)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -104,7 +109,13 @@ class ProductEditDescriptionFragment : Fragment() {
         startActivityForResult(ProductAddDescriptionPickerActivity.start(activity, description), REQUEST_CODE_GET_DESCRIPTION)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SAVED_PRODUCT_DESCRIPTION, saveData(productDescription))
+    }
+
     companion object {
+        const val SAVED_PRODUCT_DESCRIPTION = "SAVED_PRODUCT_DESCRIPTION"
         const val REQUEST_CODE_GET_DESCRIPTION = 0
         const val REQUEST_CODE_GET_VIDEO = 1
         fun createInstance() = ProductEditDescriptionFragment()
