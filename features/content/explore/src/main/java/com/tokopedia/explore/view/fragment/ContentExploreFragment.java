@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -245,33 +244,18 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onCategoryClicked(int position, int categoryId) {
-        boolean isSameCategory = false;
-
-        for (int i = 0; i < categoryAdapter.getList().size(); i++) {
-            ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
-            if (categoryViewModel.isActive()) {
-                categoryViewModel.setActive(false);
-                categoryAdapter.notifyItemChanged(i);
-                if (i == position) {
-                    isSameCategory = true;
-                }
-                break;
-            }
-        }
-
-        if (isSameCategory) {
-            updateCategoryId(0);
-        } else {
+        clearSearch();
+        resetDataParam();
+        imageAdapter.clearData();
+        boolean isSameCategory = setAllCategoriesInactive(position);
+        if (!isSameCategory) {
             updateCategoryId(categoryId);
 
-            if (position > 0) {
+            if (position >= 0) {
                 categoryAdapter.getList().get(position).setActive(true);
                 categoryAdapter.notifyItemChanged(position);
             }
         }
-
-        updateCursor("");
-        imageAdapter.clearData();
         presenter.getExploreData(true);
     }
 
@@ -314,8 +298,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Override
     public void onSearchSubmitted(String text) {
         dropKeyboard();
-        updateSearch(text);
+        resetDataParam();
+        setAllCategoriesInactive();
         imageAdapter.clearData();
+
+        updateSearch(text);
         presenter.getExploreData(true);
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 ContentExloreEventTracking.Event.EXPLORE,
@@ -354,6 +341,37 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     private boolean isLoading() {
         return imageAdapter.isLoading() || swipeToRefresh.isRefreshing();
+    }
+
+    private void clearSearch() {
+        searchInspiration.getSearchTextView().setText("");
+        dropKeyboard();
+    }
+    
+    private void resetDataParam() {
+        updateSearch("");
+        updateCursor("");
+        updateCategoryId(0);
+    }
+    
+    private void setAllCategoriesInactive() {
+        setAllCategoriesInactive(-1);
+    }
+    
+    private boolean setAllCategoriesInactive(int position) {
+        boolean isSameCategory = false;
+        for (int i = 0; i < categoryAdapter.getList().size(); i++) {
+            ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
+            if (categoryViewModel.isActive()) {
+                categoryViewModel.setActive(false);
+                categoryAdapter.notifyItemChanged(i);
+                if (i == position) {
+                    isSameCategory = true;
+                }
+                break;
+            }
+        }
+        return isSameCategory;
     }
 
     private RecyclerView.OnScrollListener onScrollListener(GridLayoutManager layoutManager) {
