@@ -2,6 +2,8 @@ package com.tokopedia.challenges.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.Challenge;
@@ -19,7 +21,7 @@ import okhttp3.Interceptor;
 public class GetChallengesUseCase extends RestRequestSupportInterceptorUseCase {
 
     @Inject
-    public GetChallengesUseCase(Interceptor interceptor, Context context) {
+    public GetChallengesUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 

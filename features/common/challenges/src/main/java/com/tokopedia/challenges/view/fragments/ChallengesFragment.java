@@ -9,17 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.domain.usecase.GetChallengesUseCase;
 import com.tokopedia.challenges.view.presenter.ChallengeHomePresenter;
+import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
 
 import javax.inject.Inject;
 
 /**
  * Created by ashwanityagi on 06/08/18.
  */
-public class ChallengesFragment extends BaseDaggerFragment {
+public class ChallengesFragment extends BaseDaggerFragment implements ChallengesBaseContract.View {
 
     @Inject
     public ChallengeHomePresenter challengeHomePresenter;

@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-public class ChallengeHomePresenter extends BaseDaggerPresenter {
+public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseContract.View> implements ChallengesBaseContract.Presenter{
 
     private GetChallengesUseCase getChallengesUseCase;
 

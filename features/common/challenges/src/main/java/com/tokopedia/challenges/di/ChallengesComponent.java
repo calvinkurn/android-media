@@ -10,5 +10,5 @@ import dagger.Component;
 @ChallengesScope
 @Component(dependencies = BaseAppComponent.class)
 public interface ChallengesComponent {
-    void inject (ChallengesFragment challengesFragment);
+    void inject(ChallengesFragment challengesFragment);
 }

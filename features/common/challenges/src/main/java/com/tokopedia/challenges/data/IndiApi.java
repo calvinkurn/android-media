@@ -1,6 +1,6 @@
 package com.tokopedia.challenges.data;
 
-import com.tokopedia.nps.data.source.ChallengesUrl;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 
 import java.util.Map;
 
