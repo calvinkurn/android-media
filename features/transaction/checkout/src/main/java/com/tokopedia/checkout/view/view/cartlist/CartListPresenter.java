@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
@@ -60,13 +61,12 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartListPresenter implements ICartListPresenter {
+public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> implements ICartListPresenter {
     private static final float PERCENTAGE = 100.0f;
-
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_STEP = "step";
-    private final ICartListView view;
+    private ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartUseCase deleteCartUseCase;
@@ -77,7 +77,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
 
-    @Inject
+
     public CartListPresenter(ICartListView cartListView,
                              GetCartListUseCase getCartListUseCase,
                              DeleteCartUseCase deleteCartUseCase,
@@ -88,7 +88,22 @@ public class CartListPresenter implements ICartListPresenter {
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+        this(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase, updateCartUseCase,
+                resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase);
         this.view = cartListView;
+    }
+
+    public CartListPresenter(
+                             GetCartListUseCase getCartListUseCase,
+                             DeleteCartUseCase deleteCartUseCase,
+                             DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                             UpdateCartUseCase updateCartUseCase,
+                             ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
+                             CompositeSubscription compositeSubscription,
+                             CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -102,6 +117,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void detachView() {
+        super.detachView();
         compositeSubscription.unsubscribe();
     }
 
