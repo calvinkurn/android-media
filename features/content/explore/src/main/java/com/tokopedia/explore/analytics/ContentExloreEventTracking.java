@@ -20,6 +20,7 @@ public interface ContentExloreEventTracking {
     interface Action {
         String LOAD_MORE = "load more";
         String CLICK_GRID_CONTENT = "click grid content";
+        String SEARCH = "search";
     }
 
     interface EventLabel {

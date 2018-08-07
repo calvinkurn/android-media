@@ -317,6 +317,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
         updateSearch(text);
         imageAdapter.clearData();
         presenter.getExploreData(true);
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                ContentExloreEventTracking.Event.EXPLORE,
+                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                ContentExloreEventTracking.Action.SEARCH,
+                text
+        );
     }
 
     @Override
