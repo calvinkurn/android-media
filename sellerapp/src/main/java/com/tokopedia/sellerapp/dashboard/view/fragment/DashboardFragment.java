@@ -354,7 +354,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
                     String.valueOf(0)));
         }
-
     }
 
     private void updateShopInfo(ShopModel shopModel) {
@@ -364,8 +363,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
         shopNameTextView.setText(shopName);
-        if (shopModelInfo.isGoldMerchant()) {
+        if (shopModelInfo.isOfficialStore()) {
             gmIconImageView.setVisibility(View.VISIBLE);
+            gmIconImageView.setImageResource(R.drawable.ic_official);
+            gmStatusTextView.setText(R.string.dashboard_label_official_store);
+        } else if (shopModelInfo.isGoldMerchant()) {
+            gmIconImageView.setVisibility(View.VISIBLE);
+            gmIconImageView.setImageResource(R.drawable.ic_shop_gold);
             gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
         } else {
             gmIconImageView.setVisibility(View.GONE);

@@ -27,6 +27,11 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
             productName = it.intent.getParcelableExtra(EXTRA_NAME)?:ProductName()
             isEditable = it.intent.getBooleanExtra(EXTRA_IS_EDITABLE_NAME, true)
         }
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_NAME)) {
+                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -65,7 +70,13 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SAVED_PRODUCT_NAME, productName)
+    }
+
     companion object {
+        const val SAVED_PRODUCT_NAME = "SAVED_PRODUCT_NAME"
         fun createInstance() = ProductEditNameFragment()
     }
 }

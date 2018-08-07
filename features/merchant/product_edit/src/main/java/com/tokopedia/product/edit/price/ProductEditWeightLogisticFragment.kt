@@ -36,7 +36,14 @@ class ProductEditWeightLogisticFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        activity?.let { productLogistic = it.intent.getParcelableExtra(EXTRA_LOGISTIC) }
+        activity?.let {
+            productLogistic = it.intent.getParcelableExtra(EXTRA_LOGISTIC)
+        }
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_LOGISTIC)) {
+                productLogistic = savedInstanceState.getParcelable(SAVED_PRODUCT_LOGISTIC)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -236,8 +243,13 @@ class ProductEditWeightLogisticFragment : Fragment() {
         }
     }
 
-    companion object {
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SAVED_PRODUCT_LOGISTIC, saveData(productLogistic))
+    }
 
+    companion object {
+        const val SAVED_PRODUCT_LOGISTIC = "SAVED_PRODUCT_LOGISTIC"
         const val MIN_WEIGHT = "1"
         const val MAX_WEIGHT_GRAM = "500,000"
         const val MAX_WEIGHT_KG = "500"

@@ -57,9 +57,15 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        activity?.run { if(intent.hasExtra(EXTRA_PRICE)) {
-            productPrice = intent.getParcelableExtra(EXTRA_PRICE)
-        } }
+        activity?.run {
+            if(intent.hasExtra(EXTRA_PRICE)) {
+            productPrice = intent.getParcelableExtra(EXTRA_PRICE) }
+        }
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_PRICE)) {
+                productPrice = savedInstanceState.getParcelable(SAVED_PRODUCT_PRICE)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -136,8 +142,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun showDataPrice(productPrice: ProductPrice){
         selectedCurrencyType = productPrice.currencyType
-        spinnerCounterInputViewPrice.counterValue = productPrice.price
         setPriceTextChangedListener()
+        spinnerCounterInputViewPrice.counterValue = productPrice.price
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
         setLabelViewWholesale(wholesalePrice)
@@ -356,7 +362,13 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SAVED_PRODUCT_PRICE, saveData(productPrice))
+    }
+
     companion object {
+        const val SAVED_PRODUCT_PRICE = "SAVED_PRODUCT_PRICE"
         const val DEFAULT_PRICE = 0.0
         const val MIN_ORDER = "1"
         const val MAX_ORDER = "10,000"
