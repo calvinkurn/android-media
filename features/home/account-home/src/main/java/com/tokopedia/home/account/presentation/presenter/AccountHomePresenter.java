@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.presenter;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.home.account.domain.GetAccountUseCase;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
@@ -17,12 +18,10 @@ import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 /**
  * @author okasurya on 7/20/18.
  */
-public class AccountHomePresenter implements AccountHome.Presenter {
+public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> implements AccountHome.Presenter {
 
     private GetAccountUseCase getAccountUseCase;
     private AccountHome.View view;
-
-    @Inject
     public AccountHomePresenter(GetAccountUseCase getAccountUseCase) {
         this.getAccountUseCase = getAccountUseCase;
     }
