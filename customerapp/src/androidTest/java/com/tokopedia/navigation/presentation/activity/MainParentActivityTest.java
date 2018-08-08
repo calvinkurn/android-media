@@ -389,6 +389,13 @@ public class MainParentActivityTest {
             doReturn(Observable.just(test3())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
 
             onView(allOf(withId(R.id.swipe_refresh_layout), withTagValue(is((Object) "swipe_to_refresh_feed_plus")))).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+            // Get total item of myRecyclerView
+            int itemCount = recyclerView.getAdapter().getItemCount();
+
+            // Scroll to end of page with position
+            onView(allOf(withId(R.id.recycler_view), withTagValue(is("feed_plus_list")), isCompletelyDisplayed()))
+                    .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
         }
     }
 
@@ -412,10 +419,6 @@ public class MainParentActivityTest {
 
         onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
-        // TODO tap all nav bar button
-        // TODO verify go to all locations
-        // TODO tap toolbar then go back
-        // TODO check checked nav bar
     }
 
     @Test

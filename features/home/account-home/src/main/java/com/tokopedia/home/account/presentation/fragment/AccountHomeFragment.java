@@ -215,6 +215,7 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
 
     @Override
     public void setPresenter(AccountHomeComponent presenter) {
+    }
 
 
     @Override

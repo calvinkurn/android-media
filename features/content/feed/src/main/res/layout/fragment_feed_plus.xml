@@ -74,7 +74,8 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tab_layout">
+        android:layout_below="@+id/tab_layout"
+        android:tag="swipe_to_refresh_feed_plus">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -84,6 +85,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:clipToPadding="false"
             android:scrollbars="vertical"
+            android:tag="feed_plus_list"
             android:paddingTop="@dimen/dp_10"/>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
