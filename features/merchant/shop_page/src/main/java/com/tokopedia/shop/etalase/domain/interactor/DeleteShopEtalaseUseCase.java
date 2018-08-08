@@ -4,6 +4,8 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.usecase.RequestParams;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -11,6 +13,11 @@ import rx.Observable;
  */
 
 public class DeleteShopEtalaseUseCase extends CacheApiDataDeleteUseCase {
+
+    @Inject
+    public DeleteShopEtalaseUseCase(){
+
+    }
 
     public Observable<Boolean> createObservable() {
         return createObservable(RequestParams.create());

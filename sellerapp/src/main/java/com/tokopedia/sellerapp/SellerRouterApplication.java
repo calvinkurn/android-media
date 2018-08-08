@@ -42,7 +42,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -62,8 +61,6 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel;
 import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
@@ -73,20 +70,11 @@ import com.tokopedia.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
-import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.product.edit.common.di.component.DaggerProductComponent;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
-import com.tokopedia.shop.open.ShopOpenRouter;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -110,10 +98,14 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -134,8 +126,6 @@ import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
-import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.product.edit.common.di.component.ProductComponent;
 import com.tokopedia.product.edit.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
@@ -150,24 +140,32 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
 import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
+import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
+import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
@@ -178,6 +176,8 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
@@ -269,32 +269,17 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
-        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
-    }
-
-    @Override
-    public void removeInstopedToken() {
-        InstagramMediaPresenterImpl.removeToken();
-    }
-
-    @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
@@ -526,13 +511,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToHome(Context context) {
-        Intent intent = getHomeIntent(context);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void sendScreenName(String screenName) {
         ScreenTracking.screen(screenName);
     }
@@ -562,11 +540,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
-    }
-
-    @Override
-    public void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
-        ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
     }
 
     @Override
@@ -837,11 +810,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Class getSellingActivityClass() {
         return TkpdSeller.getSellingActivityClass();
-    }
-
-    @Override
-    public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -1326,7 +1294,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void gotoTopAdsDashboard(Context context) {
-        startActivity(TopAdsDashboardActivity.getCallingIntent(context));
+        context.startActivity(TopAdsDashboardActivity.getCallingIntent(context));
     }
 
     @Override
@@ -1384,6 +1352,29 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
+    }
+
+    @Override
+    public void goToShopReview(Context context, String shopId, String shopDomain) {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        ReputationTracking tracking = new ReputationTracking(this);
+        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, sessionHandler.getShopID().equals(shopId));
+        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+    }
+
+    @Override
+    public void goToShopDiscussion(Context context, String shopId) {
+        context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+    }
+
+    @Override
+    public void goToManageShipping(Context context) {
+        context.startActivity(new Intent(context, EditShippingActivity.class));
+    }
+
+    @Override
+    public void goToEditShop(Context context) {
+        context.startActivity(getIntentManageShop(context));
     }
 
     @Override

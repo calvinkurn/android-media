@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class EtalaseModel {
+    private final static int USE_ACE = 1;
     @SerializedName("use_ace")
     @Expose
     private long useAce;
@@ -29,6 +30,10 @@ public class EtalaseModel {
 
     public long getUseAce() {
         return useAce;
+    }
+
+    public boolean isUseAce(){
+        return useAce == USE_ACE;
     }
 
     public void setUseAce(long useAce) {

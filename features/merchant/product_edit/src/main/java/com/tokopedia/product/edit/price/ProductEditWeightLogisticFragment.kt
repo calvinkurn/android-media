@@ -172,7 +172,7 @@ class ProductEditWeightLogisticFragment : Fragment() {
             ProductEditPreOrderTimeType.DAY ->  R.string.product_label_day
             ProductEditPreOrderTimeType.WEEK ->  R.string.product_label_week
             ProductEditPreOrderTimeType.MONTH ->  R.string.product_label_month
-            else -> -1
+            else -> R.string.product_label_day
         })
 
 

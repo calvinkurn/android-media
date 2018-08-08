@@ -40,10 +40,10 @@ import com.tokopedia.shop.open.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.di.component.ShopSettingInfoComponent;
 import com.tokopedia.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
+import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.listener.ShopOpenInfoView;
 import com.tokopedia.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.shop.open.view.presenter.ShopOpenInfoPresenter;
-import com.tokopedia.shop.open.util.ShopErrorHandler;
 
 import java.io.File;
 import java.util.ArrayList;

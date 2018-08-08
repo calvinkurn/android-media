@@ -73,7 +73,22 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        restoreSaveInstance(savedInstanceState)
         return inflater.inflate(R.layout.fragment_product_edit_category, container, false)
+    }
+
+    open fun restoreSaveInstance(savedInstanceState: Bundle?) {
+        savedInstanceState?.run {
+            if(containsKey(EXTRA_NAME)){
+                name = getString(EXTRA_NAME)
+            }
+            if(containsKey(EXTRA_CATALOG)){
+                productCatalog = getParcelable(EXTRA_CATALOG)
+            }
+            if(containsKey(EXTRA_CATEGORY)){
+                productCategory = getParcelable(EXTRA_CATEGORY)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,6 +119,13 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
                 presenter.fetchCatalogData(name, productCategory.categoryId.toLong(), 0, 1)
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_NAME, name)
+        outState.putParcelable(EXTRA_CATEGORY, productCategory)
+        outState.putParcelable(EXTRA_CATALOG, productCatalog)
     }
 
     private fun onLabelCategoryClicked() {

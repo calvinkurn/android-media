@@ -3,6 +3,7 @@
     <declare-styleable name="LabelView">
         <attr name="lv_image" format="reference" />
         <attr name="lv_image_width" format="dimension" />
+        <attr name="lv_image_height" format="dimension" />
         <attr name="lv_image_margin_right" format="dimension"/>
         <attr name="lv_title" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
@@ -24,6 +25,8 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
+        <!-- value from 0 to 1 -->
+        <attr name="lv_content_max_width_percentage" format="float" />
     </declare-styleable>
 
     <declare-styleable name="SelectionLabelView">

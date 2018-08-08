@@ -22,6 +22,7 @@ import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.ProductAddActivity
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
 import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
@@ -56,6 +57,18 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_product_add_name_category, container, false)
+    }
+
+    override fun restoreSaveInstance(savedInstanceState: Bundle?){
+        super.restoreSaveInstance(savedInstanceState)
+        savedInstanceState?.run {
+            if(containsKey(EXTRA_PRODUCT_NAME)){
+                productName = getParcelable(EXTRA_PRODUCT_NAME)
+            }
+            if (containsKey(EXTRA_IMAGES)){
+                productPictureList = getStringArrayList(EXTRA_IMAGES)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,6 +107,12 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_PRODUCT_NAME, productName)
+        outState.putStringArrayList(EXTRA_IMAGES, productPictureList)
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {

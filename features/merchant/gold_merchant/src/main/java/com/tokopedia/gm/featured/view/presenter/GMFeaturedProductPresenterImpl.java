@@ -1,6 +1,7 @@
 package com.tokopedia.gm.featured.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
@@ -23,17 +24,21 @@ public class GMFeaturedProductPresenterImpl extends GMFeaturedProductPresenter {
     private static final String TAG = "FeaturedProductPresente";
     private GMFeaturedProductSubmitUseCase gmFeaturedProductSubmitUseCase;
     private GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase;
+    private DeleteFeatureProductListCacheUseCase deleteFeatureProductListCacheUseCase;
 
     @Inject
     public GMFeaturedProductPresenterImpl(
             GMFeaturedProductSubmitUseCase gmFeaturedProductSubmitUseCase,
-            GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase) {
+            GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase,
+            DeleteFeatureProductListCacheUseCase deleteFeatureProductListCacheUseCase) {
         this.gmFeaturedProductSubmitUseCase = gmFeaturedProductSubmitUseCase;
         this.gmFeaturedProductGetListUseCase = gmFeaturedProductGetListUseCase;
+        this.deleteFeatureProductListCacheUseCase = deleteFeatureProductListCacheUseCase;
     }
 
     @Override
     public void loadData() {
+        deleteFeatureProductListCacheUseCase.executeSync();
         gmFeaturedProductGetListUseCase.execute(RequestParams.EMPTY, new Subscriber<GMFeaturedProductDomainModel>() {
             @Override
             public void onCompleted() {
@@ -97,5 +102,6 @@ public class GMFeaturedProductPresenterImpl extends GMFeaturedProductPresenter {
         super.detachView();
         gmFeaturedProductSubmitUseCase.unsubscribe();
         gmFeaturedProductGetListUseCase.unsubscribe();
+        deleteFeatureProductListCacheUseCase.unsubscribe();
     }
 }
