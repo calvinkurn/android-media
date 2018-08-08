@@ -17,8 +17,8 @@
     <string name="title_help_center_setting">Pusat Bantuan</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
-    <string name="subtitle_tkpd_pay_setting">TokoCash, Kartu Kredit, dan Metode Lainnya</string>
-    <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan Lainnya</string>
+    <string name="subtitle_tkpd_pay_setting">TokoCash, Kartu Kredit, dan Metode lainnya</string>
+    <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan lainnya</string>
     <string name="logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
@@ -94,7 +94,7 @@
     <string name="label_menu_order_processed">Pesanan Diproses</string>
     <string name="label_menu_shipping">Sedang Dikirim</string>
     <string name="label_menu_delivered">Sampai Tujuan</string>
-    <string name="title_menu_complaint">Komplain</string>
+    <string name="title_menu_complaint">Komplain Sebagai Pembeli</string>
     <string name="label_menu_complaint">Selesaikan komplain belanja anda</string>
     <string name="title_menu_other_transaction">Transaksi Lainnya</string>
     <string name="title_menu_favorites">Favorit Saya</string>
@@ -128,9 +128,13 @@
     <string name="label_menu_ready_to_ship">Siap Dikirim</string>
     <string name="label_menu_shipped">Sedang Dikirim</string>
     <string name="label_menu_arrive_at_destination">Sampai Tujuan</string>
+    <string name="title_menu_complaint_seller">Komplain Sebagai Penjual</string>
+    <string name="label_menu_complaint_seller">Lihat status komplain di sini</string>
     <string name="title_menu_product">Produk</string>
     <string name="title_menu_product_list">Pengaturan Produk</string>
     <string name="label_menu_product_list">Lihat dan atur semua produk</string>
+    <string name="title_menu_product_feature">Produk Unggulan</string>
+    <string name="label_menu_product_feature">Tampilkan 5 produk terbaik toko Anda</string>
     <string name="title_menu_product_draft">Draft Produk</string>
     <string name="label_menu_product_draft">Selesaikan kelengkapan detail produk</string>
     <string name="title_menu_other_features">Fitur Lainnya</string>

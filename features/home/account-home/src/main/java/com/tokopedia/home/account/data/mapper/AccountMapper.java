@@ -349,15 +349,31 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGrid.setItems(menuGridItems);
         items.add(menuGrid);
 
+        MenuListViewModel menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_complaint_seller));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_complaint_seller));
+        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
+        items.add(menuList);
+
         MenuTitleViewModel menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_product));
         items.add(menuTitle);
 
         items.add(new AddProductViewModel());
 
-        MenuListViewModel menuList = new MenuListViewModel();
+        menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_product_list));
         menuList.setMenuDescription(context.getString(R.string.label_menu_product_list));
         menuList.setApplink(ApplinkConst.PRODUCT_MANAGE);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_product));
+        items.add(menuList);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_product_feature));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_product_feature));
+        menuList.setApplink(ApplinkConst.PRODUCT_DRAFT);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_product));
         items.add(menuList);
