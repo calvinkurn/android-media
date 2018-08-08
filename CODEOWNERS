@@ -49,7 +49,6 @@
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 
-
 /libraries/applink/                     @tokopedia/core-team
 /libraries/bottom_sheet_builder/        @tokopedia/minion-stuart
 /libraries/cache_api/                   @tokopedia/minion-stuart
