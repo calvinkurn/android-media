@@ -56,6 +56,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private ViewPager viewPager;
     private AccountHomePagerAdapter adapter;
 
+    private QBadgeView badgeView;
     private Toolbar toolbar;
     private ImageButton menuNotification;
 
@@ -120,23 +121,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
             if (currentFragment != null) {
                 if (currentFragment instanceof SellerAccount.View) {
-                    ((SellerAccount.View) currentFragment).loadData(accountViewModel.getSellerViewModel().getItems());
+                    ((SellerAccount.View) currentFragment).loadData(accountViewModel);
                 } else if (currentFragment instanceof BuyerAccount.View) {
                     ((BuyerAccount.View) currentFragment).loadData(accountViewModel.getBuyerViewModel().getItems());
                 }
             }
-
-//            if (accountViewModel.isSeller()) {
-//                item = new AccountFragmentItem();
-//                item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
-//                item.setTitle(getContext().getString(R.string.label_account_seller));
-//                fragmentItems.add(item);
-//            } else {
-//                item = new AccountFragmentItem();
-//                item.setFragment(SellerEmptyAccountFragment.newInstance());
-//                item.setTitle(getContext().getString(R.string.label_account_seller));
-//                fragmentItems.add(item);
-//            }
         }
     }
 
@@ -182,8 +171,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
     }
-
-    private QBadgeView badgeView;
 
     @Override
     public void onNotifyBadgeNotification(int number) {
