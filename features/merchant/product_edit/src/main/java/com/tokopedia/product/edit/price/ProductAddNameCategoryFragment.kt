@@ -9,22 +9,16 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.constant.ProductExtraConstant
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog
 import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
 import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
-import com.tokopedia.product.edit.price.model.ProductCatalog
 import com.tokopedia.product.edit.price.model.ProductCategory
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
 import com.tokopedia.product.edit.view.activity.ProductAddActivity
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
-import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
 class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryView {
@@ -52,23 +46,14 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
             if (savedInstanceState.containsKey(SAVED_PRODUCT_NAME)) {
                 productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)
             }
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_IMAGES)){
+                productPictureList = savedInstanceState.getStringArrayList(SAVED_PRODUCT_IMAGES)
+            }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_product_add_name_category, container, false)
-    }
-
-    override fun restoreSaveInstance(savedInstanceState: Bundle?){
-        super.restoreSaveInstance(savedInstanceState)
-        savedInstanceState?.run {
-            if(containsKey(EXTRA_PRODUCT_NAME)){
-                productName = getParcelable(EXTRA_PRODUCT_NAME)
-            }
-            if (containsKey(EXTRA_IMAGES)){
-                productPictureList = getStringArrayList(EXTRA_IMAGES)
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,12 +92,6 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
                 }
             }
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(EXTRA_PRODUCT_NAME, productName)
-        outState.putStringArrayList(EXTRA_IMAGES, productPictureList)
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
@@ -157,11 +136,13 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         flagReset = true
         outState.putBoolean(SAVED_RESET_DATA, flagReset)
         outState.putParcelable(SAVED_PRODUCT_NAME, productName)
+        outState.putStringArrayList(SAVED_PRODUCT_IMAGES, productPictureList)
     }
 
     companion object {
         const val SAVED_RESET_DATA = "SAVED_RESET_DATA"
         const val SAVED_PRODUCT_NAME = "SAVED_PRODUCT_NAME"
+        const val SAVED_PRODUCT_IMAGES = "SAVED_PRODUCT_IMAGES"
         const val REQUEST_CODE_GET_IMAGES = 100
         fun createInstance(imageUrls: ArrayList<String>?) : ProductAddNameCategoryFragment{
             val productAddNameCategoryFragment = ProductAddNameCategoryFragment()

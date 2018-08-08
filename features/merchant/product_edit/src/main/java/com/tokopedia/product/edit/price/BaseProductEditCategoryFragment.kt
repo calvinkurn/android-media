@@ -121,13 +121,6 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(EXTRA_NAME, name)
-        outState.putParcelable(EXTRA_CATEGORY, productCategory)
-        outState.putParcelable(EXTRA_CATALOG, productCatalog)
-    }
-
     private fun onLabelCategoryClicked() {
         if (isCategoryLocked) {
             val builder = AlertDialog.Builder(activity!!,
