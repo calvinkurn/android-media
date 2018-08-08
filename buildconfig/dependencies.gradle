@@ -332,7 +332,7 @@ ext {
             settingbank           : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
             changepassword        : ":features:user:changepassword",
-            bankDB                : ":features:user:bankDB",
+            bankdb                : ":features:user:bankdb",
             otp                   : ":features:user:otp",
             vote                  : ":features:user:vote",
             contactUs             : ":features:operational:contact_us",
