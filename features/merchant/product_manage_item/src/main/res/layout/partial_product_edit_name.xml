@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:hint="@string/product_hint_product_name"
             android:imeOptions="actionDone"
-            android:inputType="textMultiLine"
+            android:inputType="text"
             android:maxLength="@integer/product_max_character_name" />
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>

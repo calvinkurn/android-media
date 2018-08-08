@@ -144,6 +144,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         selectedCurrencyType = productPrice.currencyType
         setPriceTextChangedListener()
         spinnerCounterInputViewPrice.counterValue = productPrice.price
+        spinnerCounterInputViewPrice.setCounterError(null)
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
         setLabelViewWholesale(wholesalePrice)
@@ -225,7 +226,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                     if (!isGoldMerchant && itemId == CurrencyTypeDef.TYPE_USD) {
                         if (GlobalConfig.isSellerApp()) {
                             UnifyTracking.eventSwitchRpToDollarAddProduct()
-                            setResult(true)
+                            showDialogGoToGM()
                         } else {
                             Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
                                     .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
@@ -234,10 +235,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                     } else {
                         selectedCurrencyType = itemId
                         setPriceTextChangedListener()
+                        spinnerCounterInputViewPrice.counterValue = DEFAULT_PRICE
+                        spinnerCounterInputViewPrice.counterEditText.setSelection(spinnerCounterInputViewPrice.counterEditText.text.length)
+                        spinnerCounterInputViewPrice.setCounterError(null)
                     }
-                    spinnerCounterInputViewPrice.counterValue = DEFAULT_PRICE
-                    spinnerCounterInputViewPrice.counterEditText.setSelection(spinnerCounterInputViewPrice.counterEditText.text.length)
-                    spinnerCounterInputViewPrice.setCounterError(null)
                 }
             }
         })
@@ -248,6 +249,21 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 selectedCurrencyType == CurrencyTypeDef.TYPE_USD)
 
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
+    }
+
+    private fun showDialogGoToGM(){
+        val builder = AlertDialog.Builder(context!!,
+                R.style.AppCompatAlertDialogStyle)
+        builder.setTitle(R.string.add_product_title_alert_dialog_dollar)
+        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video, getString(R.string.product_add_label_alert_dialog_dollar)))
+        builder.setCancelable(true)
+        builder.setPositiveButton(R.string.change) { dialog, _ ->
+            dialog.cancel()
+            setResult(true)
+        }
+        builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
+        val alert = builder.create()
+        alert.show()
     }
 
     private fun showEditPriceDialog() {

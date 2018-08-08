@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextWatcher
 import android.view.*
 import android.widget.CompoundButton
 import android.widget.TextView
@@ -33,6 +34,10 @@ class ProductEditWeightLogisticFragment : Fragment() {
     private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
     private val isFreeReturn by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_FREE_RETURN, false) ?: false }
 
+    private lateinit var weightTextWatcher: TextWatcher
+    private lateinit var processTimeTextWatcher: TextWatcher
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -56,21 +61,24 @@ class ProductEditWeightLogisticFragment : Fragment() {
         spinnerCounterInputViewWeight.spinnerTextView.editText.setOnClickListener({ showBottomSheetsWeight() })
         spinnerCounterInputViewProcessTime.spinnerTextView.editText.setOnClickListener({ showBottomSheetsPreOrder() })
 
-        spinnerCounterInputViewWeight.addTextChangedListener(object : NumberTextWatcher(spinnerCounterInputViewWeight.counterEditText, getString(R.string.product_default_counter_text)) {
+        weightTextWatcher = object : NumberTextWatcher(spinnerCounterInputViewWeight.counterEditText, getString(R.string.product_default_counter_text)) {
             override fun onNumberChanged(number: Double) {
                 if (isWeightValid()) {
-                    spinnerCounterInputViewProcessTime.setCounterError(null)
+                    spinnerCounterInputViewWeight.setCounterError(null)
                 }
             }
-        })
+        }
 
-        spinnerCounterInputViewProcessTime.addTextChangedListener(object : NumberTextWatcher(spinnerCounterInputViewProcessTime.counterEditText, getString(R.string.product_default_counter_text)) {
+        processTimeTextWatcher = object : NumberTextWatcher(spinnerCounterInputViewProcessTime.counterEditText, getString(R.string.product_default_counter_text)) {
             override fun onNumberChanged(number: Double) {
                 if (isPreOrderValid()) {
                     spinnerCounterInputViewProcessTime.setCounterError(null)
                 }
             }
-        })
+        }
+
+        spinnerCounterInputViewWeight.addTextChangedListener(weightTextWatcher)
+        spinnerCounterInputViewProcessTime.addTextChangedListener(processTimeTextWatcher)
 
         labelSwitchPreOrder.setListenerValue(CompoundButton.OnCheckedChangeListener {
             compoundButton: CompoundButton, b: Boolean -> populatePreorder()
@@ -149,7 +157,7 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 maxPreOrder = MAX_PRE_ORDER_WEEK
             }
             if (minPreOrder.removeCommaToInt() > getPreOrder() || getPreOrder() > maxPreOrder.removeCommaToInt()) {
-                spinnerCounterInputViewProcessTime.setCounterError(getString(R.string.product_error_product_weight_not_valid, minPreOrder, maxPreOrder))
+                spinnerCounterInputViewProcessTime.setCounterError(getString(R.string.product_error_product_pre_order_not_valid, minPreOrder, maxPreOrder))
                 return false
             }
             spinnerCounterInputViewProcessTime.setCounterError(null)
@@ -180,9 +188,12 @@ class ProductEditWeightLogisticFragment : Fragment() {
                     return
                 }
                 selectedWeightType = itemId
+                spinnerCounterInputViewWeight.removeTextChangedListener(weightTextWatcher)
                 spinnerCounterInputViewWeight.spinnerTextView.editText.setText(getWeightTypeTitle(selectedWeightType))
                 spinnerCounterInputViewWeight.counterValue = getString(R.string.product_default_counter_text).toDouble()
                 spinnerCounterInputViewWeight.counterEditText.setSelection(spinnerCounterInputViewWeight.counterEditText.text.length)
+                spinnerCounterInputViewWeight.addTextChangedListener(weightTextWatcher)
+                spinnerCounterInputViewWeight.setCounterError(null)
             }
         })
 
@@ -206,9 +217,12 @@ class ProductEditWeightLogisticFragment : Fragment() {
                     return
                 }
                 selectedPreOrderTimeType = itemId
+                spinnerCounterInputViewProcessTime.removeTextChangedListener(processTimeTextWatcher)
                 spinnerCounterInputViewProcessTime.spinnerTextView.editText.setText(getPreOrderTimeTypeTitle(selectedPreOrderTimeType))
                 spinnerCounterInputViewProcessTime.counterValue = getString(R.string.product_default_counter_text).toDouble()
                 spinnerCounterInputViewProcessTime.counterEditText.setSelection(spinnerCounterInputViewProcessTime.counterEditText.text.length)
+                spinnerCounterInputViewProcessTime.addTextChangedListener(processTimeTextWatcher)
+                spinnerCounterInputViewProcessTime.setCounterError(null)
             }
         })
 

@@ -21,9 +21,8 @@ class ProductEditNameViewHolder(var view: View, listener: Listener){
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                view.textInputLayoutName.error = if (s.isNotEmpty()) null else view.context.getString(R.string.product_error_product_name_empty)
-
                 productName.name = view.editTextName.text.toString()
+                validateForm()
                 listener.onNameChanged(productName)
             }
 
@@ -38,5 +37,9 @@ class ProductEditNameViewHolder(var view: View, listener: Listener){
 
     fun setEditableName(isEditableName: Boolean){
         view.editTextName.isEnabled = isEditableName
+    }
+
+    fun validateForm(){
+        view.textInputLayoutName.error = if (productName.name.isNotEmpty()) null else view.context.getString(R.string.product_error_product_name_empty)
     }
 }
