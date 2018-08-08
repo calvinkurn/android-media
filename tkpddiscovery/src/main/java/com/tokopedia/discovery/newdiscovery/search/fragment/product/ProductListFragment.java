@@ -485,7 +485,6 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
-        //getDynamicFilter();
         getQuickFilter();
         getGuidedSearch();
     }
@@ -502,7 +501,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     protected void requestDynamicFilter() {
-        presenter.requestDynamicFilter(NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams()));
+
     }
 
     @Override

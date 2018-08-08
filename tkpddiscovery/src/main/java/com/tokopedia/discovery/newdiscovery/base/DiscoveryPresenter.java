@@ -8,12 +8,15 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -51,24 +54,12 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     @Override
     public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStore) {
         super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, false);
 
         Map<String, Object> variables = new HashMap<>();
-//        variables.put("q", searchParameter.getQueryKey());
-//        variables.put("start", 0);
-//        variables.put("rows", 12);
-//        variables.put("uniqueId", searchParameter.getUniqueID());
-
-        variables.put("input", "{ \n" +
-                "    \"ep\":\"product\",\n" +
-                "    \"page\":1,\n" +
-                "    \"item\":10,\n" +
-                "    \"src\":\"search\",\n" +
-                "    \"user_id\":5512373,\n" +
-                "    \"device\": \"android\",\n" +
-                "    \"dep_id\": \"24\",\n" +
-                "    \"q\": \"xiaomi\"\n" +
-                "  }");
-        variables.put("params", "q=samsung&source=null&userId=null&device=android&rows=1&start=0");
+        variables.put("query", searchParameter.getQueryKey());
+        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
+        variables.put("source", searchParameter.getSource());
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),

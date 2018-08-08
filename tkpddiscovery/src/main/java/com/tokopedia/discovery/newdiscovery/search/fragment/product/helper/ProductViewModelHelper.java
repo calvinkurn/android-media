@@ -82,7 +82,7 @@ public class ProductViewModelHelper {
         model.setSuggestionText(gqlSuggestionResponse.getText());
         model.setSuggestedQuery(gqlSuggestionResponse.getQuery());
         model.setSuggestionCurrentKeyword(gqlSuggestionResponse.getCurrentKeyword());
-        model.setFormattedResultCount(Long.toString(searchProductResponse.getCount()));
+        //model.setFormattedResultCount(Long.toString(searchProductResponse.getCount()));
         return model;
     }
 
@@ -148,21 +148,22 @@ public class ProductViewModelHelper {
         productItem.setImageUrl700(productModel.getImageUrlLarge());
         productItem.setRating(productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
-        //productItem.setCountCourier(productModel.getCountCourier());
-        //productItem.setDiscountPercentage(productModel.getDiscountPercentage());
-        //productItem.setOriginalPrice(productModel.getOriginalPrice());
+        productItem.setCountCourier(productModel.getCourierCount());
+        productItem.setDiscountPercentage(productModel.getDiscountPercentage());
+        productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
+        //productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShop().getId());
         productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
         productItem.setGoldMerchant(productModel.getShop().isGoldmerchant());
         productItem.setOfficial(productModel.getShop().isOfficial());
-        productItem.setWishlisted(productModel.isWishlist());
-        productItem.setBadgesList(new ArrayList<>());
-        productItem.setLabelList(new ArrayList<>());
-        //productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
-        //productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
+        //productItem.setWishlisted(productModel.isWishlist());
+        productItem.setBadgesList(convertToBadgesItemListGql(productModel.getBadges()));
+        productItem.setLabelList(convertToLabelsItemListGql(productModel.getLabels()));
         productItem.setPosition(position);
+        //productItem.setTopLabel(productModel.getTopLabel());
+        //productItem.setBottomLabel(productModel.getBottomLabel());
         return productItem;
     }
 
@@ -220,6 +221,38 @@ public class ProductViewModelHelper {
     }
 
     private static LabelItem convertToLabelItem(LabelModel labelModel) {
+        LabelItem labelItem = new LabelItem();
+        labelItem.setTitle(labelModel.getTitle());
+        labelItem.setColor(labelModel.getColor());
+        return labelItem;
+    }
+
+    private static List<BadgeItem> convertToBadgesItemListGql(List<SearchProductGqlResponse.Badge> badgesList) {
+        List<BadgeItem> badgeItemList = new ArrayList<>();
+
+        for (SearchProductGqlResponse.Badge badgeModel : badgesList) {
+            badgeItemList.add(convertToBadgeItem(badgeModel));
+        }
+        return badgeItemList;
+    }
+
+    private static BadgeItem convertToBadgeItem(SearchProductGqlResponse.Badge badgeModel) {
+        BadgeItem badgeItem = new BadgeItem();
+        badgeItem.setImageUrl(badgeModel.getImageUrl());
+        badgeItem.setTitle(badgeModel.getTitle());
+        //badgeItem.setShown(badgeModel.isShown());
+        return badgeItem;
+    }
+
+    private static List<LabelItem> convertToLabelsItemListGql(List<SearchProductGqlResponse.Label> labelList) {
+        List<LabelItem> labelItemList = new ArrayList<>();
+        for (SearchProductGqlResponse.Label labelModel : labelList) {
+            labelItemList.add(convertToLabelItem(labelModel));
+        }
+        return labelItemList;
+    }
+
+    private static LabelItem convertToLabelItem(SearchProductGqlResponse.Label labelModel) {
         LabelItem labelItem = new LabelItem();
         labelItem.setTitle(labelModel.getTitle());
         labelItem.setColor(labelModel.getColor());

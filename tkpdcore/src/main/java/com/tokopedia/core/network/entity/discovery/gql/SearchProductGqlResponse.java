@@ -15,7 +15,7 @@ public class SearchProductGqlResponse {
     @Expose
     private SearchProduct searchProduct;
 
-    @SerializedName("dynamicAttribute")
+    @SerializedName("search_filter_product")
     @Expose
     private DynamicFilterModel dynamicFilterModel;
 
@@ -98,45 +98,45 @@ public class SearchProductGqlResponse {
 
         @SerializedName("id")
         @Expose
-        private long id;
+        private int id;
         @SerializedName("name")
         @Expose
         private String name;
         @SerializedName("price")
         @Expose
         private String price;
-        @SerializedName("rawPrice")
+        @SerializedName("price_raw")
         @Expose
-        private long rawPrice;
-        @SerializedName("minPrice")
+        private String rawPrice;
+        @SerializedName("price_min")
         @Expose
         private String minPrice;
-        @SerializedName("maxPrice")
+        @SerializedName("price_max")
         @Expose
         private String maxPrice;
-        @SerializedName("rawMinPrice")
+        @SerializedName("price_min_raw")
         @Expose
-        private long rawMinPrice;
-        @SerializedName("rawMaxPrice")
+        private String rawMinPrice;
+        @SerializedName("price_max_raw")
         @Expose
-        private long rawMaxPrice;
-        @SerializedName("count")
+        private String rawMaxPrice;
+        @SerializedName("count_product")
         @Expose
-        private long count;
+        private int count;
         @SerializedName("description")
         @Expose
         private String description;
-        @SerializedName("imageUrl")
+        @SerializedName("image_url")
         @Expose
         private String imageUrl;
         @SerializedName("url")
         @Expose
         private String url;
-        @SerializedName("departmentId")
+        @SerializedName("department_id")
         @Expose
-        private long departmentId;
+        private int departmentId;
 
-        public long getId() {
+        public int getId() {
             return id;
         }
 
@@ -148,7 +148,7 @@ public class SearchProductGqlResponse {
             return price;
         }
 
-        public long getRawPrice() {
+        public String getRawPrice() {
             return rawPrice;
         }
 
@@ -160,15 +160,15 @@ public class SearchProductGqlResponse {
             return maxPrice;
         }
 
-        public long getRawMinPrice() {
+        public String getRawMinPrice() {
             return rawMinPrice;
         }
 
-        public long getRawMaxPrice() {
+        public String getRawMaxPrice() {
             return rawMaxPrice;
         }
 
-        public long getCount() {
+        public int getCount() {
             return count;
         }
 
@@ -184,7 +184,7 @@ public class SearchProductGqlResponse {
             return url;
         }
 
-        public long getDepartmentId() {
+        public int getDepartmentId() {
             return departmentId;
         }
     }
@@ -199,13 +199,13 @@ public class SearchProductGqlResponse {
         private String suggestion;
         @SerializedName("suggestionCount")
         @Expose
-        private long suggestionCount;
+        private int suggestionCount;
         @SerializedName("instead")
         @Expose
         private String instead;
         @SerializedName("insteadCount")
         @Expose
-        private long insteadCount;
+        private int insteadCount;
         @SerializedName("text")
         @Expose
         private String text;
@@ -221,7 +221,7 @@ public class SearchProductGqlResponse {
             return suggestion;
         }
 
-        public long getSuggestionCount() {
+        public int getSuggestionCount() {
             return suggestionCount;
         }
 
@@ -229,7 +229,7 @@ public class SearchProductGqlResponse {
             return instead;
         }
 
-        public long getInsteadCount() {
+        public int getInsteadCount() {
             return insteadCount;
         }
 
@@ -256,36 +256,81 @@ public class SearchProductGqlResponse {
         @SerializedName("url")
         @Expose
         private String url;
-        @SerializedName("imageUrl")
+        @SerializedName("image_url")
         @Expose
         private String imageUrl;
-        @SerializedName("imageUrlLarge")
+        @SerializedName("image_url_700")
         @Expose
         private String imageUrlLarge;
         @SerializedName("price")
         @Expose
         private String price;
+        @SerializedName("whole_sale_price")
+        @Expose
+        private List<WholeSalePrice> wholeSalePrice = null;
+        @SerializedName("courier_count")
+        @Expose
+        private int courierCount;
+        @SerializedName("condition")
+        @Expose
+        private int condition;
+        @SerializedName("category_id")
+        @Expose
+        private int categoryId;
+        @SerializedName("category_name")
+        @Expose
+        private String categoryName;
+        @SerializedName("category_breadcrumb")
+        @Expose
+        private String categoryBreadcrumb;
+        @SerializedName("department_id")
+        @Expose
+        private int departmentId;
+        @SerializedName("department_name")
+        @Expose
+        private String departmentName;
+        @SerializedName("labels")
+        @Expose
+        private List<Label> labels = null;
+        @SerializedName("badges")
+        @Expose
+        private List<Badge> badges = null;
+        @SerializedName("is_featured")
+        @Expose
+        private int isFeatured;
         @SerializedName("rating")
         @Expose
         private int rating;
-        @SerializedName("countReview")
+        @SerializedName("count_review")
         @Expose
         private int countReview;
-        @SerializedName("preorder")
+        @SerializedName("original_price")
+        @Expose
+        private String originalPrice;
+        @SerializedName("discount_expired_time")
+        @Expose
+        private String discountExpiredTime;
+        @SerializedName("discount_start_time")
+        @Expose
+        private String discountStartTime;
+        @SerializedName("discount_percentage")
+        @Expose
+        private int discountPercentage;
+        @SerializedName("sku")
+        @Expose
+        private String sku;
+        @SerializedName("stock")
+        @Expose
+        private int stock;
+        @SerializedName("ga_key")
+        @Expose
+        private String gaKey;
+        @SerializedName("is_preorder")
         @Expose
         private boolean preorder;
-        @SerializedName("cashback")
-        @Expose
-        private String cashback;
         @SerializedName("wishlist")
         @Expose
         private boolean wishlist;
-        @SerializedName("gaKey")
-        @Expose
-        private String gaKey;
-        @SerializedName("catId")
-        @Expose
-        private long catId;
         @SerializedName("shop")
         @Expose
         private Shop shop;
@@ -318,6 +363,50 @@ public class SearchProductGqlResponse {
             return price;
         }
 
+        public List<WholeSalePrice> getWholeSalePrice() {
+            return wholeSalePrice;
+        }
+
+        public int getCourierCount() {
+            return courierCount;
+        }
+
+        public int getCondition() {
+            return condition;
+        }
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        public String getCategoryName() {
+            return categoryName;
+        }
+
+        public String getCategoryBreadcrumb() {
+            return categoryBreadcrumb;
+        }
+
+        public int getDepartmentId() {
+            return departmentId;
+        }
+
+        public String getDepartmentName() {
+            return departmentName;
+        }
+
+        public List<Label> getLabels() {
+            return labels;
+        }
+
+        public List<Badge> getBadges() {
+            return badges;
+        }
+
+        public int getIsFeatured() {
+            return isFeatured;
+        }
+
         public int getRating() {
             return rating;
         }
@@ -326,24 +415,40 @@ public class SearchProductGqlResponse {
             return countReview;
         }
 
-        public boolean isPreorder() {
-            return preorder;
+        public String getOriginalPrice() {
+            return originalPrice;
         }
 
-        public String getCashback() {
-            return cashback;
+        public String getDiscountExpiredTime() {
+            return discountExpiredTime;
         }
 
-        public boolean isWishlist() {
-            return wishlist;
+        public String getDiscountStartTime() {
+            return discountStartTime;
+        }
+
+        public int getDiscountPercentage() {
+            return discountPercentage;
+        }
+
+        public String getSku() {
+            return sku;
+        }
+
+        public int getStock() {
+            return stock;
         }
 
         public String getGaKey() {
             return gaKey;
         }
 
-        public long getCatId() {
-            return catId;
+        public boolean isPreorder() {
+            return preorder;
+        }
+
+        public boolean isWishlist() {
+            return wishlist;
         }
 
         public Shop getShop() {
@@ -351,12 +456,70 @@ public class SearchProductGqlResponse {
         }
     }
 
+    public static class WholeSalePrice {
+        @SerializedName("quantity_min")
+        @Expose
+        private int quantityMin;
+        @SerializedName("quantity_max")
+        @Expose
+        private int quantityMax;
+        @SerializedName("price")
+        @Expose
+        private String price;
+
+        public int getQuantityMin() {
+            return quantityMin;
+        }
+
+        public int getQuantityMax() {
+            return quantityMax;
+        }
+
+        public String getPrice() {
+            return price;
+        }
+    }
+
+    public static class Label {
+        @SerializedName("title")
+        @Expose
+        private String title;
+        @SerializedName("color")
+        @Expose
+        private String color;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getColor() {
+            return color;
+        }
+    }
+
+    public static class Badge {
+        @SerializedName("title")
+        @Expose
+        private String title;
+        @SerializedName("image_url")
+        @Expose
+        private String imageUrl;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+    }
+
     public static class Redirection {
 
-        @SerializedName("redirectUrl")
+        @SerializedName("redirect_url")
         @Expose
         private String redirectUrl;
-        @SerializedName("departmentId")
+        @SerializedName("department_id")
         @Expose
         private String departmentId;
 
@@ -392,10 +555,10 @@ public class SearchProductGqlResponse {
         @SerializedName("clover")
         @Expose
         private String clover;
-        @SerializedName("goldmerchant")
+        @SerializedName("is_gold_shop")
         @Expose
         private boolean goldmerchant;
-        @SerializedName("official")
+        @SerializedName("is_official")
         @Expose
         private boolean official;
 

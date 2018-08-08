@@ -14,12 +14,11 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
@@ -29,9 +28,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.GraphqlConstant;
-import com.tokopedia.graphql.data.model.CacheType;
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -90,11 +86,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        if (isUsingFilterV4) {
-            getDynamicFilterV4UseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
-        } else {
-            getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
-        }
+
     }
 
     @Override
@@ -130,7 +122,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void requestDynamicFilter() {
-        requestDynamicFilter(new HashMap<String, String>());
+
     }
 
     @Override
@@ -157,10 +149,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         removeDefaultCategoryParam(requestParams);
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("q", searchParameter.getQueryKey());
-        variables.put("start", searchParameter.getStartRow());
-        variables.put("rows", 12);
-        variables.put("uniqueId", searchParameter.getUniqueID());
+        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
@@ -284,10 +273,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         removeDefaultCategoryParam(requestParams);
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("q", searchParameter.getQueryKey());
-        variables.put("start", 0);
-        variables.put("rows", 12);
-        variables.put("uniqueId", searchParameter.getUniqueID());
+        variables.put("query", searchParameter.getQueryKey());
+        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
+        variables.put("source", searchParameter.getSource());
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
