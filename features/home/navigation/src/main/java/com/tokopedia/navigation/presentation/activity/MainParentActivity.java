@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -190,6 +191,27 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         ft.commit();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onResume();
+        if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
+            reloadPage(this);
+        }
+        isUserFirstTimeLogin = !userSession.isLoggedIn();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    private void reloadPage(Activity activity) {
+        finish();
+        startActivity(getIntent());
+    }
+
     private boolean isUserLogin() {
         if (!userSession.isLoggedIn())
             RouteManager.route(this, ApplinkConst.LOGIN);
@@ -204,31 +226,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     public BaseAppComponent getComponent() {
         return getApplicationComponent();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.onResume();
-        if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
-            reloadPage();
-        }
-        isUserFirstTimeLogin = !userSession.isLoggedIn();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
-    }
-
-    private void reloadPage() {
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        if (getApplication() instanceof  GlobalNavRouter) {
-            this.currentFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
-        }
-        selectFragment(currentFragment);
-        bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
     }
 
     private List<Fragment> fragments() {
