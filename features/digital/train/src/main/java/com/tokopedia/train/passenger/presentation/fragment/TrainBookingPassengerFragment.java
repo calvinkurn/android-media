@@ -253,6 +253,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+
         });
 
         cardActionReturn.setActionListener(() -> {
@@ -269,6 +271,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
         });
     }
 
