@@ -30,7 +30,7 @@ import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordModule;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordOldNewChooseGroupActivity;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
@@ -180,7 +180,7 @@ public class TopAdsOldKeywordListFragment extends TopAdsAdListFragment<TopAdsOld
     public void onCreateAd() {
         UnifyTracking.eventTopAdsProductNewPromoKeywordPositif();
         topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
+        TopAdsKeywordOldNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 
     @Override

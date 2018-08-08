@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
@@ -46,7 +46,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -63,7 +62,6 @@ import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -87,8 +85,7 @@ import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
+import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -662,29 +659,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, messageTAG + "onResume");
-        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-            @Override
-            public void onSuccess(ArrayList<String> imageUrls) {
-                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
-            }
-
-            @Override
-            public void onSuccess(String path) {
-                ArrayList<String> imageUrls = new ArrayList<>();
-                imageUrls.add(path);
-                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
-            }
-
-            @Override
-            public void onFailed(String message) {
-                Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public Context getContext() {
-                return ParentIndexHome.this;
-            }
-        }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);

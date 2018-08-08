@@ -18,9 +18,13 @@ public interface ShopModuleRouter {
 
     Fragment getShopTalkFragment();
 
+    void goToEditShop(Context context);
+
     void goToManageShop(Context context);
 
     void goToEditShopNote(Context context);
+
+    void goToManageShipping(Context context);
 
     void goToAddProduct(Context context);
 
@@ -35,6 +39,10 @@ public interface ShopModuleRouter {
     void goToProductDetailById(Context activity, String productId);
 
     void goToProfileShop(Context context, String userId);
+
+    void goToShopReview(Context context, String shopId, String shopDomain);
+
+    void goToShopDiscussion(Context context, String shopId);
 
     Intent getLoginIntent(Context context);
 

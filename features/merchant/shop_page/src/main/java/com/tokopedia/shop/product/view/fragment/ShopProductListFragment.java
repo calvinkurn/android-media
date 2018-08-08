@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,90 +19,101 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
+import com.tokopedia.shop.product.view.adapter.EtalaseChipAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.listener.ShopProductListView;
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
+import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-/**
- * Created by nathan on 2/15/18.
- */
+public class ShopProductListFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
+        implements ShopProductDedicatedListView, BaseEmptyViewHolder.Callback, ShopProductClickedNewListener,
+        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, EtalaseChipAdapter.OnEtalaseChipAdapterListener {
 
-public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements
-        ShopProductListView, ShopProductClickedListener, WishListActionListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
-
-    public static final int SPAN_COUNT = 2;
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_ETALASE = 200;
     private static final int REQUEST_CODE_SORT = 300;
 
-    private static final int LAYOUT_GRID_TYPE = 65;
-    private static final int LAYOUT_LIST_TYPE = 97;
-    private static final Pair<Integer, Integer>[] layoutType = new Pair[]{
-            new Pair<>(ShopProductViewHolder.LAYOUT, LAYOUT_GRID_TYPE),
-            new Pair<>(ShopProductSingleViewHolder.LAYOUT, LAYOUT_LIST_TYPE),
-            new Pair<>(ShopProductListViewHolder.LAYOUT, LAYOUT_LIST_TYPE)
-    };
+    private ShopProductAdapter shopProductAdapter;
 
-    private static final int[] LAYOUT_IMAGE_DRAWABLE_LIST = new int[]{
-            R.drawable.ic_see_grid,
-            R.drawable.ic_see_big_grid,
-            R.drawable.ic_see_list};
+    private static final int LIST_SPAN_COUNT = 1;
+    private static final int GRID_SPAN_COUNT = 2;
+
+    public static final String SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list";
+    public static final String SAVED_SELECTED_ETALASE_ID = "saved_etalase_id";
+    public static final String SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name";
+    public static final String SAVED_KEYWORD = "saved_keyword";
+    public static final String SAVED_SORT_VALUE = "saved_sort_name";
 
     @Inject
     ShopProductListPresenter shopProductListPresenter;
     @Inject
     ShopPageTracking shopPageTracking;
-    private LabelView etalaseLabelView;
-    private ShopModuleRouter shopModuleRouter;
 
-    private String etalaseId;
+    private ShopModuleRouter shopModuleRouter;
 
     private String shopId;
     private String keyword;
-    private String sortName = Integer.toString(Integer.MIN_VALUE);
+    private String sortValue;
     private String attribution;
-    private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolder.LAYOUT, 65);
-    private int currentIndex = 0, currentImgBottomNav = 0;
-    private String sortId;
-    private RecyclerView recyclerViews;
+
+    private ArrayList<ShopEtalaseViewModel> selectedEtalaseList;
+
+    private RecyclerView recyclerView;
     private BottomActionView bottomActionView;
     private ShopInfo shopInfo;
 
-    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort, String attribution) {
+    private String selectedEtalaseId;
+    private String selectedEtalaseName;
+
+    private OnShopProductListFragmentListener onShopProductListFragmentListener;
+    private boolean needReloadData;
+    private View vgEtalaseList;
+    private EtalaseChipAdapter etalaseChipAdapter;
+
+    public interface OnShopProductListFragmentListener {
+        void updateUIByShopName(String shopName);
+    }
+
+    public static ShopProductListFragment createInstance(String shopId,
+                                                         String keyword,
+                                                         String etalaseId,
+                                                         String sort,
+                                                         String attribution) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
@@ -116,13 +127,18 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(this, this);
+        return new ShopProductAdapterTypeFactory(null,
+                this, this,
+                this, null,
+                false, 0, false
+        );
     }
 
     @NonNull
     @Override
-    protected BaseListAdapter<ShopProductViewModel, ShopProductAdapterTypeFactory> createAdapterInstance() {
-        return new ShopProductAdapter(getAdapterTypeFactory());
+    protected BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory> createAdapterInstance() {
+        shopProductAdapter = new ShopProductAdapter(getAdapterTypeFactory());
+        return shopProductAdapter;
     }
 
     @Override
@@ -130,33 +146,48 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.ic_empty_list_search);
         if (TextUtils.isEmpty(keyword)) {
-            emptyModel.setTitle(getString(R.string.shop_product_empty_title_desc));
+            if (TextUtils.isEmpty(selectedEtalaseId)) {
+                emptyModel.setTitle(getString(R.string.shop_product_empty_title_desc));
+            } else {
+                emptyModel.setTitle(getString(R.string.shop_product_empty_title_etalase_desc));
+            }
         } else {
-            emptyModel.setTitle(getString(R.string.shop_product_empty_product_title, keyword));
+            if (TextUtils.isEmpty(selectedEtalaseId)) {
+                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_no_etalase));
+            } else {
+                emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_etalase));
+            }
         }
-        emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner));
+        if (TextUtils.isEmpty(selectedEtalaseId)) {
+            emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner_no_etalase));
+        } else {
+            emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner_etalase));
+        }
         return emptyModel;
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
-            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
-        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID, "");
-        keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
-        etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
-        sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
         attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
-        shopProductListPresenter.attachView(this, this);
+        setHasOptionsMenu(true);
+
+        if (savedInstanceState == null) {
+            selectedEtalaseList = new ArrayList<>();
+            selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
+            selectedEtalaseName = "";
+            keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
+            sortValue = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, String.valueOf(Integer.MIN_VALUE));
+        } else {
+            selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST);
+            selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID);
+            selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME);
+            keyword = savedInstanceState.getString(SAVED_KEYWORD);
+            sortValue = savedInstanceState.getString(SAVED_SORT_VALUE);
+        }
+        super.onCreate(savedInstanceState);
+        etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
+        shopProductListPresenter.attachView(this);
     }
 
     @Nullable
@@ -168,51 +199,35 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_shop_product_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_shop_product_list_new, container, false);
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
+        vgEtalaseList = view.findViewById(R.id.vg_etalase_list);
+        setUpEtalaseView(view);
+        return view;
+    }
+
+    public void setUpEtalaseView(View view) {
+        RecyclerView recyclerViewEtalase = view.findViewById(R.id.recycler_view_etalase);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewEtalase.setLayoutManager(layoutManager);
+        RecyclerView.ItemAnimator animator = recyclerViewEtalase.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+        recyclerViewEtalase.setAdapter(etalaseChipAdapter);
+
+        View buttonEtalaseMore = view.findViewById(R.id.v_etalase_more);
+        buttonEtalaseMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onEtalaseMoreListClicked();
+            }
+        });
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
-        recyclerViews = view.findViewById(R.id.recycler_view);
-        etalaseLabelView = view.findViewById(R.id.label_view_etalase);
-        bottomActionView = view.findViewById(R.id.bottom_action_view);
-
-        setBottomActionViewImage(currentImgBottomNav);
-        RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
-        recyclerViews.setLayoutManager(layoutManager);
-
-        etalaseLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (shopModuleRouter != null) {
-                    if (shopInfo != null) {
-                        shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), false, shopId,
-                                shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-                    }
-                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId);
-                    startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
-                }
-            }
-        });
-
-        bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
-                recyclerViews.setLayoutManager(layoutManager);
-                getAdapter().notifyDataSetChanged();
-                setBottomActionViewImage(++currentImgBottomNav);
-                if (shopInfo != null) {
-                    shopPageTracking.eventClickViewTypeProduct(getString(R.string.shop_info_title_tab_product),
-                            currentImgBottomNav, shopId, shopProductListPresenter.isMyShop(shopId),
-                            ShopPageTracking.getShopType(shopInfo.getInfo()));
-                }
-            }
-        });
-
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -220,218 +235,137 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId,
                             shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
-                ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName, shopId), REQUEST_CODE_SORT);
+                Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortValue, shopId);
+                ShopProductListFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
             }
         });
-        if (!TextUtils.isEmpty(keyword)) {
-            searchInputView.getSearchTextView().setText(keyword);
+
+    }
+
+    private void showEtalaseList() {
+        vgEtalaseList.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEtalaseList() {
+        vgEtalaseList.setVisibility(View.GONE);
+    }
+
+    @Override
+    public RecyclerView getRecyclerView(View view) {
+        recyclerView = super.getRecyclerView(view);
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy < 0) { // going up
+                    if (shopProductAdapter.getShopProductViewModelList().size() > 0) {
+                        bottomActionView.show();
+                    }
+                } else if (dy > 0) { // going down
+                    bottomActionView.hide();
+                }
+            }
+        });
+        return recyclerView;
+    }
+
+
+    @Override
+    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT) {
+                    return LIST_SPAN_COUNT;
+                } else {
+                    return GRID_SPAN_COUNT;
+                }
+            }
+        });
+        return gridLayoutManager;
     }
 
     @Override
     public void onSwipeRefresh() {
-        shopProductListPresenter.clearProductCache();
+        shopProductListPresenter.clearCache();
+        hideEtalaseList();
+        etalaseChipAdapter.setEtalaseViewModelList(null);
+        shopProductAdapter.setShopEtalaseTitle(null);
         super.onSwipeRefresh();
     }
 
-    private void setBottomActionViewImage(int index) {
-        if (bottomActionView != null && (index >= 0 && index < LAYOUT_IMAGE_DRAWABLE_LIST.length))
-            bottomActionView.setSecondImageDrawable(LAYOUT_IMAGE_DRAWABLE_LIST[index]);
-        else {
-            currentImgBottomNav = 0;
-            bottomActionView.setSecondImageDrawable(LAYOUT_IMAGE_DRAWABLE_LIST[currentImgBottomNav]);
-        }
-    }
-
-    private RecyclerView.LayoutManager iterate(final RecyclerView recyclerView) {
-        RecyclerView.LayoutManager layoutManager = null;
-        if (getNextIndex(currentIndex, layoutType.length) < 0) {
-            currentLayoutType = layoutType[currentIndex = 0];
-        } else {
-            currentLayoutType = layoutType[currentIndex];
-        }
-        switch (currentLayoutType.second) {
-            case LAYOUT_GRID_TYPE:
-                layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
-                ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-                        if (recyclerView.getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
-                            return ShopProductViewHolder.SPAN_LOOK_UP;
-                        }
-                        return SPAN_COUNT;
-                    }
-                });
-                break;
-            default:
-                layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
-                break;
-        }
-        currentIndex++;
-
-        return layoutManager;
-    }
-
-    @Override
-    protected EndlessLayoutManagerListener getEndlessLayoutManagerListener() {
-        return new EndlessLayoutManagerListener() {
-            public RecyclerView.LayoutManager getCurrentLayoutManager() {
-                return recyclerViews.getLayoutManager();
-            }
-        };
-    }
-
-    @Override
-    public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
-        super.renderList(list, hasNextPage);
-        showBottomActionView();
-        if (shopInfo != null) {
-            shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                    list, attribution, false, shopProductListPresenter.isMyShop(shopId),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
-        }
-    }
-
-    @Override
-    public void showGetListError(Throwable throwable) {
-        super.showGetListError(throwable);
-        showBottomActionView();
-    }
-
-    private void showBottomActionView() {
-        bottomActionView.setVisibility(getAdapter().isContainData() ? View.VISIBLE : View.GONE);
-    }
-
-    private int getNextIndex(int currentIndex, int max) {
-        if (currentIndex >= 0 && currentIndex < max) {
-            return currentIndex;
-        } else {
-            return -1;
-        }
-    }
-
-    @Override
-    public void loadData(int page) {
-        shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
-    }
-
-    @Override
-    public void onItemClicked(ShopProductViewModel shopProductViewModel) {
-
-    }
-
-    @Override
-    public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
-        if (shopInfo != null) {
-            shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.isWishList(), false, shopId, shopProductListPresenter.isMyShop(shopId),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
-        if (shopProductViewModel.isWishList()) {
-            shopProductListPresenter.removeFromWishList(shopProductViewModel.getId());
-        } else {
-            shopProductListPresenter.addToWishList(shopProductViewModel.getId());
-        }
-    }
-
-    @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        if (shopInfo != null) {
-            shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution,
-                    shopProductViewModel.getPositionTracking(), false, shopProductListPresenter.isMyShop(shopId),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
-        }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(),
-                shopProductViewModel.getName(), shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(),
-                attribution, shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), (currentLayoutType.second == LAYOUT_GRID_TYPE),
-                        ShopPageTrackingConstant.PRODUCT_ETALASE));
-    }
-
-    private void onShareShop() {
-        if (shopInfo != null) {
-            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
-                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
-        }
-    }
-
-    @Override
-    public void onUserNotLoginError(Throwable e) {
-        if (e instanceof UserNotLoginException && getActivity() != null) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-        }
-    }
-
-
-    @Override
-    public void onSuccessGetShopName(ShopInfo shopInfo) {
-        this.shopInfo = shopInfo;
-        if (getActivity() instanceof BaseSimpleActivity) {
-            ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
-        }
-    }
-
-    @Override
-    public void onSuccessGetEtalase(String etalaseId, String etalaseName) {
-        if (!etalaseId.equalsIgnoreCase(this.etalaseId)) {
-            this.etalaseId = etalaseId;
-        }
-        if (TextUtils.isEmpty(etalaseName)) {
-            if (shopProductListPresenter.isMyShop(shopId)) {
-                etalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
-            } else {
-                etalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
-            }
-        } else {
-            etalaseLabelView.setContent(MethodChecker.fromHtml(etalaseName));
-        }
-    }
-
-    @Override
-    public void onSearchSubmitted(String s) {
-        keyword = s;
-        loadInitialData();
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void onSearchTextChanged(String s) {
-        if (TextUtils.isEmpty(s)) {
-            keyword = s;
+    public void updateDataByChangingKeyword(String keyword) {
+        if (!this.keyword.equalsIgnoreCase(keyword)) {
+            this.keyword = keyword;
             loadInitialData();
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_ETALASE:
-                if (resultCode == Activity.RESULT_OK) {
-                    etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
-                    String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
-                    if (shopInfo != null) {
-                        shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
-                                false, etalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
-                                ShopPageTracking.getShopType(shopInfo.getInfo()));
-                    }
-                    this.isLoadingInitialData = true;
-                    loadInitialData();
-                }
-                break;
-
-            case REQUEST_CODE_SORT:
-                if (resultCode == Activity.RESULT_OK) {
-                    sortId = data.getStringExtra(ShopProductSortActivity.SORT_ID);
-                    sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
-                    this.isLoadingInitialData = true;
-                    loadInitialData();
-                }
-                break;
-            default:
-                break;
+    public void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
+        if (shopProductAdapter.isLoading()) {
+            return;
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
+        selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
+        etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
+        etalaseChipAdapter.notifyDataSetChanged();
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+        if (shopPageTracking != null) {
+            shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
+                    false, selectedEtalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
+        // no need ro rearraged, just notify the adapter to reload product list by etalase id
+
+        loadInitialData();
+    }
+
+    private void bindEtalaseChipData(ShopProductEtalaseListViewModel shopProductEtalaseListViewModel) {
+        etalaseChipAdapter.setEtalaseViewModelList(shopProductEtalaseListViewModel.getEtalaseModelList());
+        String selectedEtalaseId = shopProductEtalaseListViewModel.getSelectedEtalaseId();
+        etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
+        etalaseChipAdapter.notifyDataSetChanged();
+        showEtalaseList();
+    }
+
+    // load product list first time
+    public void loadInitialData() {
+        bottomActionView.setVisibility(View.GONE);
+        bottomActionView.hide(false);
+        isLoadingInitialData = true;
+        shopProductAdapter.clearProductList();
+        shopProductAdapter.clearAllNonDataElement();
+        showLoading();
+        loadData(getDefaultInitialPage());
+    }
+
+    @Override
+    public void loadData(int page) {
+        if (shopInfo == null) {
+            shopProductListPresenter.getShopInfo(shopId);
+        } else {
+            loadShopPageList(shopInfo, page);
+        }
+    }
+
+    private void loadShopPageList(ShopInfo shopInfo, int page) {
+        shopProductListPresenter.getShopPageList(shopInfo,
+                keyword,
+                selectedEtalaseId,
+                0,
+                page,
+                Integer.valueOf(sortValue));
     }
 
     @Override
@@ -446,6 +380,312 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             onShareShop();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onShareShop() {
+        if (shopInfo != null) {
+            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
+                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
+        }
+    }
+
+    @Override
+    protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener() {
+        return new DataEndlessScrollListener(recyclerView.getLayoutManager(), shopProductAdapter) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                showLoading();
+                loadData(page);
+            }
+        };
+    }
+
+    @Override
+    public void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
+        if (list.size() > 0) {
+            shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
+                    list, attribution,
+                    true, shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()),
+                    false,
+                    ShopPageTrackingConstant.SEARCH,
+                    selectedEtalaseName);
+        }
+
+        hideLoading();
+        shopProductAdapter.clearAllNonDataElement();
+        if (isLoadingInitialData) {
+            shopProductAdapter.clearProductList();
+            endlessRecyclerViewScrollListener.resetState();
+        }
+        shopProductAdapter.addProductList(list);
+        updateScrollListenerState(hasNextPage);
+
+        if (shopProductAdapter.getShopProductViewModelList().size() == 0) {
+            bottomActionView.setVisibility(View.GONE);
+            bottomActionView.hide();
+            shopProductAdapter.addElement(getEmptyDataViewModel());
+        } else {
+            if (isLoadingInitialData) {
+                bottomActionView.setVisibility(View.VISIBLE);
+                bottomActionView.show();
+            }
+            isLoadingInitialData = false;
+        }
+        shopProductAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClicked(BaseShopProductViewModel baseShopProductViewModel) {
+        // no op
+    }
+
+    @Override
+    public void onEmptyContentItemTextClicked() {
+        // no-op
+    }
+
+    @Override
+    public void onEtalaseMoreListClicked() {
+        if (shopInfo != null) {
+            shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), true, shopInfo.getInfo().getShopId(),
+                    shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
+
+            Intent shopEtalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), selectedEtalaseId);
+            startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE);
+        }
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        hideLoading();
+        updateStateScrollListener();
+        if (shopProductAdapter.getShopProductViewModelList().size() > 0) {
+            onGetListErrorWithExistingData(throwable);
+        } else {
+            onGetListErrorWithEmptyData(throwable);
+        }
+    }
+
+    @Override
+    protected void onGetListErrorWithEmptyData(Throwable throwable) {
+        super.onGetListErrorWithEmptyData(throwable);
+        bottomActionView.hide(false);
+    }
+
+    @Override
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured) {
+        if (shopInfo != null) {
+            // isFromFeature is always false
+            shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
+                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
+                    attribution, shopProductViewModel.getPositionTracking(), true,
+                    shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()), false,
+                    ShopPageTrackingConstant.SEARCH, selectedEtalaseName);
+        }
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
+                shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
+                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName));
+    }
+
+    @Override
+    public void onErrorAddToWishList(Throwable e) {
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+    }
+
+    @Override
+    public void onSuccessAddToWishList(String productId, Boolean value) {
+        shopProductAdapter.updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
+        shopProductAdapter.updateWishListStatus(productId, false);
+    }
+
+    @Override
+    public void onErrorRemoveFromWishList(Throwable e) {
+        if (e instanceof UserNotLoginException) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+    }
+
+    @Override
+    public void onEmptyButtonClicked() {
+        ((ShopModuleRouter) getActivity().getApplication()).goToAddProduct(getActivity());
+    }
+
+    @Override
+    public void onSuccessGetShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+        onShopProductListFragmentListener.updateUIByShopName(shopInfo.getInfo().getShopName());
+        loadInitialData();
+    }
+
+    @Override
+    public void onErrorGetShopInfo(Throwable e) {
+        showGetListError(e);
+    }
+
+    public void addToSelectedEtalaseList(String etalaseId, String etalaseName, boolean useAce) {
+        // only add the etalase with not-empty name. Empty name is a deleted etalase (that come from deeplink)
+        if (TextUtils.isEmpty(etalaseName)) {
+            return;
+        }
+        // if etalase id is not on the list, add it
+        boolean isAddedToCurrentEtalaseList = addEtalaseFromListMore(etalaseId, etalaseName, useAce);
+        if (isAddedToCurrentEtalaseList) {
+            selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName, useAce));
+            if (selectedEtalaseList.size() > ShopPageConstant.MAXIMUM_SELECTED_ETALASE_LIST) {
+                selectedEtalaseList.remove(selectedEtalaseList.size() - 1);
+            }
+        }
+        etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
+        etalaseChipAdapter.notifyDataSetChanged();
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+    }
+
+    public void addEtalaseToChip(String etalaseId, String etalaseName, boolean useAce) {
+        // add the etalase by permutation
+        // 1 2 3 4 5; after add 6 will be 1 6 2 3 4
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = etalaseChipAdapter.getEtalaseViewModelList();
+        ShopEtalaseViewModel shopEtalaseViewModelToAdd = new ShopEtalaseViewModel(etalaseId, etalaseName, useAce);
+        // index no 0 will always be "All Etalase", so, add from index 1.
+        int indexToAdd = shopEtalaseViewModelList.size() > 1 ? 1 : 0;
+        shopEtalaseViewModelList.add(indexToAdd, shopEtalaseViewModelToAdd);
+        if (shopEtalaseViewModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
+            shopEtalaseViewModelList.remove(shopEtalaseViewModelList.size() - 1);
+        }
+    }
+
+    public boolean isEtalaseInChip(String etalaseId) {
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = etalaseChipAdapter.getEtalaseViewModelList();
+        for (int i = 0, sizei = shopEtalaseViewModelList.size(); i < sizei; i++) {
+            if (shopEtalaseViewModelList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return true, if add etalase to current list; false if no add needed.
+     */
+    public boolean addEtalaseFromListMore(String etalaseId, String etalaseName, boolean useAce) {
+        if (isEtalaseInChip(etalaseId)) {
+            return false;
+        }
+        addEtalaseToChip(etalaseId, etalaseName, useAce);
+        return true;
+    }
+
+    @Override
+    public ArrayList<ShopEtalaseViewModel> getSelectedEtalaseViewModelList() {
+        return selectedEtalaseList;
+    }
+
+    @Override
+    public List<ShopEtalaseViewModel> getShopEtalaseViewModelList() {
+        return etalaseChipAdapter.getEtalaseViewModelList();
+    }
+
+    @Override
+    public String getSelectedEtalaseName() {
+        return selectedEtalaseName;
+    }
+
+    @Override
+    public void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeature) {
+        if (shopInfo != null) {
+            //isFromFeature is always false anyway.
+            shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
+                    true, shopProductViewModel.getId(),
+                    shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
+                    ShopPageTracking.getShopType(shopInfo.getInfo()));
+        }
+        if (shopProductViewModel.isWishList()) {
+            shopProductListPresenter.removeFromWishList(shopProductViewModel.getId());
+        } else {
+            shopProductListPresenter.addToWishList(shopProductViewModel.getId());
+        }
+    }
+
+    @Override
+    public void onErrorGetEtalaseList(Throwable e) {
+        etalaseChipAdapter.setEtalaseViewModelList(null);
+        hideEtalaseList();
+        shopProductAdapter.setShopEtalaseTitle(null);
+    }
+
+    @Override
+    public void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList,
+                                        String etalaseId, String etalaseName, boolean isUseAce) {
+        //default select first index as selected.
+        if (shopEtalaseViewModelList == null || shopEtalaseViewModelList.size() == 0) {
+            selectedEtalaseId = null;
+            selectedEtalaseName = null;
+        } else if (TextUtils.isEmpty(selectedEtalaseId)) {
+            selectedEtalaseId = shopEtalaseViewModelList.get(0).getEtalaseId();
+            selectedEtalaseName = shopEtalaseViewModelList.get(0).getEtalaseName();
+        } else {
+            selectedEtalaseId = etalaseId;
+            selectedEtalaseName = etalaseName;
+        }
+        // update the adapter
+        bindEtalaseChipData(new ShopProductEtalaseListViewModel(shopEtalaseViewModelList, selectedEtalaseId));
+        addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, isUseAce);
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_ETALASE:
+                if (resultCode == Activity.RESULT_OK) {
+                    selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
+                    selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
+                    boolean useAce = data.getBooleanExtra(ShopParamConstant.EXTRA_USE_ACE, true);
+
+                    addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce);
+                    if (shopPageTracking != null) {
+                        shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
+                                false, selectedEtalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
+                                ShopPageTracking.getShopType(shopInfo.getInfo()));
+                    }
+                    needReloadData = true;
+                }
+                break;
+
+            case REQUEST_CODE_SORT:
+                if (resultCode == Activity.RESULT_OK) {
+                    String sortId = data.getStringExtra(ShopProductSortActivity.SORT_ID);
+                    sortValue = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
+                    this.isLoadingInitialData = true;
+                    loadInitialData();
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (needReloadData) {
+            loadInitialData();
+            needReloadData = false;
+        }
     }
 
     @Override
@@ -472,28 +712,20 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public int getType(Object type) {
-        return currentLayoutType.first;
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        onShopProductListFragmentListener = (OnShopProductListFragmentListener) context;
+        shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
     }
 
     @Override
-    public void onErrorAddWishList(String errorMessage, String productId) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void onSuccessAddWishlist(String productId) {
-        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, true);
-    }
-
-    @Override
-    public void onErrorRemoveWishlist(String errorMessage, String productId) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void onSuccessRemoveWishlist(String productId) {
-        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, false);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(SAVED_SELECTED_ETALASE_LIST, selectedEtalaseList);
+        outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId);
+        outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName);
+        outState.putString(SAVED_SORT_VALUE, sortValue);
+        outState.putString(SAVED_KEYWORD, keyword);
     }
 
 }

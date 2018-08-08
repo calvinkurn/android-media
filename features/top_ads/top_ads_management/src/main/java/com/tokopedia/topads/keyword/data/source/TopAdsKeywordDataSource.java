@@ -5,6 +5,7 @@ import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.cloud.Datum;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.data.source.cloud.TopAdsKeywordDataSourceCloud;
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -28,5 +29,9 @@ public class TopAdsKeywordDataSource {
 
     public Observable<PageDataResponse<DataBulkKeyword>> bulkActionKeyword(DataRequest<DataBulkKeyword> dataBulkKeyword){
         return dataSourceCloud.actionBulkKeyword(dataBulkKeyword);
+    }
+
+    public Observable<AddKeywordDomainModel> addKeywords(AddKeywordDomainModel addKeywordDomainModel) {
+        return dataSourceCloud.addKeywords(addKeywordDomainModel);
     }
 }
