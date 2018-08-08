@@ -1,0 +1,14 @@
+query ShopEtalaseResponse {
+  shopNotes {
+    result {
+      id
+      title
+      content
+      isTerms
+      updateTime
+    }
+    error {
+      message
+    }
+  }
+}

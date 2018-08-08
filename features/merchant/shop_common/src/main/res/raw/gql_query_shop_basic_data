@@ -1,0 +1,19 @@
+query ShopBasicDataResponse {
+  shopBasicData {
+    result {
+      domain
+      name
+      status
+      closeSchedule
+      openSchedule
+      tagline
+      description
+      logo
+      level
+      expired
+    }
+    error {
+      message
+    }
+  }
+}

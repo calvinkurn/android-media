@@ -1,0 +1,22 @@
+query ShopEtalaseResponse {
+  shopShowcases {
+    result {
+      id
+      name
+      address
+      districtId
+      districtName
+      cityId
+      cityName
+      stateId
+      stateName
+      postalCode
+      email
+      phone
+      fax
+    }
+    error {
+      message
+    }
+  }
+}

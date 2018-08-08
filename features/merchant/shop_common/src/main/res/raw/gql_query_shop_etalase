@@ -1,0 +1,12 @@
+query ShopEtalaseResponse {
+  shopShowcases {
+    result {
+      id
+      name
+      count
+    }
+    error {
+      message
+    }
+  }
+}

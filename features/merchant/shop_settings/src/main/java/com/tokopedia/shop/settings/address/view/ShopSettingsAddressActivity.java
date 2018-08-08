@@ -8,6 +8,6 @@ public class ShopSettingsAddressActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return new Fragment();
+        return ShopSettingsAddressFragment.newInstance();
     }
 }

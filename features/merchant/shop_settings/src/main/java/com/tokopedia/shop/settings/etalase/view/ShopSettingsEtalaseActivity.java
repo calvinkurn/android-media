@@ -8,6 +8,7 @@ public class ShopSettingsEtalaseActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return new Fragment();
+        return ShopSettingsEtalaseFragment.newInstance();
     }
+
 }

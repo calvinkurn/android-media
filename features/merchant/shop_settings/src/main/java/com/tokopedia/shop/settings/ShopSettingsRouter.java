@@ -9,8 +9,6 @@ import android.content.Context;
 public interface ShopSettingsRouter {
     void goToShopEditor(Context context);
 
-    void goToManageShopShipping(Context context);
-
     void goToManageShopEtalase(Context context);
 
     void goToManageShopNotes(Context context);

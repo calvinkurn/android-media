@@ -12,6 +12,6 @@ public class ShopSettingsNotesActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return new Fragment();
+        return ShopSettingsNotesFragment.newInstance();
     }
 }
