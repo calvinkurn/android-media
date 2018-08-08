@@ -8,10 +8,10 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/container_full_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:id="@+id/container_full_page"
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 
@@ -26,9 +26,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:background="@drawable/bg_train_seat_header_shadow"
                 android:elevation="@dimen/dp_5"
-                android:layout_marginBottom="@dimen/dp_10"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -85,11 +85,13 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_width="@dimen/dp_15"
-                        android:layout_height="@dimen/dp_15"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/dp_10"
+                        android:layout_height="@dimen/dp_10"
                         android:background="@drawable/bg_train_available" />
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Micro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_4"
@@ -106,11 +108,13 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_width="@dimen/dp_15"
-                        android:layout_height="@dimen/dp_15"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/dp_10"
+                        android:layout_height="@dimen/dp_10"
                         android:background="@drawable/bg_train_filled" />
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Micro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_4"
@@ -127,11 +131,13 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_width="@dimen/dp_15"
-                        android:layout_height="@dimen/dp_15"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/dp_10"
+                        android:layout_height="@dimen/dp_10"
                         android:background="@drawable/bg_train_your_choice" />
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Micro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_4"
