@@ -61,7 +61,6 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     private static final String HACHIKO_TRAIN_KEY = "train";
 
-    private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
 
@@ -156,6 +155,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         ArrayList<String> messages = new ArrayList<>();
         messages.add("Cek kembali detail pesanan Anda sebelum lanjut ke halaman pembayaran");
+        tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(getActivity(), R.color.yellow_200));
         tickerView.buildView();

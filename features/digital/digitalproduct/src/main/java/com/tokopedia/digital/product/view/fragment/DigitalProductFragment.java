@@ -1349,7 +1349,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
-        tickerView.setTickerHeight(getResources().getDimensionPixelSize(R.dimen.dp_75));
         tickerView.buildView();
 
         tickerView.postDelayed(new Runnable() {

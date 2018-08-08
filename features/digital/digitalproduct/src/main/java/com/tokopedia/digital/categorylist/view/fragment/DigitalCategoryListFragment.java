@@ -91,8 +91,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     DigitalItemHeaderHolder headerSubscription;
     @BindView(R2.id.header_fav_number)
     DigitalItemHeaderHolder headerFavNumber;
-    @BindView(R2.id.container_ticker_view)
-    LinearLayout containerTickerView;
     @BindView(R2.id.ticker_view)
     TickerView tickerView;
     @BindView(R2.id.separator_for_ticker)
@@ -490,13 +488,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     private void showCouponAppliedTicker() {
-        containerTickerView.setVisibility(View.VISIBLE);
         separatorForTicker.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
+        tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
-        tickerView.setTickerHeight(getResources().getDimensionPixelSize(R.dimen.dp_75));
         tickerView.buildView();
 
         tickerView.postDelayed(new Runnable() {
@@ -514,7 +511,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     private void hideCouponAppliedTicker() {
-        containerTickerView.setVisibility(View.GONE);
         separatorForTicker.setVisibility(View.GONE);
     }
 }
