@@ -193,7 +193,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         DrawerNotification inbox = new DrawerNotification();
 
         List<DrawerNotification.ChildDrawerNotification> childInbox = new ArrayList<>();
-        childInbox.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual)));
+        childInbox.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual),
+                ApplinkConst.SELLER_INFO));
         inbox.setChilds(childInbox);
         return inbox;
     }
