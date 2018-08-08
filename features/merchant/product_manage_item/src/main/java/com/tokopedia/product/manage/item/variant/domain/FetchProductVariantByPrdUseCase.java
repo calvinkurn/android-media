@@ -1,12 +1,11 @@
-package com.tokopedia.product.manage.item.common.domain.interactor;
+package com.tokopedia.product.manage.item.variant.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.product.manage.item.common.model.variantbyprdold.ProductVariantByPrdModel;
-import com.tokopedia.product.manage.item.common.repository.ProductVariantRepository;
-import com.tokopedia.product.manage.item.common.repository.ProductVariantRepository;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
+import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepository;
 
 import javax.inject.Inject;
 

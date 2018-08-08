@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.item.view.viewmodel
+package com.tokopedia.product.manage.item.video.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.product.manage.item.view.adapter.ProductAddVideoRecommendationAdapterTypeFactory
+import com.tokopedia.product.manage.item.video.view.adapter.ProductAddVideoRecommendationAdapterTypeFactory
 
 class VideoRecommendationViewModel() : Visitable<ProductAddVideoRecommendationAdapterTypeFactory>, ProductAddVideoRecommendationBaseViewModel, Parcelable{
 

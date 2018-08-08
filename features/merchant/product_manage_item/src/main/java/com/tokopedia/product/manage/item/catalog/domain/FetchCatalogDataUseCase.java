@@ -1,11 +1,10 @@
-package com.tokopedia.product.manage.item.domain.interactor;
+package com.tokopedia.product.manage.item.catalog.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel;
-import com.tokopedia.product.manage.item.domain.CatalogRepository;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.CatalogDataModel;
 
 import javax.inject.Inject;
 

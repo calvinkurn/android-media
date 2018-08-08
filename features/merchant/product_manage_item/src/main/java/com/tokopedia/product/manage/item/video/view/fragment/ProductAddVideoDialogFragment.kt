@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.video.view.fragment
 
 import android.os.Bundle
 import android.text.Editable
@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.abstraction.base.view.dialog.BaseTextPickerDialogFragment
-import com.tokopedia.product.manage.item.util.YoutubeUtil
+import com.tokopedia.product.manage.item.utils.YoutubeUtil
 
 class ProductAddVideoDialogFragment : BaseTextPickerDialogFragment() {
 

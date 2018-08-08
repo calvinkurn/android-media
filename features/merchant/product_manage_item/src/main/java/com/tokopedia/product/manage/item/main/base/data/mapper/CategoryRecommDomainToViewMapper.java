@@ -1,11 +1,12 @@
-package com.tokopedia.product.manage.item.view.mapper;
+package com.tokopedia.product.manage.item.main.base.data.mapper;
 
-import com.tokopedia.product.manage.item.domain.model.CategoryRecommDomainModel;
-import com.tokopedia.product.manage.item.domain.model.ProductCategoryIdDomainModel;
-import com.tokopedia.product.manage.item.domain.model.ProductCategoryPredictionDomainModel;
-import com.tokopedia.product.manage.item.view.model.categoryrecomm.CategoryRecommViewModel;
-import com.tokopedia.product.manage.item.view.model.categoryrecomm.ProductCategoryIdViewModel;
-import com.tokopedia.product.manage.item.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+
+import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.CategoryRecommViewModel;
+import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryIdViewModel;
+import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.CategoryRecommDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.ProductCategoryIdDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.ProductCategoryPredictionDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

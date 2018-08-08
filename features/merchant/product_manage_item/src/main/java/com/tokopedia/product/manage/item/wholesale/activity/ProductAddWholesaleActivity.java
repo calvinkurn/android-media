@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.activity;
+package com.tokopedia.product.manage.item.wholesale.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,8 +9,8 @@ import android.support.v7.app.AlertDialog;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
-import com.tokopedia.product.manage.item.view.fragment.ProductAddWholesaleFragment;
-import com.tokopedia.product.manage.item.common.model.edit.ProductWholesaleViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductWholesaleViewModel;
+import com.tokopedia.product.manage.item.wholesale.fragment.ProductAddWholesaleFragment;
 
 import java.util.ArrayList;
 

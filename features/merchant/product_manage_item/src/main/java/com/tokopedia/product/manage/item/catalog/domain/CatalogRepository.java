@@ -1,6 +1,6 @@
-package com.tokopedia.product.manage.item.domain;
+package com.tokopedia.product.manage.item.catalog.domain;
 
-import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.CatalogDataModel;
 
 import rx.Observable;
 

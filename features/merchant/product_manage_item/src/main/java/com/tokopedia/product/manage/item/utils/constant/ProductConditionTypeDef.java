@@ -1,12 +1,13 @@
-package com.tokopedia.product.manage.item.constant;
+package com.tokopedia.product.manage.item.utils.constant;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.product.manage.item.constant.ProductConditionTypeDef.TYPE_NEW;
-import static com.tokopedia.product.manage.item.constant.ProductConditionTypeDef.TYPE_RECON;
+import static com.tokopedia.product.manage.item.utils.constant.ProductConditionTypeDef.TYPE_NEW;
+import static com.tokopedia.product.manage.item.utils.constant.ProductConditionTypeDef.TYPE_RECON;
+
 
 /**
  * Created by User on 8/11/2017.

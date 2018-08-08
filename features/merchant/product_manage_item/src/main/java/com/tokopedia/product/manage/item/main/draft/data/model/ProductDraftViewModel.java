@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.common.model;
+package com.tokopedia.product.manage.item.main.draft.data.model;
 
 import com.tokopedia.product.manage.item.common.util.ItemType;
 

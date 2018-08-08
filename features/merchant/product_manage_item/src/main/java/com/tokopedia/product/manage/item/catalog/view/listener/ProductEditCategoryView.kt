@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.view.listener
+package com.tokopedia.product.manage.item.catalog.view.listener
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.Catalog
-import com.tokopedia.product.manage.item.view.model.categoryrecomm.ProductCategoryPredictionViewModel
+import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryPredictionViewModel
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.Catalog
 
 interface ProductEditCategoryView: CustomerView{
     fun onSuccessLoadRecommendationCategory(categories: List<ProductCategoryPredictionViewModel>)

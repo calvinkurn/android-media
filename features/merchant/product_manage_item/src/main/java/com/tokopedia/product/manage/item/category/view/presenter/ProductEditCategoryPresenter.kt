@@ -1,14 +1,14 @@
-package com.tokopedia.product.manage.item.view.presenter
+package com.tokopedia.product.manage.item.category.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase
+import com.tokopedia.product.manage.item.catalog.domain.FetchCatalogDataUseCase
 import com.tokopedia.product.manage.item.common.util.ViewUtils
-import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel
-import com.tokopedia.product.manage.item.domain.interactor.FetchCatalogDataUseCase
-import com.tokopedia.product.manage.item.domain.interactor.GetCategoryRecommUseCase
-import com.tokopedia.product.manage.item.domain.model.CategoryRecommDomainModel
-import com.tokopedia.product.manage.item.view.listener.ProductEditCategoryView
-import com.tokopedia.product.manage.item.view.mapper.CategoryRecommDomainToViewMapper
+import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCategoryView
+import com.tokopedia.product.manage.item.category.domain.GetCategoryRecommUseCase
+import com.tokopedia.product.manage.item.main.base.data.mapper.CategoryRecommDomainToViewMapper
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.CatalogDataModel
+import com.tokopedia.product.manage.item.main.base.domain.model.CategoryRecommDomainModel
 import rx.Subscriber
 import rx.subjects.BehaviorSubject
 import rx.android.schedulers.AndroidSchedulers

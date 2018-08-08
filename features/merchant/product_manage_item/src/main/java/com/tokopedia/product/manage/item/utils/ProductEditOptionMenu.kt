@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.util
+package com.tokopedia.product.manage.item.utils
 
 import android.support.annotation.DrawableRes
 

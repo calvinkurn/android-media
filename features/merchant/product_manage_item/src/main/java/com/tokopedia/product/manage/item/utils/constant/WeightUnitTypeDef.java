@@ -1,12 +1,12 @@
-package com.tokopedia.product.manage.item.constant;
+package com.tokopedia.product.manage.item.utils.constant;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.product.manage.item.constant.WeightUnitTypeDef.TYPE_GRAM;
-import static com.tokopedia.product.manage.item.constant.WeightUnitTypeDef.TYPE_KG;
+import static com.tokopedia.product.manage.item.utils.constant.WeightUnitTypeDef.TYPE_GRAM;
+import static com.tokopedia.product.manage.item.utils.constant.WeightUnitTypeDef.TYPE_KG;
 
 /**
  * @author normansyahputa on 4/25/17.

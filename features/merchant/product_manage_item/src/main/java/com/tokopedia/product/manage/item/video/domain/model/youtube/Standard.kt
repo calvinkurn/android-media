@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.domain.model.youtube
+package com.tokopedia.product.manage.item.video.domain.model.youtube
 
 
 import com.google.gson.annotations.Expose

@@ -1,14 +1,14 @@
-package com.tokopedia.product.manage.item.di.module;
+package com.tokopedia.product.manage.item.catalog.di;
 
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
-import com.tokopedia.product.manage.item.data.source.CatalogDataSource;
-import com.tokopedia.product.manage.item.data.source.cloud.api.SearchApi;
-import com.tokopedia.product.manage.item.data.repository.CatalogRepositoryImpl;
-import com.tokopedia.product.manage.item.domain.CatalogRepository;
-import com.tokopedia.product.manage.item.domain.interactor.FetchCatalogDataUseCase;
-import com.tokopedia.product.manage.item.view.presenter.CatalogPickerPresenter;
-import com.tokopedia.product.manage.item.view.presenter.CatalogPickerPresenterImpl;
+import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl;
+import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource;
+import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository;
+import com.tokopedia.product.manage.item.catalog.domain.FetchCatalogDataUseCase;
+import com.tokopedia.product.manage.item.catalog.view.presenter.CatalogPickerPresenter;
+import com.tokopedia.product.manage.item.catalog.view.presenter.CatalogPickerPresenterImpl;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.SearchApi;
 
 import dagger.Module;
 import dagger.Provides;

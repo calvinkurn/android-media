@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.item.price.model
+package com.tokopedia.product.manage.item.logistic.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.product.manage.item.util.ProductEditPreOrderTimeType
-import com.tokopedia.product.manage.item.util.ProductEditWeightType
+import com.tokopedia.product.manage.item.utils.ProductEditPreOrderTimeType
+import com.tokopedia.product.manage.item.utils.ProductEditWeightType
 
 data class ProductLogistic(var weight: Int = 0,
                            var weightType: Int = ProductEditWeightType.GRAM,

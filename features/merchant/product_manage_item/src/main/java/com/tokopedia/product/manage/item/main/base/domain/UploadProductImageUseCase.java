@@ -1,15 +1,15 @@
-package com.tokopedia.product.manage.item.domain.interactor.uploadproduct;
+package com.tokopedia.product.manage.item.main.base.domain;
 
-import com.tokopedia.product.manage.item.common.data.mapper.ProductDraftMapper;
 import com.tokopedia.product.manage.item.common.domain.interactor.UploadImageUseCase;
 import com.tokopedia.product.manage.item.common.domain.model.ImageUploadDomainModel;
-import com.tokopedia.product.manage.item.common.model.edit.BasePictureViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductPictureResultUploadedViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 import com.tokopedia.product.manage.item.common.util.ProductNetworkConstant;
-import com.tokopedia.product.manage.item.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.product.manage.item.domain.listener.ProductSubmitNotificationListener;
-import com.tokopedia.product.manage.item.domain.mapper.ProductUploadMapper;
+import com.tokopedia.product.manage.item.main.base.data.model.BasePictureViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureResultUploadedViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.UploadImageModel;
+import com.tokopedia.product.manage.item.main.base.domain.mapper.ProductUploadMapper;
+import com.tokopedia.product.manage.item.main.base.view.listener.ProductSubmitNotificationListener;
+import com.tokopedia.product.manage.item.main.draft.data.mapper.ProductDraftMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

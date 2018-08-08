@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.di.module
+package com.tokopedia.product.manage.item.category.di
 
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl
 import com.tokopedia.core.common.category.data.source.CategoryDataSource
@@ -9,15 +9,15 @@ import com.tokopedia.core.common.category.domain.CategoryRepository
 import com.tokopedia.core.network.di.qualifier.AceQualifier
 import com.tokopedia.core.network.di.qualifier.HadesQualifier
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier
-import com.tokopedia.product.manage.item.data.repository.CatalogRepositoryImpl
-import com.tokopedia.product.manage.item.data.repository.CategoryRecommRepositoryImpl
-import com.tokopedia.product.manage.item.data.source.CatalogDataSource
-import com.tokopedia.product.manage.item.data.source.CategoryRecommDataSource
-import com.tokopedia.product.manage.item.data.source.cloud.api.MerlinApi
-import com.tokopedia.product.manage.item.data.source.cloud.api.SearchApi
-import com.tokopedia.product.manage.item.di.scope.ProductAddScope
-import com.tokopedia.product.manage.item.domain.CatalogRepository
-import com.tokopedia.product.manage.item.domain.CategoryRecommRepository
+import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl
+import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource
+import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository
+import com.tokopedia.product.manage.item.category.data.repository.CategoryRecommRepositoryImpl
+import com.tokopedia.product.manage.item.category.data.source.CategoryRecommDataSource
+import com.tokopedia.product.manage.item.category.domain.CategoryRecommRepository
+import com.tokopedia.product.manage.item.main.add.di.ProductAddScope
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.MerlinApi
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.SearchApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

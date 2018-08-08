@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.fragment;
+package com.tokopedia.product.manage.item.description.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.R;
-import com.tokopedia.product.manage.item.view.activity.ProductAddDescriptionInfoActivity;
+import com.tokopedia.product.manage.item.description.view.activity.ProductAddDescriptionInfoActivity;
 
 /**
  * Created by nathan on 3/6/18.

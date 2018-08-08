@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.di.scope;
+package com.tokopedia.product.manage.item.main.add.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

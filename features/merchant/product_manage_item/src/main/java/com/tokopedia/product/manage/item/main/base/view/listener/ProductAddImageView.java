@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.presenter;
+package com.tokopedia.product.manage.item.main.base.view.listener;
 
 import android.content.Context;
 

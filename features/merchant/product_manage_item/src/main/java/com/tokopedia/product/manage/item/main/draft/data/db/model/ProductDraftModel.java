@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.common.data.source.db.model;
+package com.tokopedia.product.manage.item.main.draft.data.db.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.manage.item.common.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
+import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 
 import java.util.List;
 

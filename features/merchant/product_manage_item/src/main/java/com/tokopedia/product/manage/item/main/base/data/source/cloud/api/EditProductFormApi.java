@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.data.source.cloud.api;
+package com.tokopedia.product.manage.item.main.base.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.EditProductFormServiceModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 
 import retrofit2.Response;
 import retrofit2.http.GET;

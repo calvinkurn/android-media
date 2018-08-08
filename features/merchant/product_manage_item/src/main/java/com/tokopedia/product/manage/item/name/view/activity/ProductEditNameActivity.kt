@@ -1,15 +1,15 @@
-package com.tokopedia.product.manage.item.view.activity
+package com.tokopedia.product.manage.item.name.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.manage.item.price.ProductEditNameFragment
+import com.tokopedia.product.manage.item.name.view.fragment.ProductEditNameFragment
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.price.model.ProductName
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_EDITABLE_NAME
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.name.view.model.ProductName
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_EDITABLE_NAME
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_NAME
 
 class ProductEditNameActivity : BaseSimpleActivity(){
 

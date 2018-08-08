@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.presenter
+package com.tokopedia.product.manage.item.video.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -10,12 +10,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.domain.interactor.GetYoutubeVideoDetailUseCase
-import com.tokopedia.product.manage.item.domain.interactor.GetYoutubeVideoListDetailUseCase
-import com.tokopedia.product.manage.item.domain.model.videorecommendation.VideoRecommendationData
-import com.tokopedia.product.manage.item.domain.model.videorecommendation.VideoRecommendationResult
-import com.tokopedia.product.manage.item.domain.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.manage.item.view.listener.ProductAddVideoView
+import com.tokopedia.product.manage.item.video.domain.GetYoutubeVideoDetailUseCase
+import com.tokopedia.product.manage.item.video.domain.GetYoutubeVideoListDetailUseCase
+import com.tokopedia.product.manage.item.video.domain.model.videorecommendation.VideoRecommendationData
+import com.tokopedia.product.manage.item.video.domain.model.videorecommendation.VideoRecommendationResult
+import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.manage.item.video.view.listener.ProductAddVideoView
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.lang.reflect.Type

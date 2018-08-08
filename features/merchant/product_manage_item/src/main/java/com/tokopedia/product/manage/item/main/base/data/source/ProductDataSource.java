@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.data.source;
+package com.tokopedia.product.manage.item.main.base.data.source;
 
-import com.tokopedia.product.manage.item.data.source.cloud.ProductCloud;
-import com.tokopedia.product.manage.item.domain.mapper.ProductUploadMapper;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.ProductCloud;
+import com.tokopedia.product.manage.item.main.base.domain.mapper.ProductUploadMapper;
 
 import javax.inject.Inject;
 

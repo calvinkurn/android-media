@@ -1,18 +1,19 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.main.add.view.fragment
 
 import android.os.Bundle
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.common.util.ProductStatus
-import com.tokopedia.product.manage.item.di.component.DaggerProductAddComponent
-import com.tokopedia.product.manage.item.di.module.ProductAddModule
-import com.tokopedia.product.manage.item.price.model.ProductCatalog
-import com.tokopedia.product.manage.item.price.model.ProductCategory
-import com.tokopedia.product.manage.item.price.model.ProductName
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.main.add.di.DaggerProductAddComponent
+import com.tokopedia.product.manage.item.main.add.di.ProductAddModule
+import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView
+import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl
+import com.tokopedia.product.manage.item.name.view.model.ProductName
 import com.tokopedia.product.manage.item.utils.convertImageListResult
 import com.tokopedia.product.manage.item.utils.isFilledAny
-import com.tokopedia.product.manage.item.view.listener.ProductAddView
-import com.tokopedia.product.manage.item.view.model.ProductAddViewModel
-import com.tokopedia.product.manage.item.view.presenter.ProductAddPresenterImpl
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.main.base.view.model.ProductAddViewModel
 import java.util.ArrayList
 
 class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<ProductAddView>, ProductAddView>() {
@@ -41,7 +42,7 @@ class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<Pr
     }
 
     companion object {
-        fun createInstance(productCatalog: ProductCatalog?, productCategory: ProductCategory?, productName: ProductName?, productImages: ArrayList<String>?) : ProductAddFragment{
+        fun createInstance(productCatalog: ProductCatalog?, productCategory: ProductCategory?, productName: ProductName?, productImages: ArrayList<String>?) : ProductAddFragment {
             val productAddFragment = ProductAddFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_CATALOG, productCatalog)

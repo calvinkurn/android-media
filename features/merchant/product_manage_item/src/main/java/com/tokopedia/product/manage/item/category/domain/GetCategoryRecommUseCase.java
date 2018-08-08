@@ -1,8 +1,7 @@
-package com.tokopedia.product.manage.item.domain.interactor;
+package com.tokopedia.product.manage.item.category.domain;
 
-import com.tokopedia.product.manage.item.data.mapper.CategoryRecommDataToDomainMapper;
-import com.tokopedia.product.manage.item.domain.CategoryRecommRepository;
-import com.tokopedia.product.manage.item.domain.model.CategoryRecommDomainModel;
+import com.tokopedia.product.manage.item.main.base.data.mapper.CategoryRecommDataToDomainMapper;
+import com.tokopedia.product.manage.item.main.base.domain.model.CategoryRecommDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

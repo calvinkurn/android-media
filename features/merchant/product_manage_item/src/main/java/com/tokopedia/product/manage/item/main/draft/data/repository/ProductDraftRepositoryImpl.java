@@ -1,15 +1,15 @@
-package com.tokopedia.product.manage.item.common.data.repository;
+package com.tokopedia.product.manage.item.main.draft.data.repository;
 
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.product.manage.item.common.data.mapper.ProductDraftMapper;
-import com.tokopedia.product.manage.item.common.data.source.ProductDraftDataSource;
-import com.tokopedia.product.manage.item.common.domain.ProductDraftRepository;
-import com.tokopedia.product.manage.item.common.data.mapper.ProductDraftListMapper;
-import com.tokopedia.product.manage.item.common.model.ProductDraftViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.draft.data.mapper.ProductDraftListMapper;
+import com.tokopedia.product.manage.item.main.draft.data.mapper.ProductDraftMapper;
+import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 
 import java.util.List;
 

@@ -1,12 +1,9 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.main.duplicate.fragment
 
 import android.os.Bundle
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel
 import com.tokopedia.product.manage.item.common.util.ProductStatus
-import com.tokopedia.product.manage.item.di.component.DaggerProductEditComponent
-import com.tokopedia.product.manage.item.di.module.ProductEditModule
-import com.tokopedia.product.manage.item.view.presenter.ProductEditView
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
+import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment
 
 /**
  * Created by zulfikarrahman on 4/27/17.

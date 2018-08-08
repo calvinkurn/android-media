@@ -1,10 +1,11 @@
-package com.tokopedia.product.manage.item.view.presenter;
+package com.tokopedia.product.manage.item.main.base.view.presenter;
 
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.product.manage.item.main.base.view.listener.ProductAddImageView;
 
 import java.util.ArrayList;
 

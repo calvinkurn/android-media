@@ -1,13 +1,13 @@
-package com.tokopedia.product.manage.item.di.module;
+package com.tokopedia.product.manage.item.main.draft.di;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.product.manage.item.common.domain.interactor.FetchDraftProductUseCase;
-import com.tokopedia.product.manage.item.common.domain.ProductDraftRepository;
-import com.tokopedia.product.manage.item.common.domain.interactor.FetchProductVariantByCatUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.product.manage.item.di.scope.ProductAddScope;
-import com.tokopedia.product.manage.item.view.presenter.ProductDraftPresenterImpl;
-import com.tokopedia.product.manage.item.view.presenter.ProductEditPresenterImpl;
+import com.tokopedia.product.manage.item.main.add.di.ProductAddModule;
+import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
+import com.tokopedia.product.manage.item.main.draft.domain.FetchDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
+import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.view.presenter.ProductDraftPresenterImpl;
+import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import dagger.Module;

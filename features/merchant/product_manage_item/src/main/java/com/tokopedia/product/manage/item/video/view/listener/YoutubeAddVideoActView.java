@@ -1,6 +1,6 @@
-package com.tokopedia.product.manage.item.view.listener;
+package com.tokopedia.product.manage.item.video.view.listener;
 
-import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment;
+import com.tokopedia.product.manage.item.video.view.fragment.ProductAddVideoFragment;
 
 import java.util.List;
 

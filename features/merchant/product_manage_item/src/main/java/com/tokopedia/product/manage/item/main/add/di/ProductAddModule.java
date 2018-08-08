@@ -1,11 +1,9 @@
-package com.tokopedia.product.manage.item.di.module;
+package com.tokopedia.product.manage.item.main.add.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -13,46 +11,35 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.manage.item.common.domain.ProductDraftRepository;
+import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl;
+import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource;
+import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository;
+import com.tokopedia.product.manage.item.category.data.repository.CategoryRecommRepositoryImpl;
+import com.tokopedia.product.manage.item.category.data.source.CategoryRecommDataSource;
+import com.tokopedia.product.manage.item.category.domain.CategoryRecommRepository;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.product.manage.item.common.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.product.manage.item.common.data.source.ProductDraftDataSource;
-import com.tokopedia.product.manage.item.common.data.source.ProductVariantDataSource;
-import com.tokopedia.product.manage.item.common.domain.interactor.FetchProductVariantByCatUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.product.manage.item.common.repository.ProductVariantRepository;
-import com.tokopedia.product.manage.item.common.repository.ProductVariantRepositoryImpl;
-import com.tokopedia.product.manage.item.data.source.CatalogDataSource;
-import com.tokopedia.product.manage.item.data.source.CategoryRecommDataSource;
-import com.tokopedia.product.manage.item.data.source.ProductScoreDataSource;
-import com.tokopedia.product.manage.item.data.source.cache.ProductScoreDataSourceCache;
-import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.DataScoringProduct;
-import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.DataScoringProductBuilder;
-import com.tokopedia.product.manage.item.data.source.cloud.api.MerlinApi;
-import com.tokopedia.product.manage.item.data.source.cloud.api.SearchApi;
-import com.tokopedia.product.manage.item.data.repository.CatalogRepositoryImpl;
-import com.tokopedia.product.manage.item.data.repository.CategoryRecommRepositoryImpl;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.product.manage.item.data.repository.ProductScoreRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
 import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.product.manage.item.di.scope.ProductAddScope;
-import com.tokopedia.product.manage.item.domain.CatalogRepository;
-import com.tokopedia.product.manage.item.domain.CategoryRecommRepository;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
-import com.tokopedia.product.manage.item.domain.ProductScoreRepository;
-import com.tokopedia.product.manage.item.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.product.manage.item.view.listener.ProductAddView;
-import com.tokopedia.product.manage.item.view.presenter.ProductAddPresenterImpl;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
-import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
+import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
+import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.MerlinApi;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.SearchApi;
+import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
+import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
+import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
+import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepository;
+import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
+import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
+import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -130,36 +117,6 @@ public class ProductAddModule {
         return new ProductDraftRepositoryImpl(productDraftDataSource, context);
     }
 
-    @ProductAddScope
-    @Provides
-    ProductScoringUseCase provideProductScoringUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                                       ProductScoreRepository productScoreRepository){
-        return new ProductScoringUseCase(threadExecutor, postExecutionThread, productScoreRepository);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductScoreRepository provideProductScoreRepo(ProductScoreDataSource productScoreDataSource){
-        return new ProductScoreRepositoryImpl(productScoreDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductScoreDataSource provideProductScoreDataSource(ProductScoreDataSourceCache productScoreDataSourceCache){
-        return new ProductScoreDataSource(productScoreDataSourceCache);
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductScoreDataSourceCache provideProductScoreDataSourceCache(DataScoringProduct dataScoringProduct){
-        return new ProductScoreDataSourceCache(dataScoringProduct);
-    }
-
-    @ProductAddScope
-    @Provides
-    DataScoringProduct provideDataScoringProduct(@ApplicationContext Context context, Gson gson){
-        return new DataScoringProductBuilder(context, gson).build();
-    }
 
     // FOR SEARCH CATALOG
     @ProductAddScope

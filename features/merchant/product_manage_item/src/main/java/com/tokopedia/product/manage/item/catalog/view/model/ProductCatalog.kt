@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.item.price.model
+package com.tokopedia.product.manage.item.catalog.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.product.manage.item.view.adapter.ProductCatalogTypeFactory
+import com.tokopedia.product.manage.item.catalog.view.adapter.ProductCatalogTypeFactory
 
 data class ProductCatalog(var catalogId : Int = 0, var catalogName : String = "", var catalogImage : String = "")
     : Parcelable, Visitable<ProductCatalogTypeFactory>{

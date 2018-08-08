@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.common.model.edit;
+package com.tokopedia.product.manage.item.main.base.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

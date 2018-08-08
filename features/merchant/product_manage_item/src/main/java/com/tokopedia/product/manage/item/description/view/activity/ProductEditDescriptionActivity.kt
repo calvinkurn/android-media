@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.activity
+package com.tokopedia.product.manage.item.description.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,10 +6,10 @@ import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.price.ProductEditDescriptionFragment
-import com.tokopedia.product.manage.item.price.model.ProductDescription
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_DESCRIPTION
-import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
+import com.tokopedia.product.manage.item.description.view.fragment.ProductEditDescriptionFragment
+import com.tokopedia.product.manage.item.description.view.model.ProductDescription
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_DESCRIPTION
+import com.tokopedia.product.manage.item.video.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
 
 class ProductEditDescriptionActivity : BaseSimpleActivity(){
 

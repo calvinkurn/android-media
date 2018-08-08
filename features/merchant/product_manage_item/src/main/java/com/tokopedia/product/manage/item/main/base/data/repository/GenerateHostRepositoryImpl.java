@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.item.data.repository;
+package com.tokopedia.product.manage.item.main.base.data.repository;
 
-import com.tokopedia.product.manage.item.data.mapper.GenerateHostMapper;
-import com.tokopedia.product.manage.item.data.source.GenerateHostDataSource;
 import com.tokopedia.product.manage.item.common.domain.repository.GenerateHostRepository;
 import com.tokopedia.product.manage.item.common.domain.model.GenerateHostDomainModel;
+import com.tokopedia.product.manage.item.main.base.data.mapper.GenerateHostMapper;
+import com.tokopedia.product.manage.item.main.base.data.source.GenerateHostDataSource;
 
 import rx.Observable;
 

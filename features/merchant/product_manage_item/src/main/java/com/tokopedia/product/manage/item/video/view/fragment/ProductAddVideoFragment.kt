@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.video.view.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -16,17 +16,17 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.view.activity.ProductAddVideoRecommendationActivity
-import com.tokopedia.product.manage.item.view.adapter.ProductAddVideoAdapterTypeFactory
-import com.tokopedia.product.manage.item.view.listener.ProductAddVideoView
-import com.tokopedia.product.manage.item.view.listener.SectionVideoRecommendationListener
-import com.tokopedia.product.manage.item.view.listener.VideoChosenListener
-import com.tokopedia.product.manage.item.domain.mapper.VideoMapper
-import com.tokopedia.product.manage.item.domain.mapper.VideoRecommendationMapper
-import com.tokopedia.product.manage.item.domain.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.manage.item.util.YoutubeUtil
-import com.tokopedia.product.manage.item.view.presenter.ProductAddVideoPresenter
-import com.tokopedia.product.manage.item.view.viewmodel.*
+import com.tokopedia.product.manage.item.video.view.adapter.ProductAddVideoAdapterTypeFactory
+import com.tokopedia.product.manage.item.video.view.listener.ProductAddVideoView
+import com.tokopedia.product.manage.item.video.view.listener.SectionVideoRecommendationListener
+import com.tokopedia.product.manage.item.video.view.listener.VideoChosenListener
+import com.tokopedia.product.manage.item.video.domain.mapper.VideoMapper
+import com.tokopedia.product.manage.item.video.domain.mapper.VideoRecommendationMapper
+import com.tokopedia.product.manage.item.utils.YoutubeUtil
+import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.manage.item.video.view.activity.ProductAddVideoRecommendationActivity
+import com.tokopedia.product.manage.item.video.view.model.*
+import com.tokopedia.product.manage.item.video.view.presenter.ProductAddVideoPresenter
 import kotlinx.android.synthetic.main.fragment_product_add_video.*
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), ProductAddVideoView, VideoChosenListener, SectionVideoRecommendationListener {
@@ -68,7 +68,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_GET_VIDEO_RECOMMENDATION -> {
-                    videoRecommendationViewModelList = data!!.getParcelableArrayListExtra<VideoRecommendationViewModel>(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION)
+                    videoRecommendationViewModelList = data!!.getParcelableArrayListExtra<VideoRecommendationViewModel>(EXTRA_VIDEO_RECOMMENDATION)
                     val videoViewModelList = adapter.data
                     for(videoViewModel in videoViewModelList){
                         if(videoViewModel is VideoViewModel && videoViewModel.recommendation == true){
@@ -218,7 +218,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         videoViewModelList.clear()
         videoViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList) as ArrayList<VideoViewModel>
         renderListData(videoViewModelList)
-        (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, ProductAddVideoFragment.MAX_VIDEO)
+        (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
         if(!productName.isEmpty())
             productAddVideoPresenter.getVideoRecommendation(productName, MAX_VIDEO_RECOMMENDATION)
     }
@@ -286,7 +286,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         NetworkErrorHelper.showGreenCloseSnackbar(activity, message)
     }
 
-    override fun setProductAddVideoFragmentListener(listener: ProductAddVideoFragment.Listener) {
+    override fun setProductAddVideoFragmentListener(listener: Listener) {
         this.listener = listener
         if(!videoRecommendationViewModelList.isEmpty())
             listener.onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList)

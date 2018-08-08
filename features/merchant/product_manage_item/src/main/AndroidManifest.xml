@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".view.activity.ProductAddNameCategoryActivity"
+            android:name=".main.add.view.activity.ProductAddNameCategoryActivity"
             android:label="@string/label_product_add"
             android:theme="@style/Theme.White">
 
@@ -21,83 +21,83 @@
         </activity>
 
         <activity
-            android:name=".view.activity.ProductAddActivity"
+            android:name=".main.add.view.activity.ProductAddActivity"
             android:label="@string/label_product_add"
             android:theme="@style/Theme.White">
 
         </activity>
 
         <activity
-            android:name=".view.activity.ProductEditCatalogPickerActivity"
+            android:name=".catalog.view.activity.ProductEditCatalogPickerActivity"
             android:label="@string/product_label_catalog"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.ProductEditCategoryActivity"
+            android:name=".category.view.activity.ProductEditCategoryActivity"
             android:label=""
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.ProductEditNameActivity"
+            android:name=".name.view.activity.ProductEditNameActivity"
             android:label="@string/product_label_product_name"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.ProductEditPriceActivity"
+            android:name=".price.view.activity.ProductEditPriceActivity"
             android:label="@string/product_label_product_price"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.ProductEditDescriptionActivity"
+            android:name=".description.view.activity.ProductEditDescriptionActivity"
             android:label="@string/product_label_description_product"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.ProductEditStockActivity"
+            android:name=".stock.view.activity.ProductEditStockActivity"
             android:label="@string/product_label_product_stock"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.ProductEditWeightLogisticActivity"
+            android:name=".logistic.view.activity.ProductEditWeightLogisticActivity"
             android:label="@string/product_label_logistic_product"
             android:theme="@style/Theme.White" />
         <activity
-            android:name="com.tokopedia.product.manage.item.view.activity.ProductAddVideoActivity"
+            android:name=".video.view.activity.ProductAddVideoActivity"
             android:label="@string/title_activity_video"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.product.manage.item.view.activity.ProductAddVideoRecommendationActivity"
+            android:name=".video.view.activity.ProductAddVideoRecommendationActivity"
             android:label="@string/title_activity_video_recommendation"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.product.manage.item.view.activity.ProductEditActivity"
+            android:name=".main.edit.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.product.manage.item.view.activity.ProductDraftAddActivity"
+            android:name=".main.draft.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.product.manage.item.view.activity.ProductDraftEditActivity"
+            android:name=".main.draft.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.product.manage.item.view.activity.ProductDuplicateActivity"
+            android:name=".main.duplicate.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.ProductAddDescriptionPickerActivity"
+            android:name=".description.view.activity.ProductAddDescriptionPickerActivity"
             android:label="@string/product_label_product_description"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.ProductAddDescriptionInfoActivity"
+            android:name=".description.view.activity.ProductAddDescriptionInfoActivity"
             android:label="@string/product_desc_guide"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />

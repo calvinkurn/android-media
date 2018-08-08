@@ -1,21 +1,18 @@
-package com.tokopedia.product.manage.item.view.activity
+package com.tokopedia.product.manage.item.main.add.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.price.model.ProductCatalog
-import com.tokopedia.product.manage.item.price.model.ProductCategory
-import com.tokopedia.product.manage.item.price.model.ProductName
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.manage.item.view.fragment.ProductAddFragment
-import com.tokopedia.product.manage.item.view.presenter.ProductAddImagePresenter
-import com.tokopedia.product.manage.item.view.presenter.ProductAddImageView
-import permissions.dispatcher.*
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.name.view.model.ProductName
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditActivity
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.main.add.view.fragment.ProductAddFragment
 
 open class ProductAddActivity : BaseProductAddEditActivity(){
     override fun getCancelMessageRes() =  R.string.product_draft_dialog_cancel_message

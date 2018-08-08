@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.activity
+package com.tokopedia.product.manage.item.main.add.view.activity
 
 import android.Manifest
 import android.annotation.TargetApi
@@ -24,11 +24,11 @@ import com.tokopedia.core.util.RequestPermissionUtil
 import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.price.ProductAddNameCategoryFragment
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment
-import com.tokopedia.product.manage.item.view.presenter.ProductAddImagePresenter
-import com.tokopedia.product.manage.item.view.presenter.ProductAddImageView
+import com.tokopedia.product.manage.item.main.add.view.fragment.ProductAddNameCategoryFragment
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.main.base.view.listener.ProductAddImageView
+import com.tokopedia.product.manage.item.main.base.view.presenter.ProductAddImagePresenter
+import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
 import permissions.dispatcher.*
 
 @RuntimePermissions

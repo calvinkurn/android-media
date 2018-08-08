@@ -1,9 +1,8 @@
-package com.tokopedia.product.manage.item.view.listener
+package com.tokopedia.product.manage.item.video.view.listener
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.product.manage.item.domain.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.manage.item.view.viewmodel.ProductAddVideoBaseViewModel
+import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
 import java.util.ArrayList
 
 interface ProductAddVideoView : CustomerView {

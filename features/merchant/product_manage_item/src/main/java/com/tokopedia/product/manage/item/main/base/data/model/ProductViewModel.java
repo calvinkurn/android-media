@@ -1,5 +1,5 @@
 
-package com.tokopedia.product.manage.item.common.model.edit;
+package com.tokopedia.product.manage.item.main.base.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,9 +10,9 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.ItemType;
 import com.tokopedia.product.manage.item.common.util.StockTypeDef;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 import java.util.ArrayList;
 import java.util.List;

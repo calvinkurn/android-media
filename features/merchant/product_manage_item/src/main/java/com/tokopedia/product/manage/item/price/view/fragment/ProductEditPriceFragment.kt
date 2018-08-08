@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.price
+package com.tokopedia.product.manage.item.price.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -19,22 +19,22 @@ import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.common.model.edit.ProductWholesaleViewModel
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher
+import com.tokopedia.product.manage.item.main.base.data.model.ProductWholesaleViewModel
 import com.tokopedia.product.manage.item.price.model.ProductPrice
-import com.tokopedia.product.manage.item.util.ProductEditOptionMenuAdapter
-import com.tokopedia.product.manage.item.util.ProductEditOptionMenuBottomSheets
+import com.tokopedia.product.manage.item.utils.ProductEditOptionMenuAdapter
+import com.tokopedia.product.manage.item.utils.ProductEditOptionMenuBottomSheets
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
-import com.tokopedia.product.manage.item.view.activity.ProductAddWholesaleActivity
-import com.tokopedia.product.manage.item.view.dialog.ProductChangeVariantPriceDialogFragment
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_MOVE_TO_GM
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_PRICE
-import com.tokopedia.product.manage.item.view.fragment.ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_MOVE_TO_GM
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_PRICE
+import com.tokopedia.product.manage.item.variant.dialog.ProductChangeVariantPriceDialogFragment
+import com.tokopedia.product.manage.item.wholesale.activity.ProductAddWholesaleActivity
+import com.tokopedia.product.manage.item.wholesale.fragment.ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE
 import kotlinx.android.synthetic.main.fragment_product_edit_price.*
 
 class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFragment.OnProductChangeVariantPriceFragmentListener {

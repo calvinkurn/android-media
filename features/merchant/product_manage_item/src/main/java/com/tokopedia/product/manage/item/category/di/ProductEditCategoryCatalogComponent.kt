@@ -1,11 +1,10 @@
-package com.tokopedia.product.manage.item.di.component
+package com.tokopedia.product.manage.item.category.di
 
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.di.module.ProductEditCategoryCatalogModule
-import com.tokopedia.product.manage.item.di.scope.ProductAddScope
-import com.tokopedia.product.manage.item.price.ProductAddNameCategoryFragment
-import com.tokopedia.product.manage.item.price.ProductEditCatalogPickerFragment
-import com.tokopedia.product.manage.item.price.ProductEditCategoryFragment
+import com.tokopedia.product.manage.item.main.add.view.fragment.ProductAddNameCategoryFragment
+import com.tokopedia.product.manage.item.catalog.view.fragment.ProductEditCatalogPickerFragment
+import com.tokopedia.product.manage.item.category.view.fragment.ProductEditCategoryFragment
+import com.tokopedia.product.manage.item.main.add.di.ProductAddScope
 import dagger.Component
 
 @ProductAddScope

@@ -1,6 +1,6 @@
-package com.tokopedia.product.manage.item.domain;
+package com.tokopedia.product.manage.item.video.domain;
 
-import com.tokopedia.product.manage.item.domain.model.YoutubeVideoModel;
+import com.tokopedia.product.manage.item.video.domain.model.YoutubeVideoModel;
 
 import rx.Observable;
 

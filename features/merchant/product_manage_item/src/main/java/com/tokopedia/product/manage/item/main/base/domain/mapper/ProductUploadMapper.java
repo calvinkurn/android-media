@@ -1,20 +1,20 @@
-package com.tokopedia.product.manage.item.domain.mapper;
+package com.tokopedia.product.manage.item.main.base.domain.mapper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.product.manage.item.common.model.edit.ProductCatalogViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductCategoryViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductEtalaseViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductPreOrderViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductVideoViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductWholesaleViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.VariantPictureViewModel;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.product.manage.item.common.util.CollectionAdapterUtils;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductCatalogViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductCategoryViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductEtalaseViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPreOrderViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductVideoViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductWholesaleViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,7 +1,7 @@
-package com.tokopedia.product.manage.item.domain.mapper
+package com.tokopedia.product.manage.item.video.domain.mapper
 
-import com.tokopedia.product.manage.item.domain.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.manage.item.view.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.manage.item.video.view.model.VideoRecommendationViewModel
 
 class VideoRecommendationMapper {
     fun transformDataToVideoViewModel(youtubeVideoModelList: List<YoutubeVideoModel>): List<VideoRecommendationViewModel> {

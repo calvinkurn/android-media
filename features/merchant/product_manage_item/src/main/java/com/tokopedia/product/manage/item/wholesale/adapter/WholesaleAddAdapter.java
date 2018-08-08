@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.adapter;
+package com.tokopedia.product.manage.item.wholesale.adapter;
 
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +16,9 @@ import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.CurrencyUsdPrefixEdittextTextWatcher;
 import com.tokopedia.product.manage.item.common.util.PrefixEditText;
 import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductWholesaleViewModel;
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
-import com.tokopedia.product.manage.item.common.model.edit.ProductWholesaleViewModel;
-import com.tokopedia.product.manage.item.view.model.wholesale.WholesaleModel;
+import com.tokopedia.product.manage.item.wholesale.model.WholesaleModel;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

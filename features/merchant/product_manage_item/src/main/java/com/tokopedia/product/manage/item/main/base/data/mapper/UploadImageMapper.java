@@ -1,7 +1,7 @@
-package com.tokopedia.product.manage.item.data.mapper;
+package com.tokopedia.product.manage.item.main.base.data.mapper;
 
-import com.tokopedia.product.manage.item.data.source.cloud.model.ResultUploadImage;
-import com.tokopedia.product.manage.item.domain.model.ImageProcessDomainModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.ResultUploadImage;
+import com.tokopedia.product.manage.item.main.base.domain.model.ImageProcessDomainModel;
 
 import rx.functions.Func1;
 

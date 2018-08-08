@@ -1,18 +1,18 @@
-package com.tokopedia.product.manage.item.view.presenter;
+package com.tokopedia.product.manage.item.main.base.view.presenter;
 
 import android.text.TextUtils;
 
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.product.manage.item.common.util.DraftNotFoundException;
-import com.tokopedia.product.manage.item.common.domain.interactor.FetchDraftProductUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.DeleteSingleDraftProductUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.product.manage.item.data.exception.UploadProductException;
-import com.tokopedia.product.manage.item.domain.interactor.uploadproduct.SubmitProductUseCase;
-import com.tokopedia.product.manage.item.domain.listener.ProductSubmitNotificationListener;
-import com.tokopedia.product.manage.item.domain.mapper.ProductUploadMapper;
-import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.data.exception.UploadProductException;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.domain.SubmitProductUseCase;
+import com.tokopedia.product.manage.item.main.base.domain.mapper.ProductUploadMapper;
+import com.tokopedia.product.manage.item.main.base.view.listener.ProductSubmitNotificationListener;
+import com.tokopedia.product.manage.item.main.draft.domain.DeleteSingleDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.domain.FetchDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 
 import java.util.ArrayList;
 import java.util.List;

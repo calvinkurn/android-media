@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.domain.model.videorecommendation
+package com.tokopedia.product.manage.item.video.domain.model.videorecommendation
 
 /**
  * Created by hendry on 25/06/18.

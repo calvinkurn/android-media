@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.domain.model.videorecommendation
+package com.tokopedia.product.manage.item.video.domain.model.videorecommendation
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

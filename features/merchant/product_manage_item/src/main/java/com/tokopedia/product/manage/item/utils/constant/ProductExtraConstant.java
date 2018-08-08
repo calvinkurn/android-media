@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.constant;
+package com.tokopedia.product.manage.item.utils.constant;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.main.draft.view.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel
 import com.tokopedia.product.manage.item.common.util.ProductStatus
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
 
 class ProductDraftAddFragment : ProductDraftEditFragment() {
 

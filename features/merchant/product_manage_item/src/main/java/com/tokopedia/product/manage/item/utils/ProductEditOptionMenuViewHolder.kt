@@ -1,7 +1,8 @@
-package com.tokopedia.product.manage.item.util
+package com.tokopedia.product.manage.item.utils
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.tokopedia.product.manage.item.utils.ProductEditOptionMenu
 import kotlinx.android.synthetic.main.item_product_edit_menu_option.view.*
 
 class ProductEditOptionMenuViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

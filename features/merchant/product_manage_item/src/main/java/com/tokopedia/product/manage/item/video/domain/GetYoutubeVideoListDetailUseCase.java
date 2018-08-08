@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.domain.interactor;
+package com.tokopedia.product.manage.item.video.domain;
 
 import android.content.Context;
 

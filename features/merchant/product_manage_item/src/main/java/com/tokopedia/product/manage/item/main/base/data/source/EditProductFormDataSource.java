@@ -1,7 +1,8 @@
-package com.tokopedia.product.manage.item.data.source;
+package com.tokopedia.product.manage.item.main.base.data.source;
 
-import com.tokopedia.product.manage.item.data.source.cloud.EditProductFormCloud;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.EditProductFormServiceModel;
+
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.EditProductFormCloud;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 
 import javax.inject.Inject;
 

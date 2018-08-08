@@ -1,7 +1,8 @@
-package com.tokopedia.product.manage.item.common.repository;
+package com.tokopedia.product.manage.item.variant.data.repository;
 
-import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.manage.item.common.model.variantbyprdold.ProductVariantByPrdModel;
+
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
 
 import java.util.List;
 

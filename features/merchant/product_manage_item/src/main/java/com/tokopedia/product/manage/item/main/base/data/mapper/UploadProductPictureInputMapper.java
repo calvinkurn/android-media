@@ -1,12 +1,12 @@
-package com.tokopedia.product.manage.item.data.mapper;
+package com.tokopedia.product.manage.item.main.base.data.mapper;
 
 import com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef;
-import com.tokopedia.product.manage.item.data.source.cloud.model.AddProductPictureInputServiceModel;
-import com.tokopedia.product.manage.item.data.source.cloud.model.ProductPhotoListServiceModel;
-import com.tokopedia.product.manage.item.data.source.cloud.model.ProductPhotoServiceModel;
-import com.tokopedia.product.manage.item.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.product.manage.item.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.product.manage.item.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.ProductPhotoListServiceModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.ProductPhotoServiceModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.UploadProductInputDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

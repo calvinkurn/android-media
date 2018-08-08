@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.common.data.source;
+package com.tokopedia.product.manage.item.main.draft.data.source;
 
 import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
 

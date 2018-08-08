@@ -1,12 +1,12 @@
-package com.tokopedia.product.manage.item.util;
+package com.tokopedia.product.manage.item.utils;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.product.manage.item.util.ProductEditWeightType.GRAM;
-import static com.tokopedia.product.manage.item.util.ProductEditWeightType.KILOGRAM;
+import static com.tokopedia.product.manage.item.utils.ProductEditWeightType.GRAM;
+import static com.tokopedia.product.manage.item.utils.ProductEditWeightType.KILOGRAM;
 
 @Retention(RetentionPolicy.SOURCE)
 @IntDef({GRAM, KILOGRAM})

@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.data.source;
+package com.tokopedia.product.manage.item.video.data.source;
 
-import com.tokopedia.product.manage.item.data.source.cloud.YoutubeVideoLinkCloud;
-import com.tokopedia.product.manage.item.data.mapper.YoutubeVidToDomainMapper;
-import com.tokopedia.product.manage.item.domain.model.YoutubeVideoModel;
+import com.tokopedia.product.manage.item.main.base.data.mapper.YoutubeVidToDomainMapper;
+import com.tokopedia.product.manage.item.video.data.source.cloud.YoutubeVideoLinkCloud;
+import com.tokopedia.product.manage.item.video.domain.model.YoutubeVideoModel;
 
 import rx.Observable;
 

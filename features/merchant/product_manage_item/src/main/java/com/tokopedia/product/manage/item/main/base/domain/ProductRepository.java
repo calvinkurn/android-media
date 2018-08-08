@@ -1,6 +1,7 @@
-package com.tokopedia.product.manage.item.domain;
+package com.tokopedia.product.manage.item.main.base.domain;
 
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 
 import rx.Observable;
 

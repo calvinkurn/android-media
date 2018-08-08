@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.fragment;
+package com.tokopedia.product.manage.item.description.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

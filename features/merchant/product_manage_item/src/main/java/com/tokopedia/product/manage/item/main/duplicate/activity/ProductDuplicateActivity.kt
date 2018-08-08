@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.activity
+package com.tokopedia.product.manage.item.main.duplicate.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,8 +6,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.view.fragment.ProductDuplicateFragment
-import com.tokopedia.product.manage.item.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditActivity
+import com.tokopedia.product.manage.item.main.duplicate.fragment.ProductDuplicateFragment
+import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
 
 class ProductDuplicateActivity : BaseProductAddEditActivity() {
 

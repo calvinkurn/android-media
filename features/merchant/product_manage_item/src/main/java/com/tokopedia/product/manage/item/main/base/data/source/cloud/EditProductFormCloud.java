@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.data.source.cloud;
+package com.tokopedia.product.manage.item.main.base.data.source.cloud;
 
 import android.content.Context;
 
@@ -6,8 +6,8 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.product.manage.item.data.source.cloud.api.EditProductFormApi;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.EditProductFormServiceModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.EditProductFormApi;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 
 import javax.inject.Inject;
 

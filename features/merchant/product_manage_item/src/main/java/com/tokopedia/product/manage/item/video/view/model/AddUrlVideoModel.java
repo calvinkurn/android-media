@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.model;
+package com.tokopedia.product.manage.item.video.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

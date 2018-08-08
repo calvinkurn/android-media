@@ -1,6 +1,7 @@
-package com.tokopedia.product.manage.item.domain.listener;
+package com.tokopedia.product.manage.item.main.base.view.listener;
 
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 
 /**
  * Created by nathan on 2/28/18.

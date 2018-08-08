@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.price
+package com.tokopedia.product.manage.item.utils
 
 import android.content.Context
 import android.support.v7.widget.SwitchCompat

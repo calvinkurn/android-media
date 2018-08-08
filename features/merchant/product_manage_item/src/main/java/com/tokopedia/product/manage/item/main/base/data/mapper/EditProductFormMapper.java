@@ -1,18 +1,18 @@
-package com.tokopedia.product.manage.item.data.mapper;
+package com.tokopedia.product.manage.item.main.base.data.mapper;
 
 import android.text.TextUtils;
 
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
 import com.tokopedia.product.manage.item.common.util.StockTypeDef;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.DataEditProductForm;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.EditProductFormServiceModel;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.ProductEditForm;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.ProductImage;
-import com.tokopedia.product.manage.item.data.source.cloud.model.editproductform.WholesalePrice;
-import com.tokopedia.product.manage.item.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.product.manage.item.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.product.manage.item.domain.model.ProductWholesaleDomainModel;
-import com.tokopedia.product.manage.item.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.DataEditProductForm;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.EditProductFormServiceModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.ProductEditForm;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.ProductImage;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.WholesalePrice;
+import com.tokopedia.product.manage.item.main.base.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.ProductWholesaleDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.UploadProductInputDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

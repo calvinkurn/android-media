@@ -1,11 +1,10 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.main.base.view.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -18,34 +17,41 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel
-import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel
-import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.category.view.activity.ProductEditCategoryActivity
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ProductStatus
 import com.tokopedia.product.manage.item.common.util.StockTypeDef
-import com.tokopedia.product.manage.item.constant.ProductExtraConstant
+import com.tokopedia.product.manage.item.description.view.activity.ProductEditDescriptionActivity
+import com.tokopedia.product.manage.item.description.view.model.ProductDescription
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
-import com.tokopedia.product.manage.item.price.ProductEditWeightLogisticFragment
+import com.tokopedia.product.manage.item.logistic.view.activity.ProductEditWeightLogisticActivity
+import com.tokopedia.product.manage.item.logistic.view.fragment.ProductEditWeightLogisticFragment
+import com.tokopedia.product.manage.item.logistic.view.model.ProductLogistic
+import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView
+import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
 import com.tokopedia.product.manage.item.price.model.*
-import com.tokopedia.product.manage.item.util.ProductEditCurrencyType
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
 import com.tokopedia.product.manage.item.utils.*
-import com.tokopedia.product.manage.item.view.activity.*
-import com.tokopedia.product.manage.item.view.listener.ListenerOnErrorAddProduct
-import com.tokopedia.product.manage.item.view.listener.ProductAddView
-import com.tokopedia.product.manage.item.view.mapper.AnalyticsMapper
-import com.tokopedia.product.manage.item.view.model.ProductAddViewModel
-import com.tokopedia.product.manage.item.view.presenter.ProductAddPresenterImpl
-import com.tokopedia.product.manage.item.view.service.UploadProductService
+import com.tokopedia.product.manage.item.main.base.view.listener.ListenerOnErrorAddProduct
+import com.tokopedia.product.manage.item.main.base.view.model.ProductAddViewModel
+import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
+import com.tokopedia.product.manage.item.name.view.activity.ProductEditNameActivity
+import com.tokopedia.product.manage.item.name.view.model.ProductName
+import com.tokopedia.product.manage.item.price.view.activity.ProductEditPriceActivity
+import com.tokopedia.product.manage.item.stock.view.activity.ProductEditStockActivity
+import com.tokopedia.product.manage.item.stock.view.model.ProductStock
+import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import javax.inject.Inject
 
@@ -456,7 +462,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         productVariantByCatModelList, productVariantViewModel,
                         productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR,
                         productPrice?.price ?: 0.0,
-                        getStatusStockViewVariant(productStock?:ProductStock()),
+                        getStatusStockViewVariant(productStock?: ProductStock()),
                         officialStore, productStock?.sku, isEdittingDraft(),
                         productSizeChart, hasOriginalVariantLevel1 == true,
                         hasOriginalVariantLevel2 == true,

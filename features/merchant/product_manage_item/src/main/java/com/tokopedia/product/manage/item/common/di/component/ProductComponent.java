@@ -23,17 +23,13 @@ import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.product.manage.item.common.di.module.ProductTomeQualifier;
 import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**

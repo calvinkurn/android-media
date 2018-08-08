@@ -1,7 +1,8 @@
-package com.tokopedia.product.manage.item.data.source;
+package com.tokopedia.product.manage.item.main.base.data.source;
 
-import com.tokopedia.product.manage.item.data.source.cloud.GenerateHostCloud;
-import com.tokopedia.product.manage.item.data.source.cloud.model.GenerateHost;
+
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.GenerateHostCloud;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.GenerateHost;
 
 import javax.inject.Inject;
 

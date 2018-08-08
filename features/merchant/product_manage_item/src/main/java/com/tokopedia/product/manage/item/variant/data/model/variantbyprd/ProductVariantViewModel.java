@@ -1,5 +1,5 @@
 
-package com.tokopedia.product.manage.item.common.model.variantbyprd;
+package com.tokopedia.product.manage.item.variant.data.model.variantbyprd;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,10 +13,10 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.product.manage.item.common.util.StockTypeDef;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 public class ProductVariantViewModel implements Parcelable {
 

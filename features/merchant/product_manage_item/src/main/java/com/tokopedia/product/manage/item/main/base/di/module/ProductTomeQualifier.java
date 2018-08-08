@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.di.module;
+package com.tokopedia.product.manage.item.main.base.di.module;
 
 import javax.inject.Qualifier;
 

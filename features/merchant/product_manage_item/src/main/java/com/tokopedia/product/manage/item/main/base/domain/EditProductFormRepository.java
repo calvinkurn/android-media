@@ -1,6 +1,6 @@
-package com.tokopedia.product.manage.item.domain;
+package com.tokopedia.product.manage.item.main.base.domain;
 
-import com.tokopedia.product.manage.item.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 

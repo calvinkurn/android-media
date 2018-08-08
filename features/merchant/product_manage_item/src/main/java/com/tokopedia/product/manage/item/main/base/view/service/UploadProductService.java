@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.service;
+package com.tokopedia.product.manage.item.main.base.view.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -20,17 +20,17 @@ import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.R;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
-import com.tokopedia.product.manage.item.di.component.DaggerAddProductServiceComponent;
-import com.tokopedia.product.manage.item.di.module.AddProductserviceModule;
-import com.tokopedia.product.manage.item.domain.listener.ProductSubmitNotificationListener;
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.di.component.DaggerAddProductServiceComponent;
+import com.tokopedia.product.manage.item.main.base.di.module.AddProductserviceModule;
+import com.tokopedia.product.manage.item.main.base.view.listener.ProductSubmitNotificationListener;
+import com.tokopedia.product.manage.item.main.base.view.presenter.AddProductServiceListener;
+import com.tokopedia.product.manage.item.main.base.view.presenter.AddProductServicePresenter;
+import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
+import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
-import com.tokopedia.product.manage.item.view.activity.ProductDraftAddActivity;
-import com.tokopedia.product.manage.item.view.activity.ProductDraftEditActivity;
-import com.tokopedia.product.manage.item.view.presenter.AddProductServiceListener;
-import com.tokopedia.product.manage.item.view.presenter.AddProductServicePresenter;
+import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
 
 import java.util.HashMap;
 

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.product.manage.item.R;
-import com.tokopedia.product.manage.item.data.exception.ImageUploadErrorException;
+import com.tokopedia.product.manage.item.main.base.data.exception.ImageUploadErrorException;
 
 /**
  * Created by zulfikarrahman on 7/18/18.

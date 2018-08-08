@@ -1,11 +1,11 @@
-package com.tokopedia.product.manage.item.price
+package com.tokopedia.product.manage.item.category.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.price.model.ProductCategory
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
 import kotlinx.android.synthetic.main.item_product_category_recommendation.view.*
 
 class ProductCategoryRecommendationAdapter(private val categoryRecommendationList: MutableList<ProductCategory>,
@@ -44,7 +44,7 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
         notifyDataSetChanged()
     }
 
-    fun getSelectedCategory(): ProductCategory{
+    fun getSelectedCategory(): ProductCategory {
         return categoryRecommendationList[selectedPosition]
     }
 

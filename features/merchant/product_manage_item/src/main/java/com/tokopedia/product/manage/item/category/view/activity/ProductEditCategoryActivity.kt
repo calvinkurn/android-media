@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.activity
+package com.tokopedia.product.manage.item.category.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -9,11 +9,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.price.ProductEditCategoryFragment
-import com.tokopedia.product.manage.item.price.model.ProductCatalog
-import com.tokopedia.product.manage.item.price.model.ProductCategory
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
+import com.tokopedia.product.manage.item.category.view.fragment.ProductEditCategoryFragment
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
+import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
 
 class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductComponent>{
     private var productName: String = ""

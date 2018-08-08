@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.common.data.source.db.model;
+package com.tokopedia.product.manage.item.main.draft.data.db.model;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,10 +1,9 @@
-package com.tokopedia.product.manage.item.di.component;
+package com.tokopedia.product.manage.item.video.di;
 
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.di.module.YoutubeVideoModule;
-import com.tokopedia.product.manage.item.view.activity.ProductAddVideoActivity;
-import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment;
+import com.tokopedia.product.manage.item.video.view.activity.ProductAddVideoActivity;
+import com.tokopedia.product.manage.item.video.view.fragment.ProductAddVideoFragment;
 
 import dagger.Component;
 

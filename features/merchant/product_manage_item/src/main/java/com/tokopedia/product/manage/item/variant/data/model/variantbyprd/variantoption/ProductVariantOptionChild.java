@@ -1,11 +1,11 @@
-package com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption;
+package com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.manage.item.common.model.edit.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,10 @@
-package com.tokopedia.product.manage.item.view.activity
+package com.tokopedia.product.manage.item.main.draft.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
-import com.tokopedia.product.manage.item.view.fragment.ProductDraftEditFragment
-import com.tokopedia.product.manage.item.view.fragment.ProductDraftEditFragment.Companion.DRAFT_PRODUCT_ID
+import com.tokopedia.product.manage.item.main.draft.view.fragment.ProductDraftEditFragment
+import com.tokopedia.product.manage.item.main.draft.view.fragment.ProductDraftEditFragment.Companion.DRAFT_PRODUCT_ID
 
 class ProductDraftEditActivity : ProductDraftAddActivity() {
 

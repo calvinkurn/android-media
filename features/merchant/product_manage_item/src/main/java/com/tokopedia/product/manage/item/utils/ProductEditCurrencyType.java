@@ -1,12 +1,13 @@
-package com.tokopedia.product.manage.item.util;
+package com.tokopedia.product.manage.item.utils;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.product.manage.item.util.ProductEditCurrencyType.RUPIAH;
-import static com.tokopedia.product.manage.item.util.ProductEditCurrencyType.USD;
+import static com.tokopedia.product.manage.item.utils.ProductEditCurrencyType.RUPIAH;
+import static com.tokopedia.product.manage.item.utils.ProductEditCurrencyType.USD;
+
 
 @Retention(RetentionPolicy.SOURCE)
 @IntDef({RUPIAH, USD})

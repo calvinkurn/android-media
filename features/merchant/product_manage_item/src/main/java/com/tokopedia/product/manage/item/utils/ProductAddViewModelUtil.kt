@@ -3,13 +3,18 @@ package com.tokopedia.product.manage.item.utils
 import android.text.TextUtils
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
-import com.tokopedia.product.manage.item.common.model.edit.*
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
-import com.tokopedia.product.manage.item.constant.ProductConditionTypeDef
-import com.tokopedia.product.manage.item.price.model.*
-import com.tokopedia.product.manage.item.util.ProductEditPreOrderTimeType
-import com.tokopedia.product.manage.item.view.listener.ListenerOnErrorAddProduct
-import com.tokopedia.product.manage.item.view.model.ProductAddViewModel
+import com.tokopedia.product.manage.item.description.view.model.ProductDescription
+import com.tokopedia.product.manage.item.logistic.view.model.ProductLogistic
+import com.tokopedia.product.manage.item.main.base.data.model.*
+import com.tokopedia.product.manage.item.main.base.view.listener.ListenerOnErrorAddProduct
+import com.tokopedia.product.manage.item.main.base.view.model.ProductAddViewModel
+import com.tokopedia.product.manage.item.name.view.model.ProductName
+import com.tokopedia.product.manage.item.price.model.ProductPrice
+import com.tokopedia.product.manage.item.stock.view.model.ProductStock
+import com.tokopedia.product.manage.item.utils.constant.ProductConditionTypeDef
 
 fun convertCategory(productCategory: ProductCategory?): ProductCategoryViewModel? {
     val productCategoryViewModel = ProductCategoryViewModel()

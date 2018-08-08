@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.price
+package com.tokopedia.product.manage.item.category.view.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -11,19 +11,20 @@ import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.constant.ProductExtraConstant
-import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.Catalog
-import com.tokopedia.product.manage.item.price.model.ProductCatalog
-import com.tokopedia.product.manage.item.price.model.ProductCategory
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
-import com.tokopedia.product.manage.item.view.activity.ProductEditCatalogPickerActivity
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.manage.item.view.listener.ProductEditCategoryView
-import com.tokopedia.product.manage.item.view.model.categoryrecomm.ProductCategoryPredictionViewModel
-import com.tokopedia.product.manage.item.view.presenter.ProductEditCategoryPresenter
+import com.tokopedia.product.manage.item.catalog.view.activity.ProductEditCatalogPickerActivity
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCategoryView
+import com.tokopedia.product.manage.item.category.view.adapter.ProductCategoryRecommendationAdapter
+import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryPredictionViewModel
+import com.tokopedia.product.manage.item.category.view.presenter.ProductEditCategoryPresenter
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.Catalog
+import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import kotlinx.android.synthetic.main.fragment_product_edit_category.*
 import javax.inject.Inject
 
@@ -52,7 +53,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         setHasOptionsMenu(true)
         arguments?.run {
             productCategory = getParcelable(EXTRA_CATEGORY)?: ProductCategory()
-            productCatalog = getParcelable(EXTRA_CATALOG)?:ProductCatalog()
+            productCatalog = getParcelable(EXTRA_CATALOG)?: ProductCatalog()
             name = getString(EXTRA_NAME, "")
             isCategoryLocked = getBoolean(EXTRA_CATEGORY_LOCKED)
         }
@@ -234,7 +235,8 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
 
     private fun renderRecommendation(categories: List<ProductCategoryPredictionViewModel>){
         resetCategoryCatalog()
-        productCategoryRecommendationAdapter.replaceData(categories.map {ProductCategory().apply {
+        productCategoryRecommendationAdapter.replaceData(categories.map {
+            ProductCategory().apply {
             categoryId = it.lastCategoryId
             categoryName = it.printedString
         }})

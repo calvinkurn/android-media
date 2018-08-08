@@ -1,18 +1,14 @@
-package com.tokopedia.product.manage.item.view.presenter;
-
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
+package com.tokopedia.product.manage.item.main.add.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
-import com.tokopedia.product.manage.item.common.domain.interactor.FetchProductVariantByCatUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
-import com.tokopedia.product.manage.item.view.listener.ProductAddView;
+import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;

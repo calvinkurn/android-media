@@ -1,11 +1,10 @@
-package com.tokopedia.product.manage.item.price.viewholder
+package com.tokopedia.product.manage.item.name.view.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.price.model.ProductName
-import kotlinx.android.synthetic.main.fragment_product_edit_description.view.*
+import com.tokopedia.product.manage.item.name.view.model.ProductName
 import kotlinx.android.synthetic.main.partial_product_edit_name.view.*
 
 class ProductEditNameViewHolder(var view: View, listener: Listener){

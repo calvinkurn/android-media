@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.common.model.variantbyprdold;
+package com.tokopedia.product.manage.item.variant.data.model.variantbyprdold;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.data.source.cloud;
+package com.tokopedia.product.manage.item.main.base.data.source.cloud;
 
 import android.content.Context;
 

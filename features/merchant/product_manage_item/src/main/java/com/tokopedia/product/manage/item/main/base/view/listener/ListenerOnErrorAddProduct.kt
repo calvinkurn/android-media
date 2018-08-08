@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.listener
+package com.tokopedia.product.manage.item.main.base.view.listener
 
 interface ListenerOnErrorAddProduct {
     fun onErrorName()

@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.adapter
+package com.tokopedia.product.manage.item.video.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.util.YoutubeUtil
-import com.tokopedia.product.manage.item.view.adapter.viewholder.SectionVideoRecommendationViewHolder
-import com.tokopedia.product.manage.item.view.adapter.viewholder.VideoRecommendationFeaturedViewHolder
-import com.tokopedia.product.manage.item.view.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.manage.item.utils.YoutubeUtil
+import com.tokopedia.product.manage.item.video.view.adapter.viewholder.SectionVideoRecommendationViewHolder
+import com.tokopedia.product.manage.item.video.view.adapter.viewholder.VideoRecommendationFeaturedViewHolder
+import com.tokopedia.product.manage.item.video.view.model.VideoRecommendationViewModel
 import kotlinx.android.synthetic.main.item_product_add_video_recommendation_featured.view.*
 
 

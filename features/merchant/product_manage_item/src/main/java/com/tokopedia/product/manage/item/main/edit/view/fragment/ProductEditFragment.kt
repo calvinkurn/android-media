@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.main.edit.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +8,13 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel
 import com.tokopedia.product.manage.item.common.util.ProductStatus
-import com.tokopedia.product.manage.item.di.component.DaggerProductEditComponent
-import com.tokopedia.product.manage.item.di.module.ProductEditModule
-import com.tokopedia.product.manage.item.utils.convertToProductAddViewModel
-import com.tokopedia.product.manage.item.view.model.ProductAddViewModel
-import com.tokopedia.product.manage.item.view.presenter.ProductEditPresenterImpl
-import com.tokopedia.product.manage.item.view.presenter.ProductEditView
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.main.edit.di.DaggerProductEditComponent
+import com.tokopedia.product.manage.item.main.edit.di.ProductEditModule
+import com.tokopedia.product.manage.item.main.edit.view.listener.ProductEditView
+import com.tokopedia.product.manage.item.main.edit.view.presenter.ProductEditPresenterImpl
 
 open class ProductEditFragment : BaseProductAddEditFragment<ProductEditPresenterImpl, ProductEditView>(), ProductEditView {
 

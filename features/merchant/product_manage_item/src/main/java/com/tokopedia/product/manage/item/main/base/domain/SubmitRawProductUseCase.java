@@ -1,9 +1,8 @@
-package com.tokopedia.product.manage.item.domain.interactor.uploadproduct;
+package com.tokopedia.product.manage.item.main.base.domain;
 
 import android.text.TextUtils;
 
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
-import com.tokopedia.product.manage.item.domain.ProductRepository;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

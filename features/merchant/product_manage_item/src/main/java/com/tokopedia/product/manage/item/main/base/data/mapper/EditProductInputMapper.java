@@ -1,8 +1,9 @@
-package com.tokopedia.product.manage.item.data.mapper;
+package com.tokopedia.product.manage.item.main.base.data.mapper;
 
-import com.tokopedia.product.manage.item.data.source.cloud.model.AddProductValidationInputServiceModel;
-import com.tokopedia.product.manage.item.data.source.cloud.model.EditProductInputServiceModel;
-import com.tokopedia.product.manage.item.domain.model.UploadProductInputDomainModel;
+
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.EditProductInputServiceModel;
+import com.tokopedia.product.manage.item.main.base.domain.model.UploadProductInputDomainModel;
 
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.price
+package com.tokopedia.product.manage.item.main.add.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -8,20 +8,19 @@ import android.view.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.constant.ProductExtraConstant
-import com.tokopedia.product.manage.item.di.component.DaggerProductEditCategoryCatalogComponent
-import com.tokopedia.product.manage.item.di.module.ProductEditCategoryCatalogModule
+import com.tokopedia.product.manage.item.category.di.ProductEditCategoryCatalogModule
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
-import com.tokopedia.product.manage.item.price.model.ProductCatalog
-import com.tokopedia.product.manage.item.price.model.ProductCategory
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.manage.item.price.model.ProductName
-import com.tokopedia.product.manage.item.price.viewholder.ProductEditNameViewHolder
-import com.tokopedia.product.manage.item.view.activity.ProductAddActivity
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.manage.item.view.listener.ProductEditCategoryView
+import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.name.view.model.ProductName
+import com.tokopedia.product.manage.item.name.view.viewholder.ProductEditNameViewHolder
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCategoryView
+import com.tokopedia.product.manage.item.category.di.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.manage.item.category.view.fragment.BaseProductEditCategoryFragment
+import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
 class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryView {
@@ -137,7 +136,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         const val REQUEST_CODE_GET_CATEGORY = 1
         const val REQUEST_CODE_GET_CATALOG = 2
         const val REQUEST_CODE_GET_IMAGES = 100
-        fun createInstance(imageUrls: ArrayList<String>?) : ProductAddNameCategoryFragment{
+        fun createInstance(imageUrls: ArrayList<String>?) : ProductAddNameCategoryFragment {
             val productAddNameCategoryFragment = ProductAddNameCategoryFragment()
             val bundle = Bundle()
             bundle.putStringArrayList(BaseProductAddEditFragment.EXTRA_IMAGES, imageUrls)

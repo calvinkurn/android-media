@@ -1,6 +1,9 @@
-package com.tokopedia.product.manage.item.view.adapter
+package com.tokopedia.product.manage.item.video.view.adapter
 
-import com.tokopedia.product.manage.item.view.viewmodel.*
+import com.tokopedia.product.manage.item.video.view.model.EmptyVideoViewModel
+import com.tokopedia.product.manage.item.video.view.model.SectionVideoRecommendationViewModel
+import com.tokopedia.product.manage.item.video.view.model.TitleVideoChosenViewModel
+import com.tokopedia.product.manage.item.video.view.model.VideoViewModel
 
 interface ProductAddVideoTypeFactory {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.di.module;
+package com.tokopedia.product.manage.item.video.di;
 
 import android.content.Context;
 
@@ -8,14 +8,14 @@ import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
-import com.tokopedia.product.manage.item.data.mapper.YoutubeVidToDomainMapper;
-import com.tokopedia.product.manage.item.data.source.YoutubeVideoLinkDataSource;
-import com.tokopedia.product.manage.item.data.source.cloud.YoutubeVideoLinkCloud;
-import com.tokopedia.product.manage.item.data.source.cloud.api.YoutubeVideoLinkApi;
-import com.tokopedia.product.manage.item.data.repository.YoutubeRepositoryImpl;
-import com.tokopedia.product.manage.item.domain.YoutubeVideoRepository;
-import com.tokopedia.product.manage.item.domain.interactor.YoutubeVideoUseCase;
+import com.tokopedia.product.manage.item.main.base.data.mapper.YoutubeVidToDomainMapper;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.YoutubeVideoLinkApi;
 import com.tokopedia.product.manage.item.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.product.manage.item.video.data.repository.YoutubeRepositoryImpl;
+import com.tokopedia.product.manage.item.video.data.source.YoutubeVideoLinkDataSource;
+import com.tokopedia.product.manage.item.video.data.source.cloud.YoutubeVideoLinkCloud;
+import com.tokopedia.product.manage.item.video.domain.YoutubeVideoRepository;
+import com.tokopedia.product.manage.item.video.domain.YoutubeVideoUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,7 +58,7 @@ public class YoutubeVideoModule {
     @Provides
     YoutubeVideoRepository provideYoutubeVideoRepository(
             YoutubeVideoLinkDataSource youtubeVideoLinkDataSource) {
-        return new  YoutubeRepositoryImpl(youtubeVideoLinkDataSource);
+        return new YoutubeRepositoryImpl(youtubeVideoLinkDataSource);
     }
 
     @ActivityScope

@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.view.fragment
+package com.tokopedia.product.manage.item.main.draft.view.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.di.component.DaggerProductDraftComponent
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel
 import com.tokopedia.product.manage.item.common.util.ProductStatus
-import com.tokopedia.product.manage.item.di.module.ProductDraftModule
-import com.tokopedia.product.manage.item.utils.convertToProductAddViewModel
-import com.tokopedia.product.manage.item.view.model.ProductAddViewModel
-import com.tokopedia.product.manage.item.view.presenter.ProductDraftPresenterImpl
-import com.tokopedia.product.manage.item.view.presenter.ProductDraftView
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.main.draft.di.DaggerProductDraftComponent
+import com.tokopedia.product.manage.item.main.draft.di.ProductDraftModule
+import com.tokopedia.product.manage.item.main.draft.view.listener.ProductDraftView
+import com.tokopedia.product.manage.item.main.draft.view.presenter.ProductDraftPresenterImpl
 
 open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPresenterImpl, ProductDraftView>(), ProductDraftView{
 

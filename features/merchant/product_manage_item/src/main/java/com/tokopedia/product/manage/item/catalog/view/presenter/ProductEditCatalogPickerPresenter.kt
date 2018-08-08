@@ -1,11 +1,11 @@
-package com.tokopedia.product.manage.item.view.presenter
+package com.tokopedia.product.manage.item.catalog.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.Catalog
-import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel
-import com.tokopedia.product.manage.item.domain.interactor.FetchCatalogDataUseCase
-import com.tokopedia.product.manage.item.price.model.ProductCatalog
-import com.tokopedia.product.manage.item.view.listener.ProductEditCatalogPickerView
+import com.tokopedia.product.manage.item.catalog.domain.FetchCatalogDataUseCase
+import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCatalogPickerView
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.Catalog
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.CatalogDataModel
 import rx.Subscriber
 import javax.inject.Inject
 

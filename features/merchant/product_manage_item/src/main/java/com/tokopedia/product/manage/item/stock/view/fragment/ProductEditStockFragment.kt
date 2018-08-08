@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.price
+package com.tokopedia.product.manage.item.stock.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -8,14 +8,15 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_STOCK
-import com.tokopedia.product.manage.item.price.model.ProductStock
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
-import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
+import com.tokopedia.product.manage.item.stock.view.model.ProductStock
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
 import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
 import android.text.Editable
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
+import com.tokopedia.product.manage.item.utils.LabelRadioButton
 
 class ProductEditStockFragment : Fragment() {
 

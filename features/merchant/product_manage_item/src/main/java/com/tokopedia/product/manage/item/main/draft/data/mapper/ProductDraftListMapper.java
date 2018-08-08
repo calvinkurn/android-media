@@ -1,12 +1,10 @@
-package com.tokopedia.product.manage.item.common.data.mapper;
+package com.tokopedia.product.manage.item.main.draft.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.product.manage.item.common.model.ProductDraftViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
-import com.tokopedia.product.manage.item.common.model.ProductDraftViewModel;
-import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 
 import java.util.List;
 

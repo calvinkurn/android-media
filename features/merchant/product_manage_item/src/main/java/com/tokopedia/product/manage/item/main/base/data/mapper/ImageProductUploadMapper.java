@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.data.mapper;
+package com.tokopedia.product.manage.item.main.base.data.mapper;
 
 
-import com.tokopedia.product.manage.item.data.source.cloud.model.ResultUploadImage;
-import com.tokopedia.product.manage.item.data.source.cloud.model.UploadImageModel;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.ResultUploadImage;
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.UploadImageModel;
 
 import javax.inject.Inject;
 

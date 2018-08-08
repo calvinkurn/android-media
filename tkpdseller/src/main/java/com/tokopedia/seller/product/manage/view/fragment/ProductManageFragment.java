@@ -63,7 +63,7 @@ import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
-//import com.tokopedia.product.manage.item.view.activity.ProductAddActivity;
+//import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.manage.constant.CashbackOption;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
