@@ -50,14 +50,21 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_challenges, container, false);
         recyclerView = view.findViewById(R.id.rv_home_challenges);
         tvActiveChallenges = view.findViewById(R.id.tv_active_challenges);
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
+        tvActiveChallenges.setOnClickListener(v -> {
+            challengeHomePresenter.getOpenChallenges();
+            tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
+            tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
+        });
 
-        tvActiveChallenges.setOnClickListener(v -> challengeHomePresenter.getOpenChallenges());
-        tvPastChallenges.setOnClickListener(v -> challengeHomePresenter.getPastChallenges());
+        tvPastChallenges.setOnClickListener(v -> {
+            challengeHomePresenter.getPastChallenges();
+            tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
+            tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
+        });
 
         challengeHomePresenter.getOpenChallenges();
         return view;

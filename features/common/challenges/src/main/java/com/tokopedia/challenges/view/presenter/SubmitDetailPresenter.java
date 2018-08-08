@@ -1,4 +1,4 @@
-package com.tokopedia.challenges.presenter;
+package com.tokopedia.challenges.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.data.model.IndiUserModel;
@@ -23,10 +23,5 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setApprovedView(model.getUserId());
         getView().setDetailTitle(model.getUserId());
         getView().setDetailContent(model.getUserId());
-        getView().setChallengeIcon(model.getUserId());
-        getView().setChallengeTitle(model.getUserId());
-        getView().setChallengeAt(model.getUserId());
-        getView().setChallengeHash(model.getUserId());
-        getView().setSubmitBtnClick(model.getUserId());
     }
 }
