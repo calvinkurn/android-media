@@ -1,6 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
 
-</LinearLayout>
+    <TextView style="@style/TextView.Micro.BlackSecondary"
+        android:id="@+id/shipping_destination"
+        android:layout_width="0dp"
+        tools:text="Kota Asal : Jakarta"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/shipping_weight"
+        app:layout_constraintEnd_toStartOf="@+id/shipping_weight"/>
+
+    <TextView style="@style/TextView.Micro.BlackSecondary"
+        android:id="@+id/shipping_weight"
+        android:layout_width="0dp"
+        android:gravity="end"
+        tools:text="Berat : 1000 gram"
+        app:layout_constraintTop_toTopOf="@+id/shipping_destination"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/shipping_destination"
+        app:layout_constraintStart_toEndOf="@+id/shipping_destination"/>
+
+    <TextView style="@style/TextView.Micro.BlackSecondary"
+        android:id="@+id/shipping_receiver_name"
+        android:layout_width="0dp"
+        tools:text="@string/shipping_receiver_name_text"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_destination"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView style="@style/TextView.Micro.BlackSecondary"
+        android:id="@+id/shipping_receiver_address"
+        android:layout_width="0dp"
+        tools:text="@string/shipping_receiver_name_text"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:lineSpacingExtra="@dimen/line_spacing_6"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_receiver_name"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_grey"
+        android:layout_marginTop="@dimen/dp_16"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_receiver_address"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/bullet1"
+            android:layout_width="@dimen/dp_6"
+            android:layout_height="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_6"
+            android:src="@drawable/ic_bullet_green"
+            app:layout_constraintEnd_toStartOf="@+id/text1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/text1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text1" />
+
+        <TextView style="@style/TextView.Micro.BlackSecondary"
+            android:id="@+id/text1"
+            android:layout_width="0dp"
+            android:text="@string/shipping_cost_descr_1"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/bullet1"
+            app:layout_constraintStart_toEndOf="@+id/bullet1"/>
+
+        <ImageView android:id="@+id/bullet2"
+            android:layout_width="@dimen/dp_6"
+            android:layout_height="@dimen/dp_6"
+            android:src="@drawable/ic_bullet_green"
+            android:layout_marginTop="@dimen/dp_14"
+            app:layout_constraintTop_toBottomOf="@id/text1"
+            app:layout_constraintStart_toStartOf="@+id/bullet1"
+            app:layout_constraintLeft_toLeftOf="@+id/bullet1"/>
+
+        <TextView style="@style/TextView.Micro.BlackSecondary"
+            android:id="@+id/text2"
+            android:layout_width="0dp"
+            android:text="@string/shipping_cost_descr_2"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@+id/text1"
+            app:layout_constraintRight_toRightOf="@+id/text1"
+            app:layout_constraintEnd_toEndOf="@+id/text1"
+            app:layout_constraintLeft_toRightOf="@+id/bullet2"
+            app:layout_constraintStart_toEndOf="@+id/bullet2"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

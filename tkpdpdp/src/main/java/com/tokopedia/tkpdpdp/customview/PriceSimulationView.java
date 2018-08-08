@@ -159,7 +159,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         } else {
             rateEstimationLayout.setVisibility(VISIBLE);
             rateEstStartigPrice.setText(ratesModel.getTexts().getTextMinPrice());
-            rateEstDestination.setText(ratesModel.getTexts().getTextDestination());
+            rateEstDestination.setText(context.getString(R.string.rate_est_dest_pdp_detail, ratesModel.getTexts().getTextDestination()));
             separator0.setVisibility(VISIBLE);
             rateEstimationLayout.setOnClickListener(view -> listener.moveToEstimationDetail());
         }
