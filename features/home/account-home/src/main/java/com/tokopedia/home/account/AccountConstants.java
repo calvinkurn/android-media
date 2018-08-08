@@ -41,6 +41,8 @@ public class AccountConstants {
         public static final String REKSA_DANA_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/";
 
         public static final String EMAS_URL = TkpdBaseURL.WEB_DOMAIN + "emas/";
+
+        public static final String MYBILLS_URL = TkpdBaseURL.WEB_DOMAIN + "mybills/";
     }
 
     public static class Analytics {

@@ -37,7 +37,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.*;
  */
 public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
-
     private Context context;
 
     @Inject
@@ -232,24 +231,34 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         items.add(menuList);
 
         menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
+        menuList.setMenu(context.getString(R.string.title_menu_mybills));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_mybills));
         menuList.setApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
+                AccountConstants.Url.MYBILLS_URL));
         menuList.setTitleTrack(PEMBELI);
-        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
+        menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);
 
-        menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
-        menuList.setApplink(String.format("%s?url=%s",
-                ApplinkConst.WEBVIEW,
-                AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
-        menuList.setTitleTrack(PEMBELI);
-        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-        items.add(menuList);
+//        menuList = new MenuListViewModel();
+//        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
+//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
+//        menuList.setApplink(String.format("%s?url=%s",
+//                ApplinkConst.WEBVIEW,
+//                AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
+//        menuList.setTitleTrack(PEMBELI);
+//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
+//        items.add(menuList);
+//
+//        menuList = new MenuListViewModel();
+//        menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
+//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
+//        menuList.setApplink(String.format("%s?url=%s",
+//                ApplinkConst.WEBVIEW,
+//                AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
+//        menuList.setTitleTrack(PEMBELI);
+//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
+//        items.add(menuList);
 
         InfoCardViewModel infoCard = new InfoCardViewModel();
         infoCard.setIconRes(R.drawable.ic_tokocash_big);
