@@ -98,6 +98,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_waiting_for_payment));
         menuList.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
+        menuList.setCount(accountModel.getNotifications().getBuyerOrder().getPaymentStatus());
         menuList.setApplink(ApplinkConst.PMS);
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
@@ -156,6 +157,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_complaint));
         menuList.setMenuDescription(context.getString(R.string.label_menu_complaint));
+        menuList.setCount(accountModel.getNotifications().getResolution().getBuyer());
         menuList.setApplink(ApplinkConst.RESCENTER_BUYER);
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
