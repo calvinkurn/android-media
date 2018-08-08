@@ -18,6 +18,7 @@ import static com.tokopedia.home.account.AccountConstants.VARIABLES;
  * @author okasurya on 7/20/18.
  */
 public class AccountHomePresenter implements AccountHome.Presenter {
+
     private GetAccountUseCase getAccountUseCase;
     private AccountHome.View view;
 
@@ -28,6 +29,7 @@ public class AccountHomePresenter implements AccountHome.Presenter {
 
     @Override
     public void getAccount(String query) {
+        view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(QUERY, query);
@@ -36,11 +38,12 @@ public class AccountHomePresenter implements AccountHome.Presenter {
         getAccountUseCase.execute(requestParams, new Subscriber<AccountViewModel>() {
             @Override
             public void onCompleted() {
-
+                view.hideLoading();
             }
 
             @Override
             public void onError(Throwable e) {
+                view.showError(e.getMessage());
                 e.printStackTrace();
             }
 
