@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">forgotpassword</string>
+
+    <string name="title_reset_success_hint_1">Sebuah email telah dikirim ke email kontak Anda dikaitkan dengan akun Anda,</string>
+    <string name="title_reset_success_hint_2">Harap bersabar, pengiriman email dapat tertunda. \n
+Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk atau folder spam atau filter jika Anda tidak menerima email ini.</string>
+</resources>
