@@ -15,11 +15,11 @@ import java.util.List;
  * Created by ashwanityagi on 07/08/18.
  */
 
-public class ChallengesListAdpater extends RecyclerView.Adapter<ChallengesViewHolder> {
+public class ChallengesListAdapter extends RecyclerView.Adapter<ChallengesViewHolder> {
     List<Result> challengesResultList= new ArrayList<>();
     Context context;
 
-    public ChallengesListAdpater(Context context,  List<Result> challengesResultList) {
+    public ChallengesListAdapter(Context context, List<Result> challengesResultList) {
         this.context = context;
         this.challengesResultList = challengesResultList;
     }

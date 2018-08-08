@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:text="My Subscriptions"
+                android:text="My Submissions"
                 android:textAlignment="textStart" />
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>

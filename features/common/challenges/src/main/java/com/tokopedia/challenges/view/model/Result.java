@@ -60,6 +60,7 @@ public class Result implements Parcelable{
         endDate = in.readString();
         thumbnailUrl = in.readString();
         hashTag = in.readString();
+        prizes = in.createTypedArrayList(Prize.CREATOR);
     }
 
     public static final Creator<Result> CREATOR = new Creator<Result>() {
@@ -190,5 +191,6 @@ public class Result implements Parcelable{
         dest.writeString(endDate);
         dest.writeString(thumbnailUrl);
         dest.writeString(hashTag);
+        dest.writeTypedList(prizes);
     }
 }

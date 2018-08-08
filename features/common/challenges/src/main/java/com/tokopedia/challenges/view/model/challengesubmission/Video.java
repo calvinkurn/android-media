@@ -17,29 +17,35 @@ public class Video implements Parcelable {
     @SerializedName("Sources")
     @Expose
     private List<Source> sources = null;
-    public final static Parcelable.Creator<Video> CREATOR = new Creator<Video>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
+    protected Video(Parcel in) {
+        duration = in.readInt();
+        sources = in.createTypedArrayList(Source.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(duration);
+        dest.writeTypedList(sources);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Video> CREATOR = new Creator<Video>() {
+        @Override
         public Video createFromParcel(Parcel in) {
             return new Video(in);
         }
 
+        @Override
         public Video[] newArray(int size) {
-            return (new Video[size]);
+            return new Video[size];
         }
-
     };
-
-    protected Video(Parcel in) {
-        this.duration = ((int) in.readValue((int.class.getClassLoader())));
-        in.readList(this.sources, (Source.class.getClassLoader()));
-    }
-
-    public Video() {
-    }
 
     public int getDuration() {
         return duration;
@@ -56,15 +62,4 @@ public class Video implements Parcelable {
     public void setSources(List<Source> sources) {
         this.sources = sources;
     }
-
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(duration);
-        dest.writeList(sources);
-    }
-
-    public int describeContents() {
-        return 0;
-    }
-
 }

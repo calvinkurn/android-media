@@ -30,13 +30,10 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining = view.findViewById(R.id.tv_time_remaining);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent =new Intent(view.getContext(), ChallengeDetailActivity.class);
-                intent.putExtra("challengesResult",challengesResult);
-                view.getContext().startActivity(intent);
-            }
+        view.setOnClickListener(view1 -> {
+            Intent intent =new Intent(view1.getContext(), ChallengeDetailActivity.class);
+            intent.putExtra("challengesResult",challengesResult);
+            view1.getContext().startActivity(intent);
         });
     }
 
@@ -44,8 +41,18 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         this.challengesResult = challengesResult;
         tvTitle.setText(challengesResult.getTitle());
         tvHastags.setText(challengesResult.getHashTag());
-        tvTimeRemaining.setText(challengesResult.getEndDate());
-      //  tvStatus.setText(challengesResult.getSubmissionCount());
+
+        if(challengesResult.getMe().getSubmissionCounts().getApproved()>0){
+            tvStatus.setText("Approved");
+        }else if(challengesResult.getMe().getSubmissionCounts().getDeclined()>0){
+            tvStatus.setText("Declined");
+        }else if(challengesResult.getMe().getSubmissionCounts().getWaiting()>0){
+            tvStatus.setText("Waiting");
+        }else{
+            tvTimeRemaining.setText(challengesResult.getEndDate());
+            tvTimeRemaining.setVisibility(View.VISIBLE);
+            tvStatus.setVisibility(View.GONE);
+        }
         ImageHandler.loadImageAndCache(imgChallenge, challengesResult.getThumbnailUrl());
     }
 

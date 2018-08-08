@@ -1,10 +1,13 @@
 
 package com.tokopedia.challenges.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Prize {
+public class Prize implements Parcelable{
 
     @SerializedName("Type")
     @Expose
@@ -21,6 +24,30 @@ public class Prize {
     @SerializedName("Index")
     @Expose
     private Integer index;
+
+    protected Prize(Parcel in) {
+        type = in.readString();
+        title = in.readString();
+        prize = in.readString();
+        description = in.readString();
+        if (in.readByte() == 0) {
+            index = null;
+        } else {
+            index = in.readInt();
+        }
+    }
+
+    public static final Creator<Prize> CREATOR = new Creator<Prize>() {
+        @Override
+        public Prize createFromParcel(Parcel in) {
+            return new Prize(in);
+        }
+
+        @Override
+        public Prize[] newArray(int size) {
+            return new Prize[size];
+        }
+    };
 
     public String getType() {
         return type;
@@ -62,4 +89,22 @@ public class Prize {
         this.index = index;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(type);
+        parcel.writeString(title);
+        parcel.writeString(prize);
+        parcel.writeString(description);
+        if (index == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeInt(index);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.challenges.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetActiveChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.GetPastChallengesUseCase;
 import com.tokopedia.challenges.view.model.Challenge;
@@ -42,6 +43,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
                 getView().setChallengeDataToUI(mainDataObject.getResults());
+                CommonUtils.dumper("data data data data data data data");
             }
         });
     }

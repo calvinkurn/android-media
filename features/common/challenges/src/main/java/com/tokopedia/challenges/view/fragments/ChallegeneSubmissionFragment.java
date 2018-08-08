@@ -31,6 +31,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
+import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.customview.ExpandableTextView;
@@ -58,12 +59,13 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     TextView seeMoreButton;
     ImageView seeMoreArrow;
     ExpandableTextView description;
-    RecyclerView submissionRecyclerView;
+    RecyclerView submissionRecyclerView, awardRecylerView;
     List<SubmissionResult> submissionResults;
 
     SubmissionItemAdapter submissionItemAdapter;
 
     Result challengeResult;
+    private AwardAdapter awardAdapter;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
@@ -94,6 +96,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         seeMoreButton = (TextView) view.findViewById(R.id.seemorebutton_description);
         seeMoreArrow = (ImageView) view.findViewById(R.id.down_arrow_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
+        awardRecylerView = view.findViewById(R.id.rv_awards);
+
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
@@ -166,7 +170,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         submissionRecyclerView.setLayoutManager(mLayoutManager);
         submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
         submissionRecyclerView.setAdapter(submissionItemAdapter);
-
+        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        awardRecylerView.setLayoutManager(mLayoutManager1);
+        awardAdapter = new AwardAdapter(challengeResult.getPrizes());
+        awardRecylerView.setAdapter(awardAdapter);
     }
 
     @Override

@@ -24,7 +24,7 @@ import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
  * Created by ashwanityagi on 06/08/18.
  */
 
-public class ChallengesHomeActivity extends BaseActivity implements HasComponent<ChallengesComponent>{
+public class ChallengesHomeActivity extends BaseActivity{
 private TabLayout tabLayout;
 private ViewPager viewPager;
 
@@ -62,10 +62,4 @@ private ViewPager viewPager;
         setTitle("Home");
     }
 
-    @Override
-    public ChallengesComponent getComponent() {
-        return DaggerChallengesComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
-                .build();
-    }
 }

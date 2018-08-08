@@ -18,30 +18,36 @@ public class Media implements Parcelable {
     @SerializedName("Video")
     @Expose
     private Video video;
-    public final static Parcelable.Creator<Media> CREATOR = new Creator<Media>() {
 
+    protected Media(Parcel in) {
+        mediaType = in.readString();
+        imageUrl = in.readString();
+        video = in.readParcelable(Video.class.getClassLoader());
+    }
 
-        @SuppressWarnings({
-                "unchecked"
-        })
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mediaType);
+        dest.writeString(imageUrl);
+        dest.writeParcelable(video, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Media> CREATOR = new Creator<Media>() {
+        @Override
         public Media createFromParcel(Parcel in) {
             return new Media(in);
         }
 
+        @Override
         public Media[] newArray(int size) {
-            return (new Media[size]);
+            return new Media[size];
         }
-
     };
-
-    protected Media(Parcel in) {
-        this.mediaType = ((String) in.readValue((String.class.getClassLoader())));
-        this.imageUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.video = ((Video) in.readValue((Video.class.getClassLoader())));
-    }
-
-    public Media() {
-    }
 
     public String getMediaType() {
         return mediaType;
@@ -65,17 +71,6 @@ public class Media implements Parcelable {
 
     public void setVideo(Video video) {
         this.video = video;
-    }
-
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(mediaType);
-        dest.writeValue(imageUrl);
-        dest.writeValue(video);
-    }
-
-    public int describeContents() {
-        return 0;
     }
 
 }

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.adapter.ChallengesListAdpater;
+import com.tokopedia.challenges.view.adapter.ChallengesListAdapter;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.presenter.ChallengeHomePresenter;
 import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
@@ -28,7 +28,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Inject
     public ChallengeHomePresenter challengeHomePresenter;
-    private ChallengesListAdpater listAdpater;
+    private ChallengesListAdapter listAdpater;
     private RecyclerView recyclerView;
     private TextView tvActiveChallenges;
     private TextView tvPastChallenges;
@@ -79,7 +79,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Override
     public void setChallengeDataToUI(List<Result> resultList) {
-        listAdpater = new ChallengesListAdpater(getActivity(), resultList);
+        listAdpater = new ChallengesListAdapter(getActivity(), resultList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(listAdpater);

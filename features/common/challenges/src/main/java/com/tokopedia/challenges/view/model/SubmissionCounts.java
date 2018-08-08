@@ -8,35 +8,35 @@ public class SubmissionCounts {
 
     @SerializedName("Approved")
     @Expose
-    private Integer approved;
+    private int approved;
     @SerializedName("Waiting")
     @Expose
-    private Integer waiting;
+    private int waiting;
     @SerializedName("Declined")
     @Expose
-    private Integer declined;
+    private int declined;
 
-    public Integer getApproved() {
+    public int getApproved() {
         return approved;
     }
 
-    public void setApproved(Integer approved) {
+    public void setApproved(int approved) {
         this.approved = approved;
     }
 
-    public Integer getWaiting() {
+    public int getWaiting() {
         return waiting;
     }
 
-    public void setWaiting(Integer waiting) {
+    public void setWaiting(int waiting) {
         this.waiting = waiting;
     }
 
-    public Integer getDeclined() {
+    public int getDeclined() {
         return declined;
     }
 
-    public void setDeclined(Integer declined) {
+    public void setDeclined(int declined) {
         this.declined = declined;
     }
 

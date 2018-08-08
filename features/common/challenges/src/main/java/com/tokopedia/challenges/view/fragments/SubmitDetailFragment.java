@@ -11,8 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.model.IndiUserModel;
+import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 
@@ -32,7 +35,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Inject
     SubmitDetailPresenter presenter;
-    private IndiUserModel model;
+    private SubmissionResult model;
 
     public static Fragment newInstance(){
         return new SubmitDetailFragment();
@@ -51,7 +54,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         approvedView = view.findViewById(R.id.approved);
         detailTitle = view.findViewById(R.id.detail_title);
         detailContent = view.findViewById(R.id.detail_content);
-        presenter.attachView(this);
+        model = getArguments().getParcelable("submissionsResult");
         presenter.setDataInFields(model);
 
         return view;
@@ -67,7 +70,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setChallengeImage(String url) {
-        //this.challengeImage = challengeImage;
+        ImageHandler.loadImageAndCache(challengeImage, url);
     }
 
     public void setLikesCountView(String likesCount) {
@@ -108,6 +111,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     protected void initInjector() {
+        getComponent(ChallengesComponent.class).inject(this);
+
+        presenter.attachView(this);
 
     }
 

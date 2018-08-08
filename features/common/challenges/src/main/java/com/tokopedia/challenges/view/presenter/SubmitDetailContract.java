@@ -3,10 +3,11 @@ package com.tokopedia.challenges.view.presenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.challenges.data.model.IndiUserModel;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public interface SubmitDetailContract {
     public interface Presenter extends CustomerPresenter<View> {
-        void setDataInFields(IndiUserModel model);
+        void setDataInFields(SubmissionResult model);
     }
 
     public interface View extends CustomerView {
