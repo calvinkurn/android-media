@@ -214,8 +214,8 @@ class ProductModalFragment : BaseDaggerFragment() {
 
         et_remark.setText(selectedRemarkNotes)
 
+        text_variant_stock.text = MethodChecker.fromHtml(productData?.info?.productStockWording)
         activity?.let {
-            text_variant_stock.text = MethodChecker.fromHtml(productData?.info?.productStockWording)
             text_variant_stock.visibility = View.VISIBLE
             if (productData?.info?.limitedStock!!) {
                 text_variant_stock.setTextColor(ContextCompat.getColor(it, R.color.tkpd_dark_red))
@@ -223,8 +223,6 @@ class ProductModalFragment : BaseDaggerFragment() {
                 text_variant_stock.setTextColor(ContextCompat.getColor(it, R.color.black_70))
             }
         }
-
-        text_variant_stock.text = productData?.info?.productStockWording
 
         number_picker_quantitiy_product.setNumber(selectedQuantity!!)
         number_picker_quantitiy_product.setMinValue(Integer.parseInt(productData?.info?.productMinOrder))
