@@ -38,7 +38,6 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                //Success scenario e.g. HTTP 200 OK
                 RestResponse res1 = restResponse.get(Challenge.class);
                 int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
