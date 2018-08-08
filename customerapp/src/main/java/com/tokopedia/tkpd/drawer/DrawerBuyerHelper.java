@@ -15,6 +15,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.challenges.view.activity.ChallengesHomeActivity;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -189,6 +190,11 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
+                true));
+
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_challenges),
+                R.drawable.icon_setting,
+                TkpdState.DrawerPosition.CHALLENGES,
                 true));
 
         showAppShareButton(data);
@@ -507,7 +513,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     UnifyTracking.eventCategoryDrawer();
                     intent = BrowseProductRouter.getCategoryNavigationIntent(context);
                     context.startActivity(BrowseProductRouter.getCategoryNavigationIntent(context));
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.CATEGORY);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.CATEGORY);
                     break;
                 case TkpdState.DrawerPosition.WISHLIST:
                     Intent wishList = SimpleHomeRouter
@@ -515,107 +521,107 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     context.startActivity(wishList);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(wishList.getComponent().getClassName(),AppEventTracking.EventLabel.WISHLIST);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(wishList.getComponent().getClassName(), AppEventTracking.EventLabel.WISHLIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
                     intent = TransactionPurchaseRouter.createIntentConfirmPayment(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
                     intent = TransactionPurchaseRouter.createIntentTxStatus(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.ORDER_STATUS);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.ORDER_STATUS);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.ORDER_STATUS);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING:
                     intent = TransactionPurchaseRouter.createIntentConfirmShipping(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.RECEIVE_CONFIRMATION);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.RECEIVE_CONFIRMATION);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.RECEIVE_CONFIRMATION);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED:
                     intent = TransactionPurchaseRouter.createIntentTxCanceled(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.CANCELLED_ORDER);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.CANCELLED_ORDER);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.CANCELLED_ORDER);
 
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST:
                     intent = TransactionPurchaseRouter.createIntentTxAll(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
 
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_SHOPPING_LIST:
                     intent = TransactionPurchaseRouter.createIntentTxSummary(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_PAYMENT_LIST:
                     intent = PaymentListActivity.createIntent(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
+                    if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
                         intent = RouteManager.getIntent(context, ApplinkConst.DIGITAL_ORDER);
-                    else{
+                    else {
                         intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
                         sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     }
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST:
                     intent = RouteManager.getIntent(context, ApplinkConst.EVENTS_ORDER);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST:
                     intent = RouteManager.getIntent(context, ApplinkConst.DEALS_ORDER);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
                     intent = RouteManager.getIntent(context, ApplinkConst.FLIGHT_ORDER);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_TRAIN_TRANSACTION_LIST:
                     intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
                             + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + TkpdBaseURL.DigitalWebsite.PARAM_DIGITAL_ISPULSA);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.TRAIN_TRANSACTION_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.TRAIN_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.TRAIN_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.NEW_ORDER);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.NEW_ORDER);
                     break;
                 case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
                     intent = SellerRouter.getActivitySellingTransactionConfirmShipping(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
 
                     break;
                 case TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS:
                     intent = SellerRouter.getActivitySellingTransactionShippingStatus(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_STATUS);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DELIVERY_STATUS);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.DELIVERY_STATUS);
                     break;
                 case TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST:
                     intent = SellerRouter.getActivitySellingTransactionList(context);
@@ -694,6 +700,9 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     }
                     break;
+                case TkpdState.DrawerPosition.CHALLENGES:
+                    context.startActivity(new Intent(context, ChallengesHomeActivity.class));
+                    break;
                 default:
                     super.onItemClicked(item);
             }
@@ -711,7 +720,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
-        if(context.getApplication() instanceof SellerModuleRouter) {
+        if (context.getApplication() instanceof SellerModuleRouter) {
             ((SellerModuleRouter) context.getApplication()).gotoTopAdsDashboard(context);
         }
 

@@ -1,6 +1,12 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'challenges'
+    groupId = 'com.tokopedia.challenges'
+    versionName = "${tkpdChallengesVersion}"
+    artifactName ="challenges-release"
+}
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
@@ -12,4 +18,8 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+apply from: '../../../publish_local.gradle'

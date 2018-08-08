@@ -76,6 +76,7 @@ ext {
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdChallengesVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -272,7 +273,9 @@ ext {
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
-            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            digitalDeals          : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}"
+
     ]
 
     tkpdLibDependencies = [
@@ -343,7 +346,8 @@ ext {
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train"
+            train                 : ":features:digital:train",
+            challenges            : ":features:common:challenges"
     ]
 
     libraries = [

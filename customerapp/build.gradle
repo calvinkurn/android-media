@@ -438,6 +438,7 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.challenges)
 
 }
 
