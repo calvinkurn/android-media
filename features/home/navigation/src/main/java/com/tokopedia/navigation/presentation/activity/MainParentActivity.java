@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -83,8 +84,22 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
 
+    @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
+    public static Intent getApplinkIntent(Context context, Bundle bundle) {
+        return start(context);
+    }
+
+    @DeepLink({ApplinkConst.HOME_FEED, ApplinkConst.FEED})
+    public static Intent getApplinkFeedIntent(Context context, Bundle bundle) {
+        // TODO: 8/7/18 oka add bundle for change tab
+        Intent intent = start(context);
+        intent.putExtra("TAB_POSITION", FEED_MENU);
+        return intent;
+    }
+
     public static Intent start(Context context) {
-        return new Intent(context, MainParentActivity.class);
+        return new Intent(context, MainParentActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     @Override

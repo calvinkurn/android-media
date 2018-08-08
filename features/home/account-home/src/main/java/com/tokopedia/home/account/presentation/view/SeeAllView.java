@@ -88,8 +88,7 @@ public class SeeAllView extends BottomSheets{
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_train,
                 getContext().getString(R.string.title_menu_train),
-                //TODO change this
-                ApplinkConst.DIGITAL_ORDER,
+                AccountConstants.Navigation.TRAIN_ORDER_LIST,
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)

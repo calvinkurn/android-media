@@ -112,6 +112,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  * modified by meta on 24/01/2018, implement bottom navigation menu
  */
+@Deprecated
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
         GetUserInfoListener, HasComponent, InAppManager.InAppMessageListener {
 
@@ -151,40 +152,33 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private BroadcastReceiver cartNotificationBroadcastReceiver;
     private NudgeView nudgeView ;
 
-    @DeepLink(Constants.Applinks.HOME)
-    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.from(context);
-        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class));
-        return taskStackBuilder;
-    }
+//    @DeepLink(Constants.Applinks.HOME)
+//    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.from(context);
+//        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class));
+//        return taskStackBuilder;
+//    }
 
-    @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
-    public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
+//    @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
+//    public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
+//        return new Intent(context, ParentIndexHome.class)
+//                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
+//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//    }
 
-    @DeepLink({Constants.Applinks.FAVORITE})
-    public static Intent getFavoriteApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
-    }
+//    @DeepLink(Constants.Applinks.HOME_CATEGORY)
+//    public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
+//        return new Intent(context, ParentIndexHome.class)
+//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
+//                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+//    }
 
-    @DeepLink(Constants.Applinks.HOME_CATEGORY)
-    public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
-    }
-
-    @DeepLink(Constants.Applinks.HOME_HOTLIST)
-    public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
-    }
+//    @DeepLink(Constants.Applinks.HOME_HOTLIST)
+//    public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
+//        return new Intent(context, ParentIndexHome.class)
+//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
+//                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+//    }
 
     public ViewPager getViewPager() {
         return mViewPager;

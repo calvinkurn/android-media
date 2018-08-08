@@ -298,14 +298,13 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
-import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
+import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.FlightVoucherCodeWrapperImpl;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
-import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
@@ -353,6 +352,7 @@ import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivit
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.transaction.purchase.detail.model.detail.response.Customer;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
@@ -782,7 +782,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                   SessionHandler sessionHandler,
                                   LocalCacheHandler drawerCache,
                                   GlobalCacheManager globalCacheManager) {
-        return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache, globalCacheManager);
+        return new NoOpDrawerHelper(activity);
     }
 
     @Override
@@ -967,13 +967,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeHotlistIntent(Context context) {
-//        return ParentIndexHome.getHomeHotlistIntent(context);
         return MainParentActivity.start(context);
     }
 
     @Override
     public Intent getHomeFeedIntent(Context context) {
-//        return ParentIndexHome.getHomeFeedIntent(context);
         return MainParentActivity.start(context);
     }
 
@@ -1196,7 +1194,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
-        return ParentIndexHome.class;
+        return MainParentActivity.class;
     }
 
     @Override
@@ -2289,7 +2287,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
         Intent topadsIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
+                .getLaunchIntentForPackage(CustomerAppConstants.TOP_SELLER_APPLICATION_PACKAGE);
         if (topadsIntent != null) {
             goToApplinkActivity(context, TopAdsAppLinkUtil.createAppLink(userSession.getUserId(),
                     productId, shopId, source));
@@ -2404,7 +2402,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void gotoTopAdsDashboard(Context context) {
         Intent topadsIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
+                .getLaunchIntentForPackage(CustomerAppConstants.TOP_SELLER_APPLICATION_PACKAGE);
 
         if (topadsIntent != null) {
             goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD);
@@ -2651,6 +2649,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getStringRemoteConfig(String key) {
         return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key, String defaultValue) {
+        return remoteConfig.getString(key, defaultValue);
     }
 
     @Override
