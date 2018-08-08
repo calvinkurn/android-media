@@ -5,9 +5,11 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Amou
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionMessageDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionMessageViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
@@ -56,7 +58,17 @@ public class EditSolutionSubscriber extends Subscriber<EditSolutionResponseDomai
                 null,
                 domain.getFreeReturn() != null ?
                         mappingFreeReturnViewModel(domain.getFreeReturn()) :
+                        null,
+                domain.getComplaints() != null ?
+                        SolutionSubscriber.mappingSolutionComplaintDomain(domain.getComplaints()) :
+                        null,
+                domain.getMessage() != null ?
+                        mappingSolutionMessageViewModel(domain.getMessage()) :
                         null);
+    }
+
+    private static SolutionMessageViewModel mappingSolutionMessageViewModel(SolutionMessageDomain domain) {
+        return new SolutionMessageViewModel(domain.getConfirm());
     }
 
     private List<SolutionViewModel> mappingSolutionViewModelList(

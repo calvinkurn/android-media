@@ -18,7 +18,7 @@ import rx.Observable;
 public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
     public static final String ORDER_ID = "order_id";
     public static final String PARAM_RESOLUTION_ID = "resolutionID";
-    public static final String PARAM_PROBLEM = "problem";
+    public static final String PARAM_COMPLAINT = "complaints";
 
     private CreateResolutionSource createResolutionSource;
 
@@ -34,19 +34,14 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
 
     public RequestParams getSolutionUseCaseParams(ResultViewModel resultViewModel) {
         JsonObject problemObject = new JsonObject();
-        try {
-            problemObject.add(PARAM_PROBLEM, resultViewModel.getProblemArray());
-            if (resultViewModel.resolutionId != null) {
-                problemObject.addProperty(PARAM_RESOLUTION_ID, Integer.valueOf(resultViewModel.resolutionId));
-            }
-            RequestParams params = RequestParams.create();
-            params.putString(ORDER_ID, resultViewModel.orderId);
-            params.putObject(PARAM_PROBLEM, problemObject);
-
-            return params;
-        } catch (Exception e) {
-            e.printStackTrace();
+        problemObject.add(PARAM_COMPLAINT, resultViewModel.getProblemArray());
+        if (resultViewModel.resolutionId != null) {
+            problemObject.addProperty(PARAM_RESOLUTION_ID, Integer.valueOf(resultViewModel.resolutionId));
         }
-        return null;
+        RequestParams params = RequestParams.create();
+        params.putString(ORDER_ID, resultViewModel.orderId);
+        params.putObject(PARAM_COMPLAINT, problemObject);
+
+        return params;
     }
 }

@@ -22,12 +22,16 @@ public class SolutionResponseDomain {
     private FreeReturnDomain freeReturn;
 
     @Nullable
+    private List<SolutionComplaintDomain> complaints = new ArrayList<>();
+
+    @Nullable
     private boolean isSuccess;
 
-    public SolutionResponseDomain(List<SolutionDomain> solutions, RequireDomain require, FreeReturnDomain freeReturn) {
+    public SolutionResponseDomain(List<SolutionDomain> solutions, RequireDomain require, FreeReturnDomain freeReturn, List<SolutionComplaintDomain> complaints) {
         this.solutions = solutions;
         this.require = require;
         this.freeReturn = freeReturn;
+        this.complaints = complaints;
     }
 
     @Nullable
@@ -64,5 +68,14 @@ public class SolutionResponseDomain {
 
     public void setSuccess(@Nullable boolean success) {
         isSuccess = success;
+    }
+
+    @Nullable
+    public List<SolutionComplaintDomain> getComplaints() {
+        return complaints;
+    }
+
+    public void setComplaints(@Nullable List<SolutionComplaintDomain> complaints) {
+        this.complaints = complaints;
     }
 }

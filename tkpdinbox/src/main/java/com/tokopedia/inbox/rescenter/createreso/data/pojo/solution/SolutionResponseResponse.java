@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class SolutionResponseResponse {
-    @SerializedName("solution")
+    @SerializedName("solutions")
     @Expose
     private List<SolutionResponse> solution;
     @SerializedName("require")
@@ -19,6 +19,8 @@ public class SolutionResponseResponse {
     @SerializedName("freeReturn")
     @Expose
     private FreeReturnResponse freeReturn;
+    @SerializedName("complaints")
+    private List<SolutionComplaintResponse> complaints;
 
     public List<SolutionResponse> getSolution() {
         return solution;
@@ -44,6 +46,13 @@ public class SolutionResponseResponse {
         this.freeReturn = freeReturn;
     }
 
+    public List<SolutionComplaintResponse> getComplaints() {
+        return complaints;
+    }
+
+    public void setComplaints(List<SolutionComplaintResponse> complaints) {
+        this.complaints = complaints;
+    }
 
     @Override
     public String toString() {

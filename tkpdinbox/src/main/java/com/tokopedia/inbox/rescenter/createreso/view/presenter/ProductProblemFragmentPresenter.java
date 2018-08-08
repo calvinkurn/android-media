@@ -63,7 +63,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
         }
     }
 
-    public void addProblemResult(ProductProblemViewModel productProblemViewModel) {
+    private void addProblemResult(ProductProblemViewModel productProblemViewModel) {
         ComplaintResult complaintResult = new ComplaintResult();
         ProblemResult problemResult = new ProblemResult();
         problemResult.name = productProblemViewModel.getProblem().getName();
@@ -74,11 +74,11 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
         updateProblemResultList();
     }
 
-    public void deleteProblemResult(ProductProblemViewModel productProblemViewModel) {
+    private void deleteProblemResult(ProductProblemViewModel productProblemViewModel) {
         removeProblemResult(productProblemViewModel);
     }
 
-    public void updateProblemResultList() {
+    private void updateProblemResultList() {
         updateContinueButton();
         mainView.onProblemResultListUpdated(complaintResults);
     }

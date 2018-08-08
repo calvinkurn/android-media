@@ -6,9 +6,8 @@ import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoW
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateSubmitResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateValidateResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ProductProblemListResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealSolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditAppealSolutionResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponseResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditAppealSolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponseResponse;
 
 import java.util.HashMap;
@@ -80,12 +79,12 @@ public interface ResolutionApi {
                          @Body Object object);
 
     @GET(ResolutionUrl.GET_RESOLUTION_EDIT)
-    Observable<Response<ResolutionResponse<EditSolutionResponseResponse>>>
+    Observable<Response<ResolutionResponse<EditAppealSolutionResponseResponse>>>
     getEditSolution(@Path(PATH_RESOLUTION_ID) String resoId);
 
 
     @GET(ResolutionUrl.GET_RESOLUTION_APPEAL)
-    Observable<Response<ResolutionResponse<AppealSolutionResponseResponse>>>
+    Observable<Response<ResolutionResponse<EditAppealSolutionResponseResponse>>>
     getAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId);
 
 

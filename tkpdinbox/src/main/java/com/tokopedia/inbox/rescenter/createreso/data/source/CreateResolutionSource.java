@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.createreso.data.source;
 
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.AppealSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateResoWithoutAttachmentMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateSubmitMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.CreateValidateMapper;
@@ -12,7 +11,6 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateRe
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
@@ -42,7 +40,6 @@ public class CreateResolutionSource {
     private CreateSubmitMapper createSubmitMapper;
     private ResolutionApi resolutionApi;
     private EditSolutionMapper editSolutionMapper;
-    private AppealSolutionMapper appealSolutionMapper;
     private EditAppealResolutionResponseMapper editAppealResolutionResponseMapper;
 
     @Inject
@@ -53,7 +50,6 @@ public class CreateResolutionSource {
                                   CreateSubmitMapper createSubmitMapper,
                                   ResolutionApi resolutionApi,
                                   EditSolutionMapper editSolutionMapper,
-                                  AppealSolutionMapper appealSolutionMapper,
                                   EditAppealResolutionResponseMapper editAppealResolutionResponseMapper
     ){
         this.productProblemMapper = productProblemMapper;
@@ -63,7 +59,6 @@ public class CreateResolutionSource {
         this.createSubmitMapper = createSubmitMapper;
         this.resolutionApi = resolutionApi;
         this.editSolutionMapper = editSolutionMapper;
-        this.appealSolutionMapper = appealSolutionMapper;
         this.editAppealResolutionResponseMapper = editAppealResolutionResponseMapper;
     }
 
@@ -83,7 +78,7 @@ public class CreateResolutionSource {
 
     public Observable<SolutionResponseDomain> getSolution(RequestParams requestParams) {
         return resolutionApi.getSolution(requestParams.getString(GetSolutionUseCase.ORDER_ID, ""),
-                requestParams.getObject(GetSolutionUseCase.PARAM_PROBLEM))
+                requestParams.getObject(GetSolutionUseCase.PARAM_COMPLAINT))
                 .map(solutionMapper);
     }
 
@@ -92,9 +87,9 @@ public class CreateResolutionSource {
                 .map(editSolutionMapper);
     }
 
-    public Observable<AppealSolutionResponseDomain> getAppealSolutionResponse(RequestParams requestParams) {
+    public Observable<EditSolutionResponseDomain> getAppealSolutionResponse(RequestParams requestParams) {
         return resolutionApi.getAppealSolution(requestParams.getString(GetEditSolutionUseCase.RESO_ID, ""))
-                .map(appealSolutionMapper);
+                .map(editSolutionMapper);
     }
 
     public Observable<EditAppealResolutionSolutionDomain>

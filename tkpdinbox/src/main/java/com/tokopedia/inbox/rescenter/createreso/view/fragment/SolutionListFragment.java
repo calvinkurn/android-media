@@ -58,6 +58,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     ResultViewModel resultViewModel;
     EditAppealSolutionModel editAppealSolutionModel;
     FreeReturnViewModel freeReturnViewModel;
+    SolutionResponseViewModel solutionResponseViewModel;
 
 
     RecyclerView rvSolution;
@@ -164,6 +165,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     public void showSuccessGetSolution(SolutionResponseViewModel solutionResponseViewModel) {
         hideLoading();
         llSolution.setVisibility(View.VISIBLE);
+        this.solutionResponseViewModel = solutionResponseViewModel;
         presenter.updateLocalData(solutionResponseViewModel);
         populateDataToView(solutionResponseViewModel);
     }
@@ -171,11 +173,18 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void moveToSolutionDetail(SolutionViewModel solutionViewModel) {
         Intent intent = new Intent(getActivity(), SolutionDetailActivity.class);
-        intent.putExtra(SOLUTION_DATA, solutionViewModel);
         if (resultViewModel != null) {
-            intent.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+            intent = SolutionDetailActivity.getCreateInstance(
+                    getActivity(),
+                    resultViewModel,
+                    solutionViewModel,
+                    solutionResponseViewModel);
         } else {
-            intent.putExtra(EDIT_APPEAL_MODEL_DATA, editAppealSolutionModel);
+            intent = SolutionDetailActivity.getEditInstance(
+                    getActivity(),
+                    editAppealSolutionModel,
+                    solutionViewModel,
+                    solutionResponseViewModel);
         }
         startActivityForResult(intent, REQUEST_SOLUTION);
     }
