@@ -33,9 +33,6 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private TextView tvActiveChallenges;
     private TextView tvPastChallenges;
 
-    public ChallengesFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
