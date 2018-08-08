@@ -180,4 +180,5 @@
     <dimen name="icon_stock_height">21dp</dimen>
     <dimen name="pdp_discount_background_radius">16dp</dimen>
     <dimen name="sp_4">4sp</dimen>
+    <dimen name="dp_26">26dp</dimen>
 </resources>

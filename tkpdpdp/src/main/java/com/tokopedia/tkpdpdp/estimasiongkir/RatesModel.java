@@ -19,6 +19,10 @@ public class RatesModel {
     @Expose
     private List<ShippingServiceModel> attributes;
 
+    public List<ShippingServiceModel> getAttributes() {
+        return attributes;
+    }
+
     public RatesModel() {
         attributes = new ArrayList<>();
     }

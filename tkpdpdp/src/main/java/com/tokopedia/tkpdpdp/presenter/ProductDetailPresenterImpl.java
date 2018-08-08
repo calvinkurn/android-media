@@ -181,9 +181,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onCompleted() { }
 
                     @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
+                    public void onError(Throwable throwable) { }
 
                     @Override
                     public void onNext(RatesModel ratesModel) {

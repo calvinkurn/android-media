@@ -39,6 +39,10 @@ public class ShippingServiceModel {
         return etd;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
     public class Product {
         @SerializedName("shipper_name")
         @Expose
@@ -55,5 +59,17 @@ public class ShippingServiceModel {
         @SerializedName("shipper_etd")
         @Expose
         private String etd;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getEtd() {
+            return etd;
+        }
+
+        public String getFmtPrice() {
+            return fmtPrice;
+        }
     }
 }

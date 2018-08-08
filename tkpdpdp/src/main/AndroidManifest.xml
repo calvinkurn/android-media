@@ -53,7 +53,8 @@
 
         <activity android:name=".estimasiongkir.RatesEstimationDetailActivity"
             android:label="@string/label_rates_estimation_detail"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
 
     </application>
 

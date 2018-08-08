@@ -5,7 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/rates_estimation_detail_shimmer"
+        android:id="@+id/loading_state_view"
+        android:visibility="gone"/>
+
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp"
