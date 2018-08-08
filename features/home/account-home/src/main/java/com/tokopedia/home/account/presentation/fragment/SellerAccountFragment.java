@@ -100,9 +100,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void showLoading() {
         if (adapter != null)
             adapter.showLoading();
-
-        if (swipeRefreshLayout != null)
-            swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
