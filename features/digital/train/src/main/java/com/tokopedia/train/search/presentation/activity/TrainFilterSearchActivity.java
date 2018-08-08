@@ -26,7 +26,6 @@ import com.tokopedia.train.search.presentation.fragment.TrainFilterSearchFragmen
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.presenter.TrainFilterSearchPresenter;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
