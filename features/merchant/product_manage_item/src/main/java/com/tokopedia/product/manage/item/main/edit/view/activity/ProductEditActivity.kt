@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
+import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
 
 class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent> {
     override fun getNewFragment(): Fragment {

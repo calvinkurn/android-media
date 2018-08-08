@@ -3,14 +3,14 @@ package com.tokopedia.seller.product.draft.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.product.manage.item.common.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.product.manage.item.common.data.source.ProductDraftDataSource;
+import com.tokopedia.product.manage.item.main.add.di.ProductAddModule;
+import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
+import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
+import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
-import com.tokopedia.product.manage.item.common.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenterImpl;
-import com.tokopedia.product.manage.item.di.module.ProductAddModule;
-import com.tokopedia.product.manage.item.di.scope.ProductAddScope;
 
 import dagger.Module;
 import dagger.Provides;

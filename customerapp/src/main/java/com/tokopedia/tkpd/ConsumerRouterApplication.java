@@ -188,12 +188,12 @@ import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
-import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel;
-import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.manage.item.util.ProductEditModuleRouter;
-import com.tokopedia.product.manage.item.view.activity.ProductAddNameCategoryActivity;
-import com.tokopedia.product.manage.item.view.activity.ProductEditActivity;
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
+import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
@@ -368,7 +368,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopChatRouter,
         TokopointRouter,
         OtpModuleRouter,
-        ProductEditModuleRouter{
+        ProductEditModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

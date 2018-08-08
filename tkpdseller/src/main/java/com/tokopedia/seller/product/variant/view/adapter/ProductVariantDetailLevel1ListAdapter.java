@@ -10,9 +10,9 @@ import android.widget.TextView;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

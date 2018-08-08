@@ -13,13 +13,13 @@ import android.view.View;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.product.manage.item.common.util.ProductVariantConstant;
+import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
-import com.tokopedia.product.manage.item.common.model.edit.VariantPictureViewModel;
-import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantOption;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.product.variant.view.dialog.ProductVariantItemPickerAddDialogFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;

@@ -15,6 +15,7 @@ import com.tokopedia.product.manage.item.main.edit.di.DaggerProductEditComponent
 import com.tokopedia.product.manage.item.main.edit.di.ProductEditModule
 import com.tokopedia.product.manage.item.main.edit.view.listener.ProductEditView
 import com.tokopedia.product.manage.item.main.edit.view.presenter.ProductEditPresenterImpl
+import com.tokopedia.product.manage.item.utils.convertToProductAddViewModel
 
 open class ProductEditFragment : BaseProductAddEditFragment<ProductEditPresenterImpl, ProductEditView>(), ProductEditView {
 

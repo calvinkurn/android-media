@@ -16,6 +16,7 @@ import com.tokopedia.product.manage.item.main.draft.di.DaggerProductDraftCompone
 import com.tokopedia.product.manage.item.main.draft.di.ProductDraftModule
 import com.tokopedia.product.manage.item.main.draft.view.listener.ProductDraftView
 import com.tokopedia.product.manage.item.main.draft.view.presenter.ProductDraftPresenterImpl
+import com.tokopedia.product.manage.item.utils.convertToProductAddViewModel
 
 open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPresenterImpl, ProductDraftView>(), ProductDraftView{
 

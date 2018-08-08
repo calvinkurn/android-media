@@ -1,8 +1,6 @@
 package com.tokopedia.product.manage.item.main.add.di;
 
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.di.module.ProductAddModule;
-import com.tokopedia.product.manage.item.di.scope.ProductAddScope;
 import com.tokopedia.product.manage.item.main.add.view.fragment.ProductAddFragment;
 
 import dagger.Component;

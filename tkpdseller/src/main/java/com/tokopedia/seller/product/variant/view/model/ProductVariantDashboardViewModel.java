@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.util.SparseIntArray;
 
 import com.tokopedia.product.manage.item.common.util.ItemType;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 
 import java.util.ArrayList;
 import java.util.List;
