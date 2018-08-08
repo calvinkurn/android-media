@@ -18,6 +18,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TestableTkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.home.account.presentation.BuyerAccount;
+import com.tokopedia.home.account.presentation.SellerAccount;
+import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
@@ -54,6 +58,7 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     private AccountHomePagerAdapter adapter;
 
     private Toolbar toolbar;
+    private ImageButton menuNotification;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -83,37 +88,60 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
         if (getContext() != null) {
             GraphqlClient.init(getContext());
 
-            presenter.getAccount(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_account_home));
+            List<AccountFragmentItem> fragmentItems = new ArrayList<>();
+            AccountFragmentItem item = new AccountFragmentItem();
+            item.setFragment(BuyerAccountFragment.newInstance(null));
+            item.setTitle(getContext().getString(R.string.label_account_buyer));
+            fragmentItems.add(item);
+
+            item = new AccountFragmentItem();
+            item.setFragment(SellerAccountFragment.newInstance(null));
+            item.setTitle(getContext().getString(R.string.label_account_seller));
+            fragmentItems.add(item);
+
+            adapter.setItems(fragmentItems);
         }
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    public void loadData() {
+        if (presenter == null)
+            return;
+        presenter.getAccount(GraphqlHelper.loadRawString(getResources(), R.raw.query_account_home));
+    }
+
+    @Override
     protected String getScreenName() {
-        return null;
+        return this.getClass().getName();
     }
 
     @Override
     public void renderData(AccountViewModel accountViewModel) {
-        if(getContext() != null) {
-            List<AccountFragmentItem> fragmentItems = new ArrayList<>();
-            AccountFragmentItem item = new AccountFragmentItem();
-            item.setFragment(BuyerAccountFragment.newInstance(accountViewModel.getBuyerViewModel()));
-            item.setTitle(getContext().getString(R.string.label_account_buyer));
-            fragmentItems.add(item);
-
-            if (accountViewModel.isSeller()) {
-                item = new AccountFragmentItem();
-                item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
-                item.setTitle(getContext().getString(R.string.label_account_seller));
-                fragmentItems.add(item);
-            } else {
-                item = new AccountFragmentItem();
-                item.setFragment(SellerEmptyAccountFragment.newInstance());
-                item.setTitle(getContext().getString(R.string.label_account_seller));
-                fragmentItems.add(item);
+        if (getContext() != null && getActivity() != null) {
+            Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+            if (currentFragment != null) {
+                if (currentFragment instanceof SellerAccount.View) {
+                    ((SellerAccount.View) currentFragment).loadData(accountViewModel.getSellerViewModel().getItems());
+                } else if (currentFragment instanceof BuyerAccount.View) {
+                    ((BuyerAccount.View) currentFragment).loadData(accountViewModel.getBuyerViewModel().getItems());
+                }
             }
 
-            adapter.setItems(fragmentItems);
+//            if (accountViewModel.isSeller()) {
+//                item = new AccountFragmentItem();
+//                item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
+//                item.setTitle(getContext().getString(R.string.label_account_seller));
+//                fragmentItems.add(item);
+//            } else {
+//                item = new AccountFragmentItem();
+//                item.setFragment(SellerEmptyAccountFragment.newInstance());
+//                item.setTitle(getContext().getString(R.string.label_account_seller));
+//                fragmentItems.add(item);
+//            }
         }
     }
 
@@ -135,8 +163,6 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
         viewPager = view.findViewById(R.id.pager_home_account);
         setAdapter();
     }
-
-    private ImageButton menuNotification;
 
     private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
@@ -190,5 +216,28 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     @Override
     public void setPresenter(AccountHomeComponent presenter) {
 
+
+    @Override
+    public void showLoading() {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof CustomerView) {
+            ((BaseAccountView)currentFragment).showLoading();
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof CustomerView) {
+            ((BaseAccountView)currentFragment).hideLoading();
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof CustomerView) {
+            ((BaseAccountView)currentFragment).showError(message);
+        }
     }
 }

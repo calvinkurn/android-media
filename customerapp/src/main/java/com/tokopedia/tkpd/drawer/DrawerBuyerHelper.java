@@ -74,6 +74,7 @@ import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_SHOP_OPENED;
  * @author by nisie on 1/11/17.
  */
 
+@Deprecated
 public class DrawerBuyerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerHeaderDataBinder.DrawerHeaderListener {

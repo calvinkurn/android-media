@@ -6,14 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 
 import q.rorbin.badgeview.QBadgeView;
 
@@ -86,7 +83,8 @@ public class MainToolbar extends Toolbar {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoWishlistPage(getContext()));
             } else {
-                RouteManager.route(this.getContext(), ApplinkConst.LOGIN);
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .getLoginIntent(getContext()));
             }
         });
 
@@ -101,7 +99,8 @@ public class MainToolbar extends Toolbar {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoNotificationPage(getContext()));
             } else {
-                RouteManager.route(this.getContext(), ApplinkConst.LOGIN);
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .getLoginIntent(getContext()));
             }
         });
     }

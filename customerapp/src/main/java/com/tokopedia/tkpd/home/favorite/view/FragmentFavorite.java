@@ -28,9 +28,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.home.account.presentation.activity.FavoriteShopsActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
@@ -43,9 +41,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -105,7 +100,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         if (SessionHandler.isV4Login(getActivity())) {
             prepareView();
             favoritePresenter.attachView(this);
-            checkImpressionOncreate();
+            favoritePresenter.loadInitialData();
         } else {
             wishlistNotLoggedIn.setVisibility(View.VISIBLE);
             mainContent.setVisibility(View.GONE);
@@ -258,7 +253,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
         recylerviewScrollListener.resetState();
-        if(trace!=null)
+        if (trace != null)
             trace.stop();
     }
 
@@ -390,21 +385,5 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private boolean isAdapterNotEmpty() {
         return favoriteAdapter.getItemCount() > 0;
-    }
-
-    private void checkImpressionOncreate() {
-        final int indexTabFavorite = 2;
-        if (getActivity() instanceof ParentIndexHome) {
-            if (((ParentIndexHome) getActivity()).getViewPager() != null) {
-                if (!isAdapterNotEmpty()
-                        && ((ParentIndexHome) getActivity())
-                        .getViewPager().getCurrentItem() == indexTabFavorite) {
-
-                    favoritePresenter.loadInitialData();
-                }
-            }
-        } else if (getActivity() instanceof FavoriteShopsActivity){
-            favoritePresenter.loadInitialData();
-        }
     }
 }

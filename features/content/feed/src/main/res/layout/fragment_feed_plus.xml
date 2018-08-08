@@ -25,6 +25,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/tab_layout"
+        android:layout_below="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shadow_bottom"
@@ -84,6 +85,7 @@
             android:clipToPadding="false"
             android:scrollbars="vertical"
             android:paddingTop="@dimen/dp_10"/>
+
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
 

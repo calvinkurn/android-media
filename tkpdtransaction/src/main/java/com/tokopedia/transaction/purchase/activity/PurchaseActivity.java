@@ -72,15 +72,6 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(TransactionAppLink.PURCHASE_VERIFICATION)
-    public static Intent getCallingIntentPurchaseVerification(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_VERIFICATION)
-                .putExtras(extras);
-    }
-
     @DeepLink(ApplinkConst.PURCHASE_CONFIRMED)
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();

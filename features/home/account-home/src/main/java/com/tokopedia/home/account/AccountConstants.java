@@ -9,14 +9,21 @@ public class AccountConstants {
 
     public static final String QUERY = "query";
     public static final String VARIABLES = "variables";
-    public static final String KEY_SEE_ALL = "lihat_semua";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+
+    public static class Navigation {
+        public static final String SEE_ALL = "lihat_semua";
+        public static final String TRAIN_ORDER_LIST = "train_order_list";
+        public static final String TOPADS = "topads";
+    }
 
     public static class Url {
 
         public static final String BASE_SELLER_URL = "https://seller.tokopedia.com/";
 
-        public static final String IMAGE_URL = "https://ecs7.tokopedia.net/img/android/others/";
+        public static final String CDN_URL = "https://ecs7.tokopedia.net";
+        public static final String CDN_IMAGE_PATH = "/img/android/others/";
+        public static final String IMAGE_URL = CDN_URL + CDN_IMAGE_PATH;
 
         public static final String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
 
@@ -40,9 +47,15 @@ public class AccountConstants {
 
         static final String CLICK_HOME_PAGE = "clickHomePage";
 
-        static final String AKUN_SAYA = "akun saya";
+        public static final String AKUN_SAYA = "akun saya";
 
-        static final String CLICK = "click";
+        public static final String CLICK = "click";
+
+        public static final String PROFILE = "profile";
+
+        public static final String TOKOPOINTS = "tokopoints";
+
+        public static final String MY_COUPON = "kupon saya";
 
         public static final String PEMBELI = "pembeli";
 

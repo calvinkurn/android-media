@@ -28,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
+@Deprecated
 public class InboxResCenterActivity extends DrawerPresenterActivity<ResCenterPresenter>
         implements ResCenterView {
 
