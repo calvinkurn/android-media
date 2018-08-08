@@ -3,10 +3,10 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
-    artifactId = 'product-edit'
+    artifactId = 'product-manage-item'
     groupId = 'com.tokopedia.product'
     versionName = "${tkpdProductVersion}"
-    artifactName ="product_edit-release"
+    artifactName ="product_manage_item-release"
 }
 
 buildscript {
