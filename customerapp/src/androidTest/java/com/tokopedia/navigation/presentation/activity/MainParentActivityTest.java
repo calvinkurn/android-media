@@ -50,9 +50,15 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.home.account.data.mapper.AccountMapper;
+import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerTestAccountHomeComponent;
+import com.tokopedia.home.account.di.component.TestAccountHomeComponent;
+import com.tokopedia.home.account.di.module.TestAccountHomeModule;
+import com.tokopedia.home.account.domain.GetAccountUseCase;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
+import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -197,9 +203,30 @@ public class MainParentActivityTest {
 
         AccountHomeFragment fragment = (AccountHomeFragment) mIntentsRule.getActivity().getFragment(4);
 
-//        DaggerTestAccountHomeComponent.builder()
-//                .
+        TestAccountHomeModule testAccountHomeModule = new TestAccountHomeModule();
+        TestAccountHomeComponent accountHomeComponent = DaggerTestAccountHomeComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .testAccountHomeModule(testAccountHomeModule)
+                .build();
 
+        accountHomeComponent.accountHomePresenter(); // call this to mock getAccountUseCase
+
+        GetAccountUseCase getAccountUseCase = testAccountHomeModule.getGetAccountUseCase();
+
+        doReturn(Observable.just(provideAccountViewModel()))
+                .when(getAccountUseCase)
+                .createObservable(any(RequestParams.class));
+
+
+        if(fragment != null && fragment.isVisible()){
+            fragment.reInitInjector(accountHomeComponent);
+
+            mIntentsRule.getActivity().runOnUiThread(() -> {
+                fragment.getAccount();
+            });
+        }
+
+        Thread.sleep(5_000);
     }
 
     @Test
@@ -242,7 +269,6 @@ public class MainParentActivityTest {
         }
 
         Thread.sleep(5_000);
-
 
         onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
     }
@@ -472,6 +498,13 @@ public class MainParentActivityTest {
             onView(allOf(withId(R.id.list), withTagValue(is("home_list")), isCompletelyDisplayed()))
                     .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
         }
+    }
+
+    private AccountViewModel provideAccountViewModel(){
+        AccountModel accountModel = CacheUtil.convertStringToModel(
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource("account_home.json")
+                , AccountModel.class);
+        return AccountMapper.from(baseAppComponent.getContext(), accountModel);
     }
 
     private CartListData provideGetCartListUseCase(Context context){

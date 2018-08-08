@@ -32,7 +32,7 @@ public class TestAccountHomeModule {
     ){
 
         if(this.getAccountUseCase==null){
-            this.getAccountUseCase = getAccountUseCase;
+            this.getAccountUseCase = mock(GetAccountUseCase.class);
         }
         return new AccountHomePresenter(this.getAccountUseCase);
     }

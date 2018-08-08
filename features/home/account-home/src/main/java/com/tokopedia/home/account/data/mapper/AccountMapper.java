@@ -46,14 +46,17 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
     @Override
     public AccountViewModel call(GraphqlResponse graphqlResponse) {
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+        return from(context, accountModel);
+    }
 
+    public static AccountViewModel from(Context context, AccountModel accountModel){
         AccountViewModel accountViewModel = new AccountViewModel();
-        accountViewModel.setBuyerViewModel(getBuyerModel(accountModel));
+        accountViewModel.setBuyerViewModel(getBuyerModel(context, accountModel));
         if (accountModel.getShopInfo() != null
                 && accountModel.getShopInfo().getInfo() != null
                 && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
                 && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1")) {
-            accountViewModel.setSellerViewModel(getSellerModel(accountModel));
+            accountViewModel.setSellerViewModel(getSellerModel(context, accountModel));
             accountViewModel.setSeller(true);
         } else {
             accountViewModel.setSeller(false);
@@ -61,7 +64,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         return accountViewModel;
     }
 
-    private BuyerViewModel getBuyerModel(AccountModel accountModel) {
+    private static BuyerViewModel getBuyerModel(Context context, AccountModel accountModel) {
         BuyerViewModel model = new BuyerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
@@ -240,7 +243,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         return model;
     }
 
-    private SellerViewModel getSellerModel(AccountModel accountModel) {
+    private static SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 

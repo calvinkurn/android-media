@@ -76,6 +76,10 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getAccount();
+    }
+
+    public void getAccount() {
         if (getContext() != null) {
             GraphqlClient.init(getContext());
 

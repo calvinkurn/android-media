@@ -1,6 +1,5 @@
-[
+
    {
-      "data":{
          "isAuthenticated":6547295,
          "saldo":{
             "deposit":0,
@@ -88,5 +87,5 @@
             }
          }
       }
-   }
-]
+
+
