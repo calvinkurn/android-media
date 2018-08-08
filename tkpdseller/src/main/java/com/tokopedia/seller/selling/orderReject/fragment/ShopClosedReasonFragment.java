@@ -25,7 +25,7 @@ import com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout;
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.selling.SellingService;
@@ -46,34 +46,20 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Erry on 6/3/2016.
  */
 public class ShopClosedReasonFragment extends Fragment implements SellingView {
 
-    @Bind(R2.id.reason)
     TextView reasonText;
-    @Bind(R2.id.list)
     RecyclerView recyclerView;
-    @Bind(R2.id.start_date)
     TextView startDate;
-    @Bind(R2.id.end_date)
     TextView endDate;
-    @Bind(R2.id.note)
     EditText noteTxt;
-    @Bind(R2.id.confirm_button)
     TextView confirmButton;
-    @Bind(R2.id.arrow_display)
     ImageView arrowDisplay;
-    @Bind(R2.id.add_stock_empty)
     ExpandableRelativeLayout expandableRelativeLayout;
-    @Bind(R2.id.set_stock_empty)
     LinearLayout setStockEmpty;
-    @Bind(R2.id.pBar)
     ProgressBar progressBar;
 
     private ProductListAdapter listAdapter;
@@ -116,7 +102,6 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
 //        });
 //    }
 
-    @OnClick(R2.id.end_date)
     void endDatePicker() {
         calculateDate(endDate.getText().toString());
         DatePickerUtil datePickerUtil = new DatePickerUtil(getActivity());
@@ -133,7 +118,6 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
         });
     }
 
-    @OnClick(R2.id.confirm_button)
     void onConfirm() {
         if (validateForm()) {
             ModelRejectOrder modelRejectOrder = new ModelRejectOrder();
@@ -164,7 +148,6 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
         }
     }
 
-    @OnClick(R2.id.set_stock_empty)
     void onClickStockEmpty() {
         expandableRelativeLayout.toggle();
         if (expandableRelativeLayout.isExpanded())
@@ -177,8 +160,39 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_confirm_reject_shop_closed, container, false);
-        ButterKnife.bind(this, view);
+        initView(view);
         return view;
+    }
+
+    private void initView(View view){
+        reasonText = (TextView) view.findViewById(R.id.reason);
+        recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        startDate = (TextView) view.findViewById(R.id.start_date);
+        endDate = (TextView) view.findViewById(R.id.end_date);
+        noteTxt = (EditText) view.findViewById(R.id.note);
+        confirmButton = (TextView) view.findViewById(R.id.confirm_button);
+        arrowDisplay = (ImageView) view.findViewById(R.id.arrow_display);
+        expandableRelativeLayout = (ExpandableRelativeLayout) view.findViewById(R.id.add_stock_empty);
+        setStockEmpty = (LinearLayout) view.findViewById(R.id.set_stock_empty);
+        progressBar = (ProgressBar) view.findViewById(R.id.pBar);
+        setStockEmpty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickStockEmpty();
+            }
+        });
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onConfirm();
+            }
+        });
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                endDatePicker();
+            }
+        });
     }
 
     @Override

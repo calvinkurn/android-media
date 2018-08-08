@@ -37,4 +37,9 @@ public interface ICatalogDetailPresenter {
      */
     void processShowCatalogImageFullScreen(Activity activity, int currentItem,
                                            List<CatalogImage> catalogImageList);
+
+    /**
+     * Unsubscribe observable when view is destroyed
+     */
+    void unsubscribeObservable();
 }

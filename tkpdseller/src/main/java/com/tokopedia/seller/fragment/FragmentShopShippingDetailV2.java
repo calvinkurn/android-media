@@ -2,7 +2,6 @@ package com.tokopedia.seller.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,9 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,19 +34,22 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.seller.ShippingConfirmationDetail;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
-import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.seller.selling.SellingService;
-import com.tokopedia.seller.selling.presenter.listener.SellingView;
+import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
 import com.tokopedia.seller.selling.model.modelConfirmShipping.Data;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
@@ -55,20 +57,15 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.seller.selling.presenter.listener.SellingView;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -87,6 +84,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     private static final String DATAPROCESSORDER = "data_process_order";
     private Bundle bundle;
     private boolean isConfirmDone = false;
+    public static final int REQUEST_CODE_BARCODE = 1;
 
     public FragmentShopShippingDetailV2() {
 
@@ -129,63 +127,35 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     private int position;
     private CompositeSubscription _subscriptions = new CompositeSubscription();
 
-
-    @Bind(R2.id.buyer_name)
-    TextView BuyerName;
-    @Bind(R2.id.invoice_text)
-    TextView Invoice;
-    @Bind(R2.id.courier)
-    TextView Courier;
-    @Bind(R2.id.total_item)
-    TextView TotalItem;
-    @Bind(R2.id.value)
-    TextView Value;
-    @Bind(R2.id.receiver_name)
-    TextView ReceiverName;
-    @Bind(R2.id.destination)
-    TextView Destination;
-    @Bind(R2.id.error_message)
-    TextView ErrorMessage;
-    @Bind(R2.id.scan)
-    ImageView ScanBarcode;
-    @Bind(R2.id.confirm_button)
-    TextView ConfirmButton;
-    @Bind(R2.id.detail_button)
-    TextView DetailButton;
-    @Bind(R2.id.ship_ref_number)
-    EditText ReferenceNumber;
-    @Bind(R2.id.cancel_button)
-    TextView CancelButton;
-    @Bind(R2.id.sender_name)
-    TextView SenderName;
-    @Bind(R2.id.sender_phone)
-    TextView SenderPhone;
-    @Bind(R2.id.error_spinner)
+    TextView buyerName;
+    TextView invoice;
+    TextView courier;
+    TextView totalItem;
+    TextView value;
+    TextView receiverName;
+    TextView destination;
+    TextView errorMessage;
+    ImageView scanBarcode;
+    TextView confirmButton;
+    TextView detailButton;
+    EditText referenceNumber;
+    TextView cancelButton;
+    TextView senderName;
+    TextView senderPhone;
     TextView errorSpinner;
-    @Bind(R2.id.checkBoxSwitchCourier)
-    CheckBox SwitchCourier;
-    @Bind(R2.id.spinner_kurir)
-    Spinner SpinnerAgency;
-    @Bind(R2.id.spinner_type)
-    Spinner SpinnerService;
-    @Bind(R2.id.sender_form)
-    View SenderForm;
-    @Bind(R2.id.product_list)
-    ListView ProductListView;
-    @Bind(R2.id.layout)
-    LinearLayout ShippingLayout;
-    @Bind(R2.id.scroll_view)
+    CheckBox switchCourier;
+    Spinner spinnerAgency;
+    Spinner spinnerService;
+    View senderForm;
+    ListView productListView;
+    LinearLayout shippingLayout;
     ScrollView mainScroll;
-    @Bind(R2.id.loadingSpinner)
     ProgressBar editFormProgress;
-    @Bind(R2.id.layout_destination_default)
     public View viewDefaultDestination;
-    @Bind(R2.id.layout_pickup_instant_shipping_courier)
     public View viewPickupLocationCourier;
-    @Bind(R2.id.pickup_detail_location)
     public TextView pickupLocationDetail;
-    @Bind(R2.id.destination_detail_location)
     public TextView deliveryLocationDetail;
+    TextView askBuyer;
 
     public static class ShippingServices {
         public String serviceName;
@@ -202,13 +172,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
-            if (isConfirmDone) {
-                finishShipping(true);
-            }
-        }
         initVar(savedInstanceState);
         getOrderData();
     }
@@ -258,14 +221,20 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
             serviceName.add(serviceList.get(i).serviceName);
         }
         SimpleSpinnerAdapter servicePackageAdapter = SimpleSpinnerAdapter.createAdapter(getActivity(), serviceName);
-        SpinnerAgency.setAdapter(servicePackageAdapter);
-        SpinnerAgency.setVisibility(View.VISIBLE);
+        spinnerAgency.setAdapter(servicePackageAdapter);
+        spinnerAgency.setVisibility(View.VISIBLE);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initCreateView(inflater, container);
+        if (savedInstanceState != null) {
+            isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
+            if (isConfirmDone) {
+                finishShipping(true);
+            }
+        }
         _subscriptions = RxUtils.getNewCompositeSubIfUnsubscribed(_subscriptions);
         return rootView;
     }
@@ -278,7 +247,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private void initCreateView(LayoutInflater inflater, ViewGroup container) {
         rootView = inflater.inflate(R.layout.activity_shipping_confirmation_prod_conf, container, false);
-        ButterKnife.bind(this, rootView);
+        initView(rootView);
         setViewDataV4();
         setAdapter();
         getEditShippingForm();
@@ -286,47 +255,47 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private void setViewDataV4() {
         OrderDetail orderDetail = orderShippingList.getOrderDetail();
-        TotalItem.setText(Html.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderDetail.getDetailQuantity() + " ( " + orderDetail.getDetailTotalWeight() + "kg )</b>"));
-        Invoice.setText(orderDetail.getDetailInvoice());
-        Value.setText(Html.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderDetail.getDetailOpenAmountIdr() + "</b>"));
+        totalItem.setText(MethodChecker.fromHtml(getString(R.string.title_total_item) + ": <b>" + orderDetail.getDetailQuantity() + " ( " + orderDetail.getDetailTotalWeight() + "kg )</b>"));
+        invoice.setText(orderDetail.getDetailInvoice());
+        value.setText(MethodChecker.fromHtml(getString(R.string.title_transaction_value) + " : <b>" + orderDetail.getDetailOpenAmountIdr() + "</b>"));
 
         if (CommonUtils.checkNullForZeroJson(orderDetail.getDetailDropshipName())
                 && CommonUtils.checkNullForZeroJson(orderDetail.getDetailDropshipTelp())) {
-            SenderName.setText(orderDetail.getDetailDropshipName());
-            SenderPhone.setText(orderDetail.getDetailDropshipTelp());
-            SenderForm.setVisibility(View.VISIBLE);
+            senderName.setText(orderDetail.getDetailDropshipName());
+            senderPhone.setText(orderDetail.getDetailDropshipTelp());
+            senderForm.setVisibility(View.VISIBLE);
         } else {
-            SenderForm.setVisibility(View.GONE);
+            senderForm.setVisibility(View.GONE);
         }
 
-        BuyerName.setText(orderShippingList.getOrderCustomer().getCustomerName());
+        buyerName.setText(orderShippingList.getOrderCustomer().getCustomerName());
 
         OrderShipment orderShipment = orderShippingList.getOrderShipment();
-        Courier.setText(orderShipment.getShipmentName() + "( " + orderShipment.getShipmentProduct() + " )");
+        courier.setText(orderShipment.getShipmentName() + "( " + orderShipment.getShipmentProduct() + " )");
         shippingID = orderShipment.getShipmentId();
         if (orderShippingList.getIsPickUp() == 1) {
-            ConfirmButton.setText(getString(R.string.title_pickup_button));
+            confirmButton.setText(getString(R.string.title_pickup_button));
             viewDefaultDestination.setVisibility(View.GONE);
             viewPickupLocationCourier.setVisibility(View.VISIBLE);
         } else {
-            ConfirmButton.setText(getString(R.string.title_confirm_button));
+            confirmButton.setText(getString(R.string.title_confirm_button));
             viewDefaultDestination.setVisibility(View.VISIBLE);
             viewPickupLocationCourier.setVisibility(View.GONE);
         }
 
         OrderDestination orderDestination = orderShippingList.getOrderDestination();
-        ReceiverName.setText(Html.fromHtml(orderDestination.getReceiverName()));
-        String vDest = Html.fromHtml(orderDestination.getAddressStreet()).toString()
+        receiverName.setText(MethodChecker.fromHtml(orderDestination.getReceiverName()));
+        String vDest = MethodChecker.fromHtml(orderDestination.getAddressStreet()).toString()
                 + "\n" + orderDestination.getAddressDistrict() + "    " + orderDestination.getAddressCity() + ", " + orderDestination.getAddressPostal()
                 + "\n" + orderDestination.getAddressProvince() + "\n" + getString(R.string.title_phone) + " : " + orderDestination.getReceiverPhone();
         vDest = vDest.replaceAll("&#39;", "'");
         vDest = vDest.replaceAll("&amp;", "'");
-        Destination.setText(vDest);
+        destination.setText(vDest);
         deliveryLocationDetail.setText(vDest);
 
         OrderShop orderShop = orderShippingList.getOrderShop();
-        pickupAddress = Html.fromHtml(orderShop.getAddressStreet())
-                + "\n" + Html.fromHtml(orderShop.getAddressCity()).toString() + ", " + Html.fromHtml(orderShop.getAddressPostal())
+        pickupAddress = MethodChecker.fromHtml(orderShop.getAddressStreet())
+                + "\n" + MethodChecker.fromHtml(orderShop.getAddressCity()).toString() + ", " + MethodChecker.fromHtml(orderShop.getAddressPostal())
                 + "\n" + orderShop.getAddressProvince()
                 + "\n" + getString(R.string.title_phone) + ":" + orderShop.getShipperPhone();
 
@@ -339,74 +308,183 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @SuppressWarnings("EmptyCatchBlock")
     private void setAdapter() {
         adapter = ListViewShopTxDetailProdListV2.createInstance(getActivity(), orderShippingList.getOrderProducts());
-        ProductListView.setAdapter(adapter);
+        productListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(), orderShippingList.getOrderProducts().get(position).getProductId().toString()));
+                startActivity(ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(
+                                getActivity(), getProductDataToPass(position)));
             }
         });
-        ListViewHelper.getListViewSize(ProductListView);
+        askBuyer.setOnClickListener(onAskBuyerClickListener());
+        ListViewHelper.getListViewSize(productListView);
     }
 
-    @OnClick(R2.id.buyer_name)
+    private View.OnClickListener onAskBuyerClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                            .getAskBuyerIntent(getActivity(),
+                                    orderShippingList.getOrderCustomer().getCustomerId(),
+                                    orderShippingList.getOrderCustomer().getCustomerName(),
+                                    orderShippingList.getOrderDetail().getDetailInvoice(),
+                                    MethodChecker.fromHtml(
+                                            getString(R.string.custom_content_message_ask_seller)
+                                                    .replace("XXX",
+                                                            orderShippingList.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    orderShippingList.getOrderCustomer().getCustomerImage());
+                    startActivity(intent);
+                }
+            }
+        };
+    }
+
+
+    private void initView(View view) {
+        invoice = (TextView) view.findViewById(R.id.invoice_text);
+        buyerName = (TextView) view.findViewById(R.id.buyer_name);
+        courier = (TextView) view.findViewById(R.id.courier);
+        totalItem = (TextView) view.findViewById(R.id.total_item);
+        value = (TextView) view.findViewById(R.id.value);
+        receiverName = (TextView) view.findViewById(R.id.receiver_name);
+        destination = (TextView) view.findViewById(R.id.destination);
+        errorMessage = (TextView) view.findViewById(R.id.error_message);
+        scanBarcode = (ImageView) view.findViewById(R.id.scan);
+        confirmButton = (TextView) view.findViewById(R.id.confirm_button);
+        detailButton = (TextView) view.findViewById(R.id.detail_button);
+        referenceNumber = (EditText) view.findViewById(R.id.ship_ref_number);
+        cancelButton = (TextView) view.findViewById(R.id.cancel_button);
+        senderName = (TextView) view.findViewById(R.id.sender_name);
+        senderPhone = (TextView) view.findViewById(R.id.sender_phone);
+        errorSpinner = (TextView) view.findViewById(R.id.error_spinner);
+        switchCourier = (CheckBox) view.findViewById(R.id.checkBoxSwitchCourier);
+        spinnerAgency = (Spinner) view.findViewById(R.id.spinner_kurir);
+        spinnerService = (Spinner) view.findViewById(R.id.spinner_type);
+        senderForm = view.findViewById(R.id.sender_form);
+        productListView = (ListView) view.findViewById(R.id.product_list);
+        shippingLayout = (LinearLayout) view.findViewById(R.id.layout);
+        mainScroll = (ScrollView) view.findViewById(R.id.scroll_view);
+        editFormProgress = (ProgressBar) view.findViewById(R.id.loadingSpinner);
+        viewDefaultDestination = view.findViewById(R.id.layout_destination_default);
+        viewPickupLocationCourier = view.findViewById(R.id.layout_pickup_instant_shipping_courier);
+        pickupLocationDetail = (TextView) view.findViewById(R.id.pickup_detail_location);
+        deliveryLocationDetail = (TextView) view.findViewById(R.id.destination_detail_location);
+        askBuyer = (TextView) view.findViewById(R.id.ask_buyer);
+
+        buyerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBuyerName();
+            }
+        });
+
+        detailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onDetailClick();
+            }
+        });
+
+        spinnerAgency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                onAgencySelect(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        switchCourier.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                onSwitchCourierChecked(compoundButton, b);
+            }
+        });
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onConfirmClick();
+            }
+        });
+        invoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onInvoiceClick();
+            }
+        });
+        scanBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scanBarCode();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelDialog();
+            }
+        });
+    }
+
     public void onBuyerName() {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), userId)
-        );
+        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), userId));
+        }
     }
 
-    @OnClick(R2.id.detail_button)
     public void onDetailClick() {
+        UnifyTracking.eventConfirmShippingDetails();
         startActivity(ShippingConfirmationDetail.createInstance(getActivity(), orderShippingList, permission, userId, invoiceUrl, invoicePdf));
     }
 
-    @OnItemSelected(R2.id.spinner_kurir)
     public void onAgencySelect(int position) {
         if (position == 0) {
-            SpinnerService.setVisibility(View.INVISIBLE);
+            spinnerService.setVisibility(View.INVISIBLE);
         } else {
             setSpinnerService(position);
         }
     }
 
-    @OnCheckedChanged(R2.id.checkBoxSwitchCourier)
     public void onSwitchCourierChecked(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            ShippingLayout.setVisibility(View.VISIBLE);
+            shippingLayout.setVisibility(View.VISIBLE);
         } else {
             resetError();
-            ShippingLayout.setVisibility(View.GONE);
-            SpinnerAgency.setSelection(0);
-            SpinnerService.setSelection(0);
+            shippingLayout.setVisibility(View.GONE);
+            spinnerAgency.setSelection(0);
+            spinnerService.setSelection(0);
         }
     }
 
-    @OnClick(R2.id.confirm_button)
     public void onConfirmClick() {
         if (checkConfirmationError()) {
             confirmShipping();
-            TrackingUtils.eventLoca(getActivity().getString(R.string.shipping_confirmation));
         }
     }
 
-    @OnClick(R2.id.invoice_text)
     public void onInvoiceClick() {
-        AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, Invoice.getText().toString());
+        AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, invoice.getText().toString());
     }
 
-    @OnClick(R2.id.scan)
     public void scanBarCode() {
         FragmentShopShippingDetailV2PermissionsDispatcher.onScanBarcodeWithCheck(FragmentShopShippingDetailV2.this);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
-    @OnClick(R2.id.cancel_button)
     public void cancelDialog() {
         createCancelDialog();
     }
@@ -438,6 +516,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private void cancelShipping(String remark) {
+        UnifyTracking.eventConfirmShippingCancel();
         bundle = new Bundle();
         ModelParamSelling modelParamSelling = new ModelParamSelling();
         modelParamSelling.setActionType("reject");
@@ -459,7 +538,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         modelParamSelling.setActionType("confirm");
         modelParamSelling.setOrderId(orderId);
         modelParamSelling.setPosition(position);
-        modelParamSelling.setRefNum(ReferenceNumber.getText().toString());
+        modelParamSelling.setRefNum(referenceNumber.getText().toString());
         modelParamSelling.setShipmentId(getAgencyId());
         modelParamSelling.setShipmentName(getAgencyName());
         modelParamSelling.setSpId(getServiceId());
@@ -470,18 +549,18 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private boolean checkConfirmationError() {
         resetError();
-        if (orderShippingList.getIsPickUp() != 1 && (ReferenceNumber.length() < 7 || ReferenceNumber.length() > 17)) {
-            ReferenceNumber.requestFocus();
-            ReferenceNumber.setError(getString(R.string.error_receipt_number));
+        if (orderShippingList.getIsPickUp() != 1 && (referenceNumber.length() < 7 || referenceNumber.length() > 17)) {
+            referenceNumber.requestFocus();
+            referenceNumber.setError(getString(R.string.error_receipt_number));
             return false;
         }
-        if (SwitchCourier.isChecked()) {
-            if (SpinnerAgency.getSelectedItemPosition() == 0) {
+        if (switchCourier.isChecked()) {
+            if (spinnerAgency.getSelectedItemPosition() == 0) {
                 errorSpinner.setText(getString(R.string.error_shipping_must_choose));
                 errorSpinner.setVisibility(View.VISIBLE);
                 return false;
             }
-            if (SpinnerService.getSelectedItemPosition() == 0) {
+            if (spinnerService.getSelectedItemPosition() == 0) {
                 errorSpinner.setText(getString(R.string.error_service_must_choose));
                 errorSpinner.setVisibility(View.VISIBLE);
                 return false;
@@ -492,7 +571,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private String getAgencyId() {
         try {
-            return serviceList.get(SpinnerAgency.getSelectedItemPosition()).serviceId;
+            return serviceList.get(spinnerAgency.getSelectedItemPosition()).serviceId;
         } catch (Exception e) {
             return "";
         }
@@ -500,7 +579,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private String getAgencyName() {
         try {
-            return serviceList.get(SpinnerAgency.getSelectedItemPosition()).serviceName;
+            return serviceList.get(spinnerAgency.getSelectedItemPosition()).serviceName;
         } catch (Exception e) {
             return "";
         }
@@ -508,7 +587,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     private String getServiceId() {
         try {
-            return serviceList.get(SpinnerAgency.getSelectedItemPosition()).packageId.get(SpinnerService.getSelectedItemPosition());
+            return serviceList.get(spinnerAgency.getSelectedItemPosition()).packageId.get(spinnerService.getSelectedItemPosition());
         } catch (Exception e) {
             return "";
         }
@@ -530,15 +609,21 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private void finishShipping(boolean isAfterSaveInstance) {
-        CancelButton.setVisibility(View.GONE);
-        ConfirmButton.setText(getActivity().getString(R.string.title_order_processed));
-        ConfirmButton.setOnClickListener(null);
-        ReferenceNumber.setClickable(false);
-        ReferenceNumber.setFocusable(false);
-        ScanBarcode.setClickable(false);
-        SwitchCourier.setClickable(false);
+        cancelButton.setVisibility(View.GONE);
+        confirmButton.setText(getActivity().getString(R.string.title_order_processed));
+        confirmButton.setBackgroundResource(com.tokopedia.seller.R.drawable.button_finish_disable);
+        confirmButton.setTextColor(ContextCompat.getColor(getActivity(), com.tokopedia.seller.R.color.black_twenty_five_percent));
+        confirmButton.setOnClickListener(null);
+        referenceNumber.setClickable(false);
+        referenceNumber.setFocusable(false);
+        spinnerAgency.setEnabled(false);
+        spinnerService.setEnabled(false);
+        spinnerAgency.setClickable(false);
+        spinnerService.setClickable(false);
+        scanBarcode.setClickable(false);
+        switchCourier.setClickable(false);
         isConfirmDone = true;
-        if(!isAfterSaveInstance) {
+        if (!isAfterSaveInstance) {
             getActivity().setResult(getActivity().RESULT_OK);
 //            ((SellingDetailActivity) getActivity()).notifyChangeShipping();
         }
@@ -551,15 +636,14 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
             packageName.add(serviceList.get(pos).packageList.get(i));
         }
         SimpleSpinnerAdapter servicePackageAdapter = SimpleSpinnerAdapter.createAdapter(getActivity(), packageName);
-        SpinnerService.setAdapter(servicePackageAdapter);
-        SpinnerService.setVisibility(View.VISIBLE);
+        spinnerService.setAdapter(servicePackageAdapter);
+        spinnerService.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        referenceNumber.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
-            ReferenceNumber.setText(CommonUtils.getBarcode(data));
     }
 
     @Override
@@ -599,14 +683,27 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     @Override
-    public void setData(int type, Bundle data) {
+    public void setData(final int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_SHIPPING:
             case SellingService.CANCEL_SHIPPING:
                 Data result = Parcels.unwrap(data.getParcelable(SellingService.MODEL_CONFIRM_SHIPPING_KEY));
+                progressDialog.dismiss();
                 if (result.getIsSuccess() == 1) {
-                    progressDialog.dismiss();
                     finishShipping(false);
+                }else{
+                    NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            if (bundle != null) {
+                                if(type == SellingService.CONFIRM_SHIPPING) {
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
+                                }else{
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CANCEL_SHIPPING, bundle);
+                                }
+                            }
+                        }
+                    });
                 }
                 break;
         }
@@ -702,31 +799,31 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -735,7 +832,16 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+    }
+
+    private ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(orderShippingList.getOrderProducts().get(position).getProductPrice())
+                .setProductId(orderShippingList.getOrderProducts().get(position).getProductId())
+                .setProductName(orderShippingList.getOrderProducts().get(position).getProductName())
+                .setProductImage(orderShippingList.getOrderProducts().get(position).getProductPicture())
+                .build();
     }
 
 }

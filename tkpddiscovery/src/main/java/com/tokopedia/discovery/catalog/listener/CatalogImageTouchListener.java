@@ -29,8 +29,6 @@ public class CatalogImageTouchListener implements View.OnTouchListener {
                 float currY = event.getRawY();
                 float deltaX = currX - startX;
                 float deltaY = currY - startY;
-                System.out.println("Delta X UP: " + deltaX);
-                System.out.println("Delta Y UP: " + deltaY);
                 if (deltaX < 20 && deltaX > -20) {
                     if (deltaY < 20 && deltaY > -20) {
                         actionTouch.onCatalogImageClicked();

@@ -1,19 +1,20 @@
 package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Dialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,61 +22,59 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.tracking.activity.TrackingActivity;
-import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.tracking.activity.TrackingActivity;
+import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionImpl;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.ValidationTextUtil;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.seller.selling.view.viewHolder.TransactionViewHolder;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Erry on 7/19/2016.
  */
-public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, SearchView.OnQueryTextListener, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, View.OnClickListener {
 
-    @Bind(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @Bind(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R2.id.root)
     CoordinatorLayout rootView;
 
     private static final String ORDER_ID = "OrderID";
 
-    private LinearLayoutManager linearLayoutManager;
     private BaseSellingAdapter adapter;
     private Dialog editRefDialog;
     private TkpdProgressDialog progressDialog;
@@ -88,7 +87,9 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     private View filterView;
     private BottomSheetDialog bottomSheetDialog;
     protected boolean inhibit_spinner = true;
-    private boolean isVisibleToUser;
+
+    private PagingHandler mPaging;
+    private RefreshHandler refresh;
 
     public static FragmentSellingTransaction newInstance() {
 
@@ -99,64 +100,35 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_transaction, null);
-        startDate = ButterKnife.findById(filterView, R.id.start_date);
-        startDate.setOnClickListener(this);
-        endDate = ButterKnife.findById(filterView, R.id.end_date);
-        endDate.setOnClickListener(this);
-        spinnerFilter = ButterKnife.findById(filterView, R.id.transaction_filter);
-        searchTxt = ButterKnife.findById(filterView, R.id.search);
-        int searchPlateId = searchTxt.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
-        View searchPlate = searchTxt.findViewById(searchPlateId);
-        searchPlate.setBackgroundColor(Color.TRANSPARENT);
-        searchbtn = ButterKnife.findById(filterView, R.id.search_button);
-        searchbtn.setOnClickListener(this);
-        datePicker = DatePickerV2.createInstance(getActivity());
-        spinnerFilter.setOnItemSelectedListener(onFilterSelected());
-        swipeToRefresh.setOnRefreshListener(this);
-        bottomSheetDialog = new BottomSheetDialog(getActivity());
-        bottomSheetDialog.setContentView(filterView);
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        setDate();
-        if(isVisibleToUser){
-            onCallNetwork();
-        }
-    }
-
-    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        this.isVisibleToUser = isVisibleToUser;
         initPresenter();
-        if (isVisibleToUser && isDataEmpty()) {
-            onCallNetwork();
-        }
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
+
+        presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.TRANSACTION);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
         super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R2.id.start_date:
-                datePicker.getDatePicker(onStartPicked(), new DatePickerV2.Date(startDate.getText().toString()));
-                break;
-            case R2.id.end_date:
-                datePicker.getDatePicker(onEndPicked(), new DatePickerV2.Date(endDate.getText().toString()));
-                break;
-            case R2.id.search_button:
-                String search = searchTxt.getQuery().toString();
-                if (!TextUtils.isEmpty(search)) {
-                    if (ValidationTextUtil.isValidSalesQuery(search)) {
-                        refreshOnFilter();
-                    } else {
-                        Snackbar.make(filterView, "Keyword terlalu pendek, minimal 3 karakter", Snackbar.LENGTH_LONG).show();
-                    }
-                } else if (TextUtils.isEmpty(search)) {
-                    refreshOnFilter();
+        int i = v.getId();
+        if (i == R.id.start_date) {
+            datePicker.getDatePicker(onStartPicked(), new DatePickerV2.Date(startDate.getText().toString()));
+
+        } else if (i == R.id.end_date) {
+            datePicker.getDatePicker(onEndPicked(), new DatePickerV2.Date(endDate.getText().toString()));
+
+        } else if (i == R.id.search_button) {
+            String search = searchTxt.getQuery().toString();
+            if (!TextUtils.isEmpty(search)) {
+                if (ValidationTextUtil.isValidSalesQuery(search)) {
+                    presenter.refreshOnFilter();
+                } else {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.keyword_min_3_char), Toast.LENGTH_SHORT).show();
                 }
-                break;
+            } else if (TextUtils.isEmpty(search)) {
+                presenter.refreshOnFilter();
+            }
+
         }
     }
 
@@ -203,7 +175,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                 if (inhibit_spinner) {
                     inhibit_spinner = false;
                 }else {
-                    refreshOnFilter();
+                    presenter.refreshOnFilter();
                 }
             }
 
@@ -218,7 +190,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     protected void initPresenter() {
         if(presenter==null) {
-            presenter = new SellingStatusTransactionImpl(this);
+            presenter = new SellingStatusTransactionImpl(this, SellingStatusTransactionImpl.Type.TRANSACTION);
         }
     }
 
@@ -227,117 +199,9 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         return R.layout.fragment_shipping_status;
     }
 
-    @Override
-    public void setupRecyclerView() {
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1) {
-                    presenter.loadMore(getActivity());
-                }
-            }
-        });
-    }
-
-    @Override
-    public void initAdapter() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        adapter = new BaseSellingAdapter<SellingStatusTxModel, ViewHolder>(SellingStatusTxModel.class, R.layout.selling_transaction_list_item, ViewHolder.class) {
-            @Override
-            protected void populateViewHolder(FragmentSellingTransaction.ViewHolder viewHolder, final SellingStatusTxModel model, int position) {
-                viewHolder.bindDataModel(getActivity(), model);
-                viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(int position) {
-                        Intent intent = new Intent(getActivity(), SellingDetailActivity.class);
-                        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(model));
-                        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.TRANSACTION);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onLongClicked(int position) {
-
-                    }
-                });
-                viewHolder.overflow_btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        createOverflowMenu(v, model);
-                    }
-                });
-            }
-
-            @Override
-            protected FragmentSellingTransaction.ViewHolder getViewHolder(int mModelLayout, ViewGroup parent) {
-                ViewGroup view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
-                return new FragmentSellingTransaction.ViewHolder(view);
-            }
-        };
-        adapter.setOnRetryListener(new BaseSellingAdapter.OnRetryListener() {
-            @Override
-            public void onRetryCliked() {
-                onCallNetwork();
-            }
-        });
-    }
-
-    @Override
-    public void displayLoadMore(boolean isLoadMore) {
-        adapter.setIsLoading(isLoadMore);
-    }
-
-    @Override
-    public boolean isLoading() {
-        return adapter.getItemViewType(linearLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
-    }
-
-    @Override
-    public void setPullEnabled(boolean isPullEnabled) {
-        swipeToRefresh.setEnabled(isPullEnabled);
-
-    }
-
-    @Override
-    public int getDataSize() {
-        return adapter.getListData() != null ? adapter.getListData().size() : -1;
-    }
-
-    @Override
-    public void onCallNetwork() {
-        if (getActivity() != null) {
-            adapter.setIsLoading(!swipeToRefresh.isRefreshing());
-            presenter.callNetworkTransaction(getActivity(), searchTxt.getQuery().toString(), getFilter(spinnerFilter.getSelectedItemPosition()), startDate.getText().toString(), endDate.getText().toString());
-        }
-    }
-
-    private void refreshOnFilter() {
-        adapter.clearData();
-        adapter.setIsLoading(true);
-        onCallNetwork();
-        bottomSheetDialog.hide();
-    }
-
-    @Override
-    public void onRefresh() {
-        onCallNetwork();
-    }
-
     private String getFilter(int pos) {
         String[] filterValue = getResources().getStringArray(R.array.transaction_filter_type_ppl_value);
         return filterValue[pos];
-    }
-
-    @Override
-    public void onCallStatusLoadMore(List<SellingStatusTxModel> data) {
-        if (swipeToRefresh.isRefreshing()) {
-            adapter.clearData();
-            swipeToRefresh.setRefreshing(false);
-        }
-        adapter.setListModel(data);
     }
 
     @Override
@@ -347,7 +211,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        Log.d(TAG, "ariseRetry type " + type);
+
     }
 
     @Override
@@ -367,9 +231,228 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     }
 
     @Override
-    public void onNoResult() {
-        swipeToRefresh.setRefreshing(false);
+    public void initHandlerAndAdapter() {
+        setRetainInstance(true);
+        mPaging = new PagingHandler();
+        adapter = new BaseSellingAdapter<SellingStatusTxModel, TransactionViewHolder>(SellingStatusTxModel.class, getActivity(), R.layout.selling_transaction_list_item, TransactionViewHolder.class) {
+            @Override
+            protected void populateViewHolder(TransactionViewHolder viewHolder, final SellingStatusTxModel model, int position) {
+                viewHolder.bindDataModel(getActivity(), model);
+                viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(int position) {
+                        if(adapter.isLoading()) {
+                            getPaging().setPage(getPaging().getPage() - 1);
+                            presenter.finishConnection();
+                        }
+                        Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                                .goToOrderDetail(
+                                        getActivity(),
+                                        model.OrderId);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onLongClicked(int position) {
+
+                    }
+                });
+                viewHolder.overflow_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        createOverflowMenu(v, model);
+                    }
+                });
+            }
+
+            @Override
+            protected TransactionViewHolder getViewHolder(int mModelLayout, ViewGroup parent) {
+                ViewGroup view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
+                return new TransactionViewHolder(view);
+            }
+        };
+    }
+
+    @Override
+    public boolean getUserVisible() {
+        return getUserVisibleHint();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        rootView = (CoordinatorLayout) view.findViewById(R.id.root);
+        initView();
+        return view;
+    }
+
+    public void initView() {
+        refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+        filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_transaction, null);
+        searchTxt = (SearchView) filterView.findViewById(R.id.search);
+        startDate = (EditText) filterView.findViewById(R.id.start_date);
+
+        endDate = (EditText)filterView.findViewById(R.id.end_date);
+
+        spinnerFilter = (Spinner) filterView.findViewById(R.id.transaction_filter);
+        searchbtn =  (TextView) filterView.findViewById(R.id.search_button);
+
+        datePicker = DatePickerV2.createInstance(getActivity());
+        spinnerFilter.setOnItemSelectedListener(onFilterSelected());
+        int searchPlateId = searchTxt.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
+        View searchPlate = searchTxt.findViewById(searchPlateId);
+        searchPlate.setBackgroundColor(Color.TRANSPARENT);
+        bottomSheetDialog = new BottomSheetDialog(getActivity());
+        bottomSheetDialog.setContentView(filterView);
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        setDate();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
+    }
+
+    private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
+        return new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                presenter.onRefreshView();
+            }
+        };
+    }
+
+    @Override
+    public void setRefreshPullEnable(boolean b) {
+        refresh.setPullEnabled(b);
+    }
+
+    @Override
+    public String getQuery() {
+        return searchTxt.getQuery().toString();
+    }
+
+    @Override
+    public void notifyDataSetChanged(List<SellingStatusTxModel> listDatas) {
         adapter.clearData();
+        adapter.setListModel(listDatas);
+    }
+
+    @Override
+    public void finishRefresh() {
+        refresh.finishRefresh();
+    }
+
+    @Override
+    public void removeRetry() {
+        adapter.setIsRetry(false);
+    }
+
+    @Override
+    public void removeLoading() {
+        adapter.setIsLoading(false);
+    }
+
+    @Override
+    public View getRootView() {
+        return getView();
+    }
+
+    @Override
+    public void setRefreshing(boolean b) {
+        refresh.setRefreshing(b);
+    }
+
+    @Override
+    public void addLoadingFooter() {
+        adapter.setIsLoading(true);
+    }
+
+    @Override
+    public void initListener() {
+        adapter.setOnRetryListener(new BaseSellingAdapter.OnRetryListener() {
+            @Override
+            public void onRetryCliked() {
+                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.TRANSACTION);
+            }
+        });
+        startDate.setOnClickListener(this);
+        endDate.setOnClickListener(this);
+        searchbtn.setOnClickListener(this);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                presenter.onScrollList(((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
+            }
+        });
+    }
+
+    @Override
+    public void hideFilterView() {
+        bottomSheetDialog.hide();
+    }
+
+    @Override
+    public boolean getRefreshing() {
+        return refresh.isRefreshing();
+    }
+
+    @Override
+    public void resetPage() {
+        mPaging.resetPage();
+    }
+
+    @Override
+    public PagingHandler getPaging() {
+        return mPaging;
+    }
+
+    @Override
+    public void addRetry() {
+        adapter.setIsRetry(true);
+    }
+
+    @Override
+    public void addEmptyView() {
+        adapter.setIsDataEmpty(true);
+    }
+
+    @Override
+    public void removeEmpty() {
+        adapter.setIsDataEmpty(false);
+    }
+
+    @Override
+    public String getFilter() {
+        return getFilter(spinnerFilter.getSelectedItemPosition());
+    }
+
+    @Override
+    public String getStartDate() {
+        return startDate.getText().toString();
+    }
+
+    @Override
+    public String getEndDate() {
+        return endDate.getText().toString();
+    }
+
+    @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
     }
 
     @Override
@@ -378,14 +461,14 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        refreshOnFilter();
-        return true;
+    public void onPause() {
+        presenter.finishConnection();
+        super.onPause();
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
+    public void onResume() {
+        super.onResume();
     }
 
     private void createEditRefDialog(final SellingStatusTxModel model) {
@@ -400,7 +483,8 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             @Override
             public void onClick(View v) {
-                startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+                CommonUtils.requestBarcodeScanner(FragmentSellingTransaction.this,
+                        CustomScannerBarcodeActivity.class);
             }
         });
         ConfirmButton.setOnClickListener(new View.OnClickListener() {
@@ -430,16 +514,14 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onSuccess(String refNum) {
                 progressDialog.dismiss();
-                adapter.clearData();
-                onCallNetwork();
+                presenter.onRefreshView();;
             }
 
             @Override
             public void onFailed(String errorMsg) {
                 CommonUtils.UniversalToast(getActivity(), errorMsg);
-                adapter.clearData();
                 progressDialog.dismiss();
-                onCallNetwork();
+                presenter.onRefreshView();
             }
         };
     }
@@ -461,8 +543,8 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         }
     }
 
-    private void createOverflowMenu(View v, SellingStatusTxModel model) {
-        PopupMenu menu = new PopupMenu(getActivity(), v);
+    private void createOverflowMenu(View v, final SellingStatusTxModel model) {
+        final PopupMenu menu = new PopupMenu(getActivity(), v);
         if (model.ShippingID.equals(TkpdState.SHIPPING_ID.GOJEK)) {
             menu.getMenuInflater().inflate(R.menu.shipping_status_menu_track_only, menu.getMenu());
         } else {
@@ -476,9 +558,24 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             @Override
             public void onTrack(SellingStatusTxModel model) {
-                Bundle bundle = new Bundle();
-                bundle.putString(ORDER_ID, model.OrderId);
-                getActivity().startActivity(TrackingActivity.createInstance(getActivity(),bundle));
+                String routingAppLink;
+                routingAppLink = ApplinkConst.ORDER_TRACKING;
+                Uri.Builder uriBuilder = new Uri.Builder();
+                uriBuilder.appendQueryParameter(
+                        ApplinkConst.Query.ORDER_TRACKING_ORDER_ID,
+                        model.OrderId);
+                if (!TextUtils.isEmpty(model.liveTracking)) {
+                    uriBuilder.appendQueryParameter(
+                            ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING,
+                            model.liveTracking);
+                }
+                routingAppLink += uriBuilder.toString();
+                RouteManager.route(getActivity(), routingAppLink);
+            }
+
+            @Override
+            public void onCourierRetry() {
+                createRetryPickupDialog(model.OrderId, menu.getMenu().findItem(R.id.action_retry));
             }
         }));
         menu.show();
@@ -488,17 +585,18 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R2.id.action_edit:
-                        listener.onEditRef(model);
-                        return true;
-
-                    case R2.id.action_track:
-                        listener.onTrack(model);
-                        return true;
-
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.action_edit) {
+                    listener.onEditRef(model);
+                    return true;
+                } else if (item.getItemId() == R.id.action_track) {
+                    listener.onTrack(model);
+                    return true;
+                }
+                else if (item.getItemId() == R.id.action_retry) {
+                    listener.onCourierRetry();
+                    return true;
+                } else {
+                    return false;
                 }
             }
 
@@ -506,96 +604,48 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         };
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @OnClick(R2.id.fab)
-    public void onClick() {
-        bottomSheetDialog.show();
-    }
-
     public interface LVShopStatusInterface {
         void onEditRef(SellingStatusTxModel model);
 
         void onTrack(SellingStatusTxModel model);
+
+        void onCourierRetry();
     }
 
-    private boolean isDataEmpty() {
-        try {
-            return (presenter.getPaging().getPage() == 1 && !isLoading() && adapter.getListData().size() == 0);
-        } catch (Exception e){
-            return true;
-        }
+    private void createRetryPickupDialog(final String orderId, MenuItem retryMenu) {
+        AlertDialog.Builder retryPickupDialog = new AlertDialog.Builder(getActivity());
+        retryPickupDialog.setView(R.layout.retry_pickup_dialog);
+        retryPickupDialog.setPositiveButton(getString(R.string.title_yes),
+                onConfirmRetryPickup(orderId, retryMenu));
+        retryPickupDialog.setNegativeButton(getString(R.string.title_cancel), null);
+        retryPickupDialog.show();
     }
 
-    public static class ViewHolder extends BaseSellingViewHolder<SellingStatusTxModel> {
-        @Bind(R2.id.icon)
-        ImageView icon;
-        @Bind(R2.id.subtitle)
-        TextView subtitle;
-        @Bind(R2.id.title)
-        TextView title;
-        @Bind(R2.id.overflow_btn)
-        LinearLayout overflow_btn;
-        @Bind(R2.id.deadline_view)
-        LinearLayout deadLineContainer;
-        @Bind(R2.id.status)
-        TextView status;
-        @Bind(R2.id.deadline_date)
-        TextView deadlineDate;
-        @Bind(R2.id.invoice)
-        TextView invoice;
-        @Bind(R2.id.list_item)
-        LinearLayout itemLayout;
+    private DialogInterface.OnClickListener onConfirmRetryPickup(final String orderId,
+                                                                 final MenuItem retryMenu) {
+        return new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog.showDialog();
+                FacadeActionShopTransaction facadeAction = FacadeActionShopTransaction
+                        .createInstance(getActivity(), orderId);
+                facadeAction.retryCourierPickup(new FacadeActionShopTransaction
+                        .OnRetryPickupListener() {
+                    @Override
+                    public void onSuccess(String successMessage) {
+                        progressDialog.dismiss();
+                        Snackbar.make(rootView, successMessage, Snackbar.LENGTH_LONG).show();
+                        retryMenu.setVisible(false);
+                    }
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        @Override
-        public void setOnItemClickListener(final OnItemClickListener clickListener) {
-            itemLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickListener.onItemClicked(getAdapterPosition());
-                }
-            });
-        }
-
-        public void bindDataModel(Context context, SellingStatusTxModel model) {
-            ImageHandler.loadImageCircle2(context, icon, model.AvatarUrl);
-            title.setText(model.UserName);
-            subtitle.setText(model.LastStatus);
-            invoice.setText(model.Invoice);
-            if (!CommonUtils.checkNullForZeroJson(model.DeadlineFinish)) {
-                deadLineContainer.setVisibility(View.GONE);
-            } else if (status.getText().toString().trim().equals("Transaksi selesai")) {
-                deadLineContainer.setVisibility(View.GONE);
-            } else {
-                deadLineContainer.setVisibility(View.VISIBLE);
-                deadlineDate.setText(model.DeadlineFinish);
+                    @Override
+                    public void onFailed(String errorMessage) {
+                        progressDialog.dismiss();
+                        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                    }
+                });
             }
-            setOverflow(model);
-        }
-
-        private void setOverflow(SellingStatusTxModel model) {
-            if (!model.Permission.equals("0") && (model.OrderStatus.equals("500") || model.OrderStatus.equals("501") || model.OrderStatus.equals("520") || model.OrderStatus.equals("530"))) {
-                overflow_btn.setVisibility(View.VISIBLE);
-            } else {
-                overflow_btn.setVisibility(View.GONE);
-            }
-        }
+        };
     }
+
 }

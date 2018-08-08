@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/label_user"
+    style="@style/LabelLayout"
+    app:lv_image="@drawable/ic_info_email_grey"
+    app:lv_title_text_style="bold" />

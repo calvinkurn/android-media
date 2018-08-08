@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-@Parcel(parcelsIndex = false)
+@Parcel
 public class OrderDetail {
 
     @SerializedName("detail_insurance_price")
@@ -97,6 +97,27 @@ public class OrderDetail {
     @SerializedName("detail_order_status")
     @Expose
     Integer detailOrderStatus;
+    @SerializedName("detail_cancel_request")
+    @Expose
+    DetailCancelRequest detailCancelRequest;
+
+    /**
+     *
+     * @return
+     * The detailCancelRequest
+     */
+    public DetailCancelRequest getDetailCancelRequest() {
+        return detailCancelRequest;
+    }
+
+    /**
+     *
+     * @param detailCancelRequest
+     * The detail_cancel_request
+     */
+    public void setDetailCancelRequest(DetailCancelRequest detailCancelRequest) {
+        this.detailCancelRequest = detailCancelRequest;
+    }
 
     /**
      * 

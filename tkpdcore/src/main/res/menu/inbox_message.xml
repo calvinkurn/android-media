@@ -1,0 +1,30 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+   
+    <item
+        android:id="@+id/action_move_achieve"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/option_move_archive"/>
+    
+    <item
+        android:id="@+id/action_move_trash"
+        android:orderInCategory="101"
+        app:showAsAction="never"
+        android:title="@string/option_move_trash"/>
+
+    <item
+        android:id="@+id/action_mark_as_read"
+        android:orderInCategory="102"
+        android:title="@string/mark_as_read"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_mark_as_unread"
+        android:orderInCategory="103"
+        android:title="@string/mark_as_unread"
+        android:visible="false"
+        app:showAsAction="never" />
+</menu>

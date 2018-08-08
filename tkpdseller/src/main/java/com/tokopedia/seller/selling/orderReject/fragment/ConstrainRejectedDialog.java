@@ -14,23 +14,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by Erry on 6/6/2016.
  */
 public class ConstrainRejectedDialog extends DialogFragment {
 
-    @Bind(R2.id.confirm_button)
     TextView confirmBtn;
-    @Bind(R2.id.reason)
     EditText reasonTxt;
-    @Bind(R2.id.title)
     TextView titleTxt;
 
     OnConfirmReject onConfirmReject;
@@ -66,8 +60,10 @@ public class ConstrainRejectedDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_reject_order_reason, container, false);;
-        ButterKnife.bind(this, view);
+        View view = inflater.inflate(R.layout.dialog_reject_order_reason, container, false);
+        confirmBtn = (TextView) view.findViewById(R.id.confirm_button);
+        reasonTxt = (EditText) view.findViewById(R.id.reason);
+        titleTxt = (TextView) view.findViewById(R.id.title);
         return view;
     }
 
@@ -76,7 +72,7 @@ public class ConstrainRejectedDialog extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
         String title = getArguments().getString(ConfirmRejectOrderActivity.REASON);
         type = (ProductListAdapter.Type) getArguments().getSerializable(ConfirmRejectOrderActivity.TYPE);
-        titleTxt.setText(Html.fromHtml("Alasan Penolakan: <b>"+title+"<b>"));
+        titleTxt.setText(MethodChecker.fromHtml("Alasan Penolakan: <b>"+title+"<b>"));
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +85,6 @@ public class ConstrainRejectedDialog extends DialogFragment {
     }
 
     public boolean validateForm(){
-        Log.d("Info Text Reason", "length "+reasonTxt.getText().toString().length());
         if(reasonTxt.getText().toString().isEmpty()){
             reasonTxt.setError(getString(R.string.desc_should_not_empty));
             return false;

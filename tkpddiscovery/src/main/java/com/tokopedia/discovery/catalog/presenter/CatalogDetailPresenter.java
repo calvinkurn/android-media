@@ -3,20 +3,20 @@ package com.tokopedia.discovery.catalog.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
-import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
-import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
-import com.tokopedia.discovery.catalog.listener.IDetailCatalogView;
-import com.tokopedia.discovery.catalog.model.CatalogDetailData;
-import com.tokopedia.discovery.catalog.model.CatalogImage;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
+import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
+import com.tokopedia.discovery.catalog.listener.IDetailCatalogView;
+import com.tokopedia.discovery.catalog.model.CatalogDetailData;
+import com.tokopedia.discovery.catalog.model.CatalogImage;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -40,7 +40,7 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
 
 
     @Override
-    public void processGetCatalogDetailData(final Activity activity, String catalogId) {
+    public void processGetCatalogDetailData(final Activity activity,final String catalogId) {
         catalogView.showMainProcessLoading();
         catalogView.cleanAllContent();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -76,7 +76,7 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
                     public void onNext(CatalogDetailData catalogDetailData) {
                         catalogView.hideMainProcessLoading();
                         catalogView.renderCatalogDescription(
-                                Html.fromHtml(catalogDetailData.getCatalogInfo()
+                                MethodChecker.fromHtml(catalogDetailData.getCatalogInfo()
                                         .getCatalogDescription()).toString()
                         );
                         catalogView.renderCatalogImage(
@@ -96,18 +96,19 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
 
                         catalogView.renderCatalogShareData(
                                 generateCatalogShareData(activity,
-                                        catalogDetailData.getCatalogInfo().getCatalogUrl())
+                                        catalogDetailData.getCatalogInfo().getCatalogUrl(), catalogId)
                         );
                         catalogView.renderButtonBuy();
                     }
                 });
     }
 
-    private ShareData generateCatalogShareData(Activity activity, String catalogUrl) {
+    private ShareData generateCatalogShareData(Activity activity, String catalogUrl,String catalogId) {
         return ShareData.Builder.aShareData()
-                .setType(activity.getString(R.string.share_catalog_key))
+                .setId(catalogId)
                 .setName(activity.getString(R.string.message_share_catalog))
-                .setTextContent(activity.getString(R.string.share_text_content) + " " + catalogUrl)
+                .setType(ShareData.CATALOG_TYPE)
+                .setTextContent(activity.getString(R.string.share_text_content))
                 .setUri(catalogUrl)
                 .build();
     }
@@ -118,9 +119,7 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
             catalogView.showToastMessage("Data katalog belum tersedia");
             return;
         }
-        Intent intent = new Intent(activity, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
-        catalogView.navigateToActivity(intent);
+        catalogView.navigateToActivity(ShareActivity.createIntent(activity,shareData));
     }
 
     @Override
@@ -137,5 +136,10 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
         bundle.putInt("img_pos", currentItem);
         intent.putExtras(bundle);
         catalogView.navigateToActivity(intent);
+    }
+
+    @Override
+    public void unsubscribeObservable() {
+        dataInteractor.unsubscribe();
     }
 }

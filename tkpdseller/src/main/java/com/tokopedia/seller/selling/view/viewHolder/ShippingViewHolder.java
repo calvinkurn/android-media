@@ -1,8 +1,11 @@
 package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,10 +15,12 @@ import android.widget.TextView;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -23,56 +28,32 @@ import butterknife.ButterKnife;
  */
 public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model> {
 
-    @Bind(R2.id.invoice_text_selected)
     public TextView invoice_selected;
-    @Bind(R2.id.ref_number)
     public Button vRefNumber;
-    @Bind(R2.id.error_msg)
     public TextView vError;
-    @Bind(R2.id.receiver_name)
     public TextView vReceiver;
-    @Bind(R2.id.insert_receiver_name)
     public TextView vInsertReceiver;
-    @Bind(R2.id.dest)
     public TextView vDest;
-    @Bind(R2.id.insert_dest)
     public TextView vInsertDest;
-    @Bind(R2.id.shipping)
     public TextView vShipping;
-    @Bind(R2.id.insert_shipping)
     public TextView vInsertShipping;
-    @Bind(R2.id.insert_sender_detail)
     public TextView vInsertSenderDS;
-    @Bind(R2.id.sender_detail)
     public TextView vSenderDS;
-    @Bind(R2.id.dropshipper)
     public View Dropshipper;
-    @Bind(R2.id.insert_dropshipper)
     public View InsertDropshipper;
-    @Bind(R2.id.info_view)
     public View InfoView;
-    @Bind(R2.id.insert_view)
     public View InsertView;
-    @Bind(R2.id.user_name)
     public TextView UserName;
-    @Bind(R2.id.insert_user_name)
     public TextView InsertUserName;
-    @Bind(R2.id.but_overflow)
     public LinearLayout BtnOverflow;
-    @Bind(R2.id.deadline)
     public TextView Deadline;
-    @Bind(R2.id.deadline_view)
     public View DeadlineView;
-    @Bind(R2.id.invoice_text)
     public TextView Invoice;
-    @Bind(R2.id.shipping_price)
     public TextView vShippingPrice;
-    @Bind(R2.id.cancel_but)
     public ImageView CancelBut;
-    @Bind(R2.id.camera_but)
     public ImageView CameraBut;
-    @Bind(R2.id.main_view)
     public View MainView;
+    View deadlineColoredBorder;
 //
 //    public ShippingViewHolder(View itemView) {
 //        super(itemView);
@@ -81,7 +62,32 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
 
     public ShippingViewHolder(View itemView, MultiSelector multiSelector) {
         super(itemView, multiSelector);
-        ButterKnife.bind(this, itemView);
+        invoice_selected = (TextView) itemView.findViewById(R.id.invoice_text_selected);
+        vRefNumber = (Button) itemView.findViewById(R.id.ref_number);
+        vError = (TextView) itemView.findViewById(R.id.error_msg);
+        vReceiver = (TextView) itemView.findViewById(R.id.receiver_name);
+        vInsertReceiver = (TextView) itemView.findViewById(R.id.insert_receiver_name);
+        vDest = (TextView) itemView.findViewById(R.id.dest);
+        vInsertDest = (TextView) itemView.findViewById(R.id.insert_dest);
+        vShipping = (TextView)itemView.findViewById(R.id.shipping);
+        vInsertShipping = (TextView) itemView.findViewById(R.id.insert_shipping);
+        vInsertSenderDS = (TextView) itemView.findViewById(R.id.insert_sender_detail);
+        vSenderDS = (TextView) itemView.findViewById(R.id.sender_detail);
+        Dropshipper = itemView.findViewById(R.id.dropshipper);
+        InsertDropshipper = itemView.findViewById(R.id.insert_dropshipper);
+        InfoView = itemView.findViewById(R.id.info_view);
+        InsertView = itemView.findViewById(R.id.insert_view);
+        UserName = (TextView) itemView.findViewById(R.id.user_name);
+        InsertUserName = (TextView) itemView.findViewById(R.id.insert_user_name);
+        BtnOverflow = (LinearLayout) itemView.findViewById(R.id.but_overflow);
+        Deadline = (TextView) itemView.findViewById(R.id.deadline);
+        DeadlineView = itemView.findViewById(R.id.deadline_view);
+        Invoice = (TextView) itemView.findViewById(R.id.invoice_text);
+        vShippingPrice = (TextView) itemView.findViewById(R.id.shipping_price);
+        CancelBut = (ImageView) itemView.findViewById(R.id.cancel_but);
+        CameraBut = (ImageView) itemView.findViewById(R.id.camera_but);
+        MainView = itemView.findViewById(R.id.main_view);
+        deadlineColoredBorder = itemView.findViewById(R.id.colored_border);
 
         if(Build.VERSION.SDK_INT >= 21) {
             setSelectionModeStateListAnimator(null);
@@ -118,8 +124,8 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
     }
 
     private void setViewData(ShippingImpl.Model model, Context context) {
-        vReceiver.setText(Html.fromHtml(model.ReceiverName));
-        vInsertReceiver.setText(Html.fromHtml(model.ReceiverName));
+        vReceiver.setText(MethodChecker.fromHtml(model.ReceiverName));
+        vInsertReceiver.setText(MethodChecker.fromHtml(model.ReceiverName));
         vDest.setText(model.Dest);
         vInsertDest.setText(model.Dest);
         vShipping.setText(model.Shipping);
@@ -178,7 +184,8 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
         setSenderDetail(model);
         setViewData(model, context);
         checkError(model, context);
-        CommonUtils.getProcessDay(context, model.Deadline, Deadline, DeadlineView);
+        setDeadLine(model.orderShippingList);
+        //CommonUtils.getProcessDay(context, model.deadline, deadline, deadlineView);
     }
 
     @Override
@@ -196,6 +203,17 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
                 return true;
             }
         });
+    }
+
+    private void setDeadLine(OrderShippingList model) {
+        Deadline.setText(model.getOrderDeadline().getDeadlineShipping());
+        try {
+            deadlineColoredBorder.setBackgroundColor(Color.parseColor(model
+                    .getOrderDeadline()
+                    .getDeadlineColor()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

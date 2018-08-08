@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:visibility="visible"
+            android:background="@drawable/background_shadow_bottom_top_profile"/>
+
+        <com.tokopedia.profile.view.customview.PartialUserDataView
+            android:id="@+id/profile_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_shadow_top_profile"
+            android:visibility="visible" />
+
+        <com.tokopedia.profile.view.customview.PartialUserInfoView
+            android:id="@+id/profile_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_shadow_top_profile"
+            android:visibility="visible" />
+
+        <com.tokopedia.profile.view.customview.PartialUserShopView
+            android:id="@+id/profile_shop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_shadow_top_profile"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

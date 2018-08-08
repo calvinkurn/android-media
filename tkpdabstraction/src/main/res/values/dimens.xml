@@ -1,0 +1,5 @@
+<resources>
+
+    <dimen name="image_no_result">156dp</dimen>
+    <dimen name="half_screen">160dp</dimen>
+</resources>

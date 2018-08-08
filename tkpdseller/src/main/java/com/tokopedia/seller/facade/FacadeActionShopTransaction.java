@@ -7,6 +7,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.seller.selling.network.apiservices.MyShopOrderActService;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
@@ -60,6 +62,12 @@ public class FacadeActionShopTransaction {
         void onFailed(String errorMsg);
     }
 
+    public interface OnRetryPickupListener {
+        void onSuccess(String successMessage);
+
+        void onFailed(String errorMessage);
+    }
+
     public static FacadeActionShopTransaction createInstance(Context context, String orderId) {
         FacadeActionShopTransaction facade = new FacadeActionShopTransaction();
         facade.context = context;
@@ -97,18 +105,16 @@ public class FacadeActionShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.onFailed();
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -170,18 +176,16 @@ public class FacadeActionShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.onFailed();
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -221,18 +225,16 @@ public class FacadeActionShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.onFailed("terjadi masalah koneksi");
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 JSONObject jsonObject = null;
@@ -256,4 +258,33 @@ public class FacadeActionShopTransaction {
                 ));
     }
 
+    public void retryCourierPickup(final OnRetryPickupListener listener) {
+        TKPDMapParam<String, String> paramsRetryPickup = new TKPDMapParam<>();
+        paramsRetryPickup.put("order_id", orderId);
+        compositeSubscription.add(new MyShopOrderActService().getApi()
+                .retryPickUp(AuthUtil.generateParamsNetwork(context, paramsRetryPickup))
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<TkpdResponse>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onFailed(context.getString(R.string.msg_network_error_1));
+                    }
+
+                    @Override
+                    public void onNext(Response<TkpdResponse> tkpdResponse) {
+                        if(!tkpdResponse.body().isError()) {
+                            listener.onSuccess(tkpdResponse.body().getStatusMessages().get(0));
+                        } else {
+                            listener.onFailed(tkpdResponse.body().getErrorMessageJoined());
+                        }
+                    }
+                }));
+    }
 }

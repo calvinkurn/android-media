@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-@Parcel(parcelsIndex = false)
+@Parcel
 public class OrderHistory {
 
     @SerializedName("history_status_date")

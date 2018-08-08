@@ -11,28 +11,25 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManager;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
-import com.tokopedia.core.home.ParentIndexHome;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.adapter.TxConfBankListAdapter;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
 import com.tokopedia.transaction.purchase.listener.ConfirmPaymentViewListener;
 import com.tokopedia.transaction.purchase.model.ConfirmPaymentData;
-import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.Form;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormEdit;
@@ -48,8 +45,7 @@ import java.util.Map;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * ConfirmPaymentPresenterImpl
- * Created by Angga.Prasetiyo on 20/06/2016.
+ * @author Angga.Prasetiyo on 20/06/2016.
  */
 public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
     private final ConfirmPaymentViewListener viewListener;
@@ -105,7 +101,7 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
 
     @Override
     public void processGetEditPaymentForm(final Context context, final String confirmationId) {
-        LocalCacheHandler bankCache = new LocalCacheHandler(context, ParentIndexHome.FETCH_BANK);
+        LocalCacheHandler bankCache = new LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK);
         if (bankCache.isExpired() || getBankListFromDB("").size() == 0) {
             requestBankList(context, new OnFinishBankList() {
                 @Override
@@ -120,7 +116,7 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
 
     @Override
     public void processGetConfirmPaymentForm(final Context context, final String confirmationId) {
-        LocalCacheHandler bankCache = new LocalCacheHandler(context, ParentIndexHome.FETCH_BANK);
+        LocalCacheHandler bankCache = new LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK);
         if (bankCache.isExpired() || getBankListFromDB("").size() == 0) {
             requestBankList(context, new OnFinishBankList() {
                 @Override
@@ -142,24 +138,6 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
             } else {
                 actionVerificationPayment(context, data);
             }
-        }
-    }
-
-    @Override
-    public void setLocalyticsFlow(Context context, ConfirmationData data) {
-        try {
-            int amtPayment = Integer.parseInt(data.getPaymentDetail()
-                    .getPaymentAmt().replaceAll("\\D+", ""));
-            Map<String, String> values = new HashMap<>();
-            values.put(context.getString(R.string.event_payment_method),
-                    data.getPaymentDetail().getPaymentMethodName());
-            values.put(context.getString(R.string.event_value_total_transaction),
-                    getTotalTransactionCategory(context, amtPayment));
-
-            PaymentTracking.confirmPaymentLoca(values);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CommonUtils.dumper("LocalTag : Error : " + e.toString());
         }
     }
 
@@ -211,6 +189,7 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
                     > formEditData.getDatetime().getDayInt()) {
                 if (Integer.parseInt(data.getPaymentMonth())
                         >= formEditData.getDatetime().getMonthInt()) {
+                    //noinspection WrongConstant
                     if (Integer.parseInt(data.getPaymentYear())
                             == Calendar.getInstance().get(Calendar.YEAR)) {
                         viewListener.renderErrorDate(context.getString(R.string.error_payment_date_not_valid));
@@ -290,7 +269,8 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
                 return false;
             }
         }
-        if (!data.getPaymentMethod().equals("5") && ((data.getPaymentAmount() == null || data.getPaymentAmount().isEmpty()))) {
+        if (!data.getPaymentMethod().equals("5")
+                && ((data.getPaymentAmount() == null || data.getPaymentAmount().isEmpty()))) {
             viewListener.renderErrorPaymentAmount("Jumlah Pembayaran harus diisi");
             return false;
         } else {
@@ -414,15 +394,10 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
 
             @Override
             public void setBank(List<Bank> banks) {
-                LocalCacheHandler cache = new LocalCacheHandler(context, ParentIndexHome.FETCH_BANK);
+                LocalCacheHandler cache = new LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK);
                 cache.setExpire(86400);
                 cache.applyEditor();
                 action.actionOnSuccess();
-            }
-
-            @Override
-            public void setDepartments(List<CategoryDB> departments) {
-
             }
 
             @Override

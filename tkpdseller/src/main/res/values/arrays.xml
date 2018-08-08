@@ -1,0 +1,85 @@
+<resources>
+
+    <!-- Library =============================================================================== -->
+    <string-array name="lib_date_picker_month_entries">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>Mei</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Agu</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
+
+    <!-- Product =============================================================================== -->
+    <string-array name="product_currency_entries">
+        <item>Rp</item>
+        <item>US$</item>
+    </string-array>
+    <string-array name="product_currency_values">
+        <item>@string/product_currency_value_idr</item>
+        <item>@string/product_currency_value_usd</item>
+    </string-array>
+
+    <string-array name="product_weight_entries">
+        <item>Gram</item>
+        <item>Kg</item>
+    </string-array>
+    <string-array name="product_weight_values">
+        <item>@string/product_weight_value_gram</item>
+        <item>@string/product_weight_value_kg</item>
+    </string-array>
+
+    <string-array name="product_stock_status_entries">
+        <item>Selalu Tersedia</item>
+        <item>Stok Terbatas</item>
+        <item>Stok Kosong</item>
+    </string-array>
+    <string-array name="product_stock_status_values">
+        <item>@string/product_stock_available_value</item>
+        <item>@string/product_stock_limited_value</item>
+        <item>@string/product_stock_not_available_value</item>
+    </string-array>
+
+    <string-array name="product_condition_entries">
+        <item>Baru</item>
+        <item>Bekas</item>
+    </string-array>
+    <string-array name="product_condition_values">
+        <item>@string/product_condition_value_new</item>
+        <item>@string/product_condition_value_recon</item>
+    </string-array>
+
+    <string-array name="product_insurance_entries">
+        <item>Opsional</item>
+        <item>Ya</item>
+    </string-array>
+    <string-array name="product_insurance_values">
+        <item>@string/product_insurance_value_optional</item>
+        <item>@string/product_insurance_value_yes</item>
+    </string-array>
+
+    <string-array name="product_free_returns_entries">
+        <item>Ya</item>
+        <item>Tidak</item>
+    </string-array>
+    <string-array name="product_free_returns_values">
+        <item>@string/product_free_return_values_active</item>
+        <item>@string/product_free_return_values_inactive</item>
+    </string-array>
+
+    <string-array name="product_pre_order_entries">
+        <item>Hari</item>
+        <item>Minggu</item>
+    </string-array>
+    <string-array name="product_pre_order_values">
+        <item>@string/product_pre_order_value_day</item>
+        <item>@string/product_pre_order_value_week</item>
+    </string-array>
+
+</resources>

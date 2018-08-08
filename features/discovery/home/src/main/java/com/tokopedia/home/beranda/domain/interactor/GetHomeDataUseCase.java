@@ -1,0 +1,27 @@
+package com.tokopedia.home.beranda.domain.interactor;
+
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.home.beranda.data.repository.HomeRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import java.util.List;
+
+import rx.Observable;
+
+/**
+ * Created by henrypriyono on 26/01/18.
+ */
+
+public class GetHomeDataUseCase extends UseCase<List<Visitable>> {
+    private final HomeRepository repository;
+
+    public GetHomeDataUseCase(HomeRepository homeRepository) {
+        this.repository = homeRepository;
+    }
+
+    @Override
+    public Observable<List<Visitable>> createObservable(RequestParams requestParams) {
+        return repository.getAllHomeData();
+    }
+}

@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:background="@color/tkpd_bg_color"
+    android:orientation="vertical">
+
+    <com.tokopedia.topads.sdk.widget.TopAdsBannerView
+        android:id="@+id/banner_ads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <!-- Untuk onRetry satu halaman -->
+        <ImageView
+            android:id="@+id/no_result_image"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="@dimen/dp_24"
+            android:gravity="center_horizontal"
+            app:srcCompat="@drawable/ic_empty_search" />
+
+        <TextView
+            android:id="@+id/text_view_empty_title_text"
+            style="@style/TextView.Title"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="center"
+            android:text="@string/msg_empty_search_with_filter_1" />
+
+        <TextView
+            android:id="@+id/text_view_empty_content_text"
+            style="@style/TextView.Small.BlackSecondary"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_22"
+            android:gravity="center"
+            android:maxLines="4"
+            tools:text="@string/msg_empty_search_with_filter_2" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/selectedFilterRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_24"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/button_add_promo"
+            style="@style/Button.Submit.Green"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:paddingLeft="21dp"
+            android:paddingRight="21dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/empty_search_button_text" />
+
+    </LinearLayout>
+
+    <com.tokopedia.topads.sdk.widget.TopAdsView
+        android:id="@+id/topads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:display_type="grid"
+        app:ep="product"
+        app:items="4" />
+
+</LinearLayout>

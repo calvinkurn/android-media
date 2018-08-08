@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -41,9 +44,24 @@ import java.util.regex.Pattern;
  */
 public class ShippingImpl extends Shipping {
 
-    private List<Model> modelList;
+    public static final int JNE_SHIPPING = 1;
+    public static final int TIKI_SHIPPING = 2;
+    public static final int RPX_SHIPPING = 3;
+    public static final int POS_INDONESIA_SHIPPING = 4;
+    public static final int WAHANA_SHIPPING = 6;
+    public static final int PANDU_SHIPPING = 8;
+    public static final int FIRST_SHIPPING = 9;
+    public static final String LIST_MODEL = "ListModel";
+    public static final String LIST_CHECKED = "ListChecked";
+    public static final int GOJEK_SHIPPING = 10;
+    public static final int SICEPAT_SHIPPING = 11;
+    public static final int NINJA_EXPRESS_SHIPPING = 12;
+    public static final int GRAB_SHIPPING = 13;
+    public static final int JNT = 14;
+
+    private List<Model> modelList= new ArrayList<>();
     //    private List<Fragment> detailList;
-    private List<Model> checkedList;
+    private List<Model> checkedList= new ArrayList<>();
     private boolean isLoading;
 
     private FacadeShopTransaction facade;
@@ -65,11 +83,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void initData(@NonNull Context context) {
+        view.setAdapter();
+        view.setListener();
         if(!isAfterRotate) {
-            view.initView();
-            view.setAdapter();
-            view.setListener();
-            view.initRefreshView();
             if (isAllowLoading()) {
                 view.setRefreshPullEnabled(false);
             }
@@ -89,19 +105,19 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void getRotationData(Bundle argument) {
-
+        modelList = Parcels.unwrap(argument.getParcelable(LIST_MODEL));
+        checkedList = Parcels.unwrap(argument.getParcelable(LIST_CHECKED));
     }
 
     @Override
     public void saveDataBeforeRotation(Bundle argument) {
-
+        argument.putParcelable(LIST_MODEL, Parcels.wrap(modelList));
+        argument.putParcelable(LIST_CHECKED, Parcels.wrap(checkedList));
     }
 
     @Override
     public void initDataInstance(Context context) {
         this.context = context;
-        modelList = new ArrayList<>();
-        checkedList = new ArrayList<>();
         facade = FacadeShopTransaction.createInstance(context);
         view.initHandlerAndAdapter();
         checkValidationToSendGoogleAnalytic(view.getUserVisible(), context);
@@ -116,7 +132,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateListDataChecked(int position, boolean selected) {
-        (modelList.get(position)).Checked = selected;
+        if (position >= 0 && position < modelList.size()) {
+            (modelList.get(position)).Checked = selected;
+        }
         view.notifyDataSetChanged(modelList);
     }
 
@@ -131,21 +149,29 @@ public class ShippingImpl extends Shipping {
     public int getServiceAgent() {
         switch (view.getSelectedShipping()) {
             case "JNE":
-                return 1;
+                return JNE_SHIPPING;
             case "TIKI":
-                return 2;
+                return TIKI_SHIPPING;
             case "RPX":
-                return 3;
+                return RPX_SHIPPING;
             case "Pos Indonesia":
-                return 4;
+                return POS_INDONESIA_SHIPPING;
             case "Wahana":
-                return 6;
-            case "Cahaya":
-                return 7;
+                return WAHANA_SHIPPING;
             case "Pandu":
-                return 8;
+                return PANDU_SHIPPING;
             case "First":
-                return 9;
+                return FIRST_SHIPPING;
+            case "GO-JEK":
+                return GOJEK_SHIPPING;
+            case "SiCepat":
+                return SICEPAT_SHIPPING;
+            case "Ninja Xpress":
+                return NINJA_EXPRESS_SHIPPING;
+            case "Grab":
+                return GRAB_SHIPPING;
+            case "J&T":
+                return JNT;
             default:
                 return 0;
         }
@@ -156,7 +182,7 @@ public class ShippingImpl extends Shipping {
         if (remark.length() == 0) {
             remark.setError(context.getString(R.string.error_field_required));
         } else if (remark.length() < 5 && remark.length() > 0) {
-            remark.setError("Minimal 5 karakter");
+            remark.setError(context.getString(R.string.char_should_min_5));
         } else if (remark.length() >= 5) {
             actionCancelShipping(pos, remark.getText().toString(), context);
             dialog.dismiss();
@@ -189,7 +215,6 @@ public class ShippingImpl extends Shipping {
     @Override
     public void doRefresh() {
         if (!isLoading && view.getUserVisible()) {
-            view.hideFilter();
             view.getPaging().resetPage();
             if (!view.isRefreshing()) {
                 clearData();
@@ -207,9 +232,10 @@ public class ShippingImpl extends Shipping {
     @Override
     public void onQueryTextSubmit(String query) {
         if (ValidationTextUtil.isValidSalesQuery(query)) {
-            doRefresh();
+            view.hideFilter();
+            onRefreshHandler();
         } else {
-            showToastMessage("Keyword terlalu pendek, minimal 3 karakter");
+            showToastMessage(context.getString(R.string.keyword_min_3_char));
         }
     }
 
@@ -229,11 +255,12 @@ public class ShippingImpl extends Shipping {
             public void OnSuccess(List<Model> model, OrderShippingData Result) {
                 if (view.getPaging().getPage() == 1)
                     modelList.clear();
-                //view.getPaging().setNewParameter(Result);
+                view.getPaging().setNewParameter(Result.getPaging());
                 modelList.addAll(model);
                 view.notifyDataSetChanged(modelList);
                 onFinishConnection();
                 view.setRefreshPullEnabled(true);
+                view.showFab();
 
             }
 
@@ -242,11 +269,13 @@ public class ShippingImpl extends Shipping {
                 onFinishConnection();
                 if (view.getPaging().getPage() == 1)
                     clearData();
+                    view.addEmptyView();
 //                if (modelList.size() == 0) {
 //                    view.addNoResult();
 //                }
                 view.getPaging().setHasNext(false);
                 view.setRefreshPullEnabled(true);
+                view.showFab();
                 view.removeRetry();
             }
 
@@ -255,6 +284,7 @@ public class ShippingImpl extends Shipping {
                 onFinishConnection();
                 if (modelList.size() == 0) {
                     view.addRetry();
+                    view.hideFab();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
@@ -267,6 +297,7 @@ public class ShippingImpl extends Shipping {
                 if (isDataEmpty()) {
                     view.setRefreshPullEnabled(false);
                     view.addRetry();
+                    view.hideFab();
                 } else {
                     try {
                         CommonUtils.UniversalToast(context, context.getString(R.string.msg_connection_timeout_toast));
@@ -329,8 +360,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void onOpenDetail(int pos, Context context) {
-        Model model = modelList.get(pos);
-        context.startActivity(ShippingConfirmationDetail.createInstance(context, model.orderShippingList, model.Permission, model.BuyerId, model.PdfUri, model.Pdf));
+        Intent intent = ((TransactionRouter)MainApplication
+                .getAppContext()).goToOrderDetail(context, modelList.get(pos).OrderId);
+        context.startActivity(intent);
     }
 
     private void finishTimeout() {
@@ -340,12 +372,13 @@ public class ShippingImpl extends Shipping {
         view.setRefreshing(false);
     }
 
-
-    private void onFinishConnection() {
+    @Override
+    public void onFinishConnection() {
         view.enableFilter();
         view.removeRetry();
         view.removeLoading();
         isLoading = false;
+        view.removeEmpty();
         view.finishRefresh();
     }
 
@@ -426,17 +459,19 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateRefNumBarcode(int getBarcodePosition, String barcode) {
-        modelList.get(getBarcodePosition).RefNum = barcode;
-        view.notifyDataSetChanged(modelList);
+        if (getBarcodePosition >= 0 && getBarcodePosition < modelList.size()) {
+            modelList.get(getBarcodePosition).RefNum = barcode;
+            view.notifyDataSetChanged(modelList);
+        }
     }
 
     @Override
     public void moveToDetail(int position) {
-        Intent intent = new Intent(context, SellingDetailActivity.class);
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(modelList.get(position)));
-        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.SHIPING);
-        view.moveToDetailResult(intent, FragmentSellingShipping.REQUEST_CODE_PROCESS_RESULT);
-//        context.startActivity(intent);
+        if(modelList != null && position >= 0 && modelList.get(position) != null) {
+            Intent intent = ((TransactionRouter)MainApplication
+                    .getAppContext()).goToOrderDetail(context, modelList.get(position).OrderId);
+            view.moveToDetailResult(intent, FragmentSellingShipping.REQUEST_CODE_PROCESS_RESULT);
+        }
     }
 
     @Override
@@ -467,7 +502,7 @@ public class ShippingImpl extends Shipping {
         }
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Model {
         public String UserName;
         public String AvatarUrl;

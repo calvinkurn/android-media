@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.selling.SellingService;
@@ -40,10 +40,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Erry on 6/3/2016.
  */
@@ -51,15 +47,10 @@ public class ConfirmRejectOrderFragment extends Fragment implements SellingView 
 
     public static final String PRODUCT_DETAIL_KEY = "product_detail_key";
 
-    @Bind(R2.id.reason)
     TextView reasonText;
-    @Bind(R2.id.list)
     RecyclerView recyclerView;
-    @Bind(R2.id.confirm_button)
     TextView confirmButton;
-    @Bind(R2.id.pBar)
     ProgressBar progressBar;
-    @Bind(R2.id.title_edit_product)
     TextView titleEditProduct;
 
     private ProductListAdapter listAdapter;
@@ -92,7 +83,17 @@ public class ConfirmRejectOrderFragment extends Fragment implements SellingView 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_confirm_reject_order, container, false);
-        ButterKnife.bind(this, view);
+        reasonText = (TextView) view.findViewById(R.id.reason);
+        recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        confirmButton = (TextView) view.findViewById(R.id.confirm_button);
+        progressBar = (ProgressBar) view.findViewById(R.id.pBar);
+        titleEditProduct = (TextView) view.findViewById(R.id.title_edit_product);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onConfirm();
+            }
+        });
         return view;
     }
 
@@ -137,7 +138,6 @@ public class ConfirmRejectOrderFragment extends Fragment implements SellingView 
         ((ConfirmRejectOrderActivity) getActivity()).ConfirmRejectOrder(SellingService.GET_PRODUCT_FORM_EDIT, bundle);
     }
 
-    @OnClick(R2.id.confirm_button)
     public void onConfirm() {
         switch (type) {
             case stock:

@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+
+project.ext {
+    artifactId = 'abstraction'
+    groupId = 'com.tokopedia.abstraction'
+    versionName = "2.22"
+    artifactName ="tkpdabstraction-release"
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.design)
+
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.serviceDependencies.hockeyApp
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.networkDependencies.glide
+}
+
+apply from: '../publish_local.gradle'

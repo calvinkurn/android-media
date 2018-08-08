@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 
 /**
- * Created by Angga.Prasetiyo on 15/06/2016.
+ * @author Angga.Prasetiyo on 15/06/2016.
  */
 public interface TxConfDetailPresenter {
 

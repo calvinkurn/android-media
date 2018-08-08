@@ -1,43 +1,114 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "25.0.0"
-
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdSeller']
+            }
         }
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
 }
 
+project.ext {
+    artifactId = 'seller'
+    groupId = 'com.tokopedia.seller'
+    versionName = "2.22"
+    artifactName ="tkpdseller-release"
+}
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile project(':app')
-    testCompile 'junit:junit:4.12'
-    compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
-    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
-    compile "org.parceler:parceler-api:1.0.4"
-    apt "org.parceler:parceler:1.0.4"
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
+    implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.libraries.imagePicker)
+
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.features.productEdit)
+    implementation project(rootProject.ext.libraries.applink)
+
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.features.districtrecommendation)
+    implementation project(rootProject.ext.libraries.imageuploader)
+
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.applink)
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor  rootProject.ext.miscDependencies.parceler
+
+    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.miscDependencies.rxJavaComputation
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.supportLibDependencies.exifinterface
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 }
+
+apply from: '../publish_local.gradle'

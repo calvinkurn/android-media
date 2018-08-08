@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/both_catalog_option_menu"
+        android:title="@string/product_manage_filter_menu_both_catalog" />
+    <item
+        android:id="@+id/with_catalog_option_menu"
+        android:title="@string/product_manage_filter_menu_with_catalog" />
+    <item
+        android:id="@+id/without_catalog_option_menu"
+        android:title="@string/product_manage_filter_menu_without_catalog" />
+
+</menu>

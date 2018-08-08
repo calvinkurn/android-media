@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.partialDetails;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
@@ -104,9 +105,9 @@ public class NewOrderDialogBuilder {
             ProdNameList[i].setLayoutParams(prodParam);
             ProductView[i].setLayoutParams(viewParam);
             if(i != total - 1) {
-                ProdNameList[i].setText(Html.fromHtml(product.getProductName() + " </br> "));
+                ProdNameList[i].setText(MethodChecker.fromHtml(product.getProductName() + " </br> "));
             } else {
-                ProdNameList[i].setText(Html.fromHtml(product.getProductName()));
+                ProdNameList[i].setText(MethodChecker.fromHtml(product.getProductName()));
             }
             ProdNameList[i].setGravity(Gravity.CENTER_VERTICAL);
             ProdQty[i] = new EditText(context);
@@ -180,7 +181,7 @@ public class NewOrderDialogBuilder {
             for(int i=0;i<total;i++){
                 OrderProduct product = model.productList.get(i);
                 prods[i] = new CheckBox(context);
-                prods[i].setText(Html.fromHtml(product.getProductName()));
+                prods[i].setText(MethodChecker.fromHtml(product.getProductName()));
                 ProductList.addView(prods[i]);
             }
         } catch (Exception e) {

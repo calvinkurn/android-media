@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 /**
- * TxListUIReceiver
- * Created by anggaprasetiyo on 9/20/16.
+ * @author anggaprasetiyo on 9/20/16.
  */
-
 public class TxListUIReceiver extends BroadcastReceiver {
     public static final String FILTER_ACTION = TxListUIReceiver.class.getCanonicalName()
             + ".FILTER_ACTION";

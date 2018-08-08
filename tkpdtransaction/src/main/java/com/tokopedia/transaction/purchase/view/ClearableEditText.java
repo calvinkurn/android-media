@@ -12,13 +12,13 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tokopedia.core.R;
+import com.tokopedia.transaction.R;
 
 /**
  * @author Kulomady on 8/15/2016.
  */
 public class ClearableEditText extends AppCompatEditText
-        implements View.OnTouchListener,View.OnFocusChangeListener,TextWatcher {
+        implements View.OnTouchListener, View.OnFocusChangeListener, TextWatcher {
 
     private Drawable mClearTextIcon;
     private OnFocusChangeListener mOnFocusChangeListener;
@@ -41,8 +41,8 @@ public class ClearableEditText extends AppCompatEditText
 
     private void init(final Context context) {
         @SuppressLint("PrivateResource")
-        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.abc_ic_clear_mtrl_alpha);
-        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable); //Wrap the drawable so that it can be tinted pre Lollipop
+        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
+        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(wrappedDrawable, getCurrentHintTextColor());
         mClearTextIcon = wrappedDrawable;
 
@@ -83,7 +83,8 @@ public class ClearableEditText extends AppCompatEditText
     @Override
     public boolean onTouch(final View view, final MotionEvent motionEvent) {
         final int x = (int) motionEvent.getX();
-        if (mClearTextIcon.isVisible() && x > getWidth() - getPaddingRight() - mClearTextIcon.getIntrinsicWidth()) {
+        if (mClearTextIcon.isVisible()
+                && x > getWidth() - getPaddingRight() - mClearTextIcon.getIntrinsicWidth()) {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 setText("");
             }
@@ -91,8 +92,10 @@ public class ClearableEditText extends AppCompatEditText
         }
         return mOnTouchListener != null && mOnTouchListener.onTouch(view, motionEvent);
     }
+
     @Override
-    public final void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+    public final void onTextChanged(final CharSequence s, final int start,
+                                    final int before, final int count) {
         if (isFocused()) {
             setClearIconVisible(s.length() > 0);
         }

@@ -1,0 +1,30 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.tokopedia.gm">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name">
+        <activity
+            android:name=".statistic.view.activity.GMStatisticDashboardActivity"
+            android:label="@string/gm_statistic_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+        <activity
+            android:name=".statistic.view.activity.GMStatisticTransactionActivity"
+            android:exported="true"
+            android:label="@string/gm_statistic_transaction_label" />
+        <activity
+            android:name=".statistic.view.activity.GMStatisticTransactionTableActivity"
+            android:exported="true"
+            android:label="@string/list_sold_product_text" />
+        <activity
+            android:name=".statistic.view.activity.GMStatisticDatePickerActivity"
+            android:exported="true"
+            android:label="@string/title_date_setting" />
+        <activity
+            android:name=".featured.view.activity.GMFeaturedProductActivity"
+            android:exported="true"
+            android:label="@string/featured_product_title" />
+    </application>
+</manifest>

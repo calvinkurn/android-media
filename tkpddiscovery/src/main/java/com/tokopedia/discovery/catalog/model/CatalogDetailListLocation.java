@@ -5,12 +5,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.customadapter.ColoredFilterModel;
 
 /**
  * @author by alvarisi on 10/18/16.
  */
 
-public class CatalogDetailListLocation implements Parcelable {
+public class CatalogDetailListLocation implements Parcelable, ColoredFilterModel {
     @SerializedName("id")
     @Expose
     private String id;
@@ -90,5 +91,10 @@ public class CatalogDetailListLocation implements Parcelable {
 
     public void setTotalData(Integer totalData) {
         this.totalData = totalData;
+    }
+
+    @Override
+    public String getText() {
+        return name;
     }
 }

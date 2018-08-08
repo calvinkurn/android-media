@@ -5,7 +5,7 @@ import org.parceler.Parcel;
 /**
  * Created by Toped10 on 6/3/2016.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class ModelEditPrice {
     public static final String MODEL_EDIT_PRICE_KEY = "model_edit_price_key";
     public static final String PRODUCT_ID = "product_id";

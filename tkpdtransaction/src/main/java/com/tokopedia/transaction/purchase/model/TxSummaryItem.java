@@ -5,11 +5,13 @@ package com.tokopedia.transaction.purchase.model;
  */
 public class TxSummaryItem {
 
+    private int index;
     private String name;
     private int count;
     private String desc;
 
-    public TxSummaryItem(String name, String desc, int count) {
+    public TxSummaryItem(int index, String name, String desc, int count) {
+        this.index = index;
         this.name = name;
         this.desc = desc;
         this.count = count;
@@ -39,4 +41,7 @@ public class TxSummaryItem {
         this.count = count;
     }
 
+    public int getIndex() {
+        return index;
+    }
 }

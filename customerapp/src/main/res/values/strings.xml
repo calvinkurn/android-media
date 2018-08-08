@@ -1,3 +1,124 @@
 <resources>
-    <string name="app_name">Customer App</string>
+    <string name="app_name">Tokopedia</string>
+    <string name="lihat_smua_promo">Lihat Semua Promo</string>
+
+    <!-- Push Notif -->
+    <string name="purchase_finish">Pesanan Selesai</string>
+    <string name="purchase_confirm">Konfirmasi Pesanan</string>
+    <string name="purchase_confirm_receiving">Konfirmasikan Penerimaan</string>
+    <string name="purchase_shipped">Konfirmasi Pengiriman</string>
+    <string name="purchase_canceled">Pesanan Dibatalkan</string>
+    <string name="title_home_official_store">Official Store</string>
+    <string name="label_gold_merchant">Gold Merchant</string>
+    <string name="hint_search_wishlist">Cari produk di wishlist</string>
+
+    <!--favorite page-->
+    <string name="msg_empty_wishlist">Empty wishlist</string>
+    <string name="msg_fav_shop_success">Sukses memfavoritkan toko</string>
+    <string name="msg_fav_shop_failed">Gagal memfavoritkan toko silahkan coba lagi</string>
+    <string name="empty_wishlist">Wishlist Anda masih kosong</string>
+    <string name="find_product">Mulai cari produk</string>
+    <string name="lihat_semua_product">Lihat Semua Produk</string>
+    <string name="textview_redirect_seller_app">Fitur ini hanya tersedia pada aplikasi TopSeller. Nikmati berbagai kemudahan berjualan online dalam genggaman Anda.</string>
+    <string name="drawer_title_wishlist">Wishlist</string>
+    <string name="drawer_title_buyer">Pembelian</string>
+    <string name="drawer_title_payment_status">Status Pembayaran</string>
+    <string name="drawer_title_order_status">Status Pemesanan</string>
+    <string name="drawer_title_confirm_delivery">Konfirmasi Penerimaan</string>
+    <string name="drawer_title_transaction_canceled">Transaksi Dibatalkan</string>
+    <string name="drawer_title_purchase_list">Daftar Pembelian</string>
+    <string name="introducing">Memperkenalkan</string>
+    <string name="download_topseller_app">Download Aplikasi TopSeller</string>
+
+    <!--tokocash cashback-->
+    <string name="toko_cash_pending_title">Bonus Cashback</string>
+    <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
+    <string name="toko_cash_pending_close_button">Tutup</string>
+    <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
+
+    <string name="react_native_banner_official_title">Official Store</string>
+    <string name="official_store_term_conditions_title"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="deeplink_receiver_applink_update_button_title">Update</string>
+    <string name="deeplink_receiver_applink_update_button_cancel_title">Batal</string>
+
+    <!--tokocash history-->
+    <string name="toko_cash_title_page_date_range">Rentang Tanggal</string>
+    <string name="toko_cash_tab_choose_date">Pilih Tanggal</string>
+    <string name="toko_cash_tab_choose_date_range">Pilih Rentang Waktu</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
+
+    <!--home-->
+    <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+    <string name="buka_toko">Buka Toko</string>
+    <string name="manage_toko">Atur Toko</string>
+    <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
+    <string name="manage_shop_wording_subtitle">Kelola pengaturan toko Anda untuk meningkatkan penjualan</string>
+    <string name="empty_shop_wording_title">Buka toko sekarang, banyak lebihnya!</string>
+    <string name="top_up_button">Top Up</string>
+    <string name="open_shop_wording_title">Atur Toko, Raih Keuntungan!</string>
+
+    <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
+    <string name="digital_widget_title">Produk Digital</string>
+
+    <!--For QR Code-->
+    <string name="title_scan_qr">Scan Kode QR</string>
+    <string name="title_dialog_wrong_scan">Oops!</string>
+    <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
+    <string name="btn_dialog_wrong_scan">OK</string>
+    <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
+    <string name="no_available_feature">Fitur akan segera hadir untuk anda.</string>
+    <string name="error_actiivty_open_permission">Gagal membuka scan kode QR</string>
+
+    <!-- Tokocash activation -->
+    <string name="title_activation">Aktivasi TokoCash</string>
+    <string name="applick_tokocash_activation">tokopedia://wallet/activation</string>
+    <string name="label_tokocash">TokoCash</string>
+
+    <string name="payment_description_transfer_procedure">Mohon lakukan pembayaran pesanan Rp. %1$s ke %2$s %3$s sebelum %4$s. Untuk info lebih lanjut cek status pembayaran Anda.</string>
+    <string name="wishlist_empty_title">Wishlist masih kosong</string>
+    <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
+
+    <string name="longpress_beli">Beli</string>
+    <string name="longpress_bayar">Bayar</string>
+    <string name="longpress_jual">Jual</string>
+    <string name="longpress_share">Share</string>
+    <string name="coupon_copy_text">Kode voucher tersalin</string>
+    <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
+    <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
+
+
+    <!-- Shake Shake Campaign -->
+
+    <string name="shake_shake_success">Berhasil shake shake</string>
+    <string name="shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
+
+    <string name="drawer_title_shopping_list">Daftar Belanja</string>
+    <string name="drawer_title_payment_list">Menunggu Pembayaran</string>
+    <string name="drawer_title_digital_transaction_list"><![CDATA[Daftar Top-Up & Tagihan]]></string>
+    <string name="drawer_title_travel_flight_transaction_list">Daftar Tiket Pesawat</string>
+    <string name="drawer_title_travel_train_transaction_list">Daftar Tiket Kereta Api</string>
+    <string name="drawer_title_events_transaction_list">Daftar Events</string>
+    <string name="drawer_title_deals_transaction_list">Daftar Deals</string>
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+    <string name="sedang_dalam_proses_shake">Sedang dalam Proses Shake</string>
+    <string name="cancel_shake_shake">Memuat Shake-Shake</string>
+    <string name="shake_shake_terus">Ayo Shake Terus</string>
+    <string name="ok">OK</string>
+    <string name="disable_shake_shake">“Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk main Shake Shake-nya.” OK
+</string>
+    <string name="yes">Ya</string>
+    <string name="masuk_sekarang">Ok</string>
+    <string name="shake_login_error">Login sekarang untuk menghidupkan kembali fitur shake-shake!</string>
+    <string name="mainapp_extend_gold_merchant">Perpanjang Gold Merchant</string>
+    <string name="mainapp_upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="oops">Oops!</string>
+    <string name="shake_lagi">Shake Lagi</string>
+    <string name="sepertinya_sistem_shake">Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk!</string>
+    <string name="matikan_shake">Matikan Shake</string>
+    <string name="video_not_play_error">Video can not be played.</string>
+    <string name="cta_here">CTA Here</string>
+    <string name="video_title_bar_lable">Tokopedia</string>
+    <string name="loren_impsum">Loren Impsum</string>
+    <string name="video_desc">Loren Impsum Loren Impsum Loren ImpsumLoren Impsum</string>
 </resources>

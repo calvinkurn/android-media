@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="70dp"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="6dp"
+    android:layout_marginTop="6dp"
+    android:background="@drawable/shape_bg_rounded_white_rectangle"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center"
+    android:padding="8dp"
+    android:text="Rp 20000"
+    android:textSize="12sp" />

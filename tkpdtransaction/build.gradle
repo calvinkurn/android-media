@@ -1,37 +1,80 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
 
-android {
-    compileSdkVersion 24
-    buildToolsVersion "25.0.0"
-
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    dependencies {
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
         }
+        classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+project.ext {
+    artifactId = 'transaction'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "2.22"
+    artifactName ="tkpdtransaction-release"
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.imagePicker)
 
-    compile project(':app')
+    implementation project(rootProject.ext.libraries.graphql)
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile 'junit:junit:4.12'
-    compile'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
-    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.base
+
+    implementation rootProject.ext.miscDependencies.scannerZxing
+
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+
+    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
+    implementation project(path: ':libraries:applink')
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
 }
+
+apply from: '../publish_local.gradle'

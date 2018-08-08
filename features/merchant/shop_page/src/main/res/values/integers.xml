@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="shop_page_collapsing_toolbar_hide_time">50</integer>
+
+</resources>

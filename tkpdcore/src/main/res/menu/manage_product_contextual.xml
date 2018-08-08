@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_update_categories"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_update_categories"/>
+    
+    <item
+        android:id="@+id/action_update_etalase"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_update_etalase"/>
+        
+    <item
+        android:id="@+id/action_update_insurance"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_update_insurance"/>
+
+    <item
+        android:id="@+id/action_delete"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_delete"/>
+
+</menu>

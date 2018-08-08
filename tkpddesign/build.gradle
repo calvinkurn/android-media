@@ -1,0 +1,34 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'design'
+    groupId = 'com.tokopedia.design'
+    versionName = "2.22"
+    artifactName ="tkpddesign-release"
+}
+
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    testImplementation "org.robolectric:robolectric:3.8"
+
+}
+
+apply from: '../publish_local.gradle'

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextView.Headline.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.SubHeadline.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextView.TitleBig.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Title.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Title.BlackSecondary.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+    <style name="TextView.Small.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Small.Green.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Small.BlackDisabled.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Small.WhitePrimary.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Micro.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Micro.BlackSecondary.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextView.Micro.BlackDisabled.Bold">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+</resources>

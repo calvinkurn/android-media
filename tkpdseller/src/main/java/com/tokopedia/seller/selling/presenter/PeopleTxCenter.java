@@ -17,4 +17,8 @@ public abstract class PeopleTxCenter extends BaseImpl<PeopleTxCenterView> {
     public abstract void checkValidationToSendGoogleAnalytic(boolean isVisibleToUser, Context context);
 
     public abstract void setLocalyticFlow(Activity context);
+
+    public abstract void refreshData();
+
+    public abstract void onDestroyView();
 }

@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
@@ -16,8 +17,10 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import rx.Subscriber;
+
 /**
- * Created by Angga.Prasetiyo on 11/04/2016.
+ * @author Angga.Prasetiyo on 11/04/2016.
  */
 public interface TxOrderNetInteractor {
 
@@ -27,7 +30,8 @@ public interface TxOrderNetInteractor {
         int PULL_REFRESH = 2;
     }
 
-    void getCancelPaymentForm(Context context, Map<String, String> params, OnCancelPaymentForm listener);
+    void getCancelPaymentForm(Context context, Map<String, String> params,
+                              OnCancelPaymentForm listener);
 
     void cancelPayment(Context context, Map<String, String> params, OnCancelPayment listener);
 
@@ -55,8 +59,8 @@ public interface TxOrderNetInteractor {
     void deliverReject(@NonNull Context context, @NonNull Map<String, String> params,
                        @NonNull OnDeliverReject listener);
 
-    void getInvoiceData(@NonNull Context context, @NonNull Map<String, String> params,
-                        @NonNull OnGetInvoiceData listener);
+    void getInvoiceData(TKPDMapParam<String, String> paramNetwork,
+                        Subscriber<TxVerInvoiceData> subscriberGetTXInvoiceData);
 
     void uploadValidProofByPayment(Context context, Map<String, String> params,
                                    OnUploadProof listener);
@@ -72,6 +76,15 @@ public interface TxOrderNetInteractor {
 
     void getEditPaymentForm(@NonNull Context context, @NonNull Map<String, String> params,
                             EditPaymentFormListener listener);
+
+    void requestCancelOrder(@NonNull TKPDMapParam<String, String> params,
+                            RequestCancelOrderListener listener);
+
+    void showCancelTransactionDialog(@NonNull TKPDMapParam<String, String> params,
+                           CancelTransactionDialogListener listener);
+
+    void cancelTransaction(@NonNull TKPDMapParam<String, String> params,
+                           CancelTransactionListener listener);
 
     void unSubscribeObservable();
 
@@ -92,6 +105,8 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
     }
 
@@ -100,6 +115,8 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
     }
 
@@ -107,6 +124,8 @@ public interface TxOrderNetInteractor {
         void onSuccess(JSONObject data, OrderListData dataObj);
 
         void onError(String message);
+
+        void onNoConnection(String message);
 
         void onEmptyData();
     }
@@ -118,13 +137,13 @@ public interface TxOrderNetInteractor {
     }
 
     interface OnGetPaymentConfirmationList {
-        void onSuccess(JSONObject data, TxConfListData dataObj);
+        void onSuccess(TxConfListData dataObj);
 
         void onError(String message);
 
         void onEmptyData();
 
-        void onTimeout(String message);
+        void onNoConnection(String message);
     }
 
 
@@ -156,14 +175,9 @@ public interface TxOrderNetInteractor {
 
         void onError(String message);
 
+        void onNoConnection(String message);
+
         void onEmptyData();
-    }
-
-    interface OnGetInvoiceData {
-
-        void onSuccess(TxVerInvoiceData data);
-
-        void onError(String message);
     }
 
     interface OnUploadProof {
@@ -192,5 +206,36 @@ public interface TxOrderNetInteractor {
         void onNoConnection(String message);
     }
 
+    interface RequestCancelOrderListener {
+        void onSuccess(String message);
+
+        void onError(String message);
+
+        void onTimeout(String message);
+
+        void onNoConnection(String message);
+    }
+
+    interface CancelTransactionDialogListener {
+        void onSuccess(String message);
+
+        void onError(String message);
+
+        void onTimeout(String message);
+
+        void onNoConnection(String message);
+    }
+
+    interface CancelTransactionListener{
+        void onSuccess(String message);
+
+        void onPaymentExpired(String message);
+
+        void onError(String message);
+
+        void onTimeout(String message);
+
+        void onNoConnection(String message);
+    }
 
 }

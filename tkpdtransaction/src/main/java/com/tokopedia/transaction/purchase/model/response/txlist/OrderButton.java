@@ -33,6 +33,15 @@ public class OrderButton implements Parcelable {
     @SerializedName("button_open_complaint_received")
     @Expose
     private String buttonComplaintReceived;
+    @SerializedName("button_open_complaint_not_received")
+    @Expose
+    private String buttonComplaintNotReceived;
+    @SerializedName("button_cancel_request")
+    @Expose
+    private String buttonCancelRequest;
+    @SerializedName("button_cancel_replacement")
+    @Expose
+    private String buttonCancelReplacement;
 
     public String getButtonOpenDispute() {
         return buttonOpenDispute;
@@ -90,6 +99,33 @@ public class OrderButton implements Parcelable {
         this.buttonComplaintReceived = buttonComplaintReceived;
     }
 
+    public String getButtonComplaintNotReceived() {
+        return buttonComplaintNotReceived;
+    }
+
+    public void setButtonComplaintNotReceived(String buttonComplaintNotReceived) {
+        this.buttonComplaintNotReceived = buttonComplaintNotReceived;
+    }
+
+    public String getButtonCancelRequest() {
+        return buttonCancelRequest;
+    }
+
+    public void setButtonCancelRequest(String buttonCancelRequest) {
+        this.buttonCancelRequest = buttonCancelRequest;
+    }
+
+    public String getButtonCancelReplacement() {
+        return buttonCancelReplacement;
+    }
+
+    public void setButtonCancelReplacement(String buttonCancelReplacement) {
+        this.buttonCancelReplacement = buttonCancelReplacement;
+    }
+
+    public OrderButton() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -97,32 +133,35 @@ public class OrderButton implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.buttonAskSeller);
-        dest.writeString(this.buttonOpenDispute);
-        dest.writeString(this.buttonResCenterUrl);
-        dest.writeString(this.buttonOpenTimeLeft);
-        dest.writeString(this.buttonResCenterGoTo);
-        dest.writeString(this.buttonUploadProof);
-        dest.writeString(this.buttonComplaintReceived);
-    }
-
-    public OrderButton() {
+        dest.writeString(buttonAskSeller);
+        dest.writeString(buttonOpenDispute);
+        dest.writeString(buttonResCenterUrl);
+        dest.writeString(buttonOpenTimeLeft);
+        dest.writeString(buttonResCenterGoTo);
+        dest.writeString(buttonUploadProof);
+        dest.writeString(buttonComplaintReceived);
+        dest.writeString(buttonCancelRequest);
+        dest.writeString(buttonCancelReplacement);
+        dest.writeString(buttonComplaintNotReceived);
     }
 
     protected OrderButton(Parcel in) {
-        this.buttonAskSeller = in.readString();
-        this.buttonOpenDispute = in.readString();
-        this.buttonResCenterUrl = in.readString();
-        this.buttonOpenTimeLeft = in.readString();
-        this.buttonResCenterGoTo = in.readString();
-        this.buttonUploadProof = in.readString();
-        this.buttonComplaintReceived = in.readString();
+        buttonAskSeller = in.readString();
+        buttonOpenDispute = in.readString();
+        buttonResCenterUrl = in.readString();
+        buttonOpenTimeLeft = in.readString();
+        buttonResCenterGoTo = in.readString();
+        buttonUploadProof = in.readString();
+        buttonComplaintReceived = in.readString();
+        buttonCancelRequest = in.readString();
+        buttonCancelReplacement = in.readString();
+        buttonComplaintNotReceived = in.readString();
     }
 
     public static final Creator<OrderButton> CREATOR = new Creator<OrderButton>() {
         @Override
-        public OrderButton createFromParcel(Parcel source) {
-            return new OrderButton(source);
+        public OrderButton createFromParcel(Parcel in) {
+            return new OrderButton(in);
         }
 
         @Override

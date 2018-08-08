@@ -7,8 +7,7 @@ import com.tokopedia.transaction.purchase.model.AllTxFilter;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 
 /**
- *
- * Created by Angga.Prasetiyo on 21/04/2016.
+ * @author Angga.Prasetiyo on 21/04/2016.
  */
 public interface TxListPresenter {
 
@@ -24,8 +23,6 @@ public interface TxListPresenter {
 
     void processRejectOrder(Context context, OrderData data);
 
-    void processUploadTx(Context context, OrderData data);
-
     void processConfirmDeliver(Context context, OrderData data, int typeInstance);
 
     void processOpenDispute(Context activity, OrderData data, int state);
@@ -38,4 +35,9 @@ public interface TxListPresenter {
 
     void onDestroyView();
 
+    void cancelReplacement(Context context, OrderData orderData);
+
+    void processComplain(Context context, OrderData orderData);
+
+    void processComplainConfirmDeliver(Context context, OrderData orderData);
 }

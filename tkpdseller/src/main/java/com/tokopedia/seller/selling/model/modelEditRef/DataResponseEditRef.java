@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-@Parcel(parcelsIndex = false)
+@Parcel
 public class DataResponseEditRef {
 
     @SerializedName("is_success")

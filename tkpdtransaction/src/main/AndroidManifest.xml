@@ -1,39 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.transaction">
+    package="com.tokopedia.transaction">
+
+    <uses-feature
+        android:name="android.hardware.fingerprint"
+        android:required="false"/>
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity"
-            android:label="@string/title_activity_payment_confirmation"
+            android:name=".purchase.activity.ConfirmPaymentActivity"
+            android:label="@string/title_change_payment"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.transaction.purchase.activity.TxConfirmationDetailActivity"
+            android:name=".purchase.activity.TxConfirmationDetailActivity"
             android:label="@string/title_activity_transaction_payment_confirmation_detail"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.tokopedia.transaction.purchase.activity.TxVerDetailActivity"
+            android:name=".purchase.activity.TxVerDetailActivity"
             android:label="@string/title_payment_verification"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.transaction.purchase.activity.TxDetailActivity"
+            android:name=".purchase.activity.TxDetailActivity"
             android:label="@string/title_activity_people_tx_details"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.transaction.purchase.activity.TxHistoryActivity"
+            android:name=".purchase.activity.TxHistoryActivity"
             android:label="@string/title_activity_order_history_view"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.transaction.purchase.activity.PurchaseActivity"
+            android:name=".purchase.activity.PurchaseActivity"
             android:label="@string/title_purchase"
+             />
+        <activity
+            android:name=".orders.orderlist.view.activity.OrderListActivity"
+            android:label="@string/title_order_list"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".orders.orderdetails.view.activity.OrderListDetailActivity"
+            android:label="@string/title_order_detail"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".cart.activity.CartActivity"
+            android:label="@string/title_activity_cart"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".cart.activity.ShipmentCartActivity"
+            android:label="@string/title_activity_cart_shipment"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".addtocart.activity.AddToCartActivity"
+            android:label="@string/title_activity_add_to_cart_v2"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".wallet.WalletActivity"
+            android:label="@string/toko_cash_info" />
+        <activity
+            android:name=".bcaoneklik.activity.CreditCardAuthenticationActivity"
+            android:label="@string/menu_credit_card_authentication" />
+        <activity android:name=".bcaoneklik.BcaOneClickActivity" />
+        <activity android:name=".bcaoneklik.BcaOneClickEditActivity" />
+        <activity
+            android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
+            android:label="@string/label_payment_setting" />
+
+        <activity
+            android:name=".bcaoneklik.activity.CreditCardDetailActivity"
+            android:label="@string/label_detail_credit_card" />
+
+        <activity
+            android:name=".insurance.view.InsuranceTnCActivity"
+            android:label="@string/title_term_and_condition" />
+        <activity
+            android:name=".purchase.detail.activity.OrderDetailActivity"
+            android:label="@string/title_activity_people_tx_details"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".purchase.detail.activity.OrderHistoryActivity"
+            android:label="@string/title_activity_people_tx_history"/>
+        <activity
+            android:name=".purchase.activity.PaymentProcedureActivity"
+            android:theme="@style/Toolbar.White"
+            android:label="@string/title_payment_procedure"/>
+
+        <activity
+            android:name=".purchase.detail.activity.ConfirmShippingActivity"
+            android:label="@string/title_confirm_shipment"/>
+
+        <activity
+            android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
+            android:label="@string/title_scan_awb" />
+        <activity
+            android:name=".pickuppoint.view.activity.PickupPointActivity"
+            android:label="@string/title_send_to_pick_up_booth"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".pickuppoint.view.activity.PickupPointMapActivity"
+            android:label="@string/title_send_to_pick_up_booth" />
 
         <service
-            android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
+            android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />
+
+        <service
+            android:name=".cart.services.TopPayIntentService"
+            android:exported="false" />
+        <service
+            android:name=".addtocart.services.ATCIntentService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

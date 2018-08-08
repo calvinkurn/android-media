@@ -1,0 +1,33 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="?android:attr/actionBarSize"
+        android:theme="@style/AppBarTheme"
+        app:titleTextAppearance="@style/ToolbarText"
+        app:subtitleTextAppearance="@style/ToolbarSubtitleText"/>
+    
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/stepper_progress"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:rcBackgroundColor="@color/black_twelve_percent"
+        app:rcMax="100"
+        app:rcProgressColor="@color/tkpd_main_green"
+        app:rcRadius="0dp"/>
+
+    <FrameLayout
+        android:id="@+id/parent_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

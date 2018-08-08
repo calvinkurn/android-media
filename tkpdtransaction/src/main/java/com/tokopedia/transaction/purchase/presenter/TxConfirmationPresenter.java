@@ -7,7 +7,7 @@ import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfDa
 import java.util.Set;
 
 /**
- * Created by Angga.Prasetiyo on 13/05/2016.
+ * @author Angga.Prasetiyo on 13/05/2016.
  */
 public interface TxConfirmationPresenter {
     void getPaymentConfirmationData(Context context, int page, int typeRequest);

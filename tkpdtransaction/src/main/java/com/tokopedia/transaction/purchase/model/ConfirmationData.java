@@ -34,7 +34,7 @@ public class ConfirmationData implements Parcelable {
     }
 
     /**
-     * @return The isSuccess
+     * @return The getResponseCode
      */
     public Integer getIsSuccess() {
         return isSuccess;

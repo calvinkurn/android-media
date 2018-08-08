@@ -7,13 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.tokopedia.seller.facade.FacadeShopTransaction;
+import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 
 import org.parceler.Parcels;
 
@@ -31,7 +35,7 @@ public class NewOrderImpl extends NewOrder {
     private boolean isRefresh;
 
     private Model modelNewOrder = new Model();
-    public List<OrderShippingList> ListDatas = new ArrayList<>();
+    public List<OrderShippingList> listDatas = new ArrayList<>();
 
     private FacadeShopTransaction facade;
 
@@ -51,12 +55,13 @@ public class NewOrderImpl extends NewOrder {
 
     @Override
     public void initData(@NonNull Context context) {
-        view.initView();
-        if (isAllowLoading()) {
-            addLoading();
-        }
         view.initListener();
-        initData();
+        if (!isAfterRotate) {
+            if (isAllowLoading()) {
+                addLoading();
+            }
+            initData();
+        }
     }
 
     @Override
@@ -101,7 +106,6 @@ public class NewOrderImpl extends NewOrder {
     }
 
     public void getOrderList() {
-        view.setRefreshPullEnable(false);
         view.disableFilter();
         isLoading = true;
         requestGetNewOrder();
@@ -120,7 +124,7 @@ public class NewOrderImpl extends NewOrder {
                 view.hideFilterView();
                 onRefreshOrder();
             } else {
-                showToastMessage("Keyword terlalu pendek, minimal 3 karakter");
+                showToastMessage(context.getString(R.string.keyword_min_3_char));
             }
         }
     }
@@ -147,15 +151,18 @@ public class NewOrderImpl extends NewOrder {
     }
 
 
-
     @Override
     public void moveToDetail(int position) {
-        Intent intent = new Intent(context, SellingDetailActivity.class);
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(ListDatas.get(position)));
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA2, modelNewOrder.Permission);
-        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.NEW_ORDER);
-//        context.startActivity(intent);
-        view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
+        if (listDatas != null && position >= 0 && listDatas.get(position) != null) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .goToOrderDetail(
+                            context,
+                            listDatas.get(position)
+                                    .getOrderDetail()
+                                    .getDetailOrderId()
+                                    .toString());
+            view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
+        }
     }
 
     private void requestGetNewOrder() {
@@ -164,21 +171,23 @@ public class NewOrderImpl extends NewOrder {
     }
 
     private void clearData() {
-        ListDatas.clear();
-        view.notifyDataSetChanged(ListDatas);
+        listDatas.clear();
+        view.notifyDataSetChanged(listDatas);
     }
 
-    private void finishConnection() {
+    @Override
+    public void finishConnection() {
         view.finishRefresh();
         view.removeRetry();
         isLoading = false;
         view.removeLoading();
+        view.removeEmpty();
         view.enableFilter();
     }
 
     private boolean isDataEmpty() {
         try {
-            return (view.getPaging().getPage() == 1 && !isLoading && ListDatas.size() == 0);
+            return (view.getPaging().getPage() == 1 && !isLoading && listDatas.size() == 0);
         } catch (Exception e) {
             return false;
         }
@@ -228,23 +237,27 @@ public class NewOrderImpl extends NewOrder {
         return new FacadeShopTransaction.GetNewOrderListener() {
             @Override
             public void OnSuccess(Model model, OrderShippingData Result) {
-                if (view.getPaging().getPage() == 1)
+                if (view.getPaging().getPage() == 1) {
+                    AppWidgetUtil.sendBroadcastToAppWidget(context);
                     clearData();
-                //view.getPaging().setNewParameter(Result);
+                }
+                view.getPaging().setNewParameter(Result.getPaging());
                 finishConnection();
                 modelNewOrder = model;
-                ListDatas.addAll(modelNewOrder.DataList);
-                view.notifyDataSetChanged(ListDatas);
-                view.setRefreshPullEnable(true);
+                listDatas.addAll(modelNewOrder.DataList);
+                view.notifyDataSetChanged(listDatas);
+                view.showFab();
             }
 
             @Override
             public void OnNoResult() {
                 finishConnection();
-                if (view.getPaging().getPage() == 1)
+                if (view.getPaging().getPage() == 1) {
                     clearData();
+                    view.addEmptyView();
+                }
                 view.getPaging().setHasNext(false);
-                view.setRefreshPullEnable(true);
+                view.showFab();
                 view.removeRetry();
             }
 
@@ -256,12 +269,13 @@ public class NewOrderImpl extends NewOrder {
             @Override
             public void OnError() {
                 finishConnection();
-                if (ListDatas.size() == 0) {
+                if (listDatas.size() == 0) {
+                    view.hideFab();
                     view.addRetry();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
-                view.setRefreshPullEnable(true);
+
             }
 
             @Override

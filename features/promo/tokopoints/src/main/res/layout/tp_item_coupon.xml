@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/tp_margin_small"
+    app:cardUseCompatPadding="true">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/tp_padding_regular">
+
+        <ImageView
+            android:id="@+id/img_banner"
+            android:layout_width="match_parent"
+            android:layout_height="104dp" />
+
+        <TextView
+            android:id="@+id/text_quota_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tp_margin_small"
+            android:background="@drawable/bg_tp_remaining_exchange"
+            android:paddingBottom="@dimen/tp_padding_xxsmall"
+            android:paddingLeft="@dimen/tp_margin_small"
+            android:paddingRight="@dimen/tp_margin_small"
+            android:paddingTop="@dimen/tp_padding_xxsmall"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/tp_text_size_xxsmall"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/tp_padding_small"
+            android:paddingLeft="@dimen/tp_padding_regular"
+            android:paddingRight="@dimen/tp_padding_regular"
+            android:paddingTop="@dimen/tp_padding_small"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/tp_text_size_xsmall"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_banner" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_points_stack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_padding_regular"
+            android:layout_marginStart="@dimen/tp_padding_regular"
+            android:layout_marginTop="@dimen/tp_padding_xsmall"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_description"
+            app:srcCompat="@drawable/ic_tp_point_stack" />
+
+        <TextView
+            android:id="@+id/text_point_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_small"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/tp_text_size_small"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/img_points_stack"
+            app:layout_constraintStart_toEndOf="@+id/img_points_stack"
+            app:layout_constraintTop_toTopOf="@+id/img_points_stack" />
+
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_padding_regular"
+            android:layout_marginStart="@dimen/tp_padding_regular"
+            android:layout_marginTop="@dimen/tp_padding_small"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_points_stack"
+            app:srcCompat="@drawable/ic_tp_time" />
+
+        <TextView
+            android:id="@+id/text_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_small"
+            android:text="@string/tp_label_valid_for"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/tp_text_size_xsmall"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/img_time"
+            app:layout_constraintTop_toTopOf="@+id/img_time" />
+
+        <TextView
+            android:id="@+id/text_time_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_small"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/tp_text_size_small"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/img_time"
+            app:layout_constraintTop_toBottomOf="@+id/text_time_label" />
+
+        <TextView
+            android:id="@+id/text_disabled_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_margin_regular"
+            android:layout_marginStart="@dimen/tp_margin_regular"
+            android:layout_marginTop="@dimen/tp_margin_xsmall"
+            android:textColor="@color/red_error"
+            android:textSize="@dimen/tp_text_size_small"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/img_time"
+            app:layout_constraintTop_toBottomOf="@+id/text_time_value" />
+
+        <TextView
+            android:id="@+id/button_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/tp_margin_large"
+            android:layout_marginRight="@dimen/tp_padding_regular"
+            android:layout_marginTop="@dimen/tp_margin_small"
+            android:background="@drawable/bg_button_orange"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/tp_padding_small"
+            android:paddingLeft="@dimen/tp_margin_large"
+            android:paddingRight="@dimen/tp_margin_large"
+            android:paddingTop="@dimen/tp_padding_small"
+            android:textColor="@color/white"
+            android:textSize="@dimen/tp_text_size_xsmall"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

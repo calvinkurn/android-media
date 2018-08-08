@@ -5,7 +5,7 @@ import org.parceler.Parcel;
 /**
  * Created by Toped10 on 6/3/2016.
  */
-@Parcel(parcelsIndex = false)
+@Parcel
 public class ModelRejectOrder {
     public static final String MODEL_REJECT_ORDER_KEY = "model_reject_order_key";
 

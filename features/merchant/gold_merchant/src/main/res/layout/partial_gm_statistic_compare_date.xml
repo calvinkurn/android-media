@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.expandable.ExpandableOptionSwitch
+        android:id="@+id/expandable_option_switch_compare_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:eo_checked="false"
+        app:eo_theme="@style/ExpandableStyleNoItemPadding"
+        app:eo_title="@string/gm_statistic_compare_date_section">
+
+        <com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView
+            android:id="@+id/date_period_view_compared"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:date_period_selected="true"
+            app:date_period_title="@string/gm_statistic_compare_date_title" />
+    </com.tokopedia.expandable.ExpandableOptionSwitch>
+
+</LinearLayout>

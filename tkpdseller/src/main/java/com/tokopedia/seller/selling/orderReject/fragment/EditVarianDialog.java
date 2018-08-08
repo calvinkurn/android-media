@@ -16,26 +16,22 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 import com.tokopedia.seller.selling.orderReject.model.ModelEditDescription;
 
 import org.parceler.Parcels;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by Erry on 6/6/2016.
  */
 public class EditVarianDialog extends DialogFragment {
 
-    @Bind(R2.id.description)
     EditText descTxt;
-    @Bind(R2.id.title)
     TextView titleTxt;
-    @Bind(R2.id.checkbox)
     CheckBox checkBox;
 
     public static final String TITLE = "title";
@@ -91,7 +87,9 @@ public class EditVarianDialog extends DialogFragment {
                 dialog.dismiss();
             }
         });
-        ButterKnife.bind(this, view);
+        descTxt = (EditText) view.findViewById(R.id.description);
+        titleTxt = (TextView) view.findViewById(R.id.title);
+        checkBox = (CheckBox) view.findViewById(R.id.checkbox);
         Dialog dialog = builder.create();
         return dialog;
     }
@@ -114,7 +112,7 @@ public class EditVarianDialog extends DialogFragment {
         orderProduct = Parcels.unwrap(getArguments().getParcelable(ProductListAdapter.ORDER_PRODUCT));
         position = getArguments().getInt(ProductListAdapter.POSITION);
         isStockChange = getArguments().getBoolean(ProductListAdapter.STOCK_CHANGE_CONDITION, false);
-        titleTxt.setText(Html.fromHtml("Nama produk: <b>"+title+"<b>"));
+        titleTxt.setText(MethodChecker.fromHtml("Nama produk: <b>"+title+"<b>"));
         if(CommonUtils.checkNullForZeroJson(orderProduct.getProductDescription())) {
             descTxt.setText(removeHtmlTag(orderProduct.getProductDescription()));
         }
@@ -124,7 +122,7 @@ public class EditVarianDialog extends DialogFragment {
     private String removeHtmlTag(String s){
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
         replace(stringBuilder, '\n', "<br/>");
-        String parseString = Html.fromHtml(stringBuilder.toString()).toString();
+        String parseString = MethodChecker.fromHtml(stringBuilder.toString()).toString();
         return parseString;
     }
 

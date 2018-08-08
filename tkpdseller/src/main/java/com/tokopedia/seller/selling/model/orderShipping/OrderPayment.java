@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import org.parceler.Parcel;
 
 
-@Parcel(parcelsIndex = false)
+@Parcel
 public class OrderPayment {
 
     @SerializedName("payment_process_due_date")

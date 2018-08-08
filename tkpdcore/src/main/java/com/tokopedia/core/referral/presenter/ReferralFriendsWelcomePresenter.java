@@ -1,0 +1,64 @@
+package com.tokopedia.core.referral.presenter;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.referral.ReferralActivity;
+import com.tokopedia.core.referral.listener.FriendsWelcomeView;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
+
+import java.net.URLDecoder;
+
+/**
+ * Created by ashwanityagi on 04/12/17.
+ */
+
+public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomePresenter {
+
+    private FriendsWelcomeView view;
+    private final String CODE_KEY = "code";
+    private SessionHandler sessionHandler;
+    private RemoteConfig remoteConfig;
+
+    public ReferralFriendsWelcomePresenter(FriendsWelcomeView view) {
+        this.view = view;
+        sessionHandler = new SessionHandler(view.getActivity());
+    }
+
+    @Override
+    public void initialize() {
+        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
+        if (view.getActivity().getIntent() != null && view.getActivity().getIntent().getExtras() != null) {
+            String code = view.getActivity().getIntent().getExtras().getString(CODE_KEY);
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
+            if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
+                if (sessionHandler.isV4Login()) {
+                    view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
+                }
+                view.closeView();
+            }
+            BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
+        }
+
+    }
+
+    public String getHowItWorks() {
+        return view.getActivity().getString(R.string.cashback_enter_tokocash);
+    }
+
+    @Override
+    public String getSubHeaderFromFirebase() {
+
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, view.getActivity().getString(R.string.referral_welcome_desc));
+    }
+}

@@ -1,1 +1,47 @@
-include ':app', ':customerapp', ':tkpdinbox', ':tkpddiscovery', ':tkpdtransaction', ':tkpdseller', ':tkpdsession', ':sellerapp'
+include ':settingbank'
+ext.isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = !isCiServer
+    }
+    remote(HttpBuildCache) {
+        url = "${ci_url}"
+        push = isCiServer
+        allowUntrustedServer = true
+        credentials {
+            username = "${ci_username}"
+            password = "${ci_password}"
+        }
+    }
+}
+
+
+apply from: "features/settings-features.gradle"
+apply from: "libraries/settings-libraries.gradle"
+
+include 'customerapp'
+include 'tkpdloyalty'
+include 'tkpdride'
+include 'tkpdfeed'
+include 'tkpdcore'
+include 'tkpdinbox'
+include 'tkpddiscovery'
+include 'tkpdtransaction'
+include 'tkpdsession'
+include 'tkpdpdp'
+include 'tkpddesign'
+include 'sellerapp'
+include 'tkpdseller'
+include 'tkpdtokocash'
+include 'tkpdabstraction'
+include 'tkpdflight'
+include 'tkpdcontent'
+include 'tkpdstream'
+include 'tkpdshop'
+include 'tkpdshop-common'
+include 'tkpdgm-common'
+include 'tkpdreputation-common'
+include 'tkpdwishlist-common'
+include 'tkpdtransaction-common'
+include 'posapp'
