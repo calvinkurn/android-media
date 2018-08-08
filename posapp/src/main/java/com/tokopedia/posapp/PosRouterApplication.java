@@ -751,7 +751,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     public PosAppComponent getPosAppComponent() {
-        if(posAppComponent == null) {
+        if (posAppComponent == null) {
             posAppComponent = DaggerPosAppComponent.builder().baseAppComponent(getBaseAppComponent()).build();
         }
 
@@ -761,6 +761,12 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent getSettingBankIntent(Context context) {
 //        There is no setting bank in pos
+        return null;
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
+        //        There is no change password in pos
         return null;
     }
 }

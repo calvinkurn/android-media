@@ -1,8 +1,8 @@
 package com.tokopedia.settingbank.choosebank.domain.usecase
 
 import com.raizlabs.android.dbflow.config.FlowManager
-import com.tokopedia.core.database.DbFlowDatabase
-import com.tokopedia.core.database.model.Bank
+import com.tokopedia.bankdb.Bank
+import com.tokopedia.bankdb.BankFlowDatabase
 import com.tokopedia.settingbank.choosebank.data.BankListApi
 import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListWSMapper
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
@@ -26,7 +26,7 @@ class GetBankListWSUseCase(val api: BankListApi,
 
     private fun saveToDB(bankListViewModel: BankListViewModel, requestParams: RequestParams): BankListViewModel {
 
-        val database = FlowManager.getDatabase(DbFlowDatabase.NAME).writableDatabase
+        val database = FlowManager.getDatabase(BankFlowDatabase.NAME).writableDatabase
         database.beginTransaction()
         try {
             val bankList = mapToDBModel(bankListViewModel.list!!)

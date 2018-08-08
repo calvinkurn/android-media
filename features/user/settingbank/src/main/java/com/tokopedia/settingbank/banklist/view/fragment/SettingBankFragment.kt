@@ -223,7 +223,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         if (adapter.getList() != null) {
             val element = adapter.getList()!![adapterPosition] as BankAccountViewModel
 
-            if (element != null && presenter.isMsisdnVerified()) {
+            if (presenter.isMsisdnVerified()) {
                 analyticTracker.trackEditBankAccount()
                 startActivityForResult(AddEditBankActivity.createIntentEditBank(
                         activity!!

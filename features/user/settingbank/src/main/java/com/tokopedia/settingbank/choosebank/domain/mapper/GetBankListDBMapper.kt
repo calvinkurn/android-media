@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.choosebank.domain.mapper
 
-import com.tokopedia.core.database.model.Bank
+import com.tokopedia.bankdb.Bank
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import rx.Observable

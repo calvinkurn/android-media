@@ -76,6 +76,8 @@ ext {
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdBankDBVersion = '2.22'
+
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -324,21 +326,22 @@ ext {
             home                  : ":features:discovery:home",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
-            groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
+            groupchat             : ":features:user:groupchat",
             profile               : ":features:user:profile",
-            settingbank         : ":features:user:settingbank",
+            settingbank           : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
             changepassword        : ":features:user:changepassword",
-            contactUs             : ":features:operational:contact_us",
+            bankDB                : ":features:user:bankDB",
             otp                   : ":features:user:otp",
+            vote                  : ":features:user:vote",
+            contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             districtrecommendation: ":features:logistic:district_recommendation",
-            vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
