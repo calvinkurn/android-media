@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public class SubmitDetailActivity extends BaseActivity {
     public static Intent newInstance(Context context){
@@ -14,10 +15,10 @@ public class SubmitDetailActivity extends BaseActivity {
     }
     @Override
     protected Fragment getNewFragment() {
-        IndiUserModel model = getIntent().getParcelableExtra("DETAILS");
+        SubmissionResult model = getIntent().getParcelableExtra("submissionsResult");
         Fragment fragment = SubmitDetailFragment.newInstance();
         Bundle arg = new Bundle();
-//        arg.putParcelable("DETAILS",model);
+        arg.putParcelable("submissionsResult",model);
         fragment.setArguments(arg);
         return fragment;
     }

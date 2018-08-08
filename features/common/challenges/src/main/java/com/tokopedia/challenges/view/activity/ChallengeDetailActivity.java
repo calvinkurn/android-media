@@ -10,7 +10,7 @@ public class ChallengeDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_challenges_detail);
+//        setContentView(R.layout.activity_challenges_detail);
     }
 
     @Override

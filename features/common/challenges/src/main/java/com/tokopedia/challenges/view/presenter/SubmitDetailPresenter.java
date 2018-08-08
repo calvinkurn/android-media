@@ -2,6 +2,7 @@ package com.tokopedia.challenges.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.data.model.IndiUserModel;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 
 import javax.inject.Inject;
@@ -12,16 +13,16 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     }
 
     @Override
-    public void setDataInFields(IndiUserModel model) {
-        getView().setProfilePic(model.getUserId());
-        getView().setProfileText(model.getUserId());
-        getView().setChallengeImage(model.getUserId());
-        getView().setLikesCountView(model.getUserId());
-        getView().setPointsView(model.getUserId());
-        getView().setShareView(model.getUserId());
-        getView().setDateView(model.getUserId());
-        getView().setApprovedView(model.getUserId());
-        getView().setDetailTitle(model.getUserId());
-        getView().setDetailContent(model.getUserId());
+    public void setDataInFields(SubmissionResult model) {
+       // getView().setProfilePic(model.getThumbnailUrl());
+        //getView().setProfileText(model.getTitle());
+        getView().setChallengeImage(model.getThumbnailUrl());
+        getView().setLikesCountView(String.valueOf(model.getLikes()));
+        getView().setPointsView(String.valueOf(model.getPoints()));
+     //   getView().setShareView(model.getUserId());
+        getView().setDateView(model.getCreateDate());
+        getView().setApprovedView(model.getStatus());
+        getView().setDetailTitle(model.getTitle());
+        getView().setDetailContent(model.getDescription());
     }
 }
