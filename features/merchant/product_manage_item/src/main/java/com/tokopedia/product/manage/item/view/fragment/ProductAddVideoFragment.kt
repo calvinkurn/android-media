@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.fragment
+package com.tokopedia.product.manage.item.view.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -15,18 +15,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.view.activity.ProductAddVideoRecommendationActivity
-import com.tokopedia.product.edit.view.adapter.ProductAddVideoAdapterTypeFactory
-import com.tokopedia.product.edit.view.listener.ProductAddVideoView
-import com.tokopedia.product.edit.view.listener.SectionVideoRecommendationListener
-import com.tokopedia.product.edit.view.listener.VideoChosenListener
-import com.tokopedia.product.edit.domain.mapper.VideoMapper
-import com.tokopedia.product.edit.domain.mapper.VideoRecommendationMapper
-import com.tokopedia.product.edit.domain.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.edit.util.YoutubeUtil
-import com.tokopedia.product.edit.view.presenter.ProductAddVideoPresenter
-import com.tokopedia.product.edit.view.viewmodel.*
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.view.activity.ProductAddVideoRecommendationActivity
+import com.tokopedia.product.manage.item.view.adapter.ProductAddVideoAdapterTypeFactory
+import com.tokopedia.product.manage.item.view.listener.ProductAddVideoView
+import com.tokopedia.product.manage.item.view.listener.SectionVideoRecommendationListener
+import com.tokopedia.product.manage.item.view.listener.VideoChosenListener
+import com.tokopedia.product.manage.item.domain.mapper.VideoMapper
+import com.tokopedia.product.manage.item.domain.mapper.VideoRecommendationMapper
+import com.tokopedia.product.manage.item.domain.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.manage.item.util.YoutubeUtil
+import com.tokopedia.product.manage.item.view.presenter.ProductAddVideoPresenter
+import com.tokopedia.product.manage.item.view.viewmodel.*
 import kotlinx.android.synthetic.main.fragment_product_add_video.*
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), ProductAddVideoView, VideoChosenListener, SectionVideoRecommendationListener {

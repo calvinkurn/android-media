@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.data.source.cloud;
+package com.tokopedia.product.manage.item.data.source.cloud;
 
-import com.tokopedia.product.edit.data.source.cloud.api.YoutubeVideoLinkApi;
-import com.tokopedia.product.edit.data.source.cloud.model.youtube.YoutubeResponse;
-import com.tokopedia.product.edit.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.product.manage.item.data.source.cloud.api.YoutubeVideoLinkApi;
+import com.tokopedia.product.manage.item.data.source.cloud.model.youtube.YoutubeResponse;
+import com.tokopedia.product.manage.item.utils.YoutubeVideoLinkUtils;
 
 import java.util.HashMap;
 import java.util.Map;

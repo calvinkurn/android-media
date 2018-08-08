@@ -1,2 +1,2 @@
-package com.tokopedia.product.edit.view.adapter
+package com.tokopedia.product.manage.item.view.adapter
 

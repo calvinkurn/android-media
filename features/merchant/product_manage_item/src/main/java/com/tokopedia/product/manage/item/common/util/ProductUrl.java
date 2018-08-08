@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 /**
  * Created by zulfikarrahman on 2/5/18.

@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.common.view.presenter;
+package com.tokopedia.product.manage.item.common.view.presenter;
 
-import com.tokopedia.product.edit.common.domain.interactor.ClearDatePickerUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.FetchDatePickerUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.SaveDatePickerUseCase;
-import com.tokopedia.product.edit.common.domain.model.DatePickerDomainModel;
-import com.tokopedia.product.edit.common.model.DatePickerViewModel;
-import com.tokopedia.product.edit.common.domain.interactor.SaveDatePickerUseCase;
-import com.tokopedia.product.edit.common.model.DatePickerViewModel;
+import com.tokopedia.product.manage.item.common.domain.interactor.ClearDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.FetchDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.SaveDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.domain.model.DatePickerDomainModel;
+import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.product.manage.item.common.domain.interactor.SaveDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
 
 import rx.Subscriber;
 

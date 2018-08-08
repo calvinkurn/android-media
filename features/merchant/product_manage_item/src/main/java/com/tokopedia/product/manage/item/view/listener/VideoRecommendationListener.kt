@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.listener
+package com.tokopedia.product.manage.item.view.listener
 
 interface VideoRecommendationListener {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.app.Activity
 import android.content.Intent
@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.*
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.edit.price.model.ProductName
-import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.price.model.ProductName
+import com.tokopedia.product.manage.item.price.viewholder.ProductEditNameViewHolder
 import android.widget.TextView
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_EDITABLE_NAME
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_EDITABLE_NAME
 
 
 class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {

@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.imagepicker.view.model;
+package com.tokopedia.product.manage.item.imagepicker.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.product.edit.imagepicker.view.adapter.CatalogAdapterTypeFactory;
+import com.tokopedia.product.manage.item.imagepicker.view.adapter.CatalogAdapterTypeFactory;
 
 /**
  * Created by zulfikarrahman on 6/5/18.

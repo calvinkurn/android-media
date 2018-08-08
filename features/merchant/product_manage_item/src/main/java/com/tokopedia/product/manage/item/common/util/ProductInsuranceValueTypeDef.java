@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.product.edit.common.util.ProductInsuranceValueTypeDef.TYPE_OPTIONAL;
-import static com.tokopedia.product.edit.common.util.ProductInsuranceValueTypeDef.TYPE_YES;
+import static com.tokopedia.product.manage.item.common.util.ProductInsuranceValueTypeDef.TYPE_OPTIONAL;
+import static com.tokopedia.product.manage.item.common.util.ProductInsuranceValueTypeDef.TYPE_YES;
 
 /**
  * Created by User on 8/11/2017.

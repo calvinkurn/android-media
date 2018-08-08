@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.data.repository;
+package com.tokopedia.product.manage.item.data.repository;
 
-import com.tokopedia.product.edit.data.source.CatalogDataSource;
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
-import com.tokopedia.product.edit.domain.CatalogRepository;
+import com.tokopedia.product.manage.item.data.source.CatalogDataSource;
+import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.product.manage.item.domain.CatalogRepository;
 
 import javax.inject.Inject;
 

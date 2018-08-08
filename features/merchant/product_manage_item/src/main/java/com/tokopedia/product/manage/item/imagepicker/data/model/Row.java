@@ -1,5 +1,5 @@
 
-package com.tokopedia.product.edit.imagepicker.data.model;
+package com.tokopedia.product.manage.item.imagepicker.data.model;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

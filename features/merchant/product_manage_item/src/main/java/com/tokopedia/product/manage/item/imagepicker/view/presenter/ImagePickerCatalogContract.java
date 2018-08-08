@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.imagepicker.view.presenter;
+package com.tokopedia.product.manage.item.imagepicker.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.product.edit.imagepicker.view.model.CatalogModelView;
+import com.tokopedia.product.manage.item.imagepicker.view.model.CatalogModelView;
 
 /**
  * Created by zulfikarrahman on 6/5/18.

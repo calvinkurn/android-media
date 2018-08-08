@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.os.Bundle
-import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
-import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.price.model.ProductCategory
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.di.component.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.manage.item.di.module.ProductEditCategoryCatalogModule
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.price.model.ProductCategory
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
 
 
 class ProductEditCategoryFragment : BaseProductEditCategoryFragment() {

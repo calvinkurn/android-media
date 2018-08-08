@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.model.scoringproduct;
+package com.tokopedia.product.manage.item.view.model.scoringproduct;
 
 import android.os.Parcel;
 import android.os.Parcelable;

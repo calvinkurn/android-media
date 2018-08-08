@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.domain.listener;
+package com.tokopedia.product.manage.item.domain.listener;
 
 /**
  * @author sebastianuskh on 4/20/17.

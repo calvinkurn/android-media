@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.domain;
+package com.tokopedia.product.manage.item.common.domain;
 
 import java.util.HashMap;
 import java.util.Map;

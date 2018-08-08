@@ -1,5 +1,5 @@
 
-package com.tokopedia.product.edit.common.model.variantbyprd.variantcombination;
+package com.tokopedia.product.manage.item.common.model.variantbyprd.variantcombination;
 
 import android.os.Parcel;
 import android.os.Parcelable;

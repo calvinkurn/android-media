@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.common.data.mapper;
+package com.tokopedia.product.manage.item.common.data.mapper;
 
-import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
-import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 
 import javax.inject.Inject;
 

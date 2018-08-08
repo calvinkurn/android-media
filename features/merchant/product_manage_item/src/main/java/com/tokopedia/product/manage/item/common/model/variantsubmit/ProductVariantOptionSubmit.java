@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.common.model.variantsubmit;
+package com.tokopedia.product.manage.item.common.model.variantsubmit;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.edit.common.model.variantbyprdold.PictureItem;
+import com.tokopedia.product.manage.item.common.model.variantbyprdold.PictureItem;
 
 import java.util.List;
 

@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.di.component;
+package com.tokopedia.product.manage.item.di.component;
 
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
-import com.tokopedia.product.edit.common.di.module.ProductTomeQualifier;
-import com.tokopedia.product.edit.di.module.ProductAddModule;
-import com.tokopedia.product.edit.di.scope.ProductAddScope;
-import com.tokopedia.product.edit.price.ProductAddNameCategoryFragment;
-import com.tokopedia.product.edit.view.fragment.ProductAddFragment;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.module.ProductTomeQualifier;
+import com.tokopedia.product.manage.item.di.module.ProductAddModule;
+import com.tokopedia.product.manage.item.di.scope.ProductAddScope;
+import com.tokopedia.product.manage.item.price.ProductAddNameCategoryFragment;
+import com.tokopedia.product.manage.item.view.fragment.ProductAddFragment;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;

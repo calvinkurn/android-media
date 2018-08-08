@@ -1,19 +1,19 @@
-package com.tokopedia.product.edit.view.activity
+package com.tokopedia.product.manage.item.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.price.model.ProductCategory
-import com.tokopedia.product.edit.price.model.ProductName
-import com.tokopedia.product.edit.util.ProductEditModuleRouter
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
-import com.tokopedia.product.edit.view.fragment.ProductAddFragment
-import com.tokopedia.product.edit.view.fragment.ProductEditFragment
-import com.tokopedia.product.edit.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.price.model.ProductCategory
+import com.tokopedia.product.manage.item.price.model.ProductName
+import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.view.fragment.ProductAddFragment
+import com.tokopedia.product.manage.item.view.fragment.ProductEditFragment
+import com.tokopedia.product.manage.item.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
 
 class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent> {
     override fun getNewFragment(): Fragment {

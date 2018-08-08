@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.model.variantbycat;
+package com.tokopedia.product.manage.item.common.model.variantbycat;
 
 import android.os.Parcel;
 import android.os.Parcelable;

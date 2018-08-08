@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.activity;
+package com.tokopedia.product.manage.item.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,11 +6,11 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
-import com.tokopedia.product.edit.constant.ProductExtraConstant;
-import com.tokopedia.product.edit.util.ProductEditModuleRouter;
-import com.tokopedia.product.edit.view.fragment.ProductScoringDetailFragment;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.constant.ProductExtraConstant;
+import com.tokopedia.product.manage.item.util.ProductEditModuleRouter;
+import com.tokopedia.product.manage.item.view.fragment.ProductScoringDetailFragment;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 /**
  * Created by zulfikarrahman on 4/12/17.

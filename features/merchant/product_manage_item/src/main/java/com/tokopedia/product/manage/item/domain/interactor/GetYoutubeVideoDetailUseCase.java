@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.domain.interactor;
+package com.tokopedia.product.manage.item.domain.interactor;
 
 import android.content.Context;
 
@@ -6,7 +6,7 @@ import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.product.edit.domain.model.youtube.YoutubeVideoModel;
+import com.tokopedia.product.manage.item.domain.model.youtube.YoutubeVideoModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.common.data.source;
+package com.tokopedia.product.manage.item.common.data.source;
 
-import com.tokopedia.product.edit.common.data.source.cloud.UploadImageDataSourceCloud;
-import com.tokopedia.product.edit.common.data.source.cloud.UploadImageDataSourceCloud;
+import com.tokopedia.product.manage.item.common.data.source.cloud.UploadImageDataSourceCloud;
+import com.tokopedia.product.manage.item.common.data.source.cloud.UploadImageDataSourceCloud;
 
 import java.util.Map;
 

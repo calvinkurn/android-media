@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.imagepicker.domain.mapper;
+package com.tokopedia.product.manage.item.imagepicker.domain.mapper;
 
-import com.tokopedia.product.edit.imagepicker.view.model.CatalogModelView;
-import com.tokopedia.product.edit.imagepicker.data.model.CatalogImage;
+import com.tokopedia.product.manage.item.imagepicker.view.model.CatalogModelView;
+import com.tokopedia.product.manage.item.imagepicker.data.model.CatalogImage;
 
 import java.util.ArrayList;
 import java.util.List;

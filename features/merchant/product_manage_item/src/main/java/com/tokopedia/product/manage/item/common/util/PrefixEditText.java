@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,7 +12,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 
-import com.tokopedia.product.edit.R;
+import com.tokopedia.product.manage.item.R;
 
 /**
  * Created by Hendry on 3/9/2017.

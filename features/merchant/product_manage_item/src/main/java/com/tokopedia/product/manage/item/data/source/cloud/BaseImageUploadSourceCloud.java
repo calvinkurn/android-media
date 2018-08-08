@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.data.source.cloud;
+package com.tokopedia.product.manage.item.data.source.cloud;
 
 import android.content.Context;
 
@@ -13,7 +13,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.product.edit.common.util.ProductNetworkConstant;
+import com.tokopedia.product.manage.item.common.util.ProductNetworkConstant;
 
 /**
  * Created by zulfikarrahman on 4/11/17.

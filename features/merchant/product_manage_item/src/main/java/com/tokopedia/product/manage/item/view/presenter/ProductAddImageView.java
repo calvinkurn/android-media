@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
 import android.content.Context;
 

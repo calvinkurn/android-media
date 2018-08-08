@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.view.activity
+package com.tokopedia.product.manage.item.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.ProductEditWeightLogisticFragment
-import com.tokopedia.product.edit.price.model.ProductLogistic
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_FREE_RETURN
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.price.ProductEditWeightLogisticFragment
+import com.tokopedia.product.manage.item.price.model.ProductLogistic
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_FREE_RETURN
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
 
 class ProductEditWeightLogisticActivity : BaseSimpleActivity(){
 

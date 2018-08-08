@@ -1,6 +1,6 @@
-package com.tokopedia.product.edit.common.model;
+package com.tokopedia.product.manage.item.common.model;
 
-import com.tokopedia.product.edit.common.util.ItemType;
+import com.tokopedia.product.manage.item.common.util.ItemType;
 
 /**
  * Created by User on 6/21/2017.

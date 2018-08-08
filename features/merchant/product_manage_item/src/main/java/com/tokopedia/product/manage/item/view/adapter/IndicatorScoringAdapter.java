@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.adapter;
+package com.tokopedia.product.manage.item.view.adapter;
 
 import android.content.Context;
 import android.os.Build;
@@ -12,9 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.utils.ScoringProductHelper;
-import com.tokopedia.product.edit.view.model.scoringproduct.IndicatorScoreView;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.utils.ScoringProductHelper;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.IndicatorScoreView;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,8 +6,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.common.util.TomeException;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.common.util.TomeException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;

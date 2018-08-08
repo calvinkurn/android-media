@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.domain.interactor;
+package com.tokopedia.product.manage.item.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.product.edit.domain.ProductScoreRepository;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.domain.ProductScoreRepository;
 
 import rx.Observable;
 

@@ -1,10 +1,10 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 import android.support.annotation.IntDef;
 
-import static com.tokopedia.product.edit.common.util.StockTypeDef.TYPE_ACTIVE;
-import static com.tokopedia.product.edit.common.util.StockTypeDef.TYPE_ACTIVE_LIMITED;
-import static com.tokopedia.product.edit.common.util.StockTypeDef.TYPE_WAREHOUSE;
+import static com.tokopedia.product.manage.item.common.util.StockTypeDef.TYPE_ACTIVE;
+import static com.tokopedia.product.manage.item.common.util.StockTypeDef.TYPE_ACTIVE_LIMITED;
+import static com.tokopedia.product.manage.item.common.util.StockTypeDef.TYPE_WAREHOUSE;
 
 /**
  * @author normansyahputa on 4/25/17.

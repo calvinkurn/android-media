@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.di.module;
+package com.tokopedia.product.manage.item.common.di.module;
 
 import android.content.Context;
 
@@ -11,20 +11,20 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.product.edit.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.edit.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.edit.common.data.repository.DatePickerRepositoryImpl;
-import com.tokopedia.product.edit.common.data.source.DatePickerDataSource;
-import com.tokopedia.product.edit.common.di.scope.ProductScope;
-import com.tokopedia.product.edit.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.edit.common.domain.DatePickerRepository;
-import com.tokopedia.product.edit.common.domain.interactor.ClearDatePickerUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.FetchDatePickerUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.SaveDatePickerUseCase;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.product.edit.common.view.presenter.DatePickerPresenter;
-import com.tokopedia.product.edit.common.view.presenter.DatePickerPresenterImpl;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.repository.DatePickerRepositoryImpl;
+import com.tokopedia.product.manage.item.common.data.source.DatePickerDataSource;
+import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.domain.DatePickerRepository;
+import com.tokopedia.product.manage.item.common.domain.interactor.ClearDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.FetchDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.SaveDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.view.presenter.DatePickerPresenter;
+import com.tokopedia.product.manage.item.common.view.presenter.DatePickerPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

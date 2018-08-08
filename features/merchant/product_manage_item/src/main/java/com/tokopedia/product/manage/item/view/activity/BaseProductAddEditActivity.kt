@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.activity
+package com.tokopedia.product.manage.item.view.activity
 
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.app.TkpdCoreRouter
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.util.ProductEditModuleRouter
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment
 
 abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<ProductComponent> {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.data.source.cloud.model;
+package com.tokopedia.product.manage.item.data.source.cloud.model;
 
 import java.util.List;
 

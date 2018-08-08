@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
-import com.tokopedia.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.domain.interactor.ProductScoringUseCase;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 import rx.Subscriber;
 

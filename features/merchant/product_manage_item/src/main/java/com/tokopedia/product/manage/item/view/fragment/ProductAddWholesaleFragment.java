@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.fragment;
+package com.tokopedia.product.manage.item.view.fragment;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -20,12 +20,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.product.edit.common.model.edit.ProductWholesaleViewModel;
-import com.tokopedia.product.edit.util.ProductEditCurrencyType;
-import com.tokopedia.product.edit.view.model.wholesale.WholesaleModel;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.view.activity.ProductAddWholesaleActivity;
-import com.tokopedia.product.edit.view.adapter.WholesaleAddAdapter;
+import com.tokopedia.product.manage.item.common.model.edit.ProductWholesaleViewModel;
+import com.tokopedia.product.manage.item.util.ProductEditCurrencyType;
+import com.tokopedia.product.manage.item.view.model.wholesale.WholesaleModel;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.view.activity.ProductAddWholesaleActivity;
+import com.tokopedia.product.manage.item.view.adapter.WholesaleAddAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

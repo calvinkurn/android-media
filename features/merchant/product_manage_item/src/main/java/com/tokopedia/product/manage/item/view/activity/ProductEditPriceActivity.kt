@@ -1,17 +1,17 @@
-package com.tokopedia.product.edit.view.activity
+package com.tokopedia.product.manage.item.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.ProductEditPriceFragment
-import com.tokopedia.product.edit.price.model.ProductPrice
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_PRICE
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.price.ProductEditPriceFragment
+import com.tokopedia.product.manage.item.price.model.ProductPrice
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_PRICE
 
 class ProductEditPriceActivity : BaseSimpleActivity(){
 

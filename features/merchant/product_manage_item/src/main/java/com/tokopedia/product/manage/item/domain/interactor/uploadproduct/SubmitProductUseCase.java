@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.domain.interactor.uploadproduct;
+package com.tokopedia.product.manage.item.domain.interactor.uploadproduct;
 
 import android.text.TextUtils;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.product.edit.common.model.edit.BasePictureViewModel;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.data.exception.ImageUploadErrorException;
-import com.tokopedia.product.edit.domain.interactor.GetProductDetailUseCase;
-import com.tokopedia.product.edit.domain.listener.ProductSubmitNotificationListener;
-import com.tokopedia.product.edit.domain.mapper.ProductUploadMapper;
+import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.manage.item.common.model.edit.BasePictureViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.data.exception.ImageUploadErrorException;
+import com.tokopedia.product.manage.item.domain.interactor.GetProductDetailUseCase;
+import com.tokopedia.product.manage.item.domain.listener.ProductSubmitNotificationListener;
+import com.tokopedia.product.manage.item.domain.mapper.ProductUploadMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

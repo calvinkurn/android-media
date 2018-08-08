@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.price.model
+package com.tokopedia.product.manage.item.price.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.product.edit.common.model.edit.ProductWholesaleViewModel
-import com.tokopedia.product.edit.util.ProductEditCurrencyType
+import com.tokopedia.product.manage.item.common.model.edit.ProductWholesaleViewModel
+import com.tokopedia.product.manage.item.util.ProductEditCurrencyType
 import java.util.ArrayList
 
 

@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.imagepicker.view.adapter;
+package com.tokopedia.product.manage.item.imagepicker.view.adapter;
 
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.product.edit.imagepicker.view.model.CatalogModelView;
+import com.tokopedia.product.manage.item.imagepicker.view.model.CatalogModelView;
 
 import java.util.ArrayList;
 

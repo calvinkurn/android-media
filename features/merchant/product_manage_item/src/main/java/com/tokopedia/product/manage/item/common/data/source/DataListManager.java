@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.common.data.source;
+package com.tokopedia.product.manage.item.common.data.source;
 
-import com.tokopedia.product.edit.common.data.source.cache.DataListCacheManager;
-import com.tokopedia.product.edit.common.data.source.cloud.DataListCloudManager;
-import com.tokopedia.product.edit.common.data.source.database.DataListDBManager;
-import com.tokopedia.product.edit.common.data.source.cache.DataListCacheManager;
-import com.tokopedia.product.edit.common.data.source.cloud.DataListCloudManager;
-import com.tokopedia.product.edit.common.data.source.database.DataListDBManager;
+import com.tokopedia.product.manage.item.common.data.source.cache.DataListCacheManager;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataListCloudManager;
+import com.tokopedia.product.manage.item.common.data.source.database.DataListDBManager;
+import com.tokopedia.product.manage.item.common.data.source.cache.DataListCacheManager;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataListCloudManager;
+import com.tokopedia.product.manage.item.common.data.source.database.DataListDBManager;
 
 import java.util.List;
 

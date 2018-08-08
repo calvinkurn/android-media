@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.app.Activity
 import android.content.Intent
@@ -8,17 +8,17 @@ import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
-import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.view.adapter.ProductCatalogTypeFactory
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.edit.view.listener.ProductEditCatalogPickerView
-import com.tokopedia.product.edit.view.presenter.ProductEditCatalogPickerPresenter
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.di.component.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.manage.item.di.module.ProductEditCategoryCatalogModule
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.view.adapter.ProductCatalogTypeFactory
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.view.listener.ProductEditCatalogPickerView
+import com.tokopedia.product.manage.item.view.presenter.ProductEditCatalogPickerPresenter
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
 import javax.inject.Inject
 

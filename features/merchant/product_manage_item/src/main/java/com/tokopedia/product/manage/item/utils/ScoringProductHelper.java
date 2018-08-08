@@ -1,10 +1,10 @@
-package com.tokopedia.product.edit.utils;
+package com.tokopedia.product.manage.item.utils;
 
 import android.content.Context;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 
-import com.tokopedia.product.edit.R;
+import com.tokopedia.product.manage.item.R;
 
 /**
  * Created by zulfikarrahman on 4/17/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit;
+package com.tokopedia.product.manage.item;
 
 import org.junit.Test;
 

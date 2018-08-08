@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

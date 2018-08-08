@@ -1,14 +1,14 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.product.edit.common.domain.interactor.FetchDraftProductUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.product.edit.domain.interactor.FetchCatalogDataUseCase;
-import com.tokopedia.product.edit.domain.interactor.GetCategoryRecommUseCase;
-import com.tokopedia.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.domain.interactor.FetchDraftProductUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.FetchProductVariantByCatUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.SaveDraftProductUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.product.manage.item.domain.interactor.FetchCatalogDataUseCase;
+import com.tokopedia.product.manage.item.domain.interactor.GetCategoryRecommUseCase;
+import com.tokopedia.product.manage.item.domain.interactor.ProductScoringUseCase;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 

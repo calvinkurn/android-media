@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.data.source.cache;
+package com.tokopedia.product.manage.item.common.data.source.cache;
 
 import android.content.Context;
 import android.content.SharedPreferences;

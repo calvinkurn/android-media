@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.utils
+package com.tokopedia.product.manage.item.utils
 
 import android.text.TextUtils
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
-import com.tokopedia.product.edit.common.model.edit.*
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef
-import com.tokopedia.product.edit.constant.ProductConditionTypeDef
-import com.tokopedia.product.edit.price.model.*
-import com.tokopedia.product.edit.util.ProductEditPreOrderTimeType
-import com.tokopedia.product.edit.view.listener.ListenerOnErrorAddProduct
-import com.tokopedia.product.edit.view.model.ProductAddViewModel
+import com.tokopedia.product.manage.item.common.model.edit.*
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
+import com.tokopedia.product.manage.item.constant.ProductConditionTypeDef
+import com.tokopedia.product.manage.item.price.model.*
+import com.tokopedia.product.manage.item.util.ProductEditPreOrderTimeType
+import com.tokopedia.product.manage.item.view.listener.ListenerOnErrorAddProduct
+import com.tokopedia.product.manage.item.view.model.ProductAddViewModel
 
 fun convertCategory(productCategory: ProductCategory?): ProductCategoryViewModel? {
     val productCategoryViewModel = ProductCategoryViewModel()

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <com.tokopedia.product.edit.price.LabelRadioButton
+    <com.tokopedia.product.manage.item.price.LabelRadioButton
         android:id="@+id/labelRadioButtonStockAvailable"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
@@ -21,7 +21,7 @@
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
-    <com.tokopedia.product.edit.price.LabelRadioButton
+    <com.tokopedia.product.manage.item.price.LabelRadioButton
         android:id="@+id/labelRadioButtonStockLimited"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
@@ -36,7 +36,7 @@
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
-    <com.tokopedia.product.edit.price.LabelRadioButton
+    <com.tokopedia.product.manage.item.price.LabelRadioButton
         android:id="@+id/labelRadioButtonStockEmpty"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"

@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.util
+package com.tokopedia.product.manage.item.util
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.product.edit.R
+import com.tokopedia.product.manage.item.R
 
 class ProductEditOptionMenuAdapter(mode: Int, private val optionMenus: List<ProductEditOptionMenu>) : RecyclerView.Adapter<ProductEditOptionMenuViewHolder>() {
     private val isCheckEnable: Boolean

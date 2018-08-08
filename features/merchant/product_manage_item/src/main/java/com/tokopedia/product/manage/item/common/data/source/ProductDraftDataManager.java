@@ -1,10 +1,10 @@
-package com.tokopedia.product.edit.common.data.source;
+package com.tokopedia.product.manage.item.common.data.source;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
-import com.tokopedia.product.edit.common.util.DraftNotFoundException;
+import com.tokopedia.product.manage.item.common.util.DraftNotFoundException;
 import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
 import com.tokopedia.productdraftdatabase.ProductDraftDataBase_Table;
 

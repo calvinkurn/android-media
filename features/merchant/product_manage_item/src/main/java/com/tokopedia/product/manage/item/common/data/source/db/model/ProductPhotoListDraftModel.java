@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.common.data.source.db.model;
+package com.tokopedia.product.manage.item.common.data.source.db.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.edit.common.data.source.db.model.ImageProductInputDraftModel;
+import com.tokopedia.product.manage.item.common.data.source.db.model.ImageProductInputDraftModel;
 
 import java.util.List;
 

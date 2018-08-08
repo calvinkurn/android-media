@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.data.source.cache;
+package com.tokopedia.product.manage.item.data.source.cache;
 
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.ColorIndicator;
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.DataScoringProduct;
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.IndicatorScore;
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.IndicatorScoring;
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.Scale;
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.ValueIndicator;
-import com.tokopedia.product.edit.view.model.scoringproduct.IndicatorScoreView;
-import com.tokopedia.product.edit.view.model.scoringproduct.TotalScoringProductView;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.ColorIndicator;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.DataScoringProduct;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.IndicatorScore;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.IndicatorScoring;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.Scale;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.ValueIndicator;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.IndicatorScoreView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.TotalScoringProductView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.DataScoringProductView;
 
 import java.util.ArrayList;
 import java.util.Collections;

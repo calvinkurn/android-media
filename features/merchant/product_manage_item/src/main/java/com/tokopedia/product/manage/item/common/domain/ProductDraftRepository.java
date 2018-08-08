@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.common.domain;
+package com.tokopedia.product.manage.item.common.domain;
 
-import com.tokopedia.product.edit.common.model.ProductDraftViewModel;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.common.model.ProductDraftViewModel;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.model.ProductDraftViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.model.ProductDraftViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 
 import java.util.List;
 

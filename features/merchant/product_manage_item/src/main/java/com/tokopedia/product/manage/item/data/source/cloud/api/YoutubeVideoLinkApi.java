@@ -1,6 +1,6 @@
-package com.tokopedia.product.edit.data.source.cloud.api;
+package com.tokopedia.product.manage.item.data.source.cloud.api;
 
-import com.tokopedia.product.edit.data.source.cloud.model.youtube.YoutubeResponse;
+import com.tokopedia.product.manage.item.data.source.cloud.model.youtube.YoutubeResponse;
 
 import java.util.Map;
 

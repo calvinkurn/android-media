@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.data.repository;
+package com.tokopedia.product.manage.item.data.repository;
 
 
-import com.tokopedia.product.edit.data.mapper.AddProductPictureMapper;
-import com.tokopedia.product.edit.data.mapper.UploadImageMapper;
-import com.tokopedia.product.edit.data.mapper.UploadProductPictureInputMapper;
-import com.tokopedia.product.edit.data.source.ImageProductUploadDataSource;
-import com.tokopedia.product.edit.data.source.cloud.model.AddProductPictureInputServiceModel;
-import com.tokopedia.product.edit.domain.ImageProductUploadRepository;
-import com.tokopedia.product.edit.domain.model.AddProductPictureDomainModel;
-import com.tokopedia.product.edit.domain.model.ImageProcessDomainModel;
-import com.tokopedia.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.product.manage.item.data.mapper.AddProductPictureMapper;
+import com.tokopedia.product.manage.item.data.mapper.UploadImageMapper;
+import com.tokopedia.product.manage.item.data.mapper.UploadProductPictureInputMapper;
+import com.tokopedia.product.manage.item.data.source.ImageProductUploadDataSource;
+import com.tokopedia.product.manage.item.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.product.manage.item.domain.ImageProductUploadRepository;
+import com.tokopedia.product.manage.item.domain.model.AddProductPictureDomainModel;
+import com.tokopedia.product.manage.item.domain.model.ImageProcessDomainModel;
+import com.tokopedia.product.manage.item.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 

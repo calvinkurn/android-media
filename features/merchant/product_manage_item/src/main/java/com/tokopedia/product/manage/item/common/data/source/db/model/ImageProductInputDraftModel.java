@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.common.data.source.db.model;
+package com.tokopedia.product.manage.item.common.data.source.db.model;
 
 
-import com.tokopedia.product.edit.common.util.ImageStatusTypeDef;
-import com.tokopedia.product.edit.common.util.ImageStatusTypeDef;
+import com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef;
+import com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef;
 
 /**
  * @author sebastianuskh on 4/13/17.

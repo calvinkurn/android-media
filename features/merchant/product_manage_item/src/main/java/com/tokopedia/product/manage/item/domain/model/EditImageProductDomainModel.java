@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.domain.model;
+package com.tokopedia.product.manage.item.domain.model;
 
 /**
  * @author sebastianuskh on 4/26/17.

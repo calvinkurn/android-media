@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.adapter.viewholder
+package com.tokopedia.product.manage.item.view.adapter.viewholder
 
 import android.content.Context
 import android.graphics.Rect
@@ -8,13 +8,13 @@ import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.view.adapter.ProductAddVideoRecommendationFeaturedAdapter
-import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment
-import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.MAX_VIDEO
-import com.tokopedia.product.edit.view.listener.SectionVideoRecommendationListener
-import com.tokopedia.product.edit.view.viewmodel.SectionVideoRecommendationViewModel
-import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.view.adapter.ProductAddVideoRecommendationFeaturedAdapter
+import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment
+import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment.Companion.MAX_VIDEO
+import com.tokopedia.product.manage.item.view.listener.SectionVideoRecommendationListener
+import com.tokopedia.product.manage.item.view.viewmodel.SectionVideoRecommendationViewModel
+import com.tokopedia.product.manage.item.view.viewmodel.VideoRecommendationViewModel
 import kotlinx.android.synthetic.main.item_product_add_section_video_recommendation.view.*
 
 class SectionVideoRecommendationViewHolder(itemView: View,

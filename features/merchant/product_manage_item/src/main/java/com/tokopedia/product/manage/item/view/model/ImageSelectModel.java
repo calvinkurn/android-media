@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.model;
+package com.tokopedia.product.manage.item.view.model;
 
 import android.graphics.BitmapFactory;
 import android.os.Parcel;

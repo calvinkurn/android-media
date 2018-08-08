@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.data.source.cache;
+package com.tokopedia.product.manage.item.common.data.source.cache;
 
 import android.support.annotation.NonNull;
 
@@ -6,8 +6,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.utils.ErrorCheck;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.product.edit.common.data.source.cache.model.DatePickerCacheModel;
-import com.tokopedia.product.edit.common.data.source.cache.model.DatePickerCacheModel;
+import com.tokopedia.product.manage.item.common.data.source.cache.model.DatePickerCacheModel;
+import com.tokopedia.product.manage.item.common.data.source.cache.model.DatePickerCacheModel;
 
 import javax.inject.Inject;
 

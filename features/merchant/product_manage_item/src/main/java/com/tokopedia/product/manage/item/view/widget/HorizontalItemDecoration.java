@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.widget;
+package com.tokopedia.product.manage.item.view.widget;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

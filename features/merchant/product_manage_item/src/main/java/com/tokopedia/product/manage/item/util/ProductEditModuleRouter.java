@@ -1,14 +1,14 @@
-package com.tokopedia.product.edit.util;
+package com.tokopedia.product.manage.item.util;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
-import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel;
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.edit.view.service.UploadProductService;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.view.service.UploadProductService;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

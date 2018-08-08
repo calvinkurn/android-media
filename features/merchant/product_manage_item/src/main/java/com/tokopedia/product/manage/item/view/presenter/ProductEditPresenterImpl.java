@@ -1,27 +1,27 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.edit.common.util.ViewUtils;
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
-import com.tokopedia.product.edit.domain.interactor.FetchCatalogDataUseCase;
-import com.tokopedia.product.edit.domain.interactor.GetCategoryRecommUseCase;
-import com.tokopedia.product.edit.domain.interactor.GetProductDetailUseCase;
-import com.tokopedia.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.domain.interactor.FetchProductVariantByCatUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.SaveDraftProductUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.common.util.ViewUtils;
+import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.product.manage.item.domain.interactor.FetchCatalogDataUseCase;
+import com.tokopedia.product.manage.item.domain.interactor.GetCategoryRecommUseCase;
+import com.tokopedia.product.manage.item.domain.interactor.GetProductDetailUseCase;
+import com.tokopedia.product.manage.item.domain.interactor.ProductScoringUseCase;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
-import com.tokopedia.product.edit.domain.model.CategoryRecommDomainModel;
-import com.tokopedia.product.edit.view.mapper.CategoryRecommDomainToViewMapper;
-import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.domain.model.CategoryRecommDomainModel;
+import com.tokopedia.product.manage.item.view.mapper.CategoryRecommDomainToViewMapper;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import java.util.List;

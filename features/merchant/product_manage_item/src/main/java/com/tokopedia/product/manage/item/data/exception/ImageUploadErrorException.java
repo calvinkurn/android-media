@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.data.exception;
+package com.tokopedia.product.manage.item.data.exception;
 
 /**
  * Created by zulfikarrahman on 7/18/18.

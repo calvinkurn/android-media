@@ -1,20 +1,20 @@
-package com.tokopedia.product.edit.view.activity
+package com.tokopedia.product.manage.item.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.price.model.ProductCategory
-import com.tokopedia.product.edit.price.model.ProductName
-import com.tokopedia.product.edit.util.ProductEditModuleRouter
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.edit.view.fragment.ProductAddFragment
-import com.tokopedia.product.edit.view.presenter.ProductAddImagePresenter
-import com.tokopedia.product.edit.view.presenter.ProductAddImageView
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.price.model.ProductCategory
+import com.tokopedia.product.manage.item.price.model.ProductName
+import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.view.fragment.ProductAddFragment
+import com.tokopedia.product.manage.item.view.presenter.ProductAddImagePresenter
+import com.tokopedia.product.manage.item.view.presenter.ProductAddImageView
 import permissions.dispatcher.*
 
 open class ProductAddActivity : BaseProductAddEditActivity(){

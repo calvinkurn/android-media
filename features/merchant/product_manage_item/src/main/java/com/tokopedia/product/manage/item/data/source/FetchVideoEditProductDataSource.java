@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.data.source;
+package com.tokopedia.product.manage.item.data.source;
 
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;

@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.view.adapter
+package com.tokopedia.product.manage.item.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.edit.view.adapter.viewholder.EmptyVideoViewHolder
-import com.tokopedia.product.edit.view.adapter.viewholder.TitleVideoChosenViewHolder
-import com.tokopedia.product.edit.view.adapter.viewholder.SectionVideoRecommendationViewHolder
-import com.tokopedia.product.edit.view.adapter.viewholder.VideoViewHolder
-import com.tokopedia.product.edit.view.listener.SectionVideoRecommendationListener
-import com.tokopedia.product.edit.view.listener.VideoChosenListener
-import com.tokopedia.product.edit.view.viewmodel.*
+import com.tokopedia.product.manage.item.view.adapter.viewholder.EmptyVideoViewHolder
+import com.tokopedia.product.manage.item.view.adapter.viewholder.TitleVideoChosenViewHolder
+import com.tokopedia.product.manage.item.view.adapter.viewholder.SectionVideoRecommendationViewHolder
+import com.tokopedia.product.manage.item.view.adapter.viewholder.VideoViewHolder
+import com.tokopedia.product.manage.item.view.listener.SectionVideoRecommendationListener
+import com.tokopedia.product.manage.item.view.listener.VideoChosenListener
+import com.tokopedia.product.manage.item.view.viewmodel.*
 
 class ProductAddVideoAdapterTypeFactory(private var sectionVideoRecommendationListener: SectionVideoRecommendationListener,
                                         private var videoChoosenListener: VideoChosenListener) : BaseAdapterTypeFactory(), ProductAddVideoTypeFactory {

@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.view.listener;
+package com.tokopedia.product.manage.item.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.Catalog;
 
 import java.util.List;
 

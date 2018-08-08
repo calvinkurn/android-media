@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
-import com.tokopedia.product.edit.domain.interactor.FetchCatalogDataUseCase;
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel;
+import com.tokopedia.product.manage.item.domain.interactor.FetchCatalogDataUseCase;
+import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel;
 
 import rx.Subscriber;
 

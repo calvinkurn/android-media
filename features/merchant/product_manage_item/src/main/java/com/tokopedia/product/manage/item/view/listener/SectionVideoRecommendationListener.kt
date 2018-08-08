@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.view.listener
+package com.tokopedia.product.manage.item.view.listener
 
-import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment
-import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment
+import com.tokopedia.product.manage.item.view.viewmodel.VideoRecommendationViewModel
 
 interface SectionVideoRecommendationListener {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.util
+package com.tokopedia.product.manage.item.util
 
 import android.support.v7.widget.RecyclerView
 import android.view.View

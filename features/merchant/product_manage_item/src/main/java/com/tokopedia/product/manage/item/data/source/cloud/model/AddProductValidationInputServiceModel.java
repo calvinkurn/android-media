@@ -1,10 +1,10 @@
-package com.tokopedia.product.edit.data.source.cloud.model;
+package com.tokopedia.product.manage.item.data.source.cloud.model;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.product.edit.common.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.product.manage.item.common.model.variantsubmit.ProductVariantDataSubmit;
 
 import java.util.List;
 import java.util.Locale;

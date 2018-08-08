@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.app.Activity
 import android.content.Intent
@@ -8,14 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_DESCRIPTION
-import com.tokopedia.product.edit.price.model.ProductDescription
-import com.tokopedia.product.edit.view.activity.ProductAddDescriptionPickerActivity
-import com.tokopedia.product.edit.view.activity.ProductAddDescriptionPickerActivity.PRODUCT_DESCRIPTION
-import com.tokopedia.product.edit.view.activity.ProductAddVideoActivity
-import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
-import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.EXTRA_VIDEOS_LINKS
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_DESCRIPTION
+import com.tokopedia.product.manage.item.price.model.ProductDescription
+import com.tokopedia.product.manage.item.view.activity.ProductAddDescriptionPickerActivity
+import com.tokopedia.product.manage.item.view.activity.ProductAddDescriptionPickerActivity.PRODUCT_DESCRIPTION
+import com.tokopedia.product.manage.item.view.activity.ProductAddVideoActivity
+import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment.Companion.EXTRA_KEYWORD
+import com.tokopedia.product.manage.item.view.fragment.ProductAddVideoFragment.Companion.EXTRA_VIDEOS_LINKS
 import kotlinx.android.synthetic.main.fragment_product_edit_description.*
 import java.util.ArrayList
 

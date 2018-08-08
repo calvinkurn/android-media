@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.view.listener;
+package com.tokopedia.product.manage.item.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.product.manage.item.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.DataScoringProductView;
 
 import java.util.List;
 

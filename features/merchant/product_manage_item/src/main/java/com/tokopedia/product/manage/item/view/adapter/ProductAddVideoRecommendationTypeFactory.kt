@@ -1,6 +1,6 @@
-package com.tokopedia.product.edit.view.adapter
+package com.tokopedia.product.manage.item.view.adapter
 
-import com.tokopedia.product.edit.view.viewmodel.*
+import com.tokopedia.product.manage.item.view.viewmodel.*
 
 interface ProductAddVideoRecommendationTypeFactory {
 

@@ -42,7 +42,7 @@
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-    <com.tokopedia.product.edit.price.LabelSwitch
+    <com.tokopedia.product.manage.item.price.LabelSwitch
         android:id="@+id/labelSwitchNewCondition"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"

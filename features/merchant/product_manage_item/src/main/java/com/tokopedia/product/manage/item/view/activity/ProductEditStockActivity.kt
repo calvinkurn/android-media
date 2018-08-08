@@ -1,16 +1,16 @@
-package com.tokopedia.product.edit.view.activity
+package com.tokopedia.product.manage.item.view.activity
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.ProductEditStockFragment
-import com.tokopedia.product.edit.price.model.ProductStock
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_STOCK
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.price.ProductEditStockFragment
+import com.tokopedia.product.manage.item.price.model.ProductStock
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_STATUS_ADD
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 
 class ProductEditStockActivity : BaseSimpleActivity(){
 

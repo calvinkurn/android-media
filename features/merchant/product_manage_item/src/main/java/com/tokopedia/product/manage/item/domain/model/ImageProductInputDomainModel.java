@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.domain.model;
+package com.tokopedia.product.manage.item.domain.model;
 
 
-import com.tokopedia.product.edit.common.util.ImageStatusTypeDef;
+import com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef;
 
 /**
  * @author sebastianuskh on 4/10/17.

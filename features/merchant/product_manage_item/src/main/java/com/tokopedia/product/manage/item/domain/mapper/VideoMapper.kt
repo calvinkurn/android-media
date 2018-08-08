@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.domain.mapper
+package com.tokopedia.product.manage.item.domain.mapper
 
-import com.tokopedia.product.edit.domain.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
-import com.tokopedia.product.edit.view.viewmodel.VideoViewModel
+import com.tokopedia.product.manage.item.domain.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.manage.item.view.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.manage.item.view.viewmodel.VideoViewModel
 import java.util.ArrayList
 
 class VideoMapper {

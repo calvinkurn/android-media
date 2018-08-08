@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.imagepicker.util;
+package com.tokopedia.product.manage.item.imagepicker.util;
 
 /**
  * Created by zulfikarrahman on 6/5/18.

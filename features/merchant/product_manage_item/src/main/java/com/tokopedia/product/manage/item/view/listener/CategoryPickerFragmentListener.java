@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.listener;
+package com.tokopedia.product.manage.item.view.listener;
 
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 

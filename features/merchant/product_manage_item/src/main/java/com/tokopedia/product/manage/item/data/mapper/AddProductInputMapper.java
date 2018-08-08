@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.data.mapper;
+package com.tokopedia.product.manage.item.data.mapper;
 
-import com.tokopedia.product.edit.data.source.cloud.model.AddProductSubmitInputServiceModel;
-import com.tokopedia.product.edit.domain.model.AddProductSubmitInputDomainModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.AddProductSubmitInputServiceModel;
+import com.tokopedia.product.manage.item.domain.model.AddProductSubmitInputDomainModel;
 
 /**
  * @author sebastianuskh on 4/11/17.

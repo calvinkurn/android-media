@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.common.data.mapper;
+package com.tokopedia.product.manage.item.common.data.mapper;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
 
 import rx.functions.Func1;
 

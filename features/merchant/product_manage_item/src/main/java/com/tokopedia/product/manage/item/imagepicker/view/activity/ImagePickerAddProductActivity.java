@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.imagepicker.view.activity;
+package com.tokopedia.product.manage.item.imagepicker.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
-import com.tokopedia.product.edit.imagepicker.view.fragment.ImagePickerCatalogFragment;
-import com.tokopedia.product.edit.imagepicker.view.adapter.ImagePickerViewPageAddProductAdapter;
+import com.tokopedia.product.manage.item.imagepicker.view.fragment.ImagePickerCatalogFragment;
+import com.tokopedia.product.manage.item.imagepicker.view.adapter.ImagePickerViewPageAddProductAdapter;
 
 /**
  * Created by zulfikarrahman on 6/6/18.

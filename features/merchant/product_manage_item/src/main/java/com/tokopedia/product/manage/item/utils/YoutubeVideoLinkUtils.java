@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.utils;
+package com.tokopedia.product.manage.item.utils;
 
 import android.content.Context;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.Pair;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.data.source.cloud.model.youtube.ContentRating;
-import com.tokopedia.product.edit.data.source.cloud.model.youtube.YoutubeResponse;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.data.source.cloud.model.youtube.ContentRating;
+import com.tokopedia.product.manage.item.data.source.cloud.model.youtube.YoutubeResponse;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

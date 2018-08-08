@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.view.listener;
+package com.tokopedia.product.manage.item.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.product.edit.view.model.AddUrlVideoModel;
+import com.tokopedia.product.manage.item.view.model.AddUrlVideoModel;
 
 import java.util.List;
 

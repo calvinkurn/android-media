@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.domain;
+package com.tokopedia.product.manage.item.domain;
 
-import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 import rx.Observable;
 

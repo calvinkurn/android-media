@@ -1,18 +1,18 @@
-package com.tokopedia.product.edit.view.fragment
+package com.tokopedia.product.manage.item.view.fragment
 
 import android.os.Bundle
-import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.common.util.ProductStatus
-import com.tokopedia.product.edit.di.component.DaggerProductAddComponent
-import com.tokopedia.product.edit.di.module.ProductAddModule
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.price.model.ProductCategory
-import com.tokopedia.product.edit.price.model.ProductName
-import com.tokopedia.product.edit.utils.convertImageListResult
-import com.tokopedia.product.edit.utils.isFilledAny
-import com.tokopedia.product.edit.view.listener.ProductAddView
-import com.tokopedia.product.edit.view.model.ProductAddViewModel
-import com.tokopedia.product.edit.view.presenter.ProductAddPresenterImpl
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.common.util.ProductStatus
+import com.tokopedia.product.manage.item.di.component.DaggerProductAddComponent
+import com.tokopedia.product.manage.item.di.module.ProductAddModule
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.price.model.ProductCategory
+import com.tokopedia.product.manage.item.price.model.ProductName
+import com.tokopedia.product.manage.item.utils.convertImageListResult
+import com.tokopedia.product.manage.item.utils.isFilledAny
+import com.tokopedia.product.manage.item.view.listener.ProductAddView
+import com.tokopedia.product.manage.item.view.model.ProductAddViewModel
+import com.tokopedia.product.manage.item.view.presenter.ProductAddPresenterImpl
 import java.util.ArrayList
 
 class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<ProductAddView>, ProductAddView>() {

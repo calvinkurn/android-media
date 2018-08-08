@@ -1,5 +1,5 @@
 
-package com.tokopedia.product.edit.view.model.scoringproduct;
+package com.tokopedia.product.manage.item.view.model.scoringproduct;
 
 public class TotalScoringProductView {
     private String valueScoreProduct;

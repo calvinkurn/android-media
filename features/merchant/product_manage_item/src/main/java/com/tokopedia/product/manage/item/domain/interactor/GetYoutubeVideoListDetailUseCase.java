@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.domain.interactor;
+package com.tokopedia.product.manage.item.domain.interactor;
 
 import android.content.Context;
 

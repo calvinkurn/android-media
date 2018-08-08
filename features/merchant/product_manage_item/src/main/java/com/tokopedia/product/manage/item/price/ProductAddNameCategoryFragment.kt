@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.app.Activity
 import android.content.Intent
@@ -6,22 +6,22 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.constant.ProductExtraConstant
-import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
-import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
-import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.price.model.ProductCategory
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.price.model.ProductName
-import com.tokopedia.product.edit.price.viewholder.ProductEditNameViewHolder
-import com.tokopedia.product.edit.view.activity.ProductAddActivity
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.constant.ProductExtraConstant
+import com.tokopedia.product.manage.item.di.component.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.manage.item.di.module.ProductEditCategoryCatalogModule
+import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.price.model.ProductCategory
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.price.model.ProductName
+import com.tokopedia.product.manage.item.price.viewholder.ProductEditNameViewHolder
+import com.tokopedia.product.manage.item.view.activity.ProductAddActivity
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.view.listener.ProductEditCategoryView
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
 class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryView {

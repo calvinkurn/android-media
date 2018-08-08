@@ -1,14 +1,14 @@
-package com.tokopedia.product.edit.view.presenter
+package com.tokopedia.product.manage.item.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase
-import com.tokopedia.product.edit.common.util.ViewUtils
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.CatalogDataModel
-import com.tokopedia.product.edit.domain.interactor.FetchCatalogDataUseCase
-import com.tokopedia.product.edit.domain.interactor.GetCategoryRecommUseCase
-import com.tokopedia.product.edit.domain.model.CategoryRecommDomainModel
-import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
-import com.tokopedia.product.edit.view.mapper.CategoryRecommDomainToViewMapper
+import com.tokopedia.product.manage.item.common.util.ViewUtils
+import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.CatalogDataModel
+import com.tokopedia.product.manage.item.domain.interactor.FetchCatalogDataUseCase
+import com.tokopedia.product.manage.item.domain.interactor.GetCategoryRecommUseCase
+import com.tokopedia.product.manage.item.domain.model.CategoryRecommDomainModel
+import com.tokopedia.product.manage.item.view.listener.ProductEditCategoryView
+import com.tokopedia.product.manage.item.view.mapper.CategoryRecommDomainToViewMapper
 import rx.Subscriber
 import rx.subjects.BehaviorSubject
 import rx.android.schedulers.AndroidSchedulers

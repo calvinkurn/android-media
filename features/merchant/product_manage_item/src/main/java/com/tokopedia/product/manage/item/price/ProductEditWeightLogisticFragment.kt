@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.app.Activity
 import android.content.Intent
@@ -10,14 +10,14 @@ import android.widget.TextView
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.NumberTextWatcher
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
-import com.tokopedia.product.edit.price.model.ProductLogistic
-import com.tokopedia.product.edit.util.ProductEditOptionMenuAdapter
-import com.tokopedia.product.edit.util.ProductEditOptionMenuBottomSheets
-import com.tokopedia.product.edit.util.ProductEditPreOrderTimeType
-import com.tokopedia.product.edit.util.ProductEditWeightType
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_FREE_RETURN
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
+import com.tokopedia.product.manage.item.price.model.ProductLogistic
+import com.tokopedia.product.manage.item.util.ProductEditOptionMenuAdapter
+import com.tokopedia.product.manage.item.util.ProductEditOptionMenuBottomSheets
+import com.tokopedia.product.manage.item.util.ProductEditPreOrderTimeType
+import com.tokopedia.product.manage.item.util.ProductEditWeightType
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IS_FREE_RETURN
 import kotlinx.android.synthetic.main.fragment_product_edit_weightlogistic.*
 
 class ProductEditWeightLogisticFragment : Fragment() {

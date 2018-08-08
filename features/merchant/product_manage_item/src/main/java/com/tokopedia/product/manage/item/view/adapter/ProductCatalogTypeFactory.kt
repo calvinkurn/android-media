@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.view.adapter
+package com.tokopedia.product.manage.item.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
 import kotlinx.android.synthetic.main.item_product_edit_catalog.view.*
 
 class ProductCatalogTypeFactory: BaseAdapterTypeFactory(){

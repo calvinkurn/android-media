@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.di.component;
+package com.tokopedia.product.manage.item.di.component;
 
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
-import com.tokopedia.product.edit.di.module.CatalogPickerModule;
-import com.tokopedia.product.edit.view.presenter.CatalogPickerPresenter;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.di.module.CatalogPickerModule;
+import com.tokopedia.product.manage.item.view.presenter.CatalogPickerPresenter;
 
 import dagger.Component;
 

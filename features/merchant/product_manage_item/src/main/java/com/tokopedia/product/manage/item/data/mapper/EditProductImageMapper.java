@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.data.mapper;
+package com.tokopedia.product.manage.item.data.mapper;
 
-import com.tokopedia.product.edit.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
-import com.tokopedia.product.edit.domain.model.EditImageProductDomainModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
+import com.tokopedia.product.manage.item.domain.model.EditImageProductDomainModel;
 
 import rx.functions.Func1;
 

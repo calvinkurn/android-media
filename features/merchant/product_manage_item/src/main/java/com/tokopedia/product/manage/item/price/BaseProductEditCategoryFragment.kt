@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.app.Activity
 import android.content.Context
@@ -10,20 +10,20 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.constant.ProductExtraConstant
-import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.price.model.ProductCategory
-import com.tokopedia.product.edit.util.ProductEditModuleRouter
-import com.tokopedia.product.edit.view.activity.ProductEditCatalogPickerActivity
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
-import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
-import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
-import com.tokopedia.product.edit.view.presenter.ProductEditCategoryPresenter
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.constant.ProductExtraConstant
+import com.tokopedia.product.manage.item.data.source.cloud.model.catalogdata.Catalog
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.price.model.ProductCategory
+import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.view.activity.ProductEditCatalogPickerActivity
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
+import com.tokopedia.product.manage.item.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.manage.item.view.listener.ProductEditCategoryView
+import com.tokopedia.product.manage.item.view.model.categoryrecomm.ProductCategoryPredictionViewModel
+import com.tokopedia.product.manage.item.view.presenter.ProductEditCategoryPresenter
 import kotlinx.android.synthetic.main.fragment_product_edit_category.*
 import javax.inject.Inject
 

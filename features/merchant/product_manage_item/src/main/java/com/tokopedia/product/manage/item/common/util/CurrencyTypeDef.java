@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.product.edit.common.util.CurrencyTypeDef.TYPE_IDR;
-import static com.tokopedia.product.edit.common.util.CurrencyTypeDef.TYPE_USD;
+import static com.tokopedia.product.manage.item.common.util.CurrencyTypeDef.TYPE_IDR;
+import static com.tokopedia.product.manage.item.common.util.CurrencyTypeDef.TYPE_USD;
 
 /**
  * @author normansyahputa on 4/25/17.

@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.view.listener
+package com.tokopedia.product.manage.item.view.listener
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.product.edit.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
 
 interface ProductEditCatalogPickerView: CustomerView{
     fun onErrorLoadCatalog(throwable: Throwable?)

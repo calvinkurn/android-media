@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.utils;
+package com.tokopedia.product.manage.item.utils;
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule;
 

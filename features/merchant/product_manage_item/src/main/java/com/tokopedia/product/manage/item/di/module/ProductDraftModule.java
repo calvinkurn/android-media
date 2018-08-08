@@ -1,13 +1,13 @@
-package com.tokopedia.product.edit.di.module;
+package com.tokopedia.product.manage.item.di.module;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.product.edit.common.domain.interactor.FetchDraftProductUseCase;
-import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
-import com.tokopedia.product.edit.common.domain.interactor.FetchProductVariantByCatUseCase;
-import com.tokopedia.product.edit.common.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.product.edit.di.scope.ProductAddScope;
-import com.tokopedia.product.edit.view.presenter.ProductDraftPresenterImpl;
-import com.tokopedia.product.edit.view.presenter.ProductEditPresenterImpl;
+import com.tokopedia.product.manage.item.common.domain.interactor.FetchDraftProductUseCase;
+import com.tokopedia.product.manage.item.common.domain.ProductDraftRepository;
+import com.tokopedia.product.manage.item.common.domain.interactor.FetchProductVariantByCatUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.SaveDraftProductUseCase;
+import com.tokopedia.product.manage.item.di.scope.ProductAddScope;
+import com.tokopedia.product.manage.item.view.presenter.ProductDraftPresenterImpl;
+import com.tokopedia.product.manage.item.view.presenter.ProductEditPresenterImpl;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import dagger.Module;

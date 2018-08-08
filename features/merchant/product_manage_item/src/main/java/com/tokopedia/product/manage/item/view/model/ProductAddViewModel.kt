@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.view.model
+package com.tokopedia.product.manage.item.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel
-import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef
-import com.tokopedia.product.edit.price.model.*
+import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel
+import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
+import com.tokopedia.product.manage.item.price.model.*
 import java.util.ArrayList
 
 data class ProductAddViewModel(var productCatalog: ProductCatalog? = ProductCatalog(),

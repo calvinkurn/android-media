@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.product.edit.domain.listener.ProductSubmitNotificationListener;
+import com.tokopedia.product.manage.item.domain.listener.ProductSubmitNotificationListener;
 
 /**
  * @author sebastianuskh on 4/20/17.

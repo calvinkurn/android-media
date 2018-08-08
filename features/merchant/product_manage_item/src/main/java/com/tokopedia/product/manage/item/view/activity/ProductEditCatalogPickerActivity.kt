@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.activity
+package com.tokopedia.product.manage.item.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -7,11 +7,11 @@ import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.common.di.component.ProductComponent
-import com.tokopedia.product.edit.price.ProductEditCatalogPickerFragment
-import com.tokopedia.product.edit.price.model.ProductCatalog
-import com.tokopedia.product.edit.util.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.price.ProductEditCatalogPickerFragment
+import com.tokopedia.product.manage.item.price.model.ProductCatalog
+import com.tokopedia.product.manage.item.util.ProductEditModuleRouter
 
 class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<ProductComponent> {
     private var productName: String = ""

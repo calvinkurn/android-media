@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.model.variantsubmit;
+package com.tokopedia.product.manage.item.common.model.variantsubmit;
 
 import android.os.Parcel;
 import android.os.Parcelable;

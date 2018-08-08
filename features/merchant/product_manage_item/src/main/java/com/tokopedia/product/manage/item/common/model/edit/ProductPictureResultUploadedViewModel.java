@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.model.edit;
+package com.tokopedia.product.manage.item.common.model.edit;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

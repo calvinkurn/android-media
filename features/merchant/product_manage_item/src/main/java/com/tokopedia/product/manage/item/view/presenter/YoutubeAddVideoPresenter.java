@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.product.edit.view.listener.YoutubeAddVideoActView;
-import com.tokopedia.product.edit.view.listener.YoutubeAddVideoView;
+import com.tokopedia.product.manage.item.view.listener.YoutubeAddVideoActView;
+import com.tokopedia.product.manage.item.view.listener.YoutubeAddVideoView;
 
 import java.util.List;
 

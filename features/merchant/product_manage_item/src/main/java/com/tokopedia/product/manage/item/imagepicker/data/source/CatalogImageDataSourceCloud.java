@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.imagepicker.data.source;
+package com.tokopedia.product.manage.item.imagepicker.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.product.edit.imagepicker.data.model.CatalogImage;
-import com.tokopedia.product.edit.imagepicker.data.model.DataResponseCatalogImage;
+import com.tokopedia.product.manage.item.imagepicker.data.model.CatalogImage;
+import com.tokopedia.product.manage.item.imagepicker.data.model.DataResponseCatalogImage;
 
 import java.util.List;
 

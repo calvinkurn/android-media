@@ -1,5 +1,5 @@
 
-package com.tokopedia.product.edit.common.model.edit;
+package com.tokopedia.product.manage.item.common.model.edit;
 
 import android.os.Parcel;
 import android.os.Parcelable;

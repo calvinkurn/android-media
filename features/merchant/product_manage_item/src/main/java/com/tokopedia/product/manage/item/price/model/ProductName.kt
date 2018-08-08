@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price.model
+package com.tokopedia.product.manage.item.price.model
 
 import android.os.Parcel
 import android.os.Parcelable

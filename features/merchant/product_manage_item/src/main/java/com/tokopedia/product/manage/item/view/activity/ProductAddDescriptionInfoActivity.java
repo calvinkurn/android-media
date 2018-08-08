@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.view.activity;
+package com.tokopedia.product.manage.item.view.activity;
 
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.edit.view.fragment.ProductAddInfoFragment;
+import com.tokopedia.product.manage.item.view.fragment.ProductAddInfoFragment;
 
 /**
  * Created by normansyahputa on 1/4/18.

@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.common.domain.repository;
+package com.tokopedia.product.manage.item.common.domain.repository;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
 
 import rx.Observable;
 

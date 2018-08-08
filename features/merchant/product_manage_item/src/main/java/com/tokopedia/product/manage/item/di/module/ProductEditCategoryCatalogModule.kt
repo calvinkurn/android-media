@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.di.module
+package com.tokopedia.product.manage.item.di.module
 
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl
 import com.tokopedia.core.common.category.data.source.CategoryDataSource
@@ -9,15 +9,15 @@ import com.tokopedia.core.common.category.domain.CategoryRepository
 import com.tokopedia.core.network.di.qualifier.AceQualifier
 import com.tokopedia.core.network.di.qualifier.HadesQualifier
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier
-import com.tokopedia.product.edit.data.repository.CatalogRepositoryImpl
-import com.tokopedia.product.edit.data.repository.CategoryRecommRepositoryImpl
-import com.tokopedia.product.edit.data.source.CatalogDataSource
-import com.tokopedia.product.edit.data.source.CategoryRecommDataSource
-import com.tokopedia.product.edit.data.source.cloud.api.MerlinApi
-import com.tokopedia.product.edit.data.source.cloud.api.SearchApi
-import com.tokopedia.product.edit.di.scope.ProductAddScope
-import com.tokopedia.product.edit.domain.CatalogRepository
-import com.tokopedia.product.edit.domain.CategoryRecommRepository
+import com.tokopedia.product.manage.item.data.repository.CatalogRepositoryImpl
+import com.tokopedia.product.manage.item.data.repository.CategoryRecommRepositoryImpl
+import com.tokopedia.product.manage.item.data.source.CatalogDataSource
+import com.tokopedia.product.manage.item.data.source.CategoryRecommDataSource
+import com.tokopedia.product.manage.item.data.source.cloud.api.MerlinApi
+import com.tokopedia.product.manage.item.data.source.cloud.api.SearchApi
+import com.tokopedia.product.manage.item.di.scope.ProductAddScope
+import com.tokopedia.product.manage.item.domain.CatalogRepository
+import com.tokopedia.product.manage.item.domain.CategoryRecommRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.domain;
+package com.tokopedia.product.manage.item.domain;
 
-import com.tokopedia.product.edit.domain.model.AddProductPictureDomainModel;
-import com.tokopedia.product.edit.domain.model.ImageProcessDomainModel;
-import com.tokopedia.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.product.manage.item.domain.model.AddProductPictureDomainModel;
+import com.tokopedia.product.manage.item.domain.model.ImageProcessDomainModel;
+import com.tokopedia.product.manage.item.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 

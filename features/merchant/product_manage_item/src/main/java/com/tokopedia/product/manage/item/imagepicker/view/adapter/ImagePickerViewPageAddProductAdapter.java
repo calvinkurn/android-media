@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.imagepicker.view.adapter;
+package com.tokopedia.product.manage.item.imagepicker.view.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -6,9 +6,9 @@ import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.imagepicker.view.fragment.ImagePickerCatalogFragment;
-import com.tokopedia.product.edit.imagepicker.util.CatalogConstant;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.imagepicker.view.fragment.ImagePickerCatalogFragment;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 
 /**
  * Created by zulfikarrahman on 6/6/18.

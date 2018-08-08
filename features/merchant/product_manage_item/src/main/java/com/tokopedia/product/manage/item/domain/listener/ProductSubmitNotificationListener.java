@@ -1,6 +1,6 @@
-package com.tokopedia.product.edit.domain.listener;
+package com.tokopedia.product.manage.item.domain.listener;
 
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 
 /**
  * Created by nathan on 2/28/18.

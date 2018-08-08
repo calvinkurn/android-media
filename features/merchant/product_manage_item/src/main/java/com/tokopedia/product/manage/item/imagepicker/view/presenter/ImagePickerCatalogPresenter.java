@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.imagepicker.view.presenter;
+package com.tokopedia.product.manage.item.imagepicker.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.product.edit.imagepicker.domain.interactor.ClearCacheCatalogUseCase;
-import com.tokopedia.product.edit.imagepicker.domain.interactor.GetCatalogImageUseCase;
-import com.tokopedia.product.edit.imagepicker.view.model.CatalogModelView;
+import com.tokopedia.product.manage.item.imagepicker.domain.interactor.ClearCacheCatalogUseCase;
+import com.tokopedia.product.manage.item.imagepicker.domain.interactor.GetCatalogImageUseCase;
+import com.tokopedia.product.manage.item.imagepicker.view.model.CatalogModelView;
 
 import java.util.List;
 

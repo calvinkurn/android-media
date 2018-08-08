@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.domain.interactor;
+package com.tokopedia.product.manage.item.common.domain.interactor;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -7,15 +7,15 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.product.edit.common.domain.UploadImageRepository;
-import com.tokopedia.product.edit.common.domain.model.GenerateHostDomainModel;
-import com.tokopedia.product.edit.common.domain.model.ImageUploadDomainModel;
-import com.tokopedia.product.edit.common.domain.repository.GenerateHostRepository;
-import com.tokopedia.product.edit.common.util.ProductNetworkConstant;
-import com.tokopedia.product.edit.common.util.ShopSettingNetworkConstant;
-import com.tokopedia.product.edit.common.domain.UploadImageRepository;
-import com.tokopedia.product.edit.common.domain.model.GenerateHostDomainModel;
-import com.tokopedia.product.edit.common.util.ProductNetworkConstant;
+import com.tokopedia.product.manage.item.common.domain.UploadImageRepository;
+import com.tokopedia.product.manage.item.common.domain.model.GenerateHostDomainModel;
+import com.tokopedia.product.manage.item.common.domain.model.ImageUploadDomainModel;
+import com.tokopedia.product.manage.item.common.domain.repository.GenerateHostRepository;
+import com.tokopedia.product.manage.item.common.util.ProductNetworkConstant;
+import com.tokopedia.product.manage.item.common.util.ShopSettingNetworkConstant;
+import com.tokopedia.product.manage.item.common.domain.UploadImageRepository;
+import com.tokopedia.product.manage.item.common.domain.model.GenerateHostDomainModel;
+import com.tokopedia.product.manage.item.common.util.ProductNetworkConstant;
 
 import java.io.File;
 import java.util.Map;

@@ -1,15 +1,15 @@
-package com.tokopedia.product.edit.common.util;
+package com.tokopedia.product.manage.item.common.util;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.product.edit.common.util.ImageStatusTypeDef.ALREADY_DELETED;
-import static com.tokopedia.product.edit.common.util.ImageStatusTypeDef.ALREADY_UPLOADED;
-import static com.tokopedia.product.edit.common.util.ImageStatusTypeDef.DEFAULT;
-import static com.tokopedia.product.edit.common.util.ImageStatusTypeDef.WILL_BE_DELETED;
-import static com.tokopedia.product.edit.common.util.ImageStatusTypeDef.WILL_BE_UPLOADED;
+import static com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef.ALREADY_DELETED;
+import static com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef.ALREADY_UPLOADED;
+import static com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef.DEFAULT;
+import static com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef.WILL_BE_DELETED;
+import static com.tokopedia.product.manage.item.common.util.ImageStatusTypeDef.WILL_BE_UPLOADED;
 
 /**
  * @author sebastianuskh on 5/16/17.

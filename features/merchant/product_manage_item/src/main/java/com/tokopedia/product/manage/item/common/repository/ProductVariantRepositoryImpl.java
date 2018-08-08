@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.common.repository;
+package com.tokopedia.product.manage.item.common.repository;
 
 import com.tokopedia.core.common.category.di.scope.CategoryPickerScope;
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.edit.common.model.variantbyprdold.ProductVariantByPrdModel;
-import com.tokopedia.product.edit.common.data.source.ProductVariantDataSource;
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprdold.ProductVariantByPrdModel;
+import com.tokopedia.product.manage.item.common.data.source.ProductVariantDataSource;
 
 import java.util.List;
 

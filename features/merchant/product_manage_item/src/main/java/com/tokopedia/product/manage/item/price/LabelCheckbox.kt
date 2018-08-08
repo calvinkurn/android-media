@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.price
+package com.tokopedia.product.manage.item.price
 
 import android.content.Context
 import android.text.TextUtils
@@ -10,7 +10,7 @@ import android.widget.CompoundButton
 import android.widget.TextView
 
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.product.edit.R
+import com.tokopedia.product.manage.item.R
 
 /**
  * Created by zulfikarrahman on 12/29/16.

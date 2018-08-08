@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.common.data.source.cloud;
+package com.tokopedia.product.manage.item.common.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.edit.common.model.variantbyprdold.ProductVariantByPrdModel;
-import com.tokopedia.product.edit.common.util.ProductUrl;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprdold.ProductVariantByPrdModel;
+import com.tokopedia.product.manage.item.common.util.ProductUrl;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 
 import java.util.List;
 

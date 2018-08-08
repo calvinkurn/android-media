@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.di.module;
+package com.tokopedia.product.manage.item.di.module;
 
 import android.content.Context;
 
@@ -8,14 +8,14 @@ import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
-import com.tokopedia.product.edit.data.mapper.YoutubeVidToDomainMapper;
-import com.tokopedia.product.edit.data.source.YoutubeVideoLinkDataSource;
-import com.tokopedia.product.edit.data.source.cloud.YoutubeVideoLinkCloud;
-import com.tokopedia.product.edit.data.source.cloud.api.YoutubeVideoLinkApi;
-import com.tokopedia.product.edit.data.repository.YoutubeRepositoryImpl;
-import com.tokopedia.product.edit.domain.YoutubeVideoRepository;
-import com.tokopedia.product.edit.domain.interactor.YoutubeVideoUseCase;
-import com.tokopedia.product.edit.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.product.manage.item.data.mapper.YoutubeVidToDomainMapper;
+import com.tokopedia.product.manage.item.data.source.YoutubeVideoLinkDataSource;
+import com.tokopedia.product.manage.item.data.source.cloud.YoutubeVideoLinkCloud;
+import com.tokopedia.product.manage.item.data.source.cloud.api.YoutubeVideoLinkApi;
+import com.tokopedia.product.manage.item.data.repository.YoutubeRepositoryImpl;
+import com.tokopedia.product.manage.item.domain.YoutubeVideoRepository;
+import com.tokopedia.product.manage.item.domain.interactor.YoutubeVideoUseCase;
+import com.tokopedia.product.manage.item.utils.YoutubeVideoLinkUtils;
 
 import dagger.Module;
 import dagger.Provides;

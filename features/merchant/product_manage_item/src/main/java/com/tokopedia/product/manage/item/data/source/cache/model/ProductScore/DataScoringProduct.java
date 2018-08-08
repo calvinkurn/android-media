@@ -1,5 +1,5 @@
 
-package com.tokopedia.product.edit.data.source.cache.model.ProductScore;
+package com.tokopedia.product.manage.item.data.source.cache.model.ProductScore;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

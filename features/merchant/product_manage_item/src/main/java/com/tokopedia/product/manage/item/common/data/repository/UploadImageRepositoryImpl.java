@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.common.data.repository;
+package com.tokopedia.product.manage.item.common.data.repository;
 
-import com.tokopedia.product.edit.common.data.source.UploadImageDataSource;
-import com.tokopedia.product.edit.common.domain.UploadImageRepository;
-import com.tokopedia.product.edit.common.domain.UploadImageRepository;
+import com.tokopedia.product.manage.item.common.data.source.UploadImageDataSource;
+import com.tokopedia.product.manage.item.common.domain.UploadImageRepository;
+import com.tokopedia.product.manage.item.common.domain.UploadImageRepository;
 
 import java.util.Map;
 

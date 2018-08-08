@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.fragment;
+package com.tokopedia.product.manage.item.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.product.edit.R;
+import com.tokopedia.product.manage.item.R;
 
 /**
  * Created by normansyahputa on 1/4/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.model.categoryrecomm;
+package com.tokopedia.product.manage.item.view.model.categoryrecomm;
 
 import android.os.Parcel;
 import android.os.Parcelable;

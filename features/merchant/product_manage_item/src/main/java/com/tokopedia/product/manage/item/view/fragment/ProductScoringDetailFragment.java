@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.fragment;
+package com.tokopedia.product.manage.item.view.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -13,18 +13,18 @@ import android.widget.TextView;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.constant.ProductExtraConstant;
-import com.tokopedia.product.edit.di.component.DaggerProductScoringComponent;
-import com.tokopedia.product.edit.di.module.ProductScoringModule;
-import com.tokopedia.product.edit.utils.ScoringProductHelper;
-import com.tokopedia.product.edit.view.listener.ProductScoringDetailView;
-import com.tokopedia.product.edit.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.product.edit.view.model.scoringproduct.TotalScoringProductView;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.product.edit.view.presenter.ProductScoringDetailPresenter;
-import com.tokopedia.product.edit.view.adapter.IndicatorScoringAdapter;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.constant.ProductExtraConstant;
+import com.tokopedia.product.manage.item.di.component.DaggerProductScoringComponent;
+import com.tokopedia.product.manage.item.di.module.ProductScoringModule;
+import com.tokopedia.product.manage.item.utils.ScoringProductHelper;
+import com.tokopedia.product.manage.item.view.listener.ProductScoringDetailView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.TotalScoringProductView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.view.presenter.ProductScoringDetailPresenter;
+import com.tokopedia.product.manage.item.view.adapter.IndicatorScoringAdapter;
 
 import javax.inject.Inject;
 

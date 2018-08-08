@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.data.repository;
+package com.tokopedia.product.manage.item.data.repository;
 
 import com.tokopedia.core.product.model.goldmerchant.Video;
-import com.tokopedia.product.edit.data.source.FetchVideoEditProductDataSource;
-import com.tokopedia.product.edit.data.source.ProductDataSource;
-import com.tokopedia.product.edit.common.model.edit.ProductVideoViewModel;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.domain.ProductRepository;
+import com.tokopedia.product.manage.item.data.source.FetchVideoEditProductDataSource;
+import com.tokopedia.product.manage.item.data.source.ProductDataSource;
+import com.tokopedia.product.manage.item.common.model.edit.ProductVideoViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.domain.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,13 +1,13 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.product.edit.domain.interactor.YoutubeVideoUseCase;
-import com.tokopedia.product.edit.domain.model.YoutubeVideoModel;
-import com.tokopedia.product.edit.utils.YoutubeVideoLinkUtils;
-import com.tokopedia.product.edit.view.model.AddUrlVideoModel;
-import com.tokopedia.product.edit.view.listener.YoutubeAddVideoActView;
+import com.tokopedia.product.manage.item.domain.interactor.YoutubeVideoUseCase;
+import com.tokopedia.product.manage.item.domain.model.YoutubeVideoModel;
+import com.tokopedia.product.manage.item.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.product.manage.item.view.model.AddUrlVideoModel;
+import com.tokopedia.product.manage.item.view.listener.YoutubeAddVideoActView;
 
 import java.util.ArrayList;
 import java.util.List;

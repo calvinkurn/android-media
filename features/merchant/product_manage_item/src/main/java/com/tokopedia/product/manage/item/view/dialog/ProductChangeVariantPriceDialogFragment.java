@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.dialog;
+package com.tokopedia.product.manage.item.view.dialog;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -20,11 +20,11 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
-import com.tokopedia.product.edit.common.util.CurrencyUsdTextWatcher;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.utils.ProductPriceRangeUtils;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
 
 /**
  * @author hendry on 4/20/17.

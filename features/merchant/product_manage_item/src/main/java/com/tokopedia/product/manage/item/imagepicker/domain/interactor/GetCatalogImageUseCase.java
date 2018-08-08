@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.imagepicker.domain.interactor;
+package com.tokopedia.product.manage.item.imagepicker.domain.interactor;
 
-import com.tokopedia.product.edit.imagepicker.view.model.CatalogModelView;
-import com.tokopedia.product.edit.imagepicker.domain.mapper.CatalogImageMapper;
-import com.tokopedia.product.edit.imagepicker.domain.CatalogImageRepository;
+import com.tokopedia.product.manage.item.imagepicker.view.model.CatalogModelView;
+import com.tokopedia.product.manage.item.imagepicker.domain.mapper.CatalogImageMapper;
+import com.tokopedia.product.manage.item.imagepicker.domain.CatalogImageRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

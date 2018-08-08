@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.model.upload;
+package com.tokopedia.product.manage.item.view.model.upload;
 
 /**
  * @author sebastianuskh on 4/13/17.

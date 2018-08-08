@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.data.source.cloud;
+package com.tokopedia.product.manage.item.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
-import com.tokopedia.product.edit.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.edit.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 import java.util.Collections;
 import java.util.Comparator;

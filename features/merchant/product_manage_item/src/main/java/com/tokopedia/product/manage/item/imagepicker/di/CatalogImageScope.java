@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.imagepicker.di;
+package com.tokopedia.product.manage.item.imagepicker.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

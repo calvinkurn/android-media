@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.data.source.database;
+package com.tokopedia.product.manage.item.common.data.source.database;
 
 
 import java.util.List;

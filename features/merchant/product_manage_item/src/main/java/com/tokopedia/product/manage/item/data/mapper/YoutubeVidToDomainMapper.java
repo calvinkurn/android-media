@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.data.mapper;
+package com.tokopedia.product.manage.item.data.mapper;
 
-import com.tokopedia.product.edit.data.source.cloud.model.youtube.Item;
-import com.tokopedia.product.edit.data.source.cloud.model.youtube.YoutubeResponse;
-import com.tokopedia.product.edit.domain.model.YoutubeVideoModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.youtube.Item;
+import com.tokopedia.product.manage.item.data.source.cloud.model.youtube.YoutubeResponse;
+import com.tokopedia.product.manage.item.domain.model.YoutubeVideoModel;
 
 import java.util.List;
 

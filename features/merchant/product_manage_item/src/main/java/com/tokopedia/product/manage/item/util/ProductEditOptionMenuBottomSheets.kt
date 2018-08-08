@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.util
+package com.tokopedia.product.manage.item.util
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.ImageButton
 import com.tokopedia.design.component.BottomSheets
 import java.util.ArrayList
-import com.tokopedia.product.edit.R
+import com.tokopedia.product.manage.item.R
 
 class ProductEditOptionMenuBottomSheets : BottomSheets() {
     private lateinit var title: String

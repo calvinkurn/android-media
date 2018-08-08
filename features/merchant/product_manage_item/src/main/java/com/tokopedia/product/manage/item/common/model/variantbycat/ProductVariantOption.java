@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.common.model.variantbycat;
+package com.tokopedia.product.manage.item.common.model.variantbycat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.edit.common.util.ItemIdType;
-import com.tokopedia.product.edit.common.util.ItemPickerType;
+import com.tokopedia.product.manage.item.common.util.ItemIdType;
+import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 
 /**
  * Created by hendry on 8/14/2017.

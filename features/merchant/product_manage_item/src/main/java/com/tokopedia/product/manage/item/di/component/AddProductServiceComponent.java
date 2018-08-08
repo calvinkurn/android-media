@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.di.component;
+package com.tokopedia.product.manage.item.di.component;
 
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
-import com.tokopedia.product.edit.di.module.AddProductserviceModule;
-import com.tokopedia.product.edit.di.scope.AddProductServiceScope;
-import com.tokopedia.product.edit.view.service.UploadProductService;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.di.module.AddProductserviceModule;
+import com.tokopedia.product.manage.item.di.scope.AddProductServiceScope;
+import com.tokopedia.product.manage.item.view.service.UploadProductService;
 
 import dagger.Component;
 

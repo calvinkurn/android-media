@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.common.domain.interactor;
+package com.tokopedia.product.manage.item.common.domain.interactor;
 
-import com.tokopedia.product.edit.common.domain.ProductDraftRepository;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.domain.ProductDraftRepository;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

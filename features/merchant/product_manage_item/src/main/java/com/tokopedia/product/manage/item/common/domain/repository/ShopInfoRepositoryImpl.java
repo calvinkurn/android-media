@@ -1,13 +1,13 @@
-package com.tokopedia.product.edit.common.domain.repository;
+package com.tokopedia.product.manage.item.common.domain.repository;
 
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.product.edit.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.edit.common.data.mapper.ShopInfoDataToDomainMapper;
-import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.mapper.ShopInfoDataToDomainMapper;
+import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
 
 import javax.inject.Inject;
 

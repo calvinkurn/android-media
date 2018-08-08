@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.view.presenter;
+package com.tokopedia.product.manage.item.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.product.edit.view.listener.ProductScoringDetailView;
+import com.tokopedia.product.manage.item.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.product.manage.item.view.listener.ProductScoringDetailView;
 
 /**
  * Created by zulfikarrahman on 4/17/17.

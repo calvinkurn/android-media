@@ -1,6 +1,6 @@
-package com.tokopedia.product.edit.domain;
+package com.tokopedia.product.manage.item.domain;
 
-import com.tokopedia.product.edit.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 
 import rx.Observable;
 

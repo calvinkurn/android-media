@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.view.activity;
+package com.tokopedia.product.manage.item.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.view.fragment.ProductAddDescriptionPickerFragment;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.view.fragment.ProductAddDescriptionPickerFragment;
 
 /**
  * Created by nathan on 3/6/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.common.data.source.cloud;
+package com.tokopedia.product.manage.item.common.data.source.cloud;
 
 import java.util.Map;
 

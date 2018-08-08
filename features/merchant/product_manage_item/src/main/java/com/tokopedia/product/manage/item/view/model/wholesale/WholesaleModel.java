@@ -1,9 +1,9 @@
-package com.tokopedia.product.edit.view.model.wholesale;
+package com.tokopedia.product.manage.item.view.model.wholesale;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.product.edit.common.util.ItemType;
+import com.tokopedia.product.manage.item.common.util.ItemType;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.model.upload;
+package com.tokopedia.product.manage.item.view.model.upload;
 
 import java.util.ArrayList;
 import java.util.List;

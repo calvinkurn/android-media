@@ -62,32 +62,32 @@
             android:label="@string/product_label_logistic_product"
             android:theme="@style/Theme.White" />
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductAddVideoActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductAddVideoActivity"
             android:label="@string/title_activity_video"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductAddVideoRecommendationActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductAddVideoRecommendationActivity"
             android:label="@string/title_activity_video_recommendation"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductEditActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductDraftAddActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductDraftEditActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductDuplicateActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />

@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.di.module;
+package com.tokopedia.product.manage.item.di.module;
 
 import android.content.Context;
 
@@ -7,15 +7,15 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.product.edit.data.source.ProductScoreDataSource;
-import com.tokopedia.product.edit.data.source.cache.ProductScoreDataSourceCache;
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.DataScoringProduct;
-import com.tokopedia.product.edit.data.source.cache.model.ProductScore.DataScoringProductBuilder;
-import com.tokopedia.product.edit.data.repository.ProductScoreRepositoryImpl;
-import com.tokopedia.product.edit.domain.ProductScoreRepository;
-import com.tokopedia.product.edit.domain.interactor.ProductScoringUseCase;
-import com.tokopedia.product.edit.view.presenter.ProductScoringDetailPresenter;
-import com.tokopedia.product.edit.view.presenter.ProductScoringDetailPresenterImpl;
+import com.tokopedia.product.manage.item.data.source.ProductScoreDataSource;
+import com.tokopedia.product.manage.item.data.source.cache.ProductScoreDataSourceCache;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.DataScoringProduct;
+import com.tokopedia.product.manage.item.data.source.cache.model.ProductScore.DataScoringProductBuilder;
+import com.tokopedia.product.manage.item.data.repository.ProductScoreRepositoryImpl;
+import com.tokopedia.product.manage.item.domain.ProductScoreRepository;
+import com.tokopedia.product.manage.item.domain.interactor.ProductScoringUseCase;
+import com.tokopedia.product.manage.item.view.presenter.ProductScoringDetailPresenter;
+import com.tokopedia.product.manage.item.view.presenter.ProductScoringDetailPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

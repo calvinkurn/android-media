@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.view.service;
+package com.tokopedia.product.manage.item.view.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,18 +19,18 @@ import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.product.edit.R;
-import com.tokopedia.product.edit.common.model.edit.ProductViewModel;
-import com.tokopedia.product.edit.common.util.ProductStatus;
-import com.tokopedia.product.edit.di.component.DaggerAddProductServiceComponent;
-import com.tokopedia.product.edit.di.module.AddProductserviceModule;
-import com.tokopedia.product.edit.domain.listener.ProductSubmitNotificationListener;
-import com.tokopedia.product.edit.util.ProductEditModuleRouter;
-import com.tokopedia.product.edit.utils.ErrorHandlerAddProduct;
-import com.tokopedia.product.edit.view.activity.ProductDraftAddActivity;
-import com.tokopedia.product.edit.view.activity.ProductDraftEditActivity;
-import com.tokopedia.product.edit.view.presenter.AddProductServiceListener;
-import com.tokopedia.product.edit.view.presenter.AddProductServicePresenter;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.common.model.edit.ProductViewModel;
+import com.tokopedia.product.manage.item.common.util.ProductStatus;
+import com.tokopedia.product.manage.item.di.component.DaggerAddProductServiceComponent;
+import com.tokopedia.product.manage.item.di.module.AddProductserviceModule;
+import com.tokopedia.product.manage.item.domain.listener.ProductSubmitNotificationListener;
+import com.tokopedia.product.manage.item.util.ProductEditModuleRouter;
+import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
+import com.tokopedia.product.manage.item.view.activity.ProductDraftAddActivity;
+import com.tokopedia.product.manage.item.view.activity.ProductDraftEditActivity;
+import com.tokopedia.product.manage.item.view.presenter.AddProductServiceListener;
+import com.tokopedia.product.manage.item.view.presenter.AddProductServicePresenter;
 
 import java.util.HashMap;
 

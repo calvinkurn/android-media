@@ -1,8 +1,8 @@
-package com.tokopedia.product.edit.data.repository;
+package com.tokopedia.product.manage.item.data.repository;
 
-import com.tokopedia.product.edit.data.source.CategoryRecommDataSource;
-import com.tokopedia.product.edit.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
-import com.tokopedia.product.edit.domain.CategoryRecommRepository;
+import com.tokopedia.product.manage.item.data.source.CategoryRecommDataSource;
+import com.tokopedia.product.manage.item.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
+import com.tokopedia.product.manage.item.domain.CategoryRecommRepository;
 
 import javax.inject.Inject;
 

@@ -1,12 +1,12 @@
-package com.tokopedia.product.edit.view.adapter
+package com.tokopedia.product.manage.item.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.edit.view.adapter.viewholder.*
-import com.tokopedia.product.edit.view.listener.VideoRecommendationListener
-import com.tokopedia.product.edit.view.viewmodel.TitleVideoRecommendationViewModel
-import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.manage.item.view.adapter.viewholder.*
+import com.tokopedia.product.manage.item.view.listener.VideoRecommendationListener
+import com.tokopedia.product.manage.item.view.viewmodel.TitleVideoRecommendationViewModel
+import com.tokopedia.product.manage.item.view.viewmodel.VideoRecommendationViewModel
 
 class ProductAddVideoRecommendationAdapterTypeFactory(private var videoRecommendationListener: VideoRecommendationListener) : BaseAdapterTypeFactory(), ProductAddVideoRecommendationTypeFactory {
 

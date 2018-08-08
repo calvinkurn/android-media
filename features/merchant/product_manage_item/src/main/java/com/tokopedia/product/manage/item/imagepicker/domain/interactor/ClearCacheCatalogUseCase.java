@@ -1,7 +1,7 @@
-package com.tokopedia.product.edit.imagepicker.domain.interactor;
+package com.tokopedia.product.manage.item.imagepicker.domain.interactor;
 
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
-import com.tokopedia.product.edit.imagepicker.util.CatalogConstant;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;

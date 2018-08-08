@@ -1,6 +1,6 @@
-package com.tokopedia.product.edit.data.mapper;
+package com.tokopedia.product.manage.item.data.mapper;
 
-import com.tokopedia.product.edit.data.source.cloud.model.editproduct.EditProductServiceModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.editproduct.EditProductServiceModel;
 
 import rx.functions.Func1;
 

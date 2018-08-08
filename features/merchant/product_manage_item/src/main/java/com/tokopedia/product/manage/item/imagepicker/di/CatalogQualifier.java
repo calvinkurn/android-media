@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.imagepicker.di;
+package com.tokopedia.product.manage.item.imagepicker.di;
 
 import javax.inject.Qualifier;
 

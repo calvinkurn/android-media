@@ -1,11 +1,11 @@
-package com.tokopedia.product.edit.data.mapper;
+package com.tokopedia.product.manage.item.data.mapper;
 
-import com.tokopedia.product.edit.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
-import com.tokopedia.product.edit.data.source.cloud.model.categoryrecommdata.ProductCategoryId;
-import com.tokopedia.product.edit.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
-import com.tokopedia.product.edit.domain.model.CategoryRecommDomainModel;
-import com.tokopedia.product.edit.domain.model.ProductCategoryIdDomainModel;
-import com.tokopedia.product.edit.domain.model.ProductCategoryPredictionDomainModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
+import com.tokopedia.product.manage.item.data.source.cloud.model.categoryrecommdata.ProductCategoryId;
+import com.tokopedia.product.manage.item.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
+import com.tokopedia.product.manage.item.domain.model.CategoryRecommDomainModel;
+import com.tokopedia.product.manage.item.domain.model.ProductCategoryIdDomainModel;
+import com.tokopedia.product.manage.item.domain.model.ProductCategoryPredictionDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
