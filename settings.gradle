@@ -15,7 +15,6 @@ buildCache {
     }
 }
 
-
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
@@ -44,3 +43,4 @@ include 'tkpdreputation-common'
 include 'tkpdwishlist-common'
 include 'tkpdtransaction-common'
 include 'posapp'
+include "features:merchant:product_edit"
