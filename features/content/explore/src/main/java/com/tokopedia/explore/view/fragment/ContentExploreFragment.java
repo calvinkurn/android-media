@@ -247,15 +247,30 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCategoryClicked(int position, int categoryId) {
+    public void onCategoryClicked(int position, int categoryId, String categoryName) {
         clearSearch();
         resetDataParam();
         imageAdapter.clearData();
         boolean isSameCategory = setAllCategoriesInactive(position);
-        if (!isSameCategory) {
-            updateCategoryId(categoryId);
+        if (isSameCategory) {
+            updateCategoryId(0);
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    ContentExloreEventTracking.Event.EXPLORE,
+                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                    ContentExloreEventTracking.Action.DESELECT_CATEGORY,
+                    categoryName
+            );
 
-            if (position >= 0) {
+        } else {
+            updateCategoryId(categoryId);
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    ContentExloreEventTracking.Event.EXPLORE,
+                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                    ContentExloreEventTracking.Action.FILTER_CATEGORY,
+                    categoryName
+            );
+
+            if (position > 0) {
                 categoryAdapter.getList().get(position).setActive(true);
                 categoryAdapter.notifyItemChanged(position);
             }
@@ -364,17 +379,17 @@ public class ContentExploreFragment extends BaseDaggerFragment
         searchInspiration.getSearchTextView().setText("");
         dropKeyboard();
     }
-    
+
     private void resetDataParam() {
         updateSearch("");
         updateCursor("");
         updateCategoryId(0);
     }
-    
+
     private void setAllCategoriesInactive() {
         setAllCategoriesInactive(-1);
     }
-    
+
     private boolean setAllCategoriesInactive(int position) {
         boolean isSameCategory = false;
         for (int i = 0; i < categoryAdapter.getList().size(); i++) {

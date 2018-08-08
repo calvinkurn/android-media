@@ -30,7 +30,7 @@ public interface ContentExploreContract {
 
         void clearData();
 
-        void onCategoryClicked(int position, int categoryId);
+        void onCategoryClicked(int position, int categoryId, String categoryName);
 
         void showLoading();
 
