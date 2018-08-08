@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.challenges.R;
 
 import java.util.concurrent.TimeUnit;
@@ -37,11 +38,6 @@ public class CountDownView extends FrameLayout {
 
     private void init(AttributeSet attrs) {
         init();
-        int startDuration;
-        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CountDownView);
-        startDuration = ta.getInt(R.styleable.CountDownView_startDuration, 0);
-        ta.recycle();
-        setStartDuration(startDuration);
     }
 
     private void init() {
@@ -51,10 +47,12 @@ public class CountDownView extends FrameLayout {
         tvSecs = view.findViewById(R.id.tv_seconds_value);
     }
 
-    public void setStartDuration(long duration) {
+    public void setStartDuration(long duration) throws MessageErrorException {
         if (timerRunning) {
             return;
         }
+        if(System.currentTimeMillis()>duration)
+            throw new MessageErrorException("Expiry time cannot be less than current time");
         startDuration = currentDuration = (duration-System.currentTimeMillis());
         updateText(startDuration);
     }
@@ -85,7 +83,7 @@ public class CountDownView extends FrameLayout {
         timer.start();
     }
 
-    public void reset() {
+    public void reset() throws MessageErrorException {
         stop();
         setStartDuration(startDuration);
         invalidate();

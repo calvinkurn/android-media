@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,32 +15,41 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.di.ChallengesComponentInstance;
+import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
+import com.tokopedia.challenges.view.contractor.SubmissionAdapterContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+import com.tokopedia.challenges.view.presenter.SubmissionAdapterPresenter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import javax.inject.Inject;
+
+public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SubmissionAdapterContract.View {
 
     private List<SubmissionResult> categoryItems;
     private Context context;
-    private final int ITEM = 1;
-    //    @Inject
-//    DealCategoryAdapterPresenter mPresenter;
+    private static final int ITEM = 1;
+    private static final int FOOTER = 2;
+    @Inject
+    SubmissionAdapterPresenter mPresenter;
     INavigateToActivityRequest navigateToActivityRequest;
     private boolean isFooterAdded;
     public final static int REQUEST_CODE_LOGIN = 104;
+    private int orientation;
 
 
-    public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest) {
+    public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation) {
         if (categoryItems == null)
             this.categoryItems = new ArrayList<>();
         else
             this.categoryItems = categoryItems;
         this.navigateToActivityRequest = navigateToActivityRequest;
-
+        this.orientation = orientation;
     }
 
     @Override
@@ -58,13 +69,17 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 v = inflater.inflate(R.layout.submission_item, parent, false);
                 holder = new ItemViewHolder(v);
                 break;
+            case FOOTER:
+                v = inflater.inflate(R.layout.footer_layout, parent, false);
+                holder = new FooterViewHolder(v);
+                break;
             default:
                 break;
         }
 
-//        DealsComponentInstance.getDealsComponent(getActivity().getApplication()).inject(this);
-//        mPresenter.attachView(this);
-//        mPresenter.initialize();
+        ChallengesComponentInstance.getChallengesComponent(getActivity().getApplication()).inject(this);
+        mPresenter.attachView(this);
+        mPresenter.initialize();
         return holder;
     }
 
@@ -84,7 +99,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        return ITEM;
+        return (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
     }
 
     private boolean isLastPosition(int position) {
@@ -137,6 +152,31 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    @Override
+    public Activity getActivity() {
+        return (Activity) context;
+    }
+
+    @Override
+    public RequestParams getParams() {
+        return null;
+    }
+
+    @Override
+    public void notifyDataSetChanged(int position) {
+
+    }
+
+    @Override
+    public void showLoginSnackbar(String message, int position) {
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
+                getActivity().getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
+                    Intent intent = ((ChallengesModuleRouter) getActivity().getApplication()).
+                            getLoginIntent(getActivity());
+                    navigateToActivityRequest.onNavigateToActivityRequest(intent, ChallengeDetailActivity.REQUEST_CODE_LOGIN, position);
+                }
+        ).show();
+    }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
@@ -155,6 +195,13 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             submissionTitle = itemView.findViewById(R.id.tv_submission_title);
             ivFavourite = itemView.findViewById(R.id.iv_like);
             ivShareVia = itemView.findViewById(R.id.iv_share);
+            if (orientation == LinearLayoutManager.HORIZONTAL) {
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
+                itemView.getLayoutParams().width = devicewidth;
+            }
+
         }
 
         public void bindData(final SubmissionResult productItem) {
@@ -167,7 +214,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 //            tvBuzzPoints.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
 
 
-//            setLikes(productItem.getLikes(), productItem.isLiked());
+            setLikes(productItem.getLikes(), productItem.getMe().isLiked());
 
 
             itemView.setOnClickListener(this);
@@ -175,21 +222,21 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ivFavourite.setOnClickListener(this);
         }
 
-//        void setLikes(int likes, boolean isLiked) {
-//            categoryItems.get(getIndex()).setLikes(likes);
-//            categoryItems.get(getIndex()).setLiked(isLiked);
-//            if (likes > 0) {
-//                tvBuzzPoints.setVisibility(View.VISIBLE);
-//                tvBuzzPoints.setText(String.valueOf(likes));
-//            } else {
-//                tvBuzzPoints.setVisibility(View.GONE);
-//            }
-//            if (isLiked) {
-//                ivFavourite.setImageResource(R.drawable.ic_wishlist_filled);
-//            } else {
-//                ivFavourite.setImageResource(R.drawable.ic_wishlist_unfilled);
-//            }
-//        }
+        void setLikes(int likes, boolean isLiked) {
+
+            categoryItems.get(getIndex()).getMe().setLiked(isLiked);
+            if (likes > 0) {
+                tvBuzzPoints.setVisibility(View.VISIBLE);
+                tvBuzzPoints.setText(String.valueOf(likes));
+            } else {
+                tvBuzzPoints.setVisibility(View.GONE);
+            }
+            if (isLiked) {
+                ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
+            } else {
+                ivFavourite.setImageResource(R.drawable.ic_wishlist_unchecked);
+            }
+        }
 
         public void setIndex(int position) {
             this.index = position;
@@ -207,7 +254,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 //                        categoryItems.get(getIndex()).getImageWeb());
             } else if (v.getId() == R.id.iv_like) {
 
-                boolean isLoggedIn=false;
+                boolean isLoggedIn = false;
 //                = mPresenter.setDealLike(categoryItems.get(getIndex()), getIndex());
 //                if (isLoggedIn) {
 //                    if (categoryItems.get(getIndex()).isLiked()) {
@@ -238,15 +285,15 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 //    }
 
 
-//    public class FooterViewHolder extends RecyclerView.ViewHolder {
-//
-//        View loadingLayout;
-//
-//        private FooterViewHolder(View itemView) {
-//            super(itemView);
-//            loadingLayout = itemView.findViewById(R.id.loading_fl);
-//        }
-//    }
+    public class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        View loadingLayout;
+
+        private FooterViewHolder(View itemView) {
+            super(itemView);
+            loadingLayout = itemView.findViewById(R.id.loading_fl);
+        }
+    }
 
 
 //    public void unsubscribeUseCase() {

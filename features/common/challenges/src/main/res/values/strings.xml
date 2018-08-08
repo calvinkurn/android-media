@@ -1,6 +1,4 @@
 <resources>
-
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="collapse">Sembunyikan</string>
@@ -9,4 +7,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="submissions">Submissions</string>
+    <string name="title_activity_login">Masuk</string>
+    <string name="text_due_date">Due Date:%s</string>
+    <string name="most_recent">Most Recent</string>
+    <string name="buzz_points">Buzz Points</string>
 </resources>

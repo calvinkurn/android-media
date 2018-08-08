@@ -1,13 +1,10 @@
 package com.tokopedia.challenges.view.presenter;
 
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
-import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 
@@ -38,6 +35,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     public void getSubmissionChallenges() {
+        getSubmissionChallengesUseCase.setRequestParams(getView().getParams());
         getSubmissionChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {

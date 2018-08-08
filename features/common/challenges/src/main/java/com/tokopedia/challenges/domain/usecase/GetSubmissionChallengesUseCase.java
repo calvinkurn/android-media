@@ -9,6 +9,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionRespons
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,16 @@ import javax.inject.Inject;
 
 public class GetSubmissionChallengesUseCase extends RestRequestSupportInterceptorUseCase {
 
+
+    private RequestParams requestParams;
+
     @Inject
     public GetSubmissionChallengesUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
+    }
+
+    public void setRequestParams(RequestParams requestParams){
+        this.requestParams=requestParams;
     }
 
     @Override
@@ -29,6 +37,7 @@ public class GetSubmissionChallengesUseCase extends RestRequestSupportIntercepto
         //Request 1
 
         RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.PRIVATE.CHALLENGES_SUBMISSIONS, SubmissionResponse.class)
+                .setQueryParams(requestParams.getParameters())
                 .build();
         tempRequest.add(restRequest1);
 
