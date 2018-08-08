@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.Challenge;
+import com.tokopedia.challenges.view.model.Channel;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 
@@ -16,10 +17,10 @@ import javax.inject.Inject;
 
 import okhttp3.Interceptor;
 
-public class GetActiveChallengesUseCase extends RestRequestSupportInterceptorUseCase {
+public class GetChallengesUseCase extends RestRequestSupportInterceptorUseCase {
 
     @Inject
-    public GetActiveChallengesUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
+    public GetChallengesUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 

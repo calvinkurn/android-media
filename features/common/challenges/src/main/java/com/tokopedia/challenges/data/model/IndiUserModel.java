@@ -1,4 +1,4 @@
-package com.tokopedia.challenges.data;
+package com.tokopedia.challenges.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

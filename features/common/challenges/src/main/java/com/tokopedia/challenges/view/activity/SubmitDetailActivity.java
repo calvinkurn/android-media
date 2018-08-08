@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.challenges.data.IndiUserModel;
+import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
 
 public class SubmitDetailActivity extends BaseActivity {

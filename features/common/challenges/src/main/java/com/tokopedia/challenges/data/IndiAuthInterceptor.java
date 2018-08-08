@@ -27,6 +27,8 @@ public class IndiAuthInterceptor implements Interceptor {
     private static final String AUTHORIZATION = "authorization";
     private static final String INDI_USER_ID = "indi-user-id";
 
+    private static final String HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization";
+
 
     private Context context;
     protected UserSession userSession;
@@ -53,6 +55,7 @@ public class IndiAuthInterceptor implements Interceptor {
 
         //new request
         Request.Builder newRequest = chain.request().newBuilder()
+                .removeHeader(HEADER_ACCOUNTS_AUTHORIZATION)
                 .header(X_API_KEY, ChallengesUrl.API_KEY)
                 .header(AUTHORIZATION, indiSession.getAccessToken())
                 .header(INDI_USER_ID, indiSession.getUserId())
@@ -66,13 +69,14 @@ public class IndiAuthInterceptor implements Interceptor {
             throwChainProcessCauseHttpError(response);
         }
 
-        //refresh access token if we get 401 or token is Empty
+        //refresh access token and recreate request with new token if response code is 401
         if (response.code() == ERROR_FORBIDDEN_REQUEST) {
             refreshToken();
+            Request newestRequest = recreateRequestWithNewAccessToken(chain);
+            response = chain.proceed(newestRequest);
         }
 
-        Request newestRequest = recreateRequestWithNewAccessToken(chain);
-        return chain.proceed(newestRequest);
+        return response;
     }
 
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
@@ -85,7 +89,7 @@ public class IndiAuthInterceptor implements Interceptor {
      * @return
      */
     protected boolean refreshToken() {
-        IndiTokenRefresh accessTokenRefresh = new IndiTokenRefresh(context, userSession, indiSession);
+        IndiTokenRefresh accessTokenRefresh = new IndiTokenRefresh(userSession, indiSession);
         try {
             accessTokenRefresh.refreshToken();
             return true;

@@ -1,7 +1,8 @@
 package com.tokopedia.challenges.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.challenges.data.IndiUserModel;
+import com.tokopedia.challenges.data.model.IndiUserModel;
+
 
 import javax.inject.Inject;
 

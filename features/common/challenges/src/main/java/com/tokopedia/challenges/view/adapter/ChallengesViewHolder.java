@@ -1,11 +1,13 @@
 package com.tokopedia.challenges.view.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.R;
 
@@ -31,7 +33,9 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent =new Intent(view.getContext(), ChallengeDetailActivity.class);
+                intent.putExtra("challengesResult",challengesResult);
+                view.getContext().startActivity(intent);
             }
         });
     }

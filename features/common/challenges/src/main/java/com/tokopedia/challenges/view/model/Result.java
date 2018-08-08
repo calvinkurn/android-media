@@ -1,11 +1,14 @@
 
 package com.tokopedia.challenges.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+public class Result implements Parcelable{
 
     @SerializedName("Id")
     @Expose
@@ -43,6 +46,33 @@ public class Result {
     @SerializedName("Me")
     @Expose
     private Me me;
+
+    protected Result(Parcel in) {
+        id = in.readString();
+        type = in.readString();
+        title = in.readString();
+        description = in.readString();
+        if (in.readByte() == 0) {
+            submissionCount = null;
+        } else {
+            submissionCount = in.readInt();
+        }
+        endDate = in.readString();
+        thumbnailUrl = in.readString();
+        hashTag = in.readString();
+    }
+
+    public static final Creator<Result> CREATOR = new Creator<Result>() {
+        @Override
+        public Result createFromParcel(Parcel in) {
+            return new Result(in);
+        }
+
+        @Override
+        public Result[] newArray(int size) {
+            return new Result[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -140,4 +170,25 @@ public class Result {
         this.me = me;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(type);
+        dest.writeString(title);
+        dest.writeString(description);
+        if (submissionCount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(submissionCount);
+        }
+        dest.writeString(endDate);
+        dest.writeString(thumbnailUrl);
+        dest.writeString(hashTag);
+    }
 }

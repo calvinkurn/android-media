@@ -5,8 +5,9 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.challenges.common.IndiSession;
+import com.tokopedia.challenges.data.model.IndiTokenModel;
+import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.user.session.UserSession;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -30,13 +32,11 @@ public class IndiTokenRefresh {
     private static final String CLIENT_USER_IMAGE_URL = "client_user_image_url";
 
     private static final String AUTHORIZATION = "authorization";
-    private final Context context;
-    private final UserSession sessionHandler;
+    private final UserSession userSession;
     private final IndiSession indiSession;
 
-    IndiTokenRefresh(Context context, UserSession userSession, IndiSession indiSession) {
-        this.context = context;
-        this.sessionHandler = userSession;
+    IndiTokenRefresh(UserSession userSession, IndiSession indiSession) {
+        this.userSession = userSession;
         this.indiSession = indiSession;
     }
 
@@ -61,14 +61,14 @@ public class IndiTokenRefresh {
 
         //if access token is valid, then map the tokopedia user with indi
         if (model != null) {
-            mapUserWithIndi(context, indiSession, sessionHandler, model.getAccessToken());
+            mapUserWithIndi(indiSession, userSession, model.getAccessToken());
             return model.getAccessToken();
         }
 
         return "";
     }
 
-    private void mapUserWithIndi(Context context, IndiSession indiSession, UserSession userSession, String token) {
+    private void mapUserWithIndi(IndiSession indiSession, UserSession userSession, String token) {
         Map<String, String> params = new HashMap<>();
         params.put(CLIENT_USER_ID, userSession.getUserId());
         params.put(CLIENT_USER_NAME, userSession.getName());
@@ -94,12 +94,15 @@ public class IndiTokenRefresh {
 
     private Retrofit getRetrofit() {
         Gson gson = new Gson();
+
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .addInterceptor(new HttpLoggingInterceptor())
+                .build();
+
         return new Retrofit.Builder()
                 .baseUrl(ChallengesUrl.INDI_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().getClientBuilder()
-                        .addInterceptor(new HttpLoggingInterceptor())
-                        .build())
+                .client(okHttpClient)
                 .build();
     }
 }
