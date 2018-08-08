@@ -4,4 +4,8 @@
     <string name="title_reset_success_hint_1">Sebuah email telah dikirim ke email kontak Anda dikaitkan dengan akun Anda,</string>
     <string name="title_reset_success_hint_2">Harap bersabar, pengiriman email dapat tertunda. \n
 Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk atau folder spam atau filter jika Anda tidak menerima email ini.</string>
+
+    <string name="forgot_password_title">Kesulitan mengakses akun Anda?</string>
+    <string name="forgot_password_body">Lupa kata sandi? Masukkan email login Anda di bawah ini. Kami akan mengirimkan pesan email beserta tautan untuk reset kata sandi anda.</string>
+
 </resources>

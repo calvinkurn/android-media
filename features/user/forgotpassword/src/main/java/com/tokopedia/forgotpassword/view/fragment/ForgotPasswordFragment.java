@@ -3,6 +3,7 @@ package com.tokopedia.forgotpassword.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -26,12 +27,8 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.forgotpassword.analytics.ForgotPasswordAnalytics;
-import com.tokopedia.forgotpassword.domain.ForgotPasswordRetrofitInteractorImpl;
 import com.tokopedia.forgotpassword.view.listener.ForgotPasswordFragmentView;
 import com.tokopedia.forgotpassword.view.presenter.ForgotPasswordFragmentPresenter;
-import com.tokopedia.forgotpassword.view.presenter.ForgotPasswordFragmentPresenterImpl;
-
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Alifa on 10/17/2016.
@@ -76,7 +73,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forgotpassword, container, false);
         frontView = view.findViewById(R.id.front_view);
         successView = view.findViewById(R.id.success_view);
@@ -107,9 +104,9 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
 
-        presenter = new ForgotPasswordFragmentPresenterImpl(this,
-                new ForgotPasswordRetrofitInteractorImpl(new AccountsService(bundle)),
-                new CompositeSubscription());
+//        presenter = new ForgotPasswordFragmentPresenterImpl(this,
+//                new ForgotPasswordRetrofitInteractorImpl(new AccountsService(bundle)),
+//                new CompositeSubscription());
     }
 
     protected void initView(View view) {

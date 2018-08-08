@@ -77,13 +77,13 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
                         public void onError(Throwable e) {
                             String error;
                             if (e instanceof UnknownHostException) {
-                                viewListener.onErrorResetPassword(viewListener.getString(R.string.msg_no_connection));
+                                viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.msg_no_connection));
                             } else if (e instanceof SocketTimeoutException) {
-                                viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_timeout));
+                                viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_timeout));
                             } else if (e instanceof IOException) {
-                                viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_internal_server));
+                                viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_internal_server));
                             } else {
-                                viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_unknown));
+                                viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_unknown));
                             }
 
                         }
@@ -105,37 +105,39 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
                                     viewListener.onErrorResetPassword(response.getErrorMessageJoined());
                                 }
                             } else {
-                                new ErrorHandler(new ErrorListener() {
-                                    @Override
-                                    public void onUnknown() {
-                                        viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_unknown));
+//                                new ErrorHandler(new ErrorListener() {
+//                                    @Override
+//                                    public void onUnknown() {
+//                                        viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_unknown));
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onTimeout() {
+//                                        viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_timeout));
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onServerError() {
+//                                        viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_internal_server));
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onBadRequest() {
+//                                        viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_bad_request));
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onForbidden() {
+//                                        viewListener.onErrorResetPassword(viewListener.getString(com.tokopedia.core.R.string.default_request_error_forbidden_auth));
+//
+//                                    }
+//                                }, responseData.code());
 
-                                    }
 
-                                    @Override
-                                    public void onTimeout() {
-                                        viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_timeout));
-
-                                    }
-
-                                    @Override
-                                    public void onServerError() {
-                                        viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_internal_server));
-
-                                    }
-
-                                    @Override
-                                    public void onBadRequest() {
-                                        viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_bad_request));
-
-                                    }
-
-                                    @Override
-                                    public void onForbidden() {
-                                        viewListener.onErrorResetPassword(viewListener.getString(R.string.default_request_error_forbidden_auth));
-
-                                    }
-                                }, responseData.code());
                             }
                         }
                     }));
