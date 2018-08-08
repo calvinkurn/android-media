@@ -207,63 +207,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 });
     }
 
-    /*@Override
-    public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
-        enrichWithFilterAndSortParams(requestParams);
-        enrichWithAdditionalParams(requestParams, additionalParams);
-        removeDefaultCategoryParam(requestParams);
-
-        getProductUseCase.execute(requestParams,
-                new DefaultSubscriber<SearchResultModel>() {
-                    @Override
-                    public void onStart() {
-                        getView().setTopAdsEndlessListener();
-                        getView().incrementStart();
-                    }
-
-                    @Override
-                    public void onNext(SearchResultModel searchResultModel) {
-                        ProductViewModel productViewModel
-                                = ProductViewModelHelper.convertToProductViewModel(searchResultModel);
-                        if (isViewAttached()) {
-                            if (productViewModel.getProductList().isEmpty()) {
-                                getView().unSetTopAdsEndlessListener();
-                                getView().showBottomBarNavigation(false);
-                            } else {
-                                List<Visitable> list = new ArrayList<Visitable>();
-                                list.addAll(productViewModel.getProductList());
-                                getView().setProductList(list);
-                                if (getView().isEvenPage()) {
-                                    getView().addGuidedSearch();
-                                }
-                                getView().showBottomBarNavigation(true);
-                                if (getView().getStartFrom() >= searchResultModel.getTotalData()) {
-                                    getView().unSetTopAdsEndlessListener();
-                                }
-                            }
-                            getView().storeTotalData(searchResultModel.getTotalData());
-                        }
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        if (isViewAttached()) {
-                            getView().hideRefreshLayout();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().hideRefreshLayout();
-                            getView().showNetworkError(searchParameter.getStartRow());
-                            getView().showBottomBarNavigation(false);
-                        }
-                    }
-                });
-    }*/
-
     @Override
     public void loadData(final SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams) {
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, true);
@@ -337,67 +280,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     }
                 });
     }
-
-    /*@Override
-    public void loadData(final SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, true);
-        enrichWithFilterAndSortParams(requestParams);
-        enrichWithForceSearchParam(requestParams, isForceSearch);
-        enrichWithAdditionalParams(requestParams, additionalParams);
-        removeDefaultCategoryParam(requestParams);
-
-        getProductUseCase.execute(requestParams,
-                new DefaultSubscriber<SearchResultModel>() {
-                    @Override
-                    public void onStart() {
-                        getView().setTopAdsEndlessListener();
-                        getView().showRefreshLayout();
-                        getView().incrementStart();
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        getView().getDynamicFilter();
-                        getView().getQuickFilter();
-                        getView().hideRefreshLayout();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().showNetworkError(0);
-                            getView().hideRefreshLayout();
-                            getView().showBottomBarNavigation(false);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(SearchResultModel searchResultModel) {
-                        if (isViewAttached()) {
-                            ProductViewModel productViewModel = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResultModel);
-                            List<Visitable> list = new ArrayList<Visitable>();
-                            if (productViewModel.getProductList().isEmpty()) {
-                                getView().setEmptyProduct();
-                                getView().setTotalSearchResultCount("0");
-                                getView().showBottomBarNavigation(false);
-                            } else {
-                                HeaderViewModel headerViewModel = new HeaderViewModel();
-                                headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-                                list.add(headerViewModel);
-                                list.addAll(productViewModel.getProductList());
-                                getView().setProductList(list);
-                                getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
-                                getView().showBottomBarNavigation(true);
-                                if (getView().getStartFrom() > searchResultModel.getTotalData()) {
-                                    getView().unSetTopAdsEndlessListener();
-                                }
-                            }
-                            getView().storeTotalData(searchResultModel.getTotalData());
-                        }
-                    }
-                });
-    }
-    */
 
     @Override
     public void loadGuidedSearch(String keyword) {
