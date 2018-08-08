@@ -117,9 +117,6 @@ public class UploadProductService extends BaseService implements AddProductServi
         Notification notification = buildFailedNotification(errorMessage, productSubmitNotificationListener.getId(), productSubmitNotificationListener.getSubmitStatus());
         notificationManager.notify(TAG, productSubmitNotificationListener.getId(), notification);
         removeNotificationFromList(productSubmitNotificationListener.getId());
-		if (!GlobalConfig.DEBUG) {
-        		Crashlytics.logException(t);
-        }
         UnifyTracking.eventAddProductErrorServer(errorMessage);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();

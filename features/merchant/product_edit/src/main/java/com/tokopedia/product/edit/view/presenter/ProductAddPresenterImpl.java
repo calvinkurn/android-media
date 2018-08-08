@@ -66,7 +66,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                getView().onSuccessLoadShopInfo(shopInfo.getInfo().isShopIsGoldBadge(),
+                getView().onSuccessLoadShopInfo(shopInfo.getOwner().isIsGoldMerchant(),
                         TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsFreeReturns()),
                         TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()));
             }
