@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.IndiUserModel;
-import com.tokopedia.challenges.presenter.SubmitDetailContract;
-import com.tokopedia.challenges.presenter.SubmitDetailPresenter;
+import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
+import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 
 import javax.inject.Inject;
 
@@ -29,11 +29,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView approvedView;
     private TextView detailTitle;
     private TextView detailContent;
-    private ImageView challengeIcon;
-    private TextView challengeTitle;
-    private TextView challengeAt;
-    private TextView challengeHash;
-    private TextView submitBtn;
+
     @Inject
     SubmitDetailPresenter presenter;
     private IndiUserModel model;
@@ -55,11 +51,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         approvedView = view.findViewById(R.id.approved);
         detailTitle = view.findViewById(R.id.detail_title);
         detailContent = view.findViewById(R.id.detail_content);
-//        challengeIcon = view.findViewById(R.id.challenge_icon);
-//        challengeTitle = view.findViewById(R.id.challenge_title);
-//        challengeAt = view.findViewById(R.id.challenge_at);
-//        challengeHash = view.findViewById(R.id.challenge_hash);
-//        submitBtn = view.findViewById(R.id.submit_btn);
         presenter.attachView(this);
         presenter.setDataInFields(model);
 
@@ -109,18 +100,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     public void setChallengeIcon(String url) {
        // this.challengeIcon = challengeIcon;
-    }
-
-    public void setChallengeTitle(String title) {
-        this.challengeTitle.setText(title);
-    }
-
-    public void setChallengeAt(String at) {
-        this.challengeAt.setText(at);
-    }
-
-    public void setChallengeHash(String hash) {
-        this.challengeHash.setText(hash);
     }
 
     public void setSubmitBtnClick(String submitBtn) {
