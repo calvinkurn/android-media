@@ -55,7 +55,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
-        inflate(getContext(), R.layout.layout_ads, this);
+        inflate(getContext(), R.layout.layout_ads_no_padding, this);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
@@ -68,6 +68,10 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 //                .getDimensionPixelSize(R.dimen.dp_16)));
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+    }
+
+    public void setItemDecoration(RecyclerView.ItemDecoration decoration) {
+        recyclerView.addItemDecoration(decoration);
     }
 
     public void setData(List<Data> data) {

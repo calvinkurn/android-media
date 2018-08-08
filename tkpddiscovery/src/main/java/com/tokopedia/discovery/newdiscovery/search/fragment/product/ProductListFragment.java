@@ -39,6 +39,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.ProductListAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
@@ -221,11 +222,13 @@ public class ProductListFragment extends SearchSectionFragment
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.white)
-        ));
+//        recyclerView.addItemDecoration(new ProductItemDecoration(
+//                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+//                getContext().getResources().getColor(R.color.white)
+//        ));
 
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16), true));
         setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
