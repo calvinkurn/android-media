@@ -12,6 +12,9 @@ public class Me {
     @SerializedName("SubmissionCounts")
     @Expose
     private SubmissionCounts submissionCounts;
+    @SerializedName("Liked")
+    @Expose
+    private boolean liked;
     @SerializedName("AuthProvider")
     @Expose
     private AuthProvider authProvider;
@@ -40,4 +43,11 @@ public class Me {
         this.authProvider = authProvider;
     }
 
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
 }
