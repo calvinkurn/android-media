@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.customview.ExpandableTextView;
@@ -45,11 +46,12 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     TextView seeMoreButton;
     ImageView seeMoreArrow;
     ExpandableTextView description;
-    RecyclerView submissionRecyclerView;
+    RecyclerView submissionRecyclerView, awardRecylerView;
 
     SubmissionItemAdapter submissionItemAdapter;
 
     Result challengeResult;
+    private AwardAdapter awardAdapter;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -75,6 +77,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         seeMoreButton = (TextView) view.findViewById(R.id.seemorebutton_description);
         seeMoreArrow = (ImageView) view.findViewById(R.id.down_arrow_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
+        awardRecylerView = view.findViewById(R.id.rv_awards);
 
 
         challengeSubmissionPresenter.attachView(this);
@@ -109,7 +112,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         submissionRecyclerView.setLayoutManager(mLayoutManager);
         submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this);
         submissionRecyclerView.setAdapter(submissionItemAdapter);
-
+        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        awardRecylerView.setLayoutManager(mLayoutManager1);
+        awardAdapter = new AwardAdapter(challengeResult.getPrizes());
+        awardRecylerView.setAdapter(awardAdapter);
     }
 
     @Override

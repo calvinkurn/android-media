@@ -206,7 +206,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider2" />
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_awardds"
+                android:id="@+id/rv_awards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
