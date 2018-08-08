@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -94,12 +95,15 @@ public class IndiTokenRefresh {
 
     private Retrofit getRetrofit() {
         Gson gson = new Gson();
+
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .addInterceptor(new HttpLoggingInterceptor())
+                .build();
+
         return new Retrofit.Builder()
                 .baseUrl(ChallengesUrl.INDI_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().getClientBuilder()
-                        .addInterceptor(new HttpLoggingInterceptor())
-                        .build())
+                .client(okHttpClient)
                 .build();
     }
 }

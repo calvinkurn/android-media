@@ -22,7 +22,7 @@ public class SubmitDetailActivity extends BaseActivity {
         IndiUserModel model = getIntent().getParcelableExtra("DETAILS");
         Fragment fragment = SubmitDetailFragment.newInstance();
         Bundle arg = new Bundle();
-        arg.putParcelable("DETAILS",model);
+//        arg.putParcelable("DETAILS",model);
         fragment.setArguments(arg);
         return fragment;
     }

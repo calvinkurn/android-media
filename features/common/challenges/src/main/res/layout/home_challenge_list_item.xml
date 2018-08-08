@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_200"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
+            android:scaleType="fitXY"
             android:src="@drawable/ic_big_notif_customerapp" />
 
         <TextView

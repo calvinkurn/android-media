@@ -55,11 +55,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         approvedView = view.findViewById(R.id.approved);
         detailTitle = view.findViewById(R.id.detail_title);
         detailContent = view.findViewById(R.id.detail_content);
-        challengeIcon = view.findViewById(R.id.challenge_icon);
-        challengeTitle = view.findViewById(R.id.challenge_title);
-        challengeAt = view.findViewById(R.id.challenge_at);
-        challengeHash = view.findViewById(R.id.challenge_hash);
-        submitBtn = view.findViewById(R.id.submit_btn);
+//        challengeIcon = view.findViewById(R.id.challenge_icon);
+//        challengeTitle = view.findViewById(R.id.challenge_title);
+//        challengeAt = view.findViewById(R.id.challenge_at);
+//        challengeHash = view.findViewById(R.id.challenge_hash);
+//        submitBtn = view.findViewById(R.id.submit_btn);
         presenter.attachView(this);
         presenter.setDataInFields(model);
 
