@@ -32,7 +32,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemList
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
@@ -221,7 +221,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
 
 
-        if (resultViewModel.problem.size() != 0) {
+        if (resultViewModel.complaints.size() != 0) {
             ffSolution.setEnabled(true);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                     R.drawable.ic_complete));
@@ -229,7 +229,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     R.drawable.bg_layout_enable_with_green));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
                     R.drawable.bg_layout_enable));
-            updateProductProblemString(resultViewModel.problem, tvChooseProductProblem);
+            updateProductProblemString(resultViewModel.complaints, tvChooseProductProblem);
             tvSolution.setTextColor(getActivity().getResources().getColor(R.color.black_70));
             tvSolutionTitle.setTextColor(getActivity().getResources().getColor(R.color.black_70));
             ivChooseProductProblem.setAlpha(float100);
@@ -284,7 +284,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             tvSolution.setText(getActivity().getResources().getString(R.string.string_choose_solution));
             tvUploadProve.setTextColor(getActivity().getResources().getColor(R.color.black_38));
             tvUploadProveTitle.setTextColor(getActivity().getResources().getColor(R.color.black_38));
-            if (resultViewModel.problem.size() != 0) {
+            if (resultViewModel.complaints.size() != 0) {
                 ivSolution.setAlpha(float70);
             } else {
                 ivSolution.setAlpha(float38);
@@ -294,7 +294,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         btnCreateResolution.setEnabled(false);
         btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(),
                 R.drawable.bg_button_disable));
-        if (resultViewModel.problem.size() != 0 && resultViewModel.solution != 0) {
+        if (resultViewModel.complaints.size() != 0 && resultViewModel.solution != 0) {
             if (resultViewModel.isAttachmentRequired) {
                 if (resultViewModel.message.remark != null) {
                     btnCreateResolution.setEnabled(true);
@@ -321,26 +321,26 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         }
     }
 
-    public void updateProductProblemString(List<ProblemResult> problemResultList, TextView textView) {
+    public void updateProductProblemString(List<ComplaintResult> complaintResults, TextView textView) {
         String problemResultString = "";
         boolean isType1Selected = false;
-        for (ProblemResult problemResult : problemResultList) {
-            if (problemResult.type == 1) {
+        for (ComplaintResult complaintResult : complaintResults) {
+            if (complaintResult.problem.type == 1) {
                 isType1Selected = true;
             }
         }
         if (isType1Selected) {
             problemResultString += getActivity().getString(R.string.string_difference_ongkir);
-            if (problemResultList.size() > 1) {
+            if (complaintResults.size() > 1) {
                 problemResultString += " & ";
                 problemResultString += (isType1Selected ?
-                        problemResultList.size() - 1 :
-                        problemResultList.size()) + " " + getActivity().getString(R.string.string_problem_product);
+                        complaintResults.size() - 1 :
+                        complaintResults.size()) + " " + getActivity().getString(R.string.string_problem_product);
             }
         } else {
             problemResultString += (isType1Selected ?
-                    problemResultList.size() - 1 :
-                    problemResultList.size()) + " " + getActivity().getString(R.string.string_problem_product);
+                    complaintResults.size() - 1 :
+                    complaintResults.size()) + " " + getActivity().getString(R.string.string_problem_product);
         }
         textView.setText(problemResultString);
     }
@@ -449,8 +449,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel,
-                                                        ArrayList<ProblemResult> problemResults) {
-        Intent intent = ProductProblemListActivity.getInstance(getActivity(), productProblemListViewModel, problemResults);
+                                                        ArrayList<ComplaintResult> complaintResults) {
+        Intent intent = ProductProblemListActivity.getInstance(getActivity(), productProblemListViewModel, complaintResults);
         startActivityForResult(intent, REQUEST_STEP1);
     }
 
@@ -478,7 +478,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         Button btnCreateComplain = (Button) dialog.findViewById(R.id.btn_create_complain);
 
-        updateProductProblemString(resultViewModel.problem, tvProblem);
+        updateProductProblemString(resultViewModel.complaints, tvProblem);
         updateSolutionString(resultViewModel, tvSolution);
 
         btnBack.setOnClickListener(view -> {
@@ -507,7 +507,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_STEP1) {
             if (resultCode == Activity.RESULT_OK) {
-                presenter.addResultFromStep1(data.<ProblemResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
+                presenter.addResultFromStep1(data.<ComplaintResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
             }
         } else if (requestCode == REQUEST_STEP2) {
             if (resultCode == Activity.RESULT_OK) {

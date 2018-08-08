@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
@@ -22,7 +23,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
     public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
 
     private ProductProblemListFragment.View mainView;
-    List<ProblemResult> problemResultList = new ArrayList<>();
+    List<ComplaintResult> complaintResults = new ArrayList<>();
 
 
     @Inject
@@ -37,11 +38,11 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     @Override
     public void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList,
-                                      List<ProblemResult> problemResultList) {
+                                      List<ComplaintResult> complaintResults) {
         mainView.populateProblemAndProduct(productProblemViewModelList);
-        if (problemResultList != null) {
-            if (problemResultList.size() != 0) {
-                this.problemResultList = problemResultList;
+        if (complaintResults != null) {
+            if (complaintResults.size() != 0) {
+                this.complaintResults = complaintResults;
                 updateProblemResultList();
             }
         }
@@ -50,8 +51,8 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
     @Override
     public void addOrRemoveStringProblem(ProductProblemViewModel productProblemViewModel) {
         boolean isContain = false;
-        for (ProblemResult problemResult : problemResultList) {
-            if (problemResult.name.equals(productProblemViewModel.getProblem().getName())) {
+        for (ComplaintResult complaintResult : complaintResults) {
+            if (complaintResult.problem.name.equals(productProblemViewModel.getProblem().getName())) {
                 isContain = true;
             }
         }
@@ -63,11 +64,13 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
     }
 
     public void addProblemResult(ProductProblemViewModel productProblemViewModel) {
+        ComplaintResult complaintResult = new ComplaintResult();
         ProblemResult problemResult = new ProblemResult();
         problemResult.name = productProblemViewModel.getProblem().getName();
         problemResult.type = productProblemViewModel.getProblem().getType();
         problemResult.trouble = productProblemViewModel.getStatusList().get(0).getTrouble().get(0).getId();
-        problemResultList.add(problemResult);
+        complaintResult.problem = problemResult;
+        complaintResults.add(complaintResult);
         updateProblemResultList();
     }
 
@@ -77,7 +80,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     public void updateProblemResultList() {
         updateContinueButton();
-        mainView.onProblemResultListUpdated(problemResultList);
+        mainView.onProblemResultListUpdated(complaintResults);
     }
 
     @Override
@@ -85,10 +88,10 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     }
 
-    public ProblemResult getProblemResultItem(ProductProblemViewModel productProblemViewModel) {
-        for (ProblemResult problemResult : problemResultList) {
-            if (problemResult.id == productProblemViewModel.getOrder().getDetail().getId()) {
-                return problemResult;
+    public ComplaintResult getProblemResultItem(ProductProblemViewModel productProblemViewModel) {
+        for (ComplaintResult complaintResult : complaintResults) {
+            if (complaintResult.problem.id == productProblemViewModel.getOrder().getDetail().getId()) {
+                return complaintResult;
             }
         }
         return null;
@@ -96,38 +99,38 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     @Override
     public void removeProblemResult(ProductProblemViewModel productProblemViewModel) {
-        List<ProblemResult> tempList = new ArrayList<>();
-        for (ProblemResult problemObject : problemResultList) {
-            if (problemObject.type == 1) {
-                if (!problemObject.name.equals(productProblemViewModel.getProblem().getName())) {
-                    tempList.add(problemObject);
+        List<ComplaintResult> tempList = new ArrayList<>();
+        for (ComplaintResult complaint : complaintResults) {
+            if (complaint.problem.type == 1) {
+                if (!complaint.problem.name.equals(productProblemViewModel.getProblem().getName())) {
+                    tempList.add(complaint);
                 }
             } else {
-                if (productProblemViewModel.getOrder() == null || problemObject.id != productProblemViewModel.getOrder().getDetail().getId()) {
-                    tempList.add(problemObject);
+                if (productProblemViewModel.getOrder() == null || complaint.problem.id != productProblemViewModel.getOrder().getDetail().getId()) {
+                    tempList.add(complaint);
                 }
             }
         }
-        problemResultList = tempList;
+        complaintResults = tempList;
         updateProblemResultList();
     }
 
     @Override
-    public void processResultData(ProblemResult problemResult, int resultStepCode) {
+    public void processResultData(ComplaintResult complaintResult, int resultStepCode) {
         boolean isContain = false;
-        List<ProblemResult> tempResultList = new ArrayList<>();
-        for (ProblemResult problemObject : problemResultList) {
-            if (problemObject.id == problemResult.id) {
+        List<ComplaintResult> complaintResults = new ArrayList<>();
+        for (ComplaintResult complaintObject : complaintResults) {
+            if (complaintObject.problem.id == complaintResult.problem.id) {
                 isContain = true;
-                tempResultList.add(problemResult);
+                complaintResults.add(complaintResult);
             } else {
-                tempResultList.add(problemObject);
+                complaintResults.add(complaintObject);
             }
         }
         if (!isContain) {
-            addResultList(problemResult);
+            addResultList(complaintResult);
         } else {
-            updateResultList(problemResult);
+            updateResultList(complaintResult);
         }
         updateProblemResultList();
         if (resultStepCode == RESULT_SAVE) {
@@ -135,20 +138,20 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
         }
     }
 
-    public void addResultList(ProblemResult problemResult) {
-        problemResultList.add(problemResult);
+    private void addResultList(ComplaintResult complaintResult) {
+        complaintResults.add(complaintResult);
     }
 
-    public void updateResultList(ProblemResult problemResult) {
-        List<ProblemResult> tempList = new ArrayList<>();
-        for (ProblemResult problemObject : problemResultList) {
-            tempList.add((problemObject.id == problemResult.id) ? problemResult : problemObject);
+    private void updateResultList(ComplaintResult complaintResult) {
+        List<ComplaintResult> tempList = new ArrayList<>();
+        for (ComplaintResult complainObject : complaintResults) {
+            tempList.add((complainObject.problem.id == complaintResult.problem.id) ? complaintResult : complainObject);
         }
-        problemResultList = tempList;
+        complaintResults = tempList;
     }
 
-    public void updateContinueButton() {
-        if (problemResultList.size() != 0) {
+    private void updateContinueButton() {
+        if (complaintResults.size() != 0) {
             mainView.enableBottomButton();
         } else {
             mainView.disableBottomButton();
@@ -157,10 +160,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     @Override
     public void buttonContinueClicked() {
-        ArrayList<ProblemResult> problemResultArrayList = new ArrayList<>();
-        for (ProblemResult problemResult : problemResultList) {
-            problemResultArrayList.add(problemResult);
-        }
+        ArrayList<ComplaintResult> problemResultArrayList = new ArrayList<>(complaintResults);
         mainView.saveData(problemResultArrayList);
     }
 }

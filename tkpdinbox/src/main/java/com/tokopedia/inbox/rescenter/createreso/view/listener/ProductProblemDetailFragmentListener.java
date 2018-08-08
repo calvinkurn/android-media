@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
 
@@ -31,11 +31,11 @@ public interface ProductProblemDetailFragmentListener {
 
         void updatePlusMinusButton(int currentValue, int maxValue);
 
-        void saveData(ProblemResult problemResult, int resultStepCode);
+        void saveData(ComplaintResult complaintResult, int resultStepCode);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void populateData(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult);
+        void populateData(ProductProblemViewModel productProblemViewModel, ComplaintResult complaintResult);
 
         void btnArrivedClicked();
 

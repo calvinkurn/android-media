@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndProblemFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 
 import java.util.ArrayList;
@@ -23,11 +23,11 @@ public class ProductProblemListActivity extends BaseSimpleActivity {
 
     public static Intent getInstance(Context context,
                                      ProductProblemListViewModel productProblemListViewModel,
-                                     ArrayList<ProblemResult> problemResults) {
+                                     ArrayList<ComplaintResult> complaintResults) {
         Intent intent = new Intent(context, ProductProblemListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_PARAM_PASS_DATA, productProblemListViewModel);
-        bundle.putParcelableArrayList(PROBLEM_RESULT_LIST_DATA, problemResults);
+        bundle.putParcelableArrayList(PROBLEM_RESULT_LIST_DATA, complaintResults);
         intent.putExtras(bundle);
         return intent;
     }

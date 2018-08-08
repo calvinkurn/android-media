@@ -12,11 +12,13 @@ import com.google.gson.JsonObject;
 public class ProblemOrderDetailResult implements Parcelable {
     public int id;
 
+    public static final String PARAM_ID = "id";
+
     public JsonObject writeToJson() {
         JsonObject object = new JsonObject();
         try {
             if (id != 0) {
-                object.addProperty("id", id);
+                object.addProperty(PARAM_ID, id);
             }
         } catch (Exception e) {
             e.printStackTrace();

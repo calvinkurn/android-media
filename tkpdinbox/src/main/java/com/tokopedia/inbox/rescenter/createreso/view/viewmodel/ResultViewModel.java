@@ -16,13 +16,15 @@ import java.util.List;
 
 public class ResultViewModel implements Parcelable {
 
-    public static final String PARAM_PROBLEM = "problem";
+    public static final String PARAM_COMPLAINT = "complaint";
     public static final String PARAM_SOLUTION = "solution";
+    public static final String PARAM_ID = "id";
     public static final String PARAM_REFUND = "refundAmount";
-    public static final String PARAM_ATTACHMENT = "attachmentCount";
-    public static final String PARAM_MESSAGE = "message";
+    public static final String PARAM_ATTACHMENT = "attachment";
+    public static final String PARAM_COUNT = "count";
+    public static final String PARAM_CONVERSATION = "conversation";
     public static final String PARAM_RESOLUTION_ID = "resolutionID";
-    public List<ProblemResult> problem = new ArrayList<>();
+    public List<ComplaintResult> complaints = new ArrayList<>();
     public int solution;
     public String solutionName;
     public int refundAmount;
@@ -55,21 +57,25 @@ public class ResultViewModel implements Parcelable {
     public JsonObject writeToJson() {
         JsonObject object = new JsonObject();
         try {
-            if (problem.size() != 0) {
-                object.add(PARAM_PROBLEM, getProblemArray());
+            if (complaints.size() != 0) {
+                object.add(PARAM_COMPLAINT, getProblemArray());
             }
             if (solution != 0) {
-                object.addProperty(PARAM_SOLUTION, solution);
+                JsonObject solutionObject = new JsonObject();
+                solutionObject.addProperty(PARAM_ID, solution);
+                object.add(PARAM_SOLUTION, solutionObject);
             }
             if (refundAmount != 0) {
                 object.addProperty(PARAM_REFUND, refundAmount);
             }
             if (attachmentCount != 0) {
-                object.addProperty(PARAM_ATTACHMENT, attachmentCount);
+                JsonObject attachmentObject = new JsonObject();
+                attachmentObject.addProperty(PARAM_COUNT, attachmentCount);
+                object.add(PARAM_ATTACHMENT, attachmentObject);
             }
             if (message != null) {
                 if (!message.remark.equals("")) {
-                    object.add(PARAM_MESSAGE, message.writeToJson());
+                    object.add(PARAM_CONVERSATION, message.writeToJson());
                 }
             }
             if (resolutionId != null) {
@@ -82,16 +88,11 @@ public class ResultViewModel implements Parcelable {
     }
 
     public JsonArray getProblemArray() {
-        try {
-            JsonArray problemArray = new JsonArray();
-            for (ProblemResult problemResult : problem) {
-                problemArray.add(problemResult.writeToJson());
-            }
-            return problemArray;
-        } catch (Exception e) {
-            e.printStackTrace();
+        JsonArray complaintArray = new JsonArray();
+        for (ComplaintResult complaint : complaints) {
+            complaintArray.add(complaint.writeToJson());
         }
-        return null;
+        return complaintArray;
     }
 
     @Override
@@ -101,7 +102,7 @@ public class ResultViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.problem);
+        dest.writeTypedList(this.complaints);
         dest.writeInt(this.solution);
         dest.writeString(this.solutionName);
         dest.writeInt(this.refundAmount);
@@ -114,7 +115,7 @@ public class ResultViewModel implements Parcelable {
     }
 
     protected ResultViewModel(Parcel in) {
-        this.problem = in.createTypedArrayList(ProblemResult.CREATOR);
+        this.complaints = in.createTypedArrayList(ComplaintResult.CREATOR);
         this.solution = in.readInt();
         this.solutionName = in.readString();
         this.refundAmount = in.readInt();

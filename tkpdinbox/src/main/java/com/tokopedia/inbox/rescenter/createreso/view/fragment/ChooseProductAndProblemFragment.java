@@ -22,6 +22,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.adapter.ProductProblemAdapt
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
@@ -51,7 +52,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     RecyclerView rvProductProblem;
     ProductProblemAdapter adapter;
     ProductProblemListViewModel productProblemListViewModel;
-    List<ProblemResult> problemResultList = new ArrayList<>();
+    List<ComplaintResult> complaintResults = new ArrayList<>();
     Button btnContinue;
 
     public static ChooseProductAndProblemFragment newInstance(ProductProblemListViewModel productProblemListViewModel, ArrayList<ProblemResult> problemResultList) {
@@ -110,7 +111,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
 
     private void setupArguments(Bundle arguments) {
         productProblemListViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
-        problemResultList = arguments.getParcelableArrayList(PROBLEM_RESULT_LIST_DATA);
+        complaintResults = arguments.getParcelableArrayList(PROBLEM_RESULT_LIST_DATA);
 
     }
 
@@ -119,7 +120,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
         rvProductProblem.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new ProductProblemAdapter(getActivity(), this);
         rvProductProblem.setAdapter(adapter);
-        presenter.loadProblemAndProduct(productProblemListViewModel, problemResultList);
+        presenter.loadProblemAndProduct(productProblemListViewModel, complaintResults);
     }
 
     private void setViewListener() {
@@ -157,7 +158,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     }
 
     @Override
-    public void onProblemResultListUpdated(List<ProblemResult> problemResults) {
+    public void onProblemResultListUpdated(List<ComplaintResult> problemResults) {
         adapter.clearAndUpdateSelectedItem(problemResults);
 
     }
@@ -179,7 +180,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
     }
 
     @Override
-    public void saveData(ArrayList<ProblemResult> problemResults) {
+    public void saveData(ArrayList<ComplaintResult> problemResults) {
         Intent output = new Intent();
         output.putParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA, problemResults);
         getActivity().setResult(Activity.RESULT_OK, output);
@@ -191,7 +192,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                presenter.processResultData((ProblemResult) data.getParcelableExtra(RESULT_DATA), data.getIntExtra(RESULT_STEP_CODE, 0));
+                presenter.processResultData((ComplaintResult) data.getParcelableExtra(RESULT_DATA), data.getIntExtra(RESULT_STEP_CODE, 0));
             }
         }
     }

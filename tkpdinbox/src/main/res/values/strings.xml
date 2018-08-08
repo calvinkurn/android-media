@@ -118,6 +118,9 @@
     <!--step 2-->
     <string name="string_money_amount_returned">Jumlah uang yang ingin dikembalikan</string>
     <string name="string_input_amount">Masukkan Jumlah Uang</string>
+    <string name="string_qty">Qty</string>
+    <string name="string_max_refund">Maksimal</string>
+    <string name="string_fund_want_refunded">Dana yang ingin dikembalikan</string>
 
     <!--step 3-->
     <string name="string_upload_prove">Unggah Bukti</string>
