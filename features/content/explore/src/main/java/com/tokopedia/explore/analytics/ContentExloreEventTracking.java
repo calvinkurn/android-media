@@ -10,7 +10,7 @@ public interface ContentExloreEventTracking {
     }
 
     interface Event {
-        String EXPLORE = "eventExplore";
+        String EXPLORE = "clickExplore";
     }
 
     interface Category {
