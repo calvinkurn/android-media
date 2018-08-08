@@ -36,8 +36,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
-    SeeAllView seeAllView;
 
+    private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
 
     @Override
@@ -47,7 +47,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     protected void openApplink(String applink) {
-        if (isApplink(applink) && getContext() != null && !TextUtils.isEmpty(applink)) {
+        if (getContext() != null && !TextUtils.isEmpty(applink) && isApplink(applink)) {
             RouteManager.route(getContext(), applink);
         }
     }

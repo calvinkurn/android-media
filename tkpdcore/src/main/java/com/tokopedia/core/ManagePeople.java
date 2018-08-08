@@ -27,6 +27,10 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
+/**
+ * Moved to AccountSettingActivity
+ */
+@Deprecated
 public class ManagePeople extends TkpdActivity {
 
     private static int REQUEST_ADD_PASSWORD = 1234;

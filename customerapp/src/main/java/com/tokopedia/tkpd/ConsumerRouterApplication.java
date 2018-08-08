@@ -188,6 +188,7 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
+import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
@@ -1061,6 +1062,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getProfileCompletionIntent(Context context) {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         return intent;
+    }
+
+    @Override
+    public Intent getManagePeopleIntent(Context context) {
+        return new Intent(context, AccountSettingActivity.class);
     }
 
     @Override
