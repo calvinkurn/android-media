@@ -194,7 +194,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
-                AccountConstants.KEY_SEE_ALL,
+                AccountConstants.Navigation.SEE_ALL,
                 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)
@@ -226,7 +226,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_favorite_shops));
         menuList.setMenuDescription(context.getString(R.string.label_menu_favorite_shops));
-        menuList.setApplink(ApplinkConst.FAVORITE_SHOPS);
+        menuList.setApplink(ApplinkConst.FAVORITE);
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
         items.add(menuList);
@@ -383,7 +383,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_topads));
         menuList.setMenuDescription(context.getString(R.string.label_menu_topads));
-        menuList.setApplink(ApplinkConst.TOPADS);
+        menuList.setApplink(AccountConstants.Navigation.TOPADS);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
@@ -400,7 +400,6 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 //        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
 //        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
 //        infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
-//        // TODO: 7/26/18 oka: set applink mitratoppers
 //        infoCardViewModel.setApplink("");
 //        items.add(infoCardViewModel);
 

@@ -17,11 +17,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 
 /**
  * @author okasurya on 7/18/18.
  */
 public class TokopediaPayCardView extends BaseCustomView {
+    private static final String KEY_IMAGE_HOST = "image_host";
+    private static final String TOKOPEDIA_PAY_BG_NAME = "bg_tokopedia_pay.png";
+
     private LinearLayout layoutAction;
     private TextView actionText;
     private TextView textAmountLeft;
@@ -60,7 +64,7 @@ public class TokopediaPayCardView extends BaseCustomView {
         layoutRight = view.findViewById(R.id.layout_right);
 
         ImageHandler.loadImageBitmap2(getContext(),
-                AccountConstants.Url.IMAGE_URL + "bg_tokopedia_pay.png",
+                getBackgroundImageUri(),
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -68,6 +72,17 @@ public class TokopediaPayCardView extends BaseCustomView {
                         container.setBackground(drawable);
                     }
                 });
+    }
+
+    private String getBackgroundImageUri() {
+        String imageUrl = AccountConstants.Url.IMAGE_URL;
+        if(getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            imageUrl = ((AccountHomeRouter) getContext().getApplicationContext())
+                    .getStringRemoteConfig(KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL);
+            imageUrl = imageUrl + AccountConstants.Url.CDN_IMAGE_PATH;
+        }
+
+        return imageUrl + TOKOPEDIA_PAY_BG_NAME;
     }
 
     public void setActionText(@NonNull String text) {

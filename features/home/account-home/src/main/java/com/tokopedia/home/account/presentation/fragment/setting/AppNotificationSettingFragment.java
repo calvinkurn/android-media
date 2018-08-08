@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.tokopedia.home.account.R;
 
-public class AppNotificationSettingFragment extends PreferenceFragmentCompat{
+public class AppNotificationSettingFragment extends PreferenceFragmentCompat {
 
     public static Fragment createInstance() {
         return new AppNotificationSettingFragment();

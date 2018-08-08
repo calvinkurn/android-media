@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -20,9 +21,14 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 
 /**
  * @author okasurya on 7/26/18.
@@ -41,9 +47,28 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     protected void openApplink(String applink) {
-        if(getContext() != null && !TextUtils.isEmpty(applink)) {
+        if (isApplink(applink) && getContext() != null && !TextUtils.isEmpty(applink)) {
             RouteManager.route(getContext(), applink);
         }
+    }
+
+
+    private boolean isApplink(String applink) {
+        if (RouteManager.isSupportApplink(getContext(), applink)) {
+            return true;
+        } else if (applink.equals(AccountConstants.Navigation.SEE_ALL)) {
+            seeAllView = new SeeAllView();
+            seeAllView.setListener(this);
+            seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
+        } else if (applink.equals(AccountConstants.Navigation.TOPADS)
+                    && getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
+        } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
+                    && getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent(getContext());
+        }
+
+        return false;
     }
 
     @Override
@@ -67,12 +92,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onBuyerVoucherClicked(BuyerCardViewModel element) {
         sendTracking(PEMBELI, AKUN_SAYA, MY_COUPON);
-        openApplink(ApplinkConst.COUPON);
+        openApplink(ApplinkConst.COUPON_LISTING);
     }
 
     @Override
     public void onTokopediaPayLinkClicked() {
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             sendTracking(PEMBELI,
                     getString(R.string.title_tkpd_pay_setting),
                     getString(R.string.label_tokopedia_pay_see_all));
@@ -82,23 +107,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuGridItemClicked(MenuGridItemViewModel item) {
-        if (TextUtils.equals(item.getApplink(), AccountConstants.KEY_SEE_ALL)){
-            seeAllView = new SeeAllView();
-            seeAllView.setListener(this);
-            seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
-        } else {
-            sendTracking(item.getTitleTrack(),
-                    item.getSectionTrack(),
-                    item.getDescription());
-            openApplink(item.getApplink());
-        }
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getDescription());
+        openApplink(item.getApplink());
     }
 
     @Override
     public void onMenuGridLinkClicked(MenuGridViewModel item) {
-        sendTracking(item.getTitleTrack(),
-                item.getSectionTrack(),
-                item.getLinkText());
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getLinkText());
         openApplink(item.getApplinkUrl());
     }
 
@@ -116,22 +131,21 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onShopAvatarClicked(ShopCardViewModel element) {
-        if(element != null && !TextUtils.isEmpty(element.getShopId())) {
+        if (element != null && !TextUtils.isEmpty(element.getShopId())) {
             openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
         }
     }
 
     @Override
     public void onShopNameClicked(ShopCardViewModel element) {
-        if(element != null && !TextUtils.isEmpty(element.getShopId())) {
+        if (element != null && !TextUtils.isEmpty(element.getShopId())) {
             openApplink(ApplinkConst.SHOP.replace(PARAM_SHOP_ID, element.getShopId()));
         }
     }
 
     @Override
     public void onAddProductClicked() {
-        sendTracking(PENJUAL, getString(R.string.title_menu_product),
-                getString(R.string.label_button_add_product));
+        sendTracking(PENJUAL, getString(R.string.title_menu_product), getString(R.string.label_button_add_product));
         openApplink(ApplinkConst.PRODUCT_ADD);
     }
 

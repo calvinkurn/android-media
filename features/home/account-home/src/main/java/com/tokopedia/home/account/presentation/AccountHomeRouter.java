@@ -51,4 +51,8 @@ public interface AccountHomeRouter {
     void gotoTopAdsDashboard(Context context);
 
     void goToGMSubscribe(Context context);
+
+    String getStringRemoteConfig(String key, String defaultValue);
+
+    Intent getTrainOrderListIntent(Context context);
 }
