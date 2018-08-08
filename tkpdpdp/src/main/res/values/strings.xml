@@ -65,4 +65,5 @@
     <string name="shipping_cost_descr_1">Ongkos kirim akhir akan dihitung di halaman checkout</string>
     <string name="shipping_cost_descr_2">Durasi dihitung sejak barang diserahkan ke kurir</string>
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="service_title_format">%1$s (%2$s)</string>
 </resources>

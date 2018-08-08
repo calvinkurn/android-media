@@ -9,8 +9,14 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.estimasiongkir.di.RatesEstimationComponent;
+import com.tokopedia.tkpdpdp.estimasiongkir.listener.RatesEstimationDetailView;
+import com.tokopedia.tkpdpdp.estimasiongkir.presentation.RatesEstimationDetailPresenter;
 
-public class RatesEstimationDetailFragment extends BaseDaggerFragment {
+import javax.inject.Inject;
+
+public class RatesEstimationDetailFragment extends BaseDaggerFragment implements RatesEstimationDetailView{
+    @Inject RatesEstimationDetailPresenter presenter;
 
     public static RatesEstimationDetailFragment createInstance(){
         return new RatesEstimationDetailFragment();
@@ -18,7 +24,8 @@ public class RatesEstimationDetailFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-
+        getComponent(RatesEstimationComponent.class).inject(this);
+        presenter.attachView(this);
     }
 
     @Override

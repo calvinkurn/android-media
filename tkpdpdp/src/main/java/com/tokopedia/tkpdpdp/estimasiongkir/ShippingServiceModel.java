@@ -24,13 +24,22 @@ public class ShippingServiceModel {
     private String notes;
 
     @SerializedName("products")
-    List<Product> products;
+    @Expose
+    private List<Product> products;
 
     public ShippingServiceModel() {
         products = new ArrayList<>();
     }
 
-    class Product {
+    public String getName() {
+        return name;
+    }
+
+    public String getEtd() {
+        return etd;
+    }
+
+    public class Product {
         @SerializedName("shipper_name")
         @Expose
         private String name;
