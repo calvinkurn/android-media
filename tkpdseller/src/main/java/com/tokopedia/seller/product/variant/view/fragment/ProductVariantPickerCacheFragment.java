@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantOption;
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListNewAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
 

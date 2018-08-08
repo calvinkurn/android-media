@@ -21,7 +21,7 @@ import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.tokopedia.product.edit.common.model.DatePickerViewModel;
+import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.gm.statistic.di.component.DaggerGMStatisticTransactionComponent;

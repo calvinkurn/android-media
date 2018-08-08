@@ -24,15 +24,15 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
-import com.tokopedia.product.edit.common.util.StockTypeDef;
-import com.tokopedia.product.edit.utils.ProductPriceRangeUtils;
-import com.tokopedia.product.edit.common.model.edit.VariantPictureViewModel;
-import com.tokopedia.product.edit.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.product.edit.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
+import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
+import com.tokopedia.product.manage.item.common.model.edit.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
-import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.product.edit.common.util.CurrencyUsdTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher;
 
 import java.util.List;
 

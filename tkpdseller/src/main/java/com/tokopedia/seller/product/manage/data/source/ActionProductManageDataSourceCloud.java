@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.manage.data.source;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.seller.product.manage.data.model.ResponseDeleteProductData;
 import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;
 

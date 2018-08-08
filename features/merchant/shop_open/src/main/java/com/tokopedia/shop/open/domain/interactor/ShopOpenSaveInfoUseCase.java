@@ -11,7 +11,7 @@ import com.tokopedia.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.shop.open.domain.model.ShopOpenSaveInfoRequestDomainModel;
 import com.tokopedia.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
-import com.tokopedia.product.edit.common.util.ShopSettingNetworkConstant;
+import com.tokopedia.product.manage.item.common.util.ShopSettingNetworkConstant;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

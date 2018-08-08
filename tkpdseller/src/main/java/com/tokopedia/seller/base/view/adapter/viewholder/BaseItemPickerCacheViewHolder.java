@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.product.edit.common.util.ItemPickerType;
+import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 
 /**
  * Created by nathan on 6/23/17.

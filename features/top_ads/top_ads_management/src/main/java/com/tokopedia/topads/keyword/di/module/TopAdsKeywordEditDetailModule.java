@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.edit.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.product.edit.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.keyword.data.repository.TopAdsOldKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;

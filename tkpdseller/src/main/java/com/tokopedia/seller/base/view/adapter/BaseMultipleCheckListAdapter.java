@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.util.Pair;
-import com.tokopedia.product.edit.common.util.ItemIdType;
+import com.tokopedia.product.manage.item.common.util.ItemIdType;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 
 import java.util.ArrayList;

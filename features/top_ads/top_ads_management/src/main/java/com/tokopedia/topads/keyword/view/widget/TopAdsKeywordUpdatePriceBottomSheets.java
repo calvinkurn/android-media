@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.R;
 
 /**

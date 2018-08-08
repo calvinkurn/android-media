@@ -68,7 +68,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductScoringDetailActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductScoringDetailActivity"
             android:label="@string/product_title_activity_product_score"
             android:screenOrientation="portrait" />
         <activity
@@ -84,7 +84,7 @@
             android:label="@string/product_title_activity_etalase_picker"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.product.edit.view.activity.ProductAddDescriptionInfoActivity"
+            android:name="com.tokopedia.product.manage.item.view.activity.ProductAddDescriptionInfoActivity"
             android:label="@string/product_desc_guide"
             android:screenOrientation="portrait" />
         <activity
@@ -205,7 +205,7 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name="com.tokopedia.product.edit.imagepicker.view.activity.ImagePickerAddProductActivity"
+        <activity android:name="com.tokopedia.product.manage.item.imagepicker.view.activity.ImagePickerAddProductActivity"
             android:theme="@style/Theme.White"
             android:label="@string/choose_image"
             android:screenOrientation="portrait"
@@ -218,14 +218,14 @@
             android:name=".shopsettings.edit.view.ShopEditService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.product.edit.view.service.UploadProductService"
+            android:name="com.tokopedia.product.manage.item.view.service.UploadProductService"
             android:exported="false" />
         <service
             android:name=".transaction.neworder.view.presenter.OrderWidgetJobService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name="com.tokopedia.product.edit.view.activity.ProductAddWholesaleActivity"
+        <activity android:name="com.tokopedia.product.manage.item.view.activity.ProductAddWholesaleActivity"
             android:label="@string/product_label_product_wholesale"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

@@ -20,7 +20,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
-import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;

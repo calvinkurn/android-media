@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 
-import com.tokopedia.product.edit.constant.ProductExtraConstant;
+import com.tokopedia.product.manage.item.constant.ProductExtraConstant;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
-import com.tokopedia.product.edit.common.util.StockTypeDef;
-import com.tokopedia.product.edit.common.model.edit.ProductPictureViewModel;
-import com.tokopedia.product.edit.common.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.edit.common.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
+import com.tokopedia.product.manage.item.common.model.edit.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.common.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.common.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardFragment;
 
 import java.util.ArrayList;

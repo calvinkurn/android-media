@@ -1,6 +1,6 @@
 package com.tokopedia.seller.seller.info.view.model;
 
-import com.tokopedia.product.edit.common.util.ItemType;
+import com.tokopedia.product.manage.item.common.util.ItemType;
 
 /**
  * Created by normansyahputa on 11/30/17.

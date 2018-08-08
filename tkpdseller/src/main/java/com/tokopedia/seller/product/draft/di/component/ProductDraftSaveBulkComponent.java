@@ -1,9 +1,9 @@
 package com.tokopedia.seller.product.draft.di.component;
 
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.product.edit.di.scope.ProductAddScope;
+import com.tokopedia.product.manage.item.di.scope.ProductAddScope;
 
 import dagger.Component;
 

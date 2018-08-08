@@ -8,8 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.product.edit.view.dialog.ProductAddImageEditVariantDialogFragment;
-import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.manage.item.view.dialog.ProductAddImageEditVariantDialogFragment;
+import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 
 import java.util.ArrayList;
 
