@@ -1,5 +1,8 @@
 package com.tokopedia.logisticdata.data.entity.ratescourierrecommendation;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Irfan Khoirul on 02/08/18.
  */
 
-public class RangePriceData {
+public class RangePriceData implements Parcelable {
 
     @SerializedName("min_price")
     @Expose
@@ -18,6 +21,34 @@ public class RangePriceData {
 
     public RangePriceData() {
     }
+
+    protected RangePriceData(Parcel in) {
+        minPrice = in.readInt();
+        maxPrice = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(minPrice);
+        dest.writeInt(maxPrice);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<RangePriceData> CREATOR = new Creator<RangePriceData>() {
+        @Override
+        public RangePriceData createFromParcel(Parcel in) {
+            return new RangePriceData(in);
+        }
+
+        @Override
+        public RangePriceData[] newArray(int size) {
+            return new RangePriceData[size];
+        }
+    };
 
     public int getMinPrice() {
         return minPrice;

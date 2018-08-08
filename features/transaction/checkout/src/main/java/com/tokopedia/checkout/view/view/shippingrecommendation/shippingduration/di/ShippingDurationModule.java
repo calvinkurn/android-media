@@ -1,0 +1,39 @@
+package com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.di;
+
+import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationAdapter;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationContract;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationPresenter;
+
+import dagger.Module;
+import dagger.Provides;
+
+/**
+ * Created by Irfan Khoirul on 07/08/18.
+ */
+
+@Module(includes = TrackingAnalyticsModule.class)
+public class ShippingDurationModule {
+
+    @Provides
+    @ShippingDurationScope
+    ShippingDurationAdapter provideShippingDurationAdapter() {
+        return new ShippingDurationAdapter();
+    }
+
+    @Provides
+    @ShippingDurationScope
+    ShippingDurationConverter provideShippingDurationConverter() {
+        return new ShippingDurationConverter();
+    }
+
+    @Provides
+    @ShippingDurationScope
+    ShippingDurationContract.Presenter provideShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+                                                                        ShippingDurationConverter shippingDurationConverter) {
+        return new ShippingDurationPresenter(getCourierRecommendationUseCase, shippingDurationConverter);
+    }
+
+}

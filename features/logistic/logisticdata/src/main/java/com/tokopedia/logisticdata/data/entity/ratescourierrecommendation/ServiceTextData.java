@@ -1,5 +1,8 @@
 package com.tokopedia.logisticdata.data.entity.ratescourierrecommendation;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Irfan Khoirul on 02/08/18.
  */
 
-public class ServiceTextData {
+public class ServiceTextData implements Parcelable {
 
     @SerializedName("text_range_price")
     @Expose
@@ -18,6 +21,34 @@ public class ServiceTextData {
 
     public ServiceTextData() {
     }
+
+    protected ServiceTextData(Parcel in) {
+        textRangePrice = in.readString();
+        textEtd = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(textRangePrice);
+        dest.writeString(textEtd);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ServiceTextData> CREATOR = new Creator<ServiceTextData>() {
+        @Override
+        public ServiceTextData createFromParcel(Parcel in) {
+            return new ServiceTextData(in);
+        }
+
+        @Override
+        public ServiceTextData[] newArray(int size) {
+            return new ServiceTextData[size];
+        }
+    };
 
     public String getTextRangePrice() {
         return textRangePrice;

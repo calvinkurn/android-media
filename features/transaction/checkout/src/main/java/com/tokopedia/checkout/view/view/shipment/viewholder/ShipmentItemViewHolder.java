@@ -291,7 +291,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                ArrayList<ShowCaseObject> showCaseObjectList) {
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
-        if (getAdapterPosition() % 2 != 0) { // Temporary condition
+        if (getAdapterPosition() % 2 == 0) { // Temporary condition
             renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
         } else {
             renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);

@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -51,7 +52,10 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
-import com.tokopedia.checkout.view.view.shippingrecommendation.ShipmentRecommendationDurationBottomsheet;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierBottomsheet;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierBottomsheetListener;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -59,6 +63,8 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
@@ -80,7 +86,8 @@ import javax.inject.Inject;
  */
 
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
-        ShipmentAdapterActionListener, CourierBottomsheet.ActionListener {
+        ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
+        ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
@@ -103,7 +110,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     // For regular shipment
     private CourierBottomsheet courierBottomsheet;
     // For shipment recommendation
-    private ShipmentRecommendationDurationBottomsheet shipmentRecommendationDurationBottomsheet;
+    private ShippingDurationBottomsheet shippingDurationBottomsheet;
+    private ShippingCourierBottomsheet shippingCourierBottomsheet;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -406,7 +414,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
-                        llCheckoutButtonContainer.setVisibility(View.VISIBLE);
                         shipmentPresenter.processInitialLoadCheckoutPage(false);
                     }
                 });
@@ -907,13 +914,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
-            if (shipmentRecommendationDurationBottomsheet == null) {
-                shipmentRecommendationDurationBottomsheet =
-                        ShipmentRecommendationDurationBottomsheet.newInstance(shipmentDetailData);
-            }
+            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(shipmentDetailData);
+            shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
-                shipmentRecommendationDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+                shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
             }
         }
     }
@@ -1182,5 +1187,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onStart() {
         super.onStart();
         checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), getScreenName());
+    }
+
+    @Override
+    public void onShippingDurationChoosen(ServiceData serviceData) {
+        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(serviceData);
+        shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
+
+        if (getActivity() != null) {
+            shippingCourierBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+        }
+    }
+
+    @Override
+    public void onCourierChoosen(ProductData productData) {
+//        shipmentAdapter.notifyDataSetChanged();
+        Log.e("Courier", productData.getShipperName());
     }
 }

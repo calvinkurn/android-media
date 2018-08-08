@@ -1,5 +1,8 @@
 package com.tokopedia.logisticdata.data.entity.ratescourierrecommendation;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +12,7 @@ import java.util.List;
  * Created by Irfan Khoirul on 02/08/18.
  */
 
-public class ServiceData {
+public class ServiceData implements Parcelable {
 
     @SerializedName("service_name")
     @Expose
@@ -32,6 +35,42 @@ public class ServiceData {
 
     public ServiceData() {
     }
+
+    protected ServiceData(Parcel in) {
+        serviceName = in.readString();
+        serviceId = in.readInt();
+        status = in.readInt();
+        rangePrice = in.readParcelable(RangePriceData.class.getClassLoader());
+        texts = in.readParcelable(ServiceTextData.class.getClassLoader());
+        products = in.createTypedArrayList(ProductData.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(serviceName);
+        dest.writeInt(serviceId);
+        dest.writeInt(status);
+        dest.writeParcelable(rangePrice, flags);
+        dest.writeParcelable(texts, flags);
+        dest.writeTypedList(products);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ServiceData> CREATOR = new Creator<ServiceData>() {
+        @Override
+        public ServiceData createFromParcel(Parcel in) {
+            return new ServiceData(in);
+        }
+
+        @Override
+        public ServiceData[] newArray(int size) {
+            return new ServiceData[size];
+        }
+    };
 
     public String getServiceName() {
         return serviceName;

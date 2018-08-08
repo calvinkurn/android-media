@@ -5,11 +5,10 @@ import android.text.TextUtils;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetCourierRecommendationData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class GetCourierRecommendationUseCase {
         graphqlUseCase.clearRequest();
         query = getQueryWithParams(query, shipmentDetailData);
 
-        GraphqlRequest request = new GraphqlRequest(query, GetCourierRecommendationData.class);
+        GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 
         graphqlUseCase.addRequest(request);
         graphqlUseCase.execute(subscriber);

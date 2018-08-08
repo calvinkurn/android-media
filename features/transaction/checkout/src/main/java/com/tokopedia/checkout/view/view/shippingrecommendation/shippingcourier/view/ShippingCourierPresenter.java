@@ -1,0 +1,51 @@
+package com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+/**
+ * Created by Irfan Khoirul on 08/08/18.
+ */
+
+public class ShippingCourierPresenter extends BaseDaggerPresenter<ShippingCourierContract.View>
+        implements ShippingCourierContract.Presenter {
+
+    private final ShippingCourierConverter shippingCourierConverter;
+    private List<ShippingCourierViewModel> shippingCourierViewModels;
+
+    @Inject
+    public ShippingCourierPresenter(ShippingCourierConverter shippingCourierConverter) {
+        this.shippingCourierConverter = shippingCourierConverter;
+    }
+
+    @Override
+    public void attachView(ShippingCourierContract.View view) {
+        super.attachView(view);
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+    }
+
+    @Override
+    public void setData(ServiceData serviceData) {
+        if (shippingCourierViewModels == null) {
+            shippingCourierViewModels = new ArrayList<>();
+        }
+        shippingCourierViewModels = shippingCourierConverter.convertToViewModel(serviceData.getProducts());
+    }
+
+    @Override
+    public List<ShippingCourierViewModel> getShippingCourierViewModels() {
+        if (shippingCourierViewModels == null) {
+            shippingCourierViewModels = new ArrayList<>();
+        }
+        return shippingCourierViewModels;
+    }
+}
