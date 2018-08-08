@@ -1316,7 +1316,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
             Intent intent = new Intent(activity, ProductAddNameCategoryActivity.class);
-            startActivity(intent);
+            activity.startActivity(intent);
         }
     }
 
@@ -1900,7 +1900,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToAddProduct(Context context) {
         if (context != null && context instanceof Activity) {
             Intent intent = new Intent(context, ProductAddNameCategoryActivity.class);
-            startActivity(intent);
+            context.startActivity(intent);
         }
     }
 
@@ -2324,11 +2324,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public void goToGMSubscribe(Context context) {
-
     }
 
     @Override

@@ -5,10 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.*
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.common.di.component.ProductComponent
 import com.tokopedia.product.edit.constant.ProductExtraConstant
+import com.tokopedia.product.edit.data.source.cloud.model.catalogdata.Catalog
 import com.tokopedia.product.edit.di.component.DaggerProductEditCategoryCatalogComponent
 import com.tokopedia.product.edit.di.module.ProductEditCategoryCatalogModule
 import com.tokopedia.product.edit.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -21,13 +23,15 @@ import com.tokopedia.product.edit.view.activity.ProductAddActivity
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment
 import com.tokopedia.product.edit.view.fragment.BaseProductAddEditFragment.Companion.EXTRA_IMAGES
 import com.tokopedia.product.edit.view.listener.ProductEditCategoryView
+import com.tokopedia.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import kotlinx.android.synthetic.main.fragment_product_add_name_category.*
 
 class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryView {
 
+    private var flagReset = false
     private var productName = ProductName()
     private var productPictureList : ArrayList<String>? = ArrayList()
-
+    private lateinit var productEditNameViewHolder: ProductEditNameViewHolder
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
                 .productComponent(getComponent(ProductComponent::class.java))
@@ -40,6 +44,14 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         productPictureList = arguments?.getStringArrayList(EXTRA_IMAGES)
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_RESET_DATA)) {
+                flagReset = savedInstanceState.getBoolean(SAVED_RESET_DATA)
+            }
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_NAME)) {
+                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -48,46 +60,40 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ProductEditNameViewHolder(view, this)
+        productEditNameViewHolder = ProductEditNameViewHolder(view, this)
         texViewMenu?.run {
             text = getString(R.string.label_next)
-            setOnClickListener { goToNext() }
+            setOnClickListener {
+                goToNext()
+            }
         }
         validateData()
     }
 
     override fun onNameChanged(productName: ProductName) {
         categoryCatalogSection.visibility = if (productName.name.isNotEmpty()) View.VISIBLE else View.GONE
-        this.productName = productName
-        presenter.onProductNameChange(productName.name)
-        name = productName.name
-        validateData()
+        if(!flagReset){
+            this.productName = productName
+            presenter.onProductNameChange(productName.name)
+            name = productName.name
+            validateData()
+            resetCategoryCatalog()
+            flagReset = false
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
-                REQUEST_CODE_GET_CATALOG -> {
-                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
-                    setCatalogChosen(productCatalog)
-                }
-                REQUEST_CODE_GET_CATEGORY -> {
-                    val newCategoryId = data.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()
-                    if(productCategory.categoryId != newCategoryId){
-                        presenter.fetchCatalogData(productName.name, newCategoryId.toLong(), 0, 1)
-                    }
-                    productCategory.categoryId = newCategoryId
-                    presenter.categoryId = newCategoryId.toLong()
-                    presenter.fetchCategory(productCategory.categoryId.toLong())
-                }
                 REQUEST_CODE_GET_IMAGES -> {
                     productPictureList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                    startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, productPictureList?:ArrayList()))
+                    startActivity(ProductAddActivity.createInstance(activity, productCatalog, productCategory, productName, productPictureList
+                            ?: ArrayList()))
                     activity?.finish()
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
@@ -101,7 +107,15 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         }
     }
 
-    private fun isDataValid() = productName.name.isNotEmpty() && productCategory.categoryId > 0
+    private fun isNameValid(): Boolean{
+        return productName.name.isNotEmpty()
+    }
+
+    private fun isCategoryChosen(): Boolean{
+        return productCategory.categoryId > 0
+    }
+
+    private fun isDataValid() = isNameValid() && isCategoryChosen()
 
     private fun goToNext(){
         if(isDataValid()){
@@ -109,13 +123,26 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
             if (productCatalog.catalogId > 0) {
                 catalogId = productCatalog.catalogId.toString()
             }
+            flagReset = true
             startActivityForResult(AddProductImagePickerBuilder.createPickerIntentWithCatalog(activity, productPictureList, catalogId), REQUEST_CODE_GET_IMAGES)
+        } else {
+            if(!isNameValid())
+                productEditNameViewHolder.validateForm()
+            else if(!isCategoryChosen())
+                NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.error_select_category))
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        flagReset = true
+        outState.putBoolean(SAVED_RESET_DATA, flagReset)
+        outState.putParcelable(SAVED_PRODUCT_NAME, productName)
+    }
+
     companion object {
-        const val REQUEST_CODE_GET_CATEGORY = 1
-        const val REQUEST_CODE_GET_CATALOG = 2
+        const val SAVED_RESET_DATA = "SAVED_RESET_DATA"
+        const val SAVED_PRODUCT_NAME = "SAVED_PRODUCT_NAME"
         const val REQUEST_CODE_GET_IMAGES = 100
         fun createInstance(imageUrls: ArrayList<String>?) : ProductAddNameCategoryFragment{
             val productAddNameCategoryFragment = ProductAddNameCategoryFragment()

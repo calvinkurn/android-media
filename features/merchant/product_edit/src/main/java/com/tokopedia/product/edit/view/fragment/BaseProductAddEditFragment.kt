@@ -338,9 +338,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType!!))}")
             labelViewWeightLogisticProduct.setSubTitle("")
         }
-        if (currentProductViewModel.productStock?.isActive ?: false) {
+        if (currentProductViewModel.productStock?.isActive == true) {
             if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0) {
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
+                labelViewStockProduct.setContent(getString(R.string.label_always_available))
             } else {
                 labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
             }
@@ -348,7 +348,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
         }
 
-        if (currentProductViewModel.productVariantByCatModelList.size > 0 && currentProductViewModel.productVariantViewModel?.hasSelectedVariant() ?: false) {
+        if (currentProductViewModel.productVariantByCatModelList.size > 0 && currentProductViewModel.productVariantViewModel?.hasSelectedVariant() == true) {
             labelViewVariantProduct.visibility = View.VISIBLE
             val productVariantOptionParentLv1 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(0)
             val productVariantOptionParentLv2 = currentProductViewModel.productVariantViewModel?.getVariantOptionParent(1)
@@ -365,7 +365,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewVariantProduct.visibility = View.GONE
         }
 
-        if (currentProductViewModel.productStock?.isActive ?: false) {
+        if (currentProductViewModel.productStock?.isActive == true) {
             if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0)
                 labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
             else
@@ -392,7 +392,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun setVariantModel(productVariantViewModel: ProductVariantViewModel?) {
 
         if (productVariantViewModel != null && productVariantViewModel.hasSelectedVariant()) {
-            @StockTypeDef val stockType = productVariantViewModel.getCalculateProductStatus()
+            @StockTypeDef val stockType = productVariantViewModel.calculateProductStatus
             if (stockType == StockTypeDef.TYPE_ACTIVE_LIMITED) {
                 currentProductAddViewModel?.productStock?.isActive = true
                 currentProductAddViewModel?.productStock?.stockCount = DEFAULT_PARENT_STOCK_IF_VARIANT
@@ -472,7 +472,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         }
     }
 
-    private fun isEdittingDraft() = isEditStatus() && getProductDraftId() > 0
+    private fun isEdittingDraft() = isEditStatus() && productDraftId > 0
 
     private fun isEditStatus() = statusUpload == ProductStatus.EDIT
 
@@ -518,7 +518,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     @SuppressLint("Range")
-    fun showWarning(message: String, action: View.OnClickListener) {
+    private fun showWarning(message: String, action: View.OnClickListener) {
         SnackbarManager.makeRed(activity, message, Snackbar.LENGTH_LONG).setAction(getString(R.string.product_action_view_error), action).show()
     }
 
@@ -533,7 +533,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     companion object {
 
-        val DEFAULT_PARENT_STOCK_IF_VARIANT = 1
+        const val DEFAULT_PARENT_STOCK_IF_VARIANT = 1
 
         const val REQUEST_CODE_GET_IMAGES = 1
         const val REQUEST_CODE_GET_CATALOG_CATEGORY = 2

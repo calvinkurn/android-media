@@ -1,5 +1,6 @@
 package com.tokopedia.product.edit.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -18,7 +19,7 @@ public interface ProductEditModuleRouter {
     ProductComponent getProductComponent();
     Intent getLoginIntent(Context context);
 
-    void goToGMSubscribe(Context context);
+    void goToGMSubscribe(Activity activity);
 
     @Nullable
     Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
