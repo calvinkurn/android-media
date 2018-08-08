@@ -8,7 +8,6 @@ import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.challenges.data.model.IndiTokenModel;
 import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.user.session.UserSession;
 

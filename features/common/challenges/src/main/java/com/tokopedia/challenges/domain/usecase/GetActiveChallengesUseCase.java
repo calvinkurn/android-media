@@ -4,10 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
-import com.tokopedia.challenges.data.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.Challenge;
-import com.tokopedia.challenges.view.model.Channel;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 

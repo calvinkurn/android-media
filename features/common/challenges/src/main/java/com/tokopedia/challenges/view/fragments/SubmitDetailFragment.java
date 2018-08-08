@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.IndiUserModel;
+import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 
