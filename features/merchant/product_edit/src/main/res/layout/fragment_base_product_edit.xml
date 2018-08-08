@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_12"
@@ -40,7 +40,13 @@
                         android:id="@+id/imageTwo"
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80" />
-                </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imageOverlayTwo"
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="@dimen/dp_80"
+                        android:src="@drawable/rounded_image_product_add_overlay"/>
+                </FrameLayout>
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -49,10 +55,16 @@
                     android:background="@drawable/rounded_image_product_add"
                     android:elevation="@dimen/dp_2"
                     android:layout_margin="@dimen/dp_2">
+
                     <ImageView
                         android:id="@+id/imageOne"
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80" />
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="@dimen/dp_80"
+                        android:src="@drawable/rounded_image_product_add_overlay"/>
 
                     <TextView
                         android:id="@+id/textEditImage"

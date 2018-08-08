@@ -13,7 +13,7 @@
         android:layout_marginRight="@dimen/dp_16"/>
 
     <android.support.v7.widget.AppCompatTextView
-        style="@style/TextView.Title.BlackSecondary"
+        style="@style/TextView.Title.BlackDisabled"
         android:text="@string/product_label_choose_category_catalog_information"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
@@ -28,7 +28,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="@dimen/dp_6"
         android:background="@drawable/information_without_catalog_shadow" />
 
     <LinearLayout

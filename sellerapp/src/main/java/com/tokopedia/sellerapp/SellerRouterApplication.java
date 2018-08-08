@@ -1165,7 +1165,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToAddProduct(Context context) {
         if (context != null && context instanceof Activity) {
-            startActivity(new Intent(context, ProductAddNameCategoryActivity.class));
+            context.startActivity(new Intent(context, ProductAddNameCategoryActivity.class));
         }
     }
 

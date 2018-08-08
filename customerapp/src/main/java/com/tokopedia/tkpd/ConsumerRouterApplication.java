@@ -1854,7 +1854,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToAddProduct(Context context) {
         if (context != null && context instanceof Activity) {
             Intent intent = new Intent(context, ProductAddNameCategoryActivity.class);
-            startActivity(intent);
+            context.startActivity(intent);
         }
     }
 
