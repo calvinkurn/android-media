@@ -9,6 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -27,14 +28,22 @@ public class ChallengesHomeActivity extends BaseActivity implements HasComponent
 private TabLayout tabLayout;
 private ViewPager viewPager;
 
-//    @Deeplink("sdsd")
-//    public static Intent getCallingReferral(Context context, Bundle extras) {
-//        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-//        return new Intent(context, ChallengesHomeActivity.class)
-//                .setData(uri.build())
-//                .putExtras(extras);
-//    }
+    @DeepLink({"tokopedia://challenges"})
+    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
+        Intent destination;
+        try {
+            String deepLink = extras.getString(DeepLink.URI);
 
+            Uri.Builder uri = Uri.parse(deepLink).buildUpon();
+            destination = new Intent(context, ChallengesHomeActivity.class)
+                    .setData(uri.build())
+                    .putExtras(extras);
+
+        } catch (Exception e) {
+            destination = new Intent(context, ChallengesHomeActivity.class);
+        }
+        return destination;
+    }
 
     @Override
     protected Fragment getNewFragment() {
