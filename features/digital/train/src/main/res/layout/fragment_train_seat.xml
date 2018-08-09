@@ -85,9 +85,9 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_gravity="center_vertical"
                         android:layout_width="@dimen/dp_10"
                         android:layout_height="@dimen/dp_10"
+                        android:layout_gravity="center_vertical"
                         android:background="@drawable/bg_train_available" />
 
                     <android.support.v7.widget.AppCompatTextView
@@ -108,9 +108,9 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_gravity="center_vertical"
                         android:layout_width="@dimen/dp_10"
                         android:layout_height="@dimen/dp_10"
+                        android:layout_gravity="center_vertical"
                         android:background="@drawable/bg_train_filled" />
 
                     <android.support.v7.widget.AppCompatTextView
@@ -131,9 +131,9 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_gravity="center_vertical"
                         android:layout_width="@dimen/dp_10"
                         android:layout_height="@dimen/dp_10"
+                        android:layout_gravity="center_vertical"
                         android:background="@drawable/bg_train_your_choice" />
 
                     <android.support.v7.widget.AppCompatTextView
@@ -146,6 +146,12 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+
+            <com.tokopedia.train.seat.presentation.widget.TrainSeatPagerIndicator
+                android:id="@+id/top_seat_pager_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp_wagon"
