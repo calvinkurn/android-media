@@ -64,14 +64,17 @@
                 android:clickable="false"
                 app:theme="@style/ProductAddEditRadioButtonCheckbox"
                 android:scaleX="1.2"
-                android:scaleY="1.2"/>
+                android:scaleY="1.2"
+                android:padding="@dimen/dp_4"
+                android:gravity="center"
+                android:button="@drawable/selector_radiobutton"/>
 
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_half"
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
