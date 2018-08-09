@@ -176,12 +176,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
-                        && scroogeWebView.getUrl() != null
-                        && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment()))
-                    scroogeWebView.loadUrl("javascript:handlePopAndroid();");
-                else
-                    onBackPressed();
+                onBackPressed();
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -277,7 +272,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     public void onBackPressed() {
-        if (isEndThanksPage()) {
+        if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
+                && scroogeWebView.getUrl() != null
+                && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment())) {
+            scroogeWebView.loadUrl("javascript:handlePopAndroid();");
+        }else if (isEndThanksPage()) {
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();
