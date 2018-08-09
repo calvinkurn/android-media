@@ -30,8 +30,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.DealsModuleRouter;
@@ -44,6 +47,7 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
+import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
@@ -64,7 +68,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private Menu mMenu;
     @Inject
     public DealsHomePresenter mPresenter;
-    private TouchViewPager viewPager;
+    private WrapContentHeightViewPager viewPager;
     private CirclePageIndicator circlePageIndicator;
     private CoordinatorLayout mainContent;
     private View progressBarLayout;
@@ -84,8 +88,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
     private TextView tvSeeAllPromo;
-    public final static String ADAPTER_POSITION = "ADAPTER_POSITION";
-    public final static String FROM_HOME = "FROM_HOME";
+    private int adapterPosition = -1;
 
     public static Fragment createInstance() {
         Fragment fragment = new DealsHomeFragment();
@@ -146,7 +149,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvLocationName.setOnClickListener(this);
         tvSeeAllPromo.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-
+        rvTrendingDeals.setNestedScrollingEnabled(false);
         rvTrendingDeals.setLayoutManager(layoutManager);
         rvCatItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
@@ -173,6 +176,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         NetworkClient.init(getActivity());
         getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
+        mPresenter.initialize();
     }
 
 
@@ -230,13 +234,28 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
                 }
                 break;
+            case DealsHomeActivity.REQUEST_CODE_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    if (userSession.isLoggedIn()) {
+                        if (adapterPosition == -1) {
+                            startOrderListActivity();
+                        } else {
+                            if (rvTrendingDeals.getAdapter() != null)
+                                ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).setLike(adapterPosition);
+                        }
+                    }
+                }
+                break;
+
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem carousel, CategoryItem top) {
+    public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem
+            carousel, CategoryItem top) {
 
         if (top.getItems() != null && top.getItems().size() > 0) {
             rvTrendingDeals.setVisibility(View.VISIBLE);
@@ -297,6 +316,16 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
         clSearch.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void startOrderListActivity() {
+        RouteManager.route(getActivity(), ApplinkConst.DEALS_ORDER);
+    }
+
+    @Override
+    public int getRequestCode() {
+        return DealsHomeActivity.REQUEST_CODE_LOGIN;
     }
 
 
@@ -436,7 +465,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
+        this.adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
     }
 }

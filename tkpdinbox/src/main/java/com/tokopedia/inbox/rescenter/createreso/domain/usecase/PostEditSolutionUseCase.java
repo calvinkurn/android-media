@@ -1,11 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.PostEditSolutionRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.source.CreateResolutionSource;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -19,18 +19,16 @@ public class PostEditSolutionUseCase extends UseCase<EditAppealResolutionSolutio
     public static final String PARAM_SOLUTION = "solution";
     public static final String PARAM_REFUND_AMOUNT = "refund_amount";
 
-    private PostEditSolutionRepository postEditSolutionRepository;
+    private CreateResolutionSource createResolutionSource;
 
-    public PostEditSolutionUseCase(ThreadExecutor threadExecutor,
-                                   PostExecutionThread postExecutionThread,
-                                   PostEditSolutionRepository postEditSolutionRepository) {
-        super(threadExecutor, postExecutionThread);
-        this.postEditSolutionRepository = postEditSolutionRepository;
+    @Inject
+    public PostEditSolutionUseCase(CreateResolutionSource createResolutionSource) {
+        this.createResolutionSource = createResolutionSource;
     }
 
     @Override
     public Observable<EditAppealResolutionSolutionDomain> createObservable(RequestParams requestParams) {
-        return postEditSolutionRepository.postEditSolutionDataCloud(requestParams);
+        return createResolutionSource.postEditSolution(requestParams);
     }
 
     public static RequestParams postEditSolutionUseCaseParams(String resoId,

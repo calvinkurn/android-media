@@ -547,13 +547,23 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
+    public Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart) {
         return null;
     }
 
     @Override
     public Intent getWithdrawIntent(Context context) {
         return null;
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return null;
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+
     }
 
     @Override
@@ -629,6 +639,12 @@ public class PosRouterApplication extends MainApplication implements
     public void showForceLogoutDialog(Response response) {
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    }
+
+    @Override
+    public void showForceLogoutTokenDialog(String response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutAnalytics(response);
     }
 
     @Override
@@ -734,11 +750,22 @@ public class PosRouterApplication extends MainApplication implements
         }
     }
 
+    @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return false;
+    }
+
     public PosAppComponent getPosAppComponent() {
         if(posAppComponent == null) {
             posAppComponent = DaggerPosAppComponent.builder().baseAppComponent(getBaseAppComponent()).build();
         }
 
         return posAppComponent;
+    }
+
+    @Override
+    public Intent getSettingBankIntent(Context context) {
+//        There is no setting bank in pos
+        return null;
     }
 }

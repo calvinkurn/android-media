@@ -19,13 +19,15 @@ import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
 import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 import com.tokopedia.discovery.search.view.fragment.SearchResultFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoCompleteViewModel> {
+public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoCompleteViewModel>
+        implements TabAutoCompleteCallback {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_suggestion_tabbing;
@@ -37,14 +39,25 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    private TabAutoCompleteViewModel model;
+    private List<Visitable> allFragmentList;
+    private List<Visitable> productFragmentList;
+    private List<Visitable> shopFragmentList;
+
     public TabAutoCompleteViewHolder(View view,
-                                     FragmentManager fragmentManager, ItemClickListener clickListener) {
+                                     FragmentManager fragmentManager,
+                                     ItemClickListener clickListener) {
         super(view);
         this.fragmentManager = fragmentManager;
         this.clickListener = clickListener;
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
-        pageAdapter = new SearchPageAdapter(fragmentManager, itemView.getContext(), clickListener);
+        pageAdapter = new SearchPageAdapter(
+                fragmentManager,
+                itemView.getContext(),
+                clickListener,
+                this
+        );
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -52,6 +65,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
 
     @Override
     public void bind(TabAutoCompleteViewModel element) {
+        this.model = element;
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -75,33 +89,64 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
         SearchResultFragment shopFragment = pageAdapter.getRegisteredFragment(2);
         shopFragment.clearData();
 
+        allFragmentList = new ArrayList<>();
+        productFragmentList = new ArrayList<>();
+        shopFragmentList = new ArrayList<>();
+
         for (SearchData searchData : element.getList()) {
             List<Visitable> list;
             switch (searchData.getId()) {
                 case SearchData.AUTOCOMPLETE_DIGITAL:
-                    allFragment.addBulkSearchResult(prepareDigitalSearch(searchData, element.getSearchTerm()));
+                    list = prepareDigitalSearch(searchData, element.getSearchTerm());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_CATEGORY:
-                    allFragment.addBulkSearchResult(insertTitle(prepareCategorySearch(searchData, element.getSearchTerm()), searchData.getName()));
+                    list = insertTitle(prepareCategorySearch(searchData, element.getSearchTerm()), searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_DEFAULT:
                     list = prepareAutoCompleteSearch(searchData, element.getSearchTerm());
+                    allFragmentList.addAll(list);
                     allFragment.addBulkSearchResult(list);
+                    productFragmentList.addAll(list);
                     productFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_HOTLIST:
                     continue;
                 case SearchData.AUTOCOMPLETE_IN_CATEGORY:
                     list = prepareInCategorySearch(searchData, element.getSearchTerm());
+                    allFragmentList.addAll(list);
                     allFragment.addBulkSearchResult(list);
+                    productFragmentList.addAll(list);
                     productFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_SHOP:
                     list = prepareShopSearch(searchData, element.getSearchTerm());
+                    shopFragmentList.addAll(list);
                     shopFragment.addBulkSearchResult(list);
-                    allFragment.addBulkSearchResult(insertTitle(list, searchData.getName()));
+                    list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
                     continue;
             }
+        }
+    }
+
+    @Override
+    public void onAdapterReady(int instanceType, SearchAdapter adapter) {
+        adapter.clearData();
+        switch (instanceType) {
+            case 0:
+                adapter.addAll(allFragmentList);
+                break;
+            case 1:
+                adapter.addAll(productFragmentList);
+                break;
+            case 2:
+                adapter.addAll(shopFragmentList);
+                break;
         }
     }
 

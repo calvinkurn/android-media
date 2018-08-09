@@ -145,23 +145,50 @@ public class PromoResponseMapper implements IPromoResponseMapper {
         Calendar cEnd = Calendar.getInstance();
         cEnd.setTime(dateEnd);
 
+        int dStart = cStart.get(Calendar.DAY_OF_MONTH);
+        int dEnd = cEnd.get(Calendar.DAY_OF_MONTH);
+
         int mStart = cStart.get(Calendar.MONTH);
         int mEnd = cEnd.get(Calendar.MONTH);
 
+        int yStart = cStart.get(Calendar.YEAR);
+        int yEnd = cEnd.get(Calendar.YEAR);
+
         String result;
         Locale localeId = new Locale("id", "ID");
-        if (mStart == mEnd) {
-            result = cStart.get(Calendar.DAY_OF_MONTH)
-                    + " - "
-                    + cEnd.get(Calendar.DAY_OF_MONTH)
-                    + " "
-                    + cEnd.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
-                    + " "
-                    + cEnd.get(Calendar.YEAR);
+
+        if (yEnd == yStart) {
+            if (mStart == mEnd && dStart == dEnd) {
+                result = cEnd.get(Calendar.DAY_OF_MONTH)
+                        + " "
+                        + cEnd.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                        + " "
+                        + cEnd.get(Calendar.YEAR);
+            } else if (mStart == mEnd) {
+                result = cStart.get(Calendar.DAY_OF_MONTH)
+                        + " - "
+                        + cEnd.get(Calendar.DAY_OF_MONTH)
+                        + " "
+                        + cEnd.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                        + " "
+                        + cEnd.get(Calendar.YEAR);
+            } else {
+                result = cStart.get(Calendar.DAY_OF_MONTH)
+                        + " "
+                        + cStart.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                        + " - "
+                        + cEnd.get(Calendar.DAY_OF_MONTH)
+                        + " "
+                        + cEnd.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                        + " "
+                        + cEnd.get(Calendar.YEAR);
+            }
         } else {
             result = cStart.get(Calendar.DAY_OF_MONTH)
                     + " "
                     + cStart.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                    + " "
+                    + cStart.get(Calendar.YEAR)
                     + " - "
                     + cEnd.get(Calendar.DAY_OF_MONTH)
                     + " "

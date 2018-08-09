@@ -82,7 +82,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         public ItemBankViewHolder(View itemView) {
             super(itemView);
             bankName = itemView.findViewById(R.id.bank_name);
-            bankAccountName = itemView.findViewById(R.id.bank_account_name);
+            bankAccountName = itemView.findViewById(R.id.bank_acc_name);
             mRadio = itemView.findViewById(R.id.radio);
         }
     }
@@ -102,7 +102,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         }
 
         parentView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_bank, parent, false);
+                .inflate(R.layout.item_bank_withdraw, parent, false);
         return new ItemBankViewHolder(parentView);
     }
 

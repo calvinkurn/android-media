@@ -9,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +20,9 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
@@ -66,6 +69,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private CategoryDetailCallbacks fragmentCallbacks;
     private String locationName;
     private DealsCategoryAdapter dealsAdapter;
+    private int adapterPosition=-1;
 
 
     @Override
@@ -146,6 +150,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
+            dealsAdapter.clearList();
             dealsAdapter.addAll(deals, false);
             dealsAdapter.notifyDataSetChanged();
             recyclerViewDeals.setVisibility(View.VISIBLE);
@@ -277,13 +282,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+
+        if(getActivity()==null)
+            return;
         switch (requestCode) {
-
-
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!locationName.equals(location1.getName())) {
+                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (location!=null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
                         mPresenter.getCategoryDetails(true);
                         mPresenter.getBrandsList(true);
                     }
@@ -292,8 +298,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 break;
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!locationName.equals(location1.getName())) {
+                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (location!=null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
                         mPresenter.getCategoryDetails(true);
                         mPresenter.getBrandsList(true);
                     } else {
@@ -301,6 +307,17 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                         mPresenter.getBrandsList(false);
                     }
 
+                }
+                break;
+            case DealsHomeActivity.REQUEST_CODE_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    if (userSession.isLoggedIn()) {
+                        if (adapterPosition != -1) {
+                            if (dealsAdapter != null)
+                                dealsAdapter.setLike(adapterPosition);
+                        }
+                    }
                 }
                 break;
         }
@@ -335,7 +352,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
+        adapterPosition=position;
         navigateToActivityRequest(intent, requestCode);
     }
 }

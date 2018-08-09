@@ -6,4 +6,15 @@
     <color name="yellow_ticker">#ecdb77</color>
     <color name="background_no_pinpoint">#ccfffffe</color>
     <color name="grey_nonactive_text">#42000000</color>
+    <color name="separator_color">#e0e0e0</color>
+    <color name="background_cashback_enable">#e3f9e3</color>
+    <color name="cashback_text_color">#42b549</color>
+    <color name="black_56">#8f000000</color>
+
+    <color name="checkout_shadow_color_1">#00AAAAAA</color>
+    <color name="checkout_shadow_color_2">#10AAAAAA</color>
+    <color name="checkout_shadow_color_3">#15AAAAAA</color>
+    <color name="checkout_shadow_color_4">#20AAAAAA</color>
+    <color name="checkout_shadow_color_5">#25AAAAAA</color>
+
 </resources>

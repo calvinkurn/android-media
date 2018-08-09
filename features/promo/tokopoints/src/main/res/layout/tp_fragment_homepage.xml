@@ -4,14 +4,12 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/white">
 
     <ViewFlipper
         android:id="@+id/container_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
         android:measureAllChildren="false">
 
         <ProgressBar
@@ -61,9 +59,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                android:layout_marginBottom="36dp"
                 android:layout_gravity="bottom|center_horizontal"
                 android:background="@color/transparent"
-                android:paddingBottom="@dimen/tp_padding_small"
                 app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
 
                 <include layout="@layout/tp_layout_floating_token" />

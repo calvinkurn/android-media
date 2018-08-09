@@ -55,7 +55,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/qc_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:logo="@drawable/ic_new_logo"
         android:resizeableActivity="false"
@@ -239,6 +239,7 @@
         <activity
             android:name=".DeveloperOptions"
             android:label="@string/title_activity_developer_options"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".TermPrivacy"

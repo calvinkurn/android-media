@@ -73,11 +73,11 @@
                         android:id="@+id/info_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_info"
-                        android:layout_alignTop="@+id/tv_balance_tokocash"
                         android:layout_alignBottom="@+id/tv_balance_tokocash"
+                        android:layout_alignTop="@+id/tv_balance_tokocash"
                         android:layout_toRightOf="@+id/tv_balance_tokocash"
-                        android:visibility="gone"/>
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_info" />
 
                 </RelativeLayout>
 
@@ -131,43 +131,26 @@
             android:layout_marginTop="@dimen/card_view_margin"
             android:padding="@dimen/keyline_1_minus_8dp"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_hachiko_egg"/>
+            app:srcCompat="@drawable/ic_hachiko_egg" />
 
         <LinearLayout
             android:id="@+id/progress_bar_tokopoint_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
             tools:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/dp_8"
-                    android:paddingTop="@dimen/dp_8"
-                    android:visibility="visible" />
-
-            </LinearLayout>
-
-            <TextView
-                style="@style/TokoPointHeaderNewLabel"
+            <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_10"
-                android:lines="1"
-                android:singleLine="true"
-                android:text="@string/home_header_tokopoint_new_label" />
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
+                android:visibility="visible" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -210,18 +193,6 @@
                         android:visibility="gone"
                         tools:text="900000000000000000 Poin"
                         tools:visibility="visible" />
-
-                    <TextView
-                        style="@style/TokoPointHeaderNewLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_5"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginStart="@dimen/dp_5"
-                        android:gravity="center"
-                        android:text="@string/home_header_tokopoint_new_label" />
 
                 </LinearLayout>
 

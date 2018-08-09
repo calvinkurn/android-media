@@ -18,6 +18,7 @@ import java.util.List;
  * Created by Irfan Khoirul on 24/01/18.
  */
 
+@Deprecated
 public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAdapter.ShipmentViewHolder> {
 
     private static final String FONT_FAMILY_SANS_SERIF = "sans-serif";

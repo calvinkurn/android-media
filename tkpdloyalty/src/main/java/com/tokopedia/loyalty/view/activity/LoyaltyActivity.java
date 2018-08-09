@@ -52,6 +52,8 @@ import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.E
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
@@ -93,6 +95,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     private int productId;
     private String cartIdString;
     private String additionalDataString;
+    private String trainReservationId;
+    private String trainReservationCode;
 
     public boolean isCouponActive() {
         return isCouponActive;
@@ -128,6 +132,14 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     public String getAdditionalDataString() {
         return additionalDataString;
+    }
+
+    public String getTrainReservationId() {
+        return trainReservationId;
+    }
+
+    public String getTrainReservationCode() {
+        return trainReservationCode;
     }
 
     private OnTabSelectedForTrackingCheckoutMarketPlace onTabSelectedForTrackingCheckoutMarketPlace;
@@ -169,6 +181,13 @@ public class LoyaltyActivity extends BasePresenterActivity
         this.additionalDataString = extras.getString(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA, ""
         );
+        this.trainReservationId = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID, ""
+        );
+        this.trainReservationCode = extras.getString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE, ""
+        );
+
     }
 
     @Override
@@ -320,9 +339,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void onUsePromoCodeClicked() {
         if (platformPageString.equalsIgnoreCase(PLATFORM_PAGE_MARKETPLACE_CART_LIST)) {
-            checkoutAnalyticsCart.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+            checkoutAnalyticsCart.eventClickAtcCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
         } else {
-            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon();
+            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon();
         }
 
     }
@@ -366,22 +385,27 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     public void sendAnalyticsOnCouponItemClickedCartListPage() {
-        checkoutAnalyticsCart.eventClickCartClickKuponFromGunakanPromoAtauKupon();
+        checkoutAnalyticsCart.eventClickAtcCartClickKuponFromGunakanKodePromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClicked(String couponName) {
+        checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickKuponFromKuponSaya(couponName);
     }
 
     @Override
     public void sendAnalyticsOnCouponItemClickedCartShipmentPage() {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
     }
 
     @Override
     public void sendAnalyticsImpressionCouponEmptyCartListPage() {
-        checkoutAnalyticsCart.eventImpressionCartImpressionOnPopUpKupon();
+        checkoutAnalyticsCart.eventViewAtcCartImpressionOnPopUpKupon();
     }
 
     @Override
     public void sendAnalyticsImpressionCouponEmptyShipmentPage() {
-        checkoutAnalyticsCourierSelection.eventImpressionCourierSelectionImpressionOnPopUpKupon();
+        checkoutAnalyticsCourierSelection.eventViewAtcCourierSelectionImpressionOnPopUpKupon();
     }
 
     @Override
@@ -424,6 +448,11 @@ public class LoyaltyActivity extends BasePresenterActivity
                     break;
             }
         }
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorGetPromoCode(String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventViewPromoCourierSelectionValidationErrorVoucherPromoFromGunakanKodePromoAtauKupon(errorMessage);
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
@@ -511,6 +540,19 @@ public class LoyaltyActivity extends BasePresenterActivity
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, category);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceTrainCouponNotActive(Context context, String platform, String category,
+                                                         String trainReservationId, String trainReservationCode) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
+        bundle.putString(EXTRA_TRAIN_RESERVATION_ID, trainReservationId);
+        bundle.putString(EXTRA_TRAIN_RESERVATION_CODE, trainReservationCode);
         intent.putExtras(bundle);
         return intent;
     }
@@ -609,6 +651,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (platformString.equalsIgnoreCase(MARKETPLACE_STRING))
+            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon();
         UnifyTracking.eventCouponPageClosed();
     }
 
@@ -626,19 +670,19 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 1) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCart.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKuponSayaFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 } else {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCart.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }
@@ -646,10 +690,10 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 0) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCart.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }

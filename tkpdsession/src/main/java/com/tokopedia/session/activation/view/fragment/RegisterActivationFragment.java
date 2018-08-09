@@ -25,6 +25,7 @@ import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -62,6 +63,8 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Inject
     SessionHandler sessionHandler;
 
+    private RegisterAnalytics registerAnalytics;
+
     public static RegisterActivationFragment createInstance(Bundle args) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
         fragment.setArguments(args);
@@ -92,6 +95,8 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
             password = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
         }
+
+        registerAnalytics = RegisterAnalytics.initAnalytics(getActivity());
     }
 
     @Override
@@ -193,12 +198,14 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         activateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                registerAnalytics.eventClickActivateEmail();
                 presenter.activateAccount();
             }
         });
         footer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                registerAnalytics.eventClickResendActivationEmail();
                 showChangeEmailDialog();
             }
         });

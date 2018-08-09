@@ -25,6 +25,7 @@ import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
 import com.tokopedia.loyalty.di.module.PromoCodeViewModule;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
@@ -36,7 +37,6 @@ import javax.inject.Inject;
  */
 
 public class PromoCodeFragment extends BasePresenterFragment implements IPromoCodeView {
-
 
     @Inject
     IPromoCodePresenter dPresenter;
@@ -56,6 +56,9 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
 
     private static final String CART_ID = "CART_ID";
+
+    private static final String TRAIN_RESERVATION_ID = "TRAIN_RESERVATION_ID";
+    private static final String TRAIN_RESERVATION_CODE = "TRAIN_RESERVATION_CODE";
 
     private static final String CHECKOUT = "checkoutdata";
 
@@ -130,15 +133,20 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                     voucherCodeFieldHolder)
             );
         } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING)) {
+            submitVoucherButton.setOnClickListener(onSubmitTrainVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitEventVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
 
-        }else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
+        } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitDealVoucher(voucherCodeField,
                     voucherCodeFieldHolder));
-
         } else {
             submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
                     voucherCodeField,
@@ -160,6 +168,28 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                             getActivity(),
                             voucherCodeField.getText().toString(),
                             getArguments().getString(CART_ID)
+                    );
+            }
+        };
+    }
+
+    private View.OnClickListener onSubmitTrainVoucher(final EditText voucherCodeField, final TextInputLayout textHolder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity() instanceof LoyaltyModuleRouter) {
+                    ((LoyaltyModuleRouter) getActivity())
+                            .trainSendTrackingOnClickUseVoucherCode(voucherCodeField.getText().toString());
+                }
+                voucherCodeFieldHolder.setError(null);
+                if (voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else
+                    dPresenter.processCheckTrainPromoCode(
+                            getActivity(),
+                            getArguments().getString(TRAIN_RESERVATION_ID),
+                            getArguments().getString(TRAIN_RESERVATION_CODE),
+                            voucherCodeField.getText().toString()
                     );
             }
         };
@@ -306,9 +336,9 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         return fragment;
     }
 
-
-    public static Fragment newInstance(String platform, String platformPage, String categoryKey,
-                                       String cartId, String additionalDataString) {
+    public static Fragment newInstance(String platform,String platformPage, String categoryKey,
+                                       String cartId, String additionalDataString,
+                                       String trainReservationId, String trainReservartionCode) {
         PromoCodeFragment fragment = new PromoCodeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
@@ -316,6 +346,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         bundle.putString(CATEGORY_KEY, categoryKey);
         bundle.putString(CART_ID, cartId);
         bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
+        bundle.putString(TRAIN_RESERVATION_ID, trainReservationId);
+        bundle.putString(TRAIN_RESERVATION_CODE, trainReservartionCode);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -342,11 +374,20 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     @Override
     public void onPromoCodeError(String errorMessage) {
         voucherCodeFieldHolder.setError(errorMessage);
+        listener.sendAnalyticsOnErrorGetPromoCode(errorMessage);
     }
 
     @Override
     public Context getContext() {
         return getActivity();
+    }
+
+    @Override
+    public void sendTrackingOnCheckTrainVoucherError(String errorMessage) {
+        if (getActivity() instanceof LoyaltyModuleRouter) {
+            ((LoyaltyModuleRouter) getActivity())
+                    .trainSendTrackingOnCheckVoucherCodeError(errorMessage);
+        }
     }
 
     @Override
@@ -456,6 +497,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         void onUsePromoCodeClicked();
 
         void sendAnalyticsScreenNamePromoCode();
+
+        void sendAnalyticsOnErrorGetPromoCode(String errorMessage);
 
     }
 }

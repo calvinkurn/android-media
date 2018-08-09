@@ -17,6 +17,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Em
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,33 +126,17 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    public void showEmpty(String query) {
-        clearData();
-        list.add(mappingEmptySearch(query));
-        notifyDataSetChanged();
-    }
-
     public void showEmpty() {
         clearData();
         list.add(mappingEmptySearch());
         notifyDataSetChanged();
     }
 
-
     private EmptySearchModel mappingEmptySearch() {
         emptySearchModel = new EmptySearchModel();
         emptySearchModel.setImageRes(R.drawable.ic_empty_search);
         emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
         emptySearchModel.setContent(context.getString(R.string.empty_search_content_template));
-        emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
-        return emptySearchModel;
-    }
-
-    private EmptySearchModel mappingEmptySearch(String query) {
-        emptySearchModel = new EmptySearchModel();
-        emptySearchModel.setImageRes(R.drawable.ic_empty_search);
-        emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
-        emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
         emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
         return emptySearchModel;
     }

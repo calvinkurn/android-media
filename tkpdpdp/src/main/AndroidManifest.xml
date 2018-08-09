@@ -44,6 +44,12 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <activity
+            android:name=".ProductModalActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/title_activity_product_modal"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+
+        <activity
             android:name=".DinkFailedActivity"
             android:screenOrientation="portrait" />
 

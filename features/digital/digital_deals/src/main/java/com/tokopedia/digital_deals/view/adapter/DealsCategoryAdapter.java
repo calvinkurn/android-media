@@ -216,8 +216,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public void showHighLightText(boolean value){
-        this.showHighlightText=value;
+    public void showHighLightText(boolean value) {
+        this.showHighlightText = value;
     }
 
     public void add(ProductItem item, boolean refreshItem) {
@@ -229,7 +229,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void clearList() {
         isHeaderAdded = false;
         isFooterAdded = false;
-        categoryItems.clear();
+        if (categoryItems != null)
+            categoryItems.clear();
     }
 
     public void addAll(List<ProductItem> items, Boolean... refreshItems) {
@@ -275,12 +276,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
     @Override
-    public void showLoginSnackbar(String message) {
+    public void showLoginSnackbar(String message, int position) {
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getActivity().getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
                     Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
-                    toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN);
+                    toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
                 }
         ).show();
     }
@@ -345,13 +346,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 hotDeal.setVisibility(View.GONE);
             }
-            if (TextUtils.isEmpty(productItem.getCityName())) {
+            if (TextUtils.isEmpty(productItem.getBrand().getCityName())) {
                 Location location = Utils.getSingletonInstance().getLocation(context);
                 if (location != null) {
                     dealavailableLocations.setText(location.getName());
                 }
             } else {
-                dealavailableLocations.setText(productItem.getCityName());
+                dealavailableLocations.setText(productItem.getBrand().getCityName());
             }
             if (productItem.getMrp() != 0) {
                 dealListPrice.setVisibility(View.VISIBLE);
@@ -419,8 +420,21 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
-                toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY);
+                toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
             }
+        }
+    }
+
+    public void setLike(int position) {
+        if (position < categoryItems.size()) {
+            if (categoryItems.get(position).isLiked()) {
+                categoryItems.get(position).setLikes(categoryItems.get(position).getLikes() - 1);
+                categoryItems.get(position).setLiked(!categoryItems.get(position).isLiked());
+            } else {
+                categoryItems.get(position).setLikes(categoryItems.get(position).getLikes() + 1);
+                categoryItems.get(position).setLiked(!categoryItems.get(position).isLiked());
+            }
+            notifyItemChanged(position);
         }
     }
 
@@ -554,7 +568,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private void setDealTitle(int position, ProductItem value) {
             this.valueItem = value;
-            if(showHighlightText) {
+            if (showHighlightText) {
                 SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
                 if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
                     StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
@@ -569,7 +583,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 tvDealTitle.setText(spannableString);
-            }else{
+            } else {
                 tvDealTitle.setText(valueItem.getDisplayName());
 
             }
@@ -597,6 +611,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public interface INavigateToActivityRequest {
-        void onNavigateToActivityRequest(Intent intent, int requestCode);
+        void onNavigateToActivityRequest(Intent intent, int requestCode, int position);
     }
 }

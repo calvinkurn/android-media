@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/bank_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="#b3000000"
+        android:lineSpacingExtra="@dimen/sp_8"
+        tools:text="PT BANK CENTRAL ASIA TBK"
+        />
+
+    <TextView
+        android:id="@+id/bank_acc_name"
+        android:layout_below="@id/bank_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_12"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="#8a000000"
+        android:lineSpacingExtra="@dimen/sp_5"
+        tools:text="5678908730 • Alexandra Ronodididi…"
+        />
+
+    <ImageView
+        android:id="@+id/radio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bank_withdraw_radio_button_default"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

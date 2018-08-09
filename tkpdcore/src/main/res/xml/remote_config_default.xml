@@ -139,6 +139,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>app_enable_similar_search</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_show_simple_app_rating</key>
         <value>true</value>
     </entry>
@@ -186,10 +190,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_flight_transaction_menu</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>mainapp_show_recomendation_button</key>
         <value>true</value>
     </entry>
@@ -214,5 +214,33 @@
     <entry>
         <key>mainapp_digital_smartcard</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_is_enabled_new_setting_bank</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_is_enabled_new_setting_bank</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_new_change_password_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_new_change_password_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>indicator_groupchat</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_login_inactive_phone_no_link</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_kai_native_enable</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

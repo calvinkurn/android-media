@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -41,7 +40,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     private int MAX_QUANTITY = 8;
     private int CURRENT_QUANTITY = 1;
 
-    private LinearLayout llContinue;
+    private TextView tvContinue;
     private CoordinatorLayout mainContent;
     private FrameLayout progressBarLayout;
 
@@ -63,7 +62,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     private DealFragmentCallbacks fragmentCallbacks;
 
 
-    private static final int EVENT_LOGIN_REQUEST = 1099;
+    private static final int LOGIN_REQUEST_CODE = 1099;
 
     public static Fragment createInstance() {
         Fragment fragment = new SelectDealQuantityFragment();
@@ -123,7 +122,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvMrp = view.findViewById(R.id.tv_mrp);
         tvSalesPrice = view.findViewById(R.id.tv_sales_price);
         tvTotalAmount = view.findViewById(R.id.tv_total_amount);
-        llContinue = view.findViewById(R.id.ll_continue);
+        tvContinue = view.findViewById(R.id.tv_continue);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         mainContent = view.findViewById(R.id.main_content);
     }
@@ -173,7 +172,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             setUpTotalAmount();
             setButtons();
 
-        } else if (v.getId() == R.id.ll_continue) {
+        } else if (v.getId() == R.id.tv_continue) {
             packageViewModel = new PackageViewModel();
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
@@ -223,7 +222,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
         tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
 
-        llContinue.setOnClickListener(this);
+        tvContinue.setOnClickListener(this);
         ivAdd.setOnClickListener(this);
         ivSubtract.setOnClickListener(this);
     }
@@ -260,7 +259,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     public int getRequestCode() {
-        return EVENT_LOGIN_REQUEST;
+        return LOGIN_REQUEST_CODE;
     }
 
     @Override

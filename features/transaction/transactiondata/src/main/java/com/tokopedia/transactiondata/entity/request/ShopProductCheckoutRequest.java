@@ -37,6 +37,11 @@ public class ShopProductCheckoutRequest {
     @Expose
     public int fcancelPartial;
 
+    public int getShopId() {
+        return shopId;
+    }
+
+
     private ShopProductCheckoutRequest(Builder builder) {
         shopId = builder.shopId;
         isPreorder = builder.isPreorder;
@@ -101,6 +106,7 @@ public class ShopProductCheckoutRequest {
             fcancelPartial = val;
             return this;
         }
+
 
         public ShopProductCheckoutRequest build() {
             return new ShopProductCheckoutRequest(this);

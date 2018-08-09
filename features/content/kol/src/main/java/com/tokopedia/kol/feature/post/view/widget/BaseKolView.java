@@ -159,7 +159,7 @@ public class BaseKolView extends BaseCustomView {
         kolText.setOnClickListener(v -> {
             if (kolText.getText().toString().endsWith(
                     kolText.getContext().getString(R.string.read_more_english))) {
-                UrlUtil.setTextWithClickableTokopediaUrl(kolText, element.getReview());
+                UrlUtil.setTextWithClickableTokopediaUrl(kolText, getKolText(element));
                 element.setReviewExpanded(true);
 
                 viewListener.onDescriptionClickListener(element);

@@ -36,6 +36,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -44,7 +45,6 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.feedplus.view.activity.RecentViewActivity;
@@ -67,9 +67,12 @@ import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -108,6 +111,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
+    private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
 
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
@@ -124,6 +128,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
+    private View tabExplore;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
@@ -142,6 +147,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     boolean hasLoadedOnce = false;
 
+    public static FeedPlusFragment newInstance() {
+        FeedPlusFragment fragment = new FeedPlusFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected String getScreenName() {
         return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED;
@@ -157,11 +169,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        GraphqlClient.init(getActivity());
         trace = TrackingUtils.startTrace("feed_trace");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
             firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
         initVar();
+        setRetainInstance(true);
     }
 
 
@@ -218,8 +232,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        tabExplore = parentView.findViewById(R.id.tab_explore);
 
         prepareView();
+        GraphqlClient.init(getActivity());
         presenter.attachView(this);
         return parentView;
 
@@ -660,6 +676,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     );
                 }
                 break;
+            case CREATE_POST:
+                break;
             case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfileRecommendation(
@@ -671,11 +689,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
             default:
                 break;
         }
-    }
-
-    private void forceLoadFirstPage() {
-        hasLoadedOnce = false;
-        loadData(true);
     }
 
     @Override
@@ -754,9 +767,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
-        }
-        if (!hasFeed()) {
-            forceLoadFirstPage();
         }
     }
 
@@ -896,7 +906,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onOpenKolTooltip(int rowNumber, String url) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
@@ -941,16 +951,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
-            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
-        }
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        //TODO milhamj revert remote config
+//        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
+//            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
+//        }
+        feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
     public void onErrorFollowKol(String errorMessage, final int id, final int status, final int rowNumber) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
-            if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
+            if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
                 presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
             else
                 presenter.followKol(id, rowNumber, FeedPlusFragment.this);
@@ -1086,8 +1097,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLogin() {
-        Intent intent = feedModuleRouter.getLoginIntent(getContext());
-        startActivity(intent);
+        Intent intent = feedModuleRouter.getLoginIntent(getActivity());
+        getActivity().startActivityForResult(intent, DrawerHelper.REQUEST_LOGIN);
     }
 
     @Override
@@ -1124,6 +1135,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getAdapterListSize() {
         return adapter.getItemCount();
+    }
+
+    @Override
+    public void onWhitelistClicked(String url) {
+        startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity(), url), CREATE_POST);
     }
 
     @Override
