@@ -1,14 +1,11 @@
 package com.tokopedia.travelcalendar.view;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 
 import com.tokopedia.travelcalendar.R;
@@ -37,7 +34,7 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
     private Date currentCalendar;
     private Date maxDateCal;
 
-    public GridCalendarAdapter(Context context, List<CellDate> monthlyDates, Calendar currentDate,
+    public GridCalendarAdapter(List<CellDate> monthlyDates, Calendar currentDate,
                                Calendar maxDate, List<HolidayResult> holidayResultList) {
         this.monthlyDates = monthlyDates;
         this.currentDate = currentDate;
@@ -85,7 +82,7 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
             container = view.findViewById(R.id.container);
         }
 
-        public void bind(CellDate cellDate){
+        public void bind(CellDate cellDate) {
             Date mDate = cellDate.getDate();
             Calendar dateCal = Calendar.getInstance();
             dateCal.setTime(mDate);
