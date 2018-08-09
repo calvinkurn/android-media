@@ -11,13 +11,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/explore_category_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_16"
+                tools:itemCount="2"
+                tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_explore_tag" />
 
             <com.tokopedia.design.text.SearchInputView
                 android:id="@+id/search_inspiration"
@@ -29,19 +42,6 @@
                 app:siv_search_hint="@string/search_your_inspiration" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/explore_category_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_16"
-            tools:itemCount="2"
-            tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_explore_tag" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -13,6 +13,15 @@
         android:background="@color/white"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
+        <com.tokopedia.searchbar.MainToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:layout_scrollFlags="scroll|enterAlways" />
+
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
