@@ -144,15 +144,6 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
                 val titleVideoChosenViewModel = TitleVideoChosenViewModel()
                 adapter.addElement(titleVideoChosenViewModel)
             }
-//            for (i in adapter.data.indices) {
-//                val productAddVideoBaseViewModels = adapter.data[i]
-//                if (productAddVideoBaseViewModels is EmptyVideoViewModel) {
-//                    adapter.clearElement(productAddVideoBaseViewModels)
-//                    val titleVideoChosenViewModel = TitleVideoChosenViewModel()
-//                    adapter.addElement(titleVideoChosenViewModel)
-//                    break
-//                }
-//            }
             adapter.addElement(productAddVideoBaseViewModel)
         } else {
             adapter.clearElement(productAddVideoBaseViewModel)
@@ -162,15 +153,6 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
                     val emptyVideoViewModel = EmptyVideoViewModel()
                     adapter.addElement(emptyVideoViewModel)
                 }
-//                for (i in adapter.data.indices) {
-//                    val productAddVideoBaseViewModels = adapter.data[i]
-//                    if (productAddVideoBaseViewModels is TitleVideoChosenViewModel) {
-//                        adapter.clearElement(productAddVideoBaseViewModels)
-//                        val emptyVideoViewModel = EmptyVideoViewModel()
-//                        adapter.addElement(emptyVideoViewModel)
-//                        break
-//                    }
-//                }
             }
         }
         setButtonAddVideoUrl()
