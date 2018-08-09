@@ -51,15 +51,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
-                e.printStackTrace();
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getSubmissionChallenges();
-                    }
-                });
+
             }
 
             @Override

@@ -17,25 +17,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
@@ -60,24 +57,30 @@ import javax.inject.Inject;
 public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements ChallengeSubmissonContractor.View, View.OnClickListener, SubmissionItemAdapter.INavigateToActivityRequest {
 
     @Inject
-    ChallengeSubmissionPresenter challengeSubmissionPresenter;
+    ChallengeSubmissionPresenter mPresenter;
     ImageView challengeImage;
     TextView challengeTitle;
     TextView challengeDueDate;
-    TextView tv_participated;
-    TextView seeMoreButton;
-    ImageView seeMoreArrow;
+    TextView tvParticipated;
+    TextView seeMoreButtonDesc;
+    TextView seeMoreButtonBuzzPoints;
+    TextView seeMoreButtonTnc;
     ExpandableTextView description;
-    LinearLayout expandDescription;
     RecyclerView submissionRecyclerView, awardRecylerView;
     List<SubmissionResult> submissionResults;
     CustomVideoPlayer videoPlayer;
     ConstraintLayout timerView;
+    RelativeLayout rlExpiry;
+    ConstraintLayout clAbout;
+    ConstraintLayout clVideoPlayer;
+    ConstraintLayout clAwards;
+    ConstraintLayout clSubmissions;
+    ConstraintLayout clHowBuzzPoints;
+    ConstraintLayout clTnc;
     ProgressBar timerProgressBar;
     CountDownView countDownView;
-    TextView hashTag;
-    TextView tv_TnC;
-//    TextView expand_TnC;
+    TextView tvHashTag;
+    TextView tvTnCText;
 
     SubmissionItemAdapter submissionItemAdapter;
 
@@ -88,6 +91,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private AppBarLayout appBarLayout;
     private ChallengesFragmentCallbacks fragmentCallbacks;
     private String tncText;
+    private TextView tvHowBuzzPointsText;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -106,21 +110,25 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.challenges_detail_fragment, container, false);
-        challengeImage =  view.findViewById(R.id.image_challenge);
-        challengeTitle =  view.findViewById(R.id.tv_title);
-        hashTag =  view.findViewById(R.id.tv_hashtag);
-        challengeDueDate =  view.findViewById(R.id.tv_expiry_date);
-        tv_participated =  view.findViewById(R.id.tv_participated);
+        challengeImage = view.findViewById(R.id.image_challenge);
+        challengeTitle = view.findViewById(R.id.tv_title);
+        tvHashTag = view.findViewById(R.id.tv_hashtag);
+        challengeDueDate = view.findViewById(R.id.tv_expiry_date);
+        tvParticipated = view.findViewById(R.id.tv_participated);
         timerView = view.findViewById(R.id.cl_timer);
         timerProgressBar = view.findViewById(R.id.progressBar);
         countDownView = view.findViewById(R.id.count_down);
-        description =  view.findViewById(R.id.tv_expandable_description);
-        expandDescription = view.findViewById(R.id.expand_view_description);
-        seeMoreButton =  view.findViewById(R.id.seemorebutton_description);
-        seeMoreArrow =  view.findViewById(R.id.down_arrow_description);
+        description = view.findViewById(R.id.tv_expandable_description);
+        seeMoreButtonDesc = view.findViewById(R.id.seemorebutton_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
         awardRecylerView = view.findViewById(R.id.rv_awards);
-
+        rlExpiry = view.findViewById(R.id.cl_expiry);
+        clAbout = view.findViewById(R.id.cl_about);
+        clVideoPlayer = view.findViewById(R.id.cl_video_player);
+        clAwards = view.findViewById(R.id.cl_awards);
+        clSubmissions = view.findViewById(R.id.cl_submissions);
+        clHowBuzzPoints = view.findViewById(R.id.cl_how_buzzpoints);
+        clTnc = view.findViewById(R.id.cl_tnc);
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
@@ -129,16 +137,17 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         collapsingToolbarLayout.setTitle(" ");
         appBarLayout = view.findViewById(R.id.app_bar);
         description.setInterpolator(new OvershootInterpolator());
-        expandDescription.setOnClickListener(this);
+        seeMoreButtonDesc.setOnClickListener(this);
         view.findViewById(R.id.tv_see_all).setOnClickListener(this);
-
         videoPlayer = view.findViewById(R.id.video_player);
-
-        tv_TnC = view.findViewById(R.id.tv_tnc);
-//        expand_TnC = view.findViewById(R.id.seemorebutton_tnc);
-        challengeSubmissionPresenter.attachView(this);
-        challengeSubmissionPresenter.initialize();
-
+        tvTnCText = view.findViewById(R.id.tv_tnc_text);
+        tvHowBuzzPointsText = view.findViewById(R.id.tv_how_buzz_points_text);
+        seeMoreButtonBuzzPoints = view.findViewById(R.id.seemorebutton_buzzpoints);
+        seeMoreButtonTnc = view.findViewById(R.id.seemorebutton_tnc);
+        seeMoreButtonBuzzPoints.setOnClickListener(this);
+        seeMoreButtonTnc.setOnClickListener(this);
+        mPresenter.attachView(this);
+        mPresenter.initialize();
         return view;
     }
 
@@ -186,42 +195,61 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void renderSubmissionItems(SubmissionResponse submissionResponse) {
+
         submissionResults = submissionResponse.getSubmissionResults();
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        submissionRecyclerView.setLayoutManager(mLayoutManager);
-        submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
-        submissionRecyclerView.setAdapter(submissionItemAdapter);
+        if (submissionResults != null && submissionResults.size() > 0) {
+            clSubmissions.setVisibility(View.VISIBLE);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            submissionRecyclerView.setLayoutManager(mLayoutManager);
+            submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+            submissionRecyclerView.setAdapter(submissionItemAdapter);
+        }
     }
+
+
 
     @Override
     public void renderChallengeDetail() {
         ImageHandler.loadImage(getActivity(), challengeImage, challengeResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
-        challengeTitle.setText(challengeResult.getTitle());
+        if (!TextUtils.isEmpty(challengeResult.getTitle())) {
+            challengeTitle.setText(challengeResult.getTitle());
+        } else {
+            challengeTitle.setVisibility(View.GONE);
+        }
         challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
                 Utils.convertUTCToString(challengeResult.getEndDate())));
         if (!TextUtils.isEmpty(challengeResult.getHashTag()))
-        hashTag.setText(challengeResult.getHashTag());
-        description.setText(challengeResult.getDescription());
+            tvHashTag.setText(challengeResult.getHashTag());
+        else {
+            tvHashTag.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(challengeResult.getDescription())) {
+            description.setText(challengeResult.getDescription());
+        } else {
+            description.setVisibility(View.GONE);
+        }
         setCountDownView();
 //        videoPlayer.setVideoThumbNail(submissionResponse.getSubmissionResults());
-        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        awardRecylerView.setLayoutManager(mLayoutManager1);
-        awardAdapter = new AwardAdapter(challengeResult.getPrizes());
-        awardRecylerView.setAdapter(awardAdapter);
-
-
+        if (challengeResult.getPrizes() != null && challengeResult.getPrizes().size() > 0) {
+            LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            awardRecylerView.setLayoutManager(mLayoutManager1);
+            awardAdapter = new AwardAdapter(challengeResult.getPrizes());
+            awardRecylerView.setAdapter(awardAdapter);
+        } else {
+            clAwards.setVisibility(View.GONE);
+        }
     }
 
     private void setCountDownView() {
         if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null) {
             if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
-                tv_participated.setText("Approved");
+                tvParticipated.setText("Approved");
             } else if (challengeResult.getMe().getSubmissionCounts().getDeclined() > 0) {
-                tv_participated.setText("Declined");
+                tvParticipated.setText("Declined");
             } else if (challengeResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-                tv_participated.setText("Waiting");
+                tvParticipated.setText("Waiting");
             } else if (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate())) {
-                tv_participated.setText("Completed");
+                tvParticipated.setText("Completed");
             } else {
                 try {
                     countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
@@ -230,14 +258,14 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     e.printStackTrace();
                 }
                 timerView.setVisibility(View.VISIBLE);
-                tv_participated.setVisibility(View.GONE);
+                tvParticipated.setVisibility(View.GONE);
             }
         }
     }
 
     @Override
     public RequestParams getParams() {
-        RequestParams requestParams=RequestParams.create();
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.QUERY_PARAM_CHALLENGE_ID, challengeResult.getId());
         requestParams.putInt(Utils.QUERY_PARAM_KEY_START, 0);
         requestParams.putInt(Utils.QUERY_PARAM_KEY_SIZE, 10);
@@ -278,44 +306,49 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void renderTnC(TermsNCondition termsNCondition) {
         tncText = termsNCondition.getTerms();
-        tv_TnC.setText("Terms & Condition");
+        if (!TextUtils.isEmpty(tncText)) {
+            clTnc.setVisibility(View.VISIBLE);
+            tvTnCText.setText(termsNCondition.getTerms());
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (tv_TnC.getLineCount() >= 10) {
-//                    expand_TnC.setVisibility(View.VISIBLE);
+                if (tvTnCText.getLineCount() >= 10) {
+                    seeMoreButtonTnc.setVisibility(View.VISIBLE);
                 } else {
-//                    expand_TnC.setVisibility(View.GONE);
+                    seeMoreButtonTnc.setVisibility(View.GONE);
                 }
             }
         }, 100);
-//        expand_TnC.setOnClickListener(this);
-
     }
-
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.expand_view_description) {
+        if (v.getId() == R.id.seemorebutton_description) {
             if (description.isExpanded()) {
-                seeMoreButton.setText(R.string.expand);
-
+                seeMoreButtonDesc.setText(R.string.expand);
             } else {
-                seeMoreButton.setText(R.string.collapse);
-
+                seeMoreButtonDesc.setText(R.string.collapse);
             }
             description.toggle();
         } else if (v.getId() == R.id.tv_see_all) {
-            fragmentCallbacks.replaceFragment(submissionResults);
+            fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
+        } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
+            fragmentCallbacks.replaceFragment(tncText, "How Do you Generate Buzz Points?");
+        } else if (v.getId() == R.id.seemorebutton_tnc) {
+            fragmentCallbacks.replaceFragment(tncText, "Terms & Conditions");
         }
-//        else if (v.getId() == R.id.seemorebutton_tnc) {
-//            fragmentCallbacks.replaceFragment(tncText, "Terms & Conditions");
-//        }
 
     }
 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         navigateToActivityRequest(intent, requestCode);
+    }
+
+    @Override
+    public void onDestroyView() {
+        mPresenter.onDestroy();
+        super.onDestroyView();
     }
 }
