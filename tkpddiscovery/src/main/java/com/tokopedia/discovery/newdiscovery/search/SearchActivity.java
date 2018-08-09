@@ -43,8 +43,6 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRoute
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.graphql.domain.GraphqlUseCase_Factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,7 +89,6 @@ public class SearchActivity extends DiscoveryActivity
     private String catalogTabTitle;
     private String shopTabTitle;
     private boolean forceSwipeToShop;
-
     private BottomSheetFilterView bottomSheetFilterView;
 
     @Inject

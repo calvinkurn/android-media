@@ -267,7 +267,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
                                 list.add(headerViewModel);
                                 list.addAll(productViewModel.getProductList());
-                                list.add(new TopAdsViewModel());
+//                                list.add(new TopAdsViewModel());
                                 getView().removeLoading();
                                 getView().setProductList(list);
                                 getView().addLoading();

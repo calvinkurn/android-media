@@ -12,7 +12,7 @@
         android:id="@+id/image_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="3dp"
+        app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="0dp"
         app:cardUseCompatPadding="true">
 

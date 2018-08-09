@@ -20,6 +20,7 @@ import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import org.w3c.dom.Text;
 
@@ -88,6 +89,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putString(BrowseApi.Q, searchParameter.getQueryKey());
         requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
         requestParams.putBoolean(BrowseApi.REFINED, forceSearch);
+        requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
         if (!TextUtils.isEmpty(searchParameter.getUserID())) {
             requestParams.putString(BrowseApi.USER_ID, searchParameter.getUserID());
         }

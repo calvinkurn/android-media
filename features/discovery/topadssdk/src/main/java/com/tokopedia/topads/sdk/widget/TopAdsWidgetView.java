@@ -64,14 +64,15 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
-                .getDimensionPixelSize(R.dimen.dp_16)));
+//        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
+//                .getDimensionPixelSize(R.dimen.dp_16)));
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
 
     public void setItemDecoration(RecyclerView.ItemDecoration decoration) {
         recyclerView.addItemDecoration(decoration);
+        notifyDataChange();
     }
 
     public void setData(List<Data> data) {
@@ -138,5 +139,6 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     public void setMode(DisplayMode mode) {
         this.mode = mode;
+        adapter.switchDisplayMode(mode);
     }
 }
