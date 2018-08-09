@@ -1,4 +1,13 @@
 <resources>
+    <string name="image_description">Image Description</string>
+    <string name="description">Description</string>
+    <string name="image_title">Image Title</string>
+    <string name="title">Title</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose_an_image_title">Choose an Image or Video</string>
+
+    <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="collapse">Sembunyikan</string>

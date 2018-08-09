@@ -3,6 +3,9 @@
     package="com.tokopedia.challenges">
 
     <application>
+        <activity android:name=".view.activity.ChallengesSubmitActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent"></activity>
         <activity
             android:name=".view.activity.ChallengesHomeActivity"
             android:screenOrientation="portrait"

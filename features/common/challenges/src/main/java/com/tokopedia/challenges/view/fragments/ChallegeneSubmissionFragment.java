@@ -29,7 +29,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.di.DaggerChallengesComponent;
+import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
@@ -59,9 +59,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     TextView seeMoreButton;
     ImageView seeMoreArrow;
     ExpandableTextView description;
+    View submitButton;
     RecyclerView submissionRecyclerView, awardRecylerView;
     List<SubmissionResult> submissionResults;
-
     SubmissionItemAdapter submissionItemAdapter;
 
     Result challengeResult;
@@ -96,6 +96,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         seeMoreButton = (TextView) view.findViewById(R.id.seemorebutton_description);
         seeMoreArrow = (ImageView) view.findViewById(R.id.down_arrow_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
+        submitButton = view.findViewById(R.id.ll_buynow);
         awardRecylerView = view.findViewById(R.id.rv_awards);
 
         toolbar = view.findViewById(R.id.toolbar);
@@ -108,7 +109,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         description.setInterpolator(new OvershootInterpolator());
         description.setOnClickListener(this);
         view.findViewById(R.id.tv_see_all).setOnClickListener(this);
-
+        submitButton.setOnClickListener(this);
         challengeSubmissionPresenter.attachView(this);
         challengeSubmissionPresenter.initialize();
         return view;
@@ -221,6 +222,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             description.toggle();
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults);
+        }else if(v.getId() == R.id.ll_buynow) {
+            startActivity(new Intent(getContext(), ChallengesSubmitActivity.class));
+
         }
 
     }

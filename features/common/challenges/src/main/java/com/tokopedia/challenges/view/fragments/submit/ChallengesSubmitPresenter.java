@@ -1,0 +1,131 @@
+package com.tokopedia.challenges.view.fragments.submit;
+
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.domain.usecase.GetChallegeTermsUseCase;
+import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
+import com.tokopedia.challenges.domain.usecase.IntializeMultiPartUseCase;
+import com.tokopedia.challenges.view.fragments.submit.IChallengesSubmitContract.Presenter;
+import com.tokopedia.challenges.view.model.Challenge;
+import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
+import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.usecase.RequestParams;
+
+import java.io.File;
+import java.lang.reflect.Type;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
+
+public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSubmitContract.View> implements Presenter {
+
+    static private int MB_1 = 1024;
+    static private int MB_10 = 10 * MB_1;
+    GetChallengeSettingUseCase mGetChallengeSettingUseCase;
+    GetChallegeTermsUseCase mGetChallegeTermsUseCase;
+    IntializeMultiPartUseCase mIntializeMultiPartUseCase;
+
+    @Inject
+    public ChallengesSubmitPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallegeTermsUseCase mGetChallegeTermsUseCase, IntializeMultiPartUseCase mIntializeMultiPartUseCase) {
+        this.mGetChallengeSettingUseCase = mGetChallengeSettingUseCase;
+        this.mGetChallegeTermsUseCase = mGetChallegeTermsUseCase;
+        this.mIntializeMultiPartUseCase = mIntializeMultiPartUseCase;
+    }
+
+    @Override
+    public void attachView(IChallengesSubmitContract.View view) {
+        super.attachView(view);
+        mGetChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> restResponse) {
+                RestResponse res1 = restResponse.get(ChallengeSettings.class);
+                ChallengeSettings settings = res1.getData();
+                updateUI(settings);
+            }
+        });
+    }
+
+    private void updateUI(ChallengeSettings settings) {
+        if(settings.isUploadAllowed()) {
+            if(settings.isAllowPhotos()) {
+                //update UI
+            }else if(settings.isAllowVideos()){
+                // update UI
+            }
+        }
+     }
+
+    @Override
+    public void onSubmitButtonClick() {
+        String title = getView().getImageTitle();
+        String description = getView().getDescription();
+        String imagePath = getView().getImage();
+        if (!isValidateTitle(title)) {
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
+        } else if (!isValidateDescription(description)) {
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
+        } else if (!isValidateSize(imagePath)) {
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
+        } else {
+            mIntializeMultiPartUseCase.generateRequestParams(title,description,imagePath);
+            mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+
+                }
+            });
+        }
+
+    }
+
+    private boolean isValidateSize(String fileLoc) {
+        File file = new File(fileLoc);
+        long size = file.length();
+        return ((size / 1024) < MB_10);
+    }
+
+    private boolean isValidateDescription(@NonNull String description) {
+        if (description.length() > 300)
+            return false;
+        else
+            return true;
+    }
+
+    private boolean isValidateTitle(@NonNull String title) {
+        if (title.length() > 50)
+            return false;
+        else
+            return true;
+    }
+
+    @Override
+    public void onCancelButtonClick() {
+        getView().finish();
+    }
+
+}
