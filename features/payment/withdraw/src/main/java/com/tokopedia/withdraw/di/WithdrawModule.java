@@ -5,12 +5,14 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.withdraw.domain.model.WSErrorResponse;
 
 import dagger.Module;
 import dagger.Provides;
@@ -55,6 +57,7 @@ public class WithdrawModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(accountsAuthorizationInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(new ErrorResponseInterceptor(WSErrorResponse.class))
                 .addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession))
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession));
 

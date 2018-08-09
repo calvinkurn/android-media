@@ -7,6 +7,7 @@ package com.tokopedia.withdraw.data;
 public class WithdrawUrl {
 
     public static final String PATH_GET_WITHDRAW_FORM = "get_withdraw_form.pl";
+    public static final String PATH_DO_WITHDRAW = "do_withdraw.pl";
 
     public static final String BASE_URL = "https://ws.tokopedia.com/";
 

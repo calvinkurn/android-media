@@ -1,6 +1,7 @@
 package com.tokopedia.withdraw.view.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,7 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
+import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
 import com.tokopedia.withdraw.view.adapter.BankAdapter;
 import com.tokopedia.withdraw.view.decoration.SpaceItemDecoration;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
@@ -251,6 +253,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showConfirmPassword() {
-
+        Intent intent = new Intent(getActivity(), WithdrawPasswordActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(WithdrawPasswordActivity.BUNDLE_WITHDRAW, totalWithdrawal.getText().toString());
+        bundle.putParcelable(WithdrawPasswordActivity.BUNDLE_BANK, bankAdapter.getSelectedBank());
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 65);
     }
 }

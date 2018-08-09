@@ -1,8 +1,8 @@
 package com.tokopedia.withdraw.domain.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.withdraw.domain.model.DoWithdrawPojo;
 import com.tokopedia.withdraw.domain.model.InfoDepositDomainModel;
-import com.tokopedia.withdraw.domain.model.InfoDepositPojo;
 import com.tokopedia.withdraw.view.model.BankAccount;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
@@ -18,16 +18,16 @@ import rx.functions.Func1;
  * @author by StevenFredian on 30/07/18.
  */
 
-public class DepositInfoMapper implements Func1<Response<DataResponse<InfoDepositPojo>>, InfoDepositDomainModel> {
+public class DoWithdrawMapper implements Func1<Response<DataResponse<DoWithdrawPojo>>, String> {
 
     @Inject
-    public DepositInfoMapper(){
+    public DoWithdrawMapper(){
 
     }
 
     @Override
-    public InfoDepositDomainModel call(Response<DataResponse<InfoDepositPojo>> response) {
-        InfoDepositPojo temp = response.body().getData();
+    public String call(Response<DataResponse<DoWithdrawPojo>> response) {
+        DoWithdrawPojo temp = response.body().getData();
         InfoDepositDomainModel model = new InfoDepositDomainModel();
         model.setUseableDeposit(temp.getUseableDeposit());
         model.setUseableDepositIdr(temp.getUseableDepositIdr());
@@ -36,20 +36,14 @@ public class DepositInfoMapper implements Func1<Response<DataResponse<InfoDeposi
             BankAccountViewModel item = new BankAccountViewModel();
             BankAccount data = temp.getBankAccount().get(i);
 
-
-            item.setBankAccountId(data.getBankAccountId());
             item.setBankAccountName(data.getBankAccountName());
-            item.setBankAccountNumber(data.getBankAccountNumber());
-
-            item.setBankId(data.getBankId());
             item.setBankName(data.getBankName());
-            item.setBankBranch(data.getBankBranch());
 
             list.add(item);
         }
         list.get(0).setChecked(true);
         model.setBankAccount(list);
-        return model;
+        return "";
     }
 
 }

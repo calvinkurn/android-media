@@ -9,7 +9,7 @@ import dagger.Component;
  */
 
 
-@DepositWithdrawScope
+@DoWithdrawScope
 @Component(modules = DoWithdrawModule.class, dependencies = WithdrawComponent.class)
 public interface DoWithdrawComponent {
 

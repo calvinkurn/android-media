@@ -10,6 +10,8 @@ import com.tokopedia.withdraw.view.fragment.WithdrawPasswordFragment;
 
 public class WithdrawPasswordActivity extends BaseSimpleActivity {
 
+    public final static String BUNDLE_BANK = "bank";
+    public final static String BUNDLE_WITHDRAW = "withdraw";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,4 +34,8 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity {
         return intent;
     }
 
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
 }

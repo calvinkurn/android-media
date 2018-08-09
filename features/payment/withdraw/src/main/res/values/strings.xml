@@ -39,6 +39,7 @@
     <string name="withdrawal">Tarik Saldo</string>
     <string name="confirm_password">Konfirmasi dengan kata sandi akun Tokopedia Anda</string>
     <string name="tokopedia_password">Kata Sandi Tokopedia</string>
+    <string name="error_field_required">Harus diisi</string>
 
 
 </resources>

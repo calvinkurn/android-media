@@ -1,9 +1,12 @@
 
 package com.tokopedia.withdraw.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
-public class BankAccountViewModel {
+public class BankAccountViewModel implements Parcelable{
 
     private int bankId;
     private int bankBranch;
@@ -90,4 +93,47 @@ public class BankAccountViewModel {
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.bankId);
+        dest.writeInt(this.bankBranch);
+        dest.writeString(this.bankAccountName);
+        dest.writeString(this.bankAccountNumber);
+        dest.writeInt(this.isVerifiedAccount);
+        dest.writeString(this.bankAccountId);
+        dest.writeString(this.bankName);
+        dest.writeInt(this.isDefaultBank);
+        dest.writeByte(this.checked ? (byte) 1 : (byte) 0);
+    }
+
+    protected BankAccountViewModel(Parcel in) {
+        this.bankId = in.readInt();
+        this.bankBranch = in.readInt();
+        this.bankAccountName = in.readString();
+        this.bankAccountNumber = in.readString();
+        this.isVerifiedAccount = in.readInt();
+        this.bankAccountId = in.readString();
+        this.bankName = in.readString();
+        this.isDefaultBank = in.readInt();
+        this.checked = in.readByte() != 0;
+    }
+
+    public static final Creator<BankAccountViewModel> CREATOR = new Creator<BankAccountViewModel>() {
+        @Override
+        public BankAccountViewModel createFromParcel(Parcel source) {
+            return new BankAccountViewModel(source);
+        }
+
+        @Override
+        public BankAccountViewModel[] newArray(int size) {
+            return new BankAccountViewModel[size];
+        }
+    };
 }

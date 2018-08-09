@@ -4,7 +4,10 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.withdraw.data.DepositActionApi;
 import com.tokopedia.withdraw.data.WithdrawUrl;
+import com.tokopedia.withdraw.domain.source.DoWithdrawSource;
+import com.tokopedia.withdraw.domain.usecase.DoWithdrawUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,17 +29,17 @@ public class DoWithdrawModule {
                                         @WithdrawQualifier OkHttpClient okHttpClient) {
         return retrofitBuilder.baseUrl(WithdrawUrl.URL_DEPOSIT_ACTION).client(okHttpClient).build();
     }
-//
-//    @DoWithdrawScope
-//    @Provides
-//    public DepositApi provideDepositApi(@WithdrawQualifier Retrofit retrofit){
-//        return retrofit.create(DepositApi.class);
-//    }
-//
-//    @Provides
-//    public DepositUseCase provideDepositUseCase(DepositSource depositSource){
-//        return new DepositUseCase(depositSource);
-//    }
+
+    @DoWithdrawScope
+    @Provides
+    public DepositActionApi provideDeposiActiontApi(@WithdrawQualifier Retrofit retrofit){
+        return retrofit.create(DepositActionApi.class);
+    }
+
+    @Provides
+    public DoWithdrawUseCase provideDoWithdrawUseCase(DoWithdrawSource source){
+        return new DoWithdrawUseCase(source);
+    }
 
 
     @Provides
