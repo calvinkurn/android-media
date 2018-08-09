@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">tkpdcustomer</string>
     <!--Feed-->
+    <string name="tab_explore">Explore</string>
+    <string name="tab_my_feed">My Feed</string>
     <string name="inspiration_header">Inspired by your ,%1$s.</string>
     <string name="official_store_header">Produk Terbaik Official Store.</string>
     <string name="favorite">Favoritkan</string>

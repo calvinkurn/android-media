@@ -1,32 +1,35 @@
 package com.tokopedia.feedplus.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
-import com.tokopedia.explore.view.listener.ExploreContainerListener;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
+import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by milhamj on 25/07/18.
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FeedPlusContainerListener, ExploreContainerListener {
+        implements FeedPlusContainerListener {
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
-    private FrameLayout feedPlusContainer;
-    private FrameLayout contentExploreContainer;
 
     public static FeedPlusContainerFragment newInstance() {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
@@ -40,8 +43,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
-        feedPlusContainer = view.findViewById(R.id.feed_plus_container);
-        contentExploreContainer = view.findViewById(R.id.content_explore_container);
+        tabLayout = view.findViewById(R.id.tab_layout);
+        viewPager = view.findViewById(R.id.view_pager);
         return view;
     }
 
@@ -66,9 +69,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (feedPlusFragment == null) {
             feedPlusFragment = FeedPlusFragment.newInstance();
         }
-        feedPlusContainer.setVisibility(View.VISIBLE);
-        contentExploreContainer.setVisibility(View.GONE);
-        inflateFragment(R.id.feed_plus_container, feedPlusFragment);
     }
 
     @Override
@@ -76,30 +76,40 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (contentExploreFragment == null) {
             contentExploreFragment = ContentExploreFragment.newInstance(getArguments());
         }
-        feedPlusContainer.setVisibility(View.GONE);
-        contentExploreContainer.setVisibility(View.VISIBLE);
-        inflateFragment(R.id.content_explore_container, contentExploreFragment);
     }
 
     private void initView() {
-        showFeedPlus();
+        setAdapter();
     }
 
-    protected void inflateFragment(@IdRes int containerId, Fragment fragment) {
-        if (fragment == null) {
-            return;
-        }
+    private void setAdapter() {
+        List<FeedPlusTabItem> tabItemList = new ArrayList<>();
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_my_feed),
+                getFeedPlusFragment())
+        );
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_explore),
+                getContentExploreFragment())
+        );
+        FeedPlusTabAdapter adapter = new FeedPlusTabAdapter(getChildFragmentManager());
+        adapter.setItemList(tabItemList);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
 
-        String TAG = fragment.getClass().getSimpleName();
-        if (getChildFragmentManager().findFragmentByTag(TAG) != null) {
-            getChildFragmentManager().beginTransaction()
-                    .replace(containerId,
-                            getChildFragmentManager().findFragmentByTag(TAG))
-                    .commit();
-        } else {
-            getChildFragmentManager().beginTransaction()
-                    .add(containerId, fragment, TAG)
-                    .commit();
+    public FeedPlusFragment getFeedPlusFragment() {
+        if (feedPlusFragment == null) {
+            feedPlusFragment = FeedPlusFragment.newInstance();
         }
+        return feedPlusFragment;
+    }
+
+    public ContentExploreFragment getContentExploreFragment() {
+        if (contentExploreFragment == null) {
+            Bundle bundle = new Bundle();
+            contentExploreFragment = ContentExploreFragment.newInstance(bundle);
+        }
+        return contentExploreFragment;
     }
 }

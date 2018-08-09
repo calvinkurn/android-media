@@ -56,7 +56,6 @@ import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
-import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
@@ -130,7 +129,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private SwipeToRefresh swipeToRefresh;
     private View mainContent;
     private View newFeed;
-    private View tabExplore;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private AbstractionRouter abstractionRouter;
@@ -138,7 +136,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private MainToolbar mainToolbar;
 
     private Trace trace;
-    private FeedPlusContainerListener containerListener;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
@@ -220,13 +217,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     FeedModuleRouter.class.getSimpleName());
         }
 
-        if (getParentFragment() instanceof FeedPlusContainerListener) {
-            containerListener = (FeedPlusContainerListener) getParentFragment();
-        } else {
-            throw new IllegalStateException("getParentFragment() must implement " +
-                    FeedPlusContainerListener.class.getSimpleName());
-        }
-
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
     }
@@ -266,7 +256,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
         mainToolbar = parentView.findViewById(R.id.toolbar);
-        tabExplore = parentView.findViewById(R.id.tab_explore);
 
         prepareView();
         GraphqlClient.init(getActivity());
@@ -316,9 +305,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             }
 
-        });
-        tabExplore.setOnClickListener(v -> {
-           containerListener.showContentExplore();
         });
     }
 

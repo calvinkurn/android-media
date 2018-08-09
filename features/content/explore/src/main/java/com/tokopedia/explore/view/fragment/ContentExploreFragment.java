@@ -31,7 +31,6 @@ import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactoryImpl;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.explore.view.listener.ExploreContainerListener;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
@@ -60,7 +59,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
     private SwipeToRefresh swipeToRefresh;
-    private View tabFeed;
     private View appBarLayout;
 
     @Inject
@@ -72,7 +70,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Inject
     ExploreImageAdapter imageAdapter;
 
-    private ExploreContainerListener containerListener;
     private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
     private int categoryId;
@@ -108,7 +105,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        tabFeed = view.findViewById(R.id.tab_feed);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         return view;
     }
@@ -167,9 +163,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
         ExploreImageTypeFactory typeFactory = new ExploreImageTypeFactoryImpl(this);
         imageAdapter.setTypeFactory(typeFactory);
         exploreImageRv.setAdapter(imageAdapter);
-        tabFeed.setOnClickListener(v -> {
-            containerListener.showFeedPlus();
-        });
     }
 
     private void initVar() {
@@ -186,13 +179,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
         } else {
             throw new IllegalStateException("Application must be an instance of " +
                     AbstractionRouter.class.getSimpleName());
-        }
-
-        if (getParentFragment() instanceof ExploreContainerListener) {
-            containerListener = (ExploreContainerListener) getParentFragment();
-        } else {
-            throw new IllegalStateException("getParentFragment() must implement " +
-                    ExploreContainerListener.class.getSimpleName());
         }
     }
 
