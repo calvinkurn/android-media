@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
-                    android:background="@drawable/background_participated"
+                    android:background="@drawable/bg_round_solid_green_radius_huge"
                     android:fontFamily="sans-serif"
                     android:gravity="center_vertical"
                     android:paddingBottom="@dimen/dp_3"
@@ -123,7 +123,7 @@
                     android:paddingRight="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_3"
                     android:text="Participated"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/text_color_participated"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintBottom_toBottomOf="@id/tv_expiry_date"
                     app:layout_constraintRight_toRightOf="parent"
@@ -336,7 +336,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:clipToPadding="false"
-                android:visibility="gone"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
                 app:layout_constraintTop_toBottomOf="@id/tv_submissions" />
@@ -364,9 +363,6 @@
                 android:text="Read Terms and Conditions"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
         </android.support.constraint.ConstraintLayout>
@@ -378,7 +374,7 @@
         android:layout_height="@dimen/dp_80"
         android:layout_gravity="bottom"
         app:cardBackgroundColor="@color/white"
-        app:cardElevation="@dimen/dp_0">
+        app:cardElevation="@dimen/dp_8">
 
 
         <TextView

@@ -2,4 +2,6 @@
 <resources>
     <color name="tkpd_dark_gray_toolbar">#666666</color>
     <color name="yellow">#ffe38f</color>
+    <color name="status_bg_color">#daf5db</color>
+    <color name="text_color_participated">#42b549</color>
 </resources>
