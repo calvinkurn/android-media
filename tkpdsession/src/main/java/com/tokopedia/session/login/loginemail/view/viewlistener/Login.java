@@ -72,6 +72,8 @@ public interface Login {
         void enableArrow();
 
         void onForbidden();
+
+        void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData);
     }
 
     interface Presenter extends CustomerPresenter<View> {

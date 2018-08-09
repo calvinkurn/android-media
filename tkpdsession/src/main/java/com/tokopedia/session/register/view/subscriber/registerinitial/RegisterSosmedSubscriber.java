@@ -16,6 +16,7 @@ import rx.Subscriber;
  */
 
 public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
+    private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
     private final RegisterInitial.View viewListener;
     private final String methodName;
 
@@ -47,10 +48,14 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onNext(LoginSosmedDomain registerSosmedDomain) {
-        if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-            viewListener.onGoToCreatePasswordPage(
-                    registerSosmedDomain.getInfo().getGetUserInfoDomainData(),
-                    methodName);
+//        if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+//            viewListener.onGoToCreatePasswordPage(
+//                    registerSosmedDomain.getInfo().getGetUserInfoDomainData(),
+//                    methodName);
+//        }
+        if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().getName().contains(CHARACTER_NOT_ALLOWED)) {
+            viewListener.onGoToAddName(registerSosmedDomain.getInfo()
+                    .getGetUserInfoDomainData());
         } else if (registerSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && isMsisdnVerified(registerSosmedDomain.getInfo())) {

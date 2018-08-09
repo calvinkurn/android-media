@@ -60,6 +60,7 @@ import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
+import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
@@ -100,10 +101,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
     private static final int REQUEST_VERIFY_PHONE = 105;
     private static final int REQUEST_WELCOME_PAGE = 106;
-    private static final int REQUEST_ADD_NAME = 107;
+    private static final int REQUEST_ADD_NAME_REGISTER_PHONE = 107;
     private static final int REQUEST_VERIFY_PHONE_TOKOCASH = 108;
     private static final int REQUEST_CHOOSE_ACCOUNT = 109;
     private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 110;
+    private static final int REQUEST_ADD_NAME = 111;
+
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -399,8 +402,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode == Activity.RESULT_OK) {
             startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber),
-                    REQUEST_ADD_NAME);
-        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+                    REQUEST_ADD_NAME_REGISTER_PHONE);
+        } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
             startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                     REQUEST_WELCOME_PAGE);
         } else if (requestCode == REQUEST_WELCOME_PAGE) {
@@ -424,6 +427,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -647,6 +656,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         userInfoDomainData.getCreatePasswordList(),
                         String.valueOf(userInfoDomainData.getUserId())));
         startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
+    }
+
+    @Override
+    public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
+        Intent intent = ChangeNameActivity.newInstance(getActivity());
+        startActivityForResult(intent, REQUEST_ADD_NAME);
     }
 
     @Override

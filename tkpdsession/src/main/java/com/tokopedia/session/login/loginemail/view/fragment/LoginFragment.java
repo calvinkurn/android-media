@@ -62,6 +62,7 @@ import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActiva
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
+import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
@@ -70,6 +71,7 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
@@ -106,6 +108,8 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUESTS_CREATE_PASSWORD = 106;
     private static final int REQUEST_ACTIVATE_ACCOUNT = 107;
     private static final int REQUEST_VERIFY_PHONE = 108;
+    private static final int REQUEST_ADD_NAME = 109;
+
 
 
     public static final int TYPE_SQ_PHONE = 1;
@@ -584,6 +588,12 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
+        Intent intent = ChangeNameActivity.newInstance(getActivity());
+        startActivityForResult(intent, REQUEST_ADD_NAME);
+    }
+
+    @Override
     public void setSmartLock() {
         saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
                 emailEditText.getText().toString(),
@@ -832,6 +842,12 @@ public class LoginFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_VERIFY_PHONE) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
+            getActivity().setResult(Activity.RESULT_CANCELED);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

@@ -29,7 +29,7 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
     @Inject
     public LoginWithSosmedUseCase(GetTokenUseCase getTokenUseCase,
                                   GetUserInfoUseCase getUserInfoUseCase,
-                                  MakeLoginUseCase makeLoginUseCase)  {
+                                  MakeLoginUseCase makeLoginUseCase) {
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
@@ -52,17 +52,13 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
                 .flatMap(new Func1<LoginSosmedDomain, Observable<LoginSosmedDomain>>() {
                     @Override
                     public Observable<LoginSosmedDomain> call(LoginSosmedDomain registerSosmedDomain) {
-                        if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-                            return makeLogin(registerSosmedDomain);
-                        } else {
-                            return Observable.just(registerSosmedDomain);
-                        }
+                        return makeLogin(registerSosmedDomain);
                     }
                 });
     }
 
     protected Observable<LoginSosmedDomain> makeLogin(final LoginSosmedDomain
-                                                                 registerSosmedDomain) {
+                                                              registerSosmedDomain) {
         return makeLoginUseCase.getExecuteObservable(MakeLoginUseCase.getParam(
                 String.valueOf(registerSosmedDomain.getInfo().getGetUserInfoDomainData().getUserId())
         ))
@@ -76,7 +72,7 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
     }
 
     protected Observable<LoginSosmedDomain> getInfo(final LoginSosmedDomain
-                                                               registerSosmedDomain) {
+                                                            registerSosmedDomain) {
         return getUserInfoUseCase.createObservable(RequestParams.EMPTY)
                 .flatMap(new Func1<GetUserInfoDomainModel, Observable<LoginSosmedDomain>>() {
                     @Override
