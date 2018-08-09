@@ -181,5 +181,28 @@
             </LinearLayout>
         </LinearLayout>
 
+        <TableLayout
+            android:stretchColumns="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <TextView
+                    android:text="React Native Developer Mode"
+                    android:paddingRight="25dip"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ToggleButton
+                    android:id="@+id/toggle_reactnative_mode"
+                    android:onClick="toggleReactClick"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+        </TableLayout>
+
+
+
     </LinearLayout>
 </ScrollView>

@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -21,10 +22,10 @@ import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 
-
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String IS_CHUCK_ENABLED = "is_enable";
+    public static boolean isReleaseMode = true;
     //developer test
 
     private TextView vCustomIntent;
@@ -36,6 +37,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private AppCompatEditText remoteConfigValueEditText;
     private AppCompatButton remoteConfigCheckBtn;
     private AppCompatButton remoteConfigSaveBtn;
+    private ToggleButton toggleReactDeveloperMode;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -79,6 +81,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         remoteConfigValueEditText = findViewById(R.id.et_remote_config_value);
         remoteConfigCheckBtn = findViewById(R.id.btn_remote_config_check);
         remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
+
+        toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
     }
 
     private void initListener() {
@@ -156,6 +160,16 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 actionSaveValueRemoteConfig();
             }
         });
+    }
+
+    private void toggleReactClick(View view){
+        if (toggleReactDeveloperMode.isChecked()){
+            Toast.makeText(DeveloperOptions.this, "ON", Toast.LENGTH_SHORT).show();
+            isReleaseMode = true;
+        } else {
+            Toast.makeText(DeveloperOptions.this, "OFF", Toast.LENGTH_SHORT).show();
+            isReleaseMode = false;
+        }
     }
 
     private void actionSaveValueRemoteConfig() {

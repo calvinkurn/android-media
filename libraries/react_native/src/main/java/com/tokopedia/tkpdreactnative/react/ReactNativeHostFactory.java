@@ -9,6 +9,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.microsoft.codepush.react.CodePush;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Arrays;
@@ -25,17 +26,12 @@ public class ReactNativeHostFactory {
 
     public static ReactNativeHost init(Application application) {
         if(instance == null) instance = new ReactNativeHostFactory();
-        /*reactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(application)
-                .setBundleAssetName("index.android.bundle")
-                .setJSMainModuleName("reactscript/index.android")
-                .addPackage(new MainReactPackage())
-                .addPackage(new CoreReactPackage())
-                .setUseDeveloperSupport(true)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build();*/
 
-        return instance.createReactNativeHost(application);
+        if (DeveloperOptions.isReleaseMode){
+            return instance.createReactNativeHost(application);
+        } else {
+            return instance.createReactNativeHostDev(application);
+        }
     }
 
     private ReactNativeHost createReactNativeHost(final Application application) {
