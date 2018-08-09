@@ -3,9 +3,11 @@ package com.tokopedia.challenges.view.fragments;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -82,6 +84,8 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     private void setUpVariables(View view) {
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+        toolbar.getNavigationIcon().setColorFilter(ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar), PorterDuff.Mode.SRC_ATOP);
         toolbar.setTitle(getActivity().getResources().getString(R.string.submissions));
         recyclerview = view.findViewById(R.id.rv_submissions);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);

@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -194,21 +195,17 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             submissionTitle.setText(productItem.getTitle());
             ImageHandler.loadImage(context, submissionImage, productItem.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
 
-
-//            Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_location);
-//            tvBuzzPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-//            tvBuzzPoints.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
-
-
-            setLikes(productItem.getMe().isLiked());
+            if (productItem.getMe() != null)
+                setLikes(productItem.getMe().isLiked());
             if (productItem.getPoints() > 0) {
                 tvBuzzPoints.setVisibility(View.VISIBLE);
                 tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
+                Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_buzz_points);
+                tvBuzzPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+                tvBuzzPoints.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
             } else {
                 tvBuzzPoints.setVisibility(View.GONE);
             }
-
-
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);
             ivFavourite.setOnClickListener(this);

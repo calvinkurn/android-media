@@ -7,9 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesListAdapter;
@@ -32,6 +35,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private RecyclerView recyclerView;
     private TextView tvActiveChallenges;
     private TextView tvPastChallenges;
+    private LinearLayout emptyLayout;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         recyclerView = view.findViewById(R.id.rv_home_challenges);
         tvActiveChallenges = view.findViewById(R.id.tv_active_challenges);
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
+        emptyLayout= view.findViewById(R.id.empty_view);
+        progressBar=view.findViewById(R.id.progressbar);
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
@@ -79,6 +86,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Override
     public void setChallengeDataToUI(List<Result> resultList) {
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyLayout.setVisibility(View.GONE);
         listAdpater = new ChallengesListAdapter(getActivity(), resultList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -86,8 +95,45 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     }
 
     @Override
+    public void showErrorNetwork(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                "title",
+                "message",
+                "choba lagi", 0,
+                getChallengesRetryListener()
+        );
+    }
+
+    @Override
+    public void renderEmptyList() {
+        recyclerView.setVisibility(View.GONE);
+        emptyLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void removeProgressBarView() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgressBarView() {
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        emptyLayout.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
     }
 
+
+    private NetworkErrorHelper.RetryClickedListener getChallengesRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+            }
+        };
+    }
 }

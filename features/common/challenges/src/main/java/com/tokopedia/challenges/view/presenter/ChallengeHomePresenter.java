@@ -1,6 +1,7 @@
 package com.tokopedia.challenges.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetActiveChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.GetPastChallengesUseCase;
@@ -26,6 +27,8 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
     }
 
     public void getOpenChallenges() {
+        getView().showProgressBarView();
+
         getActiveChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -35,20 +38,30 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                getView().removeProgressBarView();
+                getView().showErrorNetwork(
+                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(Challenge.class);
                 int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
-                getView().setChallengeDataToUI(mainDataObject.getResults());
+                if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
+                    getView().setChallengeDataToUI(mainDataObject.getResults());
+                } else {
+                    getView().renderEmptyList();
+                }
                 CommonUtils.dumper("data data data data data data data");
+
             }
         });
     }
 
     public void getPastChallenges() {
+        getView().showProgressBarView();
         getPastChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -57,6 +70,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onError(Throwable e) {
+                getView().removeProgressBarView();
                 e.printStackTrace();
             }
 
@@ -66,7 +80,12 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 RestResponse res1 = restResponse.get(Challenge.class);
                 int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
-                getView().setChallengeDataToUI(mainDataObject.getResults());
+                if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
+                    getView().setChallengeDataToUI(mainDataObject.getResults());
+                } else {
+                   getView().renderEmptyList();
+                }
+                getView().removeProgressBarView();
             }
         });
     }

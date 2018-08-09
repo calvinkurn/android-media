@@ -8,5 +8,7 @@ public interface ChallengesFragmentCallbacks {
 
     void replaceFragment(List<SubmissionResult> outlets);
 
+    void replaceFragment(String text, String toolBarText);
+
     List<SubmissionResult> getSubmissions();
 }
