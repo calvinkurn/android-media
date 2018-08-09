@@ -56,6 +56,7 @@ import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;
 
@@ -69,9 +70,10 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALAS
  */
 
 public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
-        implements ShopProductListView, BaseEmptyViewHolder.Callback,
+        implements ShopProductListView, WishListActionListener, BaseEmptyViewHolder.Callback,
         ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedNewListener,
-        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, ShopProductAdapterTypeFactory.OnShopProductAdapterTypeFactoryListener {
+        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
+        ShopProductAdapterTypeFactory.OnShopProductAdapterTypeFactoryListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
@@ -136,7 +138,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         super.onCreate(savedInstanceState);
         attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
-        shopProductLimitedListPresenter.attachView(this);
+        shopProductLimitedListPresenter.attachView(this, this);
     }
 
 
@@ -395,28 +397,33 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
 
     @Override
-    public void onErrorRemoveFromWishList(Throwable e) {
-
-    }
-
-    @Override
-    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
-        shopProductAdapter.updateWishListStatus(productId, false);
-    }
-
-    @Override
-    public void onErrorAddToWishList(Throwable e) {
+    public void onErrorAddWishList(String errorMessage, String productId) {
         if (!shopProductLimitedListPresenter.isLogin()) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddToWishList(String productId, Boolean value) {
+    public void onSuccessAddWishlist(String productId) {
         shopProductAdapter.updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
+        shopProductAdapter.updateWishListStatus(productId, false);
+    }
+
+    @Override
+    public void onErrorAddToWishList(Throwable e) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override

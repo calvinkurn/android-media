@@ -23,9 +23,9 @@ import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
-import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,32 +42,42 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
     private final GetShopProductListWithAttributeUseCase productListWithAttributeNewUseCase;
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
-    private final AddToWishListUseCase addToWishListUseCase;
-    private final RemoveFromWishListUseCase removeFromWishListUseCase;
+    private final AddWishListUseCase addWishListUseCase;
+    private final RemoveWishListUseCase removeWishListUseCase;
 
     private final UserSession userSession;
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
     private final DeleteShopEtalaseUseCase deleteShopEtalaseUseCase;
+    private WishListActionListener wishListActionListener;
 
     @Inject
     public ShopProductListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeNewUseCase,
-                                    AddToWishListUseCase addToWishListUseCase,
-                                    RemoveFromWishListUseCase removeFromWishListUseCase,
+                                    AddWishListUseCase addWishListUseCase,
+                                    RemoveWishListUseCase removeWishListUseCase,
                                     DeleteShopProductUseCase deleteShopProductUseCase,
                                     DeleteShopEtalaseUseCase deleteShopEtalaseUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     GetShopEtalaseUseCase getShopEtalaseUseCase,
                                     UserSession userSession) {
         this.productListWithAttributeNewUseCase = productListWithAttributeNewUseCase;
-        this.addToWishListUseCase = addToWishListUseCase;
-        this.removeFromWishListUseCase = removeFromWishListUseCase;
+        this.addWishListUseCase = addWishListUseCase;
+        this.removeWishListUseCase = removeWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
         this.deleteShopEtalaseUseCase = deleteShopEtalaseUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
         this.userSession = userSession;
+    }
+
+    public void attachView(ShopProductDedicatedListView view, WishListActionListener wishlistListener) {
+        this.wishListActionListener = wishlistListener;
+        super.attachView(view);
+    }
+
+    public boolean isLogin() {
+        return userSession.isLoggedIn();
     }
 
     public boolean isMyShop(String shopId) {
@@ -265,47 +275,13 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
             getView().onErrorAddToWishList(new UserNotLoginException());
             return;
         }
-        RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
-        addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
+        addWishListUseCase.createObservable(productId, userSession.getUserId(), wishListActionListener);
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorAddToWishList(e);
-                }
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                getView().onSuccessAddToWishList(productId, aBoolean);
-            }
-        });
     }
 
     public void removeFromWishList(final String productId) {
-        RequestParams requestParam = RemoveFromWishListUseCase.createRequestParam(userSession.getUserId(), productId);
-        removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
+        removeWishListUseCase.createObservable(productId, userSession.getUserId(), wishListActionListener);
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorRemoveFromWishList(e);
-                }
-            }
-
-            @Override
-            public void onNext(Boolean value) {
-                getView().onSuccessRemoveFromWishList(productId, value);
-            }
-        });
     }
 
     public void clearCache() {
@@ -316,8 +292,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     @Override
     public void detachView() {
         super.detachView();
-        addToWishListUseCase.unsubscribe();
-        removeFromWishListUseCase.unsubscribe();
+        addWishListUseCase.unsubscribe();
+        removeWishListUseCase.unsubscribe();
         productListWithAttributeNewUseCase.unsubscribe();
         getShopEtalaseUseCase.unsubscribe();
         getShopInfoUseCase.unsubscribe();

@@ -47,7 +47,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -57,6 +56,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.topchat.R;
@@ -130,6 +130,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+    private static final int MAX_SIZE_IMAGE_PICKER = 5;
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
@@ -362,7 +363,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                         new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                         ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                        null,null);
+                        null, null);
                 Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
                 startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE);
             }
@@ -897,18 +898,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (imagePathList == null || imagePathList.size() <= 0) {
                     return;
                 }
-                String imagePath = imagePathList.get(0);
                 List<ImageUploadViewModel> list = new ArrayList<>();
+                String imagePath = imagePathList.get(0);
                 if (!TextUtils.isEmpty(imagePath)) {
                     ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
                     list.add(temp);
                 } else {
-                    ArrayList<String> imagePaths = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                    if (imagePaths != null) {
-                        for (int i = 0; i < imagePaths.size(); i++) {
-                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePaths.get(i));
-                            list.add(temp);
-                        }
+                    for (int i = 0; i < imagePathList.size(); i++) {
+                        ImageUploadViewModel temp = generateChatViewModelWithImage(imagePathList.get(i));
+                        list.add(temp);
                     }
                 }
                 adapter.addReply(list);
