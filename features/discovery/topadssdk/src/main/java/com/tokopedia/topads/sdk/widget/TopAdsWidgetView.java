@@ -64,8 +64,8 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
-//        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
-//                .getDimensionPixelSize(R.dimen.dp_16)));
+        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
+                .getDimensionPixelSize(R.dimen.dp_16)));
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }

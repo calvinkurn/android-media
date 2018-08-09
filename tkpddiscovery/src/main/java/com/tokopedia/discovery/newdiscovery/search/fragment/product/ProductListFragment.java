@@ -222,13 +222,10 @@ public class ProductListFragment extends SearchSectionFragment
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
-//        recyclerView.addItemDecoration(new ProductItemDecoration(
-//                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-//                getContext().getResources().getColor(R.color.white)
-//        ));
-
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16), true));
+        recyclerView.addItemDecoration(new ProductItemDecoration(
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                getContext().getResources().getColor(R.color.white)
+        ));
         setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
