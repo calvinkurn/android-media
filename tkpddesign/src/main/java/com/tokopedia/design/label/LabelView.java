@@ -45,6 +45,7 @@ public class LabelView extends BaseCustomView {
 
     private int maxLines;
     private float titleTextSize;
+    private float subtitleTextSize;
     private float contentTextSize;
     private int minTitleWidth;
 
@@ -84,6 +85,7 @@ public class LabelView extends BaseCustomView {
             maxLines = styledAttributes.getInt(R.styleable.LabelView_lv_content_max_lines, 1);
             contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, contentTextSize);
+            subtitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_sub_title_text_size, contentTextSize);
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
         } finally {
             styledAttributes.recycle();
@@ -118,6 +120,7 @@ public class LabelView extends BaseCustomView {
         titleTextView.setMinWidth(minTitleWidth);
         if (!TextUtils.isEmpty(subTitleText)) {
             subTitleTextView.setText(subTitleText);
+            subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subtitleTextSize);
             subTitleTextView.setVisibility(View.VISIBLE);
         }
         contentTextView.setText(contentText);

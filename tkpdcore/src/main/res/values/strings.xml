@@ -291,7 +291,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <!-- Strings related Navigation Drawer -->
     <string name="title_myshop">Toko Saya</string>
     <string name="title_create_shop">Buka Toko</string>
-    <string name="title_bank">Akun Bank</string>
+    <string name="title_bank">Rekening Bank</string>
     <string name="title_address">Alamat</string>
     <string name="title_prod_list">Daftar Produk</string>
     <string name="title_inbox">Kotak Masuk</string>
@@ -1587,6 +1587,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_fill_street_address">Mohon isi Alamat Jalan Anda</string>
     <string name="toggle_rpx_next_day_i_drop">RPX Next Day Package dan IDrop tidak dapat dipilih bersamaan</string>
     <string name="title_delivery_location">Lokasi Pickup (Opsional)</string>
+    <string name="title_delivery_location_pickup">Lokasi Pengiriman (Opsional)</string>
     <string name="title_delivery_location_cart">Lokasi Pengiriman</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
     <string name="choose_location">Pilih Lokasi</string>
@@ -2228,5 +2229,6 @@ di Tokopedia Sekarang!</string>
     <string name="referral_welcome_header"><![CDATA[<font color=\'#399c3f\'>Givana</font> memberi kamu Promo Referral.]]></string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
+    <string name="message_success_change_password">Kata sandi berhasil diubah</string>
 
 </resources>

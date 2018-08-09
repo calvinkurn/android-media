@@ -37,9 +37,13 @@ public interface KolPostListener {
 
         void updateCursor(String lastCursor);
 
-        void onLikeKolSuccess(int rowNumber);
+        interface Like {
+            Context getContext();
 
-        void onLikeKolError(String message);
+            void onLikeKolSuccess(int rowNumber);
+
+            void onLikeKolError(String message);
+        }
 
         interface ViewHolder {
             Context getContext();
@@ -77,8 +81,8 @@ public interface KolPostListener {
 
         void unfollowKol(int id, int rowNumber, View kolListener);
 
-        void likeKol(int id, int rowNumber, View kolListener);
+        void likeKol(int id, int rowNumber, View.Like likeListener);
 
-        void unlikeKol(int id, int rowNumber, View kolListener);
+        void unlikeKol(int id, int rowNumber, View.Like likeListener);
     }
 }

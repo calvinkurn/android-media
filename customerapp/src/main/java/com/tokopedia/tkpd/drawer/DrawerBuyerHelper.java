@@ -20,6 +20,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.pms.payment.view.activity.PaymentListActivity;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -307,6 +308,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                 drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 getTotalBuyerNotif());
 
+
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_payment_list),
+                        TkpdState.DrawerPosition.PEOPLE_PAYMENT_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
+
         buyerMenu.add(new DrawerItem(
                         context.getString(R.string.drawer_title_shopping_list),
                         TkpdState.DrawerPosition.PEOPLE_SHOPPING_LIST,
@@ -344,6 +353,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
+
         return buyerMenu;
     }
 
@@ -544,7 +554,12 @@ public class DrawerBuyerHelper extends DrawerHelper
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
-
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_PAYMENT_LIST:
+                    intent = PaymentListActivity.createIntent(context);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.PURCHASE_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
                     if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))

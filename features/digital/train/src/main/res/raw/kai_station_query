@@ -1,0 +1,15 @@
+{
+    kaiStations {
+        name
+        cities {
+            name
+            stations {
+                id
+                name
+                displayName
+                code
+                popularityRank
+             }
+         }
+     }
+}
