@@ -213,4 +213,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         trainSchedulePresenter.detachView();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+    }
 }

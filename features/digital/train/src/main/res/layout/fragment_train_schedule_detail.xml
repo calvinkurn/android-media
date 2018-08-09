@@ -93,13 +93,13 @@
 
                 <TextView
                     android:id="@+id/departure_date"
-                    style="@style/TextView.Micro.BlackDisabled"
+                    style="@style/TextView.Micro.BlackSecondary"
                     android:layout_marginBottom="@dimen/dp_8"
                     tools:text="Jumat, 29 Agustus 2018"/>
 
                 <TextView
                     android:id="@+id/origin_station_name"
-                    style="@style/TextView.Small"
+                    style="@style/TextView.Small.BlackPrimary"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:textStyle="bold"
                     tools:text="Gambir (GMR)"/>
@@ -131,7 +131,7 @@
 
                 <TextView
                     android:id="@+id/trip_duration"
-                    style="@style/TextView.Micro.BlackDisabled"
+                    style="@style/TextView.Micro.BlackSecondary"
                     tools:text="12 jam, 20 menit"/>
 
             </LinearLayout>
@@ -147,13 +147,13 @@
 
                 <TextView
                     android:id="@+id/arrival_date"
-                    style="@style/TextView.Micro.BlackDisabled"
+                    style="@style/TextView.Micro.BlackSecondary"
                     android:layout_marginBottom="@dimen/dp_8"
                     tools:text="Sabtu, 30 Agustus 2018"/>
 
                 <TextView
                     android:id="@+id/destination_station_name"
-                    style="@style/TextView.Small"
+                    style="@style/TextView.Small.BlackPrimary"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:textStyle="bold"
                     tools:text="Lempuyangan (LPN)"/>
