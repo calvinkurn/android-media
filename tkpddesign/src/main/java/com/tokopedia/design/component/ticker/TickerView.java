@@ -390,4 +390,8 @@ public class TickerView extends BaseCustomView {
         tickerAdapter.setTextAppearance(appearance);
     }
 
+    public void hideCloseButton() {
+        imageViewActionClose.setVisibility(GONE);
+    }
+
 }

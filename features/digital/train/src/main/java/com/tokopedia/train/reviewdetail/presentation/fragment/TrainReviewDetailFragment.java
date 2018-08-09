@@ -158,6 +158,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(getActivity(), R.color.yellow_200));
+        tickerView.hideCloseButton();
         tickerView.buildView();
 
         cardDepartureTrip.setActionListener(() -> {
@@ -250,8 +251,15 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         String timeDepartureArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, departureTrip.getArrivalTimestamp());
 
-        cardDepartureTrip.setSubContentInfo(getString(R.string.train_review_trip_time_and_duration,
-                timeDepartureDepartureString, timeDepartureArrivalString, departureTrip.getDisplayDuration()));
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, departureTrip.getDepartureTimestamp());
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, departureTrip.getArrivalTimestamp());
+        int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
+        String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
+
+        cardReturnTrip.setSubContentInfo(getString(R.string.train_review_trip_time_and_duration,
+                timeDepartureDepartureString, timeDepartureArrivalString + deviationDayString));
 
         trainReviewDetailPresenter.getPassengers(trainSoftbook, departureTrip.getOrigin(),
                 departureTrip.getDestination());
@@ -272,8 +280,15 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         String timeReturnArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, returnTrip.getArrivalTimestamp());
 
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, returnTrip.getDepartureTimestamp());
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, returnTrip.getArrivalTimestamp());
+        int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
+        String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
+
         cardReturnTrip.setSubContentInfo(getString(R.string.train_review_trip_time_and_duration,
-                timeReturnDepartureString, timeReturnArrivalString, returnTrip.getDisplayDuration()));
+                timeReturnDepartureString, timeReturnArrivalString + deviationDayString));
     }
 
     @Override
