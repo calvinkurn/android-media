@@ -50,6 +50,6 @@
         android:id="@+id/rv_home_submissions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12">
+        android:layout_marginTop="@dimen/dp_16">
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>

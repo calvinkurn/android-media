@@ -28,7 +28,7 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
 
         //Request 1
 
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.PRIVATE.CHALLENGES_SUBMISSIONS, SubmissionResponse.class)
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS, SubmissionResponse.class)
                 .build();
         tempRequest.add(restRequest1);
 

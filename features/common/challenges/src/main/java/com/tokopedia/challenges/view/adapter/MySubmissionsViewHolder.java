@@ -8,9 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
-import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
@@ -35,7 +33,22 @@ class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         view.setOnClickListener(view1 -> {
             Intent intent =new Intent(view1.getContext(), SubmitDetailActivity.class);
             intent.putExtra("submissionsResult", submissionsResult);
-            view1.getContext().startActivity(intent);
+            view.getContext().startActivity(intent);
+        });
+        imgShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                ShareData shareData = ShareData.Builder.aShareData()
+//                        .setType(ShareData.INDI_CHALLENGE_TYPE)
+//                        .setId(submissionsResult.getId())
+//                        .setName(submissionsResult.getSharing().getMetaTags().getOgTitle())
+//                        .setTextContent(submissionsResult.getSharing().getMetaTags().getOgDescription())
+//                        .setUri("")
+//                        .setShareUrl(submissionsResult.getSharing().getMetaTags().getOgUrl())
+//                        .build();
+//
+//                new DefaultShare((Activity) view.getContext(), shareData).show();
+            }
         });
     }
 
