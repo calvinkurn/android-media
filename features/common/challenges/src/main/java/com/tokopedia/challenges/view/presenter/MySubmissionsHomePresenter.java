@@ -44,7 +44,12 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 int responseCodeOfResponse1 = res1.getCode();
                 SubmissionResponse mainDataObject = res1.getData();
-                getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
+
+                if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
+                    getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
+                } else {
+                    getView().renderEmptyList();
+                }
             }
         });
     }
