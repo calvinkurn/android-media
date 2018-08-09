@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.usecase.RequestParams;
 
@@ -16,7 +17,9 @@ public class ChallengeSubmissonContractor {
 
         Activity getActivity();
 
-        void renderChallengeDetail(SubmissionResponse submissionResponse);
+        void renderSubmissionItems(SubmissionResponse submissionResponse);
+
+        void renderChallengeDetail();
 
         RequestParams getParams();
 
@@ -28,6 +31,7 @@ public class ChallengeSubmissonContractor {
 
         LinearLayoutManager getLayoutManager();
 
+        void renderTnC(TermsNCondition termsNCondition);
     }
 
     public interface Presenter extends CustomerPresenter<ChallengeSubmissonContractor.View> {

@@ -26,19 +26,29 @@ public class CustomVideoPlayer extends FrameLayout {
     VideoView videoView;
     MediaController mediaController;
 
-
     public CustomVideoPlayer(@NonNull Context context) {
         super(context);
-        this.context = context;
-        init();
     }
+
+    public CustomVideoPlayer(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public CustomVideoPlayer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public CustomVideoPlayer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
 
     private void init() {
         View view = inflate(getContext(), getLayout(), this);
         videoView = view.findViewById(R.id.videoView);
 
         if (mediaController == null) {
-            mediaController = new MediaController(context);
+            mediaController = new MediaController(getContext());
             mediaController.setAnchorView(videoView);
             videoView.setMediaController(mediaController);
         }

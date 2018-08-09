@@ -9,12 +9,12 @@ import java.util.TimeZone;
 
 public class Utils {
     private static Utils singleInstance;
-    public static final String QUERY_PARAM_CHALLENGE_ID="challenge-id";
-    public static final String QUERY_PARAM_KEY_START="start";
-    public static final String QUERY_PARAM_KEY_SIZE="size";
-    public static final String QUERY_PARAM_KEY_SORT="sort";
-    public static final String QUERY_PARAM_KEY_SORT_RECENT="recent";
-    public static final String QUERY_PARAM_KEY_SORT_POINTS="points";
+    public static final String QUERY_PARAM_CHALLENGE_ID = "challenge-id";
+    public static final String QUERY_PARAM_KEY_START = "start";
+    public static final String QUERY_PARAM_KEY_SIZE = "size";
+    public static final String QUERY_PARAM_KEY_SORT = "sort";
+    public static final String QUERY_PARAM_KEY_SORT_RECENT = "recent";
+    public static final String QUERY_PARAM_KEY_SORT_POINTS = "points";
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -26,19 +26,35 @@ public class Utils {
     }
 
     public static String convertUTCToString(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", new Locale("in", "ID", ""));
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Date d = null;
-        String formattedTime=null;
+        String formattedTime = null;
         try {
             d = sdf.parse(time);
-            SimpleDateFormat sdf2 = new SimpleDateFormat("d MM yyyy", new Locale("in", "ID", ""));
+            SimpleDateFormat sdf2 = new SimpleDateFormat("d MMMM yyyy", new Locale("in", "ID", ""));
             sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
             formattedTime = sdf2.format(d);
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return " "+formattedTime;
+        return " " + formattedTime;
+    }
+
+    public static long convertUTCToMillis(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", new Locale("in", "ID", ""));
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        Date d = null;
+        try {
+            d = sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (d != null)
+            return d.getTime();
+        else
+            return -1L;
     }
 
 }
