@@ -262,7 +262,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
         String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
 
-        cardReturnTrip.setSubContentInfo(getString(R.string.train_review_trip_time_and_duration,
+        cardDepartureTrip.setSubContentInfo(getString(R.string.train_review_trip_time_and_duration,
                 timeDepartureDepartureString, timeDepartureArrivalString + deviationDayString));
 
         trainReviewDetailPresenter.getPassengers(trainSoftbook, departureTrip.getOrigin(),
