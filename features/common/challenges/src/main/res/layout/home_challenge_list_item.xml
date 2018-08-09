@@ -7,7 +7,8 @@
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_8"
-    android:elevation="@dimen/dp_6">
+    android:elevation="@dimen/dp_6"
+    app:cardCornerRadius="@dimen/dp_4">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,8 +27,8 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="Show me the slice"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_challenge" />
@@ -36,8 +37,8 @@
             android:id="@+id/tv_hastags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_5"
             android:text="#clicelb"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
@@ -46,7 +47,7 @@
             android:id="@+id/view_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_margin="@dimen/dp_16"
             android:background="@color/gray_background"
             app:layout_constraintTop_toBottomOf="@+id/tv_hastags" />
 
@@ -59,7 +60,7 @@
             android:paddingBottom="@dimen/dp_3"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_5"
+            android:paddingTop="@dimen/dp_8"
             android:text="End in 5 days"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
@@ -69,8 +70,8 @@
             android:id="@+id/img_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:src="@drawable/ic_share_via_card"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_line" />
@@ -79,16 +80,18 @@
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_12"
             android:background="@drawable/bg_round_solid_green_radius_huge"
-            android:paddingBottom="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_5"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_5"
             android:text="Participated"
             android:textColor="@color/white"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_line" />
 
 
