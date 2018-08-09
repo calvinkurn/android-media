@@ -158,7 +158,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
-    private static final int DEFAULT_POST_DELAYED_VALUE = 1000;
+    private static final int DEFAULT_POST_DELAYED_VALUE = 500;
 
     @BindView(R2.id.main_container)
     NestedScrollView mainHolderContainer;
@@ -1347,6 +1347,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private void setupTickerCouponApplied(TickerView tickerView) {
         ArrayList<String> messages = new ArrayList<>();
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
+        tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
         tickerView.buildView();
