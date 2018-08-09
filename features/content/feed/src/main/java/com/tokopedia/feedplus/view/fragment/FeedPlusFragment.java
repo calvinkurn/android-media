@@ -713,10 +713,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void forceLoadFirstPage() {
-        loadData(true);
-    }
-
     @Override
     public void onProductItemClicked(int position, Product product) {
         goToProductDetail(product.getId(),

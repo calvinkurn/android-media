@@ -54,26 +54,22 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
     private static final int LOAD_MORE_THRESHOLD = 2;
-
+    @Inject
+    ContentExploreContract.Presenter presenter;
+    @Inject
+    ExploreCategoryAdapter categoryAdapter;
+    @Inject
+    ExploreImageAdapter imageAdapter;
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
     private SwipeToRefresh swipeToRefresh;
     private View appBarLayout;
-
-    @Inject
-    ContentExploreContract.Presenter presenter;
-
-    @Inject
-    ExploreCategoryAdapter categoryAdapter;
-
-    @Inject
-    ExploreImageAdapter imageAdapter;
-
     private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
     private int categoryId;
     private boolean canLoadMore;
+    private boolean hasLoadedOnce;
 
     public static ContentExploreFragment newInstance(Bundle bundle) {
         ContentExploreFragment fragment = new ContentExploreFragment();
@@ -116,13 +112,24 @@ public class ContentExploreFragment extends BaseDaggerFragment
         initVar();
         initView();
         presenter.attachView(this);
-        presenter.getExploreData(true);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        loadData();
     }
 
     private void initView() {
@@ -179,6 +186,14 @@ public class ContentExploreFragment extends BaseDaggerFragment
         } else {
             throw new IllegalStateException("Application must be an instance of " +
                     AbstractionRouter.class.getSimpleName());
+        }
+    }
+
+    private void loadData() {
+        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null
+                && !hasLoadedOnce) {
+            presenter.getExploreData(true);
+            hasLoadedOnce = !hasLoadedOnce;
         }
     }
 
