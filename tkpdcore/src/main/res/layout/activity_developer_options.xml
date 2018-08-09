@@ -187,7 +187,7 @@
             android:layout_height="wrap_content">
             <TableRow>
                 <TextView
-                    android:text="React Native Developer Mode"
+                    android:text="@string/react_native_developer_mode"
                     android:paddingRight="25dip"
                     style="@style/TextView.Title.Bold"
                     android:layout_width="match_parent"
