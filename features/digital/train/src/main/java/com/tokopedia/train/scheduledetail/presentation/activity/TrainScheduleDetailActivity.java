@@ -57,7 +57,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private TextView textHeaderOriginCityName;
     private TextView textHeaderDestinationStationCode;
     private TextView textHeaderDestinationCityName;
-    private RelativeLayout containerViewPager;
+    private RelativeLayout containerScheduleDetail;
     private ProgressBar progressBar;
 
     private TrainScheduleViewModel trainScheduleViewModel;
@@ -104,7 +104,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         textHeaderOriginCityName = findViewById(R.id.header_origin_city_name);
         textHeaderDestinationStationCode = findViewById(R.id.header_destination_station_code);
         textHeaderDestinationCityName = findViewById(R.id.header_destination_city_name);
-        containerViewPager = findViewById(R.id.container_view_pager);
+        containerScheduleDetail = findViewById(R.id.container_schedule_detail);
         progressBar = findViewById(R.id.progress_bar);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -156,7 +156,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     public void showScheduleDetail(TrainScheduleViewModel trainScheduleViewModel, TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        containerViewPager.setVisibility(View.VISIBLE);
+        containerScheduleDetail.setVisibility(View.VISIBLE);
 
         this.trainScheduleViewModel = trainScheduleViewModel;
 
@@ -186,7 +186,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     @Override
     public void showLoading() {
         progressBar.setVisibility(View.VISIBLE);
-        containerViewPager.setVisibility(View.INVISIBLE);
+        containerScheduleDetail.setVisibility(View.INVISIBLE);
     }
 
     @Override
