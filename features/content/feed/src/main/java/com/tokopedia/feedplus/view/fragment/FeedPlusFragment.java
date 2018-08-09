@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +57,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.AddFeedViewHol
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
@@ -76,7 +78,9 @@ import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -105,7 +109,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
-        KolPostListener.View.ViewHolder {
+        KolPostListener.View.ViewHolder,
+        NotificationListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -134,6 +139,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
+    private MainToolbar mainToolbar;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -221,6 +227,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
     }
 
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(FeedPlusComponent component){
+        component.inject(this);
+        presenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public FeedPlusPresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void resetToFirstTime(){
+        isLoadedOnce = false;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(FeedPlusPresenter presenter) {
+        this.presenter = presenter;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -232,6 +261,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        mainToolbar = parentView.findViewById(R.id.toolbar);
         tabExplore = parentView.findViewById(R.id.tab_explore);
 
         prepareView();
@@ -691,6 +721,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private void forceLoadFirstPage() {
+        loadData(true);
+    }
+
     @Override
     public void onProductItemClicked(int position, Product product) {
         goToProductDetail(product.getId(),
@@ -770,19 +804,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private boolean isLoadedOnce = false;
+
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
-                && getActivity()!= null && presenter != null) {
+                && getActivity()!= null && presenter != null
+                && !isLoadedOnce) {
 
-            if (!hasLoadedOnce) {
-                presenter.fetchFirstPage();
-                if (trace != null)
-                    trace.stop();
-                hasLoadedOnce = true;
-            }
+            presenter.fetchFirstPage();
+            if (trace != null)
+                trace.stop();
 
             presenter.checkNewFeed(firstCursor);
             ScreenTracking.screen(getScreenName());
+
+            isLoadedOnce = !isLoadedOnce;
         }
     }
 
@@ -1150,5 +1186,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public AbstractionRouter getAbstractionRouter() {
         return abstractionRouter;
+    }
+
+    @Override
+    public void onNotifyBadgeNotification(int number) {
+        if (mainToolbar == null || getActivity() == null)
+            return;
+        mainToolbar.setNotificationNumber(number);
     }
 }

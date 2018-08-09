@@ -11,9 +11,9 @@ import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -29,7 +29,7 @@ import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragmentCallback;
  */
 
 public class GmSubscribeHomeActivity
-        extends DrawerPresenterActivity
+        extends BaseTemporaryDrawerActivity
         implements GmHomeFragmentCallback,
         HasComponent<AppComponent> {
 
@@ -47,6 +47,10 @@ public class GmSubscribeHomeActivity
         } else {
             return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
         }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, GmSubscribeHomeActivity.class);
     }
 
     @Override
@@ -137,10 +141,6 @@ public class GmSubscribeHomeActivity
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
-    }
-
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, GmSubscribeHomeActivity.class);
     }
 
     @Override

@@ -81,6 +81,9 @@
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
     <dimen name="sp_56">56sp</dimen>
+    <dimen name="switch_tumb_size">28dp</dimen>
+    <dimen name="switch_track_radius">13dp</dimen>
+    <dimen name="switch_track_height">26dp</dimen>
 
     <integer name="int_3">3</integer>
 

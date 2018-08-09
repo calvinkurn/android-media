@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_8"
+    app:elevation="@dimen/dp_6">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/holder_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/circular_progress_bar"
+                style="@style/ProgressBar.Tokopedia"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:layout_centerVertical="true"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                android:rotation="-90"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:progress="55"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/image_profile"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:scaleType="fitXY"
+                android:padding="@dimen/dp_6"
+                app:layout_constraintBottom_toBottomOf="@+id/circular_progress_bar"
+                app:layout_constraintLeft_toLeftOf="@+id/circular_progress_bar"
+                app:layout_constraintRight_toRightOf="@+id/circular_progress_bar"
+                app:layout_constraintTop_toTopOf="@+id/circular_progress_bar"
+                tools:src="@drawable/ic_big_notif_customerapp"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/text_username"
+                style="@style/TextView.TitleMedium.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/circular_progress_bar"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
+
+            <TextView
+                android:id="@+id/text_profile_completion"
+                style="@style/TextView.Micro.Green"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.025"
+                app:layout_constraintStart_toEndOf="@+id/circular_progress_bar"
+                app:layout_constraintTop_toBottomOf="@+id/text_username"
+                tools:text="Kelengkapan Profile 75%" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/image_tokopoint"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_tokopoint"
+            app:layout_constraintBottom_toBottomOf="@+id/text_tokopoint_amount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/label_tokopoint" />
+
+        <TextView
+            android:id="@+id/label_tokopoint"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_user_tokopoint"
+            app:layout_constraintEnd_toStartOf="@+id/divider"
+            app:layout_constraintStart_toEndOf="@+id/image_tokopoint"
+            app:layout_constraintTop_toBottomOf="@+id/holder_title" />
+
+        <TextView
+            android:id="@+id/text_tokopoint_amount"
+            style="@style/TextView.Small.Bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintEnd_toStartOf="@+id/divider"
+            app:layout_constraintStart_toEndOf="@+id/image_tokopoint"
+            app:layout_constraintTop_toBottomOf="@+id/label_tokopoint"
+            tools:text="50.000 pt" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0.5dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/grey_300"
+            app:layout_constraintBottom_toBottomOf="@+id/text_tokopoint_amount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/label_tokopoint" />
+
+        <ImageView
+            android:id="@+id/image_voucher"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_voucher"
+            app:layout_constraintBottom_toBottomOf="@+id/text_voucher_amount"
+            app:layout_constraintStart_toEndOf="@+id/divider"
+            app:layout_constraintTop_toTopOf="@+id/label_voucher" />
+
+        <TextView
+            android:id="@+id/label_voucher"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/label_user_voucher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_voucher"
+            app:layout_constraintTop_toTopOf="@+id/label_tokopoint" />
+
+        <TextView
+            android:id="@+id/text_voucher_amount"
+            style="@style/TextView.Small.Green.Bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:text="@string/label_tokopoint_see_voucher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_voucher"
+            app:layout_constraintTop_toBottomOf="@+id/label_voucher" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

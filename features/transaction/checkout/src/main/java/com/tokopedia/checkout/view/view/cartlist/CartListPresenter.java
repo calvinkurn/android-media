@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
@@ -60,13 +61,12 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartListPresenter implements ICartListPresenter {
+public class CartListPresenter  extends BaseDaggerPresenter<ICartListView> implements ICartListPresenter {
     private static final float PERCENTAGE = 100.0f;
-
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_STEP = "step";
-    private final ICartListView view;
+    private ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartUseCase deleteCartUseCase;
@@ -77,7 +77,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
 
-    @Inject
+
     public CartListPresenter(ICartListView cartListView,
                              GetCartListUseCase getCartListUseCase,
                              DeleteCartUseCase deleteCartUseCase,
@@ -88,7 +88,22 @@ public class CartListPresenter implements ICartListPresenter {
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+        this(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase, updateCartUseCase,
+                resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase);
         this.view = cartListView;
+    }
+
+    public CartListPresenter(
+                             GetCartListUseCase getCartListUseCase,
+                             DeleteCartUseCase deleteCartUseCase,
+                             DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                             UpdateCartUseCase updateCartUseCase,
+                             ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
+                             CompositeSubscription compositeSubscription,
+                             CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -102,6 +117,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void detachView() {
+        super.detachView();
         compositeSubscription.unsubscribe();
     }
 
@@ -252,49 +268,49 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
-            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
-            boolean hasCalculateWholesalePrice = false;
-            if (wholesalePrices != null && wholesalePrices.size() > 0) {
-                double subTotalWholesalePrice = 0;
-                double itemCashback = 0;for (WholesalePrice wholesalePrice : wholesalePrices) {
-                    if (itemQty >= wholesalePrice.getQtyMin() ) {
-                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
-                        hasCalculateWholesalePrice = true;
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
-                        break;
+                totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
+                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+                boolean hasCalculateWholesalePrice = false;
+                if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                    double subTotalWholesalePrice = 0;
+                    double itemCashback = 0;for (WholesalePrice wholesalePrice : wholesalePrices) {
+                        if (itemQty >= wholesalePrice.getQtyMin() ) {
+                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                            hasCalculateWholesalePrice = true;
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                            break;
+                        }
                     }
-                }
-                if (!hasCalculateWholesalePrice) {
-                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
-                    } else {
-                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                    if (!hasCalculateWholesalePrice) {
+                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
+                        } else {
+                            subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
                     }
-                }
-                if (data.getCartItemData().getOriginData().isCashBack()) {
+                    if (data.getCartItemData().getOriginData().isCashBack()) {
                         String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                         double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
                         itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice;
                     }
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
-                }
-            if (!cashbackWholesalePriceMap.containsKey(parentId)) {
+                        subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
+                    }
+                    if (!cashbackWholesalePriceMap.containsKey(parentId)) {
                         cashbackWholesalePriceMap.put(parentId, itemCashback);
                     }} else {
-                if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
-                    double itemPrice =itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                    if (data.getCartItemData().getOriginData().isCashBack()) {
+                    if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
+                        double itemPrice =itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                        if (data.getCartItemData().getOriginData().isCashBack()) {
                             String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                             double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
                             double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                             cashback = cashback + itemCashback;
                         }
                         subtotalPrice = subtotalPrice + itemPrice;data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                    cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
+                        cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
                     } else {
                         CartItemHolderData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
                         if (calculatedHolderData.getCartItemData().getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
@@ -313,11 +329,11 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
 
-            if (!subtotalWholesalePriceMap.isEmpty()) {
-                for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
-                    subtotalPrice += item.getValue();
-                }
+        if (!subtotalWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                subtotalPrice += item.getValue();
             }
+        }
 
         if (!cashbackWholesalePriceMap.isEmpty()) {
             for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {

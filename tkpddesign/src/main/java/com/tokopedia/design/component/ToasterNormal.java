@@ -14,7 +14,7 @@ public class ToasterNormal extends BaseToaster {
 
     public static Snackbar make(View view,
                                 String snackbarText,
-                                @Duration int duration) {
+                                @BaseToaster.Duration int duration) {
         return new Builder(view, snackbarText, duration)
                 .setBackgroundDrawable(R.drawable.bg_snackbar_normal)
                 .setTextColor(R.color.font_black_secondary_54)

@@ -11,6 +11,7 @@ import java.util.Map;
  */
 
 public interface ICartListPresenter {
+    void attachView(ICartListView view);
 
     void detachView();
 

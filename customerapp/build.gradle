@@ -199,7 +199,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
@@ -282,6 +282,7 @@ dependencies {
     implementation project(rootProject.ext.features.districtrecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -301,7 +302,10 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.train)
-
+    implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.features.navigation)
+    implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -414,6 +418,9 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     androidTestImplementation rootProject.ext.testDependencies.retrofitMock
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -438,7 +445,6 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
-
 }
 
 

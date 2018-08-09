@@ -261,4 +261,21 @@ public class UserSession {
         editor.putString(TOKEN_TYPE, tokenType);
         editor.apply();
     }
+
+    public void logoutSession() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_ID, null);
+        editor.putString(FULL_NAME, null);
+        editor.putString(SHOP_ID, null);
+        editor.putString(SHOP_NAME, null);
+        editor.putBoolean(IS_LOGIN, false);
+        editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putString(PHONE_NUMBER, null);
+        editor.putString(REFRESH_TOKEN, null);
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
+        editor.putString(PROFILE_PICTURE, null);
+        editor.apply();
+    }
 }

@@ -169,6 +169,8 @@
     <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
     <string name="label_courier_etd">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
+    <string name="delete">Hapus</string>
+    <string name="cart">Keranjang</string>
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
     <string name="label_donation">Donasi</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
@@ -179,5 +181,4 @@
     <string name="label_change_address">Ganti Alamat</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="note_counter_format" formatted="false">%d/%d</string>
-
 </resources>

@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:theme="@style/AppTheme.AppBarOverlayWhite">
+        
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:minHeight="?attr/actionBarSize"
+            app:contentInsetStart="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStartWithNavigation="0dp"/>
+
+    </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
         android:id="@+id/rl_content"
@@ -70,6 +88,7 @@
                     android:textSize="14sp" />
 
             </LinearLayout>
+
         </FrameLayout>
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
@@ -78,15 +97,19 @@
             android:layout_height="match_parent"
             android:layout_above="@id/bottom_layout"
             android:layout_gravity="bottom"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:tag="swipe_to_refresh_cart_new">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_cart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </com.tokopedia.core.customwidget.SwipeToRefresh>
 
     </RelativeLayout>
+
+    <include layout="@layout/layout_empty_shopping_cart_new" />
 
     <LinearLayout
         android:id="@+id/ll_network_error_view"
@@ -96,4 +119,4 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-</RelativeLayout>
+</LinearLayout>

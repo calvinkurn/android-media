@@ -245,6 +245,16 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
     }
 
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
+    }
+
     private void initializeRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
@@ -1415,7 +1425,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return new TkpdAuthInterceptor();
     }
 
-    @Override
+
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
     }

@@ -64,7 +64,6 @@ public interface Constants {
         String HOME_FEED = "tokopedia://home/feed";
         String FEED = "tokopedia://feed";
         String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
-        String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
@@ -82,6 +81,7 @@ public interface Constants {
         String PRODUCT_ADD = "tokopedia://product/add";
         String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
         String CART = "tokopedia://cart";
+        String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
         String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
         String SELLER_STATUS = "tokopedia://seller/status";
@@ -130,7 +130,7 @@ public interface Constants {
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
-        String FAVORITE = "tokopedia://home/favorite";
+        String PROFILE_COMPLETION = "tokopedia://profilecompletion";
 
         String EVENTS = "tokopedia://events";
         String EVENTS_HIBURAN = "tokopedia://hiburan";
@@ -144,6 +144,9 @@ public interface Constants {
         String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
         String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
         String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+        String DEPOSIT = "tokopedia://saldo";
+
+        String ORDER_LIST = "tokopedia://order";
 
 
         interface SellerApp {

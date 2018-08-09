@@ -20,7 +20,9 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
+public class CartActivity extends BaseCheckoutActivity
+//        implements CartFragment.ActionListener
+{
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -34,32 +36,42 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
-    protected void initInjector() {
-
+    protected int getLayoutRes() {
+        return R.layout.activity_cart;
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
+    protected void initInjector() { }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
+    protected void setupURIPass(Uri data) { }
 
     @Override
-    protected void initView() {
-
-    }
+    protected void setupBundlePass(Bundle extras) { }
 
     @Override
-    public void setTitle(CharSequence title) {
-        super.setTitle(title);
-        updateTitle(title.toString());
-    }
+    protected void initView() { }
 
-    @Override
+//    @Override
+//    public void onBackPressed() {
+//        Fragment currentFragment = getCurrentFragment();
+//        if (currentFragment instanceof RemoveCartItemFragment) {
+//            ((RemoveCartItemFragment) currentFragment)
+//                    .getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
+//        } else if (currentFragment instanceof CartFragment) {
+//            ((CartFragment) currentFragment)
+//                    .getCartPageAnalytics().eventClickCartClickArrowBack();
+//        }
+//        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+//            getSupportFragmentManager().popBackStack();
+//        } else {
+//            startActivity(
+//                    ((ICheckoutModuleRouter) getApplication())
+//                            .getHomePageIntent(this)
+//            );
+//            finish();
+//        }
+//    }
     public void onBackPressed() {
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof RemoveCartItemFragment) {
@@ -77,35 +89,27 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
+    protected void setViewListener() { }
 
     @Override
-    protected void initVar() {
-
-    }
+    protected void initVar() { }
 
     @Override
-    protected void setActionVar() {
+    protected void setActionVar() { }
 
-    }
-
-    @Override
-    public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-        Fragment fragment = getCurrentFragment();
-        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
-                    .addToBackStack(null)
-                    .commit();
-        }
-    }
+//    @Override
+//    public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
+//        Fragment fragment = getCurrentFragment();
+//        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
+//                    .addToBackStack(null)
+//                    .commit();
+//        }
+//    }
 
     @Override
     protected Fragment getNewFragment() {
-        return CartFragment.newInstance();
+        return CartFragment.newInstance("");
     }
-
-
 }
