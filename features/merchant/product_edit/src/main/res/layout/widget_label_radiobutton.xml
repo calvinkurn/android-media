@@ -53,8 +53,11 @@
             android:checked="false"
             android:clickable="false"
             app:theme="@style/ProductAddEditRadioButtonCheckbox"
+            android:padding="@dimen/dp_4"
+            android:gravity="center"
             android:scaleX="1.2"
-            android:scaleY="1.2"/>
+            android:scaleY="1.2"
+            android:button="@drawable/selector_radiobutton"/>
 
     </LinearLayout>
 </LinearLayout>
