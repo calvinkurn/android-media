@@ -2,10 +2,13 @@ package com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration
 
 import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.di.ShippingCourierScope;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationAdapter;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationContract;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationPresenter;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,9 +34,22 @@ public class ShippingDurationModule {
 
     @Provides
     @ShippingDurationScope
+    ShippingCourierConverter provideShippingCourierConverter() {
+        return new ShippingCourierConverter();
+    }
+
+    @Provides
+    @ShippingDurationScope
     ShippingDurationContract.Presenter provideShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
-                                                                        ShippingDurationConverter shippingDurationConverter) {
-        return new ShippingDurationPresenter(getCourierRecommendationUseCase, shippingDurationConverter);
+                                                                        ShippingDurationConverter shippingDurationConverter,
+                                                                        ShippingCourierConverter shippingCourierConverter) {
+        return new ShippingDurationPresenter(getCourierRecommendationUseCase, shippingDurationConverter, shippingCourierConverter);
+    }
+
+    @Provides
+    @ShippingDurationScope
+    GetCourierRecommendationUseCase getCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
+        return new GetCourierRecommendationUseCase(shippingDurationConverter);
     }
 
 }

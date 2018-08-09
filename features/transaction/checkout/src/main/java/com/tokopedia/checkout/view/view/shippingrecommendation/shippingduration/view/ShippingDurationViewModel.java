@@ -3,7 +3,10 @@ package com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+
+import java.util.List;
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -12,17 +15,22 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 public class ShippingDurationViewModel implements Parcelable {
 
     private ServiceData serviceData;
+    private List<ShippingCourierViewModel> shippingCourierViewModelList;
     private boolean selected;
 
     public ShippingDurationViewModel() {
     }
 
     protected ShippingDurationViewModel(Parcel in) {
+        serviceData = in.readParcelable(ServiceData.class.getClassLoader());
+        shippingCourierViewModelList = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
         selected = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(serviceData, flags);
+        dest.writeTypedList(shippingCourierViewModelList);
         dest.writeByte((byte) (selected ? 1 : 0));
     }
 
@@ -57,5 +65,13 @@ public class ShippingDurationViewModel implements Parcelable {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public List<ShippingCourierViewModel> getShippingCourierViewModelList() {
+        return shippingCourierViewModelList;
+    }
+
+    public void setShippingCourierViewModelList(List<ShippingCourierViewModel> shippingCourierViewModelList) {
+        this.shippingCourierViewModelList = shippingCourierViewModelList;
     }
 }

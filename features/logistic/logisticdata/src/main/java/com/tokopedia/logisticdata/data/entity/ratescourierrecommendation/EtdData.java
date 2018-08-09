@@ -17,20 +17,20 @@ public class EtdData implements Parcelable {
     private int minEtd;
     @SerializedName("max_etd")
     @Expose
-    private int max_etd;
+    private int maxEtd;
 
     public EtdData() {
     }
 
     protected EtdData(Parcel in) {
         minEtd = in.readInt();
-        max_etd = in.readInt();
+        maxEtd = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(minEtd);
-        dest.writeInt(max_etd);
+        dest.writeInt(maxEtd);
     }
 
     @Override
@@ -58,11 +58,11 @@ public class EtdData implements Parcelable {
         this.minEtd = minEtd;
     }
 
-    public int getMax_etd() {
-        return max_etd;
+    public int getMaxEtd() {
+        return maxEtd;
     }
 
-    public void setMax_etd(int max_etd) {
-        this.max_etd = max_etd;
+    public void setMaxEtd(int maxEtd) {
+        this.maxEtd = maxEtd;
     }
 }

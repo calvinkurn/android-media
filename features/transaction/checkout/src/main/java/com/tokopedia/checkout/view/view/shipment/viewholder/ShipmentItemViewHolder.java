@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -292,7 +293,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         if (getAdapterPosition() % 2 == 0) { // Temporary condition
-            renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
+            renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
+                    recipientAddressModel, shipmentCartItemModel.getShopShipmentList());
         } else {
             renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
         }
@@ -406,7 +408,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 && shipmentDetailData.getSelectedCourier() != null;
 
         String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
-        String boldText = "pk 14:00";
+        String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
         tvTickerInfo.setText(tickerInfo);
 
         int startSpan = tvTickerInfo.getText().toString().indexOf(boldText);
@@ -455,27 +457,33 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderCourierRecommendation(ShipmentCartItemModel shipmentCartItemModel,
                                              ShipmentDetailData shipmentDetailData,
-                                             RecipientAddressModel recipientAddressModel) {
+                                             RecipientAddressModel recipientAddressModel,
+                                             List<ShopShipment> shopShipmentList) {
         llShipmentContainer.setVisibility(View.GONE);
         llShipmentRecommendationContainer.setVisibility(View.VISIBLE);
         tvChooseDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionListener.onChooseShipmentDuration(shipmentCartItemModel, recipientAddressModel);
+                mActionListener.onChooseShipmentDuration(
+                        shipmentCartItemModel, recipientAddressModel, shopShipmentList, getAdapterPosition()
+                );
             }
         });
 
         tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mActionListener.onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel,
+                        shopShipmentList, getAdapterPosition());
             }
         });
 
         tvChangeSelectedCourierRecommendation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mActionListener.onChangeShippingCourier(
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
+                        getAdapterPosition());
             }
         });
 
@@ -483,7 +491,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 && shipmentDetailData.getSelectedCourier() != null;
 
         String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
-        String boldText = "pk 14:00";
+        String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
         tvTickerInfo.setText(tickerInfo);
 
         int startSpan = tvTickerInfo.getText().toString().indexOf(boldText);
@@ -494,8 +502,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvTickerInfo.setText(spannableStringBuilder);
 
         if (isCourierSelected) {
+            llSelectShipmentRecommendation.setVisibility(View.GONE);
+            llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
+            tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
+            tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
+            tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true));
         } else {
+            llSelectedShipmentRecommendation.setVisibility(View.GONE);
+            llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.GONE);
         }
     }

@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.List;
@@ -19,9 +21,11 @@ public interface ShippingCourierContract {
     }
 
     interface Presenter extends CustomerPresenter<ShippingCourierContract.View> {
-        void setData(ServiceData serviceData);
+        void setData(List<ShippingCourierViewModel> shippingCourierViewModels);
 
         List<ShippingCourierViewModel> getShippingCourierViewModels();
+
+        CourierItemData getCourierItemData(ShippingCourierViewModel shippingCourierViewModel);
     }
 
 }

@@ -54,6 +54,7 @@ import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierBottomsheetListener;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -910,11 +911,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
-                                         RecipientAddressModel recipientAddressModel) {
+                                         RecipientAddressModel recipientAddressModel,
+                                         List<ShopShipment> shopShipmentList,
+                                         int cartPosition) {
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
-            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(shipmentDetailData);
+            shippingDurationBottomsheet =
+                    ShippingDurationBottomsheet.newInstance(shipmentDetailData, shopShipmentList, cartPosition);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
@@ -1190,18 +1194,45 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onShippingDurationChoosen(ServiceData serviceData) {
-        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(serviceData);
+    public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                          CourierItemData courierItemData, int cartPosition) {
+        shipmentAdapter.setSelectedCourier(cartPosition, courierItemData);
+        shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartPosition);
+    }
+
+    @Override
+    public void onCourierChoosen(CourierItemData courierItemData, int cartPosition) {
+        shipmentAdapter.setSelectedCourier(cartPosition, courierItemData);
+        // TODO : Handle no pinpoint and another error
+    }
+
+    @Override
+    public void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
+                                         RecipientAddressModel recipientAddressModel,
+                                         List<ShopShipment> shopShipmentList,
+                                         int cartPosition) {
+        ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
+                recipientAddressModel);
+        if (shipmentDetailData != null) {
+            shippingDurationBottomsheet =
+                    ShippingDurationBottomsheet.newInstance(shipmentDetailData, shopShipmentList, cartPosition);
+            shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
+
+            if (getActivity() != null) {
+                shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+            }
+        }
+    }
+
+    @Override
+    public void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                        int cartPosition) {
+        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
+                shippingCourierViewModels, cartPosition);
         shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
 
         if (getActivity() != null) {
             shippingCourierBottomsheet.show(getActivity().getSupportFragmentManager(), null);
         }
-    }
-
-    @Override
-    public void onCourierChoosen(ProductData productData) {
-//        shipmentAdapter.notifyDataSetChanged();
-        Log.e("Courier", productData.getShipperName());
     }
 }

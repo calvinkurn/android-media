@@ -11,15 +11,18 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,6 +36,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         ShippingDurationAdapterListener {
 
     public static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
+    public static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
+    public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
 
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
@@ -47,11 +52,15 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Inject
     ShippingDurationAdapter shippingDurationAdapter;
 
-    public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData) {
+    public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
+                                                          List<ShopShipment> shopShipmentList,
+                                                          int cartPosition) {
         ShippingDurationBottomsheet shippingDurationBottomsheet =
                 new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
+        bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
+        bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -89,11 +98,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
         initializeInjector();
         presenter.attachView(this);
-        setupRecyclerView();
         if (getArguments() != null) {
+            int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
+            setupRecyclerView(cartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
+            List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             if (shipmentDetailData != null) {
-                presenter.loadCourierRecommendation(shipmentDetailData);
+                presenter.loadCourierRecommendation(shipmentDetailData, shopShipments);
             }
         }
     }
@@ -103,9 +114,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
         dismiss();
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(int cartPosition) {
         shippingDurationAdapter.setShippingDurationAdapterListener(this);
         shippingDurationAdapter.setShippingDurationViewModels(presenter.getShippingDurationViewModels());
+        shippingDurationAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvDuration.setLayoutManager(linearLayoutManager);
@@ -132,7 +144,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void showNoConnection(String message) {
+    public void showErrorPage(String message) {
         pbLoading.setVisibility(View.GONE);
         llContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -142,12 +154,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
                     public void onRetryClicked() {
                         if (getArguments() != null) {
                             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
+                            List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
                             if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(shipmentDetailData);
+                                presenter.loadCourierRecommendation(shipmentDetailData, shopShipments);
                             }
                         }
                     }
                 });
+        updateHeight();
     }
 
     @Override
@@ -157,8 +171,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onShippingDurationChoosen(ServiceData serviceData) {
-        shippingDurationBottomsheetListener.onShippingDurationChoosen(serviceData);
+    public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                          int cartPosition) {
+        shippingDurationBottomsheetListener.onShippingDurationChoosen(
+                shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
+                cartPosition);
         dismiss();
     }
 }

@@ -12,6 +12,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class ErrorData implements Parcelable {
 
+    public static final String ERROR_PINPOINT_NEEDED = "501";
+    public static final String ERROR_DISTANCE_LIMIT_EXCEEDED = "502";
+    public static final String ERROR_WEIGHT_LIMIT_EXCEEDED = "503";
+    public static final String ERROR_RATES_NOT_AVAILABLE = "504";
+
     @SerializedName("error_id")
     @Expose
     private String errorId;

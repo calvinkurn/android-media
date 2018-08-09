@@ -1,9 +1,11 @@
 package com.tokopedia.checkout.view.view.shipment;
 
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -23,7 +25,9 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                           RecipientAddressModel recipientAddressModel);
 
     void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
-                                  RecipientAddressModel recipientAddressModel);
+                                  RecipientAddressModel recipientAddressModel,
+                                  List<ShopShipment> shopShipmentList,
+                                  int cartPosition);
 
     void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
 
@@ -56,5 +60,12 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onChoosePaymentMethodButtonClicked();
 
     void onDonationChecked(boolean checked);
+
+    void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
+                                  RecipientAddressModel recipientAddressModel,
+                                  List<ShopShipment> shopShipmentList,
+                                  int position);
+
+    void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels, int position);
 
 }

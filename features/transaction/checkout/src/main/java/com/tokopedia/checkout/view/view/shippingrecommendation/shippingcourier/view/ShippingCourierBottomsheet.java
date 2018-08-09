@@ -8,14 +8,16 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,7 +28,8 @@ import javax.inject.Inject;
 public class ShippingCourierBottomsheet extends BottomSheets
         implements ShippingCourierContract.View, HasComponent<CartComponent>, ShippingCourierAdapterListener {
 
-    public static final String ARGUMENT_SERVICE_DATA = "ARGUMENT_SERVICE_DATA";
+    public static final String ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST";
+    public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
 
     private LinearLayout llContent;
     private RecyclerView rvCourier;
@@ -39,11 +42,13 @@ public class ShippingCourierBottomsheet extends BottomSheets
     @Inject
     ShippingCourierAdapter shippingDurationAdapter;
 
-    public static ShippingCourierBottomsheet newInstance(ServiceData serviceData) {
+    public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                                         int cartPosition) {
         ShippingCourierBottomsheet shippingCourierBottomsheet =
                 new ShippingCourierBottomsheet();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARGUMENT_SERVICE_DATA, serviceData);
+        bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         shippingCourierBottomsheet.setArguments(bundle);
 
         return shippingCourierBottomsheet;
@@ -81,17 +86,20 @@ public class ShippingCourierBottomsheet extends BottomSheets
         initializeInjector();
         presenter.attachView(this);
         if (getArguments() != null) {
-            ServiceData serviceData = getArguments().getParcelable(ARGUMENT_SERVICE_DATA);
-            if (serviceData != null) {
-                presenter.setData(serviceData);
-                setupRecyclerView();
+            int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
+            List<ShippingCourierViewModel> shippingCourierViewModels =
+                    getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
+            if (shippingCourierViewModels != null) {
+                presenter.setData(shippingCourierViewModels);
+                setupRecyclerView(cartPosition);
             }
         }
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(int cartPosition) {
         shippingDurationAdapter.setShippingCourierAdapterListener(this);
         shippingDurationAdapter.setShippingCourierViewModels(presenter.getShippingCourierViewModels());
+        shippingDurationAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvCourier.setLayoutManager(linearLayoutManager);
@@ -104,8 +112,9 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onCourierChoosen(ProductData productData) {
-        shippingCourierBottomsheetListener.onCourierChoosen(productData);
+    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition) {
+        CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
+        shippingCourierBottomsheetListener.onCourierChoosen(courierItemData, cartPosition);
         dismiss();
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view;
 
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -8,6 +8,6 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 
 public interface ShippingCourierBottomsheetListener {
 
-    void onCourierChoosen(ProductData productData);
+    void onCourierChoosen(CourierItemData courierItemData, int cartPosition);
 
 }

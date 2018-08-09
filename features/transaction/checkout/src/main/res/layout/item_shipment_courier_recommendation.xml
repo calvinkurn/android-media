@@ -40,7 +40,7 @@
             android:paddingLeft="@dimen/dp_27"
             android:paddingRight="@dimen/dp_27"
             android:paddingTop="@dimen/dp_9"
-            android:text="Pilih"
+            android:text="@string/label_button_choose_courier_recommendation"
             android:textColor="@color/white" />
 
     </LinearLayout>
@@ -71,7 +71,7 @@
                 android:layout_weight="1"
                 android:paddingBottom="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_16"
-                android:text="8 jam" />
+                tools:text="8 jam" />
 
             <TextView
                 android:id="@+id/tv_change_selected_duration"
@@ -87,8 +87,8 @@
                 android:paddingLeft="@dimen/dp_27"
                 android:paddingRight="@dimen/dp_27"
                 android:paddingTop="@dimen/dp_9"
-                android:text="Ubah Durasi"
-                android:textColor="@color/black_54" />
+                android:textColor="@color/black_54"
+                android:text="@string/label_button_change_shipping_duration" />
 
         </LinearLayout>
 
@@ -115,14 +115,14 @@
                     style="@style/TextMidMediumBlack70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Grab Parcel" />
+                    tools:text="Grab Parcel" />
 
                 <TextView
                     android:id="@+id/tv_selected_price_recommendation"
                     style="@style/TextSmallNormalBlack54"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rp20.000" />
+                    tools:text="Rp20.000" />
 
             </LinearLayout>
 
@@ -140,7 +140,7 @@
                 android:paddingLeft="@dimen/dp_27"
                 android:paddingRight="@dimen/dp_27"
                 android:paddingTop="@dimen/dp_9"
-                android:text="Ubah Kurir"
+                android:text="@string/label_button_change_courier_recommendation"
                 android:textColor="@color/black_54" />
 
         </LinearLayout>

@@ -4,11 +4,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierPresenter;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +28,17 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
 
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
     private final ShippingDurationConverter shippingDurationConverter;
+    private final ShippingCourierConverter shippingCourierConverter;
 
     private List<ShippingDurationViewModel> shippingDurationViewModelList;
 
     @Inject
     public ShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
-                                     ShippingDurationConverter shippingDurationConverter) {
+                                     ShippingDurationConverter shippingDurationConverter,
+                                     ShippingCourierConverter shippingCourierConverter) {
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
         this.shippingDurationConverter = shippingDurationConverter;
+        this.shippingCourierConverter = shippingCourierConverter;
     }
 
     @Override
@@ -48,12 +53,13 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     @Override
-    public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData) {
+    public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
+                                          List<ShopShipment> shopShipmentList) {
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-            getCourierRecommendationUseCase.execute(query, shipmentDetailData,
-                    new Subscriber<GraphqlResponse>() {
+            getCourierRecommendationUseCase.execute(query, shipmentDetailData, shopShipmentList,
+                    new Subscriber<List<ShippingDurationViewModel>>() {
                         @Override
                         public void onCompleted() {
 
@@ -63,37 +69,16 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                         public void onError(Throwable e) {
                             e.printStackTrace();
                             if (getView() != null) {
-                                getView().showNoConnection(ErrorHandler.getErrorMessage(getView().getActivity(), e));
+                                getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
                             }
                         }
 
                         @Override
-                        public void onNext(GraphqlResponse graphqlResponse) {
+                        public void onNext(List<ShippingDurationViewModel> shippingDurationViewModels) {
                             if (getView() != null) {
                                 getView().hideLoading();
-                                GetRatesCourierRecommendationData data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
-                                if (data != null && data.getRatesData() != null &&
-                                        data.getRatesData().getRatesDetailData() != null &&
-                                        data.getRatesData().getRatesDetailData().getServices() != null) {
-                                    if (shippingDurationViewModelList == null) {
-                                        shippingDurationViewModelList = new ArrayList<>();
-                                    }
-                                    shippingDurationViewModelList.clear();
-                                    List<ShippingDurationViewModel> shippingDurationViewModels =
-                                            shippingDurationConverter.convertToViewModel(
-                                                    data.getRatesData().getRatesDetailData().getServices());
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                    getView().showData(shippingDurationViewModelList);
-                                }
+                                shippingDurationViewModelList.addAll(shippingDurationViewModels);
+                                getView().showData(shippingDurationViewModelList);
                             }
                         }
                     });
@@ -108,4 +93,14 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         return shippingDurationViewModelList;
     }
 
+    @Override
+    public CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels) {
+        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+            if (shippingCourierViewModel.getProductData().isRecommend()) {
+                return shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
+            }
+        }
+
+        return null;
+    }
 }

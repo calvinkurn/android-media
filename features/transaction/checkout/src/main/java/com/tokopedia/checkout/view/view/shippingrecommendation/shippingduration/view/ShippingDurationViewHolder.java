@@ -20,8 +20,11 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgCheck;
     private View vSeparator;
 
-    public ShippingDurationViewHolder(View itemView) {
+    private int cartPosition;
+
+    public ShippingDurationViewHolder(View itemView, int cartPosition) {
         super(itemView);
+        this.cartPosition = cartPosition;
 
         tvDuration = itemView.findViewById(R.id.tv_duration);
         tvPrice = itemView.findViewById(R.id.tv_price);
@@ -40,7 +43,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 shippingDurationViewModel.setSelected(!shippingDurationViewModel.isSelected());
-                shippingDurationAdapterListener.onShippingDurationChoosen(shippingDurationViewModel.getServiceData());
+                shippingDurationAdapterListener.onShippingDurationChoosen(
+                        shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition);
             }
         });
 

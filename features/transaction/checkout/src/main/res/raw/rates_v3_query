@@ -7,6 +7,13 @@
       weight:"$weight"
       token:"$token"
       ut:"$ut"
+      type:"$type"
+      from:"$from"
+      insurance:"$insurance"
+      product_insurance:"$product_insurance"
+      order_value:"$order_value"
+      cat_id:"$cat_id"
+      lang:"$lang"
   }) {
   ratesv3 {
     id

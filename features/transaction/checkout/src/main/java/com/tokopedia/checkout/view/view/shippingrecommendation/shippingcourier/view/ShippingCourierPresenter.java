@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
@@ -34,11 +36,8 @@ public class ShippingCourierPresenter extends BaseDaggerPresenter<ShippingCourie
     }
 
     @Override
-    public void setData(ServiceData serviceData) {
-        if (shippingCourierViewModels == null) {
-            shippingCourierViewModels = new ArrayList<>();
-        }
-        shippingCourierViewModels = shippingCourierConverter.convertToViewModel(serviceData.getProducts());
+    public void setData(List<ShippingCourierViewModel> shippingCourierViewModels) {
+        this.shippingCourierViewModels = shippingCourierViewModels;
     }
 
     @Override
@@ -47,5 +46,10 @@ public class ShippingCourierPresenter extends BaseDaggerPresenter<ShippingCourie
             shippingCourierViewModels = new ArrayList<>();
         }
         return shippingCourierViewModels;
+    }
+
+    @Override
+    public CourierItemData getCourierItemData(ShippingCourierViewModel shippingCourierViewModel) {
+        return shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
     }
 }

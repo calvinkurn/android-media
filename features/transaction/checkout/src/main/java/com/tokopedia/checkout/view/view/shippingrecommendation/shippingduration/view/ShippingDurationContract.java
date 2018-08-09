@@ -5,7 +5,10 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.List;
@@ -21,7 +24,7 @@ public interface ShippingDurationContract {
 
         void hideLoading();
 
-        void showNoConnection(String message);
+        void showErrorPage(String message);
 
         void showData(List<ShippingDurationViewModel> serviceDataList);
 
@@ -29,9 +32,11 @@ public interface ShippingDurationContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void loadCourierRecommendation(ShipmentDetailData shipmentDetailData);
+        void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
         List<ShippingDurationViewModel> getShippingDurationViewModels();
+
+        CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels);
     }
 
 }

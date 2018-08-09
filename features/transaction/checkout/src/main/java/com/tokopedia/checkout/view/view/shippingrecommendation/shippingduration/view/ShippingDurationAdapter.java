@@ -16,6 +16,7 @@ public class ShippingDurationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private List<ShippingDurationViewModel> shippingDurationViewModels;
     private ShippingDurationAdapterListener shippingDurationAdapterListener;
+    private int cartPosition;
 
     public void setShippingDurationViewModels(List<ShippingDurationViewModel> shippingDurationViewModels) {
         this.shippingDurationViewModels = shippingDurationViewModels;
@@ -23,6 +24,10 @@ public class ShippingDurationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public void setShippingDurationAdapterListener(ShippingDurationAdapterListener shippingDurationAdapterListener) {
         this.shippingDurationAdapterListener = shippingDurationAdapterListener;
+    }
+
+    public void setCartPosition(int cartPosition) {
+        this.cartPosition = cartPosition;
     }
 
     @Override
@@ -34,7 +39,7 @@ public class ShippingDurationAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        return new ShippingDurationViewHolder(view);
+        return new ShippingDurationViewHolder(view, cartPosition);
     }
 
     @Override

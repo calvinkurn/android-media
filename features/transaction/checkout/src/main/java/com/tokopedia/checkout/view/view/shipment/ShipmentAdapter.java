@@ -29,6 +29,7 @@ import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -447,6 +448,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
         checkHasSelectAllCourier();
+    }
+
+    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                             int position) {
+        ShipmentData currentShipmentData = shipmentDataList.get(position);
+        if (currentShipmentData instanceof ShipmentCartItemModel) {
+            ShipmentCartItemModel cartItemModel = (ShipmentCartItemModel) currentShipmentData;
+            if (cartItemModel.getSelectedShipmentDetailData() != null &&
+                    cartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                cartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierViewModels);
+            }
+        }
     }
 
     public boolean checkHasSelectAllCourier() {

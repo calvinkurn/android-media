@@ -12,6 +12,8 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 public class ShippingCourierViewModel implements Parcelable {
 
     private ProductData productData;
+    private int additionalFee;
+    private boolean allowDropshipper;
     private boolean selected;
 
     public ShippingCourierViewModel() {
@@ -19,12 +21,16 @@ public class ShippingCourierViewModel implements Parcelable {
 
     protected ShippingCourierViewModel(Parcel in) {
         productData = in.readParcelable(ProductData.class.getClassLoader());
+        additionalFee = in.readInt();
+        allowDropshipper = in.readByte() != 0;
         selected = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(productData, flags);
+        dest.writeInt(additionalFee);
+        dest.writeByte((byte) (allowDropshipper ? 1 : 0));
         dest.writeByte((byte) (selected ? 1 : 0));
     }
 
@@ -59,5 +65,21 @@ public class ShippingCourierViewModel implements Parcelable {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public int getAdditionalFee() {
+        return additionalFee;
+    }
+
+    public void setAdditionalFee(int additionalFee) {
+        this.additionalFee = additionalFee;
+    }
+
+    public boolean isAllowDropshipper() {
+        return allowDropshipper;
+    }
+
+    public void setAllowDropshipper(boolean allowDropshipper) {
+        this.allowDropshipper = allowDropshipper;
     }
 }

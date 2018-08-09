@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.shipmentrates;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ public class ShipmentDetailData implements Parcelable {
     private boolean dropshipperNameValid;
     private boolean dropshipperPhoneValid;
     private String shopId;
+    private List<ShippingCourierViewModel> shippingCourierViewModels;
 
     public ShipmentDetailData() {
     }
@@ -45,6 +48,7 @@ public class ShipmentDetailData implements Parcelable {
         dropshipperNameValid = in.readByte() != 0;
         dropshipperPhoneValid = in.readByte() != 0;
         shopId = in.readString();
+        shippingCourierViewModels = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -171,6 +175,14 @@ public class ShipmentDetailData implements Parcelable {
         this.shopId = shopId;
     }
 
+    public List<ShippingCourierViewModel> getShippingCourierViewModels() {
+        return shippingCourierViewModels;
+    }
+
+    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels) {
+        this.shippingCourierViewModels = shippingCourierViewModels;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -192,5 +204,6 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte((byte) (dropshipperNameValid ? 1 : 0));
         dest.writeByte((byte) (dropshipperPhoneValid ? 1 : 0));
         dest.writeString(shopId);
+        dest.writeTypedList(shippingCourierViewModels);
     }
 }

@@ -28,8 +28,4 @@ public class ShipmentUseCaseModule {
         return new ChangeShippingAddressUseCase(iCartRepository);
     }
 
-    @Provides
-    GetCourierRecommendationUseCase getCourierRecommendationUseCase(GraphqlUseCase graphqlUseCase) {
-        return new GetCourierRecommendationUseCase(graphqlUseCase);
-    }
 }

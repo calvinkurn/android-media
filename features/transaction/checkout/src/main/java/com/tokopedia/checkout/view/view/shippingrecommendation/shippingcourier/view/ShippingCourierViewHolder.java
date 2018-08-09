@@ -20,8 +20,11 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgCheck;
     private View vSeparator;
 
-    public ShippingCourierViewHolder(View itemView) {
+    private int cartPosition;
+
+    public ShippingCourierViewHolder(View itemView, int cartPosition) {
         super(itemView);
+        this.cartPosition = cartPosition;
 
         tvCourier = itemView.findViewById(R.id.tv_courier);
         tvPrice = itemView.findViewById(R.id.tv_price);
@@ -42,7 +45,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 shippingCourierViewModel.setSelected(!shippingCourierViewModel.isSelected());
-                shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel.getProductData());
+                shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition);
             }
         });
     }

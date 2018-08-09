@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view;
 
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 
 import java.util.ArrayList;
@@ -11,16 +12,27 @@ import java.util.List;
 
 public class ShippingCourierConverter {
 
-    public List<ShippingCourierViewModel> convertToViewModel(List<ProductData> productDataList) {
-        List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
-        for (ProductData productData : productDataList) {
-            ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
-            shippingCourierViewModel.setProductData(productData);
-            shippingCourierViewModel.setSelected(false);
-            shippingCourierViewModels.add(shippingCourierViewModel);
-        }
+    public CourierItemData convertToCourierItemData(ShippingCourierViewModel shippingCourierViewModel) {
+        CourierItemData courierItemData = new CourierItemData();
+        courierItemData.setShipperId(shippingCourierViewModel.getProductData().getShipperId());
+        courierItemData.setShipperProductId(shippingCourierViewModel.getProductData().getShipperProductId());
+        courierItemData.setName(shippingCourierViewModel.getProductData().getShipperName());
+        courierItemData.setEstimatedTimeDelivery(shippingCourierViewModel.getProductData().getTexts().getTextEtd());
+        courierItemData.setMinEtd(shippingCourierViewModel.getProductData().getEtd().getMinEtd());
+        courierItemData.setMaxEtd(shippingCourierViewModel.getProductData().getEtd().getMaxEtd());
+        courierItemData.setShipperPrice(shippingCourierViewModel.getProductData().getPrice().getPrice());
+        courierItemData.setShipperFormattedPrice(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
+        courierItemData.setInsurancePrice(shippingCourierViewModel.getProductData().getInsurance().getInsurancePrice());
+        courierItemData.setInsuranceType(shippingCourierViewModel.getProductData().getInsurance().getInsuranceType());
+        courierItemData.setInsuranceUsedType(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedType());
+        courierItemData.setInsuranceUsedInfo(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedInfo());
+        courierItemData.setInsuranceUsedDefault(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedDefault());
+        courierItemData.setUsePinPoint(shippingCourierViewModel.getProductData().getIsShowMap() == 1);
+        courierItemData.setAllowDropshiper(shippingCourierViewModel.isAllowDropshipper());
+        courierItemData.setAdditionalPrice(shippingCourierViewModel.getAdditionalFee());
+        courierItemData.setSelected(true);
 
-        return shippingCourierViewModels;
+        return courierItemData;
     }
 
 }

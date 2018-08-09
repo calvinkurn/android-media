@@ -20,6 +20,7 @@ public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private List<ShippingCourierViewModel> shippingCourierViewModels;
     private ShippingCourierAdapterListener shippingCourierAdapterListener;
+    private int cartPosition;
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels) {
         this.shippingCourierViewModels = shippingCourierViewModels;
@@ -27,6 +28,10 @@ public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public void setShippingCourierAdapterListener(ShippingCourierAdapterListener shippingCourierAdapterListener) {
         this.shippingCourierAdapterListener = shippingCourierAdapterListener;
+    }
+
+    public void setCartPosition(int cartPosition) {
+        this.cartPosition = cartPosition;
     }
 
     @Override
@@ -38,7 +43,7 @@ public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        return new ShippingCourierViewHolder(view);
+        return new ShippingCourierViewHolder(view, cartPosition);
     }
 
     @Override
