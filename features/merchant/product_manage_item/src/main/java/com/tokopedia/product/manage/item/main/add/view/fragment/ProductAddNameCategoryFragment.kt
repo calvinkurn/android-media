@@ -79,8 +79,8 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
             name = productName.name
             validateData()
             resetCategoryCatalog()
-            flagReset = false
         }
+        flagReset = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
