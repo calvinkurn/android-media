@@ -165,7 +165,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
-        checkIsHaveApplinkComeFromDeeplink(intent);
+//        checkIsHaveApplinkComeFromDeeplink(intent);
     }
 
     private void initInjector() {
