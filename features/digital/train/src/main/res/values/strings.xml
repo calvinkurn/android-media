@@ -153,7 +153,7 @@
     <string name="train_review_trip">%1$s - %2$s</string>
     <string name="train_review_trip_date">(%1$s)</string>
     <string name="train_review_trip_train">%1$s - %2$s</string>
-    <string name="train_review_trip_time_and_duration"> | %1$s - %2$s (%3$s)</string>
+    <string name="train_review_trip_time_and_duration"> | %1$s - %2$s</string>
     <string name="train_review_item_label_passengers_no_id">No ID: </string>
     <string name="train_review_label_passengers_data">Data Penumpang</string>
     <string name="train_review_label_total_payment">Total Pembayaran</string>

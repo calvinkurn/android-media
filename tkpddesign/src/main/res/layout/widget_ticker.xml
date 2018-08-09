@@ -37,14 +37,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_90"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg_ticker"
     android:paddingTop="@dimen/dp_2"
     android:paddingBottom="@dimen/dp_2"
     android:paddingLeft="@dimen/dp_3"
     android:paddingRight="@dimen/dp_2">
 
-    <com.tkpd.library.ui.widget.TouchViewPager
+    <com.tokopedia.design.component.ticker.TouchViewPager
         android:id="@+id/view_pager_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
