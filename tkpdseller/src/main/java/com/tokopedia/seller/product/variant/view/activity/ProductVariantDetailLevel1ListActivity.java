@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.edit.common.util.CurrencyTypeDef;
-import com.tokopedia.product.edit.common.util.StockTypeDef;
-import com.tokopedia.product.edit.common.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.product.edit.common.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLevel1ListFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 

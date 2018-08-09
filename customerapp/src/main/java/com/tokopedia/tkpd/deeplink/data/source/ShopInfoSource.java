@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.deeplink.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 
 import retrofit2.Response;
 import rx.Observable;

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.TitleBig.Bold"
+        android:text="@string/product_label_choose_product_category_catalog"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Title.BlackDisabled"
+        android:text="@string/product_label_choose_category_catalog_information"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/dp_16"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_6"
+        android:background="@drawable/information_without_catalog_shadow" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Title"
+            android:text="@string/product_label_choose_category_catalog_not_match"
+            android:layout_marginTop="@dimen/dp_24"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/add_no_catalog"
+            style="@style/TextView.Title.Green"
+            android:text="@string/product_label_choose_category_catalog_without_catalog"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_24"/>
+
+    </LinearLayout>
+
+</LinearLayout>

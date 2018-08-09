@@ -1,8 +1,8 @@
 package com.tokopedia.topads.keyword.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.product.edit.common.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.domain.TopAdsKeywordRepository;
 import com.tokopedia.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;

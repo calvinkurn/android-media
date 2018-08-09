@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.product.edit.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.manage.data.mapper.DeleteProductCloudMapper;
 import com.tokopedia.seller.product.manage.data.model.ResponseDeleteProductData;
 import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;

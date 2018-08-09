@@ -40,7 +40,7 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
-import com.tokopedia.product.edit.common.util.ViewUtils;
+import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -354,7 +354,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             transactionSuccessTextView.setText(getString(R.string.dashboard_shop_success_rate,
                     String.valueOf(0)));
         }
-
     }
 
     private void updateShopInfo(ShopModel shopModel) {
@@ -364,8 +363,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
         shopNameTextView.setText(shopName);
-        if (shopModelInfo.isGoldMerchant()) {
+        if (shopModelInfo.isOfficialStore()) {
             gmIconImageView.setVisibility(View.VISIBLE);
+            gmIconImageView.setImageResource(R.drawable.ic_official);
+            gmStatusTextView.setText(R.string.dashboard_label_official_store);
+        } else if (shopModelInfo.isGoldMerchant()) {
+            gmIconImageView.setVisibility(View.VISIBLE);
+            gmIconImageView.setImageResource(R.drawable.ic_shop_gold);
             gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
         } else {
             gmIconImageView.setVisibility(View.GONE);

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.picker.view.listener;
 
-import com.tokopedia.product.edit.common.util.ItemPickerType;
+import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 

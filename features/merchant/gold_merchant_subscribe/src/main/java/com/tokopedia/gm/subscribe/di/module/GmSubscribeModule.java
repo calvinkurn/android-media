@@ -16,10 +16,10 @@ import com.tokopedia.gm.subscribe.data.source.product.cloud.api.GoldMerchantApi;
 import com.tokopedia.gm.subscribe.di.scope.GmSubscribeScope;
 import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
-import com.tokopedia.product.edit.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.edit.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 
