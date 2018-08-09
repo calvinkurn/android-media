@@ -27,6 +27,10 @@ query CatalogCouponListing($categoryID: Int, $pointRange: Int, $sortID: Int, $pa
       isDisabledButton
       disableErrorMessage
       upperTextDesc
+      pointsSlash
+      pointsSlashStr
+      discountPercentage
+      discountPercentageStr
     }
   }
 

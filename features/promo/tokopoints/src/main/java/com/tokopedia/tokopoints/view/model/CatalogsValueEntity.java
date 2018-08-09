@@ -111,6 +111,54 @@ public class CatalogsValueEntity implements Serializable {
     @SerializedName("catalogType")
     private int catalogType;
 
+    @Expose
+    @SerializedName("pointsSlash")
+    private int pointsSlash;
+
+    @Expose
+    @SerializedName("pointsSlashStr")
+    private String pointsSlashStr;
+
+    @Expose
+    @SerializedName("discountPercentage")
+    private int discountPercentage;
+
+    @Expose
+    @SerializedName("discountPercentageStr")
+    private String discountPercentageStr;
+
+    public int getPointsSlash() {
+        return pointsSlash;
+    }
+
+    public void setPointsSlash(int pointsSlash) {
+        this.pointsSlash = pointsSlash;
+    }
+
+    public String getPointsSlashStr() {
+        return pointsSlashStr;
+    }
+
+    public void setPointsSlashStr(String pointsSlashStr) {
+        this.pointsSlashStr = pointsSlashStr;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public String getDiscountPercentageStr() {
+        return discountPercentageStr;
+    }
+
+    public void setDiscountPercentageStr(String discountPercentageStr) {
+        this.discountPercentageStr = discountPercentageStr;
+    }
+
     public String getBaseCode() {
         return baseCode;
     }
@@ -343,11 +391,15 @@ public class CatalogsValueEntity implements Serializable {
                 ", title='" + title + '\'' +
                 ", isDisabled=" + isDisabled +
                 ", isDisabledButton=" + isDisabledButton +
-                ", upperTextDesc='" + upperTextDesc + '\'' +
+                ", upperTextDesc=" + upperTextDesc +
                 ", expiredLabel='" + expiredLabel + '\'' +
                 ", disableErrorMessage='" + disableErrorMessage + '\'' +
                 ", expiredStr='" + expiredStr + '\'' +
-                ", catalogType='" + catalogType + '\'' +
+                ", catalogType=" + catalogType +
+                ", pointsSlash=" + pointsSlash +
+                ", pointsSlashStr='" + pointsSlashStr + '\'' +
+                ", discountPercentage=" + discountPercentage +
+                ", discountPercentageStr='" + discountPercentageStr + '\'' +
                 '}';
     }
 }

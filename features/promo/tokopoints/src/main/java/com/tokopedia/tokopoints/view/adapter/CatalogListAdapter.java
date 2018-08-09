@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.adapter;
 
+import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -34,7 +35,8 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView quota, description, pointLabel, pointValue,
-                timeLabel, timeValue, disabledError, btnContinue;
+                timeLabel, timeValue, disabledError, btnContinue,
+                labelPoint, textDiscount;
         ImageView imgBanner, imgTime, imgPoint;
 
         public ViewHolder(View view) {
@@ -50,6 +52,8 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             imgBanner = view.findViewById(R.id.img_banner);
             imgTime = view.findViewById(R.id.img_time);
             imgPoint = view.findViewById(R.id.img_points_stack);
+            labelPoint = view.findViewById(R.id.text_point_label);
+            textDiscount = view.findViewById(R.id.text_point_discount);
         }
     }
 
@@ -78,7 +82,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFit2(holder.imgBanner.getContext(),holder.imgBanner, item.getThumbnailUrlMobile());
+        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
 
         //setting points info if exist in response
         if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
@@ -141,6 +145,21 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
         } else {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+        }
+
+        if (item.getPointsSlash() <= 0) {
+            holder.labelPoint.setVisibility(View.GONE);
+        } else {
+            holder.labelPoint.setVisibility(View.VISIBLE);
+            holder.labelPoint.setText(item.getPointsSlashStr());
+            holder.labelPoint.setPaintFlags(holder.labelPoint.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
+        if (item.getDiscountPercentage() <= 0) {
+            holder.textDiscount.setVisibility(View.GONE);
+        } else {
+            holder.textDiscount.setVisibility(View.VISIBLE);
+            holder.textDiscount.setText(item.getDiscountPercentageStr());
         }
 
         holder.btnContinue.setOnClickListener(v -> {
