@@ -7,11 +7,13 @@ import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,8 +38,11 @@ public class GetSubmissionChallengesUseCase extends RestRequestSupportIntercepto
 
         //Request 1
 
+        HashMap<String, Object> parameters=requestParams.getParameters();
+        ChallengesUrl.CHALLENGE_ID = String.valueOf(parameters.get(Utils.QUERY_PARAM_CHALLENGE_ID));
+        parameters.remove(Utils.QUERY_PARAM_CHALLENGE_ID);
         RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.PRIVATE.CHALLENGES_SUBMISSIONS, SubmissionResponse.class)
-                .setQueryParams(requestParams.getParameters())
+                .setQueryParams(parameters)
                 .build();
         tempRequest.add(restRequest1);
 

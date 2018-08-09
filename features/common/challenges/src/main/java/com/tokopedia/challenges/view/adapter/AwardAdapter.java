@@ -1,8 +1,11 @@
 package com.tokopedia.challenges.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.model.Prize;
+
 import java.util.List;
 
 public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -51,7 +55,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public class AwardViewHolder extends RecyclerView.ViewHolder {
-        private View  itemView;
+        private View itemView;
         private TextView awardTitle;
         private TextView awardDescription;
         private ImageView awardImage;
@@ -63,6 +67,10 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             awardTitle = itemView.findViewById(R.id.tv_award_title);
             awardDescription = itemView.findViewById(R.id.tv_award_price);
             awardImage = itemView.findViewById(R.id.award_image);
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
+            itemView.getLayoutParams().width = devicewidth;
         }
 
         public void setIndex(int position) {

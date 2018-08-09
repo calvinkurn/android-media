@@ -9,6 +9,7 @@ import java.util.TimeZone;
 
 public class Utils {
     private static Utils singleInstance;
+    public static final String QUERY_PARAM_CHALLENGE_ID="challenge-id";
     public static final String QUERY_PARAM_KEY_START="start";
     public static final String QUERY_PARAM_KEY_SIZE="size";
     public static final String QUERY_PARAM_KEY_SORT="sort";

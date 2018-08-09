@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -60,6 +61,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     ImageView seeMoreArrow;
     ExpandableTextView description;
     View submitButton;
+    LinearLayout expandDescription;
     RecyclerView submissionRecyclerView, awardRecylerView;
     List<SubmissionResult> submissionResults;
     SubmissionItemAdapter submissionItemAdapter;
@@ -93,6 +95,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         challengeDueDate = (TextView) view.findViewById(R.id.tv_expiry_date);
         tv_participated = (TextView) view.findViewById(R.id.tv_participated);
         description = (ExpandableTextView) view.findViewById(R.id.tv_expandable_description);
+        expandDescription = view.findViewById(R.id.expand_view_description);
         seeMoreButton = (TextView) view.findViewById(R.id.seemorebutton_description);
         seeMoreArrow = (ImageView) view.findViewById(R.id.down_arrow_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
@@ -107,7 +110,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         collapsingToolbarLayout.setTitle(" ");
         appBarLayout = view.findViewById(R.id.app_bar);
         description.setInterpolator(new OvershootInterpolator());
-        description.setOnClickListener(this);
+        expandDescription.setOnClickListener(this);
         view.findViewById(R.id.tv_see_all).setOnClickListener(this);
         submitButton.setOnClickListener(this);
         challengeSubmissionPresenter.attachView(this);
@@ -167,19 +170,21 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
                 Utils.convertUTCToString(challengeResult.getEndDate())));
         description.setText(challengeResult.getDescription());
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        submissionRecyclerView.setLayoutManager(mLayoutManager);
-        submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
-        submissionRecyclerView.setAdapter(submissionItemAdapter);
         LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         awardRecylerView.setLayoutManager(mLayoutManager1);
         awardAdapter = new AwardAdapter(challengeResult.getPrizes());
         awardRecylerView.setAdapter(awardAdapter);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        submissionRecyclerView.setLayoutManager(mLayoutManager);
+        submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+        submissionRecyclerView.setAdapter(submissionItemAdapter);
     }
 
     @Override
     public RequestParams getParams() {
         RequestParams requestParams=RequestParams.create();
+        requestParams.putString(Utils.QUERY_PARAM_CHALLENGE_ID, challengeResult.getId());
         requestParams.putInt(Utils.QUERY_PARAM_KEY_START, 0);
         requestParams.putInt(Utils.QUERY_PARAM_KEY_SIZE, 10);
         requestParams.putString(Utils.QUERY_PARAM_KEY_SORT, Utils.QUERY_PARAM_KEY_SORT_RECENT);
