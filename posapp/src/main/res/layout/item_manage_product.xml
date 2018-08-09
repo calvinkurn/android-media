@@ -99,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
-            style="@style/SwitchStyle" />
+            style="@style/Switch" />
         <TextView
             android:id="@+id/text_status"
             android:layout_width="wrap_content"
