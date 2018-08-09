@@ -16,6 +16,7 @@ public class SolutionResponseViewModel implements Parcelable {
     private FreeReturnViewModel freeReturn;
     private List<SolutionComplaintModel> complaints;
     private SolutionMessageViewModel message;
+    private SolutionViewModel selectedSolution;
 
 
     public SolutionResponseViewModel(
@@ -29,6 +30,15 @@ public class SolutionResponseViewModel implements Parcelable {
         this.freeReturn = freeReturn;
         this.complaints = complaints;
         this.message = message;
+        this.selectedSolution = new SolutionViewModel();
+    }
+
+    public SolutionViewModel getSelectedSolution() {
+        return selectedSolution;
+    }
+
+    public void setSelectedSolution(SolutionViewModel selectedSolution) {
+        this.selectedSolution = selectedSolution;
     }
 
     public SolutionMessageViewModel getMessage() {
@@ -84,6 +94,7 @@ public class SolutionResponseViewModel implements Parcelable {
         dest.writeParcelable(this.freeReturn, flags);
         dest.writeTypedList(this.complaints);
         dest.writeParcelable(this.message, flags);
+        dest.writeParcelable(this.selectedSolution, flags);
     }
 
     protected SolutionResponseViewModel(Parcel in) {
@@ -92,6 +103,7 @@ public class SolutionResponseViewModel implements Parcelable {
         this.freeReturn = in.readParcelable(FreeReturnViewModel.class.getClassLoader());
         this.complaints = in.createTypedArrayList(SolutionComplaintModel.CREATOR);
         this.message = in.readParcelable(SolutionMessageViewModel.class.getClassLoader());
+        this.selectedSolution = in.readParcelable(SolutionViewModel.class.getClassLoader());
     }
 
     public static final Creator<SolutionResponseViewModel> CREATOR = new Creator<SolutionResponseViewModel>() {

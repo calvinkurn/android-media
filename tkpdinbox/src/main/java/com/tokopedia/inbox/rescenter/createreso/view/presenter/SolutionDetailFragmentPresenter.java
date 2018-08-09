@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
@@ -9,7 +10,15 @@ import com.tokopedia.inbox.rescenter.createreso.view.subscriber.AppealSolutionWi
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionWithRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.OngkirCheckboxSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.OngkirSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.ProductSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionComplaintModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,19 +52,52 @@ public class SolutionDetailFragmentPresenter
     }
 
     @Override
-    public void initResultViewModel(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel) {
+    public void initResultViewModel(ResultViewModel resultViewModel,
+                                    SolutionViewModel solutionViewModel,
+                                    SolutionResponseViewModel solutionResponseViewModel) {
         this.solutionViewModel = solutionViewModel;
         this.resultViewModel = resultViewModel;
-        mainView.updateAmountError("Maksimal " + solutionViewModel.getAmount().getIdr());
-        mainView.updateBottomButton(resultViewModel.refundAmount);
+        updateList(solutionResponseViewModel.getComplaints());
     }
 
     @Override
-    public void initEditAppealSolutionModel(EditAppealSolutionModel editAppealSolutionModel, SolutionViewModel solutionViewModel) {
+    public void initEditAppealSolutionModel(EditAppealSolutionModel editAppealSolutionModel,
+                                            SolutionViewModel solutionViewModel,
+                                            SolutionResponseViewModel solutionResponseViewModel) {
         this.editAppealSolutionModel = editAppealSolutionModel;
         this.solutionViewModel = solutionViewModel;
-        mainView.updateAmountError("Maksimal " + solutionViewModel.getAmount().getIdr());
-        mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
+        updateList(solutionResponseViewModel.getComplaints());
+    }
+
+    private void updateList(List<SolutionComplaintModel> modelList) {
+        boolean isSingleItem = modelList.size() == 1;
+        List<Visitable> itemList = new ArrayList<>();
+        for (SolutionComplaintModel model : modelList) {
+            if (model.getShipping() == null) {
+                itemList.add(new ProductSolutionModel(
+                        model.getProblem(),
+                        model.getShipping(),
+                        model.getProduct(),
+                        model.getOrder()));
+            } else {
+                if (model.getShipping().isChecked()) {
+                    itemList.add(new OngkirSolutionModel(
+                            model.getProblem(),
+                            model.getShipping(),
+                            model.getProduct(),
+                            model.getOrder(),
+                            isSingleItem));
+                } else {
+                    itemList.add(new OngkirCheckboxSolutionModel(
+                            model.getProblem(),
+                            model.getShipping(),
+                            model.getProduct(),
+                            model.getOrder(),
+                            isSingleItem));
+                }
+            }
+        }
+        mainView.initDataToList(itemList);
     }
 
     @Override

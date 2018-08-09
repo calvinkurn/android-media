@@ -20,6 +20,7 @@ public class SolutionComplaintModel implements Parcelable {
         this.order = order;
     }
 
+
     public SolutionProblemModel getProblem() {
         return problem;
     }
@@ -72,7 +73,7 @@ public class SolutionComplaintModel implements Parcelable {
         this.order = in.readParcelable(SolutionOrderModel.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<SolutionComplaintModel> CREATOR = new Parcelable.Creator<SolutionComplaintModel>() {
+    public static final Creator<SolutionComplaintModel> CREATOR = new Creator<SolutionComplaintModel>() {
         @Override
         public SolutionComplaintModel createFromParcel(Parcel source) {
             return new SolutionComplaintModel(source);

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -26,14 +29,22 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionDetailAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.typefactory.SolutionRefundTypeFactory;
+import com.tokopedia.inbox.rescenter.createreso.view.typefactory.SolutionRefundTypeFactoryImpl;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionOrderModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -46,37 +57,47 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     public static final String EDIT_APPEAL_MODEL_DATA = "edit_appeal_model_data";
+    public static final String SOLUTION_RESPONSE_MODEL = "solution_response_data";
     public static final String SOLUTION_DATA = "solution_data";
 
-    TkpdTextInputLayout tilAmount;
-    EditText etAmount;
-    ProgressBar progressBar;
-    Button btnContinue;
+    private TkpdTextInputLayout tilAmount;
+    private EditText etAmount;
+    private ProgressBar progressBar;
+    private Button btnContinue;
+    private RecyclerView recyclerView;
+    private SolutionRefundTypeFactory typeFactory;
+    private SolutionDetailAdapter adapter;
 
-    SolutionViewModel solutionViewModel;
-    EditAppealSolutionModel editAppealSolutionModel;
-    ResultViewModel resultViewModel;
+
+    private SolutionViewModel solutionViewModel;
+    private EditAppealSolutionModel editAppealSolutionModel;
+    private ResultViewModel resultViewModel;
+    private SolutionResponseViewModel solutionResponseViewModel;
 
     @Inject
     SolutionDetailFragmentPresenter presenter;
 
 
     public static SolutionDetailFragment newInstance(ResultViewModel resultViewModel,
-                                                     SolutionViewModel solutionViewModel) {
+                                                     SolutionViewModel solutionViewModel,
+                                                     SolutionResponseViewModel solutionResponseViewModel) {
         SolutionDetailFragment fragment = new SolutionDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(SOLUTION_DATA, solutionViewModel);
         bundle.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        bundle.putParcelable(SOLUTION_RESPONSE_MODEL, solutionResponseViewModel);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     public static SolutionDetailFragment newEditAppealDetailInstance(EditAppealSolutionModel editAppealSolutionModel,
-                                                                     SolutionViewModel solutionViewModel) {
+                                                                     SolutionViewModel solutionViewModel,
+                                                                     SolutionResponseViewModel solutionResponseViewModel) {
         SolutionDetailFragment fragment = new SolutionDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(SOLUTION_DATA, solutionViewModel);
         bundle.putParcelable(EDIT_APPEAL_MODEL_DATA, editAppealSolutionModel);
+        bundle.putParcelable(SOLUTION_RESPONSE_MODEL, solutionResponseViewModel);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -88,6 +109,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment
         etAmount = (EditText) view.findViewById(R.id.et_amount);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         presenter.attachView(this);
         return view;
     }
@@ -117,6 +139,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
     private void setupArguments(Bundle arguments) {
         solutionViewModel = arguments.getParcelable(SOLUTION_DATA);
+        solutionResponseViewModel = arguments.getParcelable(SOLUTION_RESPONSE_MODEL);
         if (arguments.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
             resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
         } else {
@@ -126,9 +149,15 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
     private void initView() {
         if (resultViewModel != null) {
-            presenter.initResultViewModel(resultViewModel, solutionViewModel);
+            presenter.initResultViewModel(
+                    resultViewModel,
+                    solutionViewModel,
+                    solutionResponseViewModel);
         } else {
-            presenter.initEditAppealSolutionModel(editAppealSolutionModel, solutionViewModel);
+            presenter.initEditAppealSolutionModel(
+                    editAppealSolutionModel,
+                    solutionViewModel,
+                    solutionResponseViewModel);
         }
 
         tilAmount.setHint(getActivity().getResources().getString(R.string.string_money_amount_returned));
@@ -143,6 +172,16 @@ public class SolutionDetailFragment extends BaseDaggerFragment
                         editAppealSolutionModel.getSolutionName()));
             }
         }
+
+    }
+
+    @Override
+    public void initDataToList(List<Visitable> itemList) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        typeFactory = new SolutionRefundTypeFactoryImpl(this);
+        adapter = new SolutionDetailAdapter(typeFactory, itemList);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void setViewListener() {
@@ -296,6 +335,24 @@ public class SolutionDetailFragment extends BaseDaggerFragment
         if (progressBar.getVisibility() == View.VISIBLE) {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public ComplaintResult getComplaintResult(SolutionOrderModel orderModel) {
+        if (orderModel == null) {
+            return resultViewModel.complaints.get(0);
+        }
+        List<ComplaintResult> complaintResults = resultViewModel != null ?
+                resultViewModel.complaints :
+                editAppealSolutionModel.complaints;
+        ComplaintResult result = new ComplaintResult();
+        for (ComplaintResult complaintResult : complaintResults) {
+            if(complaintResult.order.detail.id == orderModel.getDetail().getId()) {
+                result = complaintResult;
+                break;
+            }
+        }
+        return result;
     }
 
     @Override

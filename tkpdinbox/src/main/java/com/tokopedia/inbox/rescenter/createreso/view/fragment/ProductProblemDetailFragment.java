@@ -31,7 +31,6 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.utils.TimeTickerUtil;
 
@@ -66,11 +65,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
     ProductProblemDetailFragmentPresenter presenter;
     Dialog dialog;
 
-    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
+    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ComplaintResult complaintResult) {
         ProductProblemDetailFragment fragment = new ProductProblemDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemViewModel);
-        bundle.putParcelable(PROBLEM_RESULT_DATA, problemResult);
+        bundle.putParcelable(PROBLEM_RESULT_DATA, complaintResult);
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -7,14 +7,50 @@ public class SolutionProblemDomain {
 
     private int type;
     private String name;
+    private int trouble;
     private SolutionProblemAmountDomain amount;
     private SolutionProblemAmountDomain maxAmount;
+    private int qty;
+    private String remark;
 
-    public SolutionProblemDomain(int type, String name, SolutionProblemAmountDomain amount, SolutionProblemAmountDomain maxAmount) {
+    public SolutionProblemDomain(int type,
+                                 String name,
+                                 int trouble,
+                                 SolutionProblemAmountDomain amount,
+                                 SolutionProblemAmountDomain maxAmount,
+                                 int qty,
+                                 String remark) {
         this.type = type;
         this.name = name;
+        this.trouble = trouble;
         this.amount = amount;
         this.maxAmount = maxAmount;
+        this.qty = qty;
+        this.remark = remark;
+    }
+
+    public int getTrouble() {
+        return trouble;
+    }
+
+    public void setTrouble(int trouble) {
+        this.trouble = trouble;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public SolutionProblemAmountDomain getMaxAmount() {

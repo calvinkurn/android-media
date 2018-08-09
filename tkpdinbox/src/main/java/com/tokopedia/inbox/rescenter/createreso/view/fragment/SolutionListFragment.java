@@ -172,7 +172,8 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     @Override
     public void moveToSolutionDetail(SolutionViewModel solutionViewModel) {
-        Intent intent = new Intent(getActivity(), SolutionDetailActivity.class);
+        Intent intent;
+        solutionResponseViewModel.setSelectedSolution(solutionViewModel);
         if (resultViewModel != null) {
             intent = SolutionDetailActivity.getCreateInstance(
                     getActivity(),

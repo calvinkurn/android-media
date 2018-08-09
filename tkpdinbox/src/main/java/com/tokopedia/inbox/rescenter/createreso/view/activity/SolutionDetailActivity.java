@@ -28,6 +28,7 @@ public class SolutionDetailActivity extends BaseSimpleActivity {
     SolutionViewModel solutionViewModel;
     ResultViewModel resultViewModel;
     EditAppealSolutionModel editAppealSolutionModel;
+    SolutionResponseViewModel solutionResponseViewModel;
 
     public static Intent getCreateInstance(Context context,
                                            ResultViewModel resultViewModel,
@@ -59,14 +60,19 @@ public class SolutionDetailActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         Bundle extras = getIntent().getExtras();
         solutionViewModel = extras.getParcelable(SOLUTION_DATA);
+        solutionResponseViewModel = extras.getParcelable(SOLUTION_RESPONSE_MODEL);
         if (extras.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
             resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
-            return SolutionDetailFragment.newInstance(resultViewModel, solutionViewModel);
+            return SolutionDetailFragment.newInstance(
+                    resultViewModel,
+                    solutionViewModel,
+                    solutionResponseViewModel);
         } else {
             editAppealSolutionModel = extras.getParcelable(EDIT_APPEAL_MODEL_DATA);
             return SolutionDetailFragment.newEditAppealDetailInstance(
                     editAppealSolutionModel,
-                    solutionViewModel);
+                    solutionViewModel,
+                    solutionResponseViewModel);
         }
     }
 

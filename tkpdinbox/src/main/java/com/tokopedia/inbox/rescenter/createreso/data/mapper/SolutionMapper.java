@@ -123,12 +123,15 @@ public class SolutionMapper implements Func1<Response<ResolutionResponse<Solutio
         return new SolutionProblemDomain(
                 response.getType(),
                 response.getName(),
+                response.getTrouble(),
                 response.getAmount() != null ?
                         mappingSolutionProblemAmountDomain(response.getAmount()) :
                         null,
                 response.getMaxAmount() != null ?
                         mappingSolutionProblemAmountDomain(response.getMaxAmount()) :
-                        null);
+                        null,
+                response.getQty(),
+                response.getRemark());
     }
 
     private static SolutionProblemAmountDomain mappingSolutionProblemAmountDomain(SolutionProblemAmountResponse response) {

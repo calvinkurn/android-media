@@ -11,10 +11,16 @@ public class SolutionProblemResponse {
     private int type;
     @SerializedName("name")
     private String name;
+    @SerializedName("trouble")
+    private int trouble;
     @SerializedName("amount")
     private SolutionProblemAmountResponse amount;
     @SerializedName("maxAmount")
     private SolutionProblemAmountResponse maxAmount;
+    @SerializedName("qty")
+    private int qty;
+    @SerializedName("remark")
+    private String remark;
 
     public int getType() {
         return type;
@@ -46,5 +52,29 @@ public class SolutionProblemResponse {
 
     public void setMaxAmount(SolutionProblemAmountResponse maxAmount) {
         this.maxAmount = maxAmount;
+    }
+
+    public int getTrouble() {
+        return trouble;
+    }
+
+    public void setTrouble(int trouble) {
+        this.trouble = trouble;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

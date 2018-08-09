@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionProblemModel;
 
@@ -23,6 +24,7 @@ public class BaseSolutionRefundView extends BaseCustomView {
     private TextView tvRefund;
     private EditText etRefund;
 
+    private SolutionDetailFragmentListener.View mainView;
     private ComplaintResult complaintResult;
 
     public BaseSolutionRefundView(@NonNull Context context) {
@@ -50,14 +52,15 @@ public class BaseSolutionRefundView extends BaseCustomView {
         etRefund = (EditText) view.findViewById(R.id.et_fund);
     }
 
-    public void bind(SolutionProblemModel element, ComplaintResult complaintResult) {
+    public void bind(SolutionProblemModel element, SolutionDetailFragmentListener.View mainView, ComplaintResult complaintResult) {
+        this.mainView = mainView;
         this.complaintResult = complaintResult;
         initView(element);
         setViewListener(element);
     }
 
     private void initView(SolutionProblemModel element) {
-        etRefund.setText(complaintResult.problem.amount == 0 ? element.getAmount().getInteger() : complaintResult.problem.amount);
+        etRefund.setText(String.valueOf(complaintResult.problem.amount == 0 ? element.getAmount().getInteger() : complaintResult.problem.amount));
         tvRefund.setText(element.getMaxAmount().getIdr());
     }
 

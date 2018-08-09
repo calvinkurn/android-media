@@ -110,12 +110,15 @@ public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
         return new SolutionProblemModel(
                 response.getType(),
                 response.getName(),
+                response.getTrouble(),
                 response.getAmount() != null ?
                         mappingSolutionProblemAmountDomain(response.getAmount()) :
                         null,
                 response.getMaxAmount() != null ?
                         mappingSolutionProblemAmountDomain(response.getMaxAmount()) :
-                        null);
+                        null,
+                response.getQty(),
+                response.getRemark());
     }
 
     public static List<SolutionComplaintModel> mappingSolutionComplaintDomain(List<SolutionComplaintDomain> responseList) {
