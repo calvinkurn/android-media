@@ -13,11 +13,6 @@
             android:id="@+id/layout_departure_detail"
             layout="@layout/view_train_summary_departure" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator_vertical" />
-
         <com.tokopedia.train.search.presentation.TrainSearchRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

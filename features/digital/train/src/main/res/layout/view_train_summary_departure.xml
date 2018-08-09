@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/detail_departure_info"
-            style="@style/TextView.Small"
+            style="@style/TextView.Small.BlackSecondary"
             android:layout_below="@+id/title_departure_info"
             android:layout_marginTop="@dimen/dp_5"
             android:layout_toRightOf="@+id/train_name"

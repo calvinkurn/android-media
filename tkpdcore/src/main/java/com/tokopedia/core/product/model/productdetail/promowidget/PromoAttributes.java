@@ -30,7 +30,7 @@ public class PromoAttributes implements Parcelable{
     @SerializedName("short_cond_html")
     @Expose
     private String shortCondHtml;
-    @SerializedName("applinks")
+    @SerializedName("applink")
     @Expose
     private String applinks;
 
