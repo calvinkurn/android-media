@@ -25,6 +25,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -300,6 +301,7 @@ import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
+import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.flight.FlightVoucherCodeWrapperImpl;
 import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
@@ -2641,6 +2643,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxTicketCallingIntent(Context context) {
         return new Intent(context, InboxTicketActivity.class);
+    }
+
+    @Override
+    public ApplicationUpdate getAppUpdate(Context context) {
+        return new FirebaseRemoteAppUpdate(context);
     }
 
     @Override

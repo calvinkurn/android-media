@@ -82,11 +82,11 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         if (!accountModel.getWallet().isLinked()){
             tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
             tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
-            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_ACTIVATION);
+            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
         } else {
             tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
-            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_HOME);
+            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());

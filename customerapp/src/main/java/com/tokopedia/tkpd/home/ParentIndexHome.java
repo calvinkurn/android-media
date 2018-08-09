@@ -53,9 +53,9 @@ import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
-import com.tokopedia.core.appupdate.ApplicationUpdate;
-import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
@@ -793,27 +793,27 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void checkAppUpdate() {
-        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-            @Override
-            public void onNeedUpdate(DetailUpdate detail) {
-                if (!isPausing()) {
-                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
-                            .getAlertDialog().show();
-                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNotNeedUpdate() {
-                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
-            }
-        });
+//        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
+//        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+//            @Override
+//            public void onNeedUpdate(DetailUpdate detail) {
+//                if (!isPausing()) {
+//                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
+//                            .getAlertDialog().show();
+//                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onNotNeedUpdate() {
+//                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
+//            }
+//        });
     }
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {

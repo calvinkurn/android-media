@@ -94,14 +94,8 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                     if (walletModel != null){
                         if (walletModel.isLinked()){
                             RouteManager.route(getActivity(), walletModel.getApplink());
-//                            router.goToTokoCash(walletModel.getApplink(),
-//                                    walletModel.getRedirectUrl(),
-//                                    getActivity());
                         } else {
                             RouteManager.route(getActivity(), walletModel.getAction().getApplink());
-//                            router.goToTokoCash(walletModel.getAction().getApplink(),
-//                                    walletModel.getAction().getRedirectUrl(),
-//                                    getActivity());
                         }
                     }
                     break;

@@ -15,7 +15,6 @@ import com.tokopedia.home.account.presentation.fragment.setting.AccountSettingFr
 @DeepLink(ApplinkConst.SETTING_ACCOUNT)
 public class AccountSettingActivity extends BaseSimpleActivity {
 
-    private static final String KEY_PRIVACY = "privacy";
     private static final int REQUEST_CHANGE_PASSWORD = 123;
 
     public static Intent createIntent(Context context) {
@@ -29,14 +28,6 @@ public class AccountSettingActivity extends BaseSimpleActivity {
                 case 0:
                     NetworkErrorHelper.showSnackbar(this, getString(R.string.message_success_change_profile));
                     setResult(resultCode, new Intent());
-                    break;
-                case 1:
-                    Bundle bundles = new Bundle();
-                    bundles.putBundle(KEY_PRIVACY, data.getExtras());
-
-                    Intent datas = new Intent();
-                    datas.putExtras(bundles);
-                    setResult(resultCode, datas);
                     break;
                 case REQUEST_CHANGE_PASSWORD:
                     NetworkErrorHelper.showGreenCloseSnackbar(this, getString(R.string.message_success_change_password));

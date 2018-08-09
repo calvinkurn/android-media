@@ -1,6 +1,6 @@
-package com.tokopedia.core.appupdate;
+package com.tokopedia.abstraction.base.view.appupdate;
 
-import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 
 /**
  * Created by okasurya on 7/25/17.
