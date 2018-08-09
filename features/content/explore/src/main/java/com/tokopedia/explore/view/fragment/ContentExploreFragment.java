@@ -31,6 +31,7 @@ import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactoryImpl;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
+import com.tokopedia.explore.view.listener.ExploreContainerListener;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
@@ -71,6 +72,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Inject
     ExploreImageAdapter imageAdapter;
 
+    private ExploreContainerListener containerListener;
     private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
     private int categoryId;
@@ -115,8 +117,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         GraphqlClient.init(getContext());
-        initView();
         initVar();
+        initView();
         presenter.attachView(this);
         presenter.getExploreData(true);
     }
@@ -165,6 +167,9 @@ public class ContentExploreFragment extends BaseDaggerFragment
         ExploreImageTypeFactory typeFactory = new ExploreImageTypeFactoryImpl(this);
         imageAdapter.setTypeFactory(typeFactory);
         exploreImageRv.setAdapter(imageAdapter);
+        tabFeed.setOnClickListener(v -> {
+            containerListener.showFeedPlus();
+        });
     }
 
     private void initVar() {
@@ -181,6 +186,13 @@ public class ContentExploreFragment extends BaseDaggerFragment
         } else {
             throw new IllegalStateException("Application must be an instance of " +
                     AbstractionRouter.class.getSimpleName());
+        }
+
+        if (getParentFragment() instanceof ExploreContainerListener) {
+            containerListener = (ExploreContainerListener) getParentFragment();
+        } else {
+            throw new IllegalStateException("getParentFragment() must implement " +
+                    ExploreContainerListener.class.getSimpleName());
         }
     }
 

@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -41,8 +40,6 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -59,6 +56,7 @@ import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
+import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
@@ -128,30 +126,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
     public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
 
-    RecyclerView recyclerView;
-    SwipeToRefresh swipeToRefresh;
-    RelativeLayout mainContent;
-    View newFeed;
-    Trace trace;
+    private RecyclerView recyclerView;
+    private SwipeToRefresh swipeToRefresh;
+    private View mainContent;
+    private View newFeed;
     private View tabExplore;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
-    private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
     private MainToolbar mainToolbar;
 
-    @Inject
-    FeedPlusPresenter presenter;
-
+    private Trace trace;
+    private FeedPlusContainerListener containerListener;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private String firstCursor = "";
     private int loginIdInt;
+    private boolean hasLoadedOnce = false;
 
-    boolean hasLoadedOnce = false;
+    @Inject
+    FeedPlusPresenter presenter;
 
     public static FeedPlusFragment newInstance() {
         FeedPlusFragment fragment = new FeedPlusFragment();
@@ -221,6 +218,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
         } else {
             throw new IllegalStateException("Application must implement " +
                     FeedModuleRouter.class.getSimpleName());
+        }
+
+        if (getParentFragment() instanceof FeedPlusContainerListener) {
+            containerListener = (FeedPlusContainerListener) getParentFragment();
+        } else {
+            throw new IllegalStateException("getParentFragment() must implement " +
+                    FeedPlusContainerListener.class.getSimpleName());
         }
 
         String loginIdString = getUserSession().getUserId();
@@ -313,6 +317,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
         });
+        tabExplore.setOnClickListener(v -> {
+           containerListener.showContentExplore();
+        });
     }
 
     private void trackImpression(Visitable item) {
@@ -338,7 +345,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -987,10 +993,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        //TODO milhamj revert remote config
-//        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
-//            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
-//        }
         feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
