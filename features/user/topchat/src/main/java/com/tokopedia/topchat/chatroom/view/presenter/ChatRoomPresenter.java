@@ -432,7 +432,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().setCanLoadMore(false);
         getView().setHeaderModel(replyData.getNameHeader(), replyData.getImageHeader());
         getView().setHeader();
-        if (pagingHandler.getPage() == 1) {
+        if (pagingHandler.getPage() == 1 && replyData.getChatList().size() > 0) {
             getView().getAdapter().setList(replyData.getChatList());
             getView().scrollToBottom();
             getView().hideMainLoading();
@@ -442,8 +442,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                         (QuickReplyListViewModel) replyData.getChatList().get(0);
                 getView().showQuickReplyView(model);
             }
-        } else {
+        } else if (replyData.getChatList().size() > 0) {
             getView().getAdapter().addList(replyData.getChatList());
+        } else if (replyData.getChatList().size() == 0) {
+            getView().hideMainLoading();
         }
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
