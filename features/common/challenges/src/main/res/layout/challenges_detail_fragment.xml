@@ -172,7 +172,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/green_nob"
+                android:background="@color/tkpd_main_green"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_expiry" />
@@ -233,7 +233,7 @@
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_12"
-                    android:tint="@color/green_nob" />
+                    android:tint="@color/tkpd_main_green" />
             </LinearLayout>
 
             <View
@@ -243,7 +243,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/green_nob"
+                android:background="@color/tkpd_main_green"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/expand_view_description" />
@@ -265,6 +265,9 @@
                 android:id="@+id/rv_awards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@+id/tv_awards"
                 tools:listitem="@layout/challenges_award_item" />
@@ -276,7 +279,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/green_nob"
+                android:background="@color/tkpd_main_green"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_awards" />
@@ -324,7 +327,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/green_nob"
+                android:background="@color/tkpd_main_green"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_submissions" />
@@ -348,19 +351,24 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cv_checkout"
+        android:id="@+id/ll_continue"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_80"
         android:layout_gravity="bottom"
-        app:cardBackgroundColor="@color/tkpd_main_green">
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="@dimen/dp_0">
+
 
         <TextView
-            android:id="@+id/ll_buynow"
+            android:id="@+id/submit_photo"
+            style="@style/TextView.Small.White"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_margin="@dimen/dp_14"
+            android:background="@drawable/background_submit_btn"
             android:gravity="center"
-            android:text="View Your Submissions" />
+            android:text="@string/submit_photo" />
     </android.support.v7.widget.CardView>
+
 </android.support.design.widget.CoordinatorLayout>

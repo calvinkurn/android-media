@@ -12,4 +12,6 @@
     <string name="text_due_date">Due Date:%s</string>
     <string name="most_recent">Most Recent</string>
     <string name="buzz_points">Buzz Points</string>
+    <string name="see_all">Lihat Semua</string>
+    <string name="submit_photo">View or Submit your Photo</string>
 </resources>
