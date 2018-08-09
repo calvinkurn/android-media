@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
@@ -63,6 +64,9 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
+
+    private static final String PARAM_CHECKOUT_CLIENT = "android";
+    private static final String PARAM_CHECKOUT_VERSION = "kai-" + GlobalConfig.VERSION_NAME;
 
     @Inject
     TrainAnalytics trainAnalytics;
@@ -192,8 +196,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
                     trainSoftbook.getReservationCode(),
                     appliedVoucherCode,
-                    "web",
-                    "7");
+                    PARAM_CHECKOUT_CLIENT,
+                    PARAM_CHECKOUT_VERSION);
         });
 
         viewTrainReviewDetailPriceSection.showScheduleTripsPrice(trainSoftbook);
