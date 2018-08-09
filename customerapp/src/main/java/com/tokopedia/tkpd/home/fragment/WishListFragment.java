@@ -94,7 +94,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wishList = new WishListImpl(this, new SearchWishlistUsecase());
+        wishList = new WishListImpl(getActivity(), this, new SearchWishlistUsecase());
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
@@ -254,9 +254,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         enhancedECommerceProductCartMapData.setShopType(generateShopType(dataDetail.getShop()));
         enhancedECommerceProductCartMapData.setShopName(dataDetail.getShop().getName());
         enhancedECommerceProductCartMapData.setCategoryId(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setDimension38(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setAttribution(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setDimension40(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setListName(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
         enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());

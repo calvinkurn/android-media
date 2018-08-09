@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,17 +18,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter;
-import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapterListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
@@ -35,6 +36,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppe
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
@@ -92,43 +94,35 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerCreateResoComponent daggerCreateResoComponent =
-                (DaggerCreateResoComponent) DaggerCreateResoComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerCreateResoComponent.inject(this);
+        DaggerResolutionComponent resolutionComponent =
+                (DaggerResolutionComponent)DaggerResolutionComponent.builder()
+                        .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext())
+                                .getBaseAppComponent()).build();
+        resolutionComponent.inject(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_solution_list, container, false);
+        rvSolution = (RecyclerView) view.findViewById(R.id.rv_solution);
+        llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
+        tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
+        llSolution = (LinearLayout) view.findViewById(R.id.solution_layout);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        llFreeReturn.setVisibility(View.GONE);
         presenter.attachView(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupArguments(getArguments());
+        initView();
+        setViewListener();
     }
 
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
+    private void setupArguments(Bundle arguments) {
         if (arguments.getParcelable(RESULT_VIEW_MODEL_DATA) instanceof ResultViewModel) {
             resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
         } else if (arguments.getParcelable(EDIT_APPEAL_MODEL_DATA) instanceof EditAppealSolutionModel) {
@@ -137,20 +131,7 @@ public class SolutionListFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_solution_list;
-    }
-
-    @Override
-    protected void initView(View view) {
-        rvSolution = (RecyclerView) view.findViewById(R.id.rv_solution);
-        llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
-        tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
-        llSolution = (LinearLayout) view.findViewById(R.id.solution_layout);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        llFreeReturn.setVisibility(View.GONE);
-
+    private void initView() {
         rvSolution.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (!isEditAppeal)
             presenter.initResultViewModel(resultViewModel);
@@ -158,15 +139,9 @@ public class SolutionListFragment extends BaseDaggerFragment
             presenter.initEditAppeal(editAppealSolutionModel);
     }
 
-    @Override
-    protected void setViewListener() {
-        tvFreeReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(FreeReturnActivity
-                        .newInstance(getActivity(), freeReturnViewModel.getLink()));
-            }
-        });
+    private void setViewListener() {
+        tvFreeReturn.setOnClickListener(view -> startActivity(FreeReturnActivity
+                .newInstance(getActivity(), freeReturnViewModel.getLink())));
     }
 
     @Override
@@ -283,7 +258,7 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     @Override
     public void showDialogCompleteEditAppeal(final SolutionViewModel solutionViewModel) {
-        final Dialog dialog = new Dialog(context);
+        final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_edit_solution);
         TextView tvTitle = (TextView) dialog.findViewById(R.id.tv_title);
@@ -296,11 +271,11 @@ public class SolutionListFragment extends BaseDaggerFragment
         updateSolutionString(solutionViewModel, tvSolution);
 
         if (editAppealSolutionModel.isEdit) {
-            tvTitle.setText(context.getString(R.string.string_edit_title));
-            tvMessage.setText(context.getString(R.string.string_edit_message));
+            tvTitle.setText(getActivity().getString(R.string.string_edit_title));
+            tvMessage.setText(getActivity().getString(R.string.string_edit_message));
         } else {
-            tvTitle.setText(context.getString(R.string.string_appeal_title));
-            tvMessage.setText(context.getString(R.string.string_appeal_message));
+            tvTitle.setText(getActivity().getString(R.string.string_appeal_title));
+            tvMessage.setText(getActivity().getString(R.string.string_appeal_message));
         }
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -331,7 +306,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
         textView.setText(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
                 solutionViewModel.getSolutionName().replace(
-                        context.getResources().getString(R.string.string_return_value),
+                        getActivity().getResources().getString(R.string.string_return_value),
                         CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
                 solutionViewModel.getName());
     }

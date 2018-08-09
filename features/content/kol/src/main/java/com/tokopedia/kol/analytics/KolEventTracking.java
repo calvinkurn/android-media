@@ -7,6 +7,7 @@ package com.tokopedia.kol.analytics;
 public interface KolEventTracking {
     interface Screen {
         String SCREEN_KOL_COMMENTS = "Kol Comments Page";
+        String SCREEN_KOL_POST_DETAIL = "content detail page";
     }
 
     interface Event {

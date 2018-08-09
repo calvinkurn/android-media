@@ -15,6 +15,7 @@ import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -23,19 +24,32 @@ import retrofit2.Retrofit;
 
 public class AccessTokenRefresh {
 
+    private static final String FORCE_LOGOUT = "forced_logout";
+    private static final String INVALID_REQUEST = "invalid_request";
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String GRANT_TYPE = "grant_type";
+    private static final String REFRESH_TOKEN = "refresh_token";
+
     public String refreshToken(Context context, UserSession userSession, NetworkRouter networkRouter)  {
 
         userSession.clearToken();
         Map<String, String> params = new HashMap<>();
 
-        params.put("grant_type", "refresh_token");
-        params.put("refresh_token", EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
+        params.put(ACCESS_TOKEN, userSession.getAccessToken());
+        params.put(GRANT_TYPE, REFRESH_TOKEN);
+        params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
 
         Call<String> responseCall = getRetrofit(context, userSession, networkRouter).create(AccountsBasicApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;
+        String tokenResponseError = null;
         try {
-            tokenResponse = responseCall.clone().execute().body();
+            Response<String> response = responseCall.clone().execute();
+
+            tokenResponseError = response.errorBody().string();
+            checkShowForceLogout(tokenResponseError, networkRouter);
+
+            tokenResponse = response.body();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,5 +72,15 @@ public class AccessTokenRefresh {
                         new AccountsBasicInterceptor(context, networkRouter, userSession))
                         .build())
                 .build();
+    }
+
+    protected Boolean isRequestDenied(String responseString) {
+        return responseString.toLowerCase().contains(FORCE_LOGOUT);
+    }
+
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter){
+        if (isRequestDenied(response)) {
+            networkRouter.showForceLogoutTokenDialog(response);
+        }
     }
 }
