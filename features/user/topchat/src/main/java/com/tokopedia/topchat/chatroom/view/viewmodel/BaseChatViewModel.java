@@ -4,9 +4,6 @@ import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
-import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
-import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 
 /**
  * @author by yfsx on 08/05/18.
@@ -20,7 +17,8 @@ public class BaseChatViewModel {
     private String attachmentId;
     private String attachmentType;
     private String replyTime;
-    private boolean showTime = false;
+    private boolean showDate = false;
+    private boolean showTime = true;
     private String message;
 
     /**
@@ -87,8 +85,8 @@ public class BaseChatViewModel {
         return message;
     }
 
-    public boolean isShowTime() {
-        return showTime;
+    public boolean isShowDate() {
+        return showDate;
     }
 
     public void setReplyTime(String replyTime) {
@@ -102,11 +100,22 @@ public class BaseChatViewModel {
     /**
      * Set in {@link ChatRoomAdapter}
      *
-     * @param showTime set true to show time in header of chat
+     * @param showDate set true to show date in header of chat
+     */
+    public void setShowDate(boolean showDate) {
+        this.showDate = showDate;
+    }
+
+    public boolean isShowTime() {
+        return showTime;
+    }
+
+    /**
+     * Set in {@link ChatRoomAdapter}
+     *
+     * @param showTime set true to show time in chat
      */
     public void setShowTime(boolean showTime) {
         this.showTime = showTime;
     }
-
-
 }

@@ -10,10 +10,10 @@ import rx.Subscriber;
  */
 
 public class LikeKolPostSubscriber extends Subscriber<Boolean> {
-    private final KolPostListener.View  view;
+    private final KolPostListener.View.Like  view;
     private final int rowNumber;
 
-    public LikeKolPostSubscriber(KolPostListener.View view, int rowNumber) {
+    public LikeKolPostSubscriber(KolPostListener.View.Like view, int rowNumber) {
         this.view = view;
         this.rowNumber = rowNumber;
     }

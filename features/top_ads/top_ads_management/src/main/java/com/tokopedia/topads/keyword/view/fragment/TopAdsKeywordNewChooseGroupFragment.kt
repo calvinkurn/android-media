@@ -243,7 +243,9 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
     }
 
     override fun onGetGroupAdListError(e: Throwable?) {
-        context?.let { input_layout_choose_group.error = ViewUtils.getGeneralErrorMessage(it, e) }
+        context?.let {
+            input_layout_choose_group.error = ViewUtils.getGeneralErrorMessage(it, e)
+        }
     }
 
     override fun onDestroy() {

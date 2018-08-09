@@ -62,8 +62,12 @@ class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
         txtOrderDate.setText(lastUpdatedDate(buyerPurchaseList.getDetail().getCreateTime()));
         ImageHandler.loadImageThumbs(imgProduct.getContext(), imgProduct, buyerPurchaseList.getProducts().get(0).getImage());
         txtProductName.setText(buyerPurchaseList.getProducts().get(0).getName());
-        txtMoreItem.setText(String.format(txtMoreItem.getContext().getResources().getString(R.string.more_items),
-                buyerPurchaseList.getProducts().size() - 1));
+        if(buyerPurchaseList.getProducts().size() > 1) {
+            txtMoreItem.setText(String.format(txtMoreItem.getContext().getResources().getString(R.string.more_items),
+                    buyerPurchaseList.getProducts().size() - 1));
+        }else {
+            txtMoreItem.setVisibility(View.INVISIBLE);
+        }
         txtTotalPrice.setText(buyerPurchaseList.getDetail().getTotalAmount());
         txtInvalidMsg.setText(buyerPurchaseList.getDetail().getStatus());
     }

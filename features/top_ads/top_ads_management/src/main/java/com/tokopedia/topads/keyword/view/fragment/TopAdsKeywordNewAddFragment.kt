@@ -124,7 +124,9 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
     }
 
     private fun initEmptyStateView() {
-        activity?.let { no_result_image.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.icon_empty_local_keyword)) }
+        activity?.let {
+            no_result_image.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.icon_empty_local_keyword))
+        }
         text_view_empty_title_text.setText(R.string.topads_keyword_local_empty_title)
         text_view_empty_content_text.visibility = View.GONE
         button_add_promo.visibility = View.GONE
@@ -161,14 +163,17 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     private fun gotoKeywordCurrentList() {
         stepperModel?.run {
-            activity?.let { TopAdsKeywordCurrentListActivity.start(it, isPositive, groupId!!,
-                    this@TopAdsKeywordNewAddFragment) }
+            activity?.let {
+                TopAdsKeywordCurrentListActivity.start(it, isPositive, groupId!!, this@TopAdsKeywordNewAddFragment)
+            }
         }
     }
 
     private fun gotoAddKeywordItem(){
-        activity?.let { TopAdsKeywordNewItemActivity.startForResult(it, REQUEST_ADD_ITEM_CODE,
-                localKeywordAdapter.localKeywords, maxKeyword, stepperModel, this)}
+        activity?.let {
+            TopAdsKeywordNewItemActivity.startForResult(it, REQUEST_ADD_ITEM_CODE,
+                    localKeywordAdapter.localKeywords, maxKeyword, stepperModel, this)
+        }
     }
 
     private fun setCurrentMaxKeyword(){

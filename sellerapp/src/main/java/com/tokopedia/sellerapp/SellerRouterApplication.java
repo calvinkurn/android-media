@@ -22,8 +22,11 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.changepassword.ChangePasswordRouter;
+import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
+import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -32,19 +35,26 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -61,8 +71,10 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
+import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
@@ -118,6 +130,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
@@ -153,6 +166,8 @@ import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWa
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.settingbank.BankRouter;
+import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
@@ -203,7 +218,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter {
+        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1260,11 +1275,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isEnabledGroupChat() {
-        return false;
-    }
-
-    @Override
     public void sendTrackingGroupChatLeftNavigation() {
     }
 
@@ -1430,7 +1440,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openRedirectUrl(Activity activity, String url) {
-        goToWebview(activity,url);
+        goToWebview(activity, url);
     }
 
     @Override
@@ -1440,8 +1450,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isLoginInactivePhoneLinkEnabled() {
-        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
-                && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+        return false;
     }
 
     @Override
@@ -1453,4 +1462,92 @@ public abstract class SellerRouterApplication extends MainApplication
     public void setStringRemoteConfigLocal(String key, String value) {
         remoteConfig.setString(key, value);
     }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
+
+    @Override
+    public Intent getSettingBankIntent(Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_setting_bank", true))
+            return SettingBankActivity.Companion.createIntent(context);
+        else {
+            return ManagePeopleBankActivity.createInstance(context);
+        }
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
+        if (remoteConfig.getBoolean("sellerapp_new_change_password_enabled", true)) {
+            return ChangePasswordActivity.Companion.createIntent(context);
+        } else {
+            return new Intent(context, ManagePasswordActivity.class);
+        }
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return SimpleWebViewWithFilePickerActivity.getIntent(context,
+                url);
+    }
+
+    @Override
+    public Intent getProfileSettingIntent(Context context) {
+        return ManagePeopleProfileActivity.createIntent(context);
+    }
+
+    @Override
+    public void logoutToHome(Activity activity) {
+        //From DialogLogoutFragment
+        if(activity!= null) {
+            new GlobalCacheManager().deleteAll();
+            Router.clearEtalase(activity);
+            DbManagerImpl.getInstance().removeAllEtalase();
+            TrackingUtils.eventMoEngageLogoutUser();
+            SessionHandler.clearUserData(activity);
+            NotificationModHandler notif = new NotificationModHandler(activity);
+            notif.dismissAllActivedNotifications();
+            NotificationModHandler.clearCacheAllNotification(activity);
+
+            invalidateCategoryMenuData();
+            onLogout(getApplicationComponent());
+
+            Intent intent = getHomeIntent(activity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            AppWidgetUtil.sendBroadcastToAppWidget(activity);
+        }
+    }
+
 }

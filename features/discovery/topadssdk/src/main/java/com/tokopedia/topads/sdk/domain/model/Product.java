@@ -60,6 +60,7 @@ public class Product {
     private List<String> topLabels = new ArrayList<>();
     private List<String> bottomLabels = new ArrayList<>();
     private ImageProduct imageProduct;
+    private boolean loaded;
 
     public Product() {
     }
@@ -335,5 +336,13 @@ public class Product {
 
     public void setApplinks(String applinks) {
         this.applinks = applinks;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
     }
 }

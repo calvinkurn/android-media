@@ -46,7 +46,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
 
 import java.util.List;
 

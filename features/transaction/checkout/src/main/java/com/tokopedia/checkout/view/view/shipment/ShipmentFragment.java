@@ -50,7 +50,6 @@ import com.tokopedia.checkout.view.view.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -97,6 +96,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayout llNetworkErrorView;
+    private LinearLayout llCheckoutButtonContainer;
+    private TextView tvTotalPayment;
+    private TextView tvSelectPaymentMethod;
     private TkpdProgressDialog progressDialogNormal;
     private CourierBottomsheet courierBottomsheet;
 
@@ -198,7 +200,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setPromoCodeAppliedData(promoCodeAppliedData);
         shipmentPresenter.setCartPromoSuggestion(arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
         shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
-        shipmentPresenter.setShipmentCheckoutButtonModel(new ShipmentCheckoutButtonModel());
     }
 
     @Override
@@ -211,8 +212,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvShipment = view.findViewById(R.id.rv_shipment);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        llCheckoutButtonContainer = view.findViewById(R.id.ll_checkout_button_container);
+        tvTotalPayment = view.findViewById(R.id.tv_total_payment);
+        tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shipmentAdapter.checkDropshipperValidation();
+            }
+        });
     }
 
     @Override
@@ -235,7 +246,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             outState.putParcelableArrayList(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
             outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
             outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
-            outState.putParcelable(ShipmentCheckoutButtonModel.class.getSimpleName(), shipmentPresenter.getShipmentCheckoutButtonModel());
             outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
         }
     }
@@ -251,7 +261,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.setShipmentCartItemModelList(savedInstanceState.getParcelableArrayList(ShipmentCartItemModel.class.getSimpleName()));
                 shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
                 shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
-                shipmentPresenter.setShipmentCheckoutButtonModel(savedInstanceState.getParcelable(ShipmentCheckoutButtonModel.class.getSimpleName()));
                 shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
                 renderCheckoutPage(true);
             } else {
@@ -271,14 +280,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
                                       ShipmentCostModel shipmentCostModel,
-                                      ShipmentCheckoutButtonModel shipmentCheckoutButtonModel,
                                       boolean isInitialRender) {
         shipmentAdapter.clearData();
         rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvShipment.setAdapter(shipmentAdapter);
         if (isInitialRender) {
-            rvShipment.addItemDecoration(
-                    new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+            rvShipment.addItemDecoration(new CartItemDecoration());
         }
         CartItemPromoHolderData cartItemPromoHolderData =
                 CartItemPromoHolderData.createInstanceFromAppliedPromo(promoCodeAppliedData);
@@ -300,7 +307,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
-        shipmentAdapter.addShipmentCheckoutButtonModel(shipmentCheckoutButtonModel);
         if (isInitialRender) {
             if (!shipmentSelectionStateDataHashSet.isEmpty()) {
                 for (ShipmentSelectionStateData shipmentSelectionStateData : shipmentSelectionStateDataHashSet) {
@@ -312,6 +318,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
+        llCheckoutButtonContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -388,6 +395,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderErrorPage(String message) {
         rvShipment.setVisibility(View.GONE);
+        llCheckoutButtonContainer.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -395,6 +403,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
+                        llCheckoutButtonContainer.setVisibility(View.VISIBLE);
                         shipmentPresenter.processInitialLoadCheckoutPage(false);
                     }
                 });
@@ -412,12 +421,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         ShipmentDonationModel shipmentDonationModel = shipmentPresenter.getShipmentDonationModel();
         ShipmentCostModel shipmentCostModel = shipmentPresenter.getShipmentCostModel();
-        ShipmentCheckoutButtonModel shipmentCheckoutButtonModel = shipmentPresenter.getShipmentCheckoutButtonModel();
 
         initRecyclerViewData(
                 promoCodeAppliedData, cartPromoSuggestion, recipientAddressModel,
-                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel,
-                shipmentCheckoutButtonModel, isInitialRender
+                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, isInitialRender
         );
     }
 
@@ -430,7 +437,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
             CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
     ) {
-        shipmentAdapter.disableShipmentCheckoutButtonModel();
         if (getActivity() != null && needToRefreshItemList) {
             showToastError(getActivity().getString(R.string.error_message_checkout_failed));
         }
@@ -448,13 +454,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 oldShipmentCartItemModelList,
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getShipmentCostModel(),
-                shipmentPresenter.getShipmentCheckoutButtonModel(),
                 false
         );
     }
 
     @Override
-    public void renderDataChangedFromMultipleAddress(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public void renderDataChanged() {
         if (getArguments() != null) {
             initializePresenterData(getArguments());
         }
@@ -464,12 +469,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         ShipmentDonationModel shipmentDonationModel = shipmentPresenter.getShipmentDonationModel();
         ShipmentCostModel shipmentCostModel = shipmentPresenter.getShipmentCostModel();
-        ShipmentCheckoutButtonModel shipmentCheckoutButtonModel = shipmentPresenter.getShipmentCheckoutButtonModel();
 
         initRecyclerViewData(
                 promoCodeAppliedData, cartPromoSuggestion, recipientAddressModel,
-                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel,
-                shipmentCheckoutButtonModel, false
+                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, false
         );
     }
 
@@ -699,10 +702,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ArrayList<ShipmentCartItemModel> shipmentCartItemModels = data.getParcelableArrayListExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_CART_TEM_LIST_DATA);
             ShipmentCostModel shipmentCostModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_COST_SATA);
             ShipmentDonationModel shipmentDonationModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_DONATION_DATA);
-            ShipmentCheckoutButtonModel shipmentCheckoutButtonModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA);
             shipmentPresenter.processReloadCheckoutPageFromMultipleAddress(
                     cartItemPromoHolderData, cartPromoSuggestion, recipientAddressModel, shipmentCartItemModels,
-                    shipmentCostModel, shipmentDonationModel, shipmentCheckoutButtonModel
+                    shipmentCostModel, shipmentDonationModel
             );
         } else {
             shipmentSelectionStateDataHashSet.clear();
@@ -854,15 +856,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentCostModel(),
-                shipmentPresenter.getShipmentDonationModel(),
-                shipmentPresenter.getShipmentCheckoutButtonModel()
+                shipmentPresenter.getShipmentDonationModel()
         );
         startActivityForResult(intent, REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS);
     }
 
     @Override
     public void resetTotalPrice() {
-        shipmentAdapter.updateCheckoutButtonData(true, "-");
+        shipmentAdapter.updateCheckoutButtonData("-");
     }
 
     @Override
@@ -939,8 +940,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onTotalPaymentChange(ShipmentCostModel shipmentCostModel) {
-        shipmentAdapter.updateCheckoutButtonData(false, null);
+    public void onTotalPaymentChange(String totalPayment) {
+        tvTotalPayment.setText(totalPayment);
     }
 
     @Override
@@ -1008,12 +1009,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartDataEnableToCheckout() {
-        shipmentAdapter.updateCheckoutButtonData(false, null);
+        shipmentAdapter.updateCheckoutButtonData(null);
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
-        shipmentAdapter.updateCheckoutButtonData(true, null);
+        shipmentAdapter.updateCheckoutButtonData(null);
     }
 
     @Override
@@ -1095,13 +1096,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void checkRecyclerViewFillScreen() {
-        boolean isPageFilledWithItems = rvShipment.computeVerticalScrollRange() > rvShipment.getHeight();
-        if (shipmentPresenter.getShipmentCheckoutButtonModel() != null) {
-            shipmentPresenter.getShipmentCheckoutButtonModel().setHideBottomShadow(isPageFilledWithItems);
-        }
-    }
-
     @Override
     public void onNeedUpdateViewItem(final int position) {
         if (rvShipment.isComputingLayout()) {
@@ -1109,12 +1103,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 @Override
                 public void run() {
                     shipmentAdapter.notifyItemChanged(position);
-                    checkRecyclerViewFillScreen();
                 }
             });
         } else {
             shipmentAdapter.notifyItemChanged(position);
-            checkRecyclerViewFillScreen();
         }
     }
 
@@ -1144,7 +1136,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChoosePaymentMethodButtonClicked(boolean ableToCheckout) {
+    public void onChoosePaymentMethodButtonClicked() {
         shipmentAdapter.checkDropshipperValidation();
     }
 
@@ -1152,7 +1144,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onDonationChecked(boolean checked) {
         shipmentAdapter.updateDonation(checked);
     }
-
 
     @Override
     protected String getScreenName() {

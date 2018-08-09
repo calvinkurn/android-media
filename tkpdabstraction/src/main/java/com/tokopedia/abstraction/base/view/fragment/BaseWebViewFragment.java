@@ -25,7 +25,7 @@ import static android.app.Activity.RESULT_OK;
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
 
-    private TkpdWebView webView;
+    protected TkpdWebView webView;
     private ProgressBar progressBar;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
@@ -164,7 +164,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void loadWeb() {
+    protected void loadWeb() {
         webView.clearCache(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
