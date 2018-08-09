@@ -34,6 +34,7 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
 
     private TextView textDepartureTripInfantPassengerCount;
     private TextView textDepartureTripInfantTotalPrice;
+    private LinearLayout viewInfantTotalPriceDepartureTrip;
 
     private TextView textReturnTripAdultPassengerCount;
     private TextView textReturnTripAdultTotalPrice;
@@ -99,6 +100,7 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
         textDepartureTripAdultPassengerCount = rootview.findViewById(R.id.text_departure_trip_adult_passenger_count);
         textDepartureTripAdultTotalPrice = rootview.findViewById(R.id.text_departure_trip_adult_total_price);
 
+        viewInfantTotalPriceDepartureTrip = rootview.findViewById(R.id.view_infant_total_price_departure_trip);
         textDepartureTripInfantPassengerCount = rootview.findViewById(R.id.text_departure_trip_infant_passenger_count);
         textDepartureTripInfantTotalPrice = rootview.findViewById(R.id.text_departure_trip_infant_total_price);
 
@@ -186,6 +188,7 @@ public class ViewTrainReviewDetailPriceSection extends LinearLayout {
                         false, 0).getFormattedString());
 
         if (numOfInfantPassenger > 0) {
+            viewInfantTotalPriceDepartureTrip.setVisibility(VISIBLE);
             textDepartureTripInfantPassengerCount.setText(getResources().getString(R.string.train_review_trip_infant_passenger_count,
                     origin, destination, numOfInfantPassenger));
             textDepartureTripInfantTotalPrice.setText(

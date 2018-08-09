@@ -83,8 +83,8 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/train_review_label_passengers_data"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16"
+                style="@style/TextView.Small.BlackPrimary"
+                android:textSize="@dimen/sp_17"
                 android:textStyle="bold" />
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
