@@ -5,38 +5,52 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.updateinactivephone.R;
+import com.tokopedia.updateinactivephone.design.view.UpdateInactivePhoneInfoBottomSheet;
 import com.tokopedia.updateinactivephone.fragment.SelectImageNewPhoneFragment;
+import com.tokopedia.updateinactivephone.fragment.UpdateNewPhoneEmailFragment;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactiveFormRequestPresenter;
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest;
+import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
+
 public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implements
-        HasComponent<AppComponent>, ChangeInactiveFormRequest.View, SelectImageNewPhoneFragment.SelectImageInterface {
+        HasComponent<AppComponent>, ChangeInactiveFormRequest.View,
+        SelectImageNewPhoneFragment.SelectImageInterface, UpdateNewPhoneEmailFragment.UpdateNewPhoneEmailInteractor {
 
     @Inject
     ChangeInactiveFormRequestPresenter presenter;
 
     private String userId;
-    private String oldPhoneNumber;
+    private TkpdProgressDialog tkpdProgressDialog;
+    private UpdateNewPhoneEmailFragment updateNewPhoneEmailFragment;
+    private String newEmail;
+    private String newPhoneNumber;
+    private UpdateInactivePhoneInfoBottomSheet updateInactivePhoneInfoBottomSheet;
 
 
-    public static Intent getChangeInactivePhoneIntent(Context context) {
-        return new Intent(context, ChangeInactiveFormRequestActivity.class);
+    public static Intent createIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, ChangeInactiveFormRequestActivity.class);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
@@ -57,25 +71,35 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
     }
 
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initInjector();
         presenter.attachView(this);
-        return super.onCreateView(name, context, attrs);
+        updateInactivePhoneInfoBottomSheet = new UpdateInactivePhoneInfoBottomSheet(this);
+    }
+
+    protected void initInjector() {
+        DaggerUpdateInactivePhoneComponent daggerUpdateInactivePhoneComponent = (DaggerUpdateInactivePhoneComponent)
+                DaggerUpdateInactivePhoneComponent.builder()
+                        .appComponent(getComponent())
+                        .build();
+
+        daggerUpdateInactivePhoneComponent.inject(this);
     }
 
     private void initView() {
 
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            userId = getIntent().getExtras().getString(USER_ID);
         }
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (SelectImageNewPhoneFragment.class.getSimpleName());
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
             fragment = SelectImageNewPhoneFragment.getInstance();
         }
         fragmentTransaction.replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
+        fragmentTransaction.addToBackStack(null).commit();
 
     }
 
@@ -99,7 +123,12 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
         }
 
         ImageView infoIcon = toolbar.findViewById(R.id.info_icon);
-        infoIcon.setOnClickListener(view -> Toast.makeText(view.getContext(), "icon clicked", Toast.LENGTH_SHORT).show());
+        infoIcon.setOnClickListener(view -> {
+            updateInactivePhoneInfoBottomSheet.setTitle("Info");
+            updateInactivePhoneInfoBottomSheet.show();
+        });
+
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
     @Override
@@ -108,9 +137,33 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
     }
 
     @Override
-    public void onContinueButtonClick() {
-        // TODO: 8/7/18 move to input new phone fragment
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
+    @Override
+    public void onContinueButtonClick() {
+
+        Bundle bundle = new Bundle();
+        if (getIntent() != null &&
+                getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        updateNewPhoneEmailFragment = (UpdateNewPhoneEmailFragment) getSupportFragmentManager().findFragmentByTag
+                (UpdateNewPhoneEmailFragment.class.getSimpleName());
+
+        if (updateNewPhoneEmailFragment == null) {
+            updateNewPhoneEmailFragment = UpdateNewPhoneEmailFragment.getInstance(bundle);
+        }
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.add(R.id.parent_view, updateNewPhoneEmailFragment).addToBackStack(null).commit();
     }
 
     @Override
@@ -129,22 +182,151 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
     }
 
     @Override
-    public void uploadPhotoIdImage() {
-
-    }
-
-    @Override
     public void dismissLoading() {
-
+        if (tkpdProgressDialog != null)
+            tkpdProgressDialog.dismiss();
     }
 
     @Override
     public void showLoading() {
+        if (tkpdProgressDialog == null)
+            tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+
+        tkpdProgressDialog.showDialog();
+    }
+
+    @Override
+    public void showErrorValidateData(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void onUserDataValidated() {
+
+        presenter.uploadPhotoIdImage(newEmail, newPhoneNumber, userId);
+        // TODO: 8/8/18 upload image
+    }
+
+    @Override
+    public void onPhoneTooShort() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.phone_number_invalid_min_8);
+        }
+    }
+
+    @Override
+    public void onPhoneTooLong() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.phone_number_invalid_max_15);
+        }
+    }
+
+    @Override
+    public void onPhoneBlackListed() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.phone_blacklisted);
+        }
+    }
+
+    @Override
+    public void onWrongUserIDInput() {
+        NetworkErrorHelper.showSnackbar(this, getString(R.string.wrong_user_id));
+    }
+
+    @Override
+    public void onPhoneDuplicateRequest() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DUPLICATE_REQUEST, true);
+        Intent intent = ChangeInactivePhoneRequestSubmittedActivity.createNewIntent(this, bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPhoneServerError() {
+        NetworkErrorHelper.showSnackbar(this);
+    }
+
+    @Override
+    public void onSameMsisdn() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.old_new_phone_same);
+        }
+    }
+
+    @Override
+    public void onAlreadyRegisteredMsisdn() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.already_registered_phone);
+        }
+    }
+
+    @Override
+    public void onEmptyMsisdn() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.phone_empty);
+        }
+    }
+
+    @Override
+    public void onInvalidPhone() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.phone_invalid);
+        }
+    }
+
+    @Override
+    public void onMaxReachedPhone() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(R.string.max_limit_reached_for_phone);
+        }
+    }
+
+    @Override
+    public void showErrorPhoneNumber(int resId) {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorPhone(resId);
+        }
+    }
+
+    @Override
+    public void showErrorEmail(int error_invalid_email) {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorEmail(error_invalid_email);
+        }
+    }
+
+    @Override
+    public void onEmailError() {
+        if (updateNewPhoneEmailFragment != null) {
+            updateNewPhoneEmailFragment.showErrorEmail(R.string.error_invalid_email);
+        }
+    }
+
+    @Override
+    public void onUserNotRegistered() {
+
+    }
+
+    @Override
+    public void onInvalidFileUploaded() {
+
+    }
+
+    @Override
+    public void onUpdateDataRequestFailed() {
 
     }
 
     @Override
     public void onForbidden() {
 
+    }
+
+    @Override
+    public void onSubmissionButtonClicked(String email, String phone, String userId) {
+        this.newEmail = email;
+        this.newPhoneNumber = phone;
+        presenter.validateUserData(email, phone, userId);
     }
 }

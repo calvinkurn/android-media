@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="@dimen/dp_5"
-        android:text="Contoh: 08xxxxxxxxxx"
+        android:text="@string/input_phone_hint"
         android:textColor="@color/black_56"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal" />

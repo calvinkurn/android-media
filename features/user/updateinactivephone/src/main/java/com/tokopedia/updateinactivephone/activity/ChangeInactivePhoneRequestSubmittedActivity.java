@@ -17,18 +17,14 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
+
 public class ChangeInactivePhoneRequestSubmittedActivity extends BaseSimpleActivity {
 
-    private Button returnToHome;
-    private LinearLayout newRequestDetailLayout;
     private boolean isDuplicateRequest;
     private String email;
     private String phone;
-    private TextView emailTV;
-    private TextView phoneTV;
-    private TextView duplicateRequestTV;
 
-    public static final String IS_DUPLICATE_REQUEST = "is_duplicate_request";
     public static final String USER_EMAIL = "user_email";
     public static final String USER_PHONE = "user_phone";
 
@@ -64,11 +60,11 @@ public class ChangeInactivePhoneRequestSubmittedActivity extends BaseSimpleActiv
             phone = bundle.getString(USER_PHONE);
         }
 
-        newRequestDetailLayout = findViewById(R.id.first_request_submission_details);
-        returnToHome = findViewById(R.id.button_return_to_home);
-        emailTV = findViewById(R.id.value_email);
-        phoneTV = findViewById(R.id.value_phone);
-        duplicateRequestTV = findViewById(R.id.duplicate_request_view);
+        LinearLayout newRequestDetailLayout = findViewById(R.id.first_request_submission_details);
+        Button returnToHome = findViewById(R.id.button_return_to_home);
+        TextView emailTV = findViewById(R.id.value_email);
+        TextView phoneTV = findViewById(R.id.value_phone);
+        TextView duplicateRequestTV = findViewById(R.id.duplicate_request_view);
 
         if (isDuplicateRequest) {
             newRequestDetailLayout.setVisibility(View.GONE);

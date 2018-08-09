@@ -55,4 +55,5 @@ public class ChangeInactivePhonePresenter extends BaseDaggerPresenter<ChangeInac
                     new CheckPhoneNumberStatusSubscriber(getView()));
         }
     }
+
 }

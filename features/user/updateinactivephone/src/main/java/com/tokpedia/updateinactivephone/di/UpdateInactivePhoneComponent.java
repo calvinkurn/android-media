@@ -1,6 +1,7 @@
 package com.tokpedia.updateinactivephone.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule;
 import com.tokopedia.updateinactivephone.fragment.SelectImageNewPhoneFragment;
 import com.tokopedia.updateinactivephone.fragment.ChangeInactivePhoneFragment;
@@ -14,4 +15,6 @@ public interface UpdateInactivePhoneComponent {
     void inject(ChangeInactivePhoneFragment changeInactivePhoneFragment);
 
     void inject(SelectImageNewPhoneFragment selectImageNewPhoneFragment);
+
+    void inject(ChangeInactiveFormRequestActivity changeInactiveFormRequestActivity);
 }

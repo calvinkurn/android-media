@@ -36,7 +36,9 @@ import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneRequestSubmittedActivity.IS_DUPLICATE_REQUEST;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.OLD_PHONE;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
 
 public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements ChangeInactivePhone.View {
     private EditText inputMobileNumber;
@@ -158,12 +160,12 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
     @Override
     public void showErrorPhoneNumber(int resId) {
-
+        setErrorText(getString(resId));
     }
 
     @Override
     public void showErrorPhoneNumber(String errorMessage) {
-
+        setErrorText(errorMessage);
     }
 
     @Override
@@ -189,7 +191,10 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
     @Override
     public void onPhoneStatusSuccess(String userid) {
         setErrorText("");
-        startActivity(ChangeInactiveFormRequestActivity.getChangeInactivePhoneIntent(getContext()));
+        Bundle bundle = new Bundle();
+        bundle.putString(USER_ID, userid);
+        bundle.putString(OLD_PHONE, inputMobileNumber.getText().toString());
+        startActivity(ChangeInactiveFormRequestActivity.createIntent(getContext(), bundle));
     }
 
     @Override
@@ -227,17 +232,17 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
     @Override
     public void onPhoneBlackListed() {
-        setErrorText("Phone BlackListed");
+        setErrorText(getString(R.string.phone_blacklisted));
     }
 
     @Override
     public void onPhoneInvalid() {
-        setErrorText("Invalid Phone");
+        setErrorText(getString(R.string.error_invalid_phone_number));
     }
 
     @Override
     public void onPhoneNotRegistered() {
-        setErrorText("Nomor ponsel belum terdaftar.");
+        setErrorText(getString(R.string.phone_not_registered));
     }
 
     @Override

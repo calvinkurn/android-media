@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +16,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.updateinactivephone.R;
-import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,11 +31,13 @@ import java.util.ArrayList;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
-public class SelectImageNewPhoneFragment extends BaseDaggerFragment {
+public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
 
     private static final int REQUEST_CODE_PHOTO_ID = 1001;
     private static final int MAX_IMAGE_SIZE_IN_KB = 10 * 1024 * 1024;
     private static final int REQUEST_CODE_PAYMENT_PROOF = 2001;
+    private static final String PAYMENT_ID_IMAGE_PATH = "paymentIdImagePath";
+    private static final String PHOTO_ID_IMAGE_PATH = "photoIdImagePath";
     private RelativeLayout idPhotoViewRelativeLayout, accountViewRelativeLayout;
     private ImageView idPhotoView, accountPhotoView;
     private ImagePickerBuilder imagePickerBuilder;
@@ -50,17 +51,8 @@ public class SelectImageNewPhoneFragment extends BaseDaggerFragment {
     private Button continueButton;
     private SelectImageInterface selectImageInterface;
 
-    @Override
-    protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-
-        DaggerUpdateInactivePhoneComponent daggerUpdateInactivePhoneComponent = (DaggerUpdateInactivePhoneComponent)
-                DaggerUpdateInactivePhoneComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerUpdateInactivePhoneComponent.inject(this);
-    }
+    private String photoIdPath;
+    private String accountIdPath;
 
     @Override
     public void onStart() {
@@ -76,6 +68,28 @@ public class SelectImageNewPhoneFragment extends BaseDaggerFragment {
         } catch (Exception e) {
 
         }
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            String paymentIdImagePath = savedInstanceState.getString(PAYMENT_ID_IMAGE_PATH);
+            String photoIdImagePath = savedInstanceState.getString(PHOTO_ID_IMAGE_PATH);
+
+            if (!TextUtils.isEmpty(photoIdImagePath)) {
+                selectImageInterface.setPhotoIdImagePath(photoIdImagePath);
+                loadImageToImageView(idPhotoView, photoIdImagePath);
+            }
+
+            if (!TextUtils.isEmpty(paymentIdImagePath)) {
+                selectImageInterface.setAccountPhotoImagePath(paymentIdImagePath);
+                loadImageToImageView(accountPhotoView, paymentIdImagePath);
+            }
+
+        }
+
     }
 
     @Override
@@ -146,10 +160,15 @@ public class SelectImageNewPhoneFragment extends BaseDaggerFragment {
                         String imagePath = imageUrlOrPathList.get(0);
                         uploadIdPhoto.setVisibility(View.GONE);
                         idPhotoViewRelativeLayout.setVisibility(View.VISIBLE);
+                        photoIdPath = imagePath;
                         loadImageToImageView(idPhotoView, imagePath);
-
                         selectImageInterface.setPhotoIdImagePath(imagePath);
-                        selectImageInterface.uploadPhotoIdImage();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString(PAYMENT_ID_IMAGE_PATH, accountIdPath);
+                        bundle.putString(PHOTO_ID_IMAGE_PATH, photoIdPath);
+
+                        onSaveInstanceState(bundle);
                     }
                 }
                 break;
@@ -160,8 +179,15 @@ public class SelectImageNewPhoneFragment extends BaseDaggerFragment {
                         String imagePath = imageUrlOrPathList.get(0);
                         uploadPaymentPhoto.setVisibility(View.GONE);
                         accountViewRelativeLayout.setVisibility(View.VISIBLE);
+                        accountIdPath = imagePath;
                         loadImageToImageView(accountPhotoView, imagePath);
                         selectImageInterface.setAccountPhotoImagePath(imagePath);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString(PAYMENT_ID_IMAGE_PATH, accountIdPath);
+                        bundle.putString(PHOTO_ID_IMAGE_PATH, photoIdPath);
+
+                        onSaveInstanceState(bundle);
                     }
                 }
                 break;
@@ -198,6 +224,5 @@ public class SelectImageNewPhoneFragment extends BaseDaggerFragment {
 
         void setPhotoIdImagePath(String imagePath);
 
-        void uploadPhotoIdImage();
     }
 }

@@ -15,4 +15,23 @@
     <string name="new_request_submission_desc">Hasil pengajuan Anda akan diberitahukan melalui SMS ke:</string>
     <string name="email">dan email:</string>
     <string name="goto_home">Kembali ke Beranda</string>
+    <string name="old_phone_heading">Nomor Ponsel Terdaftar</string>
+    <string name="input_phone_hint">Contoh: 08xxxxxxxxxx</string>
+    <string name="new_phone_heading">Nomor Ponsel Baru</string>
+    <string name="email_heading">Email</string>
+    <string name="email_hint">Pastikan email ini aktif untuk memperoleh hasil pengajuan</string>
+    <string name="send_submission">Kirim Pengajuan</string>
+    <string name="phone_blacklisted">nomor telepon masuk daftar hitam</string>
+    <string name="wrong_user_id">Wrong User ID</string>
+    <string name="old_new_phone_same">nomor telepon lama dan baru sama</string>
+    <string name="already_registered_phone">nomor telepon baru sudah terdaftar</string>
+    <string name="phone_empty">nomor telepon tidak boleh kosong</string>
+    <string name="phone_invalid">nomor telepon tidak valid</string>
+    <string name="max_limit_reached_for_phone">nomor telepon baru sudah dalam db, lebih besar dari atau sama dengan 5 data</string>
+    <string name="phone_not_registered">Nomor ponsel belum terdaftar.</string>
+    <string name="default_error_upload_image">Gagal mengupload gambar</string>
+    <string name="info_title">Info</string>
+    <string name="info_heading">Apabila terjadi perubahan nomor ponsel:</string>
+    <string name="info_desc_1">Disarankan untuk menarik Saldo Tokopedia ke rekening pribadi terlebih dahulu.</string>
+    <string name="info_desc_2">Dana TokoCash secara otomatis dipindahkan ke nomor baru. Setelah berhasil dipindahkan, dana tersebut tidak dapat digunakan selama 1x24 jam.</string>
 </resources>

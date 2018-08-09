@@ -12,11 +12,11 @@ import com.tokopedia.updateinactivephone.subscriber.CheckPhoneNumberStatusSubscr
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.OPERATION_NAME.CHECK_USER_STATUS;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.PHONE;
+
 
 public class CheckPhoneNumberStatusUsecase {
-
-    private static final String OPERATION_NAME = "validateInactivePhoneQuery";
-    private static final String PHONE = "phone";
 
     private GraphqlUseCase graphqlUseCase;
     private Context context;
@@ -40,7 +40,7 @@ public class CheckPhoneNumberStatusUsecase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_check_phone_number_status),
                 GqlCheckPhoneStatusResponse.class,
-                variables, OPERATION_NAME);
+                variables, CHECK_USER_STATUS);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(checkPhoneNumberStatusSubscriber);
