@@ -14,8 +14,7 @@
             android:text="@string/product_label_what_do_you_sell"
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:textStyle="bold"/>
+            android:layout_marginRight="@dimen/dp_16" />
 
         <include
             layout="@layout/partial_product_edit_name"

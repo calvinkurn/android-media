@@ -31,6 +31,11 @@ public class ProductAddWholesaleActivity extends BaseSimpleActivity {
         return ProductAddWholesaleFragment.newInstance();
     }
 
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_product_edit_with_menu;
+    }
+
     public static Intent getIntent(Context context, ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList, @CurrencyTypeDef int currencyType, double productPrice, boolean officialStore, boolean hasVariant) {
         Intent intent = new Intent(context, ProductAddWholesaleActivity.class);
         intent.putExtra(EXTRA_PRODUCT_WHOLESALE_LIST, productWholesaleViewModelList);
@@ -49,16 +54,9 @@ public class ProductAddWholesaleActivity extends BaseSimpleActivity {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                         .setTitle(getString(R.string.product_dialog_cancel_title))
                         .setMessage(getString(R.string.product_dialog_cancel_message))
-                        .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ProductAddWholesaleActivity.super.onBackPressed();
-                            }
-                        }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                // no op, just dismiss
-                            }
-                        });
+                        .setPositiveButton(getString(R.string.label_exit), (dialogInterface, i) ->
+                                ProductAddWholesaleActivity.super.onBackPressed()).setNegativeButton(getString(R.string.label_cancel),
+                                (arg0, arg1) -> { });
                 AlertDialog dialog = alertDialogBuilder.create();
                 dialog.show();
             } else {
