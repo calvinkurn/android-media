@@ -15,6 +15,7 @@ import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FeedPlusContainerListener {
+        implements FeedPlusContainerListener, FragmentListener {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -75,6 +76,15 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public void showContentExplore() {
         if (contentExploreFragment == null) {
             contentExploreFragment = ContentExploreFragment.newInstance(getArguments());
+        }
+    }
+
+    @Override
+    public void onScrollToTop() {
+        if (feedPlusFragment.getUserVisibleHint()) {
+            feedPlusFragment.scrollToTop();
+        } else if (contentExploreFragment.getUserVisibleHint()) {
+            contentExploreFragment.scrollToTop();
         }
     }
 

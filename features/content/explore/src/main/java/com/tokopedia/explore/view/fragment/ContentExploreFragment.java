@@ -375,6 +375,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
+    public void scrollToTop() {
+        if (exploreImageRv != null) {
+            exploreImageRv.smoothScrollToPosition(0);
+        }
+    }
+
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
         imageAdapter.addList(new ArrayList<>(exploreImageViewModelList));
     }

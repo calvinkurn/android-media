@@ -779,7 +779,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     public void scrollToTop() {
-        if (recyclerView != null) recyclerView.scrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
     }
 
     @Override
