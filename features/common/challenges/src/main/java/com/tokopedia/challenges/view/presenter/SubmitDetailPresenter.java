@@ -14,13 +14,11 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     @Override
     public void setDataInFields(SubmissionResult model) {
-       // getView().setProfilePic(model.getThumbnailUrl());
-        //getView().setProfileText(model.getTitle());
+        getView().setProfilePic(model.getUser().getThumbnailImage());
+        getView().setProfileText(model.getUser().getTitle());
         getView().setChallengeImage(model.getThumbnailUrl());
         getView().setLikesCountView(String.valueOf(model.getLikes()));
         getView().setPointsView(String.valueOf(model.getPoints()));
-     //   getView().setShareView(model.getUserId());
-        getView().setDateView(model.getCreateDate());
         getView().setApprovedView(model.getStatus());
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
