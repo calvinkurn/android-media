@@ -16,8 +16,6 @@ public class SubmissionAdapterContract {
 
         void notifyDataSetChanged(int position);
 
-        void showLoginSnackbar(String message, int position);
-
     }
 
     public interface Presenter extends CustomerPresenter<SubmissionAdapterContract.View> {

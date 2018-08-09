@@ -266,6 +266,16 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
+    }
+
+    @Override
     public void renderTnC(TermsNCondition termsNCondition) {
         tncText = termsNCondition.getTerms();
         tv_TnC.setText("Terms & Condition");
@@ -306,6 +316,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-
+        navigateToActivityRequest(intent, requestCode);
     }
 }

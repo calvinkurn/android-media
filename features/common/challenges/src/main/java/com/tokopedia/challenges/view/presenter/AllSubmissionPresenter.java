@@ -27,7 +27,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
     public final static String TAG = "url";
     private List<String> brands;
     GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
-    RequestParams searchParams = RequestParams.create();
+    private RequestParams searchParams = RequestParams.create();
     private int pageStart = 0;
     private int pageSize=10;
     private String sortType=Utils.QUERY_PARAM_KEY_SORT_RECENT;

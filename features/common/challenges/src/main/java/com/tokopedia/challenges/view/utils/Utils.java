@@ -9,12 +9,13 @@ import java.util.TimeZone;
 
 public class Utils {
     private static Utils singleInstance;
-    public static final String QUERY_PARAM_CHALLENGE_ID = "challenge-id";
-    public static final String QUERY_PARAM_KEY_START = "start";
-    public static final String QUERY_PARAM_KEY_SIZE = "size";
-    public static final String QUERY_PARAM_KEY_SORT = "sort";
-    public static final String QUERY_PARAM_KEY_SORT_RECENT = "recent";
-    public static final String QUERY_PARAM_KEY_SORT_POINTS = "points";
+    public static final String QUERY_PARAM_CHALLENGE_ID="challenge-id";
+    public static final String QUERY_PARAM_SUBMISSION_ID="submission-id";
+    public static final String QUERY_PARAM_KEY_START="start";
+    public static final String QUERY_PARAM_KEY_SIZE="size";
+    public static final String QUERY_PARAM_KEY_SORT="sort";
+    public static final String QUERY_PARAM_KEY_SORT_RECENT="recent";
+    public static final String QUERY_PARAM_KEY_SORT_POINTS="points";
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)

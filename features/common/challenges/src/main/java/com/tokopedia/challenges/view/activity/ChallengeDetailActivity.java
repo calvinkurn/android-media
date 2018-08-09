@@ -18,6 +18,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
 
 
     public static final int REQUEST_CODE_LOGIN = 1011;
+    public static final int REQUEST_CODE_SUBMISSIONDETAILACTIVITY = 10;
     private List<SubmissionResult> submissions;
 
 

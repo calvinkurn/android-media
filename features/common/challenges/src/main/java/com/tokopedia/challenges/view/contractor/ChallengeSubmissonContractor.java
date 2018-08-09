@@ -31,6 +31,10 @@ public class ChallengeSubmissonContractor {
 
         LinearLayoutManager getLayoutManager();
 
+        void navigateToActivityRequest(Intent intent, int requestCode);
+
+        void navigateToActivity(Intent intent);
+
         void renderTnC(TermsNCondition termsNCondition);
     }
 
