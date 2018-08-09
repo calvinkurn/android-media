@@ -81,9 +81,9 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     @Override
     public void onScrollToTop() {
-        if (feedPlusFragment.getUserVisibleHint()) {
+        if (feedPlusFragment != null && feedPlusFragment.getUserVisibleHint()) {
             feedPlusFragment.scrollToTop();
-        } else if (contentExploreFragment.getUserVisibleHint()) {
+        } else if (contentExploreFragment != null && contentExploreFragment.getUserVisibleHint()) {
             contentExploreFragment.scrollToTop();
         }
     }
