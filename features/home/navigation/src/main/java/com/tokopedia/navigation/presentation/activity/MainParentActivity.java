@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -67,12 +68,16 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
         MainParentView, ShowCaseListener {
 
-    private final static int EXIT_DELAY_MILLIS = 2000;
-    public static int HOME_MENU = 0;
-    public static int FEED_MENU = 1;
-    public static int INBOX_MENU = 2;
-    public static int CART_MENU = 3;
-    public static int ACCOUNT_MENU = 4;
+    public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
+    public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
+    public static final int ONBOARDING_REQUEST = 101;
+    public static final int HOME_MENU = 0;
+    public static final int FEED_MENU = 1;
+    public static final int INBOX_MENU = 2;
+    public static final int CART_MENU = 3;
+    public static final int ACCOUNT_MENU = 4;
+    private static final int EXIT_DELAY_MILLIS = 2000;
+
     @Inject
     UserSession userSession;
     @Inject
@@ -81,8 +86,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     GlobalNavAnalytics globalNavAnalytics;
     @Inject
     ApplicationUpdate appUpdate;
-    @Inject
-    AnalyticTracker analyticTracker;
+
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     private List<Fragment> fragmentList;
@@ -91,6 +95,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private Fragment currentFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
+    private BroadcastReceiver hockeyBroadcastReceiver;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -136,36 +141,38 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 //        }
 //
 //        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-//i
+//
 //        cacheHandler = new AnalyticsCacheHandler();
 
-//        Thread t = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                com.tokopedia.user.session.UserSession;
-//                if (SessionHandler.isFirstTimeUser(MainParentActivity.this)) {
-//
-//                    //  Launch app intro
-//                    Intent i = new Intent(MainParentActivity.this, NewOnboardingActivity.class);
-//                    startActivityForResult(i, ONBOARDING_REQUEST);
-//
-//                }
-//            }
-//        });
-//
-//        t.start();
-//
+        Thread t = new Thread(() -> {
+            if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+
+                //  Launch app intro
+                Intent i = ((GlobalNavRouter) getApplicationContext()).getOnBoardingIntent(this);
+                startActivityForResult(i, ONBOARDING_REQUEST);
+
+            }
+        });
+
+        t.start();
+
         checkAppUpdate();
-//        checkIsHaveApplinkComeFromDeeplink(getIntent());
-//
-//        initHockeyBroadcastReceiver();
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
+
+        initHockeyBroadcastReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterBroadcastHockeyApp();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
-//        checkIsHaveApplinkComeFromDeeplink(intent);
+        checkIsHaveApplinkComeFromDeeplink(intent);
     }
 
     private void initInjector() {
@@ -258,6 +265,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             reloadPage();
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
+        registerBroadcastHockeyApp();
     }
 
     @Override
@@ -406,21 +414,21 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
                 AppUpdateDialogBuilder appUpdateDialogBuilder =
-                    new AppUpdateDialogBuilder(
-                        MainParentActivity.this,
-                        detail,
-                        new AppUpdateDialogBuilder.Listener() {
-                            @Override
-                            public void onPositiveButtonClicked(DetailUpdate detail) {
-                                globalNavAnalytics.eventClickAppUpdate(detail.isForceUpdate());
-                            }
+                        new AppUpdateDialogBuilder(
+                                MainParentActivity.this,
+                                detail,
+                                new AppUpdateDialogBuilder.Listener() {
+                                    @Override
+                                    public void onPositiveButtonClicked(DetailUpdate detail) {
+                                        globalNavAnalytics.eventClickAppUpdate(detail.isForceUpdate());
+                                    }
 
-                            @Override
-                            public void onNegativeButtonClicked(DetailUpdate detail) {
-                                globalNavAnalytics.eventClickCancelAppUpdate(detail.isForceUpdate());
-                            }
-                        }
-                    );
+                                    @Override
+                                    public void onNegativeButtonClicked(DetailUpdate detail) {
+                                        globalNavAnalytics.eventClickCancelAppUpdate(detail.isForceUpdate());
+                                    }
+                                }
+                        );
                 appUpdateDialogBuilder.getAlertDialog().show();
                 globalNavAnalytics.eventImpressionAppUpdate(detail.isForceUpdate());
             }
@@ -438,84 +446,73 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
-//        if (intent.getBooleanExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
-//            if (getApplication() instanceof TkpdCoreRouter) {
-//                ((TkpdCoreRouter) getApplication()).getApplinkUnsupported(ParentIndexHome.this).showAndCheckApplinkUnsupported();
-//            }
-//        }
+        if (intent.getBooleanExtra(ApplinkRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
+            if (getApplication() instanceof ApplinkRouter) {
+                ((ApplinkRouter) getApplication()).getApplinkUnsupported(this).showAndCheckApplinkUnsupported();
+            }
+        }
     }
-//
-//    private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
-//        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
-//            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
-//
-//            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
-//                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
-//
-//                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-//                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
-//                if (clipboard != null) {
-//                    clipboard.setPrimaryClip(clip);
-//                }
-//
-//                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
-//            }
-//
-//            try {
-//                DeepLinkDelegate deepLinkDelegate = getActi;
-//                Intent applinkIntent = new Intent(this, ParentIndexHome.class);
-//                applinkIntent.setData(Uri.parse(applink));
-//                if (getIntent() != null && getIntent().getExtras() != null) {
-//                    Intent newIntent = getIntent();
-//                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
-//                    newIntent.removeExtra(DeepLink.REFERRER_URI);
-//                    newIntent.removeExtra(DeepLink.URI);
-//                    newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
-//                    if (newIntent.getExtras() != null)
-//                        applinkIntent.putExtras(newIntent.getExtras());
-//                }
-//                deepLinkDelegate.dispatchFrom(this, applinkIntent);
-//            } catch (ActivityNotFoundException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    private void initHockeyBroadcastReceiver() {
-//        hockeyBroadcastReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                if (intent != null && intent.getAction() != null) {
-//                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
-//                        if (!DialogHockeyApp.isDialogShown(ParentIndexHome.this))
-//                            showHockeyAppDialog();
-//                    }
-//                }
-//            }
-//        };
-//    }
-//
-//    private void registerBroadcastHockeyApp() {
-//        if (!GlobalConfig.isAllowDebuggingTools()) {
-//            IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
-//            LocalBroadcastManager.getInstance(this).registerReceiver(hockeyBroadcastReceiver,
-//                    new IntentFilter(intentFilter));
-//        }
-//    }
-//
-//    private void unregisterBroadcastHockeyApp() {
-//        LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
-//    }
-//
-//    private void showHockeyAppDialog() {
-//        DialogHockeyApp.createShow(this,
-//                new DialogHockeyApp.ActionListener() {
-//                    @Override
-//                    public void onDialogClicked() {
-//                        Intent intent = new Intent(Intent.ACTION_VIEW);
-//                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
-//                        startActivity(intent);
-//                    }
-//                });
-//    }
+
+    private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
+        if (!TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
+            String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
+
+            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
+                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+
+                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+            }
+
+            try {
+                Intent applinkIntent = new Intent(this, MainParentActivity.class);
+                applinkIntent.setData(Uri.parse(applink));
+                if (getIntent() != null && getIntent().getExtras() != null) {
+                    Intent newIntent = getIntent();
+                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+                    newIntent.removeExtra(DeepLink.REFERRER_URI);
+                    newIntent.removeExtra(DeepLink.URI);
+                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
+                    if (newIntent.getExtras() != null)
+                        applinkIntent.putExtras(newIntent.getExtras());
+                }
+                ((ApplinkRouter) getApplicationContext()).dispatchFrom(this, applinkIntent);
+            } catch (ActivityNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void initHockeyBroadcastReceiver() {
+        hockeyBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null) {
+                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
+                        showHockeyAppDialog();
+                    }
+                }
+            }
+        };
+    }
+
+    private void registerBroadcastHockeyApp() {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
+            LocalBroadcastManager.getInstance(this).registerReceiver(hockeyBroadcastReceiver, new IntentFilter(intentFilter));
+        }
+    }
+
+    private void unregisterBroadcastHockeyApp() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
+    }
+
+    private void showHockeyAppDialog() {
+        ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
+    }
 }

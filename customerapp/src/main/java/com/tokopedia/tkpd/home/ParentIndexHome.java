@@ -825,39 +825,39 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
-        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
-            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
-
-            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
-                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
-
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
-                if (clipboard != null) {
-                    clipboard.setPrimaryClip(clip);
-                }
-
-                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
-            }
-            if (!isPausing()) {
-                try {
-                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-                    Intent applinkIntent = new Intent(this, ParentIndexHome.class);
-                    applinkIntent.setData(Uri.parse(applink));
-                    if (getIntent() != null && getIntent().getExtras() != null) {
-                        Intent newIntent = getIntent();
-                        newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
-                        newIntent.removeExtra(DeepLink.REFERRER_URI);
-                        newIntent.removeExtra(DeepLink.URI);
-                        newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
-                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
-                    }
-                    deepLinkDelegate.dispatchFrom(this, applinkIntent);
-                } catch (ActivityNotFoundException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+//        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
+//            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
+//
+//            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
+//                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+//
+//                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+//                if (clipboard != null) {
+//                    clipboard.setPrimaryClip(clip);
+//                }
+//
+//                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+//            }
+//            if (!isPausing()) {
+//                try {
+//                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+//                    Intent applinkIntent = new Intent(this, ParentIndexHome.class);
+//                    applinkIntent.setData(Uri.parse(applink));
+//                    if (getIntent() != null && getIntent().getExtras() != null) {
+//                        Intent newIntent = getIntent();
+//                        newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+//                        newIntent.removeExtra(DeepLink.REFERRER_URI);
+//                        newIntent.removeExtra(DeepLink.URI);
+//                        newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
+//                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
+//                    }
+//                    deepLinkDelegate.dispatchFrom(this, applinkIntent);
+//                } catch (ActivityNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     private void initHockeyBroadcastReceiver() {

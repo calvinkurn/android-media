@@ -55,9 +55,6 @@ public class GlobalNavAnalytics {
     }
 
     public void eventImpressionAppUpdate(boolean isForceUpdate) {
-        if (analyticTracker == null)
-            return;
-
         analyticTracker.sendEventTracking(
                 GlobalNavConstant.Analytics.EVENT_IMPRESSION_APP_UPDATE,
                 GlobalNavConstant.Analytics.CATEGORY_APP_UPDATE,
@@ -69,9 +66,6 @@ public class GlobalNavAnalytics {
     }
 
     public void eventClickAppUpdate(boolean isForceUpdate) {
-        if (analyticTracker == null)
-            return;
-
         analyticTracker.sendEventTracking(
                 GlobalNavConstant.Analytics.EVENT_CLICK_APP_UPDATE,
                 GlobalNavConstant.Analytics.CATEGORY_APP_UPDATE,
@@ -83,9 +77,6 @@ public class GlobalNavAnalytics {
     }
 
     public void eventClickCancelAppUpdate(boolean isForceUpdate) {
-        if (analyticTracker == null)
-            return;
-
         analyticTracker.sendEventTracking(
                 GlobalNavConstant.Analytics.EVENT_CLICK_CANCEL_APP_UPDATE,
                 GlobalNavConstant.Analytics.CATEGORY_APP_UPDATE,
