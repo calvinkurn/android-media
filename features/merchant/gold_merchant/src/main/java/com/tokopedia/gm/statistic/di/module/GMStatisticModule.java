@@ -35,12 +35,12 @@ import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
-import com.tokopedia.product.edit.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.edit.common.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.product.edit.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.edit.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

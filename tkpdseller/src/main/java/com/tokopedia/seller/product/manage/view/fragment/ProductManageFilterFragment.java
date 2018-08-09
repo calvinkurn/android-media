@@ -17,7 +17,7 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.product.edit.constant.ProductExtraConstant;
+import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
 import com.tokopedia.seller.R;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;

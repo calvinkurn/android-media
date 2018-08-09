@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.deeplink.data.factory;
 
 
-import com.tokopedia.product.edit.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.tkpd.deeplink.data.source.ShopInfoCloudSource;
 import com.tokopedia.tkpd.deeplink.data.source.ShopInfoSource;
 

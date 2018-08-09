@@ -24,7 +24,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.product.edit.common.util.ItemType;
+import com.tokopedia.product.manage.item.common.util.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;

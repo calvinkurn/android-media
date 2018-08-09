@@ -2,7 +2,7 @@ package com.tokopedia.gm.cashback.data.source;
 
 import com.tokopedia.gm.cashback.data.model.RequestGetCashbackModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.product.edit.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 
 import java.util.ArrayList;
 import java.util.List;

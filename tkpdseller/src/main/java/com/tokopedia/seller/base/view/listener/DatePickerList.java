@@ -1,6 +1,6 @@
 package com.tokopedia.seller.base.view.listener;
 
-import com.tokopedia.product.edit.common.model.DatePickerViewModel;
+import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
 
 /**
  * Created by nathan on 7/18/17.

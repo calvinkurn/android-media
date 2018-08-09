@@ -21,7 +21,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
-//import com.tokopedia.product.edit.view.activity.ProductAddActivity;
+//import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;

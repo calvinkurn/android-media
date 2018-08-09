@@ -16,7 +16,7 @@ import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerMultipleItem;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 
 import java.util.ArrayList;
 import java.util.List;

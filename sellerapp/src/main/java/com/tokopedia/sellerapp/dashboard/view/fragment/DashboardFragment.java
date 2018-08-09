@@ -40,7 +40,7 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
-import com.tokopedia.product.edit.common.util.ViewUtils;
+import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;

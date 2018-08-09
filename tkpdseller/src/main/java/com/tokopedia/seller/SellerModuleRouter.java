@@ -6,9 +6,9 @@ import android.content.Intent;
 
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.product.edit.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.product.edit.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 
 import java.util.List;
 

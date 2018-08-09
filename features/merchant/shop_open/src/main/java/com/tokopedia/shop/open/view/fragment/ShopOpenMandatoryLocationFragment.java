@@ -24,7 +24,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
-import com.tokopedia.product.edit.common.util.TomeException;
+import com.tokopedia.product.manage.item.common.util.TomeException;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;

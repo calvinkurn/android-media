@@ -19,7 +19,7 @@ import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
-import com.tokopedia.product.edit.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;

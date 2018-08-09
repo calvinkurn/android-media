@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shop.setting.data.datasource.cloud;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.product.edit.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.seller.shop.setting.data.model.DataResponseShopSchedule;
 
 import java.util.Map;

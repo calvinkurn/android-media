@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.product.edit.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 
 import java.util.ArrayList;
 import java.util.List;

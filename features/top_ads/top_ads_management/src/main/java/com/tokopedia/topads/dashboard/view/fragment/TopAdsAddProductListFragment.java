@@ -29,7 +29,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.common.utils.MenuTintUtils;
 import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.tokopedia.topads.R;
-import com.tokopedia.product.edit.common.util.ItemType;
+import com.tokopedia.product.manage.item.common.util.ItemType;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.mapper.SearchProductEOFMapper;
