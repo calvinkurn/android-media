@@ -22,6 +22,4 @@ public interface GlobalNavRouter {
     Intent getInboxTicketCallingIntent(Context context);
 
     ApplicationUpdate getAppUpdate(Context context);
-
-    getApplinkUnsupported(ParentIndexHome.this)
 }
