@@ -41,14 +41,6 @@
             android:layout_height="1dp"
             android:background="@drawable/bg_line_separator" />
 
-        <!--<com.tokopedia.design.component.ticker.TickerView-->
-            <!--android:id="@+id/ticker_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:padding="@dimen/dp_10"-->
-            <!--app:tckv_indicator_off_color="@color/grey"-->
-            <!--app:tckv_indicator_on_color="@color/tkpd_main_green" />-->
-
         <include layout="@layout/include_digital_ticker_coupon_applied_view" />
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
