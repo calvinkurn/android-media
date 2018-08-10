@@ -45,6 +45,8 @@ public interface FlightOrderListContract {
         void loadPageData(int page);
 
         void startAirportSyncInBackground(long airportVersion);
+
+        void navigateToWebview(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -63,5 +65,6 @@ public interface FlightOrderListContract {
 
         void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item);
 
+        void onMoreAirlineInfoClicked();
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
@@ -228,7 +229,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Override
     public void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item) {
         if (isDepartureDateMoreThan6Hours(
-                FlightDateUtil.stringToDate(departureTime))) {
+                FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, departureTime))) {
             getView().goToCancellationPage(invoiceId, item);
         } else {
             getView().showLessThan6HoursDialog();
@@ -257,6 +258,11 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                         }
                     });
         }
+    }
+
+    @Override
+    public void onMoreAirlineInfoClicked() {
+        getView().navigateToWebview(FlightUrl.AIRLINES_CONTACT_URL);
     }
 
     private List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney) {
