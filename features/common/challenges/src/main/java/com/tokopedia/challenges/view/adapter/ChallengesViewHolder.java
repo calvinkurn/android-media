@@ -1,5 +1,7 @@
 package com.tokopedia.challenges.view.adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.R;
@@ -21,9 +24,11 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
     ImageView imgShare;
 
     private Result challengesResult;
+    private Context context;
 
-    ChallengesViewHolder(View view) {
+    ChallengesViewHolder(Context context, View view) {
         super(view);
+        this.context = context;
         tvTitle = view.findViewById(R.id.tv_title);
         tvHastags = view.findViewById(R.id.tv_hastags);
         imgChallenge = view.findViewById(R.id.img_challenge);
@@ -37,7 +42,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-
+            ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context,"tokopedia://referral", challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
         });
     }
 

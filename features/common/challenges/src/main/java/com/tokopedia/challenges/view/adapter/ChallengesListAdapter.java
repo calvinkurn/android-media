@@ -26,7 +26,7 @@ public class ChallengesListAdapter extends RecyclerView.Adapter<ChallengesViewHo
 
     @Override
     public ChallengesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ChallengesViewHolder(LayoutInflater.from(context).inflate(R.layout.home_challenge_list_item, parent, false));
+        return new ChallengesViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_challenge_list_item, parent, false));
     }
 
     @Override

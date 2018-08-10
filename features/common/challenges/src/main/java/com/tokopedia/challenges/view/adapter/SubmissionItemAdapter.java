@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
@@ -231,9 +232,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-//                Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
-//                        context, categoryItems.get(getIndex()).getDisplayName(),
-//                        categoryItems.get(getIndex()).getImageWeb());
+                ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context,"tokopedia://referral", categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
             } else if (v.getId() == R.id.iv_like) {
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
                 if (categoryItems.get(getIndex()).getMe() != null) {
