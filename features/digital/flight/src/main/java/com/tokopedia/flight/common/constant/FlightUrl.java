@@ -35,6 +35,7 @@ public class FlightUrl {
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";
     public static String CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String CONTACT_US_FLIGHT_PREFIX_GLOBAL = WEB_DOMAIN + "contact-us?pid=46&ivtype=4";
+    public static String AIRLINES_CONTACT_URL = WEB_DOMAIN + "bantuan/kontak-maskapai-penerbangan/";
 
     public static String getUrlPdf(String orderId, String filename, String userId) {
         return WEB_DOMAIN + "pesawat/pdf/generate?invoice_id=" + orderId + "&pdf=" + filename + "&user_id=" + userId;

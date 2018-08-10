@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderlist.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,10 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,11 +73,13 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     private static final int REQUEST_CODE_ORDER_DETAIL = 3;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
+    private String selectedFilter;
+
+    @Inject
+    FlightModuleRouter flightModuleRouter;
     @Inject
     FlightOrderListPresenter presenter;
     private QuickSingleFilterView quickSingleFilterView;
-
-    private String selectedFilter;
 
     public static FlightOrderListFragment createInstance() {
         return new FlightOrderListFragment();
@@ -270,13 +277,13 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @SuppressLint("StringFormatMatches")
     @Override
     public void showLessThan6HoursDialog() {
-        int color = getContext().getResources().getColor(R.color.green_500);
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(MethodChecker.fromHtml(getString(
-            R.string.flight_cancellation_recommendation_to_contact_airlines_description,
-            color, "#")));
-        dialog.setBtnOk("OK");
+        dialog.setDesc(buildAirlineContactInfo(
+                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description),
+                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description_mark)
+        ));
+        dialog.setBtnOk(getString(R.string.flight_cancellation_less_than_6_hours_confirmation_dialog));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -286,13 +293,37 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.show();
     }
 
+    @NonNull
+    private SpannableString buildAirlineContactInfo(String fullText, String mark) {
+        final int color = getContext().getResources().getColor(R.color.green_500);
+        int startIndex = fullText.indexOf(mark);
+        int stopIndex = fullText.length();
+        SpannableString description = new SpannableString(fullText);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                presenter.onMoreAirlineInfoClicked();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            }
+        };
+        description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return description;
+    }
+
     @Override
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final String departureTime) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
-            MethodChecker.fromHtml(getString(
-                R.string.flight_cancellation_dialog_non_refundable_description)));
+                MethodChecker.fromHtml(getString(
+                        R.string.flight_cancellation_dialog_non_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -316,7 +347,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
-            MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
+                MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -341,5 +372,10 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
                 invoiceId,
                 item
         ), REQUEST_CODE_CANCELLATION);
+    }
+
+    @Override
+    public void navigateToWebview(String url) {
+        startActivity(flightModuleRouter.getWebviewActivity(getActivity(), url));
     }
 }
