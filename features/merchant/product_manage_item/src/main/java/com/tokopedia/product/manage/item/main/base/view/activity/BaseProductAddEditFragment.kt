@@ -393,14 +393,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewVariantProduct.visibility = View.GONE
         }
 
-        if (currentProductViewModel.productStock?.isActive == true) {
-            if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0)
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
-            else
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
-        } else
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
-
         if (currentProductViewModel.etalaseId ?: 0 > 0) {
             labelViewEtalaseProduct.setContent(currentProductViewModel.etalaseName)
             labelViewEtalaseProduct.setSubTitle("")
