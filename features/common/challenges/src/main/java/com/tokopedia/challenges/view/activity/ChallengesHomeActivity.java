@@ -3,23 +3,19 @@ package com.tokopedia.challenges.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
-import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
 
 /**
  * Created by ashwanityagi on 06/08/18.

@@ -5,6 +5,7 @@ import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.fragments.AllSubmissionFragment;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 import com.tokopedia.challenges.view.fragments.ChallengesFragment;
+import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitFragment;
 import com.tokopedia.challenges.view.fragments.MySubmissionsFragment;
 import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
 
@@ -16,6 +17,7 @@ public interface ChallengesComponent {
     void inject(ChallengesFragment challengesFragment);
 
     void inject(ChallegeneSubmissionFragment challegeneSubmissionFragment);
+    void inject(ChallengesSubmitFragment challengesSubmitFragment);
 
     void inject(MySubmissionsFragment mySubmissionsFragment);
 

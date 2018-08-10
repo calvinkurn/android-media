@@ -16,12 +16,22 @@ public class ChallengesUrl {
     }
 
     public interface PRIVATE {
+        String PRIVATE = "private/";
         String ME = "private/me";
         String OPEN_CHALLENGES = "private/" + CHANNEL_ID + "/challenges/open?start=0&size=50";
         String PAST_CHALLENGES = "private/" + CHANNEL_ID + "/challenges/closed?start=0&size=50";
         String CHALLENGES_SUBMISSIONS = "private/" + CHALLENGE_ID +"/submissions";
         String SUBMISSIONS_LIKE = "private/%s/track/like";
         String SUBMISSIONS_UNLIKE = "private/%s/track/unlike";
+
+
+        public interface Upload {
+            String PRIVATE_CHANNENGE_ID = PRIVATE + CHALLENGE_ID;
+            String CHALLENGE_SETTING = PRIVATE_CHANNENGE_ID + "/upload/settings";
+            String CHALLENGE_TERMS = PRIVATE_CHANNENGE_ID + "/upload/terms";
+            String CHALLENGE_INTIALIZE_MULTIPART = PRIVATE_CHANNENGE_ID + "/upload/initialize";
+            String CHALLENGE_GET_NEXT_PART = PRIVATE_CHANNENGE_ID + "/upload/getnextpart";
+        }
 
     }
 

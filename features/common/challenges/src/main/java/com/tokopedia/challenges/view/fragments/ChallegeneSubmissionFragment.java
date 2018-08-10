@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
@@ -66,6 +67,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     TextView seeMoreButtonBuzzPoints;
     TextView seeMoreButtonTnc;
     ExpandableTextView description;
+    View submitButton;
     RecyclerView submissionRecyclerView, awardRecylerView;
     List<SubmissionResult> submissionResults;
     CustomVideoPlayer videoPlayer;
@@ -121,6 +123,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         description = view.findViewById(R.id.tv_expandable_description);
         seeMoreButtonDesc = view.findViewById(R.id.seemorebutton_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
+        submitButton = view.findViewById(R.id.ll_continue);
         awardRecylerView = view.findViewById(R.id.rv_awards);
         rlExpiry = view.findViewById(R.id.cl_expiry);
         clAbout = view.findViewById(R.id.cl_about);
@@ -139,6 +142,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         description.setInterpolator(new OvershootInterpolator());
         seeMoreButtonDesc.setOnClickListener(this);
         view.findViewById(R.id.tv_see_all).setOnClickListener(this);
+        submitButton.setOnClickListener(this);
         videoPlayer = view.findViewById(R.id.video_player);
         tvTnCText = view.findViewById(R.id.tv_tnc_text);
         tvHowBuzzPointsText = view.findViewById(R.id.tv_how_buzz_points_text);
@@ -333,6 +337,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             description.toggle();
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
+        }else if(v.getId() == R.id.ll_continue) {
+            startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(),challengeResult));
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(tncText, "How Do you Generate Buzz Points?");
         } else if (v.getId() == R.id.seemorebutton_tnc) {
