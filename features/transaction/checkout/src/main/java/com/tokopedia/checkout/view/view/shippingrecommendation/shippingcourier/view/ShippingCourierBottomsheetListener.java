@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 
 /**
@@ -8,6 +9,6 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 
 public interface ShippingCourierBottomsheetListener {
 
-    void onCourierChoosen(CourierItemData courierItemData, int cartPosition);
+    void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartPosition);
 
 }

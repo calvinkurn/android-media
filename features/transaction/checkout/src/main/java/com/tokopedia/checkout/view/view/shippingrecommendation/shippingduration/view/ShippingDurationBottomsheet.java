@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -38,6 +39,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
     public static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
+    public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
 
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
@@ -54,12 +56,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
                                                           List<ShopShipment> shopShipmentList,
+                                                          RecipientAddressModel recipientAddressModel,
                                                           int cartPosition) {
         ShippingDurationBottomsheet shippingDurationBottomsheet =
                 new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
         bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
+        bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         shippingDurationBottomsheet.setArguments(bundle);
 
@@ -99,6 +103,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         initializeInjector();
         presenter.attachView(this);
         if (getArguments() != null) {
+            RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
+            presenter.setRecipientAddressModel(recipientAddressModel);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             setupRecyclerView(cartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
@@ -175,7 +181,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                           int cartPosition) {
         shippingDurationBottomsheetListener.onShippingDurationChoosen(
                 shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                cartPosition);
+                presenter.getRecipientAddressModel(), cartPosition);
         dismiss();
     }
 }

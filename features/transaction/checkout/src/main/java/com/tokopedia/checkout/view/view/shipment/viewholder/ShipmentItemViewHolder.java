@@ -293,7 +293,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                ArrayList<ShowCaseObject> showCaseObjectList) {
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
-        if (getAdapterPosition() % 2 == 0) { // Temporary condition
+        if (shipmentCartItemModel.isUseCourierRecommendation()) {
             renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                     recipientAddressModel, shipmentCartItemModel.getShopShipmentList());
         } else {
@@ -452,13 +452,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                              ShipmentDetailData shipmentDetailData,
                                              RecipientAddressModel recipientAddressModel,
                                              List<ShopShipment> shopShipmentList) {
+        RecipientAddressModel currentAddress;
+        if (recipientAddressModel == null) {
+            currentAddress = shipmentCartItemModel.getRecipientAddressModel();
+        } else {
+            currentAddress = recipientAddressModel;
+        }
         llShipmentContainer.setVisibility(View.GONE);
         llShipmentRecommendationContainer.setVisibility(View.VISIBLE);
         tvChooseDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mActionListener.onChooseShipmentDuration(
-                        shipmentCartItemModel, recipientAddressModel, shopShipmentList, getAdapterPosition()
+                        shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
                 );
             }
         });
@@ -466,7 +472,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionListener.onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel,
+                mActionListener.onChangeShippingDuration(shipmentCartItemModel, currentAddress,
                         shopShipmentList, getAdapterPosition());
             }
         });
@@ -476,7 +482,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 mActionListener.onChangeShippingCourier(
                         shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                        getAdapterPosition());
+                        currentAddress, getAdapterPosition());
             }
         });
 
@@ -495,6 +501,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(tvTickerInfo.getText().toString());
                 spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 tvTickerInfo.setText(spannableStringBuilder);
+                tvTickerInfo.setVisibility(View.VISIBLE);
                 llShipmentInfoTicker.setVisibility(View.VISIBLE);
             } else {
                 tvTickerInfo.setVisibility(View.GONE);

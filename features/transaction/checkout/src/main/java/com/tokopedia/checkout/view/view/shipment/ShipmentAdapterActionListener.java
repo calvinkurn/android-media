@@ -66,6 +66,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                                   List<ShopShipment> shopShipmentList,
                                   int position);
 
-    void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels, int position);
+    void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                 RecipientAddressModel recipientAddressModel, int position);
 
 }

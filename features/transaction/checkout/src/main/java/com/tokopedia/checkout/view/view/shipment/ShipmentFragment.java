@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -64,8 +63,6 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
@@ -597,11 +594,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderEditAddressSuccess(String latitude, String longitude) {
         shipmentAdapter.updateShipmentDestinationPinpoint(Double.parseDouble(latitude),
                 Double.parseDouble(longitude));
-        courierBottomsheet = null;
         int position = shipmentAdapter.getLastChooseCourierItemPosition();
+
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
         if (shipmentCartItemModel != null) {
-            onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
+            if (shipmentCartItemModel.isUseCourierRecommendation()) {
+                courierBottomsheet = null;
+                onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
+            } else {
+                // Todo : determine which bottomsheet to be re-shown
+                shippingCourierBottomsheet = null;
+                shippingDurationBottomsheet = null;
+                onChangeShippingDuration(shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel(),
+                        shipmentCartItemModel.getShopShipmentList(), position);
+            }
         }
     }
 
@@ -917,8 +923,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
-            shippingDurationBottomsheet =
-                    ShippingDurationBottomsheet.newInstance(shipmentDetailData, shopShipmentList, cartPosition);
+            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                    shipmentDetailData, shopShipmentList, recipientAddressModel, cartPosition);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
@@ -1195,15 +1201,65 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          CourierItemData courierItemData, int cartPosition) {
-        shipmentAdapter.setSelectedCourier(cartPosition, courierItemData);
-        shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartPosition);
+                                          CourierItemData courierItemData,
+                                          RecipientAddressModel recipientAddressModel,
+                                          int cartItemPosition) {
+        if (courierItemData == null) {
+            // If there's no recommendation, user choose courier manually
+            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, cartItemPosition);
+        } else {
+            if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
+                    recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
+                    recipientAddressModel.getLongitude() == 0)) {
+                shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
+                LocationPass locationPass = new LocationPass();
+                if (shipmentAdapter.getAddressShipmentData() != null) {
+                    locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
+                    locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
+                } else {
+                    ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+                    if (shipmentCartItemModel != null) {
+                        RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                        if (updatedRecipientAddressModel != null) {
+                            locationPass.setCityName(updatedRecipientAddressModel.getCityName());
+                            locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
+                        }
+                    }
+                }
+                Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            } else {
+                shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
+                shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartItemPosition);
+            }
+        }
     }
 
     @Override
-    public void onCourierChoosen(CourierItemData courierItemData, int cartPosition) {
-        shipmentAdapter.setSelectedCourier(cartPosition, courierItemData);
-        // TODO : Handle no pinpoint and another error
+    public void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition) {
+        if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
+                recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
+                recipientAddressModel.getLongitude() == 0)) {
+            shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
+            LocationPass locationPass = new LocationPass();
+            if (shipmentAdapter.getAddressShipmentData() != null) {
+                locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
+                locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
+            } else {
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+                if (shipmentCartItemModel != null) {
+                    RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                    if (updatedRecipientAddressModel != null) {
+                        locationPass.setCityName(updatedRecipientAddressModel.getCityName());
+                        locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
+                    }
+                }
+            }
+            Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
+            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+        } else {
+            shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
+        }
     }
 
     @Override
@@ -1214,8 +1270,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
-            shippingDurationBottomsheet =
-                    ShippingDurationBottomsheet.newInstance(shipmentDetailData, shopShipmentList, cartPosition);
+            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                    shipmentDetailData, shopShipmentList, recipientAddressModel, cartPosition);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
@@ -1226,9 +1282,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                        RecipientAddressModel recipientAddressModel,
                                         int cartPosition) {
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
-                shippingCourierViewModels, cartPosition);
+                shippingCourierViewModels, recipientAddressModel, cartPosition);
         shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
 
         if (getActivity() != null) {

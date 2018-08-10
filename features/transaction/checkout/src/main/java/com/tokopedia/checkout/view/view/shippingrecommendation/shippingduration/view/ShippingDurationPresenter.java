@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -31,6 +32,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     private final ShippingCourierConverter shippingCourierConverter;
 
     private List<ShippingDurationViewModel> shippingDurationViewModelList;
+    private RecipientAddressModel recipientAddressModel;
 
     @Inject
     public ShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
@@ -39,6 +41,16 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
         this.shippingDurationConverter = shippingDurationConverter;
         this.shippingCourierConverter = shippingCourierConverter;
+    }
+
+    @Override
+    public RecipientAddressModel getRecipientAddressModel() {
+        return recipientAddressModel;
+    }
+
+    @Override
+    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
+        this.recipientAddressModel = recipientAddressModel;
     }
 
     @Override

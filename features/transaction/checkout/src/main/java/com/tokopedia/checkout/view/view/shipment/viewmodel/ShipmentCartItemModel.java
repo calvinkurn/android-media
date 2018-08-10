@@ -60,6 +60,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     // Address Model for multiple address shipment, null if single address shipment
     private RecipientAddressModel recipientAddressModel;
 
+    // Flag for courier recommendation
+    private boolean useCourierRecommendation;
+
     public ShipmentCartItemModel() {
     }
 
@@ -91,6 +94,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateDropshipperHasError = in.readByte() != 0;
         recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
+        useCourierRecommendation = in.readByte() != 0;
     }
 
     @Override
@@ -122,6 +126,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
         dest.writeParcelable(recipientAddressModel, flags);
         dest.writeTypedList(cartItemModels);
+        dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
     }
 
     @Override
@@ -168,6 +173,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setOfficialStore(shipmentCartItemModel.isOfficialStore());
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
+        newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
 
         return newShipmentCartItemModel;
     }
@@ -388,6 +394,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.shopShipmentList = shopShipmentList;
     }
 
+    public boolean isUseCourierRecommendation() {
+        return useCourierRecommendation;
+    }
+
+    public void setUseCourierRecommendation(boolean useCourierRecommendation) {
+        this.useCourierRecommendation = useCourierRecommendation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -418,6 +432,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getUnixTime(), that.getUnixTime())
                 .append(getStore(), that.getStore())
                 .append(getRecipientAddressModel(), that.getRecipientAddressModel())
+                .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .isEquals();
     }
 
@@ -445,6 +460,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getUnixTime())
                 .append(getStore())
                 .append(getRecipientAddressModel())
+                .append(isUseCourierRecommendation())
                 .toHashCode();
     }
 }

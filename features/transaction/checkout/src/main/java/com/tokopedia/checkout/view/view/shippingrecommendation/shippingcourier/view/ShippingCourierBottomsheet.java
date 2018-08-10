@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
@@ -30,6 +31,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
 
     public static final String ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST";
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
+    public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
 
     private LinearLayout llContent;
     private RecyclerView rvCourier;
@@ -43,11 +45,13 @@ public class ShippingCourierBottomsheet extends BottomSheets
     ShippingCourierAdapter shippingDurationAdapter;
 
     public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                                         RecipientAddressModel recipientAddressModel,
                                                          int cartPosition) {
         ShippingCourierBottomsheet shippingCourierBottomsheet =
                 new ShippingCourierBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         shippingCourierBottomsheet.setArguments(bundle);
 
@@ -86,6 +90,8 @@ public class ShippingCourierBottomsheet extends BottomSheets
         initializeInjector();
         presenter.attachView(this);
         if (getArguments() != null) {
+            RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
+            presenter.setRecipientAddressModel(recipientAddressModel);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             List<ShippingCourierViewModel> shippingCourierViewModels =
                     getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
@@ -115,7 +121,8 @@ public class ShippingCourierBottomsheet extends BottomSheets
     public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition) {
         presenter.updateSelectedCourier(shippingCourierViewModel);
         CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
-        shippingCourierBottomsheetListener.onCourierChoosen(courierItemData, cartPosition);
+        shippingCourierBottomsheetListener.onCourierChoosen(
+                courierItemData, presenter.getRecipientAddressModel(), cartPosition);
         dismiss();
     }
 }

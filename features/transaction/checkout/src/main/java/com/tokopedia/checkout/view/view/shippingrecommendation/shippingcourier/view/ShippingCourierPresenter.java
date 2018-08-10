@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -19,10 +20,21 @@ public class ShippingCourierPresenter extends BaseDaggerPresenter<ShippingCourie
 
     private final ShippingCourierConverter shippingCourierConverter;
     private List<ShippingCourierViewModel> shippingCourierViewModels;
+    private RecipientAddressModel recipientAddressModel;
 
     @Inject
     public ShippingCourierPresenter(ShippingCourierConverter shippingCourierConverter) {
         this.shippingCourierConverter = shippingCourierConverter;
+    }
+
+    @Override
+    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
+        this.recipientAddressModel = recipientAddressModel;
+    }
+
+    @Override
+    public RecipientAddressModel getRecipientAddressModel() {
+        return recipientAddressModel;
     }
 
     @Override

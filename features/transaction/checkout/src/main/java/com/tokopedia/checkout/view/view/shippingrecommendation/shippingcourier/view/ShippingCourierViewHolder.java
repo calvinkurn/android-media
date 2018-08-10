@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -35,10 +36,12 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     public void bindData(ShippingCourierViewModel shippingCourierViewModel,
                          ShippingCourierAdapterListener shippingCourierAdapterListener) {
         tvCourier.setText(shippingCourierViewModel.getProductData().getShipperName());
-        tvPrice.setText(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
-//        if (!shippingCourierViewModel.isSelected()) {
-//            shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-//        }
+        if (shippingCourierViewModel.getProductData().getError() != null &&
+                shippingCourierViewModel.getProductData().getError().getErrorMessage().length() > 0) {
+            tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
+        } else {
+            tvPrice.setText(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
+        }
         imgCheck.setVisibility(shippingCourierViewModel.isSelected() ? View.VISIBLE : View.GONE);
 
         itemView.setOnClickListener(new View.OnClickListener() {
