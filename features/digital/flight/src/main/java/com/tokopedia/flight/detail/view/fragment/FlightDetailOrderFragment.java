@@ -605,6 +605,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description),
                 getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description_mark)
         ));
+        dialog.setDescMovementMethod();
         dialog.setBtnOk(getString(R.string.flight_cancellation_less_than_6_hours_confirmation_dialog));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override

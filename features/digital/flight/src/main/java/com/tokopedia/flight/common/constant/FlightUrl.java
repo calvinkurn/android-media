@@ -31,7 +31,7 @@ public class FlightUrl {
     public static final String CATEGORY_ID = "27";
     public static final String TNC_LINK = "https://www.tokopedia.com/bantuan/pengembalian-dana-dan-penggantian-jadwal";
     public static String BASE_URL = "https://api-staging.tokopedia.com";
-    public static String WEB_DOMAIN = "https://staging.tokopedia.com/";
+    public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";
     public static String CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String CONTACT_US_FLIGHT_PREFIX_GLOBAL = WEB_DOMAIN + "contact-us?pid=46&ivtype=4";
