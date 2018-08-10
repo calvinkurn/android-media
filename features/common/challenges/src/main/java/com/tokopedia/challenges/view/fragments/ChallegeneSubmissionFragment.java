@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
@@ -83,6 +85,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     CountDownView countDownView;
     TextView tvHashTag;
     TextView tvTnCText;
+    FloatingActionButton btnShare;
 
     SubmissionItemAdapter submissionItemAdapter;
 
@@ -148,6 +151,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         tvHowBuzzPointsText = view.findViewById(R.id.tv_how_buzz_points_text);
         seeMoreButtonBuzzPoints = view.findViewById(R.id.seemorebutton_buzzpoints);
         seeMoreButtonTnc = view.findViewById(R.id.seemorebutton_tnc);
+        btnShare = view.findViewById(R.id.fab_share);
+        btnShare.setOnClickListener(this);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
         mPresenter.attachView(this);
@@ -209,7 +214,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             submissionRecyclerView.setAdapter(submissionItemAdapter);
         }
     }
-
 
 
     @Override
@@ -337,13 +341,17 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             description.toggle();
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
-        }else if(v.getId() == R.id.ll_continue) {
-            startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(),challengeResult));
+        } else if (v.getId() == R.id.ll_continue) {
+            startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(), challengeResult));
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(tncText, "How Do you Generate Buzz Points?");
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, "Terms & Conditions");
+        } else if (v.getId() == R.id.fab_share) {
+            ((ChallengesModuleRouter) (getActivity().getApplication())).shareChallenge(getActivity(), "tokopedia://referral", challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage());
+
         }
+
 
     }
 
