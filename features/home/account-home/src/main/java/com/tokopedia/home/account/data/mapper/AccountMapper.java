@@ -241,30 +241,30 @@ private static final String NO_SHOP = "-1";
         menuList.setMenuDescription(context.getString(R.string.label_menu_mybills));
         menuList.setApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountConstants.Url.MYBILLS_URL));
+                AccountConstants.Url.Pulsa.MYBILLS));
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);
 
-        menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
-        menuList.setApplink(String.format("%s?url=%s",
-                ApplinkConst.WEBVIEW,
-                AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
-        menuList.setTitleTrack(PEMBELI);
-        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-        items.add(menuList);
-
-        menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
-        menuList.setApplink(String.format("%s?url=%s",
-                ApplinkConst.WEBVIEW,
-                AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
-        menuList.setTitleTrack(PEMBELI);
-        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-        items.add(menuList);
+//        menuList = new MenuListViewModel();
+//        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
+//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
+//        menuList.setApplink(String.format("%s?url=%s",
+//                ApplinkConst.WEBVIEW,
+//                AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
+//        menuList.setTitleTrack(PEMBELI);
+//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
+//        items.add(menuList);
+//
+//        menuList = new MenuListViewModel();
+//        menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
+//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
+//        menuList.setApplink(String.format("%s?url=%s",
+//                ApplinkConst.WEBVIEW,
+//                AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
+//        menuList.setTitleTrack(PEMBELI);
+//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
+//        items.add(menuList);
 
         InfoCardViewModel infoCard = new InfoCardViewModel();
         infoCard.setIconRes(R.drawable.ic_tokocash_big);
@@ -373,6 +373,14 @@ private static final String NO_SHOP = "-1";
         menuList.setMenu(context.getString(R.string.title_menu_product_list));
         menuList.setMenuDescription(context.getString(R.string.label_menu_product_list));
         menuList.setApplink(ApplinkConst.PRODUCT_MANAGE);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_product));
+        items.add(menuList);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_product_feature));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_product_feature));
+        menuList.setApplink(ApplinkConst.PRODUCT_DRAFT);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_product));
         items.add(menuList);

@@ -280,17 +280,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         startActivity(getIntent());
     }
 
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setUserSession(UserSession userSession){
-        this.userSession = userSession;
-    }
-
-    @Override
-    public BaseAppComponent getComponent() {
-        return getApplicationComponent();
-    }
-
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
