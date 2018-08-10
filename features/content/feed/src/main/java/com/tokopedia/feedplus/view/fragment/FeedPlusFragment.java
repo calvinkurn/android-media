@@ -106,8 +106,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
-        KolPostListener.View.ViewHolder,
-        NotificationListener {
+        KolPostListener.View.ViewHolder {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -133,7 +132,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TkpdProgressDialog progressDialog;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
-    private MainToolbar mainToolbar;
 
     private Trace trace;
     private LinearLayoutManager layoutManager;
@@ -255,7 +253,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
-        mainToolbar = parentView.findViewById(R.id.toolbar);
 
         prepareView();
         GraphqlClient.init(getActivity());
@@ -1172,12 +1169,5 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public AbstractionRouter getAbstractionRouter() {
         return abstractionRouter;
-    }
-
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        if (mainToolbar == null || getActivity() == null)
-            return;
-        mainToolbar.setNotificationNumber(number);
     }
 }

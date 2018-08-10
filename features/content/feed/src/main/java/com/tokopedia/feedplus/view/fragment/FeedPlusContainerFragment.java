@@ -13,9 +13,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
-import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.searchbar.MainToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,9 @@ import java.util.List;
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FeedPlusContainerListener, FragmentListener {
+        implements FragmentListener, NotificationListener {
 
+    private MainToolbar mainToolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FeedPlusFragment feedPlusFragment;
@@ -44,6 +46,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
+        mainToolbar = view.findViewById(R.id.toolbar);
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
         return view;
@@ -66,25 +69,18 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showFeedPlus() {
-        if (feedPlusFragment == null) {
-            feedPlusFragment = FeedPlusFragment.newInstance();
-        }
-    }
-
-    @Override
-    public void showContentExplore() {
-        if (contentExploreFragment == null) {
-            contentExploreFragment = ContentExploreFragment.newInstance(getArguments());
-        }
-    }
-
-    @Override
     public void onScrollToTop() {
         if (feedPlusFragment != null && feedPlusFragment.getUserVisibleHint()) {
             feedPlusFragment.scrollToTop();
         } else if (contentExploreFragment != null && contentExploreFragment.getUserVisibleHint()) {
             contentExploreFragment.scrollToTop();
+        }
+    }
+
+    @Override
+    public void onNotifyBadgeNotification(int number) {
+        if (mainToolbar != null || getActivity() != null) {
+            mainToolbar.setNotificationNumber(number);
         }
     }
 
