@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TestableTkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
@@ -42,8 +43,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import q.rorbin.badgeview.QBadgeView;
-
 /**
  * @author okasurya on 7/16/18.
  */
@@ -57,7 +56,7 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     private ViewPager viewPager;
     private AccountHomePagerAdapter adapter;
 
-    private QBadgeView badgeView;
+    private BadgeView badgeView;
     private Toolbar toolbar;
     private ImageButton menuNotification;
 
@@ -182,7 +181,7 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
         if (menuNotification == null || getActivity() == null)
             return;
         if (badgeView == null)
-            badgeView = new QBadgeView(getActivity());
+            badgeView = new BadgeView(getActivity());
 
         badgeView.bindTarget(menuNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);

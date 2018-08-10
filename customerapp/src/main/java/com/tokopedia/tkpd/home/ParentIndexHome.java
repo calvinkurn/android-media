@@ -654,7 +654,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, messageTAG + "onResume");
+        Log.d(TAG, messageTAG + "onActivityResult");
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {

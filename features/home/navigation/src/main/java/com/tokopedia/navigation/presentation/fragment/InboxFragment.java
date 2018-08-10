@@ -8,7 +8,10 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.domain.model.Notification;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
@@ -30,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import q.rorbin.badgeview.QBadgeView;
 
 /**
  * Created by meta on 19/06/18.
@@ -56,7 +57,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private InboxAdapter adapter;
     private ImageButton menuItemNotification;
     private TextView toolbarTitle;
-    private QBadgeView badgeView;
+    private BadgeView badgeView;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -94,6 +95,17 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             globalNavAnalytics.eventInboxPage(inbox.getTitle().toString().toLowerCase());
             getCallingIntent(position);
         });
+
+        setMenuNotification();
+    }
+
+    private void setMenuNotification() {
+        if (getActivity() instanceof MainParentActivity) {
+            Notification notification = ((MainParentActivity)getActivity()).getNotification();
+            if (notification != null) {
+                onNotifyBadgeNotification(notification.getTotalNotif());
+            }
+        }
     }
 
     private void intiInjector() {
@@ -202,7 +214,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             return;
 
         if (badgeView == null)
-            badgeView = new QBadgeView(getActivity());
+            badgeView = new BadgeView(getActivity());
 
         badgeView.bindTarget(menuItemNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
