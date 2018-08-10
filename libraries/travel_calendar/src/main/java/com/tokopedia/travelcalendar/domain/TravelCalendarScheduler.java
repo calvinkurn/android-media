@@ -1,0 +1,24 @@
+package com.tokopedia.travelcalendar.domain;
+
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+/**
+ * Created by nabillasabbaha on 10/08/18.
+ */
+public class TravelCalendarScheduler implements TravelCalendarProvider {
+
+    public TravelCalendarScheduler() {
+    }
+
+    @Override
+    public Scheduler computation() {
+        return Schedulers.io();
+    }
+
+    @Override
+    public Scheduler uiScheduler() {
+        return AndroidSchedulers.mainThread();
+    }
+}

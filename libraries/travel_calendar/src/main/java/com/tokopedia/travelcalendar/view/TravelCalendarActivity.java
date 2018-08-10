@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.travelcalendar.R;
 import com.tokopedia.travelcalendar.di.TravelCalendarComponent;
@@ -183,16 +181,15 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     }
 
     @Override
-    public void renderErrorMessage(Throwable throwable) {
+    public void renderErrorMessage(String message) {
         progressBar.setVisibility(View.GONE);
-        String errorMessage = ErrorHandler.getErrorMessage(this, throwable);
-        NetworkErrorHelper.createSnackbarWithAction(this, errorMessage,
+        NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getHolidayEvents();
-            }
-        }).showRetrySnackbar();
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getHolidayEvents();
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override
@@ -205,6 +202,11 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     public void hideLoading() {
         progressBar.setVisibility(View.GONE);
         viewPager.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     @Override
