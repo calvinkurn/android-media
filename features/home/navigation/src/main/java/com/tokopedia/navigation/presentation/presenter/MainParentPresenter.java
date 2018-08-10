@@ -19,8 +19,7 @@ public class MainParentPresenter {
 
     private final GetDrawerNotificationUseCase getNotificationUseCase;
 
-    @Inject
-    MainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase) {
+    public MainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase) {
         this.getNotificationUseCase = getNotificationUseCase;
     }
 

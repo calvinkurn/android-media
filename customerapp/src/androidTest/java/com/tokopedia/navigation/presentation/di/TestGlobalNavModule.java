@@ -10,6 +10,7 @@ import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.presentation.fragment.EmptyFragment;
+import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 
 import javax.inject.Named;
 
@@ -26,6 +27,13 @@ import static org.mockito.Mockito.mock;
 public class TestGlobalNavModule {
 
     private AnalyticTracker analyticTracker;
+
+    private MainParentPresenter mainParentPresenter;
+
+    @Provides
+    MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase){
+        return mainParentPresenter == null ? mainParentPresenter = new MainParentPresenter(getNotificationUseCase) : mainParentPresenter;
+    }
 
     @Provides
     AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
