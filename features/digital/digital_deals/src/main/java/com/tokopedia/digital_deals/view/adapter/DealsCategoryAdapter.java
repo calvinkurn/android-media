@@ -486,7 +486,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (productItem.getBrand().getUrl() != null) {
                 cvBrand.setOnClickListener(this);
             }
-            if (productItem.getMrp() != 0) {
+            if (productItem.getMrp() != 0 && productItem.getMrp() != productItem.getSalesPrice()) {
                 dealListPrice.setVisibility(View.VISIBLE);
                 dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
                 dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
