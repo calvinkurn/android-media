@@ -3,8 +3,8 @@ package com.tokopedia.sellerapp.fcm.appupdate;
 import android.app.Activity;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.appupdate.ApplicationUpdate;
-import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.BuildConfig;

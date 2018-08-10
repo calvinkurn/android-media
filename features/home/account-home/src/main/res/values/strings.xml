@@ -94,8 +94,10 @@
     <string name="label_menu_order_processed">Pesanan Diproses</string>
     <string name="label_menu_shipping">Sedang Dikirim</string>
     <string name="label_menu_delivered">Sampai Tujuan</string>
-    <string name="title_menu_complaint">Komplain Sebagai Pembeli</string>
-    <string name="label_menu_complaint">Selesaikan komplain belanja anda</string>
+    <string name="title_menu_buyer_complain">Komplain Sebagai Pembeli</string>
+    <string name="label_menu_buyer_complain">Selesaikan komplain belanja anda</string>
+    <string name="title_menu_seller_complain">Komplain Sebagai Penjual</string>
+    <string name="label_menu_seller_complain">Lihat status komplain di sini</string>
     <string name="title_menu_other_transaction">Transaksi Lainnya</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_last_seen">Terakhir Dilihat</string>
@@ -128,8 +130,6 @@
     <string name="label_menu_ready_to_ship">Siap Dikirim</string>
     <string name="label_menu_shipped">Sedang Dikirim</string>
     <string name="label_menu_arrive_at_destination">Sampai Tujuan</string>
-    <string name="title_menu_complaint_seller">Komplain Sebagai Penjual</string>
-    <string name="label_menu_complaint_seller">Lihat status komplain di sini</string>
     <string name="title_menu_product">Produk</string>
     <string name="title_menu_product_list">Pengaturan Produk</string>
     <string name="label_menu_product_list">Lihat dan atur semua produk</string>
@@ -172,5 +172,6 @@
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
+    <string name="message_success_change_password">Kata sandi berhasil diubah</string>
 
 </resources>

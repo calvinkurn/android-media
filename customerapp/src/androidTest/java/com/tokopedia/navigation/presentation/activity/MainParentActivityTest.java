@@ -50,6 +50,15 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.home.account.data.mapper.AccountMapper;
+import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
+import com.tokopedia.home.account.di.component.DaggerTestAccountHomeComponent;
+import com.tokopedia.home.account.di.component.TestAccountHomeComponent;
+import com.tokopedia.home.account.di.module.TestAccountHomeModule;
+import com.tokopedia.home.account.domain.GetAccountUseCase;
+import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
+import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -172,6 +181,55 @@ public class MainParentActivityTest {
     }
 
     @Test
+    public void test_load_account_home_first_time_without_login() throws Exception{
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+        doReturn(true).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+
+        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+        AccountHomeFragment fragment = (AccountHomeFragment) mIntentsRule.getActivity().getFragment(4);
+
+        TestAccountHomeModule testAccountHomeModule = new TestAccountHomeModule();
+        TestAccountHomeComponent accountHomeComponent = DaggerTestAccountHomeComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .testAccountHomeModule(testAccountHomeModule)
+                .build();
+
+        accountHomeComponent.accountHomePresenter(); // call this to mock getAccountUseCase
+
+        GetAccountUseCase getAccountUseCase = testAccountHomeModule.getGetAccountUseCase();
+
+        doReturn(Observable.just(provideAccountViewModel()))
+                .when(getAccountUseCase)
+                .createObservable(any(RequestParams.class));
+
+
+        if(fragment != null && fragment.isVisible()){
+            fragment.reInitInjector(accountHomeComponent);
+
+            mIntentsRule.getActivity().runOnUiThread(() -> {
+                fragment.getAccount();
+            });
+        }
+
+        Thread.sleep(5_000);
+    }
+
+    @Test
     public void test_load_cart_first_time_without_login() throws Exception{
         UserSession userSession = baseAppComponent.userSession();
 
@@ -211,7 +269,6 @@ public class MainParentActivityTest {
         }
 
         Thread.sleep(5_000);
-
 
         onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
     }
@@ -332,6 +389,13 @@ public class MainParentActivityTest {
             doReturn(Observable.just(test3())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
 
             onView(allOf(withId(R.id.swipe_refresh_layout), withTagValue(is((Object) "swipe_to_refresh_feed_plus")))).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+            // Get total item of myRecyclerView
+            int itemCount = recyclerView.getAdapter().getItemCount();
+
+            // Scroll to end of page with position
+            onView(allOf(withId(R.id.recycler_view), withTagValue(is("feed_plus_list")), isCompletelyDisplayed()))
+                    .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
         }
     }
 
@@ -355,10 +419,6 @@ public class MainParentActivityTest {
 
         onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
-        // TODO tap all nav bar button
-        // TODO verify go to all locations
-        // TODO tap toolbar then go back
-        // TODO check checked nav bar
     }
 
     @Test
@@ -441,6 +501,13 @@ public class MainParentActivityTest {
             onView(allOf(withId(R.id.list), withTagValue(is("home_list")), isCompletelyDisplayed()))
                     .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
         }
+    }
+
+    private AccountViewModel provideAccountViewModel(){
+        AccountModel accountModel = CacheUtil.convertStringToModel(
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource("account_home.json")
+                , AccountModel.class);
+        return AccountMapper.from(baseAppComponent.getContext(), accountModel);
     }
 
     private CartListData provideGetCartListUseCase(Context context){

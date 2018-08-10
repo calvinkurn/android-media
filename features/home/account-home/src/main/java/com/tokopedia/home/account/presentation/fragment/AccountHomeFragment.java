@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.TestableTkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.home.account.presentation.BuyerAccount;
@@ -46,7 +47,7 @@ import q.rorbin.badgeview.QBadgeView;
 /**
  * @author okasurya on 7/16/18.
  */
-public class AccountHomeFragment extends TkpdBaseV4Fragment implements
+public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeComponent, AccountHomePresenter> implements
         AccountHome.View, NotificationListener {
 
     @Inject
@@ -81,6 +82,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getAccount();
+    }
+
+    public void getAccount() {
         if (getContext() != null) {
             GraphqlClient.init(getContext());
 
@@ -182,6 +187,21 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         badgeView.bindTarget(menuNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
+    }
+
+    @Override
+    public void reInitInjector(AccountHomeComponent component) {
+        component.inject(this);
+        presenter.attachView(this);
+    }
+
+    @Override
+    public AccountHomePresenter getPresenter() {
+        return null;
+    }
+
+    @Override
+    public void setPresenter(AccountHomeComponent presenter) {
     }
 
 
