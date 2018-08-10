@@ -31,6 +31,7 @@ import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -93,21 +94,6 @@ public class PosRouterApplication extends MainApplication implements
         super.onCreate();
         initializeDagger();
         initDaggerInjector();
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
-
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
-
-    }
-
-    @Override
-    public void removeInstopedToken() {
-
     }
 
     @Override
@@ -448,6 +434,11 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
+        return null;
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
         return null;
     }
 

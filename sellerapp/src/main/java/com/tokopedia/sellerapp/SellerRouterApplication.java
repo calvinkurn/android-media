@@ -130,7 +130,6 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
@@ -457,16 +456,6 @@ public abstract class SellerRouterApplication extends MainApplication
                                                  Intent resultIntent,
                                                  Bundle bundle) {
         return null;
-    }
-
-    @Override
-    public void doFollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber) {
-
-    }
-
-    @Override
-    public void doUnfollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber) {
-
     }
 
     @Override
@@ -1082,6 +1071,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void showForceLogoutTokenDialog(String response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    }
+
+    @Override
     public void showServerError(Response response) {
         ServerErrorHandler.showServerErrorSnackbar();
         ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
@@ -1494,32 +1489,6 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return new Intent(context, ManagePasswordActivity.class);
         }
-    }
-
-    @Override
-    public String getStringRemoteConfig(String key) {
-        return remoteConfig.getString(key, "");
-    }
-
-    @Override
-    public void setStringRemoteConfigLocal(String key, String value) {
-        remoteConfig.setString(key, value);
-    }
-
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return SimpleWebViewWithFilePickerActivity.getIntent(context,
-                url);
     }
 
     @Override
