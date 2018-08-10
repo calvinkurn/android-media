@@ -11,6 +11,10 @@
             android:name=".view.activity.ChallengeDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.FullScreenVideoActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.White" />
         <activity android:name=".view.activity.SubmitDetailActivity"></activity>
     </application>
 

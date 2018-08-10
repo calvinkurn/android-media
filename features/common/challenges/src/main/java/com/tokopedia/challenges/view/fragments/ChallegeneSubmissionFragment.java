@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -81,6 +82,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     CountDownView countDownView;
     TextView tvHashTag;
     TextView tvTnCText;
+    public static int VIDEO_POS = -1;
 
     SubmissionItemAdapter submissionItemAdapter;
 
@@ -104,6 +106,23 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         super.onCreate(savedInstanceState);
         this.challengeResult = getArguments().getParcelable("challengesResult");
         setHasOptionsMenu(true);
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (VIDEO_POS != -1) {
+            if (videoPlayer != null)
+                videoPlayer.startPlay(VIDEO_POS);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (videoPlayer != null)
+            VIDEO_POS = videoPlayer.getPosition();
     }
 
     @Nullable
@@ -207,7 +226,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
 
-
     @Override
     public void renderChallengeDetail() {
         ImageHandler.loadImage(getActivity(), challengeImage, challengeResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
@@ -229,7 +247,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             description.setVisibility(View.GONE);
         }
         setCountDownView();
-//        videoPlayer.setVideoThumbNail(submissionResponse.getSubmissionResults());
+        if (challengeResult.getSharing().getAssets() != null && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
+            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false);
+        } else {
+            clVideoPlayer.setVisibility(View.GONE);
+        }
         if (challengeResult.getPrizes() != null && challengeResult.getPrizes().size() > 0) {
             LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             awardRecylerView.setLayoutManager(mLayoutManager1);
@@ -250,16 +272,16 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 tvParticipated.setText("Waiting");
             } else if (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate())) {
                 tvParticipated.setText("Completed");
-            } else {
-                try {
-                    countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
-                    countDownView.start(timerProgressBar);
-                } catch (MessageErrorException e) {
-                    e.printStackTrace();
-                }
-                timerView.setVisibility(View.VISIBLE);
-                tvParticipated.setVisibility(View.GONE);
             }
+        } else {
+            try {
+                countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
+                countDownView.start(timerProgressBar);
+            } catch (MessageErrorException e) {
+                e.printStackTrace();
+            }
+            timerView.setVisibility(View.VISIBLE);
+            tvParticipated.setVisibility(View.GONE);
         }
     }
 
@@ -308,7 +330,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         tncText = termsNCondition.getTerms();
         if (!TextUtils.isEmpty(tncText)) {
             clTnc.setVisibility(View.VISIBLE);
-            tvTnCText.setText(termsNCondition.getTerms());
+//            tvTnCText.setText(termsNCondition.getTerms());
         }
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -338,6 +360,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, "Terms & Conditions");
         }
+//        else if (v.getId() == R.id.video_player) {
+//            videoPlayer.startVideoPlay(challengeResult.getSharing().getAssets().getVideo());
+//        }
 
     }
 
@@ -351,4 +376,5 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         mPresenter.onDestroy();
         super.onDestroyView();
     }
+
 }
