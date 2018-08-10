@@ -12,4 +12,6 @@ public interface ShippingDurationAdapterListener {
 
     void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList, int cartPosition);
 
+    void onAllShippingDurationItemShown();
+
 }

@@ -17,6 +17,7 @@ public class ShippingDurationViewModel implements Parcelable {
     private ServiceData serviceData;
     private List<ShippingCourierViewModel> shippingCourierViewModelList;
     private boolean selected;
+    private boolean showShowCase;
 
     public ShippingDurationViewModel() {
     }
@@ -25,6 +26,7 @@ public class ShippingDurationViewModel implements Parcelable {
         serviceData = in.readParcelable(ServiceData.class.getClassLoader());
         shippingCourierViewModelList = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
         selected = in.readByte() != 0;
+        showShowCase = in.readByte() != 0;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class ShippingDurationViewModel implements Parcelable {
         dest.writeParcelable(serviceData, flags);
         dest.writeTypedList(shippingCourierViewModelList);
         dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeByte((byte) (showShowCase ? 1 : 0));
     }
 
     @Override
@@ -73,5 +76,13 @@ public class ShippingDurationViewModel implements Parcelable {
 
     public void setShippingCourierViewModelList(List<ShippingCourierViewModel> shippingCourierViewModelList) {
         this.shippingCourierViewModelList = shippingCourierViewModelList;
+    }
+
+    public boolean isShowShowCase() {
+        return showShowCase;
+    }
+
+    public void setShowShowCase(boolean showShowCase) {
+        this.showShowCase = showShowCase;
     }
 }

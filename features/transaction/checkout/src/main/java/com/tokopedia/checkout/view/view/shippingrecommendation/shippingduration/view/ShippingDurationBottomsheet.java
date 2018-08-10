@@ -178,9 +178,30 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                           int cartPosition) {
+        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+            shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
+        }
         shippingDurationBottomsheetListener.onShippingDurationChoosen(
                 shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
                 presenter.getRecipientAddressModel(), cartPosition);
         dismiss();
+    }
+
+    @Override
+    public void onAllShippingDurationItemShown() {
+        if (presenter.getShippingDurationViewModels() != null &&
+                presenter.getShippingDurationViewModels().size() > 0) {
+            presenter.getShippingDurationViewModels().get(0).setShowShowCase(true);
+            if (rvDuration.isComputingLayout()) {
+                rvDuration.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        shippingDurationAdapter.notifyItemChanged(0);
+                    }
+                });
+            } else {
+                shippingDurationAdapter.notifyItemChanged(0);
+            }
+        }
     }
 }

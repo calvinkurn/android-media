@@ -32,10 +32,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvDurationHeaderInfo;
 
     private int cartPosition;
+    private ShippingDurationAdapter adapter;
 
-    public ShippingDurationViewHolder(View itemView, int cartPosition) {
+    public ShippingDurationViewHolder(View itemView, ShippingDurationAdapter adapter, int cartPosition) {
         super(itemView);
         this.cartPosition = cartPosition;
+        this.adapter = adapter;
 
         rlItemDurationContainer = itemView.findViewById(R.id.rl_item_duration_container);
         tvDuration = itemView.findViewById(R.id.tv_duration);
@@ -60,17 +62,25 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
+        if (getAdapterPosition() == adapter.getItemCount() - 1) {
+            shippingDurationAdapterListener.onAllShippingDurationItemShown();
+        }
+
         if (getAdapterPosition() == 0) {
+            shippingDurationViewModel.setShowShowCase(true);
             tvDurationHeaderInfo.setVisibility(View.VISIBLE);
-            setShowCase();
+            if (shippingDurationViewModel.isShowShowCase()) {
+                setShowCase();
+            }
         } else {
             tvDurationHeaderInfo.setVisibility(View.GONE);
         }
+
     }
 
     private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(
-                rlItemDurationContainer, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
+                itemView, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
                 itemView.getContext().getString(R.string.label_body_showcase_shipping_duration),
                 ShowCaseContentPosition.UNDEFINED);
 

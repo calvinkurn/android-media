@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -12,6 +13,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 public class ShippingCourierViewModel implements Parcelable {
 
     private ProductData productData;
+    private ServiceData serviceData;
     private int additionalFee;
     private boolean allowDropshipper;
     private boolean selected;
@@ -21,6 +23,7 @@ public class ShippingCourierViewModel implements Parcelable {
 
     protected ShippingCourierViewModel(Parcel in) {
         productData = in.readParcelable(ProductData.class.getClassLoader());
+        serviceData = in.readParcelable(ServiceData.class.getClassLoader());
         additionalFee = in.readInt();
         allowDropshipper = in.readByte() != 0;
         selected = in.readByte() != 0;
@@ -29,6 +32,7 @@ public class ShippingCourierViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(productData, flags);
+        dest.writeParcelable(serviceData, flags);
         dest.writeInt(additionalFee);
         dest.writeByte((byte) (allowDropshipper ? 1 : 0));
         dest.writeByte((byte) (selected ? 1 : 0));
@@ -81,5 +85,13 @@ public class ShippingCourierViewModel implements Parcelable {
 
     public void setAllowDropshipper(boolean allowDropshipper) {
         this.allowDropshipper = allowDropshipper;
+    }
+
+    public ServiceData getServiceData() {
+        return serviceData;
+    }
+
+    public void setServiceData(ServiceData serviceData) {
+        this.serviceData = serviceData;
     }
 }

@@ -39,7 +39,7 @@ public class ShippingDurationAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        return new ShippingDurationViewHolder(view, cartPosition);
+        return new ShippingDurationViewHolder(view, this, cartPosition);
     }
 
     @Override

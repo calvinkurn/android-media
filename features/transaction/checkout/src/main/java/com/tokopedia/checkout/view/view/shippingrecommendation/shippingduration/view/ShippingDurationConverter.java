@@ -71,6 +71,7 @@ public class ShippingDurationConverter {
                                              ProductData productData) {
         ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
         shippingCourierViewModel.setProductData(productData);
+        shippingCourierViewModel.setServiceData(shippingDurationViewModel.getServiceData());
         if (selectedSpId != 0) {
             if (selectedSpId == productData.getShipperProductId()) {
                 shippingCourierViewModel.setSelected(true);

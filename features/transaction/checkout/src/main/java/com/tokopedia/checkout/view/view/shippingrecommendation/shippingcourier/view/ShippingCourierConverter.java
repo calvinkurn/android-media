@@ -13,7 +13,7 @@ public class ShippingCourierConverter {
         courierItemData.setShipperId(shippingCourierViewModel.getProductData().getShipperId());
         courierItemData.setShipperProductId(shippingCourierViewModel.getProductData().getShipperProductId());
         courierItemData.setName(shippingCourierViewModel.getProductData().getShipperName());
-        courierItemData.setEstimatedTimeDelivery(shippingCourierViewModel.getProductData().getTexts().getTextEtd());
+        courierItemData.setEstimatedTimeDelivery(shippingCourierViewModel.getServiceData().getServiceName());
         courierItemData.setMinEtd(shippingCourierViewModel.getProductData().getEtd().getMinEtd());
         courierItemData.setMaxEtd(shippingCourierViewModel.getProductData().getEtd().getMaxEtd());
         courierItemData.setShipperPrice(shippingCourierViewModel.getProductData().getPrice().getPrice());
