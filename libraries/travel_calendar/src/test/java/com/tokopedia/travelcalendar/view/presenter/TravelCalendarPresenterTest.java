@@ -6,7 +6,6 @@ import com.tokopedia.travelcalendar.domain.TravelCalendarTestScheduler;
 import com.tokopedia.travelcalendar.view.TravelCalendarContract;
 import com.tokopedia.travelcalendar.view.model.HolidayResult;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
