@@ -43,6 +43,7 @@ public interface FlightRepository {
 
     Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params);
 
+    Observable<Boolean> checkPreloadAirport();
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 

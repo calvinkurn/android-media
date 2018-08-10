@@ -42,12 +42,18 @@ public interface FlightOrderListContract {
 
         void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> item);
 
+        void loadPageData(int page);
+
+        void startAirportSyncInBackground(long airportVersion);
+
         void navigateToWebview(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void loadData(String selectedFilter, int page, int perPage);
+
+        void onInitialize(boolean isShouldCheckPreload, int page);
 
         void onDestroyView();
 

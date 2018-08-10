@@ -1,10 +1,15 @@
 package com.tokopedia.flight.orderlist.view;
 
 import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -30,6 +35,8 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.service.GetAirportListJobService;
+import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
@@ -68,21 +75,42 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
 
+    public static final String EXTRA_SHOULD_CHECK_PRELOAD = "EXTRA_SHOULD_CHECK_PRELOAD";
+
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
     private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final int REQUEST_CODE_ORDER_DETAIL = 3;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
+    public static final boolean DEFAULT_CHECK_PRELOAD = true;
+
     private String selectedFilter;
 
     @Inject
     FlightModuleRouter flightModuleRouter;
     @Inject
     FlightOrderListPresenter presenter;
+
     private QuickSingleFilterView quickSingleFilterView;
 
     public static FlightOrderListFragment createInstance() {
-        return new FlightOrderListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_SHOULD_CHECK_PRELOAD, DEFAULT_CHECK_PRELOAD);
+
+        FlightOrderListFragment fragment = new FlightOrderListFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+    public static FlightOrderListFragment createInstance(boolean isShouldCheckPreload) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_SHOULD_CHECK_PRELOAD, isShouldCheckPreload);
+
+        FlightOrderListFragment fragment = new FlightOrderListFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
@@ -130,7 +158,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void loadData(int page) {
         presenter.attachView(this);
-        presenter.loadData(selectedFilter, page, PER_PAGE);
+        if (!getArguments().getBoolean(EXTRA_SHOULD_CHECK_PRELOAD)) {
+            loadPageData(page);
+        } else {
+            presenter.onInitialize(getArguments().getBoolean(EXTRA_SHOULD_CHECK_PRELOAD), page);
+        }
         presenter.onGetProfileData();
     }
 
@@ -373,6 +405,33 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
                 invoiceId,
                 item
         ), REQUEST_CODE_CANCELLATION);
+    }
+
+    @Override
+    public void loadPageData(int page) {
+        presenter.loadData(selectedFilter, page, PER_PAGE);
+    }
+
+    @Override
+    public void startAirportSyncInBackground(long airportVersion) {
+        if (getActivity() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                JobScheduler jobScheduler =
+                        (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                if (jobScheduler == null) return;
+
+                PersistableBundle bundle = new PersistableBundle();
+                bundle.putLong(GetAirportListJobService.AIRPORT_VERSION, airportVersion);
+
+                jobScheduler.schedule(new JobInfo.Builder(101,
+                        new ComponentName(getActivity(), GetAirportListJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setExtras(bundle)
+                        .build());
+            }else {
+                GetAirportListService.startService(getActivity(), airportVersion);
+            }
+        }
     }
 
     @Override
