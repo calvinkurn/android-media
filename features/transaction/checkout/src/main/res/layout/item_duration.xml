@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_item_duration_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?selectableItemBackground"
@@ -8,10 +9,20 @@
     android:paddingRight="@dimen/dp_16">
 
     <TextView
+        android:id="@+id/tv_duration_header_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/label_hardcoded_shipping_duration_info"
+        android:textSize="@dimen/sp_11" />
+
+    <TextView
         android:id="@+id/tv_duration"
         style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_duration_header_info"
         android:layout_marginTop="@dimen/dp_16"
         android:lineSpacingExtra="4sp"
         tools:text="4 Jam" />
@@ -29,9 +40,9 @@
         android:id="@+id/img_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_duration"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:src="@drawable/ic_check" />
 
     <View

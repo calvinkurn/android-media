@@ -44,7 +44,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llContent;
-    private TextView tvDurationHeaderInfo;
     private RecyclerView rvDuration;
 
     private ShippingDurationBottomsheetListener shippingDurationBottomsheetListener;

@@ -1,11 +1,20 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
+
+import java.util.ArrayList;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -15,10 +24,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_SHIPMENT_DURATION = R.layout.item_duration;
 
+    private RelativeLayout rlItemDurationContainer;
     private TextView tvDuration;
     private TextView tvPrice;
     private ImageView imgCheck;
     private View vSeparator;
+    private TextView tvDurationHeaderInfo;
 
     private int cartPosition;
 
@@ -26,10 +37,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.cartPosition = cartPosition;
 
+        rlItemDurationContainer = itemView.findViewById(R.id.rl_item_duration_container);
         tvDuration = itemView.findViewById(R.id.tv_duration);
         tvPrice = itemView.findViewById(R.id.tv_price);
         imgCheck = itemView.findViewById(R.id.img_check);
         vSeparator = itemView.findViewById(R.id.v_separator);
+        tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info);
     }
 
     public void bindData(ShippingDurationViewModel shippingDurationViewModel,
@@ -38,7 +51,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());
         tvPrice.setText(shippingDurationViewModel.getServiceData().getTexts().getTextRangePrice());
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);
-
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +60,50 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
+        if (getAdapterPosition() == 0) {
+            tvDurationHeaderInfo.setVisibility(View.VISIBLE);
+            setShowCase();
+        } else {
+            tvDurationHeaderInfo.setVisibility(View.GONE);
+        }
+    }
+
+    private void setShowCase() {
+        ShowCaseObject showCase = new ShowCaseObject(
+                rlItemDurationContainer, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
+                itemView.getContext().getString(R.string.label_body_showcase_shipping_duration),
+                ShowCaseContentPosition.UNDEFINED);
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+
+        showCaseObjectList.add(showCase);
+
+        ShowCaseDialog showCaseDialog = createShowCaseDialog();
+
+        if (!ShowCasePreference.hasShown(itemView.getContext(), ShippingDurationViewHolder.class.getName()))
+            showCaseDialog.show(
+                    (Activity) itemView.getContext(),
+                    ShippingDurationViewHolder.class.getName(),
+                    showCaseObjectList
+            );
+    }
+
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.show_case_checkout)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.show_case_finish)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
     }
 
 }
