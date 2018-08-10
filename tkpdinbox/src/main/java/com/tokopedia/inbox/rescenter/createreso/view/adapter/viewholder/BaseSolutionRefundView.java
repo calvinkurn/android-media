@@ -61,7 +61,9 @@ public class BaseSolutionRefundView extends BaseCustomView {
 
     private void initView(SolutionProblemModel element) {
         etRefund.setText(String.valueOf(complaintResult.problem.amount == 0 ? element.getAmount().getInteger() : complaintResult.problem.amount));
+        complaintResult.problem.amount = element.getAmount().getInteger();
         tvRefund.setText(element.getMaxAmount().getIdr());
+        mainView.initAmountToResult(complaintResult);
     }
 
     private void setViewListener(SolutionProblemModel element) {
@@ -86,7 +88,7 @@ public class BaseSolutionRefundView extends BaseCustomView {
     private void onAmountChanged(String amount, SolutionProblemModel element) {
         if (!amount.equals("")) {
             int intAmount = Integer.parseInt(amount);
-            if (intAmount > element.getMaxAmount().getInteger()) {
+            if (element.getMaxAmount().getInteger() != 0 && intAmount > element.getMaxAmount().getInteger()) {
                 complaintResult.problem.amount = element.getAmount().getInteger();
                 etRefund.setText(String.valueOf(element.getMaxAmount().getInteger()));
             } else {
@@ -96,5 +98,6 @@ public class BaseSolutionRefundView extends BaseCustomView {
             complaintResult.problem.amount = 0;
             etRefund.setText(String.valueOf(0));
         }
+        mainView.calculateTotalRefund(complaintResult);
     }
 }

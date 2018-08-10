@@ -32,8 +32,6 @@ public class SolutionDetailFragmentPresenter
 
     private SolutionDetailFragmentListener.View mainView;
     private SolutionViewModel solutionViewModel;
-    private ResultViewModel resultViewModel;
-    private EditAppealSolutionModel editAppealSolutionModel;
     private PostEditSolutionUseCase postEditSolutionUseCase;
     private PostAppealSolutionUseCase postAppealSolutionUseCase;
 
@@ -52,19 +50,8 @@ public class SolutionDetailFragmentPresenter
     }
 
     @Override
-    public void initResultViewModel(ResultViewModel resultViewModel,
-                                    SolutionViewModel solutionViewModel,
-                                    SolutionResponseViewModel solutionResponseViewModel) {
-        this.solutionViewModel = solutionViewModel;
-        this.resultViewModel = resultViewModel;
-        updateList(solutionResponseViewModel.getComplaints());
-    }
-
-    @Override
-    public void initEditAppealSolutionModel(EditAppealSolutionModel editAppealSolutionModel,
-                                            SolutionViewModel solutionViewModel,
-                                            SolutionResponseViewModel solutionResponseViewModel) {
-        this.editAppealSolutionModel = editAppealSolutionModel;
+    public void initData(SolutionViewModel solutionViewModel,
+                         SolutionResponseViewModel solutionResponseViewModel) {
         this.solutionViewModel = solutionViewModel;
         updateList(solutionResponseViewModel.getComplaints());
     }
@@ -101,41 +88,7 @@ public class SolutionDetailFragmentPresenter
     }
 
     @Override
-    public void onAmountChanged(String amount) {
-        if (!amount.equals("")) {
-            int intAmount = Integer.parseInt(amount);
-            if (intAmount > solutionViewModel.getAmount().getInteger()) {
-                if (resultViewModel != null) {
-                    resultViewModel.refundAmount = solutionViewModel.getAmount().getInteger();
-                } else {
-                    editAppealSolutionModel.refundAmount = solutionViewModel.getAmount().getInteger();
-                }
-                mainView.updatePriceEditText(String.valueOf(solutionViewModel.getAmount().getInteger()));
-            } else {
-                if (resultViewModel != null) {
-                    resultViewModel.refundAmount = intAmount;
-                } else {
-                    editAppealSolutionModel.refundAmount = intAmount;
-                }
-            }
-        } else {
-            if (resultViewModel != null) {
-                resultViewModel.refundAmount = 0;
-            } else {
-                editAppealSolutionModel.refundAmount = 0;
-            }
-            mainView.updatePriceEditText(String.valueOf(0));
-        }
-
-        if (resultViewModel != null) {
-            mainView.updateBottomButton(resultViewModel.refundAmount);
-        } else {
-            mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
-        }
-    }
-
-    @Override
-    public void onContinueButtonClicked() {
+    public void onContinueButtonClicked(ResultViewModel resultViewModel, EditAppealSolutionModel editAppealSolutionModel) {
         if (resultViewModel != null) {
             resultViewModel.solution = solutionViewModel.getId();
             resultViewModel.solutionName = solutionViewModel.getSolutionName();
@@ -148,7 +101,7 @@ public class SolutionDetailFragmentPresenter
     }
 
     @Override
-    public void submitEditAppeal() {
+    public void submitEditAppeal(EditAppealSolutionModel editAppealSolutionModel) {
         if (editAppealSolutionModel.isEdit) {
             postEditSolutionUseCase.execute(PostEditSolutionUseCase.
                             postEditSolutionUseCaseParams(editAppealSolutionModel.resolutionId,

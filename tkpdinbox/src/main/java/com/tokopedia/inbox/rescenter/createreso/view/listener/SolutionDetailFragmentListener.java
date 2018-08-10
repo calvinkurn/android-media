@@ -22,19 +22,9 @@ public interface SolutionDetailFragmentListener {
 
     interface View extends CustomerView {
 
-        void populateDataToView(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
-
-        void updateAmountError(String message);
-
-        void updateBottomButton(int refundAmount);
-
         void submitData(ResultViewModel resultViewModel);
 
         void showDialogCompleteEditAppeal(EditAppealSolutionModel editAppealSolutionModel);
-
-        void updatePriceEditText(String price);
-
-        void showErrorToast(String error);
 
         void successEditSolution(String message);
 
@@ -49,22 +39,21 @@ public interface SolutionDetailFragmentListener {
         Context getContext();
 
         ComplaintResult getComplaintResult(SolutionOrderModel orderModel);
+
+        void calculateTotalRefund(ComplaintResult complaintResult);
+
+        void initAmountToResult(ComplaintResult complaintResult);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void initResultViewModel(ResultViewModel resultViewModel,
-                                 SolutionViewModel solutionViewModel,
-                                 SolutionResponseViewModel solutionResponseViewModel);
+        void initData(SolutionViewModel solutionViewModel,
+                      SolutionResponseViewModel solutionResponseViewModel);
 
-        void initEditAppealSolutionModel(EditAppealSolutionModel editAppealSolutionModel,
-                                         SolutionViewModel solutionViewModel,
-                                         SolutionResponseViewModel solutionResponseViewModel);
 
-        void onAmountChanged(String amount);
 
-        void onContinueButtonClicked();
+        void onContinueButtonClicked(ResultViewModel resultViewModel, EditAppealSolutionModel editAppealSolutionModel);
 
-        void submitEditAppeal();
+        void submitEditAppeal(EditAppealSolutionModel editAppealSolutionModel);
     }
 }

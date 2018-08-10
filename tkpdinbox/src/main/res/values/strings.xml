@@ -121,6 +121,7 @@
     <string name="string_qty">Qty</string>
     <string name="string_max_refund">Maksimal</string>
     <string name="string_fund_want_refunded">Dana yang ingin dikembalikan</string>
+    <string name="string_total_refunded">Total Dana Bermasalah</string>
 
     <!--step 3-->
     <string name="string_upload_prove">Unggah Bukti</string>

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ResultViewModel implements Parcelable {
 
-    public static final String PARAM_COMPLAINT = "complaint";
+    public static final String PARAM_COMPLAINT = "complaints";
     public static final String PARAM_SOLUTION = "solution";
     public static final String PARAM_ID = "id";
     public static final String PARAM_REFUND = "refundAmount";

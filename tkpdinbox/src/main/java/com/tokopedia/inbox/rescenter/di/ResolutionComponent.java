@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.AttachmentFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndProblemFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.CreateResolutionCenterFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionDetailFragment;

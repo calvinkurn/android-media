@@ -8,14 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,7 +23,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionDetailAdapter;
@@ -37,6 +33,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.typefactory.SolutionRefundT
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionComplaintModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionOrderModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
@@ -59,9 +56,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     public static final String EDIT_APPEAL_MODEL_DATA = "edit_appeal_model_data";
     public static final String SOLUTION_RESPONSE_MODEL = "solution_response_data";
     public static final String SOLUTION_DATA = "solution_data";
-
-    private TkpdTextInputLayout tilAmount;
-    private EditText etAmount;
+    private TextView tvRefundTotal;
     private ProgressBar progressBar;
     private Button btnContinue;
     private RecyclerView recyclerView;
@@ -105,11 +100,10 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_solution_detail, container, false);
-        tilAmount = (TkpdTextInputLayout) view.findViewById(R.id.til_amount);
-        etAmount = (EditText) view.findViewById(R.id.et_amount);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        tvRefundTotal = (TextView) view.findViewById(R.id.tv_refund_total);
         presenter.attachView(this);
         return view;
     }
@@ -148,19 +142,10 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     }
 
     private void initView() {
-        if (resultViewModel != null) {
-            presenter.initResultViewModel(
-                    resultViewModel,
-                    solutionViewModel,
-                    solutionResponseViewModel);
-        } else {
-            presenter.initEditAppealSolutionModel(
-                    editAppealSolutionModel,
-                    solutionViewModel,
-                    solutionResponseViewModel);
-        }
+        presenter.initData(
+                solutionViewModel,
+                solutionResponseViewModel);
 
-        tilAmount.setHint(getActivity().getResources().getString(R.string.string_money_amount_returned));
         if (editAppealSolutionModel != null) {
             if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
                 UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditDetailPage(
@@ -172,7 +157,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment
                         editAppealSolutionModel.getSolutionName()));
             }
         }
-
+        calculateFirstTotalRefund();
     }
 
     @Override
@@ -185,25 +170,8 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     }
 
     private void setViewListener() {
-        etAmount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                presenter.onAmountChanged(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
         btnContinue.setOnClickListener(view -> {
-            presenter.onContinueButtonClicked();
+            presenter.onContinueButtonClicked(resultViewModel, editAppealSolutionModel);
             if (editAppealSolutionModel == null) {
                 UnifyTracking.eventCreateResoStep2Continue();
             } else {
@@ -218,34 +186,6 @@ public class SolutionDetailFragment extends BaseDaggerFragment
                 }
             }
         });
-    }
-
-    @Override
-    public void populateDataToView(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel) {
-        if (resultViewModel.refundAmount != 0) {
-            etAmount.setText(String.valueOf(resultViewModel.refundAmount));
-        }
-
-    }
-
-    @Override
-    public void updatePriceEditText(String price) {
-        etAmount.setText(price);
-        etAmount.setSelection(etAmount.getText().toString().length());
-    }
-
-    @Override
-    public void updateAmountError(String message) {
-        tilAmount.setError(message);
-    }
-
-    @Override
-    public void updateBottomButton(int refundAmount) {
-        if (refundAmount == 0) {
-            buttonDisabled(btnContinue);
-        } else {
-            buttonSelected(btnContinue);
-        }
     }
 
     @Override
@@ -303,7 +243,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment
         ivClose.setOnClickListener(view -> dialog.dismiss());
 
         btnEditSolution.setOnClickListener(view -> {
-            presenter.submitEditAppeal();
+            presenter.submitEditAppeal(editAppealSolutionModel);
             dialog.dismiss();
         });
 
@@ -316,11 +256,6 @@ public class SolutionDetailFragment extends BaseDaggerFragment
                         getActivity().getResources().getString(R.string.string_return_value),
                         CurrencyFormatter.formatDotRupiah(String.valueOf(editAppealSolutionModel.refundAmount))) :
                 editAppealSolutionModel.getName());
-    }
-
-    @Override
-    public void showErrorToast(String error) {
-
     }
 
     @Override
@@ -339,20 +274,93 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
     @Override
     public ComplaintResult getComplaintResult(SolutionOrderModel orderModel) {
-        if (orderModel == null) {
-            return resultViewModel.complaints.get(0);
-        }
         List<ComplaintResult> complaintResults = resultViewModel != null ?
                 resultViewModel.complaints :
                 editAppealSolutionModel.complaints;
         ComplaintResult result = new ComplaintResult();
         for (ComplaintResult complaintResult : complaintResults) {
-            if(complaintResult.order.detail.id == orderModel.getDetail().getId()) {
+            if (orderModel == null){
+                if (complaintResult.problem.id == 0){
+                    result = complaintResult;
+                    break;
+                }
+            } else if(complaintResult.order.detail.id == orderModel.getDetail().getId()) {
                 result = complaintResult;
                 break;
             }
         }
         return result;
+    }
+
+    @Override
+    public void initAmountToResult(ComplaintResult complaintResult) {
+        boolean isComplaintAdded = false;
+        if (resultViewModel != null) {
+            for (ComplaintResult result : resultViewModel.complaints) {
+                if (complaintResult.problem.id == result.problem.id) {
+                    isComplaintAdded = true;
+                    result.problem.amount = complaintResult.problem.amount;
+                }
+            }
+            if (!isComplaintAdded) {
+                resultViewModel.complaints.add(complaintResult);
+            }
+        } else {
+            for (ComplaintResult result : editAppealSolutionModel.complaints) {
+                if (complaintResult.problem.id == result.problem.id) {
+                    isComplaintAdded = true;
+                    result.problem.amount = complaintResult.problem.amount;
+                }
+            }
+            if (!isComplaintAdded) {
+                editAppealSolutionModel.complaints.add(complaintResult);
+            }
+        }
+    }
+
+    private void calculateFirstTotalRefund() {
+        int totalValue = 0;
+        if (resultViewModel != null && resultViewModel.refundAmount != 0) totalValue = resultViewModel.refundAmount;
+        else if (editAppealSolutionModel != null && editAppealSolutionModel.refundAmount != 0) totalValue = editAppealSolutionModel.refundAmount;
+        else {
+            for (SolutionComplaintModel model : solutionResponseViewModel.getComplaints()) {
+                totalValue += model.getProblem().getAmount().getInteger();
+            }
+        }
+        tvRefundTotal.setText(CurrencyFormatter.formatDotRupiah(String.valueOf(totalValue)));
+        buttonSelected(btnContinue);
+    }
+
+    @Override
+    public void calculateTotalRefund(ComplaintResult complaintResult) {
+        boolean isComplaintAdded = false;
+        int totalValue = 0;
+        if (resultViewModel != null) {
+            for (ComplaintResult result : resultViewModel.complaints) {
+                if (complaintResult.problem.id == result.problem.id) {
+                    isComplaintAdded = true;
+                    result.problem.amount = complaintResult.problem.amount;
+                }
+                totalValue += result.problem.amount;
+            }
+            if (!isComplaintAdded) {
+                resultViewModel.complaints.add(complaintResult);
+            }
+            resultViewModel.refundAmount = totalValue;
+        } else {
+            for (ComplaintResult result : editAppealSolutionModel.complaints) {
+                if (complaintResult.problem.id == result.problem.id) {
+                    isComplaintAdded = true;
+                    result.problem.amount = complaintResult.problem.amount;
+                }
+                totalValue += result.problem.amount;
+            }
+            if (!isComplaintAdded) {
+                editAppealSolutionModel.complaints.add(complaintResult);
+            }
+            editAppealSolutionModel.refundAmount = totalValue;
+        }
+        tvRefundTotal.setText(CurrencyFormatter.formatDotRupiah(String.valueOf(totalValue)));
     }
 
     @Override

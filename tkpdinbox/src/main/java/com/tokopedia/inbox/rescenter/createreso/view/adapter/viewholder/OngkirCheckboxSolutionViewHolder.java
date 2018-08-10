@@ -48,10 +48,10 @@ public class OngkirCheckboxSolutionViewHolder extends AbstractViewHolder<OngkirC
 
     private void initView(OngkirSolutionModel model) {
         tvTitle.setText(model.getProblem().getName());
-        solutionRefundView.bind(model.getProblem(), mainView, complaintResult);
         extraLayout.setVisibility(model.isLastItem() ? View.GONE : View.VISIBLE);
         solutionRefundView.setVisibility(complaintResult.problem.amount != 0 ? View.VISIBLE : View.GONE);
         middleSeparator.setVisibility(checkBox.isChecked()? View.GONE : View.VISIBLE);
+        solutionRefundView.bind(model.getProblem(), mainView, complaintResult);
     }
 
     private void initViewListener(OngkirSolutionModel model) {

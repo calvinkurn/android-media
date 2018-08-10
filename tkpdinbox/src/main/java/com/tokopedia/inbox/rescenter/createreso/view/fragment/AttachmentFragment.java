@@ -46,6 +46,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attach
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -87,7 +89,6 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         fragment.setArguments(bundle);
         return fragment;
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -184,7 +185,6 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         etInformation = (EditText) view.findViewById(R.id.et_information);
         btnContinue = (Button) view.findViewById(R.id.btn_upload);
         rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
-        presenter.attachView(this);
         return view;
     }
 
@@ -209,6 +209,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         tilInformation.setHint(getActivity().getResources().getString(R.string.string_information));
         uploadImageDialog = ImageUploadHandler.createInstance(this);
         presenter = new AttachmentFragmentPresenter(getActivity(), this, uploadImageDialog);
+        presenter.attachView(this);
         presenter.initResultViewModel(resultViewModel);
 
     }

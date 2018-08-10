@@ -81,7 +81,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             holder.checkBox.setChecked(false);
             for (ComplaintResult complaintResult : selectedProblemResultList) {
                 if (productProblem.getProblem().getType() == ITEM_TEXT) {
-                    if (complaintResult.problem.name.equals(productProblem.getProblem().getName())) {
+                    if (complaintResult.problem.name != null && complaintResult.problem.name.equals(productProblem.getProblem().getName())) {
                         holder.checkBox.setChecked(true);
                     }
                 } else {
