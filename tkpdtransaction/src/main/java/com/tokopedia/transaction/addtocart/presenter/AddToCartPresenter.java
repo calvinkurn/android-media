@@ -62,7 +62,7 @@ public interface AddToCartPresenter {
     void addToCartService(@NonNull Context context, @NonNull ATCResultReceiver atcReceiver,
                           @NonNull OrderData orderData);
 
-    void setCacheCart(@NonNull Context context);
+    void setCacheCart(@NonNull Context context, int quantity);
 
     void sendToGTM(@NonNull Context context);
 

@@ -28,11 +28,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
@@ -40,6 +40,7 @@ import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Notification;
@@ -136,12 +137,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             this.currentFragment = fragmentList.get(0);
         }
 
-//        if (isFirstTime()) {
-//            trackFirstTime();
-//        }
-//
-//        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-//
+        if (isFirstTime()) {
+            globalNavAnalytics.trackFirstTime(this);
+        }
+
 //        cacheHandler = new AnalyticsCacheHandler();
 
         Thread t = new Thread(() -> {
@@ -407,6 +406,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);
+    }
+
+    private Boolean isFirstTime() {
+        LocalCacheHandler cache = new LocalCacheHandler(this, GlobalNavConstant.Cache.KEY_FIRST_TIME);
+        return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
     private void checkAppUpdate() {

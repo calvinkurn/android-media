@@ -1664,8 +1664,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
             if (menu != null && menu.size() > 2) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share));
-                LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
-                int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
+                int CartCache = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
                 if (CartCache > 0) {
                     menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_cart_notif));
                 } else {
@@ -1684,8 +1683,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
             if (menu != null && menu.size() > 1) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share_white));
-                LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
-                int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
+                int CartCache = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
                 if (CartCache > 0) {
                     menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.cart_active_white));
                 } else {

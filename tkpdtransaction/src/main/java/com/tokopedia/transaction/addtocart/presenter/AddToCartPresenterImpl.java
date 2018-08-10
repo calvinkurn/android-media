@@ -31,6 +31,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.transaction.TransactionConstant;
 import com.tokopedia.transaction.addtocart.activity.AddToCartActivity;
 import com.tokopedia.transaction.addtocart.interactor.AddToCartNetInteractor;
 import com.tokopedia.transaction.addtocart.interactor.AddToCartNetInteractorImpl;
@@ -514,9 +515,10 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void setCacheCart(@NonNull Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
-        cache.putInt(DrawerNotification.IS_HAS_CART, 1);
+    public void setCacheCart(@NonNull Context context, int quantity) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, TransactionConstant.CART);
+        int existing = cache.getInt(TransactionConstant.IS_HAS_CART, 0);
+        cache.putInt(TransactionConstant.IS_HAS_CART, existing + quantity);
         cache.applyEditor();
     }
 

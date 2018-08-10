@@ -37,6 +37,11 @@ public class GlobalNavConstant {
 
     }
 
+    public class Cache {
+        public static final String KEY_FIRST_TIME = "FIRST_TIME";
+        public static final String KEY_IS_FIRST_TIME = "is_first_time";
+    }
+
     public static final String QUERY = "Query";
 
     public static final int SELLER_INFO = 0;

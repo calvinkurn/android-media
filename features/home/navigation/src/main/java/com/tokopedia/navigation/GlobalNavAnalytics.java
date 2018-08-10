@@ -1,6 +1,9 @@
 package com.tokopedia.navigation;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 
 import javax.inject.Inject;
 
@@ -85,5 +88,14 @@ public class GlobalNavAnalytics {
                         GlobalNavConstant.Analytics.LABEL_FORCE_CANCEL_APP_UPDATE :
                         GlobalNavConstant.Analytics.LABEL_OPTIONAL_CANCEL_APP_UPDATE
         );
+    }
+
+    public void trackFirstTime(Context context) {
+        // TODO: 8/10/18 oka analytics appsflyer
+//        TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
+
+        LocalCacheHandler cache = new LocalCacheHandler(context, GlobalNavConstant.Cache.KEY_FIRST_TIME);
+        cache.putBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, true);
+        cache.applyEditor();
     }
 }

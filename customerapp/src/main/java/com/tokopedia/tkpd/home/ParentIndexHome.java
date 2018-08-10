@@ -550,19 +550,19 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (SessionHandler.isV4Login(this)) {
-            getMenuInflater().inflate(R.menu.main, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
-            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
-            if (CartCache > 0) {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
-            } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new);
-            }
-        } else {
-            getMenuInflater().inflate(R.menu.menu_guest, menu);
-        }
-        return true;
+//        if (SessionHandler.isV4Login(this)) {
+//            getMenuInflater().inflate(R.menu.main, menu);
+//            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+//            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
+//            if (CartCache > 0) {
+//                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
+//            } else {
+//                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new);
+//            }
+//        } else {
+//            getMenuInflater().inflate(R.menu.menu_guest, menu);
+//        }
+//        return true;
     }
 
     @Override
@@ -691,11 +691,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
-        Cache.applyEditor();
-        invalidateOptionsMenu();
-        MainApplication.resetCartStatus(false);
+//        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+//        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
+//        Cache.applyEditor();
+//        invalidateOptionsMenu();
+//        MainApplication.resetCartStatus(false);
     }
 
     private void updateCartNotification() {

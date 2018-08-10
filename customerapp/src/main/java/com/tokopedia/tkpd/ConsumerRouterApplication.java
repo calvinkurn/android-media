@@ -342,6 +342,7 @@ import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
+import com.tokopedia.transaction.TransactionConstant;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -2302,6 +2303,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             goToCreateMerchantRedirect(context);
             UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
+    }
+
+    @Override
+    public void setCartCount(Context context, int count) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TransactionConstant.CART);
+        localCacheHandler.putInt(TransactionConstant.IS_HAS_CART, count);
+    }
+
+    @Override
+    public int getCartCount(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TransactionConstant.CART);
+        return localCacheHandler.getInt(TransactionConstant.IS_HAS_CART, 0);
     }
 
     @Override
