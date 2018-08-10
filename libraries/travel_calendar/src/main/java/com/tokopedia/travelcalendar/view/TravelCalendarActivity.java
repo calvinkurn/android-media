@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.travelcalendar.R;
 import com.tokopedia.travelcalendar.di.TravelCalendarComponent;
@@ -181,9 +182,10 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     }
 
     @Override
-    public void renderErrorMessage(String message) {
+    public void renderErrorMessage(Throwable throwable) {
         progressBar.setVisibility(View.GONE);
-        NetworkErrorHelper.createSnackbarWithAction(this, message,
+        String errorMessage = ErrorHandler.getErrorMessage(this, throwable);
+        NetworkErrorHelper.createSnackbarWithAction(this, errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -202,11 +204,6 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     public void hideLoading() {
         progressBar.setVisibility(View.GONE);
         viewPager.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     @Override

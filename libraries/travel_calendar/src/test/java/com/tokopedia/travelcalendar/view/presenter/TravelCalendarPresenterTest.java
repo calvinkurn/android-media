@@ -1,10 +1,12 @@
 package com.tokopedia.travelcalendar.view.presenter;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.travelcalendar.domain.GetHolidayUseCase;
 import com.tokopedia.travelcalendar.domain.TravelCalendarTestScheduler;
 import com.tokopedia.travelcalendar.view.TravelCalendarContract;
 import com.tokopedia.travelcalendar.view.model.HolidayResult;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,13 +65,12 @@ public class TravelCalendarPresenterTest {
 
     @Test
     public void showErrorGetHolidayDatesWhenFailed() throws Exception {
-        Mockito.when(getHolidayUseCase.createObservable(Mockito.anyObject()))
-                .thenReturn(Observable.error(new Throwable()));
-
         String message = "Terjadi kesalahan. Ulangi beberapa saat lagi";
+        Mockito.when(getHolidayUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.error(new MessageErrorException(message)));
 
         presenter.getHolidayEvents();
-        Mockito.verify(view).renderErrorMessage(message);
+        Mockito.verify(view).renderErrorMessage(Mockito.anyObject());
     }
 
     @Test

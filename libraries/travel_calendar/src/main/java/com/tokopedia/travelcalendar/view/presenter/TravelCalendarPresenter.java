@@ -49,8 +49,7 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
 
                             @Override
                             public void onError(Throwable e) {
-                                String errorMessage = ErrorHandler.getErrorMessage(getView().getContext(), e);
-                                getView().renderErrorMessage(errorMessage);
+                                getView().renderErrorMessage(e);
                             }
 
                             @Override
