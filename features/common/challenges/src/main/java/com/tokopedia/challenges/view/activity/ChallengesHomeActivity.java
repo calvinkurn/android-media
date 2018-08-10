@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
+import com.tokopedia.design.utils.TabUtil;
 
 /**
  * Created by ashwanityagi on 06/08/18.
@@ -71,6 +73,11 @@ private ViewPager viewPager;
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle("Tokopedia");
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+        }
+
+        TabUtil.wrapTabIndicatorToTitle(tabLayout,(int)getResources().getDimension(R.dimen.dp_16),(int)getResources().getDimension(R.dimen.dp_12));
 
     }
 
