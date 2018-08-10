@@ -54,7 +54,6 @@ import static com.tokopedia.tkpd.home.favorite.presenter.Favorite.FAVORITE_ISFAV
 import static com.tokopedia.tkpd.home.favorite.presenter.Favorite.TOP_ADS_AD_SHOP_VALUE;
 import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
 import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
-import static com.tokopedia.tkpd.home.presenter.WishListImpl.PARAM_USER_ID;
 
 /**
  * @author Kulomady on 11/11/16.
@@ -169,7 +168,6 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
 
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put(PARAM_USER_ID, userId);
         variables.put(PAGE_NO, page);
         variables.put(ITEM_COUNT, count);
 
