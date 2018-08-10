@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.R;
@@ -42,7 +43,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-            ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context,"tokopedia://referral", challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
+            ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
         });
     }
 
