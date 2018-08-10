@@ -226,6 +226,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                        ds.setUnderlineText(false);
                     }
                 };
 
