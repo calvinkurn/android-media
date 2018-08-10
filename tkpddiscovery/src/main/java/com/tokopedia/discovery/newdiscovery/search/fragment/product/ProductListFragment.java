@@ -216,7 +216,7 @@ public class ProductListFragment extends SearchSectionFragment
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
                 getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.white)
+                getContext().getResources().getColor(R.color.red_1)
         ));
         setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {

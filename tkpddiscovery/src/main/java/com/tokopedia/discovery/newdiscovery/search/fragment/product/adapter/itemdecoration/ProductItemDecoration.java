@@ -52,8 +52,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             } else {
                 outRect.right = 0;
             }
-            outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount)
-                    || isAdsItem(parent, absolutePos) ? spacing : spacing / 2;
+            outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
         }
     }
 

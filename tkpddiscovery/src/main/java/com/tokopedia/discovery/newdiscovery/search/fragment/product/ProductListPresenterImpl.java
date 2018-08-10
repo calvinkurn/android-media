@@ -175,8 +175,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             } else {
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 getView().removeLoading();
-                                list.addAll(productViewModel.getProductList());
                                 list.add(new TopAdsViewModel());
+                                list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
                                 if (getView().isEvenPage()) {
                                     getView().addGuidedSearch();
@@ -266,8 +266,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
                                 list.add(headerViewModel);
+                                list.add(new TopAdsViewModel());
                                 list.addAll(productViewModel.getProductList());
-//                                list.add(new TopAdsViewModel());
                                 getView().removeLoading();
                                 getView().setProductList(list);
                                 getView().addLoading();
