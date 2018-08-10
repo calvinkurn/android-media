@@ -124,6 +124,9 @@ public class Filter implements Parcelable {
      * @return The options
      */
     public List<Option> getOptions() {
+        if (options == null) {
+            options = new ArrayList<>();
+        }
         return options;
     }
 
