@@ -73,6 +73,7 @@ query {
     total_notif
     userSatisfactionSurvey
     buyerOrderStatus {
+      paymentStatus
       confirmed
       processed
       shipped

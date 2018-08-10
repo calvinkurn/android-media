@@ -13,7 +13,8 @@ public class GlobalNavAnalytics {
 
     private AnalyticTracker analyticTracker;
 
-    @Inject GlobalNavAnalytics(AnalyticTracker analyticTracker) {
+    @Inject
+    GlobalNavAnalytics(AnalyticTracker analyticTracker) {
         this.analyticTracker = analyticTracker;
     }
 
@@ -50,6 +51,39 @@ public class GlobalNavAnalytics {
                 String.format("%s %s", INBOX, PAGE),
                 String.format("%s - %s", CLICK, item),
                 ""
+        );
+    }
+
+    public void eventImpressionAppUpdate(boolean isForceUpdate) {
+        analyticTracker.sendEventTracking(
+                GlobalNavConstant.Analytics.EVENT_IMPRESSION_APP_UPDATE,
+                GlobalNavConstant.Analytics.CATEGORY_APP_UPDATE,
+                GlobalNavConstant.Analytics.IMPRESSION,
+                isForceUpdate ?
+                        GlobalNavConstant.Analytics.LABEL_FORCE_APP_UPDATE :
+                        GlobalNavConstant.Analytics.LABEL_OPTIONAL_APP_UPDATE
+        );
+    }
+
+    public void eventClickAppUpdate(boolean isForceUpdate) {
+        analyticTracker.sendEventTracking(
+                GlobalNavConstant.Analytics.EVENT_CLICK_APP_UPDATE,
+                GlobalNavConstant.Analytics.CATEGORY_APP_UPDATE,
+                GlobalNavConstant.Analytics.CLICK,
+                isForceUpdate ?
+                        GlobalNavConstant.Analytics.LABEL_FORCE_APP_UPDATE :
+                        GlobalNavConstant.Analytics.LABEL_OPTIONAL_APP_UPDATE
+        );
+    }
+
+    public void eventClickCancelAppUpdate(boolean isForceUpdate) {
+        analyticTracker.sendEventTracking(
+                GlobalNavConstant.Analytics.EVENT_CLICK_CANCEL_APP_UPDATE,
+                GlobalNavConstant.Analytics.CATEGORY_APP_UPDATE,
+                GlobalNavConstant.Analytics.CLICK,
+                isForceUpdate ?
+                        GlobalNavConstant.Analytics.LABEL_FORCE_CANCEL_APP_UPDATE :
+                        GlobalNavConstant.Analytics.LABEL_OPTIONAL_CANCEL_APP_UPDATE
         );
     }
 }

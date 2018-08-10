@@ -25,7 +25,8 @@ import java.util.List;
 
 public class AccountSettingFragment extends TkpdBaseV4Fragment {
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
-    private static final int REQUEST_CHANGE_PASSWORD = 1234;
+    private static int REQUEST_ADD_PASSWORD = 1234;
+    private static final int REQUEST_CHANGE_PASSWORD = 123;
     private UserSession userSession;
 
     public static Fragment createInstance() {
@@ -70,6 +71,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     if (userSession.isHasPassword()) {
                         startActivity(router.getManagePasswordIntent(getActivity()));
+                        startActivityForResult(router.getManagePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
                     } else {
                         intentToAddPassword();
                     }
@@ -86,15 +88,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     private void intentToAddPassword() {
         if (getActivity().getApplication() instanceof AccountHomeRouter){
             startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getManagePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==0 && resultCode == Activity.RESULT_OK) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.message_success_change_profile));
+                    .getManagePasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
         }
     }
 }

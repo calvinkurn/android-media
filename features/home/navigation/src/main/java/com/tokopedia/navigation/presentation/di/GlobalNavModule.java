@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -47,9 +48,8 @@ public class GlobalNavModule {
         return new GetDrawerNotificationUseCase(graphqlUseCase, new NotificationMapper());
     }
 
-    @Named("FRAGMENT_ONE")
-    Fragment provideFragmentOne(@ApplicationContext Context context) {
-        return ((GlobalNavRouter) context).getHomeFragment();
+    @Provides
+    ApplicationUpdate provideAppUpdate(@ApplicationContext Context context) {
+        return ((GlobalNavRouter) context).getAppUpdate(context);
     }
-
 }
