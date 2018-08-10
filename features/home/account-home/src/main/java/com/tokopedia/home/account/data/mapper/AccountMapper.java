@@ -36,8 +36,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.*;
  * @author okasurya on 7/20/18.
  */
 public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
-
-
+    private static final String NO_SHOP = "-1";
     private Context context;
 
     @Inject
@@ -57,7 +56,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         if (accountModel.getShopInfo() != null
                 && accountModel.getShopInfo().getInfo() != null
                 && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
-                && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1")) {
+                && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase(NO_SHOP)) {
             accountViewModel.setSellerViewModel(getSellerModel(context, accountModel));
             accountViewModel.setSeller(true);
         } else {
@@ -83,11 +82,11 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         if (!accountModel.getWallet().isLinked()){
             tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
             tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
-            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_ACTIVATION);
+            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
         } else {
             tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
-            tokopediaPayViewModel.setApplinkLeft(ApplinkConst.WALLET_HOME);
+            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
@@ -101,6 +100,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_waiting_for_payment));
         menuList.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
+        menuList.setCount(accountModel.getNotifications().getBuyerOrder().getPaymentStatus());
         menuList.setApplink(ApplinkConst.PMS);
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
@@ -157,8 +157,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         items.add(menuGrid);
 
         menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_complaint));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_complaint));
+        menuList.setMenu(context.getString(R.string.title_menu_buyer_complain));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_buyer_complain));
+        menuList.setCount(accountModel.getNotifications().getResolution().getBuyer());
         menuList.setApplink(ApplinkConst.RESCENTER_BUYER);
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
@@ -343,12 +344,21 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuGrid.setItems(menuGridItems);
         items.add(menuGrid);
 
+        MenuListViewModel menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_seller_complain));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_seller_complain));
+        menuList.setCount(accountModel.getNotifications().getResolution().getSeller());
+        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
+        items.add(menuList);
+
         MenuTitleViewModel menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_product));
         items.add(menuTitle);
 
         items.add(new AddProductViewModel());
 
-        MenuListViewModel menuList = new MenuListViewModel();
+        menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_product_list));
         menuList.setMenuDescription(context.getString(R.string.label_menu_product_list));
         menuList.setApplink(ApplinkConst.PRODUCT_MANAGE);
@@ -374,14 +384,6 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
-
-//        menuList = new MenuListViewModel();
-//        menuList.setMenu(context.getString(R.string.title_menu_topads));
-//        menuList.setMenuDescription(context.getString(R.string.label_menu_topads));
-//        menuList.setApplink(ApplinkConst.TOPADS);
-//        menuList.setTitleTrack(PENJUAL);
-//        menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
-//        items.add(menuList)
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_topads));
