@@ -5,10 +5,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.challenges.view.model.challengesubmission.Sharing;
 
-public class Result implements Parcelable{
+public class Result implements Parcelable {
 
     @SerializedName("Id")
     @Expose
@@ -47,6 +49,7 @@ public class Result implements Parcelable{
     @Expose
     private Me me;
 
+
     protected Result(Parcel in) {
         id = in.readString();
         type = in.readString();
@@ -61,6 +64,35 @@ public class Result implements Parcelable{
         thumbnailUrl = in.readString();
         hashTag = in.readString();
         prizes = in.createTypedArrayList(Prize.CREATOR);
+        sharing = in.readParcelable(Sharing.class.getClassLoader());
+        channel = in.readParcelable(Channel.class.getClassLoader());
+        me = in.readParcelable((Me.class.getClassLoader()));
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(type);
+        dest.writeString(title);
+        dest.writeString(description);
+        if (submissionCount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(submissionCount);
+        }
+        dest.writeString(endDate);
+        dest.writeString(thumbnailUrl);
+        dest.writeString(hashTag);
+        dest.writeTypedList(prizes);
+        dest.writeParcelable(sharing, flags);
+        dest.writeParcelable(channel, flags);
+        dest.writeParcelable(me, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Result> CREATOR = new Creator<Result>() {
@@ -169,28 +201,5 @@ public class Result implements Parcelable{
 
     public void setMe(Me me) {
         this.me = me;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(type);
-        dest.writeString(title);
-        dest.writeString(description);
-        if (submissionCount == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(submissionCount);
-        }
-        dest.writeString(endDate);
-        dest.writeString(thumbnailUrl);
-        dest.writeString(hashTag);
-        dest.writeTypedList(prizes);
     }
 }

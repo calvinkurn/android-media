@@ -62,7 +62,8 @@
         app:backgroundTint="@color/white"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_share_via_card" />
+        app:srcCompat="@drawable/ic_share_via_card"
+        tools:ignore="VectorDrawableCompat" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

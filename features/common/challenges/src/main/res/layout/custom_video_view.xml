@@ -10,4 +10,17 @@
         android:id="@+id/videoView"
         android:layout_gravity="center" />
 
+    <ImageView
+        android:id="@+id/video_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
+
+    <!--<ImageView-->
+        <!--android:id="@+id/play"-->
+        <!--android:layout_width="@dimen/dp_18"-->
+        <!--android:layout_height="@dimen/dp_18"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:src=""/>-->
+
 </FrameLayout>

@@ -44,7 +44,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView detailTitle;
     private TextView detailContent;
     private TextView participateTitle;
-    private TextView participateContent;
     private TextView btnShare;
 
     @Inject
@@ -83,8 +82,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         detailTitle = view.findViewById(R.id.detail_title);
         detailContent = view.findViewById(R.id.detail_content);
 
-        participateTitle = view.findViewById(R.id.participate_title);
-        participateContent = view.findViewById(R.id.participate_content);
+        participateTitle = view.findViewById(R.id.participate_content);
         btnShare = view.findViewById(R.id.btn_share);
 
         model = getArguments().getParcelable("submissionsResult");
@@ -105,6 +103,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             ((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(),"tokopedia://referral", model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
 
         });
+    }
+
+    public void showStatusInfo() {
+        closeBtn.setVisibility(View.VISIBLE);
+        statusView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -156,6 +159,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     public void setDetailContent(String content) {
         this.detailContent.setText(content);
+    }
+
+    public void setParticipateTitle(String participateTitle) {
+        this.participateTitle.setText(participateTitle);
     }
 
     @Override

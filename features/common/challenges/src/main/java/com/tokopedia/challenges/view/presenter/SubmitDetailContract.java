@@ -11,6 +11,8 @@ public interface SubmitDetailContract {
     }
 
     public interface View extends CustomerView {
+        void showStatusInfo();
+
         void setProfilePic(String text);
 
         void setProfileText(String text);
@@ -32,6 +34,8 @@ public interface SubmitDetailContract {
         void setDetailTitle(String text);
 
         void setDetailContent(String text);
+
+        void setParticipateTitle(String title);
 
     }
 }
