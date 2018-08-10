@@ -184,7 +184,7 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
-import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
+import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
@@ -2010,7 +2010,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageShop(Context context) {
-        context.startActivity(getIntentManageShop(context));
+        context.startActivity(StoreSettingActivity.createIntent(context));
     }
 
     @Override
