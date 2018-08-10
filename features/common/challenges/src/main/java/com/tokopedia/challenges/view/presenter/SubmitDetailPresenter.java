@@ -19,7 +19,14 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setChallengeImage(model.getThumbnailUrl());
         getView().setLikesCountView(String.valueOf(model.getLikes()));
         getView().setPointsView(String.valueOf(model.getPoints()));
-        getView().setApprovedView(model.getStatus());
+        String status = model.getStatus();
+        if(status.equalsIgnoreCase("approved")){
+            getView().setApprovedView(status);
+        } else if(status.equalsIgnoreCase("declined")){
+            getView().setDeclinedView(status);
+        } else if(status.equalsIgnoreCase("pending")){
+            getView().setPendingView(status);
+        }
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
     }

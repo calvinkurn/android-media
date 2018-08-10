@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 public class ChallengesListAdapter extends RecyclerView.Adapter<ChallengesViewHolder> {
-    List<Result> challengesResultList= new ArrayList<>();
+    List<Result> challengesResultList;
     Context context;
 
     public ChallengesListAdapter(Context context, List<Result> challengesResultList) {
