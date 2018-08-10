@@ -10,15 +10,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.view.InfoCardView;
+import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 
 import java.util.ArrayList;
@@ -34,6 +41,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public static final String SELLER_DATA = "seller_data";
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private View containerEmpty;
     private RecyclerView recyclerView;
     private SellerAccountAdapter adapter;
 
@@ -51,6 +59,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_seller_account, container, false);
+        containerEmpty = view.findViewById(R.id.container_empty);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_seller);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -83,10 +92,16 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
-    public void loadData(List<? extends Visitable> visitables) {
-        if(visitables != null) {
-            adapter.clearAllElements();
-            adapter.setElement(visitables);
+    public void loadData(AccountViewModel accountViewModel) {
+        if (accountViewModel != null) {
+            if (accountViewModel.isSeller()) {
+                if(accountViewModel.getSellerViewModel() != null) {
+                    adapter.clearAllElements();
+                    adapter.setElement(accountViewModel.getSellerViewModel().getItems());
+                }
+            } else {
+                emptyState();
+            }
         }
     }
 
@@ -116,5 +131,60 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         if (getView() != null) {
             ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Empty seller
+     */
+    private void emptyState() {
+        containerEmpty.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+
+        InfoCardView topadsInfo = containerEmpty.findViewById(R.id.topads_info);
+        InfoCardView gmInfo = containerEmpty.findViewById(R.id.gm_info);
+        InfoCardView sellerCenterInfo = containerEmpty.findViewById(R.id.seller_center_info);
+        TextView btnLearnMore = containerEmpty.findViewById(R.id.btn_learn_more);
+        Button btnOpenShop = containerEmpty.findViewById(R.id.btn_open_shop);
+
+        topadsInfo.setImage(R.drawable.ic_topads);
+        topadsInfo.setMainText(R.string.title_menu_topads);
+        topadsInfo.setSecondaryText(R.string.topads_desc);
+
+        gmInfo.setImage(R.drawable.ic_badge_shop_gm);
+        gmInfo.setMainText(R.string.gold_merchant);
+        gmInfo.setSecondaryText(R.string.gold_merchant_desc);
+
+        sellerCenterInfo.setImage(R.drawable.ic_seller_center);
+        sellerCenterInfo.setMainText(R.string.seller_center);
+        sellerCenterInfo.setSecondaryText(R.string.seller_center_desc);
+
+        topadsInfo.setOnClickListener(v -> {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                ((AccountHomeRouter) getContext().getApplicationContext()).
+                        gotoTopAdsDashboard(getContext());
+            }
+        });
+
+        gmInfo.setOnClickListener(v -> {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                ((AccountHomeRouter) getContext().getApplicationContext()).
+                        goToGMSubscribe(getContext());
+            }
+        });
+
+        sellerCenterInfo.setOnClickListener(v ->
+                RouteManager.route(getActivity(), ApplinkConst.SELLER_CENTER));
+
+        btnOpenShop.setOnClickListener(v -> {
+            if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+                startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
+                        getIntentCreateShop(getContext()));
+            }
+        });
+
+        btnLearnMore.setOnClickListener(v -> RouteManager.route(getActivity(), String.format("%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                AccountConstants.Url.MORE_SELLER)));
+
     }
 }
