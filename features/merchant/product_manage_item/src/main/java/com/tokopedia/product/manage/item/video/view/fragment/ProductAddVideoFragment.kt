@@ -69,16 +69,11 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
             when (requestCode) {
                 REQUEST_CODE_GET_VIDEO_RECOMMENDATION -> {
                     videoRecommendationViewModelList = data!!.getParcelableArrayListExtra<VideoRecommendationViewModel>(EXTRA_VIDEO_RECOMMENDATION)
-                    val videoViewModelList = adapter.data
-                    for(videoViewModel in videoViewModelList){
-                        if(videoViewModel is VideoViewModel && videoViewModel.recommendation == true){
-                            deleteVideoChosenFromList(videoViewModel)
-                        }
+                    adapter.data.filter { it is VideoViewModel && it.recommendation == true }.map {
+                        deleteVideoChosenFromList(it as VideoViewModel)
                     }
-                    for(videoRecommendationViewModel in videoRecommendationViewModelList){
-                        if(videoRecommendationViewModel.chosen){
-                            addVideoChosenToList(transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel))
-                        }
+                    videoRecommendationViewModelList.filter { it.chosen }.map {
+                        addVideoChosenToList(transformVideoRecommendationViewModelToVideoViewModel(it))
                     }
                     listener?.onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList)
                     showSnackbarGreen(getString(R.string.product_add_message_success_change_video_recommendation))
@@ -144,27 +139,19 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     private fun updateListData(productAddVideoBaseViewModel : ProductAddVideoBaseViewModel, type : Int){
         if(type == ADD_VIDEO_CHOSEN) {
-            for (i in 0 until adapter.data.size) {
-                val productAddVideoBaseViewModels = adapter.data[i]
-                if (productAddVideoBaseViewModels is EmptyVideoViewModel) {
-                    adapter.clearElement(productAddVideoBaseViewModels)
-                    val titleVideoChosenViewModel = TitleVideoChosenViewModel()
-                    adapter.addElement(titleVideoChosenViewModel)
-                    break
-                }
+            adapter.data.filter { it is EmptyVideoViewModel }.map {
+                adapter.clearElement(it)
+                val titleVideoChosenViewModel = TitleVideoChosenViewModel()
+                adapter.addElement(titleVideoChosenViewModel)
             }
             adapter.addElement(productAddVideoBaseViewModel)
         } else {
             adapter.clearElement(productAddVideoBaseViewModel)
             if(videoIDs.size == 0){
-                for (i in 0 until adapter.data.size) {
-                    val productAddVideoBaseViewModels = adapter.data[i]
-                    if (productAddVideoBaseViewModels is TitleVideoChosenViewModel) {
-                        adapter.clearElement(productAddVideoBaseViewModels)
-                        val emptyVideoViewModel = EmptyVideoViewModel()
-                        adapter.addElement(emptyVideoViewModel)
-                        break
-                    }
+                adapter.data.filter { it is TitleVideoChosenViewModel }.map {
+                    adapter.clearElement(it)
+                    val emptyVideoViewModel = EmptyVideoViewModel()
+                    adapter.addElement(emptyVideoViewModel)
                 }
             }
         }
@@ -187,11 +174,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun addVideoIDfromURL(videoID: String) {
-        for(id in videoIDs){
-            if(id == videoID){
-                showSnackbarRed(getString(R.string.product_add_message_exist_video_chosen))
-                return
-            }
+        videoIDs.filter { it == videoID }.map {
+            showSnackbarRed(getString(R.string.product_add_message_exist_video_chosen))
         }
         productAddVideoPresenter.getYoutubaDataVideoUrl(videoID)
     }
@@ -199,14 +183,12 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
         val mapper = VideoRecommendationMapper()
         videoRecommendationViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList) as ArrayList<VideoRecommendationViewModel>
-        val videoViewModelList = adapter.data
-        for(videoViewModel in videoViewModelList){
-            if(videoViewModel is VideoViewModel){
-                for(videoRecommendationViewModel in videoRecommendationViewModelList){
-                    if(videoRecommendationViewModel.videoID == videoViewModel.videoID){
-                        videoRecommendationViewModel.chosen = true
-                        videoViewModel.recommendation = true
-                    }
+        adapter.data.filter { it is VideoViewModel }.map {
+            it as VideoViewModel
+            videoRecommendationViewModelList.map{ video ->
+                if(video.videoID == it.videoID){
+                    video.chosen = true
+                    it.recommendation = true
                 }
             }
         }
@@ -256,11 +238,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     override fun onVideoRecommendationPlusClicked(videoRecommendationViewModel: VideoRecommendationViewModel) {
         if (videoIDs.contains(videoRecommendationViewModel.videoID)) {
-            for (i in 0 until adapter.dataSize ){
-                if(adapter.data[i] is VideoViewModel && (adapter.data[i] as VideoViewModel).videoID == videoRecommendationViewModel.videoID){
-                    showDialogDeleteVideoChosen(adapter.data[i] as VideoViewModel)
-                    break
-                }
+            adapter.data.filter { it is VideoViewModel && it.videoID == videoRecommendationViewModel.videoID }.map{
+                showDialogDeleteVideoChosen(it as VideoViewModel)
             }
         } else {
             if(isVideoChosenSlotNotFull()) {
