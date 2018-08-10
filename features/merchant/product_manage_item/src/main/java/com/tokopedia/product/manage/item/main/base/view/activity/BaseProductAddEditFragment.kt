@@ -332,6 +332,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 visibility = View.VISIBLE
                 text = currentProductViewModel?.productCatalog?.catalogName
             }
+        }else{
+            textViewCatalog.run {
+                visibility = View.GONE
+                text = ""
+            }
         }
 
         if (currentProductViewModel == null) return
