@@ -1,5 +1,6 @@
 package com.tokopedia.challenges.view.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -24,7 +26,7 @@ import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 
 import javax.inject.Inject;
 
-public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDetailContract.View{
+public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDetailContract.View {
     private LinearLayout statusView;
     private ImageView closeBtn;
     private TextView statusText;
@@ -42,14 +44,16 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView detailTitle;
     private TextView detailContent;
     private TextView participateTitle;
+    private TextView btnShare;
 
     @Inject
     SubmitDetailPresenter presenter;
     private SubmissionResult model;
 
-    public static Fragment newInstance(){
+    public static Fragment newInstance() {
         return new SubmitDetailFragment();
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,6 +83,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         detailContent = view.findViewById(R.id.detail_content);
 
         participateTitle = view.findViewById(R.id.participate_content);
+        btnShare = view.findViewById(R.id.btn_share);
 
         model = getArguments().getParcelable("submissionsResult");
 
@@ -93,6 +98,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             closeBtn.setVisibility(View.GONE);
             statusView.setVisibility(View.GONE);
         });
+
+        btnShare.setOnClickListener(v -> {
+            ((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(),"tokopedia://referral", model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
+
+        });
     }
 
     public void showStatusInfo() {
@@ -102,7 +112,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void setProfilePic(String url) {
-        ImageHandler.loadImageCircle2(getActivity(),profilePic, url);
+        ImageHandler.loadImageCircle2(getActivity(), profilePic, url);
     }
 
     public void setProfileText(String text) {

@@ -306,6 +306,7 @@
                 android:text="@string/buzz_point_request" />
 
             <TextView
+                android:id="@+id/btn_share"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_round_corner_solid_green"

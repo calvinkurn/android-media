@@ -29,8 +29,8 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
     GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
     private RequestParams searchParams = RequestParams.create();
     private int pageStart = 0;
-    private int pageSize=10;
-    private String sortType=Utils.QUERY_PARAM_KEY_SORT_RECENT;
+    private int pageSize = 10;
+    private String sortType = Utils.QUERY_PARAM_KEY_SORT_RECENT;
     private String challengeId;
 
 
@@ -59,18 +59,18 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         this.pageStart = start;
     }
 
-    public void setSortType(String sortType){
-        this.sortType=sortType;
+    public void setSortType(String sortType) {
+        this.sortType = sortType;
     }
 
-    public void setChallengeId(String challengeId){
-        this.challengeId=challengeId;
+    public void setChallengeId(String challengeId) {
+        this.challengeId = challengeId;
     }
 
     public void loadMoreItems(boolean showProgress) {
         isLoading = true;
         setNextPageParams();
-        if(showProgress)
+        if (showProgress)
             getView().showProgressBar();
         getSubmissionChallengesUseCase.setRequestParams(searchParams);
         getSubmissionChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -94,10 +94,12 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
                 SubmissionResponse submissionResponse = res1.getData();
                 isLoading = false;
                 getView().removeFooter();
-                if (submissionResponse != null) {
+                if (submissionResponse != null && submissionResponse.getSubmissionResults() != null
+                        && submissionResponse.getSubmissionResults().size() > 0) {
                     getView().addSubmissionToCards(submissionResponse.getSubmissionResults());
-                    if (submissionResponse.getSubmissionResults() != null)
-                        pageStart += submissionResponse.getSubmissionResults().size();
+                    pageStart += submissionResponse.getSubmissionResults().size();
+                }else{
+                    isLastPage=true;
                 }
                 getView().hideProgressBar();
                 checkIfToLoad(getView().getLayoutManager());

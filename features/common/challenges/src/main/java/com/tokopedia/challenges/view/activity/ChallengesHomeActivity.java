@@ -14,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
@@ -27,7 +28,7 @@ public class ChallengesHomeActivity extends BaseActivity{
 private TabLayout tabLayout;
 private ViewPager viewPager;
 
-    @DeepLink({"tokopedia://challenges"})
+    @DeepLink({ChallengesUrl.AppLink.CHALLENGES_HOME})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         Intent destination;
         try {
