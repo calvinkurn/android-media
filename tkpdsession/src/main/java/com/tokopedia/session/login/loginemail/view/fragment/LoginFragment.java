@@ -110,7 +110,6 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUEST_ADD_NAME = 109;
 
 
-
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
@@ -123,6 +122,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     public static final String IS_AUTO_FILL = "auto_fill";
     public static final String AUTO_FILL_EMAIL = "email";
+    public static final String IS_FROM_REGISTER = "is_from_register";
 
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
@@ -172,7 +172,7 @@ public class LoginFragment extends BaseDaggerFragment
         daggerSessionComponent.inject(this);
     }
 
-    public void initOuterInjector(SessionModule sessionModule){
+    public void initOuterInjector(SessionModule sessionModule) {
         AppComponent appComponent = getComponent(AppComponent.class);
         DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
                 DaggerSessionComponent.builder()
@@ -343,7 +343,7 @@ public class LoginFragment extends BaseDaggerFragment
         presenter.discoverLogin();
         if (getArguments().getBoolean(IS_AUTO_FILL, false)) {
             emailEditText.setText(getArguments().getString(AUTO_FILL_EMAIL, ""));
-        }else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
+        } else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
             switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
                 case LoginActivity.METHOD_FACEBOOK:
                     onLoginFacebookClick();
@@ -580,7 +580,7 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
-        Intent  intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                 getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 
@@ -850,6 +850,13 @@ public class LoginFragment extends BaseDaggerFragment
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public boolean isFromRegister() {
+        return getActivity() != null
+                && getActivity().getIntent() != null &&
+                getActivity().getIntent().getBooleanExtra(IS_FROM_REGISTER, false);
     }
 
     @Override

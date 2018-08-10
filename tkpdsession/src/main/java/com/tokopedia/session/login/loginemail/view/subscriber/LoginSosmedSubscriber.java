@@ -60,23 +60,14 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onNext(LoginSosmedDomain loginSosmedDomain) {
-//        if (!loginSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-//            view.onGoToCreatePasswordPage(loginSosmedDomain.getInfo()
-//                    .getGetUserInfoDomainData());
-//        }
         if (loginSosmedDomain.getInfo().getGetUserInfoDomainData().getName().contains(CHARACTER_NOT_ALLOWED)) {
             view.onGoToAddName(loginSosmedDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (loginSosmedDomain.getMakeLoginModel() != null
-                && !isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
-                && (isMsisdnVerified(loginSosmedDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+                && !isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())) {
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginSosmed(loginMethodName);
-        } else if (!isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
-                && !isMsisdnVerified(loginSosmedDomain.getInfo())) {
-            view.setSmartLock();
-            view.onGoToPhoneVerification();
         } else if (isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())) {
             view.setSmartLock();
             view.onGoToSecurityQuestion(

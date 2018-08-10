@@ -74,6 +74,8 @@ public interface Login {
         void onForbidden();
 
         void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData);
+
+        boolean isFromRegister();
     }
 
     interface Presenter extends CustomerPresenter<View> {

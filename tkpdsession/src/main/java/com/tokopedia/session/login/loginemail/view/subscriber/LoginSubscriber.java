@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -63,12 +62,13 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                     .getGetUserInfoDomainData());
         } else if (loginEmailDomain.getLoginResult() != null
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+                && (isMsisdnVerified(loginEmailDomain.getInfo()) && !view.isFromRegister())) {
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginEmail();
         } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && !isMsisdnVerified(loginEmailDomain.getInfo())) {
+                && !isMsisdnVerified(loginEmailDomain.getInfo())
+                && view.isFromRegister()) {
             view.setSmartLock();
             view.onGoToPhoneVerification();
         } else if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {

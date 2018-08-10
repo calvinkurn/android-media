@@ -48,22 +48,13 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onNext(LoginSosmedDomain registerSosmedDomain) {
-//        if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-//            viewListener.onGoToCreatePasswordPage(
-//                    registerSosmedDomain.getInfo().getGetUserInfoDomainData(),
-//                    methodName);
-//        }
         if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().getName().contains(CHARACTER_NOT_ALLOWED)) {
             viewListener.onGoToAddName(registerSosmedDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (registerSosmedDomain.getMakeLoginModel() != null
-                && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
-                && isMsisdnVerified(registerSosmedDomain.getInfo())) {
+                && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {
             viewListener.onSuccessRegisterSosmed(methodName);
             sendRegisterEventToBranch(registerSosmedDomain.getInfo());
-        } else if (!isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
-                && !isMsisdnVerified(registerSosmedDomain.getInfo())) {
-            viewListener.onGoToPhoneVerification();
         } else if (isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {
             viewListener.onGoToSecurityQuestion(
                     registerSosmedDomain.getMakeLoginModel().getSecurityDomain(),
@@ -75,16 +66,12 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
         }
     }
 
-    private boolean isMsisdnVerified(GetUserInfoDomainModel info) {
-        return info.getGetUserInfoDomainData().isPhoneVerified();
-    }
-
     private boolean isGoToSecurityQuestion(MakeLoginDomain makeLoginModel) {
         return !makeLoginModel.isLogin() && makeLoginModel.getSecurityDomain() != null;
     }
 
-    private void sendRegisterEventToBranch(GetUserInfoDomainModel userInfoDomainModel){
-        if(userInfoDomainModel.getGetUserInfoDomainData()!=null) {
+    private void sendRegisterEventToBranch(GetUserInfoDomainModel userInfoDomainModel) {
+        if (userInfoDomainModel.getGetUserInfoDomainData() != null) {
             BranchSdkUtils.sendRegisterEvent(userInfoDomainModel.getGetUserInfoDomainData().getEmail(),
                     userInfoDomainModel.getGetUserInfoDomainData().getPhone());
         }
