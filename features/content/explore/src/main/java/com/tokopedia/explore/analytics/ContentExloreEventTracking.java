@@ -10,7 +10,7 @@ public interface ContentExloreEventTracking {
     }
 
     interface Event {
-        String EXPLORE = "eventExplore";
+        String EXPLORE = "clickExplore";
     }
 
     interface Category {
@@ -20,6 +20,9 @@ public interface ContentExloreEventTracking {
     interface Action {
         String LOAD_MORE = "load more";
         String CLICK_GRID_CONTENT = "click grid content";
+        String FILTER_CATEGORY = "filter kol by category";
+        String DESELECT_CATEGORY = "deselect filter category";
+        String SEARCH = "search";
     }
 
     interface EventLabel {

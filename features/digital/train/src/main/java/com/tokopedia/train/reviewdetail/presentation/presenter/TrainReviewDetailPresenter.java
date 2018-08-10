@@ -104,7 +104,7 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                         if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT) {
                             passengerType = "Dewasa";
                         } else if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.INFANT) {
-                            passengerType = "Infant";
+                            passengerType = "Bayi";
                         }
                         return new TrainReviewPassengerInfoViewModelBuilder()
                                 .name(departureTrainPaxPassenger.getName())

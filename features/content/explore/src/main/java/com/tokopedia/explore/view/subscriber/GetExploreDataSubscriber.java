@@ -66,6 +66,11 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 view.dismissLoading();
                 view.onErrorGetExploreDataFirstPage();
                 return;
+            } else if (discoveryKolData.getPostKol() == null
+                    || discoveryKolData.getPostKol().isEmpty()) {
+                view.dismissLoading();
+                view.showEmpty();
+                return;
             }
         }
 

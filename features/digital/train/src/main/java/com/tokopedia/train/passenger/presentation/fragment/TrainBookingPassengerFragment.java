@@ -253,6 +253,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+
         });
 
         cardActionReturn.setActionListener(() -> {
@@ -269,6 +271,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
         });
     }
 
@@ -321,8 +324,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void loadDetailSchedule(TrainScheduleViewModel trainScheduleViewModel, CardWithAction cardWithAction) {
-        cardWithAction.setContentInfo(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                TrainDateUtil.DEFAULT_VIEW_FORMAT, trainScheduleViewModel.getDepartureTimestamp()));
+        cardWithAction.setContentInfo("(" + TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.DEFAULT_VIEW_FORMAT, trainScheduleViewModel.getDepartureTimestamp()) + ")");
         cardWithAction.setSubContent(trainScheduleViewModel.getTrainName() + " " + trainScheduleViewModel.getTrainNumber());
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp());

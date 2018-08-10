@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.presentation.fragment.TrainSearchReturnFragment;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
@@ -42,6 +41,7 @@ public class TrainSearchReturnActivity extends TrainSearchActivity {
     protected String getTitleTrainToolbar() {
         return trainSearchPassDataViewModel.getDestinationCityName() + " ➝ " + trainSearchPassDataViewModel.getOriginCityName();
     }
+
     @Override
     protected String getDepartureDate() {
         return trainSearchPassDataViewModel.getReturnDate();

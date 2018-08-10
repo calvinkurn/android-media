@@ -45,7 +45,11 @@ public class ExploreCategoryAdapter extends RecyclerView.Adapter<ExploreCategory
         Context context = holder.tag.getContext();
         holder.tag.setText(list.get(position).getName());
         holder.tag.setOnClickListener(v -> {
-            listener.onCategoryClicked(position, list.get(position).getId());
+            listener.onCategoryClicked(
+                    position,
+                    list.get(position).getId(),
+                    list.get(position).getName()
+            );
         });
 
         if (list.get(position).isActive()) {

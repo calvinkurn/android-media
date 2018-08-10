@@ -4,4 +4,5 @@
 
     <!--Explore-->
     <string name="search_your_inspiration">Cari inspirasi kamu</string>
+    <string name="explore_empty_result">Maaf, halaman yang kamu cari tidak dapat ditemukan</string>
 </resources>

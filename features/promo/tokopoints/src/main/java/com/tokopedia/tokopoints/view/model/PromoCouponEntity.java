@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Map;
 
 public class PromoCouponEntity {
 
@@ -22,6 +23,18 @@ public class PromoCouponEntity {
     @Expose
     @SerializedName("extra_info")
     private List<CouponExtraInfoEntity> extraInfo;
+
+    @Expose
+    @SerializedName("tokopointsEmptyMessage")
+    private Map<String,String> emptyMessage;
+
+    public Map<String, String> getEmptyMessage() {
+        return emptyMessage;
+    }
+
+    public void setEmptyMessage(Map<String, String> emptyMessage) {
+        this.emptyMessage = emptyMessage;
+    }
 
     public List<CouponExtraInfoEntity> getExtraInfo() {
         return extraInfo;
@@ -62,6 +75,7 @@ public class PromoCouponEntity {
                 ", hasNext=" + hasNext +
                 ", totalData=" + totalData +
                 ", extraInfo=" + extraInfo +
+                ", emptyMessage=" + emptyMessage +
                 '}';
     }
 }
