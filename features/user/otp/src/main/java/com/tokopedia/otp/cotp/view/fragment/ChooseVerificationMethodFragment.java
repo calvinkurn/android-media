@@ -7,7 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
@@ -25,7 +30,6 @@ import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.cotp.view.presenter.ChooseVerificationPresenter;
@@ -50,6 +54,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     private static final int TYPE_PROFILE_SETTING = 2;
     private RecyclerView methodListRecyclerView;
     TextView changePhoneNumberButton;
+
 
     @Inject
     ChooseVerificationPresenter presenter;
@@ -117,7 +122,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_choose_verification_method, parent, false);
+        View view = inflater.inflate(R.layout.fragment_cotp_choose_method, parent, false);
         mainView = view.findViewById(R.id.main_view);
         loadingView = view.findViewById(R.id.progress_bar);
         methodListRecyclerView = view.findViewById(R.id.method_list);
@@ -143,9 +148,9 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     @Override
     public void onMethodSelected(MethodItem methodItem) {
 
-        if(analytics != null
+        if (analytics != null
                 && methodItem != null
-                && passModel != null){
+                && passModel != null) {
             analytics.eventClickMethodOtp(passModel.getOtpType(), methodItem.getModeName());
         }
         if (methodItem.isUsingPopUp()
@@ -190,31 +195,52 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     public void onSuccessGetList(ListVerificationMethod listVerificationMethod) {
         adapter.setList(listVerificationMethod.getList());
 
-        if(listVerificationMethod.getFooterLinkType() == TYPE_HIDE_LINK){
-            changePhoneNumberButton.setVisibility(View.GONE);
-        }else {
-            changePhoneNumberButton.setVisibility(View.VISIBLE);
-            changePhoneNumberButton.setOnClickListener(v -> {
-                if (getActivity() != null
-                        && getActivity().getApplicationContext() != null
-                        && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
+        switch (listVerificationMethod.getFooterLinkType()) {
+            case TYPE_HIDE_LINK:
+                changePhoneNumberButton.setVisibility(View.GONE);
+                break;
+            case TYPE_CHANGE_PHONE_UPLOAD_KTP:
+                changePhoneNumberButton.setVisibility(View.VISIBLE);
+                changePhoneNumberButton.setText(getString(R.string.my_phone_number_is_inactive));
+                changePhoneNumberButton.setTextColor(MethodChecker.getColor(getContext(), R.color
+                        .tkpd_main_green));
+                changePhoneNumberButton.setOnClickListener(v -> goToRequestChangePhoneNumberUploadKTP());
+                break;
+            case TYPE_PROFILE_SETTING:
+                changePhoneNumberButton.setVisibility(View.VISIBLE);
+                changePhoneNumberButton.setText(getString(R.string.setting));
+                changePhoneNumberButton.setTextColor(MethodChecker.getColor(getContext(), R.color
+                        .black_38));
+                String changeInactiveString = getString(R.string
+                        .my_phone_inactive_change_at_setting);
+                SpannableString changeInactiveSpan = new SpannableString(changeInactiveString);
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        goToProfileSetting();
 
-                    switch (listVerificationMethod.getFooterLinkType()) {
-                        case TYPE_CHANGE_PHONE_UPLOAD_KTP:
-                            goToRequestChangePhoneNumberUploadKTP();
-                            break;
-                        case TYPE_PROFILE_SETTING:
-                            goToProfileSetting();
-                            break;
                     }
 
-                }
-            });
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                    }
+                };
+
+                changeInactiveSpan.setSpan(clickableSpan,
+                        changeInactiveString.indexOf(getString(R.string.setting)),
+                        changeInactiveString.indexOf(getString(R.string.setting)) + getString(R
+                                .string.setting).length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                break;
         }
+
     }
 
     private void goToProfileSetting() {
-        if (getActivity() != null) {
+        if (getActivity() != null && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
             Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
                     .getProfileSettingIntent(getActivity());
             startActivity(intent);
@@ -223,7 +249,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     private void goToRequestChangePhoneNumberUploadKTP() {
-        if (getActivity() != null) {
+        if (getActivity() != null && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
             Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
                     .getChangePhoneNumberRequestIntent(getActivity());
             startActivity(intent);
