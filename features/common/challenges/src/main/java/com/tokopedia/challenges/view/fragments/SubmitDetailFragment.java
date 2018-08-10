@@ -28,7 +28,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private LinearLayout statusView;
     private ImageView closeBtn;
     private TextView statusText;
-    private TextView profileLayout;
+    private LinearLayout profileLayout;
     private ImageView profilePic;
     private TextView profileText;
     private CustomVideoPlayer challengeImage;
@@ -107,7 +107,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setChallengeImage(String url) {
-        challengeImage.setVideoThumbNail(url);
+        //challengeImage.setVideoThumbNail(url);
     }
 
     public void setLikesCountView(String likesCount) {
