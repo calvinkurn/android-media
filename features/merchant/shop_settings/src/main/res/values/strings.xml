@@ -1,6 +1,14 @@
 <resources>
-    <string name="shop_settings_manage_shop_info">Informasi</string>
+    <string name="shop_settings_manage_shop_info">Informasi Toko</string>
     <string name="shop_settings_manage_address">Pengaturan Alamat Toko</string>
     <string name="shop_settings_manage_etalase">Pengaturan Etalase Toko</string>
     <string name="shop_settings_manage_notes">Pengaturan Catatan</string>
+    <string name="shop_settings_basic_info">Informasi Dasar</string>
+    <string name="shop_slogan_hint">Masukkan slogan toko</string>
+    <string name="shop_slogan_label">Slogan Toko</string>
+    <string name="shop_description_label">Deskripsi Toko</string>
+    <string name="shop_status_label">Status Toko</string>
+    <string name="shop_settings_membership_label">Keanggotaan</string>
+    <string name="shop_settings_gold_merchant_invite">Tingkatkan efektivitas toko dengan menjadi Gold Merchant</string>
+    <string name="valid_until_x">Berlaku hingga %1$s</string>
 </resources>

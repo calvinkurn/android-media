@@ -5,9 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.shop.common.R;
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseMapper;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseViewModel;
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLResultMapper;
 import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase;
 import com.tokopedia.shop.common.graphql.data.shopetalase.gql.ShopEtalaseQuery;
@@ -15,14 +13,13 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
 
-public class GetShopEtalaseUseCase extends UseCase<List<ShopEtalaseViewModel>> {
+public class GetShopEtalaseUseCase extends UseCase<ArrayList<ShopEtalaseModel>> {
     private SingleGraphQLUseCase<ShopEtalaseQuery> graphQLUseCase;
 
     @Inject
@@ -36,7 +33,7 @@ public class GetShopEtalaseUseCase extends UseCase<List<ShopEtalaseViewModel>> {
     }
 
     @Override
-    public Observable<List<ShopEtalaseViewModel>> createObservable(RequestParams requestParams) {
+    public Observable<ArrayList<ShopEtalaseModel>> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(new GraphQLResultMapper<>())
                 //TODO remove below, just for test.
@@ -47,14 +44,7 @@ public class GetShopEtalaseUseCase extends UseCase<List<ShopEtalaseViewModel>> {
                         ShopEtalaseQuery response = new Gson().fromJson(jsonString, ShopEtalaseQuery.class);
                         return Observable.just(response).flatMap(new GraphQLResultMapper<>());
                     }
-                }).flatMap(new Func1<ArrayList<ShopEtalaseModel>, Observable<ShopEtalaseModel>>() {
-                    @Override
-                    public Observable<ShopEtalaseModel> call(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
-                        return Observable.from(shopEtalaseModels);
-                    }
-                })
-                .map(new ShopEtalaseMapper())
-                .toList();
+                });
 
     }
 

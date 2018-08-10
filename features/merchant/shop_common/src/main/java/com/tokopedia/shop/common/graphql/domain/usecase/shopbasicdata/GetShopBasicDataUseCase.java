@@ -5,9 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.shop.common.R;
-import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataMapper;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
-import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataViewModel;
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLResultMapper;
 import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQuery;
@@ -19,7 +17,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class GetShopBasicDataUseCase extends UseCase<ShopBasicDataViewModel> {
+public class GetShopBasicDataUseCase extends UseCase<ShopBasicDataModel> {
     private SingleGraphQLUseCase<ShopBasicDataQuery> graphQLUseCase;
 
     @Inject
@@ -33,7 +31,7 @@ public class GetShopBasicDataUseCase extends UseCase<ShopBasicDataViewModel> {
     }
 
     @Override
-    public Observable<ShopBasicDataViewModel> createObservable(RequestParams requestParams) {
+    public Observable<ShopBasicDataModel> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(new GraphQLResultMapper<>())
                 //TODO remove below, just for test.
@@ -44,8 +42,7 @@ public class GetShopBasicDataUseCase extends UseCase<ShopBasicDataViewModel> {
                 ShopBasicDataQuery response = new Gson().fromJson(jsonString, ShopBasicDataQuery.class);
                 return Observable.just(response).flatMap(new GraphQLResultMapper<>());
             }
-        })
-        .map(new ShopBasicDataMapper());
+        });
 
     }
 

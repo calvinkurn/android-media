@@ -81,5 +81,11 @@ public class ShopBasicDataModel {
     public String getExpired() {
         return expired;
     }
+
+    public boolean isOpen() { return status == ShopStatusDef.OPEN; }
+    public boolean isClosed() { return status == ShopStatusDef.CLOSED; }
+    public boolean isRegular() { return level == ShopStatusLevelDef.LEVEL_REGULAR; }
+    public boolean isGold() { return level == ShopStatusLevelDef.LEVEL_GOLD; }
+    public boolean isOfficialStore() { return level == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE; }
 }
 

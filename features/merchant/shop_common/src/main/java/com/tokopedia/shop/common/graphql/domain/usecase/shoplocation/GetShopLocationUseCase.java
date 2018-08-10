@@ -5,10 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.shop.common.R;
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseMapper;
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
-import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationMapper;
-import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationViewModel;
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLResultMapper;
 import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase;
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel;
@@ -17,14 +13,13 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
 
-public class GetShopLocationUseCase extends UseCase<List<ShopLocationViewModel>> {
+public class GetShopLocationUseCase extends UseCase<ArrayList<ShopLocationModel>> {
     private SingleGraphQLUseCase<ShopLocationQuery> graphQLUseCase;
 
     @Inject
@@ -38,7 +33,7 @@ public class GetShopLocationUseCase extends UseCase<List<ShopLocationViewModel>>
     }
 
     @Override
-    public Observable<List<ShopLocationViewModel>> createObservable(RequestParams requestParams) {
+    public Observable<ArrayList<ShopLocationModel>> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(new GraphQLResultMapper<>())
                 //TODO remove below, just for test.
@@ -49,14 +44,7 @@ public class GetShopLocationUseCase extends UseCase<List<ShopLocationViewModel>>
                 ShopLocationQuery response = new Gson().fromJson(jsonString, ShopLocationQuery.class);
                 return Observable.just(response).flatMap(new GraphQLResultMapper<>());
             }
-        }).flatMap(new Func1<ArrayList<ShopLocationModel>, Observable<ShopLocationModel>>() {
-                    @Override
-                    public Observable<ShopLocationModel> call(ArrayList<ShopLocationModel> shopLocationModels) {
-                        return Observable.from(shopLocationModels);
-                    }
-                })
-                .map(new ShopLocationMapper())
-                .toList();
+        });
 
     }
 
