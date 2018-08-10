@@ -16,16 +16,23 @@ import javax.inject.Inject;
 
 public class GetChallengeSettingUseCase extends RestRequestSupportInterceptorUseCase {
 
+    private String challengeID;
+
     @Inject
     public GetChallengeSettingUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
+    }
+
+
+    public void setCHALLENGE_ID(String challengeID) {
+        this.challengeID = challengeID;
     }
 
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.PRIVATE.CHALLENGE_SETTING, ChallengeSettings.class)
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.Upload.CHALLENGE_SETTING,challengeID), ChallengeSettings.class)
                 .build();
         tempRequest.add(restRequest1);
 

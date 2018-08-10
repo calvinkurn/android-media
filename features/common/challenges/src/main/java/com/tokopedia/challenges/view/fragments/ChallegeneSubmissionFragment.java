@@ -99,7 +99,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         seeMoreButton = (TextView) view.findViewById(R.id.seemorebutton_description);
         seeMoreArrow = (ImageView) view.findViewById(R.id.down_arrow_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
-        submitButton = view.findViewById(R.id.ll_buynow);
+        submitButton = view.findViewById(R.id.ll_continue);
         awardRecylerView = view.findViewById(R.id.rv_awards);
 
         toolbar = view.findViewById(R.id.toolbar);
@@ -227,8 +227,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             description.toggle();
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults);
-        }else if(v.getId() == R.id.ll_buynow) {
-            startActivity(new Intent(getContext(), ChallengesSubmitActivity.class));
+        }else if(v.getId() == R.id.ll_continue) {
+            startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(),challengeResult));
 
         }
 

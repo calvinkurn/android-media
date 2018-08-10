@@ -1,22 +1,14 @@
 package com.tokopedia.challenges.view.fragments.submit;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
+import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
@@ -33,16 +26,8 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -70,11 +55,20 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Inject
     ChallengesSubmitPresenter presenter;
+    private Result challengeResult;
+    private TextView mChallengeTitle;
+    private TextView mChallengeDescription;
 
-    public static ChallengesSubmitFragment newInstance() {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.challengeResult = getArguments().getParcelable("challengesResult");
+        setHasOptionsMenu(true);
+    }
+
+    public static ChallengesSubmitFragment newInstance(Bundle extras) {
         ChallengesSubmitFragment fragment = new ChallengesSubmitFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.setArguments(extras);
         return fragment;
     }
 
@@ -183,6 +177,21 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
                 .show();
     }
 
+    @Override
+    public Result getChallengeResult() {
+        return challengeResult;
+    }
+
+    @Override
+    public void setChallengeTitle(String text) {
+        mChallengeTitle.setText(text);
+    }
+
+    @Override
+    public void setChallengeDescription(String text) {
+        mChallengeDescription.setText(text);
+    }
+
     private void initView(View view) {
         mSelectedImage = view.findViewById(R.id.selected_image);
         mDeleteImage = view.findViewById(R.id.delete_image);
@@ -191,6 +200,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mBtnSubmit = view.findViewById(R.id.btn_submit);
         mBtnCancel = view.findViewById(R.id.btn_cancel);
         parent = view.findViewById(R.id.constraint_layout);
+        mChallengeTitle = view.findViewById(R.id.challenge_title);
+        mChallengeDescription = view.findViewById(R.id.challenge_description);
     }
 
     private void showImagePickerDialog() {
@@ -212,9 +223,9 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_SELECT && resultCode == Activity.RESULT_OK && data!= null) {
+        if (requestCode == REQUEST_IMAGE_SELECT && resultCode == Activity.RESULT_OK && data != null) {
             ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-            if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+            if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
                 mImagePath = imageUrlOrPathList.get(0);
                 ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mImagePath));
             }

@@ -11,6 +11,7 @@ import com.tokopedia.challenges.domain.usecase.IntializeMultiPartUseCase;
 import com.tokopedia.challenges.view.fragments.submit.IChallengesSubmitContract.Presenter;
 import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
+import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.usecase.RequestParams;
 
@@ -40,6 +41,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     @Override
     public void attachView(IChallengesSubmitContract.View view) {
         super.attachView(view);
+        mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
+        mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
+        mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mGetChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -95,7 +99,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 }
 
                 @Override
-                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                public void onNext(Map<Type, RestResponse> restResponse) {
 
                 }
             });

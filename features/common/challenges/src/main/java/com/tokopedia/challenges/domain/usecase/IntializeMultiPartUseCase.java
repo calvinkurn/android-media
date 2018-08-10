@@ -6,24 +6,33 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
+import com.tokopedia.challenges.view.utils.Utils;
+import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class IntializeMultiPartUseCase extends RestRequestSupportInterceptorUseCase {
 
@@ -32,98 +41,64 @@ public class IntializeMultiPartUseCase extends RestRequestSupportInterceptorUseC
     private static final String IMAGE_TITLE = "title";
     private static final String IMAGE_DESCRIPTION = "description";
     private static final String BLOB_DATA = "blob_data";
+    private final IndiAuthInterceptor interceptor;
     HashMap<String, Object> requestBodyMap = new HashMap<>();
+    private String challengeID;
+    Context context;
+    String imagePath;
 
+
+
+    public void setCHALLENGE_ID(String challengeID) {
+        this.challengeID = challengeID;
+    }
 
     @Inject
     public IntializeMultiPartUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
+        this.context = context;
+        this.interceptor = interceptor;
     }
+
+
+    @Override
+    public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
+        return super.createObservable(requestParams).flatMap(new Func1<Map<Type, RestResponse>, Observable<Map<Type, RestResponse>>>() {
+            @Override
+            public Observable<Map<Type, RestResponse>> call(Map<Type, RestResponse> restResponse) {
+                RestResponse res1 = restResponse.get(UploadFingerprints.class);
+                UploadFingerprints fingerprints = res1.getData();
+                UploadAWSUseCase uploadAWSUseCase = new UploadAWSUseCase(interceptor,context,imagePath,challengeID);
+                return uploadAWSUseCase.createObservableUploadAWS(fingerprints);
+            }
+        });
+    }
+
+
+
+
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.PRIVATE.CHALLENGE_INTIALIZE_MULTIPART, UploadFingerprints.class)
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.Upload.CHALLENGE_INTIALIZE_MULTIPART,challengeID), UploadFingerprints.class)
                 .setRequestType(RequestType.POST_MULTIPART).setBody(requestBodyMap) .build();
         tempRequest.add(restRequest1);
 
         return tempRequest;
     }
 
-     protected RequestBody generateRequestPlainTextBody(String value) {
-        return RequestBody.create(MediaType.parse("text/plain"),
-                value);
-    }
-    protected RequestBody generateRequestBlobBody(byte[] value) {
-        return RequestBody.create(MediaType.parse("text/plain"),
-                value);
-    }
 
-   private RequestBody generateImageRequestBody(String path) {
-        File file = new File(path);
-        return RequestBody.create(MediaType.parse("images/*"), file);
-    }
-
-
-    private MultipartBody.Part generateRequestImages(String name, String path) {
-        File file = new File(path);
-        RequestBody requestBody = generateImageRequestBody(path);
-        return MultipartBody.Part.createFormData(name, file.getName(), requestBody);
-    }
-
-    private MultipartBody.Part generateRequestVideo(String name, String path) {
-
-        File file = new File(path);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("audio/wav"), file);
-
-        return MultipartBody.Part.createFormData(name, file.getName(), requestBody);
-
-    }
 
     public void generateRequestParams(String title, String description, String imagePath) {
-       requestBodyMap.put(IMAGE_TITLE, generateRequestPlainTextBody(title));
-        requestBodyMap.put(IMAGE_DESCRIPTION, generateRequestPlainTextBody(description));
+        this.imagePath = imagePath;
+       requestBodyMap.put(IMAGE_TITLE, Utils.generateRequestPlainTextBody(title));
+        requestBodyMap.put(IMAGE_DESCRIPTION, Utils.generateRequestPlainTextBody(description));
         File imageFile = new File(imagePath);
-        requestBodyMap.put(FILE_NAME, generateRequestPlainTextBody(imageFile.getName()));
-        requestBodyMap.put(FILE_SIZE, generateRequestPlainTextBody(String.valueOf(imageFile.length())));
-        requestBodyMap.put(BLOB_DATA, generateRequestBlobBody(get10KBFile(imagePath)));
-        /* requestBodyMap.put(IMAGE_TITLE, title);
-        requestBodyMap.put(IMAGE_DESCRIPTION, description);
-        File imageFile = new File(imagePath);
-        requestBodyMap.put(FILE_NAME, imageFile.getName());
-        requestBodyMap.put(FILE_SIZE, String.valueOf(imageFile.length()));
-        requestBodyMap.put(BLOB_DATA, get10KBFile(imagePath));*/
-    }
-    private static  int KB_1 = 1024;
-    private static  int KB_10 = 10 * KB_1;
-    private static int MB_1 = 1000 * KB_1;
-    private static int MB_10 = 10 * MB_1;
-
-
-    public byte[] get10KBFile(String path)  {
-        File file = new File(path);
-        //init array with file length
-        byte[] bytesArray = new byte[KB_10];
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            fis.read(bytesArray); //read file into bytes[]
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bytesArray;
+        requestBodyMap.put(FILE_NAME, Utils.generateRequestPlainTextBody(imageFile.getName()));
+        requestBodyMap.put(FILE_SIZE, Utils.generateRequestPlainTextBody(String.valueOf(imageFile.length())));
+        requestBodyMap.put(BLOB_DATA, Utils.generateRequestBlobBody(Utils.get10KBFile(imagePath)));
     }
 
-    public byte[] sliceFile(String path,int start,int end) throws IOException {
-        File file = new File(path);
-        byte[] bytesArray = new byte[(int) file.length()];
-        FileInputStream fis = new FileInputStream(file);
-        fis.read(bytesArray); //read file into bytes[]
-        fis.close();
-
-        return Arrays.copyOfRange(bytesArray, start, end);
-
-    }
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.challenges.view.model.Result;
 
 public interface IChallengesSubmitContract {
 
@@ -18,6 +19,9 @@ public interface IChallengesSubmitContract {
         public void showMessage(String showToast);
         public void finish();
         void setSnackBarErrorMessage(String message);
+        public Result getChallengeResult();
+        public void setChallengeTitle(String text);
+        public void setChallengeDescription(String text);
 
     }
 
