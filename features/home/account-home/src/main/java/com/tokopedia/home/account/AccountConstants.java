@@ -36,11 +36,14 @@ public class AccountConstants {
             public static final String PULSA_FAV_NUMBER = BASE_PULSA_URL + "favorite-list/";
 
             public static final String ZAKAT_URL = BASE_PULSA_URL + "berbagi/operator/?category_id=16";
+
+            public static final String MYBILLS = BASE_PULSA_URL + "mybills/";
         }
 
         public static final String REKSA_DANA_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/";
 
         public static final String EMAS_URL = TkpdBaseURL.WEB_DOMAIN + "emas/";
+
     }
 
     public static class Analytics {

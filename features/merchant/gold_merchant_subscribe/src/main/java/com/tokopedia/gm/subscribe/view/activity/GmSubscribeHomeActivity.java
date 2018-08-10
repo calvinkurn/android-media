@@ -158,4 +158,9 @@ public class GmSubscribeHomeActivity
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
 }

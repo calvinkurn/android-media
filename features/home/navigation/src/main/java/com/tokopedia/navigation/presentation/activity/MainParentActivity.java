@@ -1,7 +1,14 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -10,6 +17,8 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -17,10 +26,15 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -55,34 +69,34 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
         MainParentView, ShowCaseListener {
 
-    private final static int EXIT_DELAY_MILLIS = 2000;
-    public static int HOME_MENU = 0;
-    public static int FEED_MENU = 1;
-    public static int INBOX_MENU = 2;
-    public static int CART_MENU = 3;
-    public static int ACCOUNT_MENU = 4;
-
-    private BottomNavigation bottomNavigation;
-    private ShowCaseDialog showCaseDialog;
-
-    private List<Fragment> fragmentList;
-    private List<String> titles;
-
-    private Notification notification;
-
-    private Fragment currentFragment;
+    public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
+    public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
+    public static final int ONBOARDING_REQUEST = 101;
+    public static final int HOME_MENU = 0;
+    public static final int FEED_MENU = 1;
+    public static final int INBOX_MENU = 2;
+    public static final int CART_MENU = 3;
+    public static final int ACCOUNT_MENU = 4;
+    private static final int EXIT_DELAY_MILLIS = 2000;
 
     @Inject
     UserSession userSession;
-
     @Inject
     MainParentPresenter presenter;
-
     @Inject
     GlobalNavAnalytics globalNavAnalytics;
+    @Inject
+    ApplicationUpdate appUpdate;
 
+    private BottomNavigation bottomNavigation;
+    private ShowCaseDialog showCaseDialog;
+    private List<Fragment> fragmentList;
+    private List<String> titles;
+    private Notification notification;
+    private Fragment currentFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
+    private BroadcastReceiver hockeyBroadcastReceiver;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -122,6 +136,44 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
             this.currentFragment = fragmentList.get(0);
         }
+
+//        if (isFirstTime()) {
+//            trackFirstTime();
+//        }
+//
+//        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+//
+//        cacheHandler = new AnalyticsCacheHandler();
+
+        Thread t = new Thread(() -> {
+            if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+
+                //  Launch app intro
+                Intent i = ((GlobalNavRouter) getApplicationContext()).getOnBoardingIntent(this);
+                startActivityForResult(i, ONBOARDING_REQUEST);
+
+            }
+        });
+
+        t.start();
+
+        checkAppUpdate();
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
+
+        initHockeyBroadcastReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterBroadcastHockeyApp();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
+        checkIsHaveApplinkComeFromDeeplink(intent);
     }
 
     private void initInjector() {
@@ -169,14 +221,14 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     private void openFragment(Fragment fragment) {
-        String backStateName =  fragment.getClass().getName();
+        String backStateName = fragment.getClass().getName();
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
 
         Fragment currentFrag = manager.findFragmentByTag(backStateName);
         if (currentFrag != null && manager.getFragments().size() > 0) {
-            for (int i = 0; i < manager.getFragments().size(); i++){
+            for (int i = 0; i < manager.getFragments().size(); i++) {
                 Fragment frag = manager.getFragments().get(i);
                 if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                     if (frag.isVisible() && frag instanceof FragmentListener) {
@@ -200,7 +252,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setUserSession(UserSession userSession){
+    public void setUserSession(UserSession userSession) {
         this.userSession = userSession;
     }
 
@@ -214,9 +266,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         super.onResume();
         presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
-            reloadPage();
+            reloadPage(this);
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
+        registerBroadcastHockeyApp();
     }
 
     @Override
@@ -225,13 +278,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         presenter.onDestroy();
     }
 
-    private void reloadPage() {
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        if (getApplication() instanceof  GlobalNavRouter) {
-            this.currentFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
-        }
-        selectFragment(currentFragment);
-        bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
+    private void reloadPage(Activity activity) {
+        finish();
+        startActivity(getIntent());
     }
 
     private List<Fragment> fragments() {
@@ -257,7 +306,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public Fragment getFragment(int index){ return getSupportFragmentManager().findFragmentById(R.id.container); }
+    public Fragment getFragment(int index) {
+        return getSupportFragmentManager().findFragmentById(R.id.container);
+    }
 
     @Override
     public void renderNotification(Notification notification) {
@@ -270,13 +321,16 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @Override
-    public void onStartLoading() { }
+    public void onStartLoading() {
+    }
 
     @Override
-    public void onError(String message) { }
+    public void onError(String message) {
+    }
 
     @Override
-    public void onHideLoading() { }
+    public void onHideLoading() {
+    }
 
     @Override
     public Context getContext() {
@@ -286,6 +340,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public BaseAppComponent getApplicationComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
+
     @Override
     public void onBackPressed() {
         doubleTapExit();
@@ -352,5 +407,112 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);
+    }
+
+    private void checkAppUpdate() {
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(DetailUpdate detail) {
+                AppUpdateDialogBuilder appUpdateDialogBuilder =
+                        new AppUpdateDialogBuilder(
+                                MainParentActivity.this,
+                                detail,
+                                new AppUpdateDialogBuilder.Listener() {
+                                    @Override
+                                    public void onPositiveButtonClicked(DetailUpdate detail) {
+                                        globalNavAnalytics.eventClickAppUpdate(detail.isForceUpdate());
+                                    }
+
+                                    @Override
+                                    public void onNegativeButtonClicked(DetailUpdate detail) {
+                                        globalNavAnalytics.eventClickCancelAppUpdate(detail.isForceUpdate());
+                                    }
+                                }
+                        );
+                appUpdateDialogBuilder.getAlertDialog().show();
+                globalNavAnalytics.eventImpressionAppUpdate(detail.isForceUpdate());
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNotNeedUpdate() {
+                checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
+            }
+        });
+    }
+
+    private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
+        if (intent.getBooleanExtra(ApplinkRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
+            if (getApplication() instanceof ApplinkRouter) {
+                ((ApplinkRouter) getApplication()).getApplinkUnsupported(this).showAndCheckApplinkUnsupported();
+            }
+        }
+    }
+
+    private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
+        if (!TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
+            String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
+
+            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
+                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+
+                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+            }
+
+            try {
+                Intent applinkIntent = new Intent(this, MainParentActivity.class);
+                applinkIntent.setData(Uri.parse(applink));
+                if (getIntent() != null && getIntent().getExtras() != null) {
+                    Intent newIntent = getIntent();
+                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+                    newIntent.removeExtra(DeepLink.REFERRER_URI);
+                    newIntent.removeExtra(DeepLink.URI);
+                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
+                    if (newIntent.getExtras() != null)
+                        applinkIntent.putExtras(newIntent.getExtras());
+                }
+                ((ApplinkRouter) getApplicationContext()).dispatchFrom(this, applinkIntent);
+            } catch (ActivityNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void initHockeyBroadcastReceiver() {
+        hockeyBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null) {
+                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
+                        showHockeyAppDialog();
+                    }
+                }
+            }
+        };
+    }
+
+    private void registerBroadcastHockeyApp() {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
+            LocalBroadcastManager.getInstance(this).registerReceiver(hockeyBroadcastReceiver, new IntentFilter(intentFilter));
+        }
+    }
+
+    private void unregisterBroadcastHockeyApp() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
+    }
+
+    private void showHockeyAppDialog() {
+        ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 }

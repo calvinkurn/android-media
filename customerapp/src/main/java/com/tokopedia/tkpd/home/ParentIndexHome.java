@@ -53,9 +53,9 @@ import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
-import com.tokopedia.core.appupdate.ApplicationUpdate;
-import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
@@ -793,27 +793,27 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void checkAppUpdate() {
-        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-            @Override
-            public void onNeedUpdate(DetailUpdate detail) {
-                if (!isPausing()) {
-                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
-                            .getAlertDialog().show();
-                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNotNeedUpdate() {
-                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
-            }
-        });
+//        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
+//        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+//            @Override
+//            public void onNeedUpdate(DetailUpdate detail) {
+//                if (!isPausing()) {
+//                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
+//                            .getAlertDialog().show();
+//                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onNotNeedUpdate() {
+//                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
+//            }
+//        });
     }
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
@@ -825,39 +825,39 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
-        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
-            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
-
-            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
-                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
-
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
-                if (clipboard != null) {
-                    clipboard.setPrimaryClip(clip);
-                }
-
-                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
-            }
-            if (!isPausing()) {
-                try {
-                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-                    Intent applinkIntent = new Intent(this, ParentIndexHome.class);
-                    applinkIntent.setData(Uri.parse(applink));
-                    if (getIntent() != null && getIntent().getExtras() != null) {
-                        Intent newIntent = getIntent();
-                        newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
-                        newIntent.removeExtra(DeepLink.REFERRER_URI);
-                        newIntent.removeExtra(DeepLink.URI);
-                        newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
-                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
-                    }
-                    deepLinkDelegate.dispatchFrom(this, applinkIntent);
-                } catch (ActivityNotFoundException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+//        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
+//            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
+//
+//            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
+//                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+//
+//                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+//                if (clipboard != null) {
+//                    clipboard.setPrimaryClip(clip);
+//                }
+//
+//                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+//            }
+//            if (!isPausing()) {
+//                try {
+//                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+//                    Intent applinkIntent = new Intent(this, ParentIndexHome.class);
+//                    applinkIntent.setData(Uri.parse(applink));
+//                    if (getIntent() != null && getIntent().getExtras() != null) {
+//                        Intent newIntent = getIntent();
+//                        newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+//                        newIntent.removeExtra(DeepLink.REFERRER_URI);
+//                        newIntent.removeExtra(DeepLink.URI);
+//                        newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
+//                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
+//                    }
+//                    deepLinkDelegate.dispatchFrom(this, applinkIntent);
+//                } catch (ActivityNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     private void initHockeyBroadcastReceiver() {

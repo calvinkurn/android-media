@@ -27,4 +27,6 @@ public interface ProfileModuleRouter {
     Intent getLoginIntent(Context context);
 
     Intent getProfileCompletionIntent(Context context);
+
+    Intent getManagePeopleIntent(Context context);
 }

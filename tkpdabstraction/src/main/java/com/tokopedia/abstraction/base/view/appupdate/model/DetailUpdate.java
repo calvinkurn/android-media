@@ -1,4 +1,4 @@
-package com.tokopedia.core.appupdate.model;
+package com.tokopedia.abstraction.base.view.appupdate.model;
 
 /**
  * Created by okasurya on 7/25/17.
