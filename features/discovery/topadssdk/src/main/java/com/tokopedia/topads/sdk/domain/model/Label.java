@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +13,9 @@ public class Label {
     public static final String KEY_TITLE = "title";
     public static final String KEY_COLOR = "color";
 
+    @SerializedName(KEY_TITLE)
     private String title;
+    @SerializedName(KEY_COLOR)
     private String color;
 
     public Label(JSONObject object) throws JSONException {

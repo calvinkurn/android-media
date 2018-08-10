@@ -56,7 +56,8 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 outRect.left = column * spacing / spanCount;
                 outRect.right = spacing - (column + 1) * spacing / spanCount;
                 if (position >= spanCount) {
-                    outRect.top = spacing;
+                    outRect.top = spacing / spanCount;
+                    outRect.bottom = spacing / spanCount;
                 }
             }
         });

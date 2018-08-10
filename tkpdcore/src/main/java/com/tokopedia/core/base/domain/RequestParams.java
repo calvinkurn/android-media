@@ -49,11 +49,11 @@ public class RequestParams {
         parameters.put(key, object);
     }
 
-    public void putJsonArray(String key, JsonArray object){
+    public void putJsonArray(String key, JsonArray object) {
         parameters.put(key, object);
     }
 
-    public void putListLong(String key, List<Long> longList){
+    public void putListLong(String key, List<Long> longList) {
         parameters.put(key, longList);
     }
 
@@ -93,7 +93,7 @@ public class RequestParams {
         }
     }
 
-    public long getLong(String key, long defaultValue){
+    public long getLong(String key, long defaultValue) {
         final Object object = parameters.get(key);
         if (object == null) {
             return defaultValue;
@@ -105,7 +105,7 @@ public class RequestParams {
         }
     }
 
-    public List<Long> getListLong(String key, List<Long> defaultValue){
+    public List<Long> getListLong(String key, List<Long> defaultValue) {
         final Object object = parameters.get(key);
         if (object == null) {
             return defaultValue;
@@ -133,21 +133,19 @@ public class RequestParams {
         return convertMapObjectToString(parameters);
     }
 
-    private TKPDMapParam<String, String> convertMapObjectToString(TKPDMapParam<String,Object> map) {
-        TKPDMapParam<String,String> newMap =new TKPDMapParam<>();
+    private TKPDMapParam<String, String> convertMapObjectToString(TKPDMapParam<String, Object> map) {
+        TKPDMapParam<String, String> newMap = new TKPDMapParam<>();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if(entry.getValue() instanceof String){
-                newMap.put(entry.getKey(), String.valueOf(entry.getValue()));
-            }
+            newMap.put(entry.getKey(), String.valueOf(entry.getValue()));
         }
         return newMap;
     }
 
-    public void putAll(Map<String, Object> params){
+    public void putAll(Map<String, Object> params) {
         parameters.putAll(params);
     }
 
-    public void putAll(HashMap<String, String> params){
+    public void putAll(HashMap<String, String> params) {
         parameters.putAll(params);
     }
 }

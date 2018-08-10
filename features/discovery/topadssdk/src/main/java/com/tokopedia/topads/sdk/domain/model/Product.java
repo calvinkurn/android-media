@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,29 +38,51 @@ public class Product {
     private static final String KEY_APPLINKS = "applinks";
     private static final String KEY_IMAGE_PRODUCT = "image_product";
 
+    @SerializedName(KEY_ID)
     private String id;
     private String adRefKey;
     private String adId;
+    @SerializedName(KEY_NAME)
     private String name;
+    @SerializedName(KEY_IMAGE)
     private ProductImage image;
+    @SerializedName(KEY_URI)
     private String uri;
+    @SerializedName(KEY_RELATIVE_URI)
     private String relativeUri;
+    @SerializedName(KEY_PRICE_FORMAT)
     private String priceFormat;
+    @SerializedName(KEY_COUNT_TALK_FORMAT)
     private String countTalkFormat;
+    @SerializedName(KEY_COUNT_REVIEW_FORMAT)
     private String countReviewFormat;
+    @SerializedName(KEY_CATEGORY)
     private Category category;
+    @SerializedName(KEY_PRODUCT_PREORDER)
     private boolean productPreorder;
+    @SerializedName(KEY_PRODUCT_WHOLESALE)
     private boolean productWholesale;
+    @SerializedName(KEY_FREERETURN)
     private String freeReturn;
+    @SerializedName(KEY_PRODUCT_CASHBACK)
     private boolean productCashback;
+    @SerializedName(KEY_PRODUCT_CASHBACK_RATE)
     private String productCashbackRate;
+    @SerializedName(KEY_PRODUCT_NEW_LABEL)
     private boolean productNewLabel;
+    @SerializedName(KEY_PRODUCT_RATE)
     private int productRating;
+    @SerializedName(KEY_APPLINKS)
     private String applinks;
+    @SerializedName(KEY_WHOLESALE_PRICE)
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
+    @SerializedName(KEY_LABELS)
     private List<Label> labels = new ArrayList<>();
+    @SerializedName(KEY_TOP_LABEL)
     private List<String> topLabels = new ArrayList<>();
+    @SerializedName(KEY_BOTTOM_LABEL)
     private List<String> bottomLabels = new ArrayList<>();
+    @SerializedName(KEY_IMAGE_PRODUCT)
     private ImageProduct imageProduct;
 
     public Product() {

@@ -1,12 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.helper;
 
-import android.content.Context;
-import android.text.TextUtils;
-
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.LabelModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;

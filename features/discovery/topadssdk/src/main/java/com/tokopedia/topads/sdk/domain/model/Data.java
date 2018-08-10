@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,14 +20,23 @@ public class Data {
     private static final String KEY_SHOP = "shop";
     private static final String KEY_PRODUCT = "product";
 
+    @SerializedName(KEY_ID)
     private String id;
+    @SerializedName(KEY_AD_REF)
     private String adRefKey;
+    @SerializedName(KEY_REDIRECT)
     private String redirect;
+    @SerializedName(KEY_STICKER_ID)
     private String stickerId;
+    @SerializedName(KEY_STICKER_IMAGE)
     private String stickerImage;
+    @SerializedName(KEY_PRODUCT_CLICK_URL)
     private String productClickUrl;
+    @SerializedName(KEY_SHOP_CLICK_URL)
     private String shopClickUrl;
+    @SerializedName(KEY_SHOP)
     private Shop shop;
+    @SerializedName(KEY_PRODUCT)
     private Product product;
     private boolean favorit;
     private boolean wislished;

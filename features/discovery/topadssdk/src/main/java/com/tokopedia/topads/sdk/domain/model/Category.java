@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +12,7 @@ public class Category {
 
     private static final String KEY_ID = "id";
 
+    @SerializedName(KEY_ID)
     private String id;
 
     public Category(JSONObject object) throws JSONException {

@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,11 +17,17 @@ public class ImageShop {
     private static final String KEY_S_ECS = "s_ecs";
     private static final String KEY_XS_ECS = "xs_ecs";
 
+    @SerializedName(KEY_COVER)
     private String cover;
+    @SerializedName(KEY_S_URL)
     private String sUrl;
+    @SerializedName(KEY_XS_URL)
     private String xsUrl;
+    @SerializedName(KEY_COVER_ECS)
     private String coverEcs;
+    @SerializedName(KEY_S_ECS)
     private String sEcs;
+    @SerializedName(KEY_XS_ECS)
     private String xsEcs;
 
     public ImageShop(JSONObject object) throws JSONException {

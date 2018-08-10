@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,8 +15,11 @@ public class Badge {
     private static final String KEY_IMAGE_URL = "image_url";
     private static final String KEY_SHOW = "show";
 
+    @SerializedName(KEY_TITLE)
     private String title;
+    @SerializedName(KEY_IMAGE_URL)
     private String imageUrl;
+    @SerializedName(KEY_SHOW)
     private Boolean show;
 
     public Badge(String imageUrl) {

@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,23 +31,39 @@ public class Shop {
     private static final String KEY_IS_OWNER = "is_owner";
     private static final String KEY_BADGES = "badges";
 
+    @SerializedName(KEY_ID)
     private String id;
     private String adRefKey;
     private String adId;
+    @SerializedName(KEY_NAME)
     private String name;
+    @SerializedName(KEY_DOMAIN)
     private String domain;
+    @SerializedName(KEY_TAGLINE)
     private String tagline;
+    @SerializedName(KEY_LOCATION)
     private String location;
+    @SerializedName(KEY_CITY)
     private String city;
+    @SerializedName(KEY_IMAGE_SHOP)
     private ImageShop imageShop;
+    @SerializedName(KEY_GOLD_SHOP)
     private boolean goldShop;
+    @SerializedName(KEY_GOLD_SHOP_BADGE)
     private boolean goldShopBadge;
+    @SerializedName(KEY_LUCKY_SHOP)
     private String luckyShop;
+    @SerializedName(KEY_SHOP_IS_OFFICIAL)
     private boolean shopIsOfficial;
+    @SerializedName(KEY_URI)
     private String uri;
+    @SerializedName(KEY_IMAGE_PRODUCT)
     private List<ImageProduct> imageProduct = new ArrayList<>();
+    @SerializedName(KEY_OWNER_ID)
     private String ownerId;
+    @SerializedName(KEY_IS_OWNER)
     private boolean isOwner;
+    @SerializedName(KEY_BADGES)
     private List<Badge> badges = new ArrayList<>();
 
     public Shop() {

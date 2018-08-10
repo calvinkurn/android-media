@@ -1,12 +1,10 @@
-package com.tokopedia.core.network.entity.discovery.gql;
+package com.tokopedia.discovery.newdiscovery.domain.gql;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Sort;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchProductGqlResponse {
@@ -19,12 +17,24 @@ public class SearchProductGqlResponse {
     @Expose
     private DynamicFilterModel dynamicFilterModel;
 
+    @SerializedName("displayAdsV3")
+    @Expose
+    private TopAdsModel topAdsModel;
+
     public SearchProduct getSearchProduct() {
         return searchProduct;
     }
 
     public DynamicFilterModel getDynamicFilterModel() {
         return dynamicFilterModel;
+    }
+
+    public TopAdsModel getTopAdsModel() {
+        return topAdsModel;
+    }
+
+    public void setTopAdsModel(TopAdsModel topAdsModel) {
+        this.topAdsModel = topAdsModel;
     }
 
     public static class SearchProduct {

@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,9 +16,13 @@ public class ImageProduct {
     private static final String KEY_IMAGE_URL = "image_url";
     private static final String KEY_IMAGE_CLICK_URL = "image_click_url";
 
+    @SerializedName(KEY_PRODUCT_ID)
     private String productId;
+    @SerializedName(KEY_PRODUCT_NAME)
     private String productName;
+    @SerializedName(KEY_IMAGE_URL)
     private String imageUrl;
+    @SerializedName(KEY_IMAGE_CLICK_URL)
     private String imageClickUrl;
 
     public ImageProduct(JSONObject object) throws JSONException {

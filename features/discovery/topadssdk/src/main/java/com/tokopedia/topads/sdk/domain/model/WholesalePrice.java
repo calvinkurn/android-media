@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,8 +14,11 @@ public class WholesalePrice {
     private static final String KEY_QUANTITY_MAX = "quantity_max_format";
     private static final String KEY_PRICE = "price_format";
 
+    @SerializedName(KEY_QUANTITY_MIN)
     private String quantityMinFormat;
+    @SerializedName(KEY_QUANTITY_MAX)
     private String quantityMaxFormat;
+    @SerializedName(KEY_PRICE)
     private String priceFormat;
 
     public WholesalePrice(JSONObject object) throws JSONException {

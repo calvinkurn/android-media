@@ -1,6 +1,8 @@
 package com.tokopedia.topads.sdk.domain.model;
 
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,9 +21,13 @@ public class TopAdsModel {
     private static final String KEY_DATA = "data";
     private static final String KEY_ERROR = "errors";
 
+    @SerializedName(KEY_ERROR)
     private Error error;
+    @SerializedName(KEY_STATUS)
     private Status status;
+    @SerializedName(KEY_HEADER)
     private Header header;
+    @SerializedName(KEY_DATA)
     private List<Data> data = new ArrayList<>();
     private int adsPosition = 0;
 

@@ -9,7 +9,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
@@ -175,7 +175,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             } else {
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 getView().removeLoading();
-                                list.add(new TopAdsViewModel());
+                                list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
                                 if (getView().isEvenPage()) {

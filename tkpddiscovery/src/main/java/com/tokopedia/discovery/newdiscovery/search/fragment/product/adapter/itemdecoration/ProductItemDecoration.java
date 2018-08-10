@@ -36,23 +36,28 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
                                RecyclerView.State state) {
         final int absolutePos = parent.getChildAdapterPosition(view);
 
-        if (isProductItem(parent, absolutePos) || isAdsItem(parent, absolutePos)) {
+        if (isProductItem(parent, absolutePos)) {
             int firstProductItemPos = absolutePos;
             while (isProductItem(parent, firstProductItemPos - 1)) firstProductItemPos--;
             int relativePos = absolutePos - firstProductItemPos;
 
             final int totalSpanCount = getTotalSpanCount(parent);
 
-            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount)
-                    || isAdsItem(parent, absolutePos) ? spacing : spacing / 2;
+            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
             outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
             if (parent.getLayoutManager() instanceof GridLayoutManager) {
-                outRect.right = isLastInRow(relativePos, totalSpanCount)
-                        || isAdsItem(parent, absolutePos) ? spacing : spacing / 2;
+                outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
             } else {
                 outRect.right = 0;
             }
             outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        } else if(isAdsItem(parent, absolutePos)){
+            outRect.left = spacing;
+            outRect.right = spacing;
+            outRect.top = isProductItem(parent, absolutePos - 1) ? spacing : 0;
+            outRect.bottom = !isProductItem(parent, absolutePos + 1) ? spacing : 0;
+        } else if(isGuidedItem(parent, absolutePos)){
+            outRect.top = !isProductItem(parent, absolutePos) ? spacing : 0;
         }
     }
 

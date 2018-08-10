@@ -2,8 +2,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
-import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
