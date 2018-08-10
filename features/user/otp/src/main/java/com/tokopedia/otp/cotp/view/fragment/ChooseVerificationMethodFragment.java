@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -208,7 +209,6 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 break;
             case TYPE_PROFILE_SETTING:
                 changePhoneNumberButton.setVisibility(View.VISIBLE);
-                changePhoneNumberButton.setText(getString(R.string.setting));
                 changePhoneNumberButton.setTextColor(MethodChecker.getColor(getContext(), R.color
                         .black_38));
                 String changeInactiveString = getString(R.string
@@ -233,6 +233,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                         changeInactiveString.indexOf(getString(R.string.setting)) + getString(R
                                 .string.setting).length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                changePhoneNumberButton.setText(changeInactiveSpan);
+                changePhoneNumberButton.setMovementMethod(LinkMovementMethod.getInstance());
 
                 break;
         }
