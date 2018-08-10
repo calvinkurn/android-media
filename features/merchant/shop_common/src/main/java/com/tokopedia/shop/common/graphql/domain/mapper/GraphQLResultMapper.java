@@ -3,8 +3,8 @@ package com.tokopedia.shop.common.graphql.domain.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.shop.common.graphql.model.GraphQLDataError;
-import com.tokopedia.shop.common.graphql.model.GraphQLResult;
+import com.tokopedia.shop.common.graphql.data.GraphQLDataError;
+import com.tokopedia.shop.common.graphql.data.GraphQLResult;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -23,7 +23,7 @@ public class GraphQLResultMapper<T> implements Func1<HasGraphQLResult<T>, Observ
             if (graphQLDataError!= null && !TextUtils.isEmpty(graphQLDataError.getMessage())) {
                 return Observable.error(new MessageErrorException(graphQLDataError.getMessage()));
             } else {
-                return null;
+                return Observable.just(null);
             }
         } else {
             return Observable.just(result);

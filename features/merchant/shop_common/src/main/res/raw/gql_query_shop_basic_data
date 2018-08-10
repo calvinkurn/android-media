@@ -1,4 +1,4 @@
-query ShopBasicDataResponse {
+query ShopBasicData {
   shopBasicData {
     result {
       domain

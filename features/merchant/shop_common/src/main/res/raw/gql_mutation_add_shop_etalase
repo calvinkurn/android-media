@@ -1,0 +1,6 @@
+mutation addShopShowcase($name:String!){
+  addShopShowcase(name:$name) {
+      success
+      message
+    }
+}

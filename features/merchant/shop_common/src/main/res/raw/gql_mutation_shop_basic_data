@@ -1,0 +1,14 @@
+mutation updateShopInfo($tagline:String, $description:String, $logoCode:String, $filePath:String, $fileName:String){
+  updateShopInfo(input: {
+      tagline: $tagline,
+      description: $description,
+      logo: {
+        code: $logoCode,
+        filePath: $filePath,
+        fileName: $fileName
+      }
+    }) {
+      success
+      message
+    }
+}

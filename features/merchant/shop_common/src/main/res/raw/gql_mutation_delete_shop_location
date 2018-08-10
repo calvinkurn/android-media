@@ -1,0 +1,6 @@
+mutation deleteShopLocation($id:String!){
+  deleteShopLocation(id:$id) {
+      success
+      message
+    }
+}

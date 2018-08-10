@@ -1,4 +1,4 @@
-query ShopEtalaseResponse {
+query ShopNotes {
   shopNotes {
     result {
       id

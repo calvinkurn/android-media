@@ -1,0 +1,10 @@
+mutation updateShopNote($id:String!, $title:String, $content:String){
+  updateShopNote(input: {
+      id: $id,
+      title: $title,
+      content: $content
+    }) {
+      success
+      message
+    }
+}

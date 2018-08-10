@@ -1,0 +1,6 @@
+mutation deleteShopNote($id:String!){
+  deleteShopNote(id:$id) {
+      success
+      message
+    }
+}

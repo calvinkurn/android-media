@@ -1,5 +1,5 @@
-query ShopEtalaseResponse {
-  shopShowcases {
+query ShopLocations {
+  shopLocations {
     result {
       id
       name
