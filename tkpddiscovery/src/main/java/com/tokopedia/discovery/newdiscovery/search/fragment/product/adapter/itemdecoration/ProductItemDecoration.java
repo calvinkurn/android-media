@@ -43,7 +43,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
             final int totalSpanCount = getTotalSpanCount(parent);
 
-            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount)
+                    || isAdsItem(parent, absolutePos) ? spacing : spacing / 2;
             outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
             if (parent.getLayoutManager() instanceof GridLayoutManager) {
                 outRect.right = isLastInRow(relativePos, totalSpanCount)
@@ -52,7 +53,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
                 outRect.right = 0;
             }
             outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount)
-                    && isAdsItem(parent, absolutePos) ? spacing : spacing / 2;
+                    || isAdsItem(parent, absolutePos) ? spacing : spacing / 2;
         }
     }
 
@@ -108,22 +109,19 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-//        Paint paint = new Paint();
-//        paint.setColor(color);
-//
-//        int childCount = parent.getChildCount();
-//        for (int i = 0; i < childCount; i++) {
-//            View child = parent.getChildAt(i);
-//            int absolutePos = parent.getChildAdapterPosition(child);
-//            if (isAdsItem(parent, absolutePos) || child == null) {
-////                canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
-////                continue;
-////            }
-//                canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
-//                canvas.drawRect(child.getLeft() - spacing, child.getBottom(), child.getRight() + spacing, child.getBottom() + spacing, paint);
-//                canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
-//                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + spacing, child.getBottom(), paint);
-//            }
-//        }
+        Paint paint = new Paint();
+        paint.setColor(color);
+
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = parent.getChildAt(i);
+            int absolutePos = parent.getChildAdapterPosition(child);
+            if (isProductItem(parent, absolutePos) || isAdsItem(parent, absolutePos) || child == null) {
+                canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
+                canvas.drawRect(child.getLeft() - spacing, child.getBottom(), child.getRight() + spacing, child.getBottom() + spacing, paint);
+                canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
+                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + spacing, child.getBottom(), paint);
+            }
+        }
     }
 }

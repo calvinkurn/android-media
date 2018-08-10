@@ -37,7 +37,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public TopAdsViewHolder(View itemView) {
         super(itemView);
         topAdsWidgetView = (TopAdsWidgetView) itemView;
-        topAdsWidgetView.setMode(DisplayMode.FEED);
+        topAdsWidgetView.setDisplayMode(DisplayMode.FEED);
         topAdsWidgetView.setItemClickListener(this);
         this.context = itemView.getContext();
     }

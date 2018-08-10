@@ -36,7 +36,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         this.context = itemView.getContext();
         adsWidgetView = itemView.findViewById(R.id.topads_view);
         adsWidgetView.setItemClickListener(this);
-        adsWidgetView.setMode(DisplayMode.GRID);
+        adsWidgetView.setDisplayMode(DisplayMode.GRID);
         adsWidgetView.setItemDecoration(new RecyclerView.ItemDecoration() {
 
             private int getTotalSpanCount(RecyclerView parent) {
@@ -96,7 +96,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
 
     @Override
     public void switchDisplay(DisplayMode mode) {
-        adsWidgetView.setMode(mode);
+        adsWidgetView.setDisplayMode(mode);
     }
 
     @Override

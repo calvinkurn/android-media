@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -18,7 +19,6 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
-import com.tokopedia.topads.sdk.view.adapter.AdsItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +32,13 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
-    private static final int DEFAULT_SPAN_COUNT = 2;
+    private static final int BIG_SPAN = 1;
+    private static final int GRID_SPAN = 2;
     private List<Data> data = new ArrayList<>();
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
-    private GridLayoutManager layoutManager;
+    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
     private DisplayMode mode = DisplayMode.GRID;
 
     public TopAdsWidgetView(Context context) {
@@ -59,14 +61,13 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
+        gridLayoutManager = new GridLayoutManager(context, GRID_SPAN,
                         GridLayoutManager.VERTICAL, false);
+        linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
-//        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
-//                .getDimensionPixelSize(R.dimen.dp_16)));
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
 
@@ -81,10 +82,8 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
             if (d.getProduct() != null) {
-                layoutManager.setSpanCount(2);
                 visitables.add(ModelConverter.convertProductData(d, mode));
             } else if (d.getShop() != null) {
-                layoutManager.setSpanCount(1);
                 visitables.add(ModelConverter.convertShopData(d, mode));
             }
         }
@@ -137,8 +136,28 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         adapter.setAdapterPosition(adapterPosition);
     }
 
-    public void setMode(DisplayMode mode) {
+    public void setDisplayMode(DisplayMode mode) {
         this.mode = mode;
+        switch (mode) {
+            case BIG:
+                gridLayoutManager.setSpanCount(BIG_SPAN);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                break;
+            case GRID:
+                gridLayoutManager.setSpanCount(GRID_SPAN);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                break;
+            case LIST:
+                recyclerView.setLayoutManager(linearLayoutManager);
+                break;
+            case FEED:
+                gridLayoutManager.setSpanCount(GRID_SPAN);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                break;
+            case FEED_EMPTY:
+                recyclerView.setLayoutManager(linearLayoutManager);
+                break;
+        }
         adapter.switchDisplayMode(mode);
     }
 }

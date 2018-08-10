@@ -80,13 +80,13 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     @Override
     public void changeDoubleGridView() {
         super.changeDoubleGridView();
-        topAdsSwitcher.switchDisplay(DisplayMode.BIG);
+        topAdsSwitcher.switchDisplay(DisplayMode.GRID);
     }
 
     @Override
     public void changeSingleGridView() {
         super.changeSingleGridView();
-        topAdsSwitcher.switchDisplay(DisplayMode.GRID);
+        topAdsSwitcher.switchDisplay(DisplayMode.BIG);
     }
 
     @Override
