@@ -598,11 +598,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
         if (shipmentCartItemModel != null) {
-            if (shipmentCartItemModel.isUseCourierRecommendation()) {
+            if (!shipmentCartItemModel.isUseCourierRecommendation()) {
                 courierBottomsheet = null;
                 onChooseShipment(position, shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel());
             } else {
-                // Todo : determine which bottomsheet to be re-shown
                 shippingCourierBottomsheet = null;
                 shippingDurationBottomsheet = null;
                 onChangeShippingDuration(shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel(),
