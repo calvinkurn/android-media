@@ -233,6 +233,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
                 PollViewModel pollViewModel
                         = convertToPollViewModel(
+                                datum.getId(),
                                 datum.getContent().getType(),
                                 datum.getContent().getPolling()
                         );
@@ -442,7 +443,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         return new ProductCommunicationViewModel(productCommunicationItems);
     }
 
-    private PollViewModel convertToPollViewModel(String cardType, FeedPolling polling) {
+    private PollViewModel convertToPollViewModel(String activityId, String cardType,
+                                                 FeedPolling polling) {
         if (polling == null) {
             return null;
         }
@@ -492,7 +494,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getLikeCount() == null ? 0 : polling.getLikeCount(),
                 polling.getCommentCount() == null ? 0 : polling.getCommentCount(),
                 0,
-                polling.getPollId() == null ? 0 : polling.getPollId(),
+                activityId == null ? 0 : Integer.valueOf(activityId),
                 TimeConverter.generateTime(
                         polling.getCreateTime() == null ? "" : polling.getCreateTime()
                 ),
