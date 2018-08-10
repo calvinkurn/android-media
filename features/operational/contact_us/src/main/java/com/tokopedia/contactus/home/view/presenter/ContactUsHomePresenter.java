@@ -105,6 +105,7 @@ public class ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCon
                     if(username != null && username.split(" ").length >0) {
                         getView().setHighMessageUserName(username.split(" ")[0]);
                     }
+                    getView().setChatBotMessage(topBotStatus.getWelcomeMessge());
                 }
 
             }
