@@ -14,7 +14,6 @@ import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -29,7 +28,9 @@ import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
@@ -64,8 +65,6 @@ public class CartListPresenter implements ICartListPresenter {
 
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
-    private static final String PARAM_CARTS = "carts";
-    private static final String PARAM_IS_RESET = "isReset";
     private static final String PARAM_STEP = "step";
     private final ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
@@ -74,7 +73,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final DeleteCartGetCartListUseCase deleteCartGetCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
-    private final ResetCartUseCase resetCartUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
@@ -86,7 +84,6 @@ public class CartListPresenter implements ICartListPresenter {
                              DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                             ResetCartUseCase resetCartUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -98,7 +95,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.deleteCartGetCartListUseCase = deleteCartGetCartListUseCase;
         this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
-        this.resetCartUseCase = resetCartUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
@@ -177,7 +173,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
@@ -210,7 +206,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
@@ -221,7 +217,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberToShipmentSingleAddress())
+                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList))
         );
     }
 
@@ -229,9 +225,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         for (int i = 0; i < dataList.size(); i++) {
             if (dataList.get(i).getCartItemData() != null && dataList.get(i).getCartItemData().getOriginData() != null) {
-                if (dataList.get(i).getCartItemData().getOriginData().getWholesalePrice() != null &&
-                        dataList.get(i).getCartItemData().getOriginData().getWholesalePrice().size() > 0 &&
-                        dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
+                if (dataList.get(i).getCartItemData().getOriginData().getParentId().equals("0")) {
                     dataList.get(i).getCartItemData().getOriginData().setParentId(String.valueOf(i + 1));
                 }
             }
@@ -258,52 +252,49 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-                totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
-                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
-                boolean hasCalculateWholesalePrice = false;
-                if (wholesalePrices != null && wholesalePrices.size() > 0) {
-                    double subTotalWholesalePrice = 0;
-                    double itemCashback = 0;
-                    for (WholesalePrice wholesalePrice : wholesalePrices) {
-                        if (itemQty >= wholesalePrice.getQtyMin()) {
-                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
-                            hasCalculateWholesalePrice = true;
-                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
-                            break;
-                        }
+            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
+            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+            boolean hasCalculateWholesalePrice = false;
+            if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                double subTotalWholesalePrice = 0;
+                double itemCashback = 0;for (WholesalePrice wholesalePrice : wholesalePrices) {
+                    if (itemQty >= wholesalePrice.getQtyMin() ) {
+                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                        hasCalculateWholesalePrice = true;
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                        break;
                     }
-                    if (!hasCalculateWholesalePrice) {
-                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
-                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
-                        } else {
-                            subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                        }
+                }
+                if (!hasCalculateWholesalePrice) {
+                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
+                    } else {
+                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                     }
-                    if (data.getCartItemData().getOriginData().isCashBack()) {
+                }
+                if (data.getCartItemData().getOriginData().isCashBack()) {
                         String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                         double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
                         itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice;
                     }
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                        subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
-                    }
-                    if (!cashbackWholesalePriceMap.containsKey(parentId)) {
+                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
+                }
+            if (!cashbackWholesalePriceMap.containsKey(parentId)) {
                         cashbackWholesalePriceMap.put(parentId, itemCashback);
-                    }
-                } else {
-                    if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
-                        double itemPrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                        if (data.getCartItemData().getOriginData().isCashBack()) {
+                    }} else {
+                if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
+                    double itemPrice =itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                    if (data.getCartItemData().getOriginData().isCashBack()) {
                             String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                             double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                             cashback = cashback + itemCashback;
                         }
-                        subtotalPrice = subtotalPrice + itemPrice;
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                        cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
+                        subtotalPrice = subtotalPrice + itemPrice;data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                    cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
                     } else {
                         CartItemHolderData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
                         if (calculatedHolderData.getCartItemData().getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
@@ -311,7 +302,7 @@ public class CartListPresenter implements ICartListPresenter {
                             if (data.getCartItemData().getOriginData().isCashBack()) {
                                 String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                                 double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice * data.getCartItemData().getUpdatedData().getQuantity();
+                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                                 cashback = cashback + itemCashback;
                             }
                             subtotalPrice = subtotalPrice + itemPrice;
@@ -322,11 +313,11 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
 
-        if (!subtotalWholesalePriceMap.isEmpty()) {
-            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
-                subtotalPrice += item.getValue();
+            if (!subtotalWholesalePriceMap.isEmpty()) {
+                for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                    subtotalPrice += item.getValue();
+                }
             }
-        }
 
         if (!cashbackWholesalePriceMap.isEmpty()) {
             for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {
@@ -339,6 +330,7 @@ public class CartListPresenter implements ICartListPresenter {
         if (cashback > 0) {
             view.updateCashback(cashback);
         }
+
     }
 
     @Override
@@ -556,7 +548,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress() {
+    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -579,6 +571,7 @@ public class CartListPresenter implements ICartListPresenter {
                 } else {
                     view.renderToShipmentFormSuccess();
                 }
+                view.sendAnalyticsOnSuccessToShipment(generateCheckoutDataAnalytics(cartItemDataList));
             }
         };
     }
@@ -693,42 +686,7 @@ public class CartListPresenter implements ICartListPresenter {
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
 
         for (CartItemData cartItemData : cartItemDataList) {
-            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
-                    new EnhancedECommerceProductCartMapData();
-            enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
-            enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
-            enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
-            enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
-            enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
-                    ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                    : cartItemData.getOriginData().getCategoryForAnalytics());
-            enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
-            enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
-            enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
-            enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
-            enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
-            enhancedECommerceProductCartMapData.setDimension38(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerAttribution()
-            );
-            enhancedECommerceProductCartMapData.setAttribution(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerAttribution()
-            );
-            enhancedECommerceProductCartMapData.setDimension40(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerListName()
-            );
-            enhancedECommerceProductCartMapData.setListName(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerListName()
-            );
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = getEnhancedECommerceProductCartMapData(cartItemData);
             enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
 
@@ -736,5 +694,56 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
 
         return enhancedECommerceCartMapData.getCartMap();
+    }
+
+    @NonNull
+    private EnhancedECommerceProductCartMapData getEnhancedECommerceProductCartMapData(CartItemData cartItemData) {
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                new EnhancedECommerceProductCartMapData();
+        enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
+        enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
+        enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+        enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                : cartItemData.getOriginData().getCategoryForAnalytics());
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
+        enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
+        enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
+        enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
+        enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
+        enhancedECommerceProductCartMapData.setAttribution(
+                TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : cartItemData.getOriginData().getTrackerAttribution()
+        );
+        enhancedECommerceProductCartMapData.setListName(
+                TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : cartItemData.getOriginData().getTrackerListName()
+        );
+        return enhancedECommerceProductCartMapData;
+    }
+
+    private Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList) {
+        Map<String, Object> checkoutMapData = new HashMap<>();
+        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+        enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_1);
+        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CART_PAGE_LOADED);
+
+        EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
+        for (CartItemData cartItemData : cartItemDataList) {
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData
+                    = getEnhancedECommerceProductCartMapData(cartItemData);
+            enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+        }
+        enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
+
+        checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
+
+        return checkoutMapData;
     }
 }

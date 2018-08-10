@@ -18,8 +18,8 @@ ext {
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
     espressoVersion = "2.2.2"
-    runnerVersion = "0.5"
-    rulesVersion = "0.5"
+    runnerVersion = "1.0.2"
+    rulesVersion = "1.0.2"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     cardioVersion = '5.5.1'
@@ -54,6 +54,7 @@ ext {
     tkpdShopVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
+    tkpdExploreVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -70,9 +71,11 @@ ext {
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
+    tkpdPaymentManagementSystem = '2.22'
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
+    tkpdTrainVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -239,6 +242,8 @@ ext {
             tkpdpdp               : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
             design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed                  : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            explore               : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             ride                  : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative           : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             loyalty               : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
@@ -255,8 +260,8 @@ ext {
             shopCommon            : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
             goldMerchantCommon    : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             shopPage              : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
+            shopOpen          : "com.tokopedia.shop:shop-open:${tkpdShopVersion}",
             productEdit           : "com.tokopedia.product:product-edit:${tkpdProductVersion}",
-            kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
@@ -266,7 +271,8 @@ ext {
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
-            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
     ]
 
     tkpdLibDependencies = [
@@ -283,6 +289,8 @@ ext {
             loyalty               : ":tkpdloyalty",
             nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
+            kol                   : ":features:content:kol",
+            explore               : ":features:content:explore",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
             inbox                 : ":tkpdinbox",
@@ -303,6 +311,7 @@ ext {
             reputation            : ":features:merchant:reputation",
             shopCommon            : ":features:merchant:shop_common",
             shopPage              : ":features:merchant:shop_page",
+            shopOpen            : ":features:merchant:shop_open",
             productEdit           : ":features:merchant:product_edit",
             topAdsManagement      : ":features:top_ads:top_ads_management",
             topAdsManagementCommon    : ":features:top_ads:top_ads_management_common",
@@ -315,11 +324,12 @@ ext {
             home                  : ":features:discovery:home",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
-            kol                   : ":features:content:kol",
             groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
             profile               : ":features:user:profile",
+            settingbank         : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
+            changepassword        : ":features:user:changepassword",
             contactUs             : ":features:operational:contact_us",
             otp                   : ":features:user:otp",
             logisticdata          : ":features:logistic:logisticdata",
@@ -331,7 +341,9 @@ ext {
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
-            digitalDeals          : ":features:digital:digital_deals"
+            digitalDeals          : ":features:digital:digital_deals",
+            paymentManagementSystem     : ":features:payment:pms",
+            train                 : ":features:digital:train"
     ]
 
     libraries = [
@@ -358,6 +370,7 @@ ext {
             graphql           : ":libraries:graphql",
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
-            youtubeutil       : ":libraries:youtubeutil"
+            youtubeutil       : ":libraries:youtubeutil",
+            travelCalendar  : ":libraries:travel_calendar"
     ]
 }

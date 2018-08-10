@@ -1,15 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.view.activity;
 
-import android.app.Fragment;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailActivityListener;
-import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailActivityPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionDetailFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
@@ -19,9 +15,7 @@ import com.tokopedia.inbox.util.analytics.InboxAnalytics;
  * Created by yoasfs on 28/08/17.
  */
 
-public class SolutionDetailActivity extends
-        BasePresenterActivity<SolutionDetailActivityListener.Presenter>
-        implements SolutionDetailActivityListener.View, HasComponent {
+public class SolutionDetailActivity extends BaseSimpleActivity {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     public static final String SOLUTION_DATA = "solution_data";
@@ -32,74 +26,18 @@ public class SolutionDetailActivity extends
     EditAppealSolutionModel editAppealSolutionModel;
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
+    protected Fragment getNewFragment() {
+        Bundle extras = getIntent().getExtras();
         solutionViewModel = extras.getParcelable(SOLUTION_DATA);
         if (extras.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
             resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
+            return SolutionDetailFragment.newInstance(resultViewModel, solutionViewModel);
         } else {
             editAppealSolutionModel = extras.getParcelable(EDIT_APPEAL_MODEL_DATA);
-        }
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new SolutionDetailActivityPresenter(this, this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_solution_detail;
-    }
-
-    @Override
-    protected void initView() {
-        if (resultViewModel != null) {
-            presenter.initFragment(resultViewModel,
+            return SolutionDetailFragment.newEditAppealDetailInstance(
+                    editAppealSolutionModel,
                     solutionViewModel);
-        } else {
-            presenter.initEditAppealFragment(editAppealSolutionModel,
-                    solutionViewModel);
-            toolbar.setTitle(R.string.string_input_amount);
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, TAG)
-                    .commit();
-        }
-    }
-
-    @Override
-    public Object getComponent() {
-        return getApplicationComponent();
     }
 
     @Override

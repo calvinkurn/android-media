@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">travel_calendar</string>
+    <string name="travel_calendar_label_choose_departure_trip_date">Pilih Tanggal Pergi</string>
+    <string name="travel_calendar_label_choose_return_trip_date">Pilih Tanggal Pulang</string>
+</resources>

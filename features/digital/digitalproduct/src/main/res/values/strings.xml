@@ -128,4 +128,5 @@
 
     <string name="promo_tab_title">Promo</string>
     <string name="guide_tab_title">Panduan</string>
+    <string name="digital_coupon_applied_ticker_message">Kode kupon telah dimasukkan. Silahkan pilih produk yang diinginkan, lalu check-out.</string>
 </resources>

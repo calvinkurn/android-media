@@ -29,8 +29,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsBannerView;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
 
 public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
     public static final String SEARCH_NF_VALUE = "1";

@@ -4,10 +4,12 @@ import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -47,7 +49,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private static final int SINGLE_DATA_SIZE = 1;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
-    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 500;
+    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 100;
 
     private TextView shippingIndex;
     private TextViewCompat pseudoEditButton;
@@ -65,6 +67,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private EditText etQty;
     private TextView tvErrorQtyValidation;
     private TextView tvErrorNoteValidation;
+    private TextView tvNoteCharCounter;
 
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
@@ -91,8 +94,24 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         etQty = itemView.findViewById(R.id.et_qty);
         tvErrorQtyValidation = itemView.findViewById(R.id.tv_error_qty_validation);
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
+        tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
         phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
+
+        etNotesForSeller.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (view.getId() == R.id.et_notes_for_seller) {
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
 
         initTextWatcherDebouncer(compositeSubscription);
     }
@@ -173,9 +192,11 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
         if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
+            String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                    editable.length(), data.getMaxRemark());
+            tvNoteCharCounter.setText(noteCounter);
             data.setProductNotes(editable.toString());
             validateNote(data);
-            multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
         }
     }
 
@@ -334,12 +355,20 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderNotes(MultipleAddressItemData itemData) {
+        etNotesForSeller.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(itemData.getMaxRemark())
+        });
+
         if (StringUtils.isBlank(itemData.getProductNotes())) {
             etNotesForSeller.setText("");
         } else {
             etNotesForSeller.setText(itemData.getProductNotes());
             etNotesForSeller.setSelection(etNotesForSeller.length());
         }
+
+        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                itemData.getProductNotes().length(), itemData.getMaxRemark());
+        tvNoteCharCounter.setText(noteCounter);
 
         if (noteTextwatcherListener != null) {
             etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));

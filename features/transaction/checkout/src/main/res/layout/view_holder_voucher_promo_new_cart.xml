@@ -20,10 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/textview_voucher"
+                style="@style/TextSmallMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -33,7 +34,7 @@
                 android:padding="@dimen/dp_16"
                 android:text="@string/use_promo_code_or_coupon"
                 android:textColor="@color/tkpd_main_green"
-                app:drawableLeftCompat="@drawable/ic_kupon"
+                app:drawableLeftCompat="@drawable/ic_voucher"
                 tools:text="Gunakan Kode Promo atau Kupon" />
 
         </FrameLayout>
@@ -43,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <TextView
                 android:id="@+id/label_promo_code"

@@ -17,8 +17,6 @@ public interface ImageProductListTypeFactory extends SearchSectionTypeFactory {
 
     int type(ProductItem productItem);
 
-    int type(EmptySearchModel emptySearchModel);
-
     int type(HeaderViewModel headerViewModel);
 
     int type(GuidedSearchViewModel guidedSearchViewModel);
