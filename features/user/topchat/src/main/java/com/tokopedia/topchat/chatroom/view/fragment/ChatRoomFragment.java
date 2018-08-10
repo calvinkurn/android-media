@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -54,7 +53,6 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -63,10 +61,9 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
-import com.tokopedia.topchat.attachproduct.analytics.AttachProductAnalytics;
-import com.tokopedia.topchat.attachproduct.view.activity.AttachProductActivity;
-import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
-import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
+import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;

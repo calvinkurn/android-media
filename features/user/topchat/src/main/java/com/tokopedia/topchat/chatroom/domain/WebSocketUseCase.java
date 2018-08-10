@@ -7,15 +7,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
-import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.topchat.common.InboxChatConstant;
-import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

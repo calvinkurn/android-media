@@ -14,7 +14,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
