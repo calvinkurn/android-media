@@ -2221,7 +2221,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void shareChallenge(Context context, String uri, String name, String imageUrl) {
         ShareData shareData = ShareData.Builder.aShareData()
-                .setType("")
+                .setType(ShareData.INDI_CHALLENGE_TYPE)
                 .setName(name)
                 .setUri(uri)
                 .setImgUri(imageUrl)

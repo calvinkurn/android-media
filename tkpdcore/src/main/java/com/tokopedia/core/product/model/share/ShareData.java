@@ -29,6 +29,7 @@ public class ShareData implements Parcelable {
     private static final String ARG_UTM_SOURCE = "Android";
     public static final String FEED_TYPE = "feed";
     public static final String GROUPCHAT_TYPE = "group_chat";
+    public static final String INDI_CHALLENGE_TYPE = "indi_challenge_type";
 
     private String type = "";
     private String name;
