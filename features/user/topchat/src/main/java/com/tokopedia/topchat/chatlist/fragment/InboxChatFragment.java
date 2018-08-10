@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -11,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +28,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -53,8 +54,6 @@ import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,39 +68,27 @@ public class InboxChatFragment extends BaseDaggerFragment
         , SearchInputView.Listener, SearchInputView.ResetListener
         , WebSocketInterface {
 
+    public boolean isMustRefresh = false;
     RecyclerView mainList;
 
-    SwipeToRefresh swipeToRefresh;
-
 //    FloatingActionButton fab;
-
+    SwipeToRefresh swipeToRefresh;
     View searchLoading;
-
     @Inject
     InboxChatPresenter presenter;
-
     InboxChatAdapter adapter;
     RefreshHandler refreshHandler;
-
     boolean isRetryShowing = false;
-    public boolean isMustRefresh = false;
-
     LinearLayoutManager layoutManager;
     TkpdProgressDialog progressDialog;
     SnackbarRetry snackbarRetry;
     Snackbar snackbarUndo;
     SearchInputView searchInputView;
-    private InboxChatTypeFactory typeFactory;
-
     boolean isMultiActionEnabled = false;
     ActionMode.Callback callbackContext;
     ActionMode contextMenu;
+    private InboxChatTypeFactory typeFactory;
     private View notifier;
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
 
     public static InboxChatFragment createInstance(String navigation) {
         InboxChatFragment fragment = new InboxChatFragment();
@@ -109,6 +96,11 @@ public class InboxChatFragment extends BaseDaggerFragment
         bundle.putString(InboxMessageConstant.PARAM_NAV, navigation);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -121,6 +113,19 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.inbox_chat_organize, menu);
+        MenuItem organize = menu.findItem(R.id.action_organize);
+        if (organize != null) {
+            organize.setIcon(getDetailMenuItem());
+            organize.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+    }
+
+    private Drawable getDetailMenuItem() {
+        TextDrawable drawable = new TextDrawable(getContext());
+        drawable.setText(getResources().getString(R.string.option_organize));
+        drawable.setTextColor(getContext().getResources().getColor(R.color.white));
+        drawable.setTextSize(16.0f);
+        return drawable;
     }
 
     @Override
@@ -178,8 +183,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                 getActivity().getMenuInflater().inflate(presenter.getMenuID(), menu);
                 isMultiActionEnabled = true;
                 presenter.setInActionMode(true);
-                if(getActivity() instanceof InboxChatActivity){
-                    ((InboxChatActivity)getActivity()).hideIndicators();
+                if (getActivity() instanceof InboxChatActivity) {
+                    ((InboxChatActivity) getActivity()).hideIndicators();
                 }
                 return true;
             }
@@ -209,8 +214,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                 isMultiActionEnabled = false;
                 presenter.setInActionMode(false);
                 enableActions();
-                if(getActivity() instanceof InboxChatActivity){
-                    ((InboxChatActivity)getActivity()).showIndicators();
+                if (getActivity() instanceof InboxChatActivity) {
+                    ((InboxChatActivity) getActivity()).showIndicators();
                 }
             }
         };
@@ -554,8 +559,8 @@ public class InboxChatFragment extends BaseDaggerFragment
             UnifyTracking.eventTopChatSearch(TopChatAnalytics.Category.INBOX_CHAT,
                     TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
                     TopChatAnalytics.Name.INBOX_CHAT);
-            if(getActivity() instanceof InboxChatActivity){
-                ((InboxChatActivity)getActivity()).hideIndicators();
+            if (getActivity() instanceof InboxChatActivity) {
+                ((InboxChatActivity) getActivity()).hideIndicators();
             }
         } else {
             onSearchReset();
@@ -573,8 +578,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         refreshHandler.setPullEnabled(true);
         presenter.resetSearch();
         setHasOptionsMenu(true);
-        if(getActivity() instanceof InboxChatActivity){
-            ((InboxChatActivity)getActivity()).showIndicators();
+        if (getActivity() instanceof InboxChatActivity) {
+            ((InboxChatActivity) getActivity()).showIndicators();
         }
     }
 
@@ -669,8 +674,8 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void reloadNotifDrawer() {
-        if(getActivity() instanceof InboxChatActivity){
-            ((InboxChatActivity)getActivity()).updateNotifDrawerData();
+        if (getActivity() instanceof InboxChatActivity) {
+            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
         }
     }
 }

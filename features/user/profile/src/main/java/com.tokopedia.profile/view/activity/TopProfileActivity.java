@@ -38,6 +38,7 @@ import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.R;
 import com.tokopedia.profile.di.DaggerTopProfileComponent;
+import com.tokopedia.profile.di.ProfileModule;
 import com.tokopedia.profile.di.TopProfileModule;
 import com.tokopedia.profile.view.adapter.TopProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.DisabledPostFragment;
@@ -270,7 +271,7 @@ public class TopProfileActivity extends BaseSimpleActivity
         buttonManageAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TopProfileActivity.this, ManagePeople.class);
+                Intent intent = getManageAccountIntent(TopProfileActivity.this);
                 startActivityForResult(intent, MANAGE_PEOPLE_CODE);
 
                 if (getContext().getApplicationContext() instanceof AbstractionRouter) {
@@ -296,6 +297,10 @@ public class TopProfileActivity extends BaseSimpleActivity
                 followUnfollowKol();
             }
         });
+    }
+
+    private Intent getManageAccountIntent(Activity activity) {
+        return ((ProfileModuleRouter) activity.getApplicationContext()).getManagePeopleIntent(activity);
     }
 
     @Override

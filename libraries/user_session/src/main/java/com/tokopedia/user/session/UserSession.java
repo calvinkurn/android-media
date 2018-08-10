@@ -40,6 +40,8 @@ public class UserSession {
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String KEY_IV = "tokopedia1234567";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
+    private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
+    private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
 
     private Context context;
 
@@ -128,6 +130,18 @@ public class UserSession {
     public boolean isMsisdnVerified() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
+    }
+
+    public String getPhoneNumber() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(PHONE_NUMBER, null);
+    }
+
+    public String getEmail() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(EMAIL, null);
     }
 
     /**
@@ -248,6 +262,21 @@ public class UserSession {
         editor.putString(ACCESS_TOKEN, accessToken);
         editor.putString(TOKEN_TYPE, tokenType);
         editor.apply();
+    }
+
+    public static boolean isFirstTimeUser(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
+    }
+
+    public static boolean setFirstTimeUser(Context context, boolean isFirstTime) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER, isFirstTime).commit();
+    }
+
+    public static boolean setFirstTimeUserNewOnboard(Context context, boolean isFirstTime) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, isFirstTime).commit();
     }
 
     public void logoutSession() {

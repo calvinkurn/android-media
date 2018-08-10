@@ -51,7 +51,16 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
                 getSupportActionBar().setHomeButtonEnabled(true);
             }
+
+            if (isLightToolbarThemes()) {
+                setLightToolbarStyle();
+            }
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return GlobalConfig.isCustomerApp();
     }
 
     @Override

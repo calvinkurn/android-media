@@ -44,8 +44,8 @@ import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -53,9 +53,9 @@ import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
-import com.tokopedia.core.appupdate.ApplicationUpdate;
-import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
@@ -87,7 +87,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
+import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -112,6 +112,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  * modified by meta on 24/01/2018, implement bottom navigation menu
  */
+@Deprecated
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
         GetUserInfoListener, HasComponent, InAppManager.InAppMessageListener {
 
@@ -151,40 +152,33 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private BroadcastReceiver cartNotificationBroadcastReceiver;
     private NudgeView nudgeView ;
 
-    @DeepLink(Constants.Applinks.HOME)
-    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.from(context);
-        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class));
-        return taskStackBuilder;
-    }
+//    @DeepLink(Constants.Applinks.HOME)
+//    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.from(context);
+//        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class));
+//        return taskStackBuilder;
+//    }
 
-    @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
-    public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
+//    @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
+//    public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
+//        return new Intent(context, ParentIndexHome.class)
+//                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
+//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//    }
 
-    @DeepLink({Constants.Applinks.FAVORITE})
-    public static Intent getFavoriteApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
-    }
+//    @DeepLink(Constants.Applinks.HOME_CATEGORY)
+//    public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
+//        return new Intent(context, ParentIndexHome.class)
+//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
+//                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+//    }
 
-    @DeepLink(Constants.Applinks.HOME_CATEGORY)
-    public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
-    }
-
-    @DeepLink(Constants.Applinks.HOME_HOTLIST)
-    public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
-        return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
-    }
+//    @DeepLink(Constants.Applinks.HOME_HOTLIST)
+//    public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
+//        return new Intent(context, ParentIndexHome.class)
+//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
+//                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+//    }
 
     public ViewPager getViewPager() {
         return mViewPager;
@@ -633,7 +627,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) ) {
             if ( isUserFirstTimeLogin) {
-
             adapter.notifyDataSetChanged();}
             updateCartNotification();
         }
@@ -688,6 +681,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
+        } else if (requestCode == DrawerHelper.REQUEST_LOGIN && resultCode == RESULT_OK) {
+            initStateFragment = INIT_STATE_FRAGMENT_HOME;
+            adapter = new PagerAdapter(getSupportFragmentManager());
+            setupViewPager();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -795,27 +793,27 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void checkAppUpdate() {
-        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-            @Override
-            public void onNeedUpdate(DetailUpdate detail) {
-                if (!isPausing()) {
-                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
-                            .getAlertDialog().show();
-                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNotNeedUpdate() {
-                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
-            }
-        });
+//        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
+//        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+//            @Override
+//            public void onNeedUpdate(DetailUpdate detail) {
+//                if (!isPausing()) {
+//                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
+//                            .getAlertDialog().show();
+//                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onNotNeedUpdate() {
+//                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
+//            }
+//        });
     }
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
@@ -827,33 +825,39 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
-        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
-            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
-
-            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
-                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
-
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
-                if (clipboard != null) {
-                    clipboard.setPrimaryClip(clip);
-                }
-
-                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
-            }
-            if (!isPausing()) {
-                try {
-                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-                    Intent applinkIntent = new Intent(this, ParentIndexHome.class);
-                    applinkIntent.setData(Uri.parse(applink));
-                    if (getIntent() != null && getIntent().getExtras() != null)
-                        applinkIntent.putExtras(getIntent().getExtras());
-                    deepLinkDelegate.dispatchFrom(this, applinkIntent);
-                } catch (ActivityNotFoundException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+//        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
+//            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
+//
+//            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
+//                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+//
+//                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+//                if (clipboard != null) {
+//                    clipboard.setPrimaryClip(clip);
+//                }
+//
+//                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+//            }
+//            if (!isPausing()) {
+//                try {
+//                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+//                    Intent applinkIntent = new Intent(this, ParentIndexHome.class);
+//                    applinkIntent.setData(Uri.parse(applink));
+//                    if (getIntent() != null && getIntent().getExtras() != null) {
+//                        Intent newIntent = getIntent();
+//                        newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+//                        newIntent.removeExtra(DeepLink.REFERRER_URI);
+//                        newIntent.removeExtra(DeepLink.URI);
+//                        newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
+//                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
+//                    }
+//                    deepLinkDelegate.dispatchFrom(this, applinkIntent);
+//                } catch (ActivityNotFoundException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     private void initHockeyBroadcastReceiver() {

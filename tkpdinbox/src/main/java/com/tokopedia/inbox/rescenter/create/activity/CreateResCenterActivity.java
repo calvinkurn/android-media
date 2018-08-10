@@ -1,11 +1,11 @@
 package com.tokopedia.inbox.rescenter.create.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -117,13 +117,13 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
 
     @Override
     public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) != null) {
-            getFragmentManager().beginTransaction()
+        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container,
-                    getFragmentManager().findFragmentByTag(TAG))
+                            getSupportFragmentManager().findFragmentByTag(TAG))
             .commit();
         } else {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment, TAG)
                     .commit();
         }

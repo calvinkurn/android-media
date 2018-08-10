@@ -37,7 +37,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements HasCo
         return tokoPointComponent;
     }
 
-    @DeepLink(ApplinkConst.COUPON)
+    @DeepLink(ApplinkConst.COUPON_LISTING)
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, MyCouponListingActivity.class);
     }

@@ -33,7 +33,7 @@
     <string name="error_get_dynamic_filter">Gagal memperoleh data Filter dan Sort</string>
     <string name="msg_empty_search_2">Silakan melakukan pencarian kembali dengan menggunakan kata kunci lain.</string>
     <string name="msg_empty_search_1">Oops... hasil pencarian Anda tidak dapat ditemukan.</string>
-    <string name="msg_empty_search_with_filter_1">Oops, Produk tidak ditemukan :(</string>
+    <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
     <string name="msg_empty_search_with_filter_2">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba kurangi filter pencarian Anda :</string>
     <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
