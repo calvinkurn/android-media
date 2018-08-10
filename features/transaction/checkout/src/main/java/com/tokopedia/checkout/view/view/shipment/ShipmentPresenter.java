@@ -930,61 +930,69 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void editAddressPinpoint(final String latitude, final String longitude,
                                     ShipmentCartItemModel shipmentCartItemModel,
                                     LocationPass locationPass) {
-        RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
-        compositeSubscription.add(
-                editAddressUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(new Subscriber<String>() {
-                            @Override
-                            public void onCompleted() {
+        if (getView() != null) {
+            getView().showLoading();
+            RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
+            compositeSubscription.add(
+                    editAddressUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.io())
+                            .subscribe(new Subscriber<String>() {
+                                @Override
+                                public void onCompleted() {
 
-                            }
+                                }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
-                            }
-
-                            @Override
-                            public void onNext(String stringResponse) {
-                                JSONObject response = null;
-                                String messageError = null;
-                                boolean statusSuccess;
-                                try {
-                                    response = new JSONObject(stringResponse);
-                                    int statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
-                                            .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS);
-                                    statusSuccess = statusCode == 1;
-                                    if (!statusSuccess) {
-                                        messageError = response.getJSONArray("message_error").getString(0);
-                                    }
-                                } catch (JSONException e) {
+                                @Override
+                                public void onError(Throwable e) {
                                     e.printStackTrace();
-                                    statusSuccess = false;
+                                    if (getView() != null) {
+                                        getView().hideLoading();
+                                        getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                    }
                                 }
 
-                                if (response != null && statusSuccess) {
-                                    if (recipientAddressModel != null) {
-                                        recipientAddressModel.setLatitude(Double.parseDouble(latitude));
-                                        recipientAddressModel.setLongitude(Double.parseDouble(longitude));
-                                    } else {
-                                        shipmentCartItemModel.getRecipientAddressModel().setLatitude(Double.parseDouble(latitude));
-                                        shipmentCartItemModel.getRecipientAddressModel().setLongitude(Double.parseDouble(longitude));
-                                    }
-                                    getView().renderEditAddressSuccess(latitude, longitude);
-                                } else {
-                                    if (TextUtils.isEmpty(messageError)) {
-                                        messageError = getView().getActivityContext().getString(R.string.default_request_error_unknown);
-                                    }
-                                    getView().navigateToSetPinpoint(messageError, locationPass);
-                                }
-                            }
-                        })
-        );
+                                @Override
+                                public void onNext(String stringResponse) {
+                                    if (getView() != null) {
+                                        getView().hideLoading();
+                                        JSONObject response = null;
+                                        String messageError = null;
+                                        boolean statusSuccess;
+                                        try {
+                                            response = new JSONObject(stringResponse);
+                                            int statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
+                                                    .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS);
+                                            statusSuccess = statusCode == 1;
+                                            if (!statusSuccess) {
+                                                messageError = response.getJSONArray("message_error").getString(0);
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            statusSuccess = false;
+                                        }
 
+                                        if (response != null && statusSuccess) {
+                                            if (recipientAddressModel != null) {
+                                                recipientAddressModel.setLatitude(Double.parseDouble(latitude));
+                                                recipientAddressModel.setLongitude(Double.parseDouble(longitude));
+                                            } else {
+                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(Double.parseDouble(latitude));
+                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(Double.parseDouble(longitude));
+                                            }
+                                            getView().renderEditAddressSuccess(latitude, longitude);
+                                        } else {
+                                            if (TextUtils.isEmpty(messageError)) {
+                                                messageError = getView().getActivityContext().getString(R.string.default_request_error_unknown);
+                                            }
+                                            getView().navigateToSetPinpoint(messageError, locationPass);
+                                        }
+                                    }
+                                }
+                            })
+            );
+        }
     }
 
     @NonNull
