@@ -3,6 +3,9 @@
     package="com.tokopedia.challenges">
 
     <application>
+        <activity android:name=".view.activity.ChallengesSubmitActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent"></activity>
         <activity
             android:name=".view.activity.ChallengesHomeActivity"
             android:screenOrientation="portrait"
@@ -11,11 +14,12 @@
             android:name=".view.activity.ChallengeDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity android:name=".view.activity.SubmitDetailActivity"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.FullScreenVideoActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.White" />
-        <activity android:name=".view.activity.SubmitDetailActivity"></activity>
     </application>
 
 </manifest>

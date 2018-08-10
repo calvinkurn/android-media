@@ -6,6 +6,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.RequestBody;
+
 public class RestRequest {
 
     /**
@@ -44,6 +46,14 @@ public class RestRequest {
      * @return Map -> Key-Value pair of query parameter (No need to encode, library will take care of this)
      */
     private Map<String, Object> queryParams;
+
+    /**
+     * Optional
+     * For providing form parameter to the apis.
+     *
+     * @return Map -> Key-Value pair of query parameter.
+     */
+    private Map<String, RequestBody> parts;
 
     /**
      * Optional
@@ -115,6 +125,10 @@ public class RestRequest {
 
     public Map<String, Object> getQueryParams() {
         return queryParams;
+    }
+
+    public Map<String, RequestBody> getPartMap() {
+        return parts;
     }
 
     public RequestType getRequestType() {

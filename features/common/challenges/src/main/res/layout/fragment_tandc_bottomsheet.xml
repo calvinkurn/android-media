@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:minHeight="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_close_default"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp" />
@@ -33,13 +34,12 @@
 
         <TextView
             android:id="@+id/tv_expandable_description"
-            style="@style/TextView.Small"
+            style="@style/TextView.Small.Black40"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
-            android:textColor="@color/black_40"
             tools:text="askdhksahdkhsdkhksakdsa bdjsahdkhd bsdkhsad" />
     </ScrollView>
 
