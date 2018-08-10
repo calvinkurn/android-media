@@ -60,6 +60,11 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
         presenter.attachView(this)
     }
 
+    override fun onDestroy() {
+        presenter.detachView()
+        super.onDestroy()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
