@@ -35,6 +35,10 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             intent.putExtra("challengesResult",challengesResult);
             view1.getContext().startActivity(intent);
         });
+
+        imgShare.setOnClickListener(v -> {
+
+        });
     }
 
     void bind(Result challengesResult) {

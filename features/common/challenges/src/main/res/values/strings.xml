@@ -23,4 +23,9 @@
     <string name="buzz_points">Buzz Points</string>
     <string name="see_all">Lihat Semua</string>
     <string name="submit_photo">View or Submit your Photo</string>
+    <string name="participate_in">Participate In</string>
+    <string name="challenge_title">Challenge Title</string>
+    <string name="approval_wait">Waiting For Approval. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod</string>
+    <string name="buzz_point_request">Help your post to gain more buzz point by sharing</string>
+    <string name="share">Share</string>
 </resources>

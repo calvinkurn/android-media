@@ -5,4 +5,7 @@
     <color name="black3_text">#b3000000</color>
     <color name="black4_text">#8a000000</color>
     <color name="tkpd_dark_gray_toolbar">#666666</color>
+    <color name="yellow">#ffe38f</color>
+    <color name="status_bg_color">#daf5db</color>
+    <color name="text_color_participated">#42b549</color>
 </resources>

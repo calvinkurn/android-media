@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +28,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private ImageView challengeImage;
     private TextView likesCountView;
     private TextView pointsView;
-    private ImageView shareView;
-    private TextView dateView;
+    private FloatingActionButton shareView;
     private TextView approvedView;
     private TextView detailTitle;
     private TextView detailContent;
@@ -50,7 +50,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         likesCountView = view.findViewById(R.id.tv_likes);
         pointsView = view.findViewById(R.id.tv_points);
         shareView = view.findViewById(R.id.share_btn);
-        dateView = view.findViewById(R.id.date);
         approvedView = view.findViewById(R.id.approved);
         detailTitle = view.findViewById(R.id.detail_title);
         detailContent = view.findViewById(R.id.detail_content);
@@ -62,7 +61,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void setProfilePic(String url) {
-        profilePic.setImageDrawable(null);
+        ImageHandler.loadImageCircle2(getActivity(),profilePic, url);
     }
 
     public void setProfileText(String text) {
@@ -83,10 +82,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     public void setShareView(String url) {
         //this.shareView = shareView;
-    }
-
-    public void setDateView(String date) {
-        this.dateView.setText(date);
     }
 
     public void setApprovedView(String approveText) {

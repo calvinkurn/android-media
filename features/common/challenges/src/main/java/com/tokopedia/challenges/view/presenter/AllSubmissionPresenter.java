@@ -27,10 +27,11 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
     public final static String TAG = "url";
     private List<String> brands;
     GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
-    RequestParams searchParams = RequestParams.create();
+    private RequestParams searchParams = RequestParams.create();
     private int pageStart = 0;
     private int pageSize=10;
     private String sortType=Utils.QUERY_PARAM_KEY_SORT_RECENT;
+    private String challengeId;
 
 
     @Inject
@@ -45,7 +46,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
 
     @Override
     public void onDestroy() {
-
+        getSubmissionChallengesUseCase.unsubscribe();
     }
 
 
@@ -62,10 +63,15 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         this.sortType=sortType;
     }
 
+    public void setChallengeId(String challengeId){
+        this.challengeId=challengeId;
+    }
 
-    public void loadMoreItems() {
+    public void loadMoreItems(boolean showProgress) {
         isLoading = true;
         setNextPageParams();
+        if(showProgress)
+            getView().showProgressBar();
         getSubmissionChallengesUseCase.setRequestParams(searchParams);
         getSubmissionChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -76,6 +82,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
             @Override
             public void onError(Throwable e) {
                 isLoading = false;
+                getView().hideProgressBar();
             }
 
             @Override
@@ -92,7 +99,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
                     if (submissionResponse.getSubmissionResults() != null)
                         pageStart += submissionResponse.getSubmissionResults().size();
                 }
-
+                getView().hideProgressBar();
                 checkIfToLoad(getView().getLayoutManager());
             }
         });
@@ -106,7 +113,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         if (!isLoading && !isLastPage) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                     && firstVisibleItemPosition >= 0) {
-                loadMoreItems();
+                loadMoreItems(false);
             } else {
                 getView().addFooter();
             }
@@ -114,6 +121,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
     }
 
     private void setNextPageParams() {
+        searchParams.putString(Utils.QUERY_PARAM_CHALLENGE_ID, challengeId);
         searchParams.putInt(Utils.QUERY_PARAM_KEY_START, pageStart);
         searchParams.putInt(Utils.QUERY_PARAM_KEY_SIZE, pageSize);
         searchParams.putString(Utils.QUERY_PARAM_KEY_SORT, sortType);

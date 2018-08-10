@@ -25,6 +25,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
     }
 
     public void getMySubmissionsList() {
+        getView().showProgressBarView();
         getMySubmissionsListUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -33,15 +34,22 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
 
             @Override
             public void onError(Throwable e) {
+                getView().removeProgressBarView();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 int responseCodeOfResponse1 = res1.getCode();
                 SubmissionResponse mainDataObject = res1.getData();
-                getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
+
+                if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
+                    getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
+                } else {
+                    getView().renderEmptyList();
+                }
             }
         });
     }

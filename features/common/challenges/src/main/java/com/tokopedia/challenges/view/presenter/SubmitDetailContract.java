@@ -23,8 +23,6 @@ public interface SubmitDetailContract {
 
          void setShareView(String text);
 
-         void setDateView(String text);
-
          void setApprovedView(String text);
 
          void setDetailTitle(String text);

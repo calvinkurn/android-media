@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface ChallengesFragmentCallbacks {
 
-    void replaceFragment(List<SubmissionResult> outlets);
+    void replaceFragment(List<SubmissionResult> submissionResults, String challengeId);
+
+    void replaceFragment(String text, String toolBarText);
 
     List<SubmissionResult> getSubmissions();
+
+    String getChallengeId();
 }
