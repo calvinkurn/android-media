@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,9 +7,10 @@
 
     <com.tokopedia.design.component.Tabs
         android:id="@+id/tab_layout_promos"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:tabIndicatorColor="@color/tkpd_main_green"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/tkpd_main_green"
@@ -27,4 +28,21 @@
             android:text="@string/tp_label_my_coupon" />
 
     </com.tokopedia.design.component.Tabs>
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/text_count"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="@dimen/tp_margin_medium"
+        android:layout_marginRight="@dimen/tp_margin_medium"
+        android:layout_marginTop="@dimen/tp_margin_xsmall"
+        android:background="@drawable/circle_green"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tab_layout_promos"
+        app:layout_constraintEnd_toEndOf="@+id/tab_layout_promos"
+        app:layout_constraintTop_toTopOf="@+id/tab_layout_promos" />
+</android.support.constraint.ConstraintLayout>

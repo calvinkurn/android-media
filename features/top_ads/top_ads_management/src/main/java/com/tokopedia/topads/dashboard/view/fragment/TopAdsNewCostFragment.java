@@ -191,6 +191,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         setSuggestionBidText(data.getData().get(0).getMedian(), data.getData().get(0).getMedianFmt());
         if (TextUtils.isEmpty(maxPriceEditText.getTextWithoutPrefix())) {
             maxPriceEditText.setText(String.valueOf(data.getData().get(0).getMedian()));
+            budgetPerDayEditText.setText(String.valueOf(data.getData().get(0).getMedian()*10));
         }
     }
 
@@ -211,6 +212,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     private void showBudgetPerDay(boolean show) {
         containerBudgetPerDay.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (show){
+            containerBudgetPerDay.getParent().requestChildFocus(containerBudgetPerDay, containerBudgetPerDay);
+        }
         if (!show && !budgetLifeTimeRadioButton.isChecked()) {
             budgetLifeTimeRadioButton.setChecked(true);
         }

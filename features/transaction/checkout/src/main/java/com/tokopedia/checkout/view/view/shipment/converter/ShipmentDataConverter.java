@@ -197,6 +197,7 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
 
+        cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;
     }
 

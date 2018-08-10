@@ -15,19 +15,26 @@
     <string name="tp_label_use_coupon">Gunakan Kupon</string>
     <string name="tp_label_check_storepoints">Cek TokoPoints</string>
     <string name="tp_label_know_tokopoints">Apa itu TokoPoints?</string>
-    <string name="tp_label_my_membership">Membership saya</string>
-    <string name="tp_label_see_membership">Lihat status Membership</string>
-    <string name="tp_label_see_loyalty">Loyalty saya</string>
-    <string name="tp_label_see_point">Points saya</string>
+    <string name="tp_label_my_membership">Membership Saya</string>
+    <string name="tp_label_see_membership">Lihat Status Membership</string>
+    <string name="tp_label_see_loyalty">Loyalty Saya</string>
+    <string name="tp_label_see_point">Points Saya</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
+    <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="tp_label_see_all">Lihat Semua</string>
     <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
     <string name="tp_label_valid_for">Berlaku selama</string>
+    <string name="tp_label_applies_to">Berlaku pada:</string>
     <string name="tp_label_prepare_catalog">Sedang Menyiapkan Katalog</string>
     <string name="tp_label_go_shopping">Silakan lanjut berbelanja</string>
     <string name="tp_label_try_again">Silakan coba kembali</string>
     <string name="tp_label_server_error">Terjadi Kendala Pada Server</string>
     <string name="tp_label_remaining_exchange">Sisa Tukar</string>
+    <string name="tp_label_coupon_expired">Kupon Habis</string>
     <string name="tp_message_tokopoints_on_boarding"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen yang memungkinkan Pengguna untuk mengumpulkan <strong>Loyalty</strong> dan <strong>Points</strong> dari transaksi yang dilakukan melalui Situs/Aplikasi.<br /><br />Kumpulkan dan tukarkan Points Anda untuk mendapatkan <strong>Kupon</strong> yang diinginkan.<br /><br />Gunakan <strong>Kupon</strong> untuk mendapatkan keuntungan lebih pada transaksi Anda berikutnya.]]></string>
+    <string name="tp_label_too_many_access">Failed to Redeem</string>
+    <string name="tp_label_wait">Tunggu beberapa saat lagi</string>
+    <string name="tp_label_exchange_point">Tukar Points</string>
+
 </resources>

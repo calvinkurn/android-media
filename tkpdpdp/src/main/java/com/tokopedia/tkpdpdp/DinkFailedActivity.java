@@ -6,13 +6,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author by errysuprayogi on 8/22/17.
@@ -20,14 +18,11 @@ import butterknife.OnClick;
 
 public class DinkFailedActivity extends TActivity {
 
-    @BindView(R2.id.toolbar_title)
     TextView toolbarTitle;
-    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @BindView(R2.id.tv_promo_product)
     TextView tvPromoProduct;
-    @BindView(R2.id.tv_promo_expired)
     TextView tvPromoExpired;
+    View buttonTopAds;
 
     public static final String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     public static final String EXTRA_TIME_EXP = "EXTRA_TIME_EXP";
@@ -37,7 +32,16 @@ public class DinkFailedActivity extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dink_fail);
-        ButterKnife.bind(this);
+        toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbar = findViewById(R.id.toolbar);
+        tvPromoProduct = findViewById(R.id.tv_promo_product);
+        tvPromoExpired = findViewById(R.id.tv_promo_expired);
+        buttonTopAds = findViewById(R.id.button_use_topads);
+        buttonTopAds.setOnClickListener(view -> {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(ads_url));
+            startActivity(i);
+        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -62,10 +66,4 @@ public class DinkFailedActivity extends TActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R2.id.button_use_topads)
-    public void onViewClicked() {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(ads_url));
-        startActivity(i);
-    }
 }

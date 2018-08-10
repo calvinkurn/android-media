@@ -19,6 +19,8 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -99,10 +101,15 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
                 errorText.setTextColor(Color.RED);
                 return;
             }
-
+            sendCariPinjamanClickEvent();
             openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM +
                     mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
         });
+    }
+
+    private void sendCariPinjamanClickEvent() {
+        String eventLabel = getScreenName() + " - " + mSpinnerLoanAmount.getSelectedItem().toString();
+        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     @Override
@@ -186,10 +193,6 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     }
 
-    public String getScreenNameId() {
-        return "";
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -211,7 +214,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     @Override
     protected String getScreenName() {
-        return getScreenNameId();
+        return InstantLoanEventConstants.Screen.AGUNAN_SCREEN_NAME;
     }
 
     public static DenganAgunanFragment createInstance(int position) {

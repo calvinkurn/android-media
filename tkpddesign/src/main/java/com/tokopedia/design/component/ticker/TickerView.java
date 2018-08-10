@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.design.R;
@@ -44,13 +45,14 @@ public class TickerView extends BaseCustomView {
     @ColorRes
     public static final int DEFAULT_COLOR_INDICATOR_OFF = R.color.font_white_disabled_38;
 
-
     public static final float DEFAULT_CORNER_RADIUS = 4.0f;
     private static final long SLIDE_DELAY = 5000;
     private static final String SAVED = "instance state TickerView.class";
     private static final String SAVED_STATE_VISIBILITY = "saved_state_visibility";
 
-    private ViewPager tickerViewPager;
+    private static final long DEFAULT_POST_DELAYED_VALUE = 500;
+
+    private TouchViewPager tickerViewPager;
     private CirclePageIndicator tickerIndicator;
     private RelativeLayout tickerHighlightView;
     private View imageViewActionClose;
@@ -145,7 +147,7 @@ public class TickerView extends BaseCustomView {
     private void init() {
         View view = inflate(getContext(), R.layout.widget_ticker, this);
         tickerHighlightView = (RelativeLayout) view.findViewById(R.id.parent_view);
-        tickerViewPager = (ViewPager) view.findViewById(R.id.view_pager_ticker);
+        tickerViewPager = (TouchViewPager) view.findViewById(R.id.view_pager_ticker);
         tickerIndicator = (CirclePageIndicator) view.findViewById(R.id.page_indicator_ticker);
         imageViewActionClose = view.findViewById(R.id.imageview_ticker_action_close);
 
@@ -292,8 +294,16 @@ public class TickerView extends BaseCustomView {
         tickerAdapter.setListener(onPartialTextClickListener);
         tickerAdapter.notifyDataSetChanged();
 
-        invalidate();
-        requestLayout();
+        tickerViewPager.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (tickerViewPager != null) {
+                    tickerViewPager.setCurrentItem(0);
+                    tickerViewPager.measureCurrentView(tickerViewPager.getChildAt(0));
+                    setVisibility(VISIBLE);
+                }
+            }
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 
     private void startAutoScrollTicker() {
@@ -361,6 +371,27 @@ public class TickerView extends BaseCustomView {
             state = bundle.getParcelable(SAVED);
         }
         super.onRestoreInstanceState(state);
+    }
+
+    public void setTickerHeight(int height) {
+        ViewGroup.LayoutParams layoutParams = tickerHighlightView.getLayoutParams();
+        layoutParams.height = height;
+
+        tickerHighlightView.setLayoutParams(layoutParams);
+        tickerHighlightView.invalidate();
+        tickerHighlightView.requestLayout();
+    }
+
+    public void setItemPadding(int top, int right, int bottom, int left) {
+        tickerAdapter.setPadding(top, right, bottom, left);
+    }
+
+    public void setItemTextAppearance(int appearance) {
+        tickerAdapter.setTextAppearance(appearance);
+    }
+
+    public void hideCloseButton() {
+        imageViewActionClose.setVisibility(GONE);
     }
 
 }

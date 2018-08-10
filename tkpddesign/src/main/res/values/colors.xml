@@ -22,7 +22,7 @@
     <color name="background_star_review">#FFC107</color>
 
     <color name="font_black_primary_70">#B3000000</color>
-    <color name="font_black_secondary_54">#8C000000</color>
+    <color name="font_black_secondary_54">#8a000000</color>
     <color name="font_black_disabled_38">#61000000</color>
 
     <color name="font_white_primary_70">#FFFFFFFF</color>
@@ -60,4 +60,8 @@
     <color name="bg_button_border_outline">#E0E0E0</color>
     <color name="white_two">#e0e0e0</color>
     <color name="gray_background">#fff2f3f4</color>
+
+    <color name="pinkish_grey">#bdbdbd</color>
+    <color name="widget_card_with_action_separator">#cfcfcf</color>
+
 </resources>

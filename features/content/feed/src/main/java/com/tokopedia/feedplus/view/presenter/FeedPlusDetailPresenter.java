@@ -1,12 +1,11 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.subscriber.FeedDetailSubscriber;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.wishlist.common.subscriber.RemoveWishListSubscriber;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
@@ -30,7 +29,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
 
     @Inject
-    FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
+    public FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
                             AddWishListUseCase addWishlistUseCase,
                             RemoveWishListUseCase removeWishlistUseCase,
                             UserSession userSession) {
@@ -40,6 +39,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         this.userSession = userSession;
     }
 
+    @Override
     public void attachView(FeedPlusDetail.View view, WishListActionListener wishlistListener) {
         this.viewListener = view;
         this.wishListActionListener = wishlistListener;
@@ -59,18 +59,23 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         }
     }
 
+    @Override
     public void getFeedDetail(String detailId, int page) {
-        viewListener.showLoading();
+        if (page == 1) {
+            getView().showLoading();
+        } else {
+            getView().showLoadingMore();
+        }
+
         getFeedsDetailUseCase.execute(
-                getFeedsDetailUseCase.getFeedDetailParam(
-                        userSession.getUserId(),
-                        detailId,
-                        page),
-                new FeedDetailSubscriber(viewListener));
+                GetFeedsDetailUseCase.getFeedDetailParam(userSession.getUserId(), detailId, page),
+                new FeedDetailSubscriber(getView(), page)
+        );
     }
 
+    @Override
     public void addToWishlist(int adapterPosition, String productId) {
-        viewListener.showLoadingProgress();
+        getView().showLoadingProgress();
 
         addWishListUseCase.createObservable(productId,
                 userSession.getUserId(), wishListActionListener);
@@ -79,7 +84,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
     @Override
     public void removeFromWishlist(int adapterPosition, String productId) {
-        viewListener.showLoadingProgress();
+        getView().showLoadingProgress();
 
         removeWishListUseCase.createObservable(productId,
                 userSession.getUserId(), wishListActionListener);

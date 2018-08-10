@@ -1,22 +1,36 @@
-query hachikoCatalogQuery($category_id: Int, $points_range: Int, $page: Int, $page_size: Int, $sort_id: Int) {
-  catalog: hachikoCatalogList(category_id: $category_id, points_range: $points_range, page: $page, page_size: $page_size, sort_id: $sort_id) {
-    catalogs {
+query CatalogListing($categoryID: Int, $pointRange: Int, $sortID: Int, $page: Int, $limit: Int){
+  catalog : tokopointsCatalogList(input: {categoryID: $categoryID, pointRange: $pointRange, sortID: $sortID, page: $page, limit: $limit}) {
+    catalogs : catalogList {
       id
-      promo_id
-      base_code
-      slug
+      promoID
+      catalogType
       expired
       points
-      points_str
-      title
       quota
-      sub_title
-      thumbnail_url
-      thumbnail_url_mobile
-      image_url
-      image_url_mobile
-      is_gift
+      title
+      subtitle
+      thumbnailURL
+      thumbnailURLMobile
+      imageURL
+      imageUrlMobile
+      thumbnailV2URL
+      thumbnailV2URLMobile
+      imageV2URL
+      imageV2URLMobile
+      slug
+      baseCode
+      pointsStr
+      isGift
+      expiredLabel
+      expiredStr
+      isDisabled
+      isDisabledButton
+      disableErrorMessage
+      upperTextDesc
+      pointsSlash
+      pointsSlashStr
+      discountPercentage
+      discountPercentageStr
     }
-    has_next
   }
 }

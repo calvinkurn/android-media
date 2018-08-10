@@ -509,7 +509,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
 
     private void setupTopbar() {
-        topBarTitle.setText(getString(R.string.product_variant));
+        topBarTitle.setText(getString(R.string.title_activity_product_modal));
     }
 
     private Child getProductDatumSelected() {
@@ -587,7 +587,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             productDetailData.getInfo().setProductPriceUnformatted(child.getPrice());
             productDetailData.getInfo().setProductUrl(child.getUrl());
             productDetailData.getInfo().setProductAlreadyWishlist(child.isWishlist()?1:0);
-            productDetailData.getInfo().setProductStockWording(child.getStockWording());
+            productDetailData.getInfo().setProductStockWording(child.getStockWordingHtml());
             productDetailData.getInfo().setLimitedStock(child.isLimitedStock());
             productDetailData.setCampaign(child.getCampaign());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {
@@ -599,9 +599,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
         renderHeaderInfo();
         List<String> joinVariant = productVariant.generateVariantValueIntoList(productDetailData.getInfo().getProductId());
-        etNotesSeller.setText(
-                getString(R.string.format_notes_variant, TextUtils.join(", ", joinVariant))
-        );
+
         if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_SIZE)) {
             UnifyTracking.eventSelectSizeVariant(option.getValue());
         } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {

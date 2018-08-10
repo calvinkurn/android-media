@@ -26,6 +26,9 @@ dependencies {
     }
 
     implementation rootProject.ext.networkDependencies.glide
+
+    testImplementation "org.robolectric:robolectric:3.8"
+
 }
 
 apply from: '../publish_local.gradle'

@@ -32,22 +32,19 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     public static final int LAYOUT = R.layout.feed_detail_header;
     private final FeedPlusDetail.View viewListener;
 
-    TextView shopName;
-    ImageView shopAvatar;
-    TextView shopSlogan;
-    ImageView gmBadge;
-    ImageView osBadge;
-
-    private final static String ADD_STRING = "tambah";
-    private final static String EDIT_STRING = "ubah";
+    private TextView shopName;
+    private ImageView shopAvatar;
+    private TextView shopSlogan;
+    private ImageView gmBadge;
+    private ImageView osBadge;
 
     public FeedDetailHeaderViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
-        shopName = (TextView) itemView.findViewById(R.id.shop_name);
-        shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
-        shopSlogan = (TextView) itemView.findViewById(R.id.shop_slogan);
-        gmBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
-        osBadge = (ImageView) itemView.findViewById(R.id.official_store);
+        shopName = itemView.findViewById(R.id.shop_name);
+        shopAvatar = itemView.findViewById(R.id.shop_avatar);
+        shopSlogan = itemView.findViewById(R.id.shop_slogan);
+        gmBadge = itemView.findViewById(R.id.gold_merchant);
+        osBadge = itemView.findViewById(R.id.official_store);
         this.viewListener = viewListener;
     }
 
@@ -87,11 +84,8 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         TypefaceSpan styleSpan = new TypefaceSpan("sans-serif");
 
         setSpan(actionSpanString, goToShopDetail, titleText, shopNameString);
-        setSpan(actionSpanString, spanColorChange, titleText, ADD_STRING);
-        setSpan(actionSpanString, spanColorChange, titleText, EDIT_STRING);
-
-        setSpan(actionSpanString, styleSpan, titleText, ADD_STRING);
-        setSpan(actionSpanString, styleSpan, titleText, EDIT_STRING);
+        setSpan(actionSpanString, spanColorChange, titleText, actionString);
+        setSpan(actionSpanString, styleSpan, titleText, actionString);
 
 
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
@@ -112,27 +106,22 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
 
         shopSlogan.setText(TimeConverter.generateTime(viewModel.getTime()));
 
-        shopAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToShopDetail(viewModel.getShopId());
-            }
-        });
+        shopAvatar.setOnClickListener(v -> viewListener.onGoToShopDetail(viewModel.getShopId()));
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewListener.onGoToShopDetail(viewModel.getShopId());
-            }
-        });
+        itemView.setOnClickListener(view -> viewListener.onGoToShopDetail(viewModel.getShopId()));
     }
 
-    private void setSpan(SpannableString actionSpanString, Object object, StringBuilder titleText, String stringEdited) {
+    private void setSpan(SpannableString actionSpanString, Object object,
+                         StringBuilder titleText, String stringEdited) {
         if (object instanceof ImageSpan) {
             actionSpanString.setSpan(object, 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else if (titleText.toString().contains(stringEdited)) {
-            actionSpanString.setSpan(object, titleText.indexOf(stringEdited)
-                    , titleText.indexOf(stringEdited) + stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            actionSpanString.setSpan(
+                    object,
+                    titleText.indexOf(stringEdited),
+                    titleText.indexOf(stringEdited) + stringEdited.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
         }
     }
 

@@ -236,31 +236,35 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
                     address.setAddressId(address_id);
                     viewListener.setAddress(address);
                 }
-
+                viewListener.successSaveAddress();
                 viewListener.finishActivity();
             }
 
             @Override
             public void onTimeout() {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar("");
             }
 
             @Override
             public void onError(String error) {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar(error);
             }
 
             @Override
             public void onNullData() {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar("");
             }
 
             @Override
             public void onNoNetworkConnection() {
                 viewListener.finishLoading();
+                viewListener.errorSaveAddress();
                 viewListener.showErrorSnackbar("");
             }
         };

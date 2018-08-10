@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
@@ -17,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
@@ -50,6 +52,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
@@ -112,6 +115,9 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.DEFAULT_COUPON_APPLIED;
+import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.DEFAULT_COUPON_NOT_APPLIED;
+import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
 
 /**
@@ -152,7 +158,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
-    private static final int DEFAULT_POST_DELAYED_VALUE = 1000;
+    private static final int DEFAULT_POST_DELAYED_VALUE = 500;
 
     @BindView(R2.id.main_container)
     NestedScrollView mainHolderContainer;
@@ -168,8 +174,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     TabLayout promoTabLayout;
     @BindView(R2.id.pager)
     DigitalWrapContentViewPager promoViewPager;
-    @BindView(R2.id.guide_separator)
-    View guideSeparator;
+    @BindView(R2.id.container_promo)
+    LinearLayout containerPromo;
 
     private ProductDigitalPresenter presenter;
 
@@ -210,6 +216,24 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private boolean ussdInProgress = false;
     private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
+    private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
+
+    public static Fragment newInstance(
+            String categoryId, String operatorId, String productId, String clientNumber,
+            String additionalETollBalance, String additionalETollLastUpdatedDate, int isCouponApplied) {
+        Fragment fragment = new DigitalProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
+        bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
+        bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
+        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
+        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
+        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, additionalETollLastUpdatedDate);
+        bundle.putInt(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
             String additionalETollBalance, String additionalETollLastUpdatedDate) {
@@ -235,6 +259,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        renderViewShadow();
     }
 
     @Override
@@ -340,6 +371,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
         additionalETollLastBalance = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE);
         additionalETollLastUpdatedDate = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE);
+
+        if (arguments.containsKey(PARAM_IS_COUPON_ACTIVE)) {
+            isCouponApplied = arguments.getInt(PARAM_IS_COUPON_ACTIVE);
+        }
     }
 
     @Override
@@ -444,6 +479,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
         this.digitalProductView.setActionListener(this);
         this.digitalProductView.renderData(categoryData, historyClientNumber);
+
+        if (isCouponApplied == DEFAULT_COUPON_APPLIED) {
+            holderProductDetail.addView(getTickerCouponApplied());
+        }
+
         holderProductDetail.addView(this.digitalProductView);
     }
 
@@ -1268,13 +1308,61 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void hidePromoGuideTab() {
         promoTabLayout.setVisibility(View.GONE);
         promoViewPager.setVisibility(View.GONE);
-        guideSeparator.setVisibility(View.GONE);
     }
 
     @Override
     public void showPromoGuideTab() {
         promoTabLayout.setVisibility(View.VISIBLE);
         promoViewPager.setVisibility(View.VISIBLE);
-        guideSeparator.setVisibility(View.VISIBLE);
+    }
+
+    private void renderViewShadow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holderCheckBalance.setElevation(10);
+            holderProductDetail.setElevation(10);
+            checkETollBalanceView.setElevation(10);
+            containerPromo.setElevation(10);
+
+            holderCheckBalance.setBackgroundResource(R.color.white);
+            holderProductDetail.setBackgroundResource(R.color.white);
+            checkETollBalanceView.setBackgroundResource(R.color.white);
+            containerPromo.setBackgroundResource(R.color.white);
+        } else {
+            holderCheckBalance.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            holderProductDetail.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            checkETollBalanceView.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            containerPromo.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        }
+    }
+
+    private View getTickerCouponApplied() {
+        View view = LayoutInflater.from(context).inflate(R.layout.include_digital_ticker_coupon_applied_view, null);
+
+        TickerView tickerView = view.findViewById(R.id.ticker_view);
+        setupTickerCouponApplied(tickerView);
+
+        return view;
+    }
+
+    private void setupTickerCouponApplied(TickerView tickerView) {
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(getString(R.string.digital_coupon_applied_ticker_message));
+        tickerView.setVisibility(View.INVISIBLE);
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
+        tickerView.buildView();
+
+        tickerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tickerView.setItemPadding(
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15),
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15)
+                );
+                tickerView.setItemTextAppearance(R.style.TextView_Micro);
+            }
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 }
