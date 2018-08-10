@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -28,26 +29,22 @@
 
                 <TextView
                     android:id="@+id/tv_hours_value"
+                    style="@style/TextView.Micro.WhitePrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
                     android:gravity="center_vertical"
-                    android:text="22"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp_14" />
+                    tools:text="22" />
 
 
             </LinearLayout>
 
             <TextView
+                style="@style/TextView.Micro.WhitePrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dp_2"
                 android:paddingRight="@dimen/dp_2"
-                android:fontFamily="sans-serif"
-                android:text=":"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12" />
+                android:text=":" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -57,25 +54,21 @@
 
                 <TextView
                     android:id="@+id/tv_minutes_value"
+                    style="@style/TextView.Micro.WhitePrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
                     android:gravity="center_vertical"
-                    android:text="20"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp_14" />
+                    tools:text="20" />
 
             </LinearLayout>
 
             <TextView
+                style="@style/TextView.Micro.WhitePrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text=":"
                 android:paddingLeft="@dimen/dp_2"
                 android:paddingRight="@dimen/dp_2"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12" />
+                android:text=":" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -85,14 +78,11 @@
 
                 <TextView
                     android:id="@+id/tv_seconds_value"
+                    style="@style/TextView.Micro.WhitePrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
                     android:gravity="center_vertical"
-                    android:text="20"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp_14" />
-
+                    tools:text="20" />
 
             </LinearLayout>
         </LinearLayout>

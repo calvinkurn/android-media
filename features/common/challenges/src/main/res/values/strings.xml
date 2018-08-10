@@ -28,4 +28,10 @@
     <string name="approval_wait">Waiting For Approval. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod</string>
     <string name="buzz_point_request">Help your post to gain more buzz point by sharing</string>
     <string name="share">Share</string>
+    <string name="about">About</string>
+    <string name="video">Video</string>
+    <string name="awards">Awards</string>
+    <string name="recent_submissions">Recent Submissions</string>
+    <string name="generate_buzz_points">How Do you Generate Buzz Points?</string>
+    <string name="terms_conditions"><![CDATA[Terms & Conditions]]></string>
 </resources>

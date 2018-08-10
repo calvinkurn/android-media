@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -83,10 +85,12 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     CountDownView countDownView;
     TextView tvHashTag;
     TextView tvTnCText;
-
+    FrameLayout progressBar;
+    FrameLayout flHeader;
     SubmissionItemAdapter submissionItemAdapter;
+    CoordinatorLayout mainContent;
 
-    Result challengeResult;
+    private Result challengeResult;
     private AwardAdapter awardAdapter;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -94,6 +98,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private ChallengesFragmentCallbacks fragmentCallbacks;
     private String tncText;
     private TextView tvHowBuzzPointsText;
+    private String challengeId;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -104,7 +109,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.challengeResult = getArguments().getParcelable("challengesResult");
+        if (!TextUtils.isEmpty(getArguments().getString(Utils.QUERY_PARAM_CHALLENGE_ID))) {
+            this.challengeId = getArguments().getString(Utils.QUERY_PARAM_CHALLENGE_ID);
+        } else {
+            this.challengeResult = getArguments().getParcelable("challengesResult");
+        }
         setHasOptionsMenu(true);
     }
 
@@ -148,10 +157,17 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         tvHowBuzzPointsText = view.findViewById(R.id.tv_how_buzz_points_text);
         seeMoreButtonBuzzPoints = view.findViewById(R.id.seemorebutton_buzzpoints);
         seeMoreButtonTnc = view.findViewById(R.id.seemorebutton_tnc);
+        progressBar = view.findViewById(R.id.progress_bar_layout);
+        flHeader = view.findViewById(R.id.fl_header);
+        mainContent=view.findViewById(R.id.main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
         mPresenter.attachView(this);
-        mPresenter.initialize();
+        if (!TextUtils.isEmpty(challengeId)) {
+            mPresenter.initialize(true, challengeResult);
+        } else {
+            mPresenter.initialize(false, challengeResult);
+        }
         return view;
     }
 
@@ -211,9 +227,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
 
-
     @Override
-    public void renderChallengeDetail() {
+    public void renderChallengeDetail(Result challengeResult) {
         ImageHandler.loadImage(getActivity(), challengeImage, challengeResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
         if (!TextUtils.isEmpty(challengeResult.getTitle())) {
             challengeTitle.setText(challengeResult.getTitle());
@@ -232,7 +247,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             description.setVisibility(View.GONE);
         }
-        setCountDownView();
+        setCountDownView(challengeResult);
 //        videoPlayer.setVideoThumbNail(submissionResponse.getSubmissionResults());
         if (challengeResult.getPrizes() != null && challengeResult.getPrizes().size() > 0) {
             LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -244,7 +259,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
     }
 
-    private void setCountDownView() {
+    private void setCountDownView(Result challengeResult) {
         if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null) {
             if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
                 tvParticipated.setText("Approved");
@@ -268,9 +283,12 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public RequestParams getParams() {
+    public RequestParams getSubmissionsParams() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(Utils.QUERY_PARAM_CHALLENGE_ID, challengeResult.getId());
+        if (!TextUtils.isEmpty(challengeId))
+            requestParams.putString(Utils.QUERY_PARAM_CHALLENGE_ID, challengeId);
+        else
+            requestParams.putString(Utils.QUERY_PARAM_CHALLENGE_ID, challengeResult.getId());
         requestParams.putInt(Utils.QUERY_PARAM_KEY_START, 0);
         requestParams.putInt(Utils.QUERY_PARAM_KEY_SIZE, 10);
         requestParams.putString(Utils.QUERY_PARAM_KEY_SORT, Utils.QUERY_PARAM_KEY_SORT_RECENT);
@@ -278,18 +296,35 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     @Override
+    public RequestParams getChallengeDetailsParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(Utils.QUERY_PARAM_CHALLENGE_ID, challengeId);
+        return requestParams;
+    }
+
+    @Override
     public View getRootView() {
-        return null;
+        return mainContent;
     }
 
     @Override
     public void showProgressBar() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
 
+    @Override
+    public void hideCollapsingHeader() {
+        flHeader.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showCollapsingHeader() {
+        flHeader.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -337,8 +372,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             description.toggle();
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
-        }else if(v.getId() == R.id.ll_continue) {
-            startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(),challengeResult));
+        } else if (v.getId() == R.id.ll_continue) {
+            startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(), challengeResult));
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(tncText, "How Do you Generate Buzz Points?");
         } else if (v.getId() == R.id.seemorebutton_tnc) {

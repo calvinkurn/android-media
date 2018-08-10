@@ -200,10 +200,8 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (productItem.getPoints() > 0) {
                 tvBuzzPoints.setVisibility(View.VISIBLE);
                 tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
-                Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_buzz_points);
-                tvBuzzPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                tvBuzzPoints.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
             } else {
+                itemView.findViewById(R.id.iv_buzz_points).setVisibility(View.GONE);
                 tvBuzzPoints.setVisibility(View.GONE);
             }
             itemView.setOnClickListener(this);
