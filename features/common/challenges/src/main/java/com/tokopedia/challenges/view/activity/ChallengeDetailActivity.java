@@ -20,6 +20,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
     public static final int REQUEST_CODE_LOGIN = 1011;
     public static final int REQUEST_CODE_SUBMISSIONDETAILACTIVITY = 10;
     private List<SubmissionResult> submissions;
+    private String challengeId;
 
 
     @Override
@@ -34,8 +35,9 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
     }
 
     @Override
-    public void replaceFragment(List<SubmissionResult> submissions) {
+    public void replaceFragment(List<SubmissionResult> submissions, String challengeId) {
         this.submissions = submissions;
+        this.challengeId = challengeId;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.parent_view, AllSubmissionFragment.createInstance());
         transaction.addToBackStack(null);
@@ -57,5 +59,10 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
     @Override
     public List<SubmissionResult> getSubmissions() {
         return submissions;
+    }
+
+    @Override
+    public String getChallengeId() {
+        return challengeId;
     }
 }
