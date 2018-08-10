@@ -190,20 +190,15 @@
 
 
 
-    <style name="TextView.Big">
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/sp_20</item>
-    </style>
-
-    <style name="TextView.Big.FontMedium">
+    <style name="TextView.TitleBig.FontMedium">
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextView.Big.BlackPrimary">
+    <style name="TextView.TitleBig.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
-    <style name="TextView.Big.FontMedium.BlackPrimary">
+    <style name="TextView.TitleBig.FontMedium.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
@@ -236,6 +231,10 @@
 
     <style name="TextView.Title.FontMedium">
         <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextView.Title.FontMedium.WhitePrimary">
+        <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
 
     <style name="TextView.Title.FontMedium.BlackPrimary">
