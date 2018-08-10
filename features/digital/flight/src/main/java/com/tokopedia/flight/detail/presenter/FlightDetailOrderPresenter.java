@@ -382,7 +382,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         boolean canGoToCancelPage = false;
         for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
             if (isDepartureDateMoreThan6Hours(
-                    FlightDateUtil.stringToDate(item.getDepartureTime()))) {
+                    FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, item.getDepartureTime()))) {
                 canGoToCancelPage = true;
             }
         }
