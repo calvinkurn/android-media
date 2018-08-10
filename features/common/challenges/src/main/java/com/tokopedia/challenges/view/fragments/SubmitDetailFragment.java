@@ -121,18 +121,23 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setShareView(String url) {
     }
 
+    private void statusContent(TextView view, String text) {
+        view.setVisibility(View.VISIBLE);
+        view.setText(text);
+    }
+
     public void setApprovedView(String approveText) {
-        this.approvedView.setText(approveText);
+        statusContent(approvedView, approveText);
     }
 
     @Override
-    public void setPendingView(String status) {
-        this.pendingView.setText(status);
+    public void setPendingView(String pendingText) {
+        statusContent(pendingView, pendingText);
     }
 
     @Override
-    public void setDeclinedView(String status) {
-        this.declinedView.setText(status);
+    public void setDeclinedView(String declineText) {
+        statusContent(declinedView, declineText);
     }
 
     public void setDetailTitle(String title) {

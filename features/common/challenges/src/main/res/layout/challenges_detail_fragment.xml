@@ -120,7 +120,7 @@
                     android:paddingRight="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_3"
                     android:text="Participated"
-                    android:textColor="@color/text_color_participated"
+                    android:textColor="@color/accepted_green_textcolor"
                     android:textSize="@dimen/sp_14" />
 
                 <android.support.constraint.ConstraintLayout
