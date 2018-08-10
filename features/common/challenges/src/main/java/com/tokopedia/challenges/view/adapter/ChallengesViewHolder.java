@@ -14,6 +14,8 @@ import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.utils.RemainingDaysFormatter;
+import com.tokopedia.challenges.view.utils.Utils;
 
 class ChallengesViewHolder extends RecyclerView.ViewHolder {
 
@@ -59,7 +61,8 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         }else if(challengesResult.getMe().getSubmissionCounts().getWaiting()>0){
             tvStatus.setText("Waiting");
         }else{
-            tvTimeRemaining.setText(challengesResult.getEndDate());
+            RemainingDaysFormatter daysFormatter = new RemainingDaysFormatter(System.currentTimeMillis(), Utils.convertUTCToMillis(challengesResult.getEndDate()));
+            tvTimeRemaining.setText(daysFormatter.getRemainingDays()+" days Remaining");
             tvTimeRemaining.setVisibility(View.VISIBLE);
             tvStatus.setVisibility(View.GONE);
         }
