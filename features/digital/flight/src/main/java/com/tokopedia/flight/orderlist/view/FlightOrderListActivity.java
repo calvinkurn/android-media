@@ -15,6 +15,9 @@ import com.tokopedia.flight.applink.ApplinkConstant;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 
+import static com.tokopedia.flight.orderlist.view.FlightOrderListFragment.DEFAULT_CHECK_PRELOAD;
+import static com.tokopedia.flight.orderlist.view.FlightOrderListFragment.EXTRA_SHOULD_CHECK_PRELOAD;
+
 /**
  * Created by zulfikarrahman on 11/28/17.
  */
@@ -25,6 +28,11 @@ public class FlightOrderListActivity extends BaseSimpleActivity implements HasCo
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, FlightOrderListActivity.class);
+    }
+
+    public static Intent getCallingIntent(Activity activity, boolean isShouldCheckPreload) {
+        return new Intent(activity, FlightOrderListActivity.class)
+                .putExtra(EXTRA_SHOULD_CHECK_PRELOAD, isShouldCheckPreload);
     }
 
     @DeepLink(ApplinkConstant.FLIGHT_ORDER)
@@ -38,7 +46,8 @@ public class FlightOrderListActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightOrderListFragment.createInstance();
+        return FlightOrderListFragment.createInstance(
+                getIntent().getBooleanExtra(EXTRA_SHOULD_CHECK_PRELOAD, DEFAULT_CHECK_PRELOAD));
     }
 
     @Override
