@@ -1,6 +1,7 @@
 package com.tokopedia.otp.cotp.view.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -235,6 +236,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 changePhoneNumberButton.setText(changeInactiveSpan);
                 changePhoneNumberButton.setMovementMethod(LinkMovementMethod.getInstance());
+                changePhoneNumberButton.setHighlightColor(Color.TRANSPARENT);
 
                 break;
         }
