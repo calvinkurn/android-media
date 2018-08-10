@@ -24,7 +24,6 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.accountHome)
 
-    implementation rootProject.ext.miscDependencies.badge
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {

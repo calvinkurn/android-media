@@ -119,8 +119,16 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GraphqlClient.init(this); // initialize graphql
-        this.initInjector(); // initialize di
+
+        if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+            startActivity(((GlobalNavRouter) getApplicationContext())
+                    .getOnBoardingIntent(this));
+            this.finish();
+            return;
+        }
+
+        GraphqlClient.init(this);
+        this.initInjector();
         presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
 
@@ -144,18 +152,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 //        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 //
 //        cacheHandler = new AnalyticsCacheHandler();
-
-        Thread t = new Thread(() -> {
-            if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
-
-                //  Launch app intro
-                Intent i = ((GlobalNavRouter) getApplicationContext()).getOnBoardingIntent(this);
-                startActivityForResult(i, ONBOARDING_REQUEST);
-
-            }
-        });
-
-        t.start();
 
         checkAppUpdate();
         checkIsHaveApplinkComeFromDeeplink(getIntent());
@@ -272,7 +268,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.onDestroy();
+        if (presenter != null)
+            presenter.onDestroy();
     }
 
     private void reloadPage(Activity activity) {
@@ -364,6 +361,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
             invalidateOptionsMenu();
         }
+    }
+
+    public Notification getNotification() {
+        return notification;
     }
 
     /**
