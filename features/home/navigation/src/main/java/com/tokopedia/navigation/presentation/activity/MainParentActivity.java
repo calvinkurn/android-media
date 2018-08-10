@@ -71,6 +71,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
+    public static final String ARGS_TAB_POSITION = "TAB_POSITION";
     public static final int ONBOARDING_REQUEST = 101;
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
@@ -105,9 +106,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     @DeepLink({ApplinkConst.HOME_FEED, ApplinkConst.FEED})
     public static Intent getApplinkFeedIntent(Context context, Bundle bundle) {
-        // TODO: 8/7/18 oka add bundle for change tab
         Intent intent = start(context);
-        intent.putExtra("TAB_POSITION", FEED_MENU);
+        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
         return intent;
     }
 
@@ -132,7 +132,20 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         titles = titles();
         fragmentList = fragments();
 
-        if (savedInstanceState == null) {
+        if (getIntent().getExtras() != null) {
+            int tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            switch (tabPosition) {
+                case FEED_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
+                    break;
+                case HOME_MENU:
+                default:
+                    bottomNavigation.getMenu().findItem(R.id.menu_home).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
+                    break;
+            }
+        } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
             this.currentFragment = fragmentList.get(0);
         }
@@ -231,9 +244,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             for (int i = 0; i < manager.getFragments().size(); i++) {
                 Fragment frag = manager.getFragments().get(i);
                 if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                    if (frag.isVisible() && frag instanceof FragmentListener) {
-                        ((FragmentListener) frag).onScrollToTop();
-                    }
+                    scrollToTop(frag);
                     ft.show(frag); // only show fragment what you want to show
                 } else {
                     ft.hide(frag); // hide all fragment
@@ -249,6 +260,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (!userSession.isLoggedIn())
             RouteManager.route(this, ApplinkConst.LOGIN);
         return userSession.isLoggedIn();
+    }
+
+    private void scrollToTop(Fragment frag) {
+        if (frag.isVisible() && frag instanceof FragmentListener) {
+            ((FragmentListener) frag).onScrollToTop();
+        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
