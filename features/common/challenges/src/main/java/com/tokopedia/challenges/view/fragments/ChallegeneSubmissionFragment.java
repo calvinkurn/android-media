@@ -89,7 +89,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     FrameLayout flHeader;
     SubmissionItemAdapter submissionItemAdapter;
     CoordinatorLayout mainContent;
-
+    ConstraintLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
     private Toolbar toolbar;
@@ -160,6 +160,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         progressBar = view.findViewById(R.id.progress_bar_layout);
         flHeader = view.findViewById(R.id.fl_header);
         mainContent=view.findViewById(R.id.main_content);
+        baseMainContent=view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
         mPresenter.attachView(this);
@@ -257,6 +258,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             clAwards.setVisibility(View.GONE);
         }
+        submitButton.setVisibility(View.VISIBLE);
+        baseMainContent.setVisibility(View.VISIBLE);
     }
 
     private void setCountDownView(Result challengeResult) {

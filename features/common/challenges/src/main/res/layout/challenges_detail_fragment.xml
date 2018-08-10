@@ -2,10 +2,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:id="@+id/main_content">
+    android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -39,16 +39,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_180"
                     android:background="@drawable/background_blur_header" />
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:contentInsetLeft="0dp"
-                    app:contentInsetStart="0dp"
-                    app:contentInsetStartWithNavigation="0dp"
-                    app:layout_collapseMode="pin" />
             </FrameLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_collapseMode="pin" />
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -67,11 +68,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp_80"
-        android:layout_marginTop="@dimen/dp_36"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/base_main_content"
             android:layout_width="match_parent"
+            android:visibility="gone"
+            android:paddingTop="@dimen/dp_36"
             android:layout_height="match_parent">
 
             <TextView
@@ -227,7 +230,6 @@
                 android:id="@+id/cl_video_player"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/cl_about">
 
                 <View
@@ -418,7 +420,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_how_buzzpoints">
@@ -461,6 +462,7 @@
         android:layout_height="@dimen/dp_80"
         android:layout_gravity="bottom"
         app:cardBackgroundColor="@color/white"
+        android:visibility="gone"
         app:cardElevation="@dimen/dp_8">
 
         <TextView

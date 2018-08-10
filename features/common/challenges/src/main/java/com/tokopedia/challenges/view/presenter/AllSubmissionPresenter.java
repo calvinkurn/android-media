@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.presenter;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
 import com.tokopedia.challenges.view.contractor.AllSubmissionContract;
@@ -83,6 +84,16 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
             public void onError(Throwable e) {
                 isLoading = false;
                 getView().hideProgressBar();
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                getView().hideProgressBar();
+                if (pageStart > 0)
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            loadMoreItems(true);
+                        }
+                    });
             }
 
             @Override
@@ -98,8 +109,8 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
                         && submissionResponse.getSubmissionResults().size() > 0) {
                     getView().addSubmissionToCards(submissionResponse.getSubmissionResults());
                     pageStart += submissionResponse.getSubmissionResults().size();
-                }else{
-                    isLastPage=true;
+                } else {
+                    isLastPage = true;
                 }
                 getView().hideProgressBar();
                 checkIfToLoad(getView().getLayoutManager());
