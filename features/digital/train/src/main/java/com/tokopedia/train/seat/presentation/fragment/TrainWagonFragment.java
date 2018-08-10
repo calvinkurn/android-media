@@ -256,7 +256,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
                 // bottom view
                 newTop = top;
                 topSeatLayout.setX(left);
-                topSeatLayout.setLeft(left);
+                topSeatArrow.setLeft(left);
                 bottomSeatLayout.setVisibility(View.GONE);
                 bottomSeatArrow.setVisibility(View.GONE);
                 AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);

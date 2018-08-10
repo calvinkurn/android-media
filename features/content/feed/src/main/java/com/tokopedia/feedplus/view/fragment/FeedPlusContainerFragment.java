@@ -1,32 +1,41 @@
 package com.tokopedia.feedplus.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
-import com.tokopedia.explore.view.listener.ExploreContainerListener;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.view.listener.FeedPlusContainerListener;
+import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
+import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
+import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.searchbar.MainToolbar;
+import com.tokopedia.user.session.UserSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by milhamj on 25/07/18.
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FeedPlusContainerListener, ExploreContainerListener {
+        implements FragmentListener, NotificationListener {
 
+    private MainToolbar mainToolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
+    private UserSession userSession;
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
-    private FrameLayout feedPlusContainer;
-    private FrameLayout contentExploreContainer;
 
     public static FeedPlusContainerFragment newInstance() {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
@@ -40,14 +49,16 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
-        feedPlusContainer = view.findViewById(R.id.feed_plus_container);
-        contentExploreContainer = view.findViewById(R.id.content_explore_container);
+        mainToolbar = view.findViewById(R.id.toolbar);
+        tabLayout = view.findViewById(R.id.tab_layout);
+        viewPager = view.findViewById(R.id.view_pager);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initVar();
         initView();
     }
 
@@ -62,44 +73,62 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showFeedPlus() {
-        if (feedPlusFragment == null) {
-            feedPlusFragment = FeedPlusFragment.newInstance();
+    public void onScrollToTop() {
+        if (feedPlusFragment != null && feedPlusFragment.getUserVisibleHint()) {
+            feedPlusFragment.scrollToTop();
+        } else if (contentExploreFragment != null && contentExploreFragment.getUserVisibleHint()) {
+            contentExploreFragment.scrollToTop();
         }
-        feedPlusContainer.setVisibility(View.VISIBLE);
-        contentExploreContainer.setVisibility(View.GONE);
-        inflateFragment(R.id.feed_plus_container, feedPlusFragment);
     }
 
     @Override
-    public void showContentExplore() {
-        if (contentExploreFragment == null) {
-            contentExploreFragment = ContentExploreFragment.newInstance(getArguments());
+    public void onNotifyBadgeNotification(int number) {
+        if (mainToolbar != null || getActivity() != null) {
+            mainToolbar.setNotificationNumber(number);
         }
-        feedPlusContainer.setVisibility(View.GONE);
-        contentExploreContainer.setVisibility(View.VISIBLE);
-        inflateFragment(R.id.content_explore_container, contentExploreFragment);
+    }
+
+    private void initVar() {
+        userSession = new UserSession(getContext());
     }
 
     private void initView() {
-        showFeedPlus();
+        setAdapter();
     }
 
-    protected void inflateFragment(@IdRes int containerId, Fragment fragment) {
-        if (fragment == null) {
-            return;
-        }
-
-        String TAG = fragment.getClass().getSimpleName();
-        if (getChildFragmentManager().findFragmentByTag(TAG) != null) {
-            getChildFragmentManager().beginTransaction()
-                    .replace(containerId,
-                            getChildFragmentManager().findFragmentByTag(TAG))
-                    .commit();
+    private void setAdapter() {
+        List<FeedPlusTabItem> tabItemList = new ArrayList<>();
+        if (userSession.isLoggedIn()) {
+            tabItemList.add(new FeedPlusTabItem(
+                    getString(R.string.tab_my_feed),
+                    getFeedPlusFragment())
+            );
+            tabLayout.setVisibility(View.VISIBLE);
         } else {
-            getChildFragmentManager().beginTransaction()
-                    .add(containerId, fragment, TAG)
-                    .commit();
+            tabLayout.setVisibility(View.GONE);
         }
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_explore),
+                getContentExploreFragment())
+        );
+        FeedPlusTabAdapter adapter = new FeedPlusTabAdapter(getChildFragmentManager());
+        adapter.setItemList(tabItemList);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public FeedPlusFragment getFeedPlusFragment() {
+        if (feedPlusFragment == null) {
+            feedPlusFragment = FeedPlusFragment.newInstance();
+        }
+        return feedPlusFragment;
+    }
+
+    public ContentExploreFragment getContentExploreFragment() {
+        if (contentExploreFragment == null) {
+            Bundle bundle = new Bundle();
+            contentExploreFragment = ContentExploreFragment.newInstance(bundle);
+        }
+        return contentExploreFragment;
     }
 }

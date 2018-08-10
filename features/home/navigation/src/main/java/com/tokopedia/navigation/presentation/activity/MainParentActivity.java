@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -49,6 +48,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -227,6 +227,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             for (int i = 0; i < manager.getFragments().size(); i++) {
                 Fragment frag = manager.getFragments().get(i);
                 if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                    if (frag.isVisible() && frag instanceof FragmentListener) {
+                        ((FragmentListener) frag).onScrollToTop();
+                    }
                     ft.show(frag); // only show fragment what you want to show
                 } else {
                     ft.hide(frag); // hide all fragment

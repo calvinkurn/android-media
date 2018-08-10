@@ -155,6 +155,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
+import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
@@ -2519,7 +2520,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getFeedPlusFragment() {
-        return new FeedPlusFragment();
+        return FeedPlusContainerFragment.newInstance();
     }
 
     @Override

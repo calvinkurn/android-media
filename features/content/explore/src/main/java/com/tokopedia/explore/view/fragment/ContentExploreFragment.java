@@ -14,11 +14,13 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.analytics.ContentExloreEventTracking;
@@ -47,32 +49,27 @@ import javax.inject.Inject;
 
 public class ContentExploreFragment extends BaseDaggerFragment
         implements ContentExploreContract.View, SearchInputView.Listener,
-        SwipeToRefresh.OnRefreshListener {
+        SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
     private static final int LOAD_MORE_THRESHOLD = 2;
-
+    @Inject
+    ContentExploreContract.Presenter presenter;
+    @Inject
+    ExploreCategoryAdapter categoryAdapter;
+    @Inject
+    ExploreImageAdapter imageAdapter;
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
     private SwipeToRefresh swipeToRefresh;
-    private View tabFeed;
     private View appBarLayout;
-
-    @Inject
-    ContentExploreContract.Presenter presenter;
-
-    @Inject
-    ExploreCategoryAdapter categoryAdapter;
-
-    @Inject
-    ExploreImageAdapter imageAdapter;
-
     private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
     private int categoryId;
     private boolean canLoadMore;
+    private boolean hasLoadedOnce;
 
     public static ContentExploreFragment newInstance(Bundle bundle) {
         ContentExploreFragment fragment = new ContentExploreFragment();
@@ -104,7 +101,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        tabFeed = view.findViewById(R.id.tab_feed);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         return view;
     }
@@ -113,10 +109,9 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         GraphqlClient.init(getContext());
-        initView();
         initVar();
+        initView();
         presenter.attachView(this);
-        presenter.getExploreData(true);
     }
 
     @Override
@@ -125,8 +120,25 @@ public class ContentExploreFragment extends BaseDaggerFragment
         abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        loadData();
+    }
+
     private void initView() {
+        dropKeyboard();
         searchInspiration.setListener(this);
+        searchInspiration.setResetListener(this);
+        searchInspiration.getSearchTextView().setOnClickListener(v -> {
+            searchInspiration.getSearchTextView().setCursorVisible(true);
+        });
         swipeToRefresh.setOnRefreshListener(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
@@ -146,6 +158,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 if (imageAdapter.getList().get(position) instanceof ExploreImageViewModel) {
                     return IMAGE_SPAN_SINGLE;
                 } else if (imageAdapter.getList().get(position) instanceof LoadingMoreModel) {
+                    return IMAGE_SPAN_COUNT;
+                } else if (imageAdapter.getList().get(position) instanceof EmptyModel) {
                     return IMAGE_SPAN_COUNT;
                 }
                 return 0;
@@ -172,6 +186,14 @@ public class ContentExploreFragment extends BaseDaggerFragment
         } else {
             throw new IllegalStateException("Application must be an instance of " +
                     AbstractionRouter.class.getSimpleName());
+        }
+    }
+
+    private void loadData() {
+        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null
+                && !hasLoadedOnce) {
+            presenter.getExploreData(true);
+            hasLoadedOnce = !hasLoadedOnce;
         }
     }
 
@@ -239,20 +261,10 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onCategoryClicked(int position, int categoryId, String categoryName) {
-        boolean isSameCategory = false;
-
-        for (int i = 0; i < categoryAdapter.getList().size(); i++) {
-            ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
-            if (categoryViewModel.isActive()) {
-                categoryViewModel.setActive(false);
-                categoryAdapter.notifyItemChanged(i);
-                if (i == position) {
-                    isSameCategory = true;
-                }
-                break;
-            }
-        }
-
+        clearSearch();
+        resetDataParam();
+        imageAdapter.clearData();
+        boolean isSameCategory = setAllCategoriesInactive(position);
         if (isSameCategory) {
             updateCategoryId(0);
             abstractionRouter.getAnalyticTracker().sendEventTracking(
@@ -276,9 +288,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 categoryAdapter.notifyItemChanged(position);
             }
         }
-
-        updateCursor("");
-        imageAdapter.clearData();
         presenter.getExploreData(true);
     }
 
@@ -297,6 +306,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void showEmpty() {
+        imageAdapter.showEmpty();
     }
 
     @Override
@@ -320,9 +334,19 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchSubmitted(String text) {
-        updateSearch(text);
+        dropKeyboard();
+        resetDataParam();
+        setAllCategoriesInactive();
         imageAdapter.clearData();
+
+        updateSearch(text);
         presenter.getExploreData(true);
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                ContentExloreEventTracking.Event.EXPLORE,
+                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                ContentExloreEventTracking.Action.SEARCH,
+                text
+        );
     }
 
     @Override
@@ -331,10 +355,30 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSearchReset() {
+        resetDataParam();
+        setAllCategoriesInactive();
+        imageAdapter.clearData();
+        presenter.getExploreData(true);
+    }
+
+    @Override
     public void onRefresh() {
         clearData();
         presenter.updateCursor("");
         presenter.refreshExploreData();
+    }
+
+    @Override
+    public void dropKeyboard() {
+        searchInspiration.getSearchTextView().setCursorVisible(false);
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+    }
+
+    public void scrollToTop() {
+        if (exploreImageRv != null) {
+            exploreImageRv.smoothScrollToPosition(0);
+        }
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
@@ -348,6 +392,37 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     private boolean isLoading() {
         return imageAdapter.isLoading() || swipeToRefresh.isRefreshing();
+    }
+
+    private void clearSearch() {
+        searchInspiration.getSearchTextView().setText("");
+        dropKeyboard();
+    }
+
+    private void resetDataParam() {
+        updateSearch("");
+        updateCursor("");
+        updateCategoryId(0);
+    }
+
+    private void setAllCategoriesInactive() {
+        setAllCategoriesInactive(-1);
+    }
+
+    private boolean setAllCategoriesInactive(int position) {
+        boolean isSameCategory = false;
+        for (int i = 0; i < categoryAdapter.getList().size(); i++) {
+            ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
+            if (categoryViewModel.isActive()) {
+                categoryViewModel.setActive(false);
+                categoryAdapter.notifyItemChanged(i);
+                if (i == position) {
+                    isSameCategory = true;
+                }
+                break;
+            }
+        }
+        return isSameCategory;
     }
 
     private RecyclerView.OnScrollListener onScrollListener(GridLayoutManager layoutManager) {
