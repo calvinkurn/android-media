@@ -222,7 +222,7 @@ public class MainParentActivityTest {
             fragment.reInitInjector(accountHomeComponent);
 
             mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.getAccount();
+                fragment.renderData(provideAccountViewModel());
             });
         }
 
