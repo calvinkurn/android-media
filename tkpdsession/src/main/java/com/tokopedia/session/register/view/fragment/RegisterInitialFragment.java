@@ -426,12 +426,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
-        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
-            dismissProgressBar();
-            getActivity().setResult(Activity.RESULT_CANCELED);
+        } else if (requestCode == REQUEST_ADD_NAME) {
+            startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                    REQUEST_WELCOME_PAGE);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
