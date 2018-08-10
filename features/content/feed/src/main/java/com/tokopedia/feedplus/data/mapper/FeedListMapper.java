@@ -494,7 +494,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getLikeCount() == null ? 0 : polling.getLikeCount(),
                 polling.getCommentCount() == null ? 0 : polling.getCommentCount(),
                 0,
-                activityId == null ? 0 : Integer.valueOf(activityId),
+                TextUtils.isEmpty(activityId) ? 0 : Integer.valueOf(activityId),
                 TimeConverter.generateTime(
                         polling.getCreateTime() == null ? "" : polling.getCreateTime()
                 ),
