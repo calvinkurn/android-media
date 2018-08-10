@@ -15,7 +15,7 @@ class RatesEstimationServiceViewHolder(itemView: View) : RecyclerView.ViewHolder
         itemView.service_product_list.run {
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-            adapter = adapter
+            adapter = this@RatesEstimationServiceViewHolder.adapter
         }
     }
 

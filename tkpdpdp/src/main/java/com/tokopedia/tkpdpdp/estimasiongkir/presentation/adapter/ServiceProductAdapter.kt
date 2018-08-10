@@ -37,6 +37,7 @@ class ServiceProductAdapter : RecyclerView.Adapter<ServiceProductAdapter.Service
         fun bind(product: ShippingServiceModel.Product) {
             val title = itemView.context.getString(R.string.shipping_receiver_text,
                     product.name, product.etd)
+
             val spannableString = SpannableString(title)
 
             spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context,
