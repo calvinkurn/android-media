@@ -36,6 +36,7 @@ import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.SessionTrackingUtils;
@@ -62,7 +63,7 @@ import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActiva
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
-import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
+import com.tokopedia.session.addname.AddNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
@@ -71,14 +72,12 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
-import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.util.ArrayList;
 
@@ -589,7 +588,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
-        Intent intent = ChangeNameActivity.newInstance(getActivity());
+        Intent intent = AddNameActivity.newInstance(getActivity());
         startActivityForResult(intent, REQUEST_ADD_NAME);
     }
 

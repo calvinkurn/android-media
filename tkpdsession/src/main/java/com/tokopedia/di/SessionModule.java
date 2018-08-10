@@ -30,6 +30,10 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
+import com.tokopedia.session.changename.data.source.ChangeNameSource;
+import com.tokopedia.session.changename.di.ChangeNameScope;
+import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -76,6 +80,8 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.di.UserModule.BEARER_SERVICE;
 
 
 /**
@@ -418,6 +424,20 @@ public class SessionModule {
     @Provides
     RegisterValidationMapper provideRegisterValidationMapper(){
         return new RegisterValidationMapper();
+    }
+
+    @SessionScope
+    @Provides
+    ChangeNameSource provideChangeNameSource(@Named(BEARER_SERVICE) AccountsService service,
+                                             ChangeNameMapper changeNameMapper,
+                                             GlobalCacheManager cacheManager) {
+        return new ChangeNameSource(service, changeNameMapper, cacheManager);
+    }
+
+    @SessionScope
+    @Provides
+    ChangeNameUseCase provideChangeNameUseCase(ChangeNameSource source) {
+        return new ChangeNameUseCase(source);
     }
 }
 

@@ -60,7 +60,6 @@ import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
-import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
@@ -660,7 +659,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
-        Intent intent = ChangeNameActivity.newInstance(getActivity());
+        Intent intent = com.tokopedia.session.addname.AddNameActivity.newInstance(getActivity());
         startActivityForResult(intent, REQUEST_ADD_NAME);
     }
 

@@ -40,15 +40,16 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
 
     private String phoneNumber;
 
-    private EditText etName;
-    private TextView btnContinue, bottomInfo, message;
+    protected EditText etName;
+    private TextView bottomInfo, message;
+    protected TextView btnContinue;
     private TkpdProgressDialog progressDialog;
     private TkpdHintTextInputLayout wrapperName;
 
     private boolean isError = false;
 
     @Inject
-    AddNamePresenter presenter;
+    protected AddNamePresenter presenter;
 
     public static AddNameFragment newInstance(Bundle bundle) {
         AddNameFragment fragment = new AddNameFragment();
@@ -101,7 +102,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         ViewUtil.stripUnderlines(bottomInfo);
     }
 
-    private void setViewListener() {
+    protected void setViewListener() {
         etName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -220,6 +221,14 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         wrapperName.setErrorEnabled(false);
         wrapperName.setError("");
         message.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccessAddName() {
+        if (getActivity() != null) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
     }
 
     @Override
