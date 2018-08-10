@@ -26,6 +26,8 @@ public interface ShippingCourierContract {
         List<ShippingCourierViewModel> getShippingCourierViewModels();
 
         CourierItemData getCourierItemData(ShippingCourierViewModel shippingCourierViewModel);
+
+        void updateSelectedCourier(ShippingCourierViewModel shippingCourierViewModel);
     }
 
 }

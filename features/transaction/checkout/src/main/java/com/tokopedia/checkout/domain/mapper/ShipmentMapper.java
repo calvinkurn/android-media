@@ -50,11 +50,13 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
 
-        Donation donation = new Donation();
-        donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
-        donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
-        donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
-        dataResult.setDonation(donation);
+        if (shipmentAddressFormDataResponse.getDonation() != null) {
+            Donation donation = new Donation();
+            donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
+            donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
+            donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
+            dataResult.setDonation(donation);
+        }
 
         if (!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
             List<GroupAddress> groupAddressListResult = new ArrayList<>();

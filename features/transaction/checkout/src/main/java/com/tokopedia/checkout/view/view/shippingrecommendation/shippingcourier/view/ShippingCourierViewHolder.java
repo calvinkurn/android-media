@@ -36,9 +36,9 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                          ShippingCourierAdapterListener shippingCourierAdapterListener) {
         tvCourier.setText(shippingCourierViewModel.getProductData().getShipperName());
         tvPrice.setText(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
-        if (!shippingCourierViewModel.isSelected()) {
-            shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-        }
+//        if (!shippingCourierViewModel.isSelected()) {
+//            shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
+//        }
         imgCheck.setVisibility(shippingCourierViewModel.isSelected() ? View.VISIBLE : View.GONE);
 
         itemView.setOnClickListener(new View.OnClickListener() {

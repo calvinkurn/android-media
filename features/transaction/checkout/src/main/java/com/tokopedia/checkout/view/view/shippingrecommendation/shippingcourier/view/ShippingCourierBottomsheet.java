@@ -113,6 +113,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
 
     @Override
     public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition) {
+        presenter.updateSelectedCourier(shippingCourierViewModel);
         CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
         shippingCourierBottomsheetListener.onCourierChoosen(courierItemData, cartPosition);
         dismiss();

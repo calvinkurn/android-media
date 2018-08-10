@@ -270,6 +270,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvSelectedPriceRecommendation = itemView.findViewById(R.id.tv_selected_price_recommendation);
         tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_change_selected_courier_recommendation);
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
+        llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {
@@ -407,16 +408,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
 
-        String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
-        String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
-        tvTickerInfo.setText(tickerInfo);
-
-        int startSpan = tvTickerInfo.getText().toString().indexOf(boldText);
-        int endSpan = tvTickerInfo.getText().toString().indexOf(boldText) + boldText.length();
-
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(tvTickerInfo.getText().toString());
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvTickerInfo.setText(spannableStringBuilder);
+        tvTickerInfo.setVisibility(View.GONE);
+        llShipmentInfoTicker.setVisibility(View.GONE);
 
         if (isCourierSelected) {
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
@@ -490,18 +483,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
 
-        String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
-        String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
-        tvTickerInfo.setText(tickerInfo);
-
-        int startSpan = tvTickerInfo.getText().toString().indexOf(boldText);
-        int endSpan = tvTickerInfo.getText().toString().indexOf(boldText) + boldText.length();
-
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(tvTickerInfo.getText().toString());
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvTickerInfo.setText(spannableStringBuilder);
-
         if (isCourierSelected) {
+            if (!shipmentDetailData.getSelectedCourier().isAllowDropshiper()) {
+                String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
+                String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
+                tvTickerInfo.setText(tickerInfo);
+
+                int startSpan = tvTickerInfo.getText().toString().indexOf(boldText);
+                int endSpan = tvTickerInfo.getText().toString().indexOf(boldText) + boldText.length();
+
+                SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(tvTickerInfo.getText().toString());
+                spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tvTickerInfo.setText(spannableStringBuilder);
+                llShipmentInfoTicker.setVisibility(View.VISIBLE);
+            } else {
+                tvTickerInfo.setVisibility(View.GONE);
+                llShipmentInfoTicker.setVisibility(View.GONE);
+            }
             llSelectShipmentRecommendation.setVisibility(View.GONE);
             llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.VISIBLE);

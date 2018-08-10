@@ -52,4 +52,17 @@ public class ShippingCourierPresenter extends BaseDaggerPresenter<ShippingCourie
     public CourierItemData getCourierItemData(ShippingCourierViewModel shippingCourierViewModel) {
         return shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
     }
+
+    @Override
+    public void updateSelectedCourier(ShippingCourierViewModel shippingCourierViewModel) {
+        if (shippingCourierViewModels != null) {
+            for (ShippingCourierViewModel courierViewModel : shippingCourierViewModels) {
+                if (courierViewModel.getProductData().getShipperProductId() != shippingCourierViewModel.getProductData().getShipperProductId()) {
+                    courierViewModel.setSelected(false);
+                } else {
+                    courierViewModel.setSelected(true);
+                }
+            }
+        }
+    }
 }
