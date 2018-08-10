@@ -2,6 +2,7 @@ package com.tokopedia.otp.cotp.view.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -198,11 +199,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         adapter.setList(listVerificationMethod.getList());
 
         switch (listVerificationMethod.getFooterLinkType()) {
-            case TYPE_HIDE_LINK:
-                changePhoneNumberButton.setVisibility(View.GONE);
-                break;
             case TYPE_CHANGE_PHONE_UPLOAD_KTP:
                 changePhoneNumberButton.setVisibility(View.VISIBLE);
+                changePhoneNumberButton.setTypeface(Typeface.create("sans-serif-medium", Typeface
+                        .NORMAL));
                 changePhoneNumberButton.setText(getString(R.string.my_phone_number_is_inactive));
                 changePhoneNumberButton.setTextColor(MethodChecker.getColor(getContext(), R.color
                         .tkpd_main_green));
@@ -234,10 +234,14 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                         changeInactiveString.indexOf(getString(R.string.setting)) + getString(R
                                 .string.setting).length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                changePhoneNumberButton.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
                 changePhoneNumberButton.setText(changeInactiveSpan);
                 changePhoneNumberButton.setMovementMethod(LinkMovementMethod.getInstance());
                 changePhoneNumberButton.setHighlightColor(Color.TRANSPARENT);
-
+                break;
+            case TYPE_HIDE_LINK:
+            default:
+                changePhoneNumberButton.setVisibility(View.GONE);
                 break;
         }
 
