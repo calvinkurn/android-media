@@ -115,9 +115,8 @@ import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
-import com.tokopedia.tkpdpdp.estimasiongkir.RatesEstimationDetailActivity;
-import com.tokopedia.tkpdpdp.estimasiongkir.RatesModel;
-import com.tokopedia.tkpdpdp.estimasiongkir.constant.RatesEstimationConstant;
+import com.tokopedia.tkpdpdp.estimasiongkir.presentation.activity.RatesEstimationDetailActivity;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
@@ -1976,7 +1975,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void moveToEstimationDetail() {
-        startActivity(RatesEstimationDetailActivity.createIntent(getActivity(), productPass.getProductId(),
+        startActivity(RatesEstimationDetailActivity.Companion.createIntent(getActivity(), productPass.getProductId(),
                 (productData.getInfo().getProductWeight()+productData.getInfo().getProductWeightUnit())));
     }
 }

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,12 +21,10 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -79,8 +76,8 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
-import com.tokopedia.tkpdpdp.estimasiongkir.GetRateEstimationUseCase;
-import com.tokopedia.tkpdpdp.estimasiongkir.RatesModel;
+import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
@@ -175,7 +172,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void getCostEstimation(String rawQuery, String productId, String userId){
-        getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productId, userId),
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.Companion.createRequestParams(rawQuery, productId, userId),
                 new Subscriber<RatesModel>() {
                     @Override
                     public void onCompleted() { }

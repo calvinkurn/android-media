@@ -15,7 +15,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
-import com.tokopedia.tkpdpdp.estimasiongkir.RatesModel;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;

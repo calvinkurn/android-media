@@ -1,0 +1,27 @@
+package com.tokopedia.tkpdpdp.estimasiongkir.presentation.viewholder
+
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import com.tokopedia.tkpdpdp.R
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.ShippingServiceModel
+import com.tokopedia.tkpdpdp.estimasiongkir.presentation.adapter.ServiceProductAdapter
+import kotlinx.android.synthetic.main.item_rates_estimation_service.view.*
+
+class RatesEstimationServiceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val adapter = ServiceProductAdapter()
+
+    init {
+        itemView.service_product_list.run {
+            isNestedScrollingEnabled = false
+            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            adapter = adapter
+        }
+    }
+
+    fun bind(shippingServiceModel: ShippingServiceModel) {
+        itemView.service_title.text = itemView.context.getString(R.string.service_title_format,
+                shippingServiceModel.name, shippingServiceModel.etd)
+        adapter.replaceProducts(shippingServiceModel.products)
+    }
+}

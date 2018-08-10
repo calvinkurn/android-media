@@ -17,7 +17,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.tkpdpdp.estimasiongkir.RatesModel;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 
 import java.util.List;
 
