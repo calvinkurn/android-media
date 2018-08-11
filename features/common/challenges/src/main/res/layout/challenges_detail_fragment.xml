@@ -228,7 +228,6 @@
                 android:id="@+id/cl_video_player"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/cl_about">
 
                 <View
@@ -258,8 +257,9 @@
                 <com.tokopedia.challenges.view.customview.CustomVideoPlayer
                     android:id="@+id/video_player"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_180"
+                    android:layout_height="@dimen/dp_240"
                     android:layout_marginTop="@dimen/dp_8"
+                    android:padding="@dimen/dp_8"
                     app:layout_constraintTop_toBottomOf="@+id/tv_video" />
 
             </android.support.constraint.ConstraintLayout>
@@ -419,7 +419,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_how_buzzpoints">
