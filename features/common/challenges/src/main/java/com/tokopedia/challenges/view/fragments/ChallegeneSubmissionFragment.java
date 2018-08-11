@@ -12,6 +12,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,7 +34,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
@@ -91,7 +94,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     FrameLayout flHeader;
     SubmissionItemAdapter submissionItemAdapter;
     CoordinatorLayout mainContent;
-
+    ConstraintLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
     private Toolbar toolbar;
@@ -101,6 +104,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private String tncText;
     private TextView tvHowBuzzPointsText;
     private String challengeId;
+    private FloatingActionButton btnShare;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -179,6 +183,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         progressBar = view.findViewById(R.id.progress_bar_layout);
         flHeader = view.findViewById(R.id.fl_header);
         mainContent=view.findViewById(R.id.main_content);
+        btnShare = view.findViewById(R.id.fab_share);
+        btnShare.setOnClickListener(this);
+        baseMainContent=view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
         mPresenter.attachView(this);
@@ -281,6 +288,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             clAwards.setVisibility(View.GONE);
         }
+        submitButton.setVisibility(View.VISIBLE);
+        baseMainContent.setVisibility(View.VISIBLE);
     }
 
     private void setCountDownView(Result challengeResult) {
@@ -402,6 +411,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             fragmentCallbacks.replaceFragment(tncText, "How Do you Generate Buzz Points?");
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, "Terms & Conditions");
+        }else if(v.getId() == R.id.fab_share){
+            ((ChallengesModuleRouter) (getActivity().getApplication())).shareChallenge(getActivity(),
+                    ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getSharing().getMetaTags().getOgTitle(),
+                    challengeResult.getSharing().getMetaTags().getOgImage());
         }
 
     }
