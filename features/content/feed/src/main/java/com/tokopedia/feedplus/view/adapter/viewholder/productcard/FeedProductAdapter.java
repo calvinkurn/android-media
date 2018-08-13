@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.view.adapter.viewholder.productcard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +69,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             showBlackScreen(holder, extraProduct);
 
             holder.container.setOnClickListener(goToFeedDetail());
+            holder.productLayout.setOnClickListener(goToFeedDetail());
         } else if (list.size() < MAX_FEED_SIZE
                 && list.size() > MAX_FEED_SIZE_SMALL
                 && position == LAST_FEED_POSITION_SMALL) {
@@ -75,6 +77,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             showBlackScreen(holder, extraProduct);
 
             holder.container.setOnClickListener(goToFeedDetail());
+            holder.productLayout.setOnClickListener(goToFeedDetail());
         } else {
             holder.extraProduct.setBackground(null);
             holder.extraProduct.setVisibility(View.GONE);
@@ -85,6 +88,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.productPrice.setText(list.get(position).getPrice());
 
             holder.container.setOnClickListener(
+                    goToProductDetail(list, holder.getAdapterPosition())
+            );
+            holder.productLayout.setOnClickListener(
                     goToProductDetail(list, holder.getAdapterPosition())
             );
         }
@@ -208,26 +214,28 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
         }
 
-        paddingSide = (int) resources.getDimension(R.dimen.new_margin_small);
+        paddingSide = (int) resources.getDimension(R.dimen.dp_2);
         holder.productName.setPadding(paddingSide, paddingTop, paddingSide, 0);
         holder.productPrice.setPadding(paddingSide, 0, paddingSide, paddingBottom);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View container;
-        public TextView productName;
-        public ImageView productImage;
+        private View container;
+        private TextView productName;
+        private CardView productLayout;
+        private ImageView productImage;
         private TextView productPrice;
-        public TextView extraProduct;
+        private TextView extraProduct;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             container = itemLayoutView;
-            productName = (TextView) itemView.findViewById(R.id.title);
-            extraProduct = (TextView) itemView.findViewById(R.id.extra_product);
-            productImage = (ImageView) itemView.findViewById(R.id.product_image);
-            productPrice = (TextView) itemView.findViewById(R.id.price);
+            productName = itemView.findViewById(R.id.title);
+            extraProduct = itemView.findViewById(R.id.extra_product);
+            productImage = itemView.findViewById(R.id.product_image);
+            productLayout = itemView.findViewById(R.id.product_layout);
+            productPrice = itemView.findViewById(R.id.price);
         }
     }
 }

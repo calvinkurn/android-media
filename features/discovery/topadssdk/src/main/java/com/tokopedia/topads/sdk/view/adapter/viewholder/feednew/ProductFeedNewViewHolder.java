@@ -1,6 +1,5 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.feednew;
 
-import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
@@ -27,24 +26,24 @@ public class ProductFeedNewViewHolder extends AbstractViewHolder<ProductFeedNewV
     public static final int LAYOUT = R.layout.layout_ads_product_feed_new;
 
     private Data data;
-    public TextView productName;
-    public ImageView productImage;
-    public TextView productPrice;
-    private Context context;
+    private TextView productName;
+    private ImageView productImage;
+    private TextView productPrice;
     private ImageLoader imageLoader;
     private LocalAdsClickListener itemClickListener;
 
     public ProductFeedNewViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener
             itemClickListener) {
         super(itemView);
-        itemView.setOnClickListener(this);
-        this.context = itemView.getContext();
         this.imageLoader = imageLoader;
         this.itemClickListener = itemClickListener;
 
         productImage = itemView.findViewById(R.id.product_image);
         productName = itemView.findViewById(R.id.title);
         productPrice = itemView.findViewById(R.id.price);
+
+        itemView.setOnClickListener(this);
+        itemView.findViewById(R.id.product_layout).setOnClickListener(this);
     }
 
     @Override
