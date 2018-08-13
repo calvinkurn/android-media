@@ -7,10 +7,11 @@
               app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
+        android:id="@+id/layout_title"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="@dimen/dp_16">
 
         <ImageButton
             android:id="@+id/btn_close"
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            app:srcCompat="@drawable/ic_close_default"/>O
+            android:src="@drawable/ic_close_default"/>
 
         <TextView
             android:id="@+id/tv_title"

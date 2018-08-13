@@ -68,6 +68,7 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -935,6 +936,7 @@ public class CartFragment extends BaseCheckoutFragment implements
     @Override
     public void renderLoadGetCartData() {
         bottomLayout.setVisibility(View.GONE);
+        notifyBottomCartParent();
     }
 
     @Override
@@ -1138,7 +1140,7 @@ public class CartFragment extends BaseCheckoutFragment implements
         if (!(fragment instanceof RemoveCartItemFragment)
                 && cartListAdapter.getCartItemDataList() != null
                 && cartListAdapter.getCartItemDataList().size() > 0) {
-//            cartPageAnalytics.eventClickCartClickHapusOnTopRightCorner();
+            cartPageAnalytics.eventClickAtcCartClickHapusOnTopRightCorner();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartListAdapter.getCartItemDataList()))
                     .addToBackStack(null)
@@ -1170,12 +1172,18 @@ public class CartFragment extends BaseCheckoutFragment implements
     public void onBackPressed() {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
         if (fragment instanceof RemoveCartItemFragment) {
-//            ((RemoveCartItemFragment)fragment).getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
+            ((RemoveCartItemFragment)fragment).getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
             getChildFragmentManager().beginTransaction().remove(fragment).commit();
             getChildFragmentManager().popBackStack();
         } else {
-//            getCartPageAnalytics().eventClickCartClickArrowBack();
+            getCartPageAnalytics().eventClickAtcCartClickArrowBack();
             getActivity().onBackPressed();
+        }
+    }
+
+    private void notifyBottomCartParent() {
+        if (getActivity() instanceof CartNotifyListener) {
+            ((CartNotifyListener)getActivity()).onNotifyCart();
         }
     }
 }

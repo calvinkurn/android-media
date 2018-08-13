@@ -20,9 +20,7 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity
-//        implements CartFragment.ActionListener
-{
+public class CartActivity extends BaseCheckoutActivity {
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -52,26 +50,6 @@ public class CartActivity extends BaseCheckoutActivity
     @Override
     protected void initView() { }
 
-//    @Override
-//    public void onBackPressed() {
-//        Fragment currentFragment = getCurrentFragment();
-//        if (currentFragment instanceof RemoveCartItemFragment) {
-//            ((RemoveCartItemFragment) currentFragment)
-//                    .getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
-//        } else if (currentFragment instanceof CartFragment) {
-//            ((CartFragment) currentFragment)
-//                    .getCartPageAnalytics().eventClickCartClickArrowBack();
-//        }
-//        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-//            getSupportFragmentManager().popBackStack();
-//        } else {
-//            startActivity(
-//                    ((ICheckoutModuleRouter) getApplication())
-//                            .getHomePageIntent(this)
-//            );
-//            finish();
-//        }
-//    }
     public void onBackPressed() {
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof RemoveCartItemFragment) {
@@ -96,17 +74,6 @@ public class CartActivity extends BaseCheckoutActivity
 
     @Override
     protected void setActionVar() { }
-
-//    @Override
-//    public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-//        Fragment fragment = getCurrentFragment();
-//        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
-//                    .addToBackStack(null)
-//                    .commit();
-//        }
-//    }
 
     @Override
     protected Fragment getNewFragment() {

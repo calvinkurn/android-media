@@ -25,10 +25,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
  * @author by alvinatin on 01/08/18.
  */
 
-public class SeeAllView extends BottomSheets{
+public class SeeAllView extends BottomSheets {
 
-    private RecyclerView holder;
-    private MenuGridAdapter adapter;
     private AccountItemListener listener;
 
     @Override
@@ -37,21 +35,17 @@ public class SeeAllView extends BottomSheets{
     }
 
     @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenHeight = displayMetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight(screenHeight/2);
+    protected BottomSheetsState state() {
+        return BottomSheetsState.FULL;
     }
 
     @Override
     public void initView(View view) {
-        holder = view.findViewById(R.id.holder_all_item);
+        RecyclerView holder = view.findViewById(R.id.holder_all_item);
 
         List<MenuGridItemViewModel> list = createItems();
 
-        adapter = new MenuGridAdapter(listener);
+        MenuGridAdapter adapter = new MenuGridAdapter(listener);
         holder.setAdapter(adapter);
         holder.setLayoutManager(
                 new GridLayoutManager(view.getContext(),
@@ -86,6 +80,16 @@ public class SeeAllView extends BottomSheets{
         list.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_flight,
+                getContext().getString(R.string.title_menu_flight),
+                ApplinkConst.FLIGHT_ORDER,
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
+        );
+        list.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_train,
                 getContext().getString(R.string.title_menu_train),
                 AccountConstants.Navigation.TRAIN_ORDER_LIST,
@@ -106,9 +110,9 @@ public class SeeAllView extends BottomSheets{
         list.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_flight,
-                getContext().getString(R.string.title_menu_flight),
-                ApplinkConst.FLIGHT_ORDER,
+                R.drawable.ic_event,
+                getContext().getString(R.string.title_menu_event),
+                ApplinkConst.EVENTS,
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)
@@ -121,16 +125,6 @@ public class SeeAllView extends BottomSheets{
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
                         AccountConstants.Url.REKSA_DANA_URL),
-                0,
-                PEMBELI,
-                getContext().getString(R.string.title_menu_transaction)
-        );
-        list.add(gridItem);
-
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_event,
-                getContext().getString(R.string.title_menu_event),
-                ApplinkConst.EVENTS,
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)
@@ -161,17 +155,21 @@ public class SeeAllView extends BottomSheets{
         );
         list.add(gridItem);
 
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_donation,
-                getContext().getString(R.string.title_menu_donation),
-                String.format("%s?%s",
-                        ApplinkConst.DIGITAL_PRODUCT,
-                        "category_id=12"),
-                0,
-                PEMBELI,
-                getContext().getString(R.string.title_menu_transaction)
-        );
-        list.add(gridItem);
+        // karina.nana [3:08 PM]
+        //donasi itu omsnya sama ama topup & tagihan
+        //jadi donasi diilangin dulu aja
+
+//        gridItem = new MenuGridItemViewModel(
+//                R.drawable.ic_donation,
+//                getContext().getString(R.string.title_menu_donation),
+//                String.format("%s?%s",
+//                        ApplinkConst.DIGITAL_PRODUCT,
+//                        "category_id=12"),
+//                0,
+//                PEMBELI,
+//                getContext().getString(R.string.title_menu_transaction)
+//        );
+//        list.add(gridItem);
 
         return list;
     }

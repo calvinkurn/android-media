@@ -179,15 +179,6 @@ private static final String NO_SHOP = "-1";
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_deals,
-                context.getString(R.string.title_menu_deals),
-                ApplinkConst.DEALS_ORDER,
-                0,
-                PEMBELI,
-                context.getString(R.string.title_menu_transaction)
-        );
-        menuGridItems.add(gridItem);
-        gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
@@ -196,6 +187,17 @@ private static final String NO_SHOP = "-1";
                 context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_train,
+                context.getString(R.string.title_menu_train),
+                AccountConstants.Navigation.TRAIN_ORDER_LIST,
+                0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),

@@ -3,7 +3,6 @@ package com.tokopedia.design.component;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,7 +10,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
@@ -94,13 +92,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         TextView textViewTitle = parentView.findViewById(R.id.tv_title);
         textViewTitle.setText(title());
 
-        ImageButton btnClose = parentView.findViewById(R.id.btn_close);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCloseButtonClick();
-            }
-        });
+        View layoutTitle = parentView.findViewById(R.id.layout_title);
+        layoutTitle.setOnClickListener(v -> onCloseButtonClick());
 
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);

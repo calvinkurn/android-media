@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -69,7 +70,7 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener {
+        MainParentView, ShowCaseListener, CartNotifyListener {
 
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -119,19 +120,19 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @Override
-    protected void onStart() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
             this.finish();
             return;
         }
-        super.onStart();
+
+        createView(savedInstanceState);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private void createView(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         this.initInjector();
         presenter.setView(this);
@@ -525,5 +526,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
+    }
+
+    @Override
+    public void onNotifyCart() {
+        if (presenter != null)
+            this.presenter.getNotificationData();
     }
 }
