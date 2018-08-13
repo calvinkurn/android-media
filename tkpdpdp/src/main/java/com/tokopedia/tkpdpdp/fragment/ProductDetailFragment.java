@@ -2040,7 +2040,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void refreshData() {
-        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, true, useVariant);
     }
     private void renderTopAds(int itemSize) {
         if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
