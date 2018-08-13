@@ -443,7 +443,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                         if (fragment instanceof FeedPlusFragment)
                             ((FeedPlusFragment) fragment).scrollToTop();
                         else if (fragment instanceof HomeFragment)
-                            ((HomeFragment) fragment).scrollToTop();
+                            ((HomeFragment) fragment).onScrollToTop();
                     }
                 }
             }

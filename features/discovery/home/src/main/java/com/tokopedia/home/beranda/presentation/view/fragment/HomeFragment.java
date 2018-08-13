@@ -78,6 +78,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.searchbar.MainToolbar;
@@ -101,7 +102,7 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         TokoCashUpdateListener, HomeFeedListener, CountDownView.CountDownListener,
-        NotificationListener {
+        NotificationListener, FragmentListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
@@ -880,7 +881,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return getUserVisibleHint();
     }
 
-    public void scrollToTop() {
+    @Override
+    public void onScrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
 
