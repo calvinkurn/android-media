@@ -141,5 +141,6 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
         super.detachView();
         getShopInfoUseCase.unsubscribe();
         saveDraftProductUseCase.unsubscribe();
+        fetchProductVariantByCatUseCase.unsubscribe();
     }
 }

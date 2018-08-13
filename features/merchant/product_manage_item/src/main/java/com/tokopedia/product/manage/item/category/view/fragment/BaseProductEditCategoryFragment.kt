@@ -110,15 +110,20 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             recyclerView.visibility = View.GONE
             labelNotFindCategory.visibility = View.GONE
             setCatalogChosen(productCatalog)
-            setCategoryChosen(productCategory)
         }else{
             titleCategoryRecommendation.visibility = View.VISIBLE
             recyclerView.visibility = View.VISIBLE
             labelNotFindCategory.visibility = View.VISIBLE
             presenter.getCategoryRecommendation(name)
-            if(productCategory.categoryId > 0) {
-                presenter.fetchCatalogData(name, productCategory.categoryId.toLong(), 0, 1)
-            }
+        }
+        if(productCategory.categoryId > 0) {
+            presenter.fetchCatalogData(name, productCategory.categoryId.toLong(), 0, 1)
+        }
+
+        if(productCategory.categoryList != null && productCategory.categoryList?.size?:0 >= 1){
+            setCategoryChosen(productCategory)
+        }else{
+            presenter.fetchCategory(productCategory.categoryId.toLong())
         }
     }
 
@@ -155,9 +160,9 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             presenter.fetchCatalogData(name, productCategory.categoryId.toLong(), 0, 1)
             resetCategoryCatalog()
         }
-        this.productCategory = productCategory
+        this.productCategory = productCategory.copy()
         presenter.categoryId = productCategory.categoryId.toLong()
-        setCategoryChosen(productCategory)
+        setCategoryChosen(this.productCategory)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -234,15 +239,16 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         productCatalog.catalogId = -1
     }
 
-    override fun populateCategory(strings: List<String>) {
+    override fun populateCategory(strings: List<String>, categoryId: Long) {
         val category = strings.filter { !TextUtils.isEmpty(it) }.joinToString(separator = " / ")
-        setCategoryChosen(ProductCategory(categoryName = category))
+        setCategoryChosen(ProductCategory(categoryId = categoryId.toInt(), categoryName = category, categoryList =strings.toTypedArray()))
     }
 
     private fun setCategoryChosen(productCategory: ProductCategory){
-        if (!TextUtils.isEmpty(productCategory.categoryName)) {
-            labelCategory.setContent(productCategory.categoryName)
+        if (!TextUtils.isEmpty(productCategory.getCategoryLastName())) {
+            labelCategory.setContent(productCategory.getCategoryLastName())
         }
+        this.productCategory = productCategory.copy()
         productCategoryRecommendationAdapter.setSelectedCategory(productCategory)
     }
 
@@ -258,6 +264,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         productCategoryRecommendationAdapter.replaceData(categories.map {ProductCategory().apply {
             categoryId = it.lastCategoryId
             categoryName = it.printedString
+            categoryList = it.categoryName
         }})
         setCatalogChosen(productCatalog)
         setCategoryChosen(productCategory)

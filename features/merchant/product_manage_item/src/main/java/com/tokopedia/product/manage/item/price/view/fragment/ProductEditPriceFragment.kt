@@ -137,7 +137,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     }
 
     override fun onChangeAllPriceVariantSubmit(currencyType: Int, currencyValue: Double) {
-        spinnerCounterInputViewPrice.counterValue = currencyValue
+        productPrice.currencyType = currencyType
+        productPrice.price = currencyValue
+        productPrice.wholesalePrice = ArrayList()
+        showDataPrice(productPrice)
     }
 
     private fun showDataPrice(productPrice: ProductPrice){

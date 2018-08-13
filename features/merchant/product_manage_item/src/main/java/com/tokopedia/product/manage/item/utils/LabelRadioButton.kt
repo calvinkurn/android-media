@@ -108,7 +108,7 @@ class LabelRadioButton : BaseCustomView {
         radiobuttonStatus = view.findViewById(R.id.radiobutton_status)
     }
 
-    private fun subTitleText(summaryText: String) {
+    fun subTitleText(summaryText: String) {
         if (TextUtils.isEmpty(summaryText)) {
             summaryTextView.visibility = View.GONE
         } else {

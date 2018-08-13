@@ -332,6 +332,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 visibility = View.VISIBLE
                 text = currentProductViewModel?.productCatalog?.catalogName
             }
+        }else{
+            textViewCatalog.run {
+                visibility = View.GONE
+                text = ""
+            }
         }
 
         if (currentProductViewModel == null) return
@@ -363,9 +368,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         }
         if (currentProductViewModel.productStock?.isActive == true) {
             if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0) {
-                labelViewStockProduct.setContent(getString(R.string.label_always_available))
-            } else {
                 labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
+            } else {
+                labelViewStockProduct.setContent(getString(R.string.label_always_available))
             }
         } else {
             labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
@@ -387,14 +392,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         } else {
             labelViewVariantProduct.visibility = View.GONE
         }
-
-        if (currentProductViewModel.productStock?.isActive == true) {
-            if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0)
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
-            else
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_always_available))
-        } else
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
 
         if (currentProductViewModel.etalaseId ?: 0 > 0) {
             labelViewEtalaseProduct.setContent(currentProductViewModel.etalaseName)

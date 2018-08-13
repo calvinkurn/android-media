@@ -30,29 +30,38 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"/>
     </LinearLayout>
 
-    <LinearLayout
-        style="@style/LabelLayout"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:divider="@drawable/bg_line_separator"
-        android:showDividers="beginning|end">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:divider="@drawable/bg_line_separator"
+            android:showDividers="beginning|end">
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_description"
-            style="@style/HintTextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/product_label_product_description"
-            app:counterEnabled="true"
-            app:counterMaxLength="@integer/product_max_character_description">
-
-            <EditText
-                android:id="@+id/edit_text_description"
-                style="@style/EditText"
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:layout_marginBottom="@dimen/dp_20"
+                android:id="@+id/text_input_layout_description"
+                style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
-                android:gravity="top"
-                android:hint="@string/product_label_enter_product_description"
-                android:inputType="textCapSentences|textMultiLine"
-                android:maxLength="@integer/product_max_character_description" />
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-    </LinearLayout>
+                android:layout_height="wrap_content"
+                android:hint="@string/product_label_product_description"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/product_max_character_description">
+
+                <EditText
+                    android:id="@+id/edit_text_description"
+                    android:overScrollMode="always"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:gravity="top"
+                    android:hint="@string/product_label_enter_product_description"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="@integer/product_max_character_description" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

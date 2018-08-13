@@ -50,7 +50,7 @@ class ProductEditCategoryPresenter
 
      fun fetchCategory(categoryId: Long){
          val requestParam = FetchCategoryDisplayUseCase.generateParam(categoryId)
-         fetchCategoryDisplayUseCase.execute(requestParam, FetchCategoryDisplaySubscriber())
+         fetchCategoryDisplayUseCase.execute(requestParam, FetchCategoryDisplaySubscriber(categoryId))
      }
 
     fun fetchCatalogData(keyword: String, departmentId: Long, start: Int, rows: Int) {
@@ -78,7 +78,7 @@ class ProductEditCategoryPresenter
         onProductName.onNext(productName)
     }
 
-    private inner class FetchCategoryDisplaySubscriber : Subscriber<List<String>>() {
+    private inner class FetchCategoryDisplaySubscriber(categoryId: Long) : Subscriber<List<String>>() {
         override fun onCompleted() {
 
         }
@@ -92,7 +92,7 @@ class ProductEditCategoryPresenter
 
         override fun onNext(strings: List<String>) {
             checkViewAttached()
-            view.populateCategory(strings)
+            view.populateCategory(strings, categoryId)
         }
     }
 

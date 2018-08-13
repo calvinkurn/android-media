@@ -7,7 +7,7 @@ import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catal
 interface ProductEditCategoryView: CustomerView{
     fun onSuccessLoadRecommendationCategory(categories: List<ProductCategoryPredictionViewModel>)
     fun onErrorLoadRecommendationCategory(throwable: Throwable?)
-    fun populateCategory(strings: List<String>)
+    fun populateCategory(strings: List<String>, categoryId: Long)
     fun onErrorLoadCatalog(errorMessage: String?)
     fun onSuccessLoadCatalog(keyword: String, departmentId: Long, catalogs: List<Catalog>)
 

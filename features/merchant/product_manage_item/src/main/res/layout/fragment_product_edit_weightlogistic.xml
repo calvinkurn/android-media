@@ -41,7 +41,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_half"
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
@@ -57,7 +57,7 @@
     <View
         android:id="@+id/lineDividerFreeReturn"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_half"
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
@@ -73,7 +73,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_half"
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 

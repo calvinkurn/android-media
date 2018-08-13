@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.item.category.view.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,7 @@ import com.tokopedia.product.manage.item.category.view.model.ProductCategory
 import kotlinx.android.synthetic.main.item_product_category_recommendation.view.*
 
 class ProductCategoryRecommendationAdapter(private val categoryRecommendationList: MutableList<ProductCategory>,
-                                           var listener: Listener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+                                           var listener: Listener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var selectedPosition = -1
 
@@ -28,9 +29,38 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.titleTextView.text = categoryRecommendationList[position].categoryName
-        holder.itemView.radioButtonStatus.isChecked = selectedPosition == position
+        holder.itemView.labelCategoryRecommendation.title = categoryRecommendationList[position].categoryName
+        categoryRecommendationList[position].categoryList?.run {
+            var title = convertTitle(this)
+            var subtitle = convertSubtitle(this)
+            if(TextUtils.isEmpty(title)){
+                title = subtitle
+                subtitle = ""
+            }
+            holder.itemView.labelCategoryRecommendation.title = title
+            holder.itemView.labelCategoryRecommendation.subTitleText(subtitle)
+        }
+        holder.itemView.labelCategoryRecommendation.isChecked = selectedPosition == position
     }
+
+    private fun convertSubtitle(strings: Array<String>): String {
+        if(strings.size > 0){
+            return strings.get(strings.size -1)
+        }
+        return ""
+    }
+
+    private fun convertTitle(strings: Array<String>): String {
+        var tempName = ""
+        for (i in 0 until strings.size -1) {
+            if (!TextUtils.isEmpty(tempName)) {
+                tempName += " / "
+            }
+            tempName += strings.get(i)
+        }
+        return tempName
+    }
+
 
     override fun getItemCount() = categoryRecommendationList.size
 
@@ -48,26 +78,39 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
         return categoryRecommendationList[selectedPosition]
     }
 
-    fun setSelectedCategory(productCategory: ProductCategory){
-        for ((index, value) in categoryRecommendationList.withIndex()){
-            if(value.categoryName == productCategory.categoryName){
+    fun setSelectedCategory(productCategory: ProductCategory) {
+        var isMatchCategory = false;
+        for ((index, value) in categoryRecommendationList.withIndex()) {
+            if (value.categoryId == productCategory.categoryId) {
                 selectedPosition = index
-                notifyDataSetChanged()
+                isMatchCategory = true
                 break
             }
         }
+        if(!isMatchCategory){
+            selectedPosition = -1
+        }
+        notifyDataSetChanged()
     }
 
     inner class ProductCategoryRecommendationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             setView()
         }
-        fun setView(){
+
+        fun setView() {
+            itemView.labelCategoryRecommendation.setOnClickListener {
+                onClickItemCategory()
+            }
             itemView.setOnClickListener({
-                selectedPosition = adapterPosition
-                notifyDataSetChanged()
-                listener.onCategoryRecommendationChoosen(getSelectedCategory())
+                onClickItemCategory()
             })
+        }
+
+        fun onClickItemCategory() {
+            selectedPosition = adapterPosition
+            notifyDataSetChanged()
+            listener.onCategoryRecommendationChoosen(getSelectedCategory())
         }
     }
 }
