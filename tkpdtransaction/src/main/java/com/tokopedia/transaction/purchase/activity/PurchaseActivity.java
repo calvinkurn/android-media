@@ -152,10 +152,22 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
+
+    @Override
+    protected int getContentId() {
+        if (GlobalConfig.isSellerApp())
+            return super.getContentId();
+        return R.layout.layout_tab_secondary;
+    }
+
+    @Override
     protected int getLayoutId() {
         if (GlobalConfig.isSellerApp())
             return R.layout.activity_purchase_tx_module;
-        return R.layout.layout_tablayout_secondary;
+        return 0;
     }
 
     @Override

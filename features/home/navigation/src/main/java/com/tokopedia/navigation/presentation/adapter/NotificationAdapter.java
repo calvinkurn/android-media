@@ -96,7 +96,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
             labelView.setTitle(child.getTitle());
 
             if (child.getBadge() != null && child.getBadge() > 0) {
-                labelView.setBadgeCounter(String.format("%s", child.getBadge()));
+                labelView.setBadgeCounter(child.getBadge());
             }
             labelView.showRightArrow(true);
             separator.setVisibility(View.GONE);

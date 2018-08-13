@@ -83,9 +83,21 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
+
+    @Override
+    protected int getContentId() {
+        if (GlobalConfig.isSellerApp())
+            return super.getContentId();
+        return R.layout.layout_tab_secondary;
+    }
+
+    @Override
     protected int getLayoutId() {
         if (GlobalConfig.isCustomerApp())
-            return R.layout.layout_tablayout_secondary;
+            return 0;
         return R.layout.activity_order_list_module;
     }
 
