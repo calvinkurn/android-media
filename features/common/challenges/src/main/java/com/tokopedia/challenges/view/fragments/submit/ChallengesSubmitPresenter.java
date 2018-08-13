@@ -88,15 +88,20 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
         } else {
             mIntializeMultiPartUseCase.generateRequestParams(title,description,imagePath);
+            getView().showProgress("Uploading");
             mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
                 @Override
                 public void onCompleted() {
-
+                    getView().hideProgress();
+                    getView().showMessage("Image Uploaded Success");
+                    getView().finish();
                 }
 
                 @Override
                 public void onError(Throwable e) {
+                    getView().hideProgress();
                     e.printStackTrace();
+                    getView().showMessage("Image Uploaded Failed");
                 }
 
                 @Override

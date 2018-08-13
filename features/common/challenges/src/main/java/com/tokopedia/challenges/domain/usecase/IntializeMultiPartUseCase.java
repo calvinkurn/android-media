@@ -80,11 +80,9 @@ public class IntializeMultiPartUseCase extends RestRequestSupportInterceptorUseC
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-
         RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.Upload.CHALLENGE_INTIALIZE_MULTIPART,challengeID), UploadFingerprints.class)
                 .setRequestType(RequestType.POST_MULTIPART).setBody(requestBodyMap) .build();
         tempRequest.add(restRequest1);
-
         return tempRequest;
     }
 
@@ -92,7 +90,7 @@ public class IntializeMultiPartUseCase extends RestRequestSupportInterceptorUseC
 
     public void generateRequestParams(String title, String description, String imagePath) {
         this.imagePath = imagePath;
-       requestBodyMap.put(IMAGE_TITLE, Utils.generateRequestPlainTextBody(title));
+        requestBodyMap.put(IMAGE_TITLE, Utils.generateRequestPlainTextBody(title));
         requestBodyMap.put(IMAGE_DESCRIPTION, Utils.generateRequestPlainTextBody(description));
         File imageFile = new File(imagePath);
         requestBodyMap.put(FILE_NAME, Utils.generateRequestPlainTextBody(imageFile.getName()));
