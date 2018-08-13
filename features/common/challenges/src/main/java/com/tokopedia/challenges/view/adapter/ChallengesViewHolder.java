@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.RemainingDaysFormatter;
 import com.tokopedia.challenges.view.utils.Utils;
 
@@ -45,7 +47,9 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-            ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
+           // ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
+
+            ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge( context,ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengesResult.getTitle(),challengesResult.getThumbnailUrl(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
         });
     }
 

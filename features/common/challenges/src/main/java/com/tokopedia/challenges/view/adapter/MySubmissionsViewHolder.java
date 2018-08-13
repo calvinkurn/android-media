@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
@@ -26,7 +27,7 @@ class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
     private SubmissionResult submissionsResult;
 
-    MySubmissionsViewHolder(Context context,View view) {
+    MySubmissionsViewHolder(Context context, View view) {
         super(view);
         this.context = context;
         tvTitle = view.findViewById(R.id.tv_title);
@@ -36,11 +37,11 @@ class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
         view.setOnClickListener(view1 -> {
-            Intent intent =new Intent(view1.getContext(), SubmitDetailActivity.class);
+            Intent intent = new Intent(view1.getContext(), SubmitDetailActivity.class);
             intent.putExtra("submissionsResult", submissionsResult);
             view.getContext().startActivity(intent);
         });
-        imgShare.setOnClickListener(v -> ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context,"tokopedia://referral", submissionsResult.getSharing().getMetaTags().getOgTitle(),submissionsResult.getSharing().getMetaTags().getOgImage()));
+        imgShare.setOnClickListener(v -> ((ChallengesModuleRouter) (((Activity) context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getThumbnailUrl(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
     }
 
     void bind(SubmissionResult challengesResult) {
@@ -48,7 +49,7 @@ class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         tvTitle.setText(challengesResult.getTitle());
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
         //imgLikes
-      //  tvStatus.setText(submissionsResult.getSubmissionCount());
+        //  tvStatus.setText(submissionsResult.getSubmissionCount());
         ImageHandler.loadImageAndCache(imgChallenge, challengesResult.getThumbnailUrl());
     }
 

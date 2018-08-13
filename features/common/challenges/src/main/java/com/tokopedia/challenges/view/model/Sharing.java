@@ -15,12 +15,21 @@ public class Sharing implements Parcelable {
     @SerializedName("Assets")
     @Expose
     private Assets assets;
+    @SerializedName("SocialTracking")
+    @Expose
+    private SocialTracking socialTracking;
 
     protected Sharing(Parcel in) {
+        metaTags = in.readParcelable(MetaTags.class.getClassLoader());
+        assets = in.readParcelable(Assets.class.getClassLoader());
+        socialTracking = in.readParcelable(SocialTracking.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(metaTags, flags);
+        dest.writeParcelable(assets, flags);
+        dest.writeParcelable(socialTracking, flags);
     }
 
     @Override
@@ -56,4 +65,11 @@ public class Sharing implements Parcelable {
         this.assets = assets;
     }
 
+    public SocialTracking getSocialTracking() {
+        return socialTracking;
+    }
+
+    public void setSocialTracking(SocialTracking socialTracking) {
+        this.socialTracking = socialTracking;
+    }
 }

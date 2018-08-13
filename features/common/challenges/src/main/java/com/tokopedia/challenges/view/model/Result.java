@@ -49,7 +49,6 @@ public class Result implements Parcelable {
     @Expose
     private Me me;
 
-
     protected Result(Parcel in) {
         id = in.readString();
         type = in.readString();

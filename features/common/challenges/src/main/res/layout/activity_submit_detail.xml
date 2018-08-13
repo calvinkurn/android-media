@@ -144,7 +144,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:src="@drawable/ic_buzz_points"
+                android:src="@drawable/ic_wishlist_unchecked"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_16"
-                android:src="@drawable/ic_wishlist_unchecked"
+                android:src="@drawable/ic_buzz_points"
                 app:layout_constraintLeft_toRightOf="@+id/tv_likes"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
