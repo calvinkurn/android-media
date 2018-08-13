@@ -284,6 +284,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         }else if (requestCode == REQUEST_CODE_VIDEO && resultCode == Activity.RESULT_OK && data != null) {
             MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
             mAttachmentPath = item.getRealPath();
+            ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
         }
 
     }

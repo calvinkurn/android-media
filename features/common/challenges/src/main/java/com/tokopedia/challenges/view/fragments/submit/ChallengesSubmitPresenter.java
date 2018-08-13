@@ -63,6 +63,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onNext(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
                 settings = res1.getData();
+                if(!settings.isUploadAllowed()) {
+                    getView().showMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
+                    getView().finish();
+                }
             }
         });
     }
@@ -74,8 +78,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         String title = getView().getImageTitle();
         String description = getView().getDescription();
         String imagePath = getView().getImage();
-        if (!isValidateTitle(title)) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
+        if(imagePath == null || imagePath.isEmpty()) {
+            getView().setSnackBarErrorMessage("Please select image");
+        }else if (!isValidateTitle(title)) {
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));  // TODO update messages
         } else if (!isValidateDescription(description)) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
         } else if (!isValidateSize(imagePath)) {
@@ -90,7 +96,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
                 @Override
                 public void onError(Throwable e) {
-
+                    e.printStackTrace();
                 }
 
                 @Override
@@ -105,7 +111,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     private boolean isValidateSize(String fileLoc) {
         File file = new File(fileLoc);
         long size = file.length();
-        return ((size / 1024) < MB_10);
+        return true;
     }
 
     private boolean isValidateDescription(@NonNull String description) {
