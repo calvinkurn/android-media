@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.PassengerBookingActivity;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -279,7 +280,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         TrainBookingPassengerAdapterTypeFactory adapterTypeFactory = new TrainBookingPassengerAdapterTypeFactory(new TrainBookingPassengerAdapterListener() {
             @Override
             public void onChangePassengerData(TrainPassengerViewModel trainPassengerViewModel) {
-                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, false), ADD_PASSENGER_REQUEST_CODE);
+                startActivity(PassengerBookingActivity.newInstance(getActivity()));
+//                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, false), ADD_PASSENGER_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -428,7 +430,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         buyerViewModel = trainPassengerViewModel;
         trainParamPassenger.setCheckedSameAsBuyer(false);
         sameAsBuyerCheckbox.setChecked(false);
-        startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, true), ADD_PASSENGER_REQUEST_CODE);
+        startActivity(PassengerBookingActivity.newInstance(getActivity()));
+//        startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, true), ADD_PASSENGER_REQUEST_CODE);
     }
 
     @SuppressWarnings("Range")
