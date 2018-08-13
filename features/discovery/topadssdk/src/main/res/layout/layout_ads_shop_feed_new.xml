@@ -8,10 +8,7 @@
     android:background="@color/white"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_6"
-    android:paddingLeft="@dimen/dp_6"
-    android:paddingStart="@dimen/dp_6"
-    tools:ignore="RtlSymmetry">
+    android:paddingBottom="@dimen/dp_6">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/header"
@@ -98,10 +95,10 @@
                 android:fontFamily="sans-serif-medium"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
+                android:paddingBottom="@dimen/dp_4"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_4"
-                android:paddingBottom="@dimen/dp_4"
                 android:text="@string/favoritkan"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_very_small"
@@ -113,6 +110,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_6"
+        android:paddingStart="@dimen/dp_6"
+        tools:ignore="RtlSymmetry" />
 
 </LinearLayout>

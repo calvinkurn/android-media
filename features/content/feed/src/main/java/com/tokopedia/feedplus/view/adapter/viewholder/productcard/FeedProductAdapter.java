@@ -67,24 +67,14 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             int extraProduct = (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION);
             showBlackScreen(holder, extraProduct);
 
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToFeedDetail();
-                }
-            });
+            holder.container.setOnClickListener(goToFeedDetail());
         } else if (list.size() < MAX_FEED_SIZE
                 && list.size() > MAX_FEED_SIZE_SMALL
                 && position == LAST_FEED_POSITION_SMALL) {
             int extraProduct = (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION_SMALL);
             showBlackScreen(holder, extraProduct);
 
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToFeedDetail();
-                }
-            });
+            holder.container.setOnClickListener(goToFeedDetail());
         } else {
             holder.extraProduct.setBackground(null);
             holder.extraProduct.setVisibility(View.GONE);
@@ -94,12 +84,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.productPrice.setVisibility(View.VISIBLE);
             holder.productPrice.setText(list.get(position).getPrice());
 
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToProductDetail(list, holder.getAdapterPosition());
-                }
-            });
+            holder.container.setOnClickListener(
+                    goToProductDetail(list, holder.getAdapterPosition())
+            );
         }
 
         setProductNamePadding(holder);
@@ -152,29 +139,32 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         holder.productPrice.setVisibility(View.GONE);
     }
 
-    private void goToFeedDetail() {
-        viewListener.onGoToFeedDetail(
+    private View.OnClickListener goToFeedDetail() {
+        return v -> viewListener.onGoToFeedDetail(
                 activityCardViewModel.getPage(),
                 activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId()
         );
     }
 
-    private void goToProductDetail(ArrayList<ProductFeedViewModel> list, int position) {
-        viewListener.onGoToProductDetailFromProductUpload(
-                activityCardViewModel.getRowNumber(),
-                activityCardViewModel.getPositionFeedCard(),
-                list.get(position).getPage(),
-                position,
-                String.valueOf(list.get(position).getProductId()),
-                list.get(position).getImageSourceSingle(),
-                list.get(position).getName(),
-                list.get(position).getPrice(),
-                list.get(position).getPriceInt(),
-                list.get(position).getUrl(),
-                activityCardViewModel.getEventLabel()
-        );
+    private View.OnClickListener goToProductDetail(ArrayList<ProductFeedViewModel> list,
+                                                   int position) {
+        return v -> {
+            viewListener.onGoToProductDetailFromProductUpload(
+                    activityCardViewModel.getRowNumber(),
+                    activityCardViewModel.getPositionFeedCard(),
+                    list.get(position).getPage(),
+                    position,
+                    String.valueOf(list.get(position).getProductId()),
+                    list.get(position).getImageSourceSingle(),
+                    list.get(position).getName(),
+                    list.get(position).getPrice(),
+                    list.get(position).getPriceInt(),
+                    list.get(position).getUrl(),
+                    activityCardViewModel.getEventLabel()
+            );
 
-        doTrackingEnhancedEcommerce();
+            doTrackingEnhancedEcommerce();
+        };
     }
 
     private void doTrackingEnhancedEcommerce() {
