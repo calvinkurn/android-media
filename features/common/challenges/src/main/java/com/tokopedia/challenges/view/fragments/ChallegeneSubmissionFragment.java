@@ -51,6 +51,7 @@ import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ChallengeSubmissionPresenter;
+import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -182,10 +183,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         seeMoreButtonTnc = view.findViewById(R.id.seemorebutton_tnc);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         flHeader = view.findViewById(R.id.fl_header);
-        mainContent=view.findViewById(R.id.main_content);
+        mainContent = view.findViewById(R.id.main_content);
         btnShare = view.findViewById(R.id.fab_share);
         btnShare.setOnClickListener(this);
-        baseMainContent=view.findViewById(R.id.base_main_content);
+        baseMainContent = view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
         mPresenter.attachView(this);
@@ -251,7 +252,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             submissionRecyclerView.setAdapter(submissionItemAdapter);
         }
     }
-
 
 
     @Override
@@ -403,10 +403,12 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             fragmentCallbacks.replaceFragment(tncText, "How Do you Generate Buzz Points?");
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, "Terms & Conditions");
-        }else if(v.getId() == R.id.fab_share){
-            ((ChallengesModuleRouter) (getActivity().getApplication())).shareChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
-                    challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(),
-                    challengeResult.getSharing().getMetaTags().getOgImage());
+        } else if (v.getId() == R.id.fab_share) {
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage());
+
+//            ((ChallengesModuleRouter) (getActivity().getApplication())).shareChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
+//                    challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(),
+//                    challengeResult.getSharing().getMetaTags().getOgImage());
         }
 
     }

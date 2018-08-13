@@ -28,9 +28,20 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
 
         //Request 1
 
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS, SubmissionResponse.class)
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=approved", SubmissionResponse.class)
                 .build();
+
+//        RestRequest restRequest2 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=waiting", SubmissionResponse.class)
+//                .build();
+//
+//
+//        RestRequest restRequest3 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=declined", SubmissionResponse.class)
+//                .build();
+
+
         tempRequest.add(restRequest1);
+        //tempRequest.add(restRequest2);
+        //tempRequest.add(restRequest3);
 
         return tempRequest;
     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -23,6 +24,7 @@ import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.contractor.SubmissionAdapterContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmissionAdapterPresenter;
+import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -231,7 +233,9 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-                ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS,categoryItems.get(getIndex()).getTitle(),categoryItems.get(getIndex()).getThumbnailUrl(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
+               // ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS,categoryItems.get(getIndex()).getTitle(),categoryItems.get(getIndex()).getThumbnailUrl(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
+                ShareBottomSheet.show(((AppCompatActivity)getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
+
             } else if (v.getId() == R.id.iv_like) {
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
                 if (categoryItems.get(getIndex()).getMe() != null) {

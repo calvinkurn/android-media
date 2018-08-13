@@ -42,6 +42,11 @@ public class ShareData implements Parcelable {
     private String id = "";
     private String shareUrl;
     private String pathSticker;
+    private String ogUrl;
+    private String ogTitle;
+    private String ogDescription;
+    private String ogImageUrl;
+
 
     public ShareData() {
     }
@@ -58,6 +63,10 @@ public class ShareData implements Parcelable {
         id = in.readString();
         shareUrl = in.readString();
         pathSticker = in.readString();
+        ogUrl = in.readString();
+        ogTitle = in.readString();
+        ogDescription = in.readString();
+        ogImageUrl = in.readString();
     }
 
     @Override
@@ -73,6 +82,10 @@ public class ShareData implements Parcelable {
         dest.writeString(id);
         dest.writeString(shareUrl);
         dest.writeString(pathSticker);
+        dest.writeString(ogUrl);
+        dest.writeString(ogTitle);
+        dest.writeString(ogDescription);
+        dest.writeString(ogImageUrl);
     }
 
     @Override
@@ -251,6 +264,38 @@ public class ShareData implements Parcelable {
         this.pathSticker = pathSticker;
     }
 
+    public String getOgUrl() {
+        return ogUrl;
+    }
+
+    public void setOgUrl(String ogUrl) {
+        this.ogUrl = ogUrl;
+    }
+
+    public String getOgTitle() {
+        return ogTitle;
+    }
+
+    public void setOgTitle(String ogTitle) {
+        this.ogTitle = ogTitle;
+    }
+
+    public String getOgDescription() {
+        return ogDescription;
+    }
+
+    public void setOgDescription(String ogDescription) {
+        this.ogDescription = ogDescription;
+    }
+
+    public String getOgImageUrl() {
+        return ogImageUrl;
+    }
+
+    public void setOgImageUrl(String ogImageUrl) {
+        this.ogImageUrl = ogImageUrl;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -263,6 +308,10 @@ public class ShareData implements Parcelable {
         private String id;
         private String shareUrl;
         private String pathSticker;
+        private String ogUrl;
+        private String ogTitle;
+        private String ogDescription;
+        private String ogImageUrl;
 
         private Builder() {
         }
@@ -325,6 +374,26 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setOgUrl(String ogUrl) {
+            this.ogUrl = ogUrl;
+            return this;
+        }
+
+        public Builder setOgTitle(String ogTitle) {
+            this.ogTitle = ogTitle;
+            return this;
+        }
+
+        public Builder setOgDescription(String ogDescription) {
+            this.ogDescription = ogDescription;
+            return this;
+        }
+
+        public Builder setOgImageUrl(String ogImageUrl) {
+            this.ogImageUrl = ogImageUrl;
+            return this;
+        }
+
         public Builder but() {
             return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -342,6 +411,10 @@ public class ShareData implements Parcelable {
             shareData.setId(id);
             shareData.setShareUrl(shareUrl);
             shareData.setPathSticker(pathSticker);
+            shareData.setOgUrl(ogUrl);
+            shareData.setPathSticker(ogTitle);
+            shareData.setPathSticker(ogDescription);
+            shareData.setPathSticker(ogImageUrl);
             return shareData;
         }
 
