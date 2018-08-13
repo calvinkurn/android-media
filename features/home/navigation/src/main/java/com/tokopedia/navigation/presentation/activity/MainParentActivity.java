@@ -26,6 +26,10 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
@@ -178,6 +182,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(GlobalNavComponent globalNavComponent){
+        globalNavComponent.inject(this);
+
+        presenter.setView(this);
     }
 
     @Override
