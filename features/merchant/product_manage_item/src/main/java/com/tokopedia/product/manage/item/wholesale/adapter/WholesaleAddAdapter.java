@@ -125,14 +125,11 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             }
             etWholeSalePrice.addTextChangedListener(textWatcher);
 
-            etWholeSalePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        if(isWithinDataset(getAdapterPosition())){
-                            setFocusFalse();
-                            wholesaleModels.get(getAdapterPosition()).setFocusPrice(true);
-                        }
+            etWholeSalePrice.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    if(isWithinDataset(getAdapterPosition())){
+                        setFocusFalse();
+                        wholesaleModels.get(getAdapterPosition()).setFocusPrice(true);
                     }
                 }
             });
@@ -145,34 +142,21 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                         wholesaleModels.get(getAdapterPosition()).setFocusQty(false);
                         currentPositionFocusQty = getAdapterPosition();
                         currentPositionFocusPrice = -1;
-                        etRangeWholesale.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                notifyDataSetChanged();
-                            }
-                        });
+                        etRangeWholesale.post(() -> notifyDataSetChanged());
                     }
                 }
             });
 
-            etRangeWholesale.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        if(isWithinDataset(getAdapterPosition())){
-                            setFocusFalse();
-                            wholesaleModels.get(getAdapterPosition()).setFocusQty(true);
-                        }
+            etRangeWholesale.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    if(isWithinDataset(getAdapterPosition())){
+                        setFocusFalse();
+                        wholesaleModels.get(getAdapterPosition()).setFocusQty(true);
                     }
                 }
             });
 
-            imageWholesale.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    removeItem(getAdapterPosition());
-                }
-            });
+            imageWholesale.setOnClickListener(v -> removeItem(getAdapterPosition()));
         }
 
         private void setValueAndRefresh(double number){
@@ -188,12 +172,7 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             for(int i = 0 ; i < wholesaleModels.size() ; i++){
                 final int j = i;
                 if(j!= getAdapterPosition()){
-                    etWholeSalePrice.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyItemChanged(j);
-                        }
-                    });
+                    etWholeSalePrice.post(() -> notifyItemChanged(j));
                 }
             }
         }

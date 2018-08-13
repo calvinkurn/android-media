@@ -6,5 +6,8 @@
 
     <integer name="max_length_price_input">11</integer>
 
+    <integer name="max_length_price_wholesale">20</integer>
+    <integer name="max_length_quantity_wholesale">15</integer>
+
     <integer name="corner_radius_shimmering">20</integer>
 </resources>
