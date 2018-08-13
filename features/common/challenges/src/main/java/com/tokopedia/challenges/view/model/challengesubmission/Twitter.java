@@ -1,14 +1,13 @@
 
 package com.tokopedia.challenges.view.model.challengesubmission;
 
-import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Twitter implements Serializable, Parcelable
+public class Twitter implements Parcelable
 {
 
     @SerializedName("Instructions")
@@ -33,7 +32,6 @@ public class Twitter implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -3394447212968575869L;
 
     protected Twitter(Parcel in) {
         this.instructions = ((String) in.readValue((String.class.getClassLoader())));

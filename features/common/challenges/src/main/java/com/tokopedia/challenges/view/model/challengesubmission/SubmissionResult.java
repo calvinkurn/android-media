@@ -248,4 +248,5 @@ public class SubmissionResult implements Parcelable
     public void setSharing(Sharing sharing) {
         this.sharing = sharing;
     }
+
 }

@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.model.IndiUserModel;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -100,7 +101,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(),"tokopedia://referral", model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
+            ((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(), ChallengesUrl.AppLink.CHALLENGES_DETAILS,model.getTitle(),model.getThumbnailUrl(),model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
 
         });
     }

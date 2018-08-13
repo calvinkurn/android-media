@@ -1,5 +1,5 @@
 
-package com.tokopedia.challenges.view.model.challengesubmission;
+package com.tokopedia.challenges.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Youtube implements Parcelable
+public class Instagram implements Parcelable
 {
 
     @SerializedName("Instructions")
@@ -19,30 +19,30 @@ public class Youtube implements Parcelable
     @SerializedName("VideoAssetUrl")
     @Expose
     private String videoAssetUrl;
-    public final static Creator<Youtube> CREATOR = new Creator<Youtube>() {
+    public final static Creator<Instagram> CREATOR = new Creator<Instagram>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public Youtube createFromParcel(Parcel in) {
-            return new Youtube(in);
+        public Instagram createFromParcel(Parcel in) {
+            return new Instagram(in);
         }
 
-        public Youtube[] newArray(int size) {
-            return (new Youtube[size]);
+        public Instagram[] newArray(int size) {
+            return (new Instagram[size]);
         }
 
     }
     ;
 
-    protected Youtube(Parcel in) {
+    protected Instagram(Parcel in) {
         this.instructions = ((String) in.readValue((String.class.getClassLoader())));
         this.requiredText = ((String) in.readValue((String.class.getClassLoader())));
         this.videoAssetUrl = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    public Youtube() {
+    public Instagram() {
     }
 
     public String getInstructions() {
