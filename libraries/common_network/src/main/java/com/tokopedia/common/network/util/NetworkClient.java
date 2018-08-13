@@ -20,6 +20,8 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 public class NetworkClient {
     private static Retrofit sRetrofit = null;
     private static RestApi sRestApi = null;
+    private static RestApi sRestApiNoInterceptor = null;
+    private static Retrofit sRetrofitNoInterceptor = null;
     private static FingerprintManager sFingerprintManager = null;
     private static UserSession sUserSession;
 
@@ -56,6 +58,26 @@ public class NetworkClient {
             sRestApi = getRetrofit().create(RestApi.class);
         }
         return sRestApi;
+    }
+
+    public static RestApi getApiInterfaceWithNoInterceptor(Context context) {
+        if (sRestApiNoInterceptor == null) {
+            sRestApiNoInterceptor = getRetrofitNoInterceptor(context).create(RestApi.class);
+        }
+        return sRestApiNoInterceptor;
+    }
+
+    public static Retrofit getRetrofitNoInterceptor(Context context) {
+        if (sRetrofitNoInterceptor == null) {
+            FlowManager.initModule(CommonNetworkGeneratedDatabaseHolder.class);
+            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
+            sRetrofitNoInterceptor = new Retrofit.Builder()
+                    .baseUrl(RestConstant.BASE_URL)
+                    .addConverterFactory(new StringResponseConverter())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .client(tkpdOkHttpBuilder.build()).build();
+        }
+        return sRetrofitNoInterceptor;
     }
 
     public static synchronized FingerprintManager getFingerPrintManager() {
