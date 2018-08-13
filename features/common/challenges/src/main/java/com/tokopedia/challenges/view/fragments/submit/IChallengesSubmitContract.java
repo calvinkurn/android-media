@@ -23,10 +23,15 @@ public interface IChallengesSubmitContract {
         public void setChallengeTitle(String text);
         public void setChallengeDescription(String text);
 
+        public void showImageVideoPicker();
+        public void selectImage();
+        public void selectVideo();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
         void onSubmitButtonClick();
         void onCancelButtonClick();
+
+        void onSelectedImageClick();
     }
 }

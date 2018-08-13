@@ -10,11 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
 
 /**

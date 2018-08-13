@@ -1,14 +1,20 @@
 package com.tokopedia.challenges.view.fragments.submit;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +24,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
+import com.tokopedia.challenges.view.customview.ExpandableTextView;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.MediaItem;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
@@ -29,7 +39,15 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import java.io.File;
 import java.util.ArrayList;
 
+
 import javax.inject.Inject;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
@@ -37,6 +55,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
+@RuntimePermissions
 public class ChallengesSubmitFragment extends BaseDaggerFragment implements IChallengesSubmitContract.View {
 
     private ImageView mSelectedImage;
@@ -45,10 +64,12 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private AppCompatEditText mEdtImageDescription;
     private TextView mBtnSubmit;
     private TextView mBtnCancel;
+    private TextView mShowMore;
 
     private ImagePickerBuilder imagePickerBuilder;
     public static final int REQUEST_IMAGE_SELECT = 1;
-    String mImagePath;
+    private static final int REQUEST_CODE_VIDEO = 2;
+    String mAttachmentPath;
 
     private View parent;
 
@@ -57,7 +78,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     ChallengesSubmitPresenter presenter;
     private Result challengeResult;
     private TextView mChallengeTitle;
-    private TextView mChallengeDescription;
+    private ExpandableTextView mChallengeDescription;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +99,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_submit_challenge, container, false);
         initView(view);
+        mChallengeDescription.setInterpolator(new OvershootInterpolator());
         presenter.attachView(this);
         setClickListener();
         return view;
@@ -102,9 +124,23 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mSelectedImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showImagePickerDialog();
+                presenter.onSelectedImageClick();
             }
         });
+
+        mShowMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mChallengeDescription.isExpanded()) {
+                    mShowMore.setText(R.string.expand);
+                } else {
+                    mShowMore.setText(R.string.collapse);
+                }
+                mChallengeDescription.toggle();
+            }
+        });
+
+
     }
 
 
@@ -125,7 +161,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public String getImage() {
-        return mImagePath;
+        return mAttachmentPath;
     }
 
 
@@ -192,6 +228,21 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mChallengeDescription.setText(text);
     }
 
+    @Override
+    public void showImageVideoPicker() {
+        showVideoImageChooseDialog();
+    }
+
+    @Override
+    public void selectImage() {
+        presenter.onSelectedImageClick();
+    }
+
+    @Override
+    public void selectVideo() {
+        ChallengesSubmitFragmentPermissionsDispatcher.actionVideoPickerWithCheck(ChallengesSubmitFragment.this);
+    }
+
     private void initView(View view) {
         mSelectedImage = view.findViewById(R.id.selected_image);
         mDeleteImage = view.findViewById(R.id.delete_image);
@@ -202,6 +253,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         parent = view.findViewById(R.id.constraint_layout);
         mChallengeTitle = view.findViewById(R.id.challenge_title);
         mChallengeDescription = view.findViewById(R.id.challenge_description);
+        mShowMore = view.findViewById(R.id.show_more);
     }
 
     private void showImagePickerDialog() {
@@ -226,9 +278,12 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         if (requestCode == REQUEST_IMAGE_SELECT && resultCode == Activity.RESULT_OK && data != null) {
             ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
             if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                mImagePath = imageUrlOrPathList.get(0);
-                ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mImagePath));
+                mAttachmentPath = imageUrlOrPathList.get(0);
+                ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
             }
+        }else if (requestCode == REQUEST_CODE_VIDEO && resultCode == Activity.RESULT_OK && data != null) {
+            MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
+            mAttachmentPath = item.getRealPath();
         }
 
     }
@@ -248,4 +303,55 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     protected String getScreenName() {
         return null;
     }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void actionVideoPicker() {
+        startActivityForResult(
+                GalleryActivity.createIntent(getActivity(), com.tokopedia.core.gallery.GalleryType.ofVideoOnly()),
+                REQUEST_CODE_VIDEO
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ChallengesSubmitFragmentPermissionsDispatcher.onRequestPermissionsResult(ChallengesSubmitFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    private void showVideoImageChooseDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getContext().getResources().getString(R.string.dialog_upload_option));
+        builder.setPositiveButton(getContext().getResources().getString(R.string.title_video), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ChallengesSubmitFragmentPermissionsDispatcher.actionVideoPickerWithCheck(ChallengesSubmitFragment.this);
+            }
+        }).setNegativeButton(getContext().getResources().getString(R.string.title_image), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                showImagePickerDialog();
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+
 }

@@ -28,4 +28,8 @@
     <string name="approval_wait">Waiting For Approval. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod</string>
     <string name="buzz_point_request">Help your post to gain more buzz point by sharing</string>
     <string name="share">Share</string>
+    <string name="show_more">Show More</string>
+
+    <string name="title_video">Video</string>
+    <string name="title_image">Gambar</string>
 </resources>

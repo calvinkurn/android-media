@@ -30,6 +30,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     GetChallengeSettingUseCase mGetChallengeSettingUseCase;
     GetChallegeTermsUseCase mGetChallegeTermsUseCase;
     IntializeMultiPartUseCase mIntializeMultiPartUseCase;
+    public ChallengeSettings settings;
 
     @Inject
     public ChallengesSubmitPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallegeTermsUseCase mGetChallegeTermsUseCase, IntializeMultiPartUseCase mIntializeMultiPartUseCase) {
@@ -41,10 +42,13 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     @Override
     public void attachView(IChallengesSubmitContract.View view) {
         super.attachView(view);
+        getView().setChallengeTitle(getView().getChallengeResult().getTitle());
+        getView().setChallengeDescription(getView().getChallengeResult().getDescription());
         mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mGetChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+
             @Override
             public void onCompleted() {
 
@@ -58,21 +62,12 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
-                ChallengeSettings settings = res1.getData();
-                updateUI(settings);
+                settings = res1.getData();
             }
         });
     }
 
-    private void updateUI(ChallengeSettings settings) {
-        if(settings.isUploadAllowed()) {
-            if(settings.isAllowPhotos()) {
-                //update UI
-            }else if(settings.isAllowVideos()){
-                // update UI
-            }
-        }
-     }
+
 
     @Override
     public void onSubmitButtonClick() {
@@ -130,6 +125,19 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     @Override
     public void onCancelButtonClick() {
         getView().finish();
+    }
+
+    @Override
+    public void onSelectedImageClick() {
+        if(settings.isAllowVideos() && settings.isAllowPhotos())  {
+            getView().showImageVideoPicker();
+        }else if(settings.isAllowPhotos()) {
+            getView().selectImage();
+            //update UI
+        }else if(settings.isAllowVideos()){
+            // update UI
+            getView().selectVideo();
+        }
     }
 
 }
