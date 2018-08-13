@@ -64,7 +64,6 @@ import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
-import com.tokopedia.vote.di.VoteModule;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -236,6 +235,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (getActivity() != null
+                        && getActivity() instanceof GroupChatContract.View
+                        && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+                    analytics.eventClickLogin(
+                            ((GroupChatContract.View) getActivity()).
+                                    getChannelInfoViewModel().getChannelId());
+                }
+
                 goToLogin();
             }
         });
@@ -276,7 +284,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void goToLogin() {
-        ((GroupChatContract.View)getActivity()).logoutChannel(mChannel);
+        ((GroupChatContract.View) getActivity()).logoutChannel(mChannel);
         startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
                 .getLoginIntent(getActivity()), REQUEST_LOGIN);
     }
@@ -345,18 +353,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void setPinnedMessage(final PinnedMessageViewModel pinnedMessage) {
-        if (getView() != null) {
-            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
+        if (getView() != null
+                && getActivity() != null
+                && getActivity() instanceof GroupChatContract.View
+                && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                    .getChannelInfoViewModel();
             View pinnedMessageView = getView().findViewById(R.id.pinned_message);
-            if (pinnedMessage != null && !TextUtils.isEmpty(pinnedMessage.getTitle())
+            if (pinnedMessage != null
+                    && !TextUtils.isEmpty(pinnedMessage.getTitle())
                     && !TextUtils.isEmpty(pinnedMessage.getMessage())) {
                 pinnedMessageView.setVisibility(View.VISIBLE);
                 ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getTitle());
-                pinnedMessageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showPinnedMessageBottomSheet(pinnedMessage);
+                pinnedMessageView.setOnClickListener(view -> {
+                    if (channelInfoViewModel != null) {
+                        analytics.eventClickAdminPinnedMessage(
+                                channelInfoViewModel.getChannelId());
                     }
+
+                    showPinnedMessageBottomSheet(pinnedMessage);
                 });
             } else {
                 pinnedMessageView.setVisibility(View.GONE);
@@ -366,7 +381,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void setQuickReply(final List<GroupChatQuickReplyItemViewModel> list) {
         if (getView() != null) {
-            if (list != null && !list.isEmpty() && userSession.isLoggedIn()){
+            if (list != null && !list.isEmpty() && userSession.isLoggedIn()) {
                 quickReplyRecyclerView.setVisibility(View.VISIBLE);
                 quickReplyAdapter.setList(list);
             } else {
@@ -406,7 +421,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
         ImageHandler.loadImage(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
-        if(!TextUtils.isEmpty(pinnedMessage.getImageUrl())){
+        if (!TextUtils.isEmpty(pinnedMessage.getImageUrl())) {
             view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -491,6 +506,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void addQuickReply(String message) {
+
+        if (getActivity() != null
+                && getActivity() instanceof GroupChatContract.View
+                && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+            analytics.eventClickQuickReply(
+                    ((GroupChatContract.View) getActivity()).
+                            getChannelInfoViewModel().getChannelId());
+        }
+
         String text = replyEditText.getText().toString();
         int index = replyEditText.getSelectionStart();
         replyEditText.setText(Html.fromHtml(String.format("%s %s %s", text.substring(0, index), message, text
@@ -718,8 +742,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             setPinnedMessage((PinnedMessageViewModel) messageItem);
         }
 
-        if(messageItem instanceof GroupChatQuickReplyViewModel){
-            setQuickReply(((GroupChatQuickReplyViewModel)messageItem).getList());
+        if (messageItem instanceof GroupChatQuickReplyViewModel) {
+            setQuickReply(((GroupChatQuickReplyViewModel) messageItem).getList());
         }
 
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {

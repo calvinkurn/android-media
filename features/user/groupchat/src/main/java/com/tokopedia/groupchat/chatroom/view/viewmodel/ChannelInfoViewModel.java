@@ -19,6 +19,7 @@ import java.util.List;
  */
 
 public class ChannelInfoViewModel implements Parcelable {
+    private String channelId;
     private String title;
     private String channelUrl;
     private String bannerUrl;
@@ -57,7 +58,7 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel;
 
-    public ChannelInfoViewModel(String title, String channelUrl, String bannerUrl,
+    public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
                                 String blurredBannerUrl,
                                 String adsImageUrl, String adsLink, String adsName, String adsId,
                                 String bannerName, String sendBirdToken, String adminName, String image,
@@ -69,6 +70,7 @@ public class ChannelInfoViewModel implements Parcelable {
                                 @Nullable PinnedMessageViewModel pinnedMessageViewModel,
                                 @Nullable ExitMessage exitMessage,
                                 List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel) {
+        this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
@@ -97,6 +99,7 @@ public class ChannelInfoViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.channelId);
         dest.writeString(this.title);
         dest.writeString(this.channelUrl);
         dest.writeString(this.bannerUrl);
@@ -125,6 +128,7 @@ public class ChannelInfoViewModel implements Parcelable {
     }
 
     protected ChannelInfoViewModel(Parcel in) {
+        this.channelId = in.readString();
         this.title = in.readString();
         this.channelUrl = in.readString();
         this.bannerUrl = in.readString();
@@ -163,6 +167,10 @@ public class ChannelInfoViewModel implements Parcelable {
             return new ChannelInfoViewModel[size];
         }
     };
+
+    public String getChannelId() {
+        return channelId;
+    }
 
     public String getTitle() {
         return title;
