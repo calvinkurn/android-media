@@ -90,5 +90,6 @@
     <string name="see_all">Lihat Semua</string>
     <string name="button_continue">Lanjutkan</string>
     <string name="text_deals">Deals</string>
+    <string name="text_available_locations">Tersedia di\u0020%d\u0020Lokasi</string>
 
 </resources>

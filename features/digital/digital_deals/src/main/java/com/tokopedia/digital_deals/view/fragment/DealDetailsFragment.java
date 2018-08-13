@@ -254,7 +254,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvDealDetails.setVisibility(View.VISIBLE);
 
 
-        if (detailsViewModel.getMrp() != 0) {
+        if (detailsViewModel.getMrp() != 0 && detailsViewModel.getMrp() != detailsViewModel.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(detailsViewModel.getMrp()));
             tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
