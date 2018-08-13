@@ -89,7 +89,9 @@ public class ProductViewModelHelper {
     private static SuggestionModel createSuggestionModel(SearchResultModel searchResultModel) {
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(searchResultModel.getSuggestionText());
-        model.setSuggestedQuery(searchResultModel.getSuggestedQuery());
+        String suggestedQuery
+                = NetworkParamHelper.getQueryValue(searchResultModel.getSuggestedQuery());
+        model.setSuggestedQuery(suggestedQuery);
         model.setSuggestionCurrentKeyword(searchResultModel.getSuggestionCurrentKeyword());
         model.setFormattedResultCount(searchResultModel.getTotalDataText());
         return model;
