@@ -1,5 +1,5 @@
 
-package com.tokopedia.challenges.view.model.challengesubmission;
+package com.tokopedia.challenges.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Facebook implements Parcelable
+public class Twitter implements Parcelable
 {
 
     @SerializedName("Instructions")
@@ -16,29 +16,29 @@ public class Facebook implements Parcelable
     @SerializedName("RequiredUrl")
     @Expose
     private String requiredUrl;
-    public final static Creator<Facebook> CREATOR = new Creator<Facebook>() {
+    public final static Creator<Twitter> CREATOR = new Creator<Twitter>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public Facebook createFromParcel(Parcel in) {
-            return new Facebook(in);
+        public Twitter createFromParcel(Parcel in) {
+            return new Twitter(in);
         }
 
-        public Facebook[] newArray(int size) {
-            return (new Facebook[size]);
+        public Twitter[] newArray(int size) {
+            return (new Twitter[size]);
         }
 
     }
     ;
 
-    protected Facebook(Parcel in) {
+    protected Twitter(Parcel in) {
         this.instructions = ((String) in.readValue((String.class.getClassLoader())));
         this.requiredUrl = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    public Facebook() {
+    public Twitter() {
     }
 
     public String getInstructions() {

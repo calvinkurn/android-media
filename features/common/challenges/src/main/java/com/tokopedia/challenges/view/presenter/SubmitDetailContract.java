@@ -11,22 +11,31 @@ public interface SubmitDetailContract {
     }
 
     public interface View extends CustomerView {
+        void showStatusInfo();
+
         void setProfilePic(String text);
 
         void setProfileText(String text);
 
-         void setChallengeImage(String text);
+        void setChallengeImage(String text);
 
-         void setLikesCountView(String text);
+        void setLikesCountView(String text);
 
-         void setPointsView(String text);
+        void setPointsView(String text);
 
-         void setShareView(String text);
+        void setShareView(String text);
 
-         void setApprovedView(String text);
+        void setApprovedView(String text);
 
-         void setDetailTitle(String text);
+        void setPendingView(String status);
 
-         void setDetailContent(String text);
+        void setDeclinedView(String status);
+
+        void setDetailTitle(String text);
+
+        void setDetailContent(String text);
+
+        void setParticipateTitle(String title);
+
     }
 }

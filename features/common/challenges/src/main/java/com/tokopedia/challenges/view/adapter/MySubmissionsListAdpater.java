@@ -27,7 +27,7 @@ public class MySubmissionsListAdpater extends RecyclerView.Adapter<MySubmissions
 
     @Override
     public MySubmissionsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MySubmissionsViewHolder(LayoutInflater.from(context).inflate(R.layout.home_submissions_list_item, parent, false));
+        return new MySubmissionsViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_submissions_list_item, parent, false));
     }
 
     @Override

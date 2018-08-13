@@ -12,5 +12,5 @@ public interface ChallengesModuleRouter {
 
     Intent getHomeIntent(Context context);
 
-    void shareDeal(Context context, String uri, String name, String imageUrl);
+    void shareChallenge(Context context, String uri, String name, String imageUrl, String og_url, String og_title, String og_image_url);
 }

@@ -1,14 +1,13 @@
 
 package com.tokopedia.challenges.view.model.challengesubmission;
 
-import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Instagram implements Serializable, Parcelable
+public class Instagram implements Parcelable
 {
 
     @SerializedName("Instructions")
@@ -36,7 +35,6 @@ public class Instagram implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 3214803950117754050L;
 
     protected Instagram(Parcel in) {
         this.instructions = ((String) in.readValue((String.class.getClassLoader())));
