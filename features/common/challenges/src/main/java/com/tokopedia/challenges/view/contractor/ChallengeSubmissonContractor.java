@@ -43,6 +43,8 @@ public class ChallengeSubmissonContractor {
         void navigateToActivity(Intent intent);
 
         void renderTnC(TermsNCondition termsNCondition);
+
+        void setCountDownView(String participatedText);
     }
 
     public interface Presenter extends CustomerPresenter<ChallengeSubmissonContractor.View> {
