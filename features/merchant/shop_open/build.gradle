@@ -31,7 +31,7 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.districtRecommendation)
-    implementation project(rootProject.ext.features.productEdit)
+    implementation project(rootProject.ext.features.productManageItem)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
