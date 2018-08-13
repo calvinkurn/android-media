@@ -22,9 +22,9 @@ public class Wishlist implements Parcelable {
     String Name;
     @SerializedName("url")
     String Url;
-    @SerializedName("image")
+    @SerializedName("image_url")
     String ImageUrl;
-    @SerializedName("price")
+    @SerializedName("raw_price")
     int Price;
     @SerializedName("condition")
     String Condition;
@@ -32,7 +32,7 @@ public class Wishlist implements Parcelable {
     Boolean isAvailable;
     @SerializedName("status")
     String Status;
-    @SerializedName("price_formatted")
+    @SerializedName("price")
     String PriceFmt;
     @SerializedName("minimum_order")
     int MinimumOrder;
