@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
@@ -36,6 +37,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
     private TopAdsInfoClickListener infoClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
     private GridLayoutManager layoutManager;
+    private RecyclerView recyclerView;
     private View promotedLayout;
     private View.OnClickListener onInfoClickListener;
 
@@ -63,7 +65,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
                 DEFAULT_SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
                 false);
-        RecyclerView recyclerView = findViewById(R.id.list);
+        recyclerView = findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -82,11 +84,14 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
 
                 promotedLayout.setVisibility(View.VISIBLE);
                 promotedLayout.setOnClickListener(getOnInfoClickListener());
+                int leftMargin = (int) getContext().getResources().getDimension(R.dimen.dp_6);
+                setRecyclerViewLeftMargin(leftMargin);
             } else if (d.getShop() != null) {
                 layoutManager.setSpanCount(1);
                 visitables.add(ModelConverter.convertToShopFeedNewViewModel(d));
 
                 promotedLayout.setVisibility(View.GONE);
+                setRecyclerViewLeftMargin(0);
             }
         }
         adapter.setList(visitables);
@@ -140,6 +145,17 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
 
     public void setAdapterPosition(int adapterPosition) {
         adapter.setAdapterPosition(adapterPosition);
+    }
+
+    private void setRecyclerViewLeftMargin(int margin) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+        layoutParams.setMargins(
+                margin,
+                0,
+                0,
+                0
+        );
     }
 
     private View.OnClickListener getOnInfoClickListener() {

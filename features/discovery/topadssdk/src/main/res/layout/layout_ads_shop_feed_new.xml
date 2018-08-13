@@ -7,7 +7,11 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_6"
+    android:paddingLeft="@dimen/dp_6"
+    android:paddingStart="@dimen/dp_6"
+    tools:ignore="RtlSymmetry">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/header"
