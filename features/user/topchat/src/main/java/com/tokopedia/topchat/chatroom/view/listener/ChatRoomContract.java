@@ -169,8 +169,6 @@ public class ChatRoomContract {
         void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons);
 
         void setUserStatus(String status, boolean isOnline);
-
-        boolean showBottomSheetMenu();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

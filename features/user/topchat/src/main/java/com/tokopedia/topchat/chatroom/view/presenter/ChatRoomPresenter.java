@@ -633,8 +633,4 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
         }
     }
-
-    public boolean showBottomSheetMenu(){
-       return getView().showBottomSheetMenu();
-    }
 }
