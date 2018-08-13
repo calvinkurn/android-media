@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,6 +55,7 @@ import com.tokopedia.challenges.view.presenter.ChallengeSubmissionPresenter;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -102,9 +104,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private AppBarLayout appBarLayout;
     private ChallengesFragmentCallbacks fragmentCallbacks;
     private String tncText;
+    private String buzzPointtext;
     private TextView tvHowBuzzPointsText;
     private String challengeId;
     private FloatingActionButton btnShare;
+    private FirebaseRemoteConfigImpl firebaseRemoteConfig;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -121,6 +125,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             this.challengeResult = getArguments().getParcelable("challengesResult");
         }
         setHasOptionsMenu(true);
+        this.firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
 
@@ -289,6 +294,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
         submitButton.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
+        showBuzzPointsText();
     }
 
     @Override
@@ -367,23 +373,21 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         startActivity(intent);
     }
 
+    public void showBuzzPointsText() {
+        buzzPointtext = firebaseRemoteConfig.getString("app_text_how_to_generate_buzz_point");
+        if (!TextUtils.isEmpty(buzzPointtext)) {
+            clHowBuzzPoints.setVisibility(View.VISIBLE);
+            tvHowBuzzPointsText.setText(Html.fromHtml(buzzPointtext));
+        }
+    }
+
     @Override
     public void renderTnC(TermsNCondition termsNCondition) {
         tncText = termsNCondition.getTerms();
         if (!TextUtils.isEmpty(tncText)) {
             clTnc.setVisibility(View.VISIBLE);
-//            tvTnCText.setText(termsNCondition.getTerms());
+            tvTnCText.setText(Html.fromHtml(tncText));
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (tvTnCText.getLineCount() >= 10) {
-                    seeMoreButtonTnc.setVisibility(View.VISIBLE);
-                } else {
-                    seeMoreButtonTnc.setVisibility(View.GONE);
-                }
-            }
-        }, 100);
     }
 
     @Override
@@ -400,9 +404,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.ll_continue) {
             startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(), challengeResult));
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
-            fragmentCallbacks.replaceFragment(tncText, "How Do you Generate Buzz Points?");
+            fragmentCallbacks.replaceFragment(buzzPointtext, getString(R.string.generate_buzz_points));
         } else if (v.getId() == R.id.seemorebutton_tnc) {
-            fragmentCallbacks.replaceFragment(tncText, "Terms & Conditions");
+            fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         }else if(v.getId() == R.id.fab_share){
             ((ChallengesModuleRouter) (getActivity().getApplication())).shareChallenge(getActivity(),
                     ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getSharing().getMetaTags().getOgTitle(),
