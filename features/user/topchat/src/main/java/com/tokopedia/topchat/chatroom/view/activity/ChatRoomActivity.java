@@ -15,6 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -38,6 +39,7 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
 
@@ -367,5 +369,16 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     public void destroy() {
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if(presenter instanceof ChatRoomPresenter){
+            boolean resultStatusOk = ((ChatRoomPresenter) presenter).showBottomSheetMenu();
+            if(resultStatusOk) {
+                return resultStatusOk;
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
     }
 }
