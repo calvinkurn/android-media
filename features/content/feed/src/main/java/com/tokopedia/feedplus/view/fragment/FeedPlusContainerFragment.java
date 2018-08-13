@@ -37,9 +37,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
 
-    public static FeedPlusContainerFragment newInstance() {
+    public static FeedPlusContainerFragment newInstance(Bundle bundle) {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
-        Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
     }

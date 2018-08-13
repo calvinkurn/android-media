@@ -1,11 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.explore">
-    <application>
-        <activity
-            android:name=".view.activity.ContentExploreActivity"
-            android:label="@string/title_explore"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-    </application>
+    <application></application>
 </manifest>
