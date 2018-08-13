@@ -83,6 +83,7 @@ import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -2220,25 +2221,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareChallenge(Context context, String uri, String name, String imageUrl, String og_url, String og_title, String og_image_url) {
+    public void shareChallenge(Activity context, String packageName, String url, String title, String imageUrl, String og_url, String og_title, String og_image_url) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.INDI_CHALLENGE_TYPE)
-                .setName(name)
-                .setUri(uri)
+                .setName(title)
+                .setUri(url)
                 .setImgUri(imageUrl)
+                .setOgUrl(og_url)
+                .setOgTitle(og_title)
+                .setOgImageUrl(og_image_url)
                 .build();
-       // ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), shareData);
-        BranchSdkUtils.generateBranchLinkWithOGUrl(shareData, (Activity) context, og_url, og_title, og_image_url, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                share.setType("text/plain");
-                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-                context.startActivity(Intent.createChooser(share, "Share link!"));
-
-            }
-        });
+        ShareSocmedHandler.ShareSpecific(shareData, context, packageName,
+                "text/plain", null, null);
+        // ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), shareData);
+//        BranchSdkUtils.generateBranchLinkWithOGUrl(shareData, (Activity) context, og_url, og_title, og_image_url, new BranchSdkUtils.GenerateShareContents() {
+//            @Override
+//            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+//
+////                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+////                share.setType("text/plain");
+////                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+////                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
+////                context.startActivity(Intent.createChooser(share, "Share link!"));
+//
+//            }
+//        });
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.tokopedia.challenges.view.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +17,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
+import com.tokopedia.challenges.view.share.ShareBottomSheet;
 
 import javax.inject.Inject;
 
@@ -101,7 +101,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(), ChallengesUrl.AppLink.CHALLENGES_DETAILS,model.getTitle(),model.getThumbnailUrl(),model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
+            //((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(), ChallengesUrl.AppLink.CHALLENGES_DETAILS,model.getTitle(),model.getThumbnailUrl(),model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
 
         });
     }
@@ -120,8 +121,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         profileText.setText(text);
     }
 
-    public void setChallengeImage(String url) {
-        //challengeImage.setVideoThumbNail(url);
+    public void setChallengeImage(String thumbnailUrl, String videoUrl) {
+        challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false);
     }
 
     public void setLikesCountView(String likesCount) {

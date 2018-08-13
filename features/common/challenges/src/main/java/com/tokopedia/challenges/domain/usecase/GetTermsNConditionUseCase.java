@@ -21,31 +21,24 @@ import javax.inject.Inject;
 public class GetTermsNConditionUseCase extends RestRequestSupportInterceptorUseCase {
 
 
-    private RequestParams requestParams;
+    private String collectionID;
 
     @Inject
     public GetTermsNConditionUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 
-    public void setRequestParams(RequestParams requestParams) {
-        this.requestParams = requestParams;
-    }
-
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-
-        //Request 1
-
-        HashMap<String, Object> parameters = requestParams.getParameters();
-        String challengeID = (String) parameters.get(Utils.QUERY_PARAM_CHALLENGE_ID);
-        parameters.remove(Utils.QUERY_PARAM_CHALLENGE_ID);
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.Upload.TERMS_N_CONDITIONS, challengeID), TermsNCondition.class)
-                .setQueryParams(parameters)
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.Upload.TERMS_N_CONDITIONS, collectionID), TermsNCondition.class)
                 .build();
         tempRequest.add(restRequest1);
 
         return tempRequest;
+    }
+
+    public void setCollectionID(String collectionID) {
+        this.collectionID = collectionID;
     }
 }
