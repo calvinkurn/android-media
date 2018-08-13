@@ -175,7 +175,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             } else {
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 getView().removeLoading();
-                                list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
+                                if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
+                                    list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
+                                }
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
                                 if (getView().isEvenPage()) {
@@ -266,7 +268,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
                                 list.add(headerViewModel);
-                                list.add(new TopAdsViewModel());
+                                if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
+                                    list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
+                                }
                                 list.addAll(productViewModel.getProductList());
                                 getView().removeLoading();
                                 getView().setProductList(list);

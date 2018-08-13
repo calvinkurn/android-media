@@ -1,5 +1,8 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -8,7 +11,7 @@ import org.json.JSONObject;
 /**
  * Created by errysuprayogi on 3/27/17.
  */
-public class Data {
+public class Data implements Parcelable {
 
     private static final String KEY_ID = "id";
     private static final String KEY_AD_REF = "ad_ref_key";
@@ -73,6 +76,52 @@ public class Data {
             setShop(new Shop(object.getJSONObject(KEY_SHOP)));
         }
     }
+
+    protected Data(Parcel in) {
+        id = in.readString();
+        adRefKey = in.readString();
+        redirect = in.readString();
+        stickerId = in.readString();
+        stickerImage = in.readString();
+        productClickUrl = in.readString();
+        shopClickUrl = in.readString();
+        shop = in.readParcelable(Shop.class.getClassLoader());
+        product = in.readParcelable(Product.class.getClassLoader());
+        favorit = in.readByte() != 0;
+        wislished = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(adRefKey);
+        dest.writeString(redirect);
+        dest.writeString(stickerId);
+        dest.writeString(stickerImage);
+        dest.writeString(productClickUrl);
+        dest.writeString(shopClickUrl);
+        dest.writeParcelable(shop, flags);
+        dest.writeParcelable(product, flags);
+        dest.writeByte((byte) (favorit ? 1 : 0));
+        dest.writeByte((byte) (wislished ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Data> CREATOR = new Creator<Data>() {
+        @Override
+        public Data createFromParcel(Parcel in) {
+            return new Data(in);
+        }
+
+        @Override
+        public Data[] newArray(int size) {
+            return new Data[size];
+        }
+    };
 
     public String getId() {
         return id;

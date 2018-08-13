@@ -4,6 +4,7 @@ import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import rx.Subscriber;
 
@@ -89,7 +90,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         model.setSearchParameter(searchParameter);
         model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
-        discoveryView.onHandleResponseSearch(model);
+        discoveryView.onHandleResponseSearch(model, new TopAdsModel());
     }
 
     private int defineResponse(SearchResultModel data) {

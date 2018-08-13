@@ -64,15 +64,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         );
     }
 
-    /*@Override
-    public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStore) {
-        super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
-        getProductUseCase.execute(
-                GetProductUseCase.createInitializeSearchParam(searchParameter, forceSearch, requestOfficialStore),
-                new DefaultSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView(), false)
-        );
-    }*/
-
     @Override
     public void requestImageSearch(String imagePath) {
         super.requestImageSearch(imagePath);

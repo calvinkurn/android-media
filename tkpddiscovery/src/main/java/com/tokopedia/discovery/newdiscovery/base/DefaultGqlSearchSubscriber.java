@@ -91,7 +91,7 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         model.setSearchParameter(searchParameter);
         model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
-        discoveryView.onHandleResponseSearch(model);
+        discoveryView.onHandleResponseSearch(model, gqlResponse.getTopAdsModel());
     }
 
     private int defineResponse(SearchProductGqlResponse.SearchProduct searchProduct) {

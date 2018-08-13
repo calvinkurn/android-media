@@ -1,5 +1,8 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -13,7 +16,7 @@ import java.util.List;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class Product {
+public class Product implements Parcelable {
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
@@ -168,6 +171,78 @@ public class Product {
             }
         }
     }
+
+    protected Product(Parcel in) {
+        id = in.readString();
+        adRefKey = in.readString();
+        adId = in.readString();
+        name = in.readString();
+        image = in.readParcelable(ProductImage.class.getClassLoader());
+        uri = in.readString();
+        relativeUri = in.readString();
+        priceFormat = in.readString();
+        countTalkFormat = in.readString();
+        countReviewFormat = in.readString();
+        category = in.readParcelable(Category.class.getClassLoader());
+        productPreorder = in.readByte() != 0;
+        productWholesale = in.readByte() != 0;
+        freeReturn = in.readString();
+        productCashback = in.readByte() != 0;
+        productCashbackRate = in.readString();
+        productNewLabel = in.readByte() != 0;
+        productRating = in.readInt();
+        applinks = in.readString();
+        wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
+        labels = in.createTypedArrayList(Label.CREATOR);
+        topLabels = in.createStringArrayList();
+        bottomLabels = in.createStringArrayList();
+        imageProduct = in.readParcelable(ImageProduct.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(adRefKey);
+        dest.writeString(adId);
+        dest.writeString(name);
+        dest.writeParcelable(image, flags);
+        dest.writeString(uri);
+        dest.writeString(relativeUri);
+        dest.writeString(priceFormat);
+        dest.writeString(countTalkFormat);
+        dest.writeString(countReviewFormat);
+        dest.writeParcelable(category, flags);
+        dest.writeByte((byte) (productPreorder ? 1 : 0));
+        dest.writeByte((byte) (productWholesale ? 1 : 0));
+        dest.writeString(freeReturn);
+        dest.writeByte((byte) (productCashback ? 1 : 0));
+        dest.writeString(productCashbackRate);
+        dest.writeByte((byte) (productNewLabel ? 1 : 0));
+        dest.writeInt(productRating);
+        dest.writeString(applinks);
+        dest.writeTypedList(wholesalePrice);
+        dest.writeTypedList(labels);
+        dest.writeStringList(topLabels);
+        dest.writeStringList(bottomLabels);
+        dest.writeParcelable(imageProduct, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     public List<String> getTopLabels() {
         return topLabels;

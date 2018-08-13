@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -46,6 +47,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Gu
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -59,6 +61,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -81,6 +84,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
+    private static final String ARG_TOPADS_MODEL = "ARG_TOPADS_MODEL";
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
@@ -98,6 +102,7 @@ public class ProductListFragment extends SearchSectionFragment
     private Config topAdsConfig;
     private ProductListAdapter adapter;
     private ProductViewModel productViewModel;
+    private TopAdsModel topAdsModel;
     private ProductListTypeFactory productListTypeFactory;
     private SearchParameter searchParameter;
     private boolean forceSearch;
@@ -106,9 +111,10 @@ public class ProductListFragment extends SearchSectionFragment
     private SimilarSearchManager similarSearchManager ;
     private ShowCaseDialog showCaseDialog;
 
-    public static ProductListFragment newInstance(ProductViewModel productViewModel) {
+    public static ProductListFragment newInstance(ProductViewModel productViewModel, TopAdsModel topAdsModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
+        args.putParcelable(ARG_TOPADS_MODEL, topAdsModel);
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
         return productListFragment;
@@ -130,6 +136,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
         productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
+        topAdsModel = savedInstanceState.getParcelable(ARG_TOPADS_MODEL);
         quickFilterOptions = savedInstanceState.getParcelableArrayList(EXTRA_QUICK_FILTER_LIST);
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
@@ -138,6 +145,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void loadDataFromArguments() {
         productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
+        topAdsModel = getArguments().getParcelable(ARG_TOPADS_MODEL);
         if (productViewModel != null) {
 
             if (productViewModel.getSearchParameter() != null)
@@ -216,7 +224,7 @@ public class ProductListFragment extends SearchSectionFragment
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
                 getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.red_1)
+                getContext().getResources().getColor(R.color.white)
         ));
         setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
@@ -239,6 +247,9 @@ public class ProductListFragment extends SearchSectionFragment
             headerViewModel.setQuickFilterList(quickFilterOptions);
         }
         list.add(headerViewModel);
+        if(!topAdsModel.getData().isEmpty()){
+            list.add(new TopAdsViewModel(topAdsModel));
+        }
         list.addAll(productViewModel.getProductList());
         return list;
     }
@@ -469,6 +480,7 @@ public class ProductListFragment extends SearchSectionFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
+        outState.putParcelable(ARG_TOPADS_MODEL, topAdsModel);
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
         outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch());
         outState.putParcelableArrayList(EXTRA_QUICK_FILTER_LIST, quickFilterOptions);
@@ -587,8 +599,13 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if (router.isSupportedDelegateDeepLink(appLink)) {
+            router.actionApplink(getActivity(), appLink);
+        } else if (appLink != "") {
+            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            intent.putExtra("url", appLink);
+            startActivity(intent);
         }
     }
 

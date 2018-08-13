@@ -1,5 +1,8 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -9,7 +12,7 @@ import org.json.JSONObject;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ImageProduct {
+public class ImageProduct implements Parcelable {
 
     private static final String KEY_PRODUCT_ID = "product_id";
     private static final String KEY_PRODUCT_NAME = "product_name";
@@ -39,6 +42,38 @@ public class ImageProduct {
             setImageClickUrl(object.getString(KEY_IMAGE_CLICK_URL));
         }
     }
+
+    protected ImageProduct(Parcel in) {
+        productId = in.readString();
+        productName = in.readString();
+        imageUrl = in.readString();
+        imageClickUrl = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productId);
+        dest.writeString(productName);
+        dest.writeString(imageUrl);
+        dest.writeString(imageClickUrl);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ImageProduct> CREATOR = new Creator<ImageProduct>() {
+        @Override
+        public ImageProduct createFromParcel(Parcel in) {
+            return new ImageProduct(in);
+        }
+
+        @Override
+        public ImageProduct[] newArray(int size) {
+            return new ImageProduct[size];
+        }
+    };
 
     public String getImageClickUrl() {
         return imageClickUrl;

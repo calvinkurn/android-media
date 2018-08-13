@@ -1,5 +1,8 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -12,7 +15,7 @@ import java.util.List;
 /**
  * Created by errysuprayogi on 3/27/17.
  */
-public class Shop {
+public class Shop implements Parcelable {
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
@@ -125,6 +128,66 @@ public class Shop {
             }
         }
     }
+
+    protected Shop(Parcel in) {
+        id = in.readString();
+        adRefKey = in.readString();
+        adId = in.readString();
+        name = in.readString();
+        domain = in.readString();
+        tagline = in.readString();
+        location = in.readString();
+        city = in.readString();
+        imageShop = in.readParcelable(ImageShop.class.getClassLoader());
+        goldShop = in.readByte() != 0;
+        goldShopBadge = in.readByte() != 0;
+        luckyShop = in.readString();
+        shopIsOfficial = in.readByte() != 0;
+        uri = in.readString();
+        imageProduct = in.createTypedArrayList(ImageProduct.CREATOR);
+        ownerId = in.readString();
+        isOwner = in.readByte() != 0;
+        badges = in.createTypedArrayList(Badge.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(adRefKey);
+        dest.writeString(adId);
+        dest.writeString(name);
+        dest.writeString(domain);
+        dest.writeString(tagline);
+        dest.writeString(location);
+        dest.writeString(city);
+        dest.writeParcelable(imageShop, flags);
+        dest.writeByte((byte) (goldShop ? 1 : 0));
+        dest.writeByte((byte) (goldShopBadge ? 1 : 0));
+        dest.writeString(luckyShop);
+        dest.writeByte((byte) (shopIsOfficial ? 1 : 0));
+        dest.writeString(uri);
+        dest.writeTypedList(imageProduct);
+        dest.writeString(ownerId);
+        dest.writeByte((byte) (isOwner ? 1 : 0));
+        dest.writeTypedList(badges);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Shop> CREATOR = new Creator<Shop>() {
+        @Override
+        public Shop createFromParcel(Parcel in) {
+            return new Shop(in);
+        }
+
+        @Override
+        public Shop[] newArray(int size) {
+            return new Shop[size];
+        }
+    };
 
     public String getId() {
         return id;

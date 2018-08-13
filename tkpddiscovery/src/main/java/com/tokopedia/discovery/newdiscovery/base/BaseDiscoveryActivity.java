@@ -16,6 +16,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -105,10 +106,10 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel) {
+    public void onHandleResponseSearch(ProductViewModel productViewModel, TopAdsModel adsModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+        SearchActivity.moveTo(this, productViewModel, adsModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override

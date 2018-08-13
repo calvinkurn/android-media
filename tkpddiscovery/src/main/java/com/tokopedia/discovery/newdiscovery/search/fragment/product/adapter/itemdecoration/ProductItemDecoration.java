@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GuidedSearchViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.Arrays;
@@ -54,10 +55,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         } else if(isAdsItem(parent, absolutePos)){
             outRect.left = spacing;
             outRect.right = spacing;
-            outRect.top = isProductItem(parent, absolutePos - 1) ? spacing : 0;
+            outRect.top = !isProductItem(parent, absolutePos - 1) ? spacing : 0;
             outRect.bottom = !isProductItem(parent, absolutePos + 1) ? spacing : 0;
-        } else if(isGuidedItem(parent, absolutePos)){
-            outRect.top = !isProductItem(parent, absolutePos) ? spacing : 0;
         }
     }
 
@@ -100,15 +99,6 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         }
         final int viewType = adapter.getItemViewType(viewPosition);
         return viewType == TopAdsViewHolder.LAYOUT;
-    }
-
-    private boolean isGuidedItem(RecyclerView parent, int viewPosition) {
-        final RecyclerView.Adapter adapter = parent.getAdapter();
-        if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
-            return false;
-        }
-        final int viewType = adapter.getItemViewType(viewPosition);
-        return viewType == GuidedSearchViewHolder.LAYOUT;
     }
 
     @Override
