@@ -32,12 +32,8 @@ public class CustomMediaController extends MediaController {
 
     @Override
     public void setAnchorView(View view) {
-
         super.setAnchorView(view);
-
-        //image button for full screen to be added to media controller
         fullScreen = new ImageButton(super.getContext());
-
         FrameLayout.LayoutParams params =
                 new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                         LayoutParams.WRAP_CONTENT);
@@ -46,17 +42,12 @@ public class CustomMediaController extends MediaController {
         params.rightMargin = 80;
         params.topMargin = 40;
         addView(fullScreen, params);
-
-        //fullscreen indicator from intent
         if (isFullScreen) {
             fullScreen.setImageResource(R.drawable.ic_close_default);
         } else {
             fullScreen.setImageResource(R.drawable.fullscreen_icon);
         }
-
-        //add listener to image button to handle full screen and exit full screen events
         fullScreen.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 if (isFullScreen) {
@@ -73,7 +64,6 @@ public class CustomMediaController extends MediaController {
             }
         });
     }
-
     public interface ICurrentPos {
         int getPosition();
     }

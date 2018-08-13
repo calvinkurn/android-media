@@ -94,7 +94,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     FrameLayout flHeader;
     SubmissionItemAdapter submissionItemAdapter;
     CoordinatorLayout mainContent;
-
+    ConstraintLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
     private Toolbar toolbar;
@@ -185,6 +185,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         mainContent=view.findViewById(R.id.main_content);
         btnShare = view.findViewById(R.id.fab_share);
         btnShare.setOnClickListener(this);
+        baseMainContent=view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
         mPresenter.attachView(this);
@@ -273,7 +274,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             description.setVisibility(View.GONE);
         }
-        setCountDownView(challengeResult);
         if (challengeResult.getSharing().getAssets() != null && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
             videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false);
         } else {
@@ -287,20 +287,13 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             clAwards.setVisibility(View.GONE);
         }
+        submitButton.setVisibility(View.VISIBLE);
+        baseMainContent.setVisibility(View.VISIBLE);
     }
 
-    private void setCountDownView(Result challengeResult) {
-        if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null) {
-            if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
-                tvParticipated.setText("Approved");
-            } else if (challengeResult.getMe().getSubmissionCounts().getDeclined() > 0) {
-                tvParticipated.setText("Declined");
-            } else if (challengeResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-                tvParticipated.setText("Waiting");
-            } else if (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate())) {
-                tvParticipated.setText("Completed");
-            }
-        } else {
+    @Override
+    public void setCountDownView(String participatedText) {
+        if (participatedText.equals("")) {
             try {
                 countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
                 countDownView.start(timerProgressBar);
@@ -309,6 +302,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             }
             timerView.setVisibility(View.VISIBLE);
             tvParticipated.setVisibility(View.GONE);
+        } else {
+            tvParticipated.setText(participatedText);
         }
     }
 
