@@ -81,6 +81,7 @@ import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -398,7 +399,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         BankRouter,
         ChangePasswordRouter,
         TrainRouter,
-        ChallengesModuleRouter{
+        ChallengesModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2219,14 +2220,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareChallenge(Context context, String uri, String name, String imageUrl) {
+    public void shareChallenge(Context context, String uri, String name, String imageUrl, String og_url, String og_title, String og_image_url) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.INDI_CHALLENGE_TYPE)
                 .setName(name)
                 .setUri(uri)
                 .setImgUri(imageUrl)
                 .build();
-        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
+       // ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), shareData);
+        BranchSdkUtils.generateBranchLinkWithOGUrl(shareData, (Activity) context, og_url, og_title, og_image_url, new BranchSdkUtils.GenerateShareContents() {
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
@@ -2234,12 +2236,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 share.putExtra(Intent.EXTRA_TEXT, branchUrl);
                 context.startActivity(Intent.createChooser(share, "Share link!"));
+
             }
         });
     }
 
     @Override
-    public String getUserPhoneNumber(){
+    public String getUserPhoneNumber() {
         return SessionHandler.getPhoneNumber();
     }
 
@@ -2447,10 +2450,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-        if(remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)){
+        if (remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)) {
             return ChangePasswordActivity.Companion.createIntent(context);
-        }else{
-            return  new Intent(context, ManagePasswordActivity.class);
+        } else {
+            return new Intent(context, ManagePasswordActivity.class);
         }
     }
 
@@ -2497,7 +2500,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
-        if(activity!= null) {
+        if (activity != null) {
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
