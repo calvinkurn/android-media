@@ -156,6 +156,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
                 0,
                 0
         );
+        recyclerView.requestLayout();
     }
 
     private View.OnClickListener getOnInfoClickListener() {
