@@ -137,7 +137,7 @@
             app:lv_content_color="@color/tkpd_main_green"
             app:lv_title="@string/product_label_product_name"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_8"/>
 
         <View
             android:layout_width="match_parent"
@@ -155,7 +155,7 @@
             app:lv_title="@string/product_label_product_price"
             app:lv_sub_title="@string/product_subtitle_product_price"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_8"/>
 
         <View
             android:layout_width="match_parent"
@@ -173,7 +173,7 @@
             app:lv_title="@string/product_label_description_product"
             app:lv_sub_title="@string/product_subtitle_product_description"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_8"/>
 
         <View
             android:layout_width="match_parent"
@@ -191,7 +191,7 @@
             app:lv_title="@string/product_label_product_stock"
             app:lv_content="@string/label_always_available"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_8"/>
 
         <View
             android:layout_width="match_parent"
@@ -210,7 +210,7 @@
             app:lv_title="@string/product_label_logistic_product"
             app:lv_sub_title="@string/product_subtitle_product_logistic"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_8"/>
 
         <View
             android:layout_width="match_parent"
@@ -228,7 +228,7 @@
             app:lv_title="@string/product_label_product_etalase"
             app:lv_sub_title="@string/product_subtitle_product_etalase"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_8"/>
 
         <View
             android:layout_width="match_parent"
@@ -246,7 +246,7 @@
             app:lv_title="@string/product_label_product_variant"
             app:lv_sub_title="@string/product_subtitle_product_variant"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_8"/>
 
         <Button
             android:id="@+id/button_save"
