@@ -130,8 +130,6 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
 
         } else {
             ((ChallengesModuleRouter) ((getActivity()).getApplication())).shareChallenge(getActivity(), packageName, url, title, og_image, og_url, og_title, og_image);
-            //actionShare(packageName);
-
         }
     }
 

@@ -56,8 +56,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         recyclerView = view.findViewById(R.id.rv_home_challenges);
         tvActiveChallenges = view.findViewById(R.id.tv_active_challenges);
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
-        emptyLayout= view.findViewById(R.id.empty_view);
-        progressBar=view.findViewById(R.id.progressbar);
+        emptyLayout = view.findViewById(R.id.empty_view);
+        progressBar = view.findViewById(R.id.progressbar);
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
@@ -85,10 +85,10 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     }
 
     @Override
-    public void setChallengeDataToUI(List<Result> resultList) {
+    public void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge) {
         recyclerView.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
-        listAdpater = new ChallengesListAdapter(getActivity(), resultList);
+        listAdpater = new ChallengesListAdapter(getActivity(), resultList, isPastChallenge);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(listAdpater);
