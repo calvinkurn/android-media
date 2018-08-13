@@ -77,9 +77,13 @@ public class Utils {
 
     public static RequestBody generateImageRequestBody(String path) {
         File file = new File(path);
-        return RequestBody.create(MediaType.parse("images/*"), file);
+        return RequestBody.create(MediaType.parse("image/*"), file);
     }
 
+
+    public static RequestBody generateImageRequestBodySlice(String path,int start,int end) {
+        return RequestBody.create(MediaType.parse("image/*"), sliceFile(path,start,end));
+    }
 
     public static MultipartBody.Part generateRequestImages(String name, String path) {
         File file = new File(path);
@@ -103,32 +107,23 @@ public class Utils {
 
 
     public static byte[] get10KBFile(String path)  {
-        File file = new File(path);
-        //init array with file length
-        byte[] bytesArray = new byte[KB_10];
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            fis.read(bytesArray); //read file into bytes[]
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bytesArray;
+       return sliceFile(path,0,KB_10);
     }
 
     public static byte[] sliceFile(String path,int start,int end) {
         File file = new File(path);
+        int upperBound = end > file.length() ? (int) file.length() : end;
         byte[] bytesArray = new byte[(int) file.length()];
         try {
             FileInputStream fis = new FileInputStream(file);
-            fis.read(bytesArray); //read file into bytes[]
+            fis.read(bytesArray,start,end);
+            //read file into bytes[]
             fis.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return Arrays.copyOfRange(bytesArray, start, end);
+        return Arrays.copyOfRange(bytesArray, start, upperBound);
 
     }
 

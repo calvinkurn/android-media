@@ -56,4 +56,9 @@ public interface RestApi {
     @Multipart
     @PUT()
     Observable<Response<String>> putMultipart(@Url String url, @PartMap Map<String, RequestBody> partMap, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+
+
+    @PUT()
+    Observable<Response<String>> putMultipart(@Url String url, @Body RequestBody requestBody, @HeaderMap Map<String, Object> headers);
+
 }

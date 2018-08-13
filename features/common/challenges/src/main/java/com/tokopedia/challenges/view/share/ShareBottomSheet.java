@@ -21,15 +21,15 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
     private static final String PACKAGENAME_WHATSAPP = "com.whatsapp.ContactPicker";
     private static final String PACKAGENAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias";
     private static final String PACKAGENAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity";
-    private static final String PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity";
+    //private static final String PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity";
     private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias";
-
-    private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP,
-            PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_TWITTER, PACKAGENAME_GPLUS};
+    private static final String PACKAGENAME_INSTAGRAM = "com.instagram.direct.share.handler.DirectShareHandlerActivity";
+    private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP,PACKAGENAME_INSTAGRAM,
+            PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
 
     private static final String KEY_WHATSAPP = "whatsapp";
     private static final String KEY_LINE = "line";
-    private static final String KEY_TWITTER = "twitter";
+   // private static final String KEY_TWITTER = "twitter";
     private static final String KEY_FACEBOOK = "facebook";
     private static final String KEY_GOOGLE = "google";
     public static final String KEY_OTHER = "lainnya";
@@ -44,7 +44,7 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
     private RecyclerView mRecyclerView;
 
 
-    public static ShareBottomSheet newInstance( String url, String title, String og_url, String og_title, String og_image) {
+    public static ShareBottomSheet newInstance(String url, String title, String og_url, String og_title, String og_image) {
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putString("url", url);
@@ -57,7 +57,7 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
     }
 
     public static void show(FragmentManager fragmentManager, String url, String title, String og_url, String og_title, String og_image) {
-        newInstance( url, title, og_url, og_title, og_image).show(fragmentManager,"");
+        newInstance(url, title, og_url, og_title, og_image).show(fragmentManager, "");
     }
 
     @Override
@@ -127,8 +127,9 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
     @Override
     public void onItemClick(String packageName) {
         if (packageName.equalsIgnoreCase(KEY_COPY)) {
+
         } else {
-            ((ChallengesModuleRouter) (((Activity) getActivity()).getApplication())).shareChallenge(getContext(), url, title, og_image, og_url, og_title, og_image);
+            ((ChallengesModuleRouter) ((getActivity()).getApplication())).shareChallenge(getActivity(), packageName, url, title, og_image, og_url, og_title, og_image);
             //actionShare(packageName);
 
         }

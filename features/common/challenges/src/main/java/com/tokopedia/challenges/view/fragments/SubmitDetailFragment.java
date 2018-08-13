@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
+import com.tokopedia.challenges.view.share.ShareBottomSheet;
 
 import javax.inject.Inject;
 
@@ -99,7 +101,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(), ChallengesUrl.AppLink.CHALLENGES_DETAILS,model.getTitle(),model.getThumbnailUrl(),model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
+            //((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(), ChallengesUrl.AppLink.CHALLENGES_DETAILS,model.getTitle(),model.getThumbnailUrl(),model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
 
         });
     }
