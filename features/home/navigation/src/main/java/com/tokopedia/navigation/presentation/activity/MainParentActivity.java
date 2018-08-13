@@ -380,10 +380,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         }
     }
 
-    public Notification getNotification() {
-        return notification;
-    }
-
     /**
      * Show Case on boarding
      */
