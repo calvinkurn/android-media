@@ -17,8 +17,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.To
 public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(ProductItem productItem);
 
-    int type(EmptySearchModel emptySearchModel);
-
     int type(HeaderViewModel headerViewModel);
 
     int type(GuidedSearchViewModel guidedSearchViewModel);

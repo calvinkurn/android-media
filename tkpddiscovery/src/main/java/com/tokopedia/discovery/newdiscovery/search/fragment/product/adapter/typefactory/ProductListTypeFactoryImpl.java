@@ -47,11 +47,6 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
-    public int type(EmptyModel viewModel) {
-        return EmptyViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(ProductItem productItem) {
         switch (getRecyclerViewItem()) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:

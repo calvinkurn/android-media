@@ -67,6 +67,7 @@ public class Shop implements Parcelable {
     @SerializedName(KEY_IS_OWNER)
     private boolean isOwner;
     @SerializedName(KEY_BADGES)
+    private boolean loaded;
     private List<Badge> badges = new ArrayList<>();
 
     public Shop() {
@@ -331,5 +332,13 @@ public class Shop implements Parcelable {
 
     public void setAdId(String adId) {
         this.adId = adId;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
     }
 }

@@ -649,41 +649,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSelectedFilterRemoved(String uniqueId) {
-
-        String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        String optionValue = OptionHelper.parseValueFromUniqueId(uniqueId);
-
-        if (Option.KEY_CATEGORY.equals(optionKey)) {
-            getFlagFilterHelper().setCategoryId("");
-            getFlagFilterHelper().setSelectedCategoryName("");
-            getFlagFilterHelper().setSelectedCategoryRootId("");
-            getSelectedFilter().remove(Option.KEY_CATEGORY);
-        } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
-                Option.KEY_PRICE_MAX.equals(optionKey)) {
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MIN);
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MAX);
-            getSelectedFilter().remove(Option.KEY_PRICE_MIN);
-            getSelectedFilter().remove(Option.KEY_PRICE_MAX);
-        } else {
-            getFlagFilterHelper().getSavedCheckedState().remove(uniqueId);
-
-            String mapValue = getSelectedFilter().get(optionKey);
-            mapValue = removeValue(mapValue, optionValue);
-
-            if (!TextUtils.isEmpty(mapValue)) {
-                getSelectedFilter().put(optionKey, mapValue);
-            } else {
-                getSelectedFilter().remove(optionKey);
-            }
-        }
-
-        clearDataFilterSort();
-        showBottomBarNavigation(false);
-        reloadData();
-    }
-
-    private String removeValue(String mapValue, String removedValue) {
-        return mapValue.replace(removedValue, "").replace(",,", ",");
+        removeSelectedFilter(uniqueId);
     }
 
     @Override
@@ -946,6 +912,9 @@ public class ProductListFragment extends SearchSectionFragment
 
 
     private boolean isShowCaseAllowed(String tag) {
+        if(getActivity() == null) {
+            return false;
+        }
         return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
     }
 

@@ -87,6 +87,7 @@ public class Product implements Parcelable {
     private List<String> bottomLabels = new ArrayList<>();
     @SerializedName(KEY_IMAGE_PRODUCT)
     private ImageProduct imageProduct;
+    private boolean loaded;
 
     public Product() {
     }
@@ -434,5 +435,13 @@ public class Product implements Parcelable {
 
     public void setApplinks(String applinks) {
         this.applinks = applinks;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
     }
 }

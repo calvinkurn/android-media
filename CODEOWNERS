@@ -1,6 +1,5 @@
 /tkpdsession/       @tokopedia/minion-kevin
 /tkpdloyalty/       @tokopedia/minion-bob
-/tkpdride/          @vishalgupta1987
 /tkpddigital/       @tokopedia/minion-mark
 /tkpdcore/          @tokopedia/core-team
 /tkpdinbox/         @tokopedia/minion-kevin
@@ -13,7 +12,6 @@
 /tkpdseller/        @tokopedia/minion-stuart
 /tkpdtokocash/      @tokopedia/minion-mark
 /tkpdabstraction/   @tokopedia/core-team
-/tkpdevents/        @vishalgupta1987
 /tkpdhome/          @tokopedia/minion-dave
 /customerapp/       @tokopedia/core-team
 
@@ -27,7 +25,6 @@
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
@@ -41,6 +38,7 @@
 /features/logistic/logisticuploadawb            @tokopedia/minion_bob
 /features/logistic/tracking                     @tokopedia/minion_bob
 
+/features/user/topchat/                 @tokopedia/minion-kevin
 /features/user/groupchat/               @tokopedia/minion-kevin
 /features/user/profile/                 @tokopedia/minion-kevin
 /features/user/vote/                    @tokopedia/minion-kevin
@@ -61,4 +59,10 @@
 /libraries/youtubeutils/                @tokopedia/minion-kevin
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
-/features/promo/tokopoints              @lavekush-t
+/features/promo/tokopoints              @tokopedia/india-android-team
+/libraries/common_network/              @ricoharisin
+/features/digital/event                 @tokopedia/india-android-team
+/features/operational/contact_us        @tokopedia/india-android-team
+/features/digital/digital_deals         @tokopedia/india-android-team
+/features/fintech/instant_loan          @tokopedia/india-android-team
+/libraries/oms                          @naveengoyal87

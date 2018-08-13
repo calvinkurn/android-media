@@ -6,10 +6,8 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -21,11 +19,7 @@ import com.tokopedia.posapp.R;
 import com.tokopedia.tkpdpdp.adapter.ImagePagerAdapter;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_ACTIVE;
-import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_STATUS_ACTIVE;
 
 /**
  * Created by yoshua on 17/04/18.
@@ -63,13 +57,12 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     protected void parseAttribute(Context context, AttributeSet attrs) {
-        imagePagerAdapter = new ImagePagerAdapter(context, new ArrayList<ProductImage>());
+
     }
 
     @Override
     protected void setViewListener() {
-        vpImage.setAdapter(imagePagerAdapter);
-        indicator.setViewPager(vpImage);
+
     }
 
     @Override
@@ -84,8 +77,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>(), urlTemporary);
+        imagePagerAdapter = new ImagePagerAdapter(listener.getActivityContext(), urlTemporary);
         vpImage.setAdapter(imagePagerAdapter);
+        indicator.setViewPager(vpImage);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
             int resId = com.tokopedia.tkpdpdp.R.drawable.product_no_photo_default;
@@ -107,6 +101,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     }
 
     public void renderTempData(ProductPass productPass) {
+        imagePagerAdapter = new ImagePagerAdapter(listener.getActivityContext(), urlTemporary);
+        vpImage.setAdapter(imagePagerAdapter);
+        indicator.setViewPager(vpImage);
         ProductImage productImage = new ProductImage();
         productImage.setImageSrc300(productPass.getProductImage());
         productImage.setImageSrc(productPass.getProductImage());

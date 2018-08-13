@@ -17,6 +17,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -38,6 +39,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
@@ -172,7 +174,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(
                 TkpdCache.RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
-                false) && (this instanceof ProductListFragment);
+                true) && (this instanceof ProductListFragment);
     }
 
     @Override
@@ -570,5 +572,43 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected boolean isUsingBottomSheetFilter() {
         return isUsingBottomSheetFilter;
+    }
+
+    protected void removeSelectedFilter(String uniqueId) {
+
+        String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
+        String optionValue = OptionHelper.parseValueFromUniqueId(uniqueId);
+
+        if (Option.KEY_CATEGORY.equals(optionKey)) {
+            getFlagFilterHelper().setCategoryId("");
+            getFlagFilterHelper().setSelectedCategoryName("");
+            getFlagFilterHelper().setSelectedCategoryRootId("");
+            getSelectedFilter().remove(Option.KEY_CATEGORY);
+        } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
+                Option.KEY_PRICE_MAX.equals(optionKey)) {
+            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MIN);
+            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MAX);
+            getSelectedFilter().remove(Option.KEY_PRICE_MIN);
+            getSelectedFilter().remove(Option.KEY_PRICE_MAX);
+        } else {
+            getFlagFilterHelper().getSavedCheckedState().remove(uniqueId);
+
+            String mapValue = getSelectedFilter().get(optionKey);
+            mapValue = removeValue(mapValue, optionValue);
+
+            if (!TextUtils.isEmpty(mapValue)) {
+                getSelectedFilter().put(optionKey, mapValue);
+            } else {
+                getSelectedFilter().remove(optionKey);
+            }
+        }
+
+        clearDataFilterSort();
+        showBottomBarNavigation(false);
+        reloadData();
+    }
+
+    protected String removeValue(String mapValue, String removedValue) {
+        return mapValue.replace(removedValue, "").replace(",,", ",");
     }
 }

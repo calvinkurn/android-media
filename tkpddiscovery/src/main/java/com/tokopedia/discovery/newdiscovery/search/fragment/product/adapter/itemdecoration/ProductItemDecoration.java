@@ -8,8 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GuidedSearchViewHolder;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.Arrays;
