@@ -168,8 +168,8 @@ public interface ConstantTransactionAnalytics {
     }
 
     interface ScreenName {
-        String CART = "/cart";
-        String CHECKOUT = "/cart/shipment";
+        String CART = "/cart page (step 1)";
+        String CHECKOUT = "/cart summary page (step 2)";
         String SELECT_COURIER = "/selectcourier";
         String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart/voucher";
         String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart/coupon";

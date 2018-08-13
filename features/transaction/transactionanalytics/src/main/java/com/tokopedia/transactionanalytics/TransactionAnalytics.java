@@ -34,7 +34,9 @@ public abstract class TransactionAnalytics {
     }
 
     void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
-        if (analyticTracker != null)
+        if (analyticTracker != null) {
+            Log.d("ANAL EE", dataLayer.toString());
             analyticTracker.sendEnhancedEcommerce(dataLayer);
+        }
     }
 }
