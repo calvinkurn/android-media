@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.domain.model.Notification;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
@@ -59,6 +57,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private TextView toolbarTitle;
     private BadgeView badgeView;
 
+    private int badgeNumber;
+
     public static InboxFragment newInstance() {
         return new InboxFragment();
     }
@@ -96,16 +96,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             getCallingIntent(position);
         });
 
-        setMenuNotification();
-    }
-
-    private void setMenuNotification() {
-        if (getActivity() instanceof MainParentActivity) {
-            Notification notification = ((MainParentActivity)getActivity()).getNotification();
-            if (notification != null) {
-                onNotifyBadgeNotification(notification.getTotalNotif());
-            }
-        }
+        onNotifyBadgeNotification(badgeNumber);
     }
 
     private void intiInjector() {
@@ -210,6 +201,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onNotifyBadgeNotification(int number) {
+        this.badgeNumber = number;
         if (menuItemNotification == null || getActivity() == null)
             return;
 

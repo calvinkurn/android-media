@@ -20,7 +20,6 @@ public class GlobalNavConstant {
         static final String PAGE = "page";
 
         static final String INBOX = "inbox";
-
         static final String NOTIFICATION = "notification";
 
         static final String IMPRESSION = "Impression";

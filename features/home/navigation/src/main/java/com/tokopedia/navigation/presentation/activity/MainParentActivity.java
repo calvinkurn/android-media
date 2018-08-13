@@ -53,8 +53,6 @@ import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -121,16 +119,19 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    protected void onStart() {
         if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
             this.finish();
             return;
         }
+        super.onStart();
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         GraphqlClient.init(this);
         this.initInjector();
         presenter.setView(this);
@@ -152,9 +153,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 //        if (isFirstTime()) {
 //            trackFirstTime();
 //        }
-//
 //        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-//
 //        cacheHandler = new AnalyticsCacheHandler();
 
         checkAppUpdate();
@@ -238,18 +237,22 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             for (int i = 0; i < manager.getFragments().size(); i++) {
                 Fragment frag = manager.getFragments().get(i);
                 if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                    if (frag.isVisible() && frag instanceof FragmentListener) {
-                        ((FragmentListener) frag).onScrollToTop();
-                    }
                     ft.show(frag); // only show fragment what you want to show
                 } else {
                     ft.hide(frag); // hide all fragment
                 }
             }
+            scrollToTop(currentFrag);
         } else {
             ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
         }
         ft.commit();
+    }
+
+    private void scrollToTop(Fragment fragment) {
+        if (fragment.isVisible() && fragment instanceof FragmentListener) {
+            ((FragmentListener) fragment).onScrollToTop();
+        }
     }
 
     private boolean isUserLogin() {
@@ -375,10 +378,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
             invalidateOptionsMenu();
         }
-    }
-
-    public Notification getNotification() {
-        return notification;
     }
 
     /**
