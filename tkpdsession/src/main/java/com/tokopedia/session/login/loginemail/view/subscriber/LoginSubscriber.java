@@ -62,11 +62,12 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                     .getGetUserInfoDomainData());
         } else if (loginEmailDomain.getLoginResult() != null
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && (isMsisdnVerified(loginEmailDomain.getInfo()) && !view.isFromRegister())) {
+                && !view.isFromRegister()) {
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginEmail();
-        } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
+        } else if (loginEmailDomain.getLoginResult() != null
+                && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
                 && !isMsisdnVerified(loginEmailDomain.getInfo())
                 && view.isFromRegister()) {
             view.setSmartLock();

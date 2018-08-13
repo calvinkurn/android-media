@@ -67,7 +67,9 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     }
 
     private boolean isGoToSecurityQuestion(MakeLoginDomain makeLoginModel) {
-        return !makeLoginModel.isLogin() && makeLoginModel.getSecurityDomain() != null;
+        return makeLoginModel != null
+                && !makeLoginModel.isLogin()
+                && makeLoginModel.getSecurityDomain() != null;
     }
 
     private void sendRegisterEventToBranch(GetUserInfoDomainModel userInfoDomainModel) {
