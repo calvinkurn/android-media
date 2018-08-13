@@ -205,7 +205,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             if(campaignActive){
                 campaignStockAvailable.setVisibility(VISIBLE);
                 campaignStockAvailable.setText(MethodChecker.fromHtml(data.getProductStockWording()));
-            } else {
+            } else if(data.isAlwaysAvailable()) {
                 linearStockAvailable.setVisibility(VISIBLE);
                 if (data.getLimitedStock()) {
                     ivStockAvailable.setImageResource(R.drawable.ic_limited_stock);

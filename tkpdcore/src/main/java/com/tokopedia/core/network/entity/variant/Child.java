@@ -62,6 +62,17 @@ public class Child implements Parcelable {
     @SerializedName("variant_type")
     @Expose
     private String variantType;
+    @SerializedName("always_available")
+    @Expose
+    private boolean alwaysAvailable;
+
+    public boolean isAlwaysAvailable() {
+        return alwaysAvailable;
+    }
+
+    public void setAlwaysAvailable(boolean alwaysAvailable) {
+        this.alwaysAvailable = alwaysAvailable;
+    }
 
     public int getProductId() {
         return productId;
@@ -223,6 +234,7 @@ public class Child implements Parcelable {
         dest.writeString(this.stockWordingHtml);
         dest.writeByte(this.isLimitedStock ? (byte) 1 : (byte) 0);
         dest.writeString(this.variantType);
+        dest.writeByte(this.alwaysAvailable ? (byte) 1 : (byte) 0);
     }
 
     public Child() {
@@ -247,6 +259,7 @@ public class Child implements Parcelable {
         this.stockWordingHtml = in.readString();
         this.isLimitedStock = in.readByte() != 0;
         this.variantType = in.readString();
+        this.alwaysAvailable = in.readByte() != 0;
     }
 
     public static final Creator<Child> CREATOR = new Creator<Child>() {

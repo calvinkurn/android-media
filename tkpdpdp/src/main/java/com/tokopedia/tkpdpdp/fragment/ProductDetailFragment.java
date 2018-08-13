@@ -1579,6 +1579,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWordingHtml());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
+            productData.getInfo().setAlwaysAvailable(productStock.isAlwaysAvailable());
             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                     productData.getInfo());
         }
