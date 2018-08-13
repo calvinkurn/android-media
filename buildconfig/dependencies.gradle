@@ -343,7 +343,8 @@ ext {
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train"
+            train                 : ":features:digital:train",
+            commonTravel          : ":features:digital:common_travel"
     ]
 
     libraries = [
