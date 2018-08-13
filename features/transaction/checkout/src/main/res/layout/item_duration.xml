@@ -4,6 +4,7 @@
     android:id="@+id/rl_item_duration_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:foreground="?selectableItemBackground"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">

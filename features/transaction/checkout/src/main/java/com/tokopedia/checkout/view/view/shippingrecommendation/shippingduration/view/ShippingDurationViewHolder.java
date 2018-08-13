@@ -67,7 +67,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (getAdapterPosition() == 0) {
-            shippingDurationViewModel.setShowShowCase(true);
             tvDurationHeaderInfo.setVisibility(View.VISIBLE);
             if (shippingDurationViewModel.isShowShowCase()) {
                 setShowCase();
@@ -80,7 +79,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(
-                itemView, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
+                rlItemDurationContainer, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
                 itemView.getContext().getString(R.string.label_body_showcase_shipping_duration),
                 ShowCaseContentPosition.UNDEFINED);
 
