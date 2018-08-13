@@ -123,7 +123,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         multipleAddressItemData = itemData;
         renderHeader(itemData, listener, itemDataList, getAdapterPosition());
         renderAddress(itemData, listener, parentPosition);
-        renderQuantity(itemData, getAdapterPosition());
+        renderQuantity(itemData, listener, getAdapterPosition());
         renderNotes(itemData);
     }
 
@@ -383,10 +383,13 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         validateNote(itemData);
     }
 
-    private void renderQuantity(MultipleAddressItemData itemData, int position) {
+    private void renderQuantity(MultipleAddressItemData itemData,
+                                MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
+                                int position) {
         btnQtyPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listener.onClickPlusQuantityButton();
                 try {
                     int qty = Integer.parseInt(multipleAddressItemData.getProductQty());
                     qty = qty + 1;
@@ -403,6 +406,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         btnQtyMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listener.onClickMinQuantityButton();
                 try {
                     int qty = Integer.parseInt(multipleAddressItemData.getProductQty());
                     qty = qty - 1;

@@ -42,21 +42,7 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT
-        );
-    }
 
-    public void eventClickAtcCartMultipleAddressClickEditFromKirimKeBeberapaAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT
-        );
-    }
 
     public void eventClickAtcCartMultipleAddressClickPilihKurirPengirimanFromKirimKeBeberapaAlamat() {
         sendEventCategoryAction(
@@ -74,21 +60,7 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT
-        );
-    }
 
-    public void eventClickAtcCartMultipleAddressClickPlusFromUbahFromKirimKeBeberapaAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_MULTIPLE_ADDRESS,
-                EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT
-        );
-    }
 
     public void eventClickAtcCartMultipleAddressClickInputQuantityFromUbahFromKirimKeBeberapaAlamat(String productQuantity) {
         sendEventCategoryActionLabel(
@@ -112,6 +84,39 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
                 EventName.CLICK_ATC,
                 EventCategory.CART_MULTIPLE_ADDRESS,
                 EventAction.CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT
+        );
+    }
+
+
+    public void eventClickAtcCartMultipleAddressClickEditFromKirimKeBeberapaAlamat() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT
+        );
+    }
+
+    public void eventClickAtcCartMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT
+        );
+    }
+
+    public void eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT
+        );
+    }
+
+    public void eventClickAtcCartMultipleAddressClickPlusFromUbahFromKirimKeBeberapaAlamat() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT
         );
     }
 }

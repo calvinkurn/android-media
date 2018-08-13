@@ -82,6 +82,10 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         void onChangeAddress(MultipleAddressItemAdapter adapter,
                              RecipientAddressModel recipientAddressModel,
                              int childPosition, int parentPosition);
+
+        void onClickPlusQuantityButton();
+
+        void onClickMinQuantityButton();
     }
 
 }

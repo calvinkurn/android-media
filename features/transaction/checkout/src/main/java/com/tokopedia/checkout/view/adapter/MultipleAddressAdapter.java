@@ -105,6 +105,16 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         listener.onChangeAddress(adapter, addressData, recipientAddressModel, childPosition, parentPosition);
     }
 
+    @Override
+    public void onClickPlusQuantityButton() {
+        listener.sendAnalyticsPlusButtonItemMultipleAddress();
+    }
+
+    @Override
+    public void onClickMinQuantityButton() {
+        listener.sendAnalyticsMinButtonItemMultipleAddress();
+    }
+
     public void unsubscribeSubscription() {
         compositeSubscription.unsubscribe();
     }
@@ -149,5 +159,9 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                              RecipientAddressModel recipientAddressModel,
                              int childPosition,
                              int parentPosition);
+
+        void sendAnalyticsPlusButtonItemMultipleAddress();
+
+        void sendAnalyticsMinButtonItemMultipleAddress();
     }
 }

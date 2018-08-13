@@ -95,6 +95,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutData checkoutData;
     private boolean partialCheckout;
 
+    private ShipmentContract.AnalyticsActionListener analyticsActionListener;
+
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
@@ -104,7 +106,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              EditAddressUseCase editAddressUseCase,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
-                             ChangeShippingAddressUseCase changeShippingAddressUseCase) {
+                             ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                             ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -114,6 +117,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.editAddressUseCase = editAddressUseCase;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
+        this.analyticsActionListener = shipmentAnalyticsActionListener;
     }
 
     @Override
@@ -411,7 +415,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processReloadCheckoutPageBecauseOfError() {
         getView().showLoading();
-        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
+        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm =
+                new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
 
         RequestParams requestParams = RequestParams.create();
@@ -815,7 +820,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().sendAnalyticsChoosePaymentMethodFailed();
+                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
                 processReloadCheckoutPageBecauseOfError();
             }
 
@@ -823,11 +828,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onNext(CheckoutData checkoutData) {
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
-                    getView().sendAnalyticsChoosePaymentMethodSuccess();
-                    getView().sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest));
+                    analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
+                    analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest));
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
-                    getView().sendAnalyticsChoosePaymentMethodFailed();
+                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
                     getView().renderCheckoutCartError(checkoutData.getErrorMessage());
                 }
             }

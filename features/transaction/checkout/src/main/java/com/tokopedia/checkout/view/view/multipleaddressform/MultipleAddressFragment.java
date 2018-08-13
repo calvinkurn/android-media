@@ -52,7 +52,8 @@ import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddre
  */
 
 public class MultipleAddressFragment extends BaseCheckoutFragment
-        implements IMultipleAddressView, MultipleAddressAdapter.MultipleAddressAdapterListener {
+        implements IMultipleAddressView, MultipleAddressAdapter.MultipleAddressAdapterListener,
+        AnalyticsActionMultipleAddressPageListener {
 
     @Inject
     IMultipleAddressPresenter presenter;
@@ -122,14 +123,13 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
-        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickPilihKurirPengirimanFromKirimKeBeberapaAlamat();
+        sendAnalyticsOnClickChooseCourierShipmentMultipleAddress();
         presenter.sendData(getActivity(), dataList);
-
     }
 
     @Override
     public void onAddNewShipmentAddress(ArrayList<MultipleAddressAdapterData> dataList, int parentPosition) {
-        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat();
+        sendAnalyticsOnClickAddNewAddressShipmentMultipleAddress();
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), dataList, parentPosition);
         startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
     }
@@ -157,9 +157,20 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                                 ArrayList<MultipleAddressAdapterData> dataList,
                                 RecipientAddressModel recipientAddressModel,
                                 int childPosition, int parentPosition) {
+        sendAnalyticsOnClickChangeAddressShipmentItemMultipleAddress();
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), recipientAddressModel,
                 dataList, childPosition, parentPosition);
         startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
+    }
+
+    @Override
+    public void sendAnalyticsPlusButtonItemMultipleAddress() {
+        sendAnalyticsOnClickButtonPlusQuantityItemMultipleAddress();
+    }
+
+    @Override
+    public void sendAnalyticsMinButtonItemMultipleAddress() {
+        sendAnalyticsOnClickButtonMinusQuantityItemMultipleAddress();
     }
 
     @Override
@@ -167,7 +178,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                               ArrayList<MultipleAddressAdapterData> dataList,
                               MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
-        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickEditFromKirimKeBeberapaAlamat();
         startActivityForResult(AddShipmentAddressActivity
                         .createIntent(getActivity(), itemPosition, dataList, productData, addressData, EDIT_MODE),
                 EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
@@ -457,5 +467,30 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onStart() {
         super.onStart();
         checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
+    }
+
+    @Override
+    public void sendAnalyticsOnClickChangeAddressShipmentItemMultipleAddress() {
+        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickEditFromKirimKeBeberapaAlamat();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickAddNewAddressShipmentMultipleAddress() {
+        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickChooseCourierShipmentMultipleAddress() {
+        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickPilihKurirPengirimanFromKirimKeBeberapaAlamat();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickButtonPlusQuantityItemMultipleAddress() {
+        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickPlusFromUbahFromKirimKeBeberapaAlamat();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickButtonMinusQuantityItemMultipleAddress() {
+        checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat();
     }
 }
