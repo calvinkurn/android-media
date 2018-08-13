@@ -154,6 +154,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.gql_search_product), SearchProductGqlResponse.class, variables);
 
+        graphqlUseCase.clearRequest();
         graphqlUseCase.setRequest(graphqlRequest);
 
         graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
@@ -279,6 +280,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.gql_search_product_first_page), SearchProductGqlResponse.class, variables);
 
+        graphqlUseCase.clearRequest();
         graphqlUseCase.setRequest(graphqlRequest);
 
         graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
