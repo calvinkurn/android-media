@@ -68,4 +68,5 @@
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
     <string name="service_title_format">%1$s (%2$s)</string>
     <string name="rate_est_detail_weight_fmt">Berat : %1$s</string>
+    <string name="rates_est_min">Ongkos Kirim %1$s</string>
 </resources>
