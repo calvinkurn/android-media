@@ -80,7 +80,9 @@ public class ProductViewModelHelper {
         SearchProductGqlResponse.Suggestion gqlSuggestionResponse = searchProductResponse.getSuggestion();
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(gqlSuggestionResponse.getText());
-        model.setSuggestedQuery(gqlSuggestionResponse.getQuery());
+        String suggestedQuery
+                = NetworkParamHelper.getQueryValue(gqlSuggestionResponse.getQuery());
+        model.setSuggestedQuery(suggestedQuery);
         model.setSuggestionCurrentKeyword(gqlSuggestionResponse.getCurrentKeyword());
         //model.setFormattedResultCount(Long.toString(searchProductResponse.getCount()));
         return model;
@@ -89,9 +91,7 @@ public class ProductViewModelHelper {
     private static SuggestionModel createSuggestionModel(SearchResultModel searchResultModel) {
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(searchResultModel.getSuggestionText());
-        String suggestedQuery
-                = NetworkParamHelper.getQueryValue(searchResultModel.getSuggestedQuery());
-        model.setSuggestedQuery(suggestedQuery);
+        model.setSuggestedQuery(searchResultModel.getSuggestedQuery());
         model.setSuggestionCurrentKeyword(searchResultModel.getSuggestionCurrentKeyword());
         model.setFormattedResultCount(searchResultModel.getTotalDataText());
         return model;
