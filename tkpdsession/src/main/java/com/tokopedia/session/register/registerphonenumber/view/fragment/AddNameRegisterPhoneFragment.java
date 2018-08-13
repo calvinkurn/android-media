@@ -23,7 +23,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameRegisterPhoneActivity;
 import com.tokopedia.session.register.registerphonenumber.view.listener.AddNameListener;
 import com.tokopedia.session.register.registerphonenumber.view.presenter.AddNamePresenter;
 import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
@@ -35,7 +35,7 @@ import javax.inject.Inject;
  * @author by yfsx on 22/03/18.
  */
 
-public class AddNameFragment extends BaseDaggerFragment implements AddNameListener.View {
+public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements AddNameListener.View {
 
 
     private String phoneNumber;
@@ -51,8 +51,8 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
     @Inject
     protected AddNamePresenter presenter;
 
-    public static AddNameFragment newInstance(Bundle bundle) {
-        AddNameFragment fragment = new AddNameFragment();
+    public static AddNameRegisterPhoneFragment newInstance(Bundle bundle) {
+        AddNameRegisterPhoneFragment fragment = new AddNameRegisterPhoneFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -89,7 +89,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
     }
 
     private void setView() {
-        phoneNumber = getArguments().getString(AddNameActivity.PARAM_PHONE);
+        phoneNumber = getArguments().getString(AddNameRegisterPhoneActivity.PARAM_PHONE);
         disableNextButton();
         btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
@@ -130,20 +130,24 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                KeyboardHandler.DropKeyboard(getActivity(), getView());
-                presenter.registerPhoneNumberAndName(etName.getText().toString());
+               onContinueClick();
             }
         });
         btnContinue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int id, KeyEvent event) {
                 if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
-                    presenter.registerPhoneNumberAndName(etName.getText().toString());
+                    onContinueClick();
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    protected void onContinueClick() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        presenter.registerPhoneNumberAndName(etName.getText().toString());
     }
 
 
