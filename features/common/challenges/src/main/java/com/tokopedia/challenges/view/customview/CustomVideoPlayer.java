@@ -78,41 +78,42 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
                     return;
                 }
             }
-            thumbNail.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    thumbNail.setVisibility(GONE);
-                    Uri video = Uri.parse(videoUrl);
-                    if (mediaController == null) {
-                        mediaController = new CustomMediaController(getContext(), videoUrl, pos, isFullScreen, CustomVideoPlayer.this);
+            if (!TextUtils.isEmpty(videoUrl)) {
+                thumbNail.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        thumbNail.setVisibility(GONE);
+                        Uri video = Uri.parse(videoUrl);
+                        if (mediaController == null) {
+                            mediaController = new CustomMediaController(getContext(), videoUrl, pos, isFullScreen, CustomVideoPlayer.this);
+                        }
+                        videoView.setVideoURI(video);
+                        videoView.requestFocus();
+                        videoView.seekTo(pos);
+                        videoView.start();
+                        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mediaPlayer) {
+                                thumbNail.setVisibility(VISIBLE);
+                                videoView.seekTo(0);
+                                mediaPlayer.reset();
+                            }
+                        });
+                        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mediaPlayer) {
+                                mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                                    @Override
+                                    public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
+                                        mediaController.setAnchorView(videoView);
+                                        videoView.setMediaController(mediaController);
+                                    }
+                                });
+                            }
+                        });
                     }
-                    videoView.setVideoURI(video);
-                    videoView.requestFocus();
-                    videoView.seekTo(pos);
-                    videoView.start();
-                    videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-                            thumbNail.setVisibility(VISIBLE);
-                            videoView.seekTo(0);
-                            mediaPlayer.reset();
-                        }
-                    });
-                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mediaPlayer) {
-                            mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                                @Override
-                                public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
-                                    mediaController.setAnchorView(videoView);
-                                    videoView.setMediaController(mediaController);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
+                });
+            }
         }
     }
 

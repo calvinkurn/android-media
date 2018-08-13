@@ -103,13 +103,7 @@
             <com.tokopedia.challenges.view.customview.CustomVideoPlayer
                 android:id="@+id/img_challenge"
                 android:layout_width="match_parent"
-                android:layout_height="190dp"
-                android:adjustViewBounds="true"
-                android:background="@color/green"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_big_notif_customerapp"
-                android:tint="@color/cardview_shadow_start_color"
-                tools:layout_editor_absoluteY="56dp"
+                android:layout_height="@dimen/dp_180"
                 android:layout_marginBottom="@dimen/dp_30"/>
 
             </RelativeLayout>

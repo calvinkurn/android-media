@@ -104,7 +104,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private AppBarLayout appBarLayout;
     private ChallengesFragmentCallbacks fragmentCallbacks;
     private String tncText;
-    private String buzzPointtext;
+    private String buzzPointText;
     private TextView tvHowBuzzPointsText;
     private String challengeId;
     private FloatingActionButton btnShare;
@@ -374,10 +374,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     public void showBuzzPointsText() {
-        buzzPointtext = firebaseRemoteConfig.getString("app_text_how_to_generate_buzz_point");
-        if (!TextUtils.isEmpty(buzzPointtext)) {
+        buzzPointText = firebaseRemoteConfig.getString("app_text_how_to_generate_buzz_point");
+        if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
-            tvHowBuzzPointsText.setText(Html.fromHtml(buzzPointtext));
+            tvHowBuzzPointsText.setText(Html.fromHtml(buzzPointText));
         }
     }
 
@@ -404,7 +404,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.ll_continue) {
             startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(), challengeResult));
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
-            fragmentCallbacks.replaceFragment(buzzPointtext, getString(R.string.generate_buzz_points));
+            fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         }else if(v.getId() == R.id.fab_share){

@@ -1,6 +1,5 @@
 package com.tokopedia.challenges.view.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
@@ -120,8 +118,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         profileText.setText(text);
     }
 
-    public void setChallengeImage(String url) {
-        //challengeImage.setVideoThumbNail(url);
+    public void setChallengeImage(String thumbnailUrl, String videoUrl) {
+        challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false);
     }
 
     public void setLikesCountView(String likesCount) {
