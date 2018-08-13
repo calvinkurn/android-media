@@ -1,6 +1,7 @@
 package com.tokopedia.withdraw.domain.source;
 
 import com.tokopedia.withdraw.data.DepositActionApi;
+import com.tokopedia.withdraw.domain.model.DoWithdrawDomainModel;
 
 import java.util.HashMap;
 
@@ -25,7 +26,7 @@ public class DoWithdrawSource {
 
     }
 
-    public Observable<String> doWithdraw(HashMap<String,Object> parameters) {
+    public Observable<DoWithdrawDomainModel> doWithdraw(HashMap<String,Object> parameters) {
         return api.doWithdraw(parameters).map(mapper);
     }
 }

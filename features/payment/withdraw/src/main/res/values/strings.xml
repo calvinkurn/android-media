@@ -40,6 +40,10 @@
     <string name="confirm_password">Konfirmasi dengan kata sandi akun Tokopedia Anda</string>
     <string name="tokopedia_password">Kata Sandi Tokopedia</string>
     <string name="error_field_required">Harus diisi</string>
+    <string name="indicator_password_error">kata sandi</string>
+    <string name="alert_success_withdraw_title">Penarikan Saldo</string>
+    <string name="alert_success_withdraw_positive">Ok</string>
+    <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses penarikan paling lama 48 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
 
 
 </resources>

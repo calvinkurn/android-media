@@ -1,9 +1,13 @@
 package com.tokopedia.withdraw.view.fragment;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,10 @@ import android.widget.EditText;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.di.DaggerDoWithdrawComponent;
@@ -27,7 +35,10 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
 
 
     private View withdrawButton;
+    private View forgotPassword;
     private EditText passwordView;
+    private Snackbar snackBarError;
+    private TkpdHintTextInputLayout wrapperPassword;
 
     @Override
     protected String getScreenName() {
@@ -61,6 +72,8 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
         View view = inflater.inflate(R.layout.layout_confirm_password, container, false);
         withdrawButton = view.findViewById(R.id.withdraw_button);
         passwordView = view.findViewById(R.id.password);
+        forgotPassword = view.findViewById(R.id.forgot_pass);
+        wrapperPassword = view.findViewById(R.id.wrapper_password);
         return view;
     }
 
@@ -73,18 +86,63 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                 int withdrawal = (int) StringUtils.convertToNumeric(
                         getArguments().getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)
                         ,false);
-
+                wrapperPassword.setError(null);
                 presenter.doWithdraw(withdrawal, (BankAccountViewModel) getArguments()
                         .get(WithdrawPasswordActivity.BUNDLE_BANK)
                         , passwordView.getText().toString());
             }
         });
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                Bundle bundle = new Bundle();
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 65);
+            }
+        });
+
+        snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
+                "", BaseToaster.LENGTH_LONG)
+                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackBarError.dismiss();
+                    }
+                });
+
     }
 
     @Override
     public void onDestroy() {
-
+        presenter.detachView();
         super.onDestroy();
     }
 
+    @Override
+    public void showError(String error) {
+        snackBarError.setText(error);
+        snackBarError.show();
+    }
+
+    @Override
+    public void showErrorPassword(String error) {
+        wrapperPassword.setError(error);
+    }
+
+    @Override
+    public void showSuccessWithdraw() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
+                .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
+                .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        getActivity().finish();
+                    }
+                })
+                .show();
+    }
 }

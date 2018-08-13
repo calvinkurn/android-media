@@ -35,6 +35,8 @@ public class WithdrawContract {
         void resetView();
 
         void showConfirmPassword();
+
+        void goToAddBank();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

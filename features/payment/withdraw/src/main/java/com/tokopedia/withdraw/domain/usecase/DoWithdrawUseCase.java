@@ -3,6 +3,7 @@ package com.tokopedia.withdraw.domain.usecase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.withdraw.domain.model.DoWithdrawDomainModel;
 import com.tokopedia.withdraw.domain.source.DoWithdrawSource;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
@@ -19,7 +20,7 @@ import static com.tokopedia.network.utils.AuthUtil.md5;
  * @author by StevenFredian on 30/07/18.
  */
 
-public class DoWithdrawUseCase extends UseCase<String> {
+public class DoWithdrawUseCase extends UseCase<DoWithdrawDomainModel> {
 
     private DoWithdrawSource doWithdrawSource;
 
@@ -43,7 +44,7 @@ public class DoWithdrawUseCase extends UseCase<String> {
     }
 
     @Override
-    public Observable<String> createObservable(RequestParams requestParams) {
+    public Observable<DoWithdrawDomainModel> createObservable(RequestParams requestParams) {
         return doWithdrawSource.doWithdraw(getParameters(requestParams));
     }
 

@@ -22,11 +22,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
+import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
@@ -43,8 +45,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View{
+public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View {
 
+    private static final int BANK_INTENT = 34275;
+    private static final int CONFIRM_PASSWORD_INTENT = 5964;
     private TextView wrapperTotalWithdrawal;
     private CloseableBottomSheetDialog infoDialog;
     RecyclerView bankRecyclerView;
@@ -71,7 +75,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     protected String getScreenName() {
         return null;
     }
-    
+
     @Inject
     WithdrawPresenter presenter;
 
@@ -97,7 +101,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_withdraw, container, false);
-        
+
         wrapperTotalWithdrawal = view.findViewById(R.id.wrapper_total_withdrawal);
 
         infoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
@@ -139,7 +143,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_8));
+        SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_8)
+                , MethodChecker.getDrawable(getActivity(), R.drawable.divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
 
         totalBalance.setText(getArguments().getString(BUNDLE_TOTAL_BALANCE, DEFAULT_TOTAL_BALANCE));
@@ -191,7 +196,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         presenter.getWithdrawForm();
 
         listBank = new ArrayList<>();
-        bankAdapter = BankAdapter.createAdapter(getActivity(), listBank);
+        bankAdapter = BankAdapter.createAdapter(this, listBank);
         bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         bankRecyclerView.setAdapter(bankAdapter);
         bankAdapter.setList(listBank);
@@ -258,6 +263,27 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bundle.putString(WithdrawPasswordActivity.BUNDLE_WITHDRAW, totalWithdrawal.getText().toString());
         bundle.putParcelable(WithdrawPasswordActivity.BUNDLE_BANK, bankAdapter.getSelectedBank());
         intent.putExtras(bundle);
-        startActivityForResult(intent, 65);
+        startActivityForResult(intent, CONFIRM_PASSWORD_INTENT);
+    }
+
+    @Override
+    public void goToAddBank() {
+        Intent intent = new Intent(getActivity(), AddEditBankActivity.class);
+        Bundle bundle = new Bundle();
+        intent.putExtras(bundle);
+        startActivityForResult(intent, BANK_INTENT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case BANK_INTENT:
+                break;
+            case CONFIRM_PASSWORD_INTENT:
+                break;
+            default:
+                break;
+        }
     }
 }

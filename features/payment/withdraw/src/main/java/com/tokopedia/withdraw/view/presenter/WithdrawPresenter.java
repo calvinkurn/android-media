@@ -84,6 +84,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
 
     @Override
     public void detachView() {
+        depositUseCase.unsubscribe();
         super.detachView();
     }
 }

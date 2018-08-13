@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.view.listener.WithdrawContract;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import java.util.List;
@@ -29,18 +30,18 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
     private final List<BankAccountViewModel> listBank;
     private int isEmpty = 0;
-    private Context context;
+    private WithdrawContract.View context;
     private String selectedBankId;
     private OnBankClickListener listener;
 
-    public BankAdapter(Context context, List<BankAccountViewModel> listBank) {
+    public BankAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
         this.context = context;
         this.listBank = listBank;
         this.selectedBankId = "";
         this.selectedItem = -1;
     }
 
-    public static BankAdapter createAdapter(Context context, List<BankAccountViewModel> listBank) {
+    public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
         return new BankAdapter(context, listBank);
     }
 
@@ -111,6 +112,12 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
         switch (holder.getItemViewType()) {
             case 1:
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        context.goToAddBank();
+                    }
+                });
                 break;
             default:
                 ItemBankViewHolder viewHolder = (ItemBankViewHolder) holder;
