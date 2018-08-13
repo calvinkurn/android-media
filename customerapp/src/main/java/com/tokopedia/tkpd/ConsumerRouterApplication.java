@@ -155,6 +155,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
+import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
@@ -184,7 +185,7 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
-import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
+import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
@@ -2011,7 +2012,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageShop(Context context) {
-        context.startActivity(getIntentManageShop(context));
+        context.startActivity(StoreSettingActivity.createIntent(context));
     }
 
     @Override
@@ -2532,7 +2533,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getFeedPlusFragment() {
-        return new FeedPlusFragment();
+        return FeedPlusContainerFragment.newInstance();
     }
 
     @Override

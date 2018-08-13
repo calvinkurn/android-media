@@ -5,6 +5,7 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.MainParentActivityTest;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment;
+import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 
 import dagger.Component;
 
@@ -16,4 +17,6 @@ import dagger.Component;
 public interface TestGlobalNavComponent extends GlobalNavComponent{
 
     GetDrawerNotificationUseCase getGetDrawerNotificationUseCase();
+
+    MainParentPresenter mainParentPresenter();
 }

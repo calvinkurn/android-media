@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -41,8 +40,6 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -109,8 +106,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
-        KolPostListener.View.ViewHolder,
-        NotificationListener {
+        KolPostListener.View.ViewHolder {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -128,30 +124,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
     public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
 
-    RecyclerView recyclerView;
-    SwipeToRefresh swipeToRefresh;
-    RelativeLayout mainContent;
-    View newFeed;
-    Trace trace;
-    private View tabExplore;
+    private RecyclerView recyclerView;
+    private SwipeToRefresh swipeToRefresh;
+    private View mainContent;
+    private View newFeed;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
-    private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
-    private MainToolbar mainToolbar;
 
-    @Inject
-    FeedPlusPresenter presenter;
-
+    private Trace trace;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private String firstCursor = "";
     private int loginIdInt;
+    private boolean hasLoadedOnce = false;
 
-    boolean hasLoadedOnce = false;
+    @Inject
+    FeedPlusPresenter presenter;
 
     public static FeedPlusFragment newInstance() {
         FeedPlusFragment fragment = new FeedPlusFragment();
@@ -261,8 +253,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
-        mainToolbar = parentView.findViewById(R.id.toolbar);
-        tabExplore = parentView.findViewById(R.id.tab_explore);
 
         prepareView();
         GraphqlClient.init(getActivity());
@@ -338,7 +328,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -721,10 +710,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void forceLoadFirstPage() {
-        loadData(true);
-    }
-
     @Override
     public void onProductItemClicked(int position, Product product) {
         goToProductDetail(product.getId(),
@@ -791,7 +776,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     public void scrollToTop() {
-        if (recyclerView != null) recyclerView.scrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
     }
 
     @Override
@@ -987,10 +974,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        //TODO milhamj revert remote config
-//        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
-//            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
-//        }
         feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
@@ -1186,12 +1169,5 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public AbstractionRouter getAbstractionRouter() {
         return abstractionRouter;
-    }
-
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        if (mainToolbar == null || getActivity() == null)
-            return;
-        mainToolbar.setNotificationNumber(number);
     }
 }

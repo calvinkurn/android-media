@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -25,6 +26,10 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
@@ -49,6 +54,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -119,8 +125,16 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GraphqlClient.init(this); // initialize graphql
-        this.initInjector(); // initialize di
+
+        if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+            startActivity(((GlobalNavRouter) getApplicationContext())
+                    .getOnBoardingIntent(this));
+            this.finish();
+            return;
+        }
+
+        GraphqlClient.init(this);
+        this.initInjector();
         presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
 
@@ -142,18 +156,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         }
 
 //        cacheHandler = new AnalyticsCacheHandler();
-
-        Thread t = new Thread(() -> {
-            if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
-
-                //  Launch app intro
-                Intent i = ((GlobalNavRouter) getApplicationContext()).getOnBoardingIntent(this);
-                startActivityForResult(i, ONBOARDING_REQUEST);
-
-            }
-        });
-
-        t.start();
 
         checkAppUpdate();
         checkIsHaveApplinkComeFromDeeplink(getIntent());
@@ -180,6 +182,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(GlobalNavComponent globalNavComponent){
+        globalNavComponent.inject(this);
+
+        presenter.setView(this);
     }
 
     @Override
@@ -229,6 +238,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             for (int i = 0; i < manager.getFragments().size(); i++) {
                 Fragment frag = manager.getFragments().get(i);
                 if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                    if (frag.isVisible() && frag instanceof FragmentListener) {
+                        ((FragmentListener) frag).onScrollToTop();
+                    }
                     ft.show(frag); // only show fragment what you want to show
                 } else {
                     ft.hide(frag); // hide all fragment
@@ -261,7 +273,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         super.onResume();
         presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
-            reloadPage();
+            reloadPage(this);
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
         registerBroadcastHockeyApp();
@@ -270,16 +282,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.onDestroy();
+        if (presenter != null)
+            presenter.onDestroy();
     }
 
-    private void reloadPage() {
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        if (getApplication() instanceof GlobalNavRouter) {
-            this.currentFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
-        }
-        selectFragment(currentFragment);
-        bottomNavigation.getMenu().getItem(HOME_MENU).setChecked(true);
+    private void reloadPage(Activity activity) {
+        finish();
+        startActivity(getIntent());
     }
 
     private List<Fragment> fragments() {
@@ -366,6 +375,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
             invalidateOptionsMenu();
         }
+    }
+
+    public Notification getNotification() {
+        return notification;
     }
 
     /**

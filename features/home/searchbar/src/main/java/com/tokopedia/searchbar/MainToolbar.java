@@ -11,8 +11,7 @@ import android.widget.ImageButton;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-
-import q.rorbin.badgeview.QBadgeView;
+import com.tokopedia.design.component.badge.BadgeView;
 
 /**
  * Created by meta on 22/06/18.
@@ -22,7 +21,7 @@ public class MainToolbar extends Toolbar {
     private ImageButton btnNotification;
     private ImageButton btnWishlist;
 
-    private QBadgeView badgeView;
+    private BadgeView badgeView;
 
     private UserSession userSession;
 
@@ -46,7 +45,7 @@ public class MainToolbar extends Toolbar {
     public void setNotificationNumber(int badgeNumber) {
         if (btnNotification != null) {
             if (badgeView == null)
-                badgeView = new QBadgeView(getContext());
+                badgeView = new BadgeView(getContext());
 
             badgeView.bindTarget(btnNotification);
             badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);

@@ -5,9 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.travelcalendar.R;
@@ -86,7 +84,7 @@ public class CalendarPickerView extends LinearLayout {
             cells.add(cellDate);
             mCal.add(Calendar.DAY_OF_MONTH, 1);
         }
-        adapter = new GridCalendarAdapter(getContext(), cells, mCal, maxDateCal, holidayResultList);
+        adapter = new GridCalendarAdapter(cells, mCal, maxDateCal, holidayResultList);
         adapter.setActionListener(new GridCalendarAdapter.ActionListener() {
             @Override
             public void onClickDate(CellDate cellDate) {

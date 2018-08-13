@@ -79,6 +79,7 @@ import com.tokopedia.navigation.presentation.di.TestGlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.module.DaggerTestBerandaComponent;
 import com.tokopedia.navigation.presentation.module.TestBerandaComponent;
+import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpd.ConsumerRouterApplication;
@@ -181,6 +182,41 @@ public class MainParentActivityTest {
     }
 
     @Test
+    public void test_notification_navigation_bar() throws Exception{
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        // reset all inbox state
+        TestGlobalNavComponent navComponent = DaggerTestGlobalNavComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .testGlobalNavModule(new TestGlobalNavModule())
+                .build();
+
+        getDrawerNotificationUseCase = navComponent.getGetDrawerNotificationUseCase();
+
+        MainParentPresenter mainParentPresenter = navComponent.mainParentPresenter();
+
+        doReturn(Observable.just(provideNotificationEntity()))
+                .when(getDrawerNotificationUseCase)
+                .createObservable(any(RequestParams.class));
+
+        mIntentsRule.getActivity().reInitInjector(
+                navComponent);
+
+        mIntentsRule.getActivity().runOnUiThread(mainParentPresenter::onResume);
+
+
+    }
+
+    @Test
     public void test_load_account_home_first_time_without_login() throws Exception{
         UserSession userSession = baseAppComponent.userSession();
 
@@ -222,7 +258,7 @@ public class MainParentActivityTest {
             fragment.reInitInjector(accountHomeComponent);
 
             mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.getAccount();
+                fragment.renderData(provideAccountViewModel());
             });
         }
 

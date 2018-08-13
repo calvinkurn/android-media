@@ -88,6 +88,7 @@ public class MethodChecker {
     }
 
     public static Spanned fromHtml(String text) {
+        if (text == null) text = "";
         Spanned result;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);

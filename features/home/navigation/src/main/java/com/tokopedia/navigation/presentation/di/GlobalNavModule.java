@@ -15,6 +15,7 @@ import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.listener.CartListener;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 
 import javax.inject.Named;
 
@@ -27,6 +28,11 @@ import dagger.Provides;
 
 @Module
 public class GlobalNavModule {
+    @Provides
+    MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase){
+        return new MainParentPresenter(getNotificationUseCase);
+    }
+
     @Provides
     AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
         if (context instanceof AbstractionRouter) {
