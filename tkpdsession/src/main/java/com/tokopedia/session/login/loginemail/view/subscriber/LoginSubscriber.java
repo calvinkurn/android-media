@@ -3,6 +3,7 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
@@ -57,12 +58,13 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
 
     @Override
     public void onNext(LoginEmailDomain loginEmailDomain) {
-        if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+        if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()
+                && GlobalConfig.isSellerApp()) {
             view.onGoToCreatePasswordPage(loginEmailDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (loginEmailDomain.getLoginResult() != null
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && !view.isFromRegister()) {
+                && (!view.isFromRegister() || GlobalConfig.isSellerApp())) {
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginEmail();

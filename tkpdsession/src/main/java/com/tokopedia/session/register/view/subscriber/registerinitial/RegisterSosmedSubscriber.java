@@ -3,6 +3,7 @@ package com.tokopedia.session.register.view.subscriber.registerinitial;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -48,7 +49,17 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onNext(LoginSosmedDomain registerSosmedDomain) {
-        if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().getName().contains(CHARACTER_NOT_ALLOWED)) {
+        if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()
+                && GlobalConfig.isSellerApp()) {
+            viewListener.onGoToCreatePasswordPage(
+                    registerSosmedDomain.getInfo().getGetUserInfoDomainData(),
+                    methodName);
+        } else if (registerSosmedDomain.getMakeLoginModel() != null
+                && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
+                && !isMsisdnVerified(registerSosmedDomain.getInfo())
+                && GlobalConfig.isSellerApp()) {
+            viewListener.onGoToPhoneVerification();
+        } else if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().getName().contains(CHARACTER_NOT_ALLOWED)) {
             viewListener.onGoToAddName(registerSosmedDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (registerSosmedDomain.getMakeLoginModel() != null
@@ -64,6 +75,10 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
         } else {
             viewListener.onErrorRegisterSosmed(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
+    }
+
+    private boolean isMsisdnVerified(GetUserInfoDomainModel info) {
+        return info.getGetUserInfoDomainData().isPhoneVerified();
     }
 
     private boolean isGoToSecurityQuestion(MakeLoginDomain makeLoginModel) {
