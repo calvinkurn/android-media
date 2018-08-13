@@ -141,7 +141,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         shopDescEditText.setText(userData.getShortDesc());
         shopSloganEditText.setText(userData.getTagLine());
 
-        Drawable imgAddPhotoBox = AppCompatResources.getDrawable(getActivity(), R.drawable.ic_add_photo_box);
+        Drawable imgAddPhotoBox = AppCompatResources.getDrawable(getActivity(), R.drawable.ic_camera_add);
         Glide.with(imagePicker.getContext())
                 .load(userData.getLogo())
                 .dontAnimate()

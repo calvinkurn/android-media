@@ -1,6 +1,7 @@
 package com.tokopedia.shop.settings.common.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditBasicInfoFragment;
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment;
 
 import dagger.Component;
@@ -13,4 +14,5 @@ import dagger.Component;
 @Component(dependencies = BaseAppComponent.class)
 public interface ShopSettingsComponent {
     void inject(ShopSettingsInfoFragment shopSettingsInfoFragment);
+    void inject(ShopEditBasicInfoFragment shopEditBasicInfoFragment);
 }

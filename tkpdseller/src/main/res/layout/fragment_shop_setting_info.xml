@@ -90,7 +90,7 @@
                     android:id="@+id/image_picker"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_add_photo_box" />
+                    app:srcCompat="@drawable/ic_camera_add" />
             </FrameLayout>
 
             <LinearLayout

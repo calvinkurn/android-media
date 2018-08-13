@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.basicinfo.view.fragment;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.settings.R;
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 
@@ -27,6 +29,7 @@ import javax.inject.Inject;
 
 public class ShopSettingsInfoFragment extends BaseDaggerFragment implements ShopSettingsInfoPresenter.View {
 
+    private static final int REQUEST_EDIT_BASIC_INFO = 781;
     @Inject
     ShopSettingsInfoPresenter shopSettingsInfoPresenter;
     private View loadingView;
@@ -39,7 +42,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     private ImageView ivShopMembership;
     private TextView tvMembershipName;
     private TextView tvMembershipDescription;
-    private View vgShopSettingsBasic;
+    private View lvShopBasicInfo;
 
     public static ShopSettingsInfoFragment newInstance() {
         return new ShopSettingsInfoFragment();
@@ -71,11 +74,12 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         tvMembershipName = view.findViewById(R.id.tvMembershipName);
         tvMembershipDescription = view.findViewById(R.id.tvMembershipDescription);
 
-        vgShopSettingsBasic = view.findViewById(R.id.vgShopSettingsBasic);
-        vgShopSettingsBasic.setOnClickListener(new View.OnClickListener() {
+        lvShopBasicInfo = view.findViewById(R.id.lvShopBasicInfo);
+        lvShopBasicInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "cahnge basic info", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), ShopEditBasicInfoActivity.class);
+                startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO);
             }
         });
 

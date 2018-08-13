@@ -11,4 +11,10 @@
     <string name="shop_settings_membership_label">Keanggotaan</string>
     <string name="shop_settings_gold_merchant_invite">Tingkatkan efektivitas toko dengan menjadi Gold Merchant</string>
     <string name="valid_until_x">Berlaku hingga %1$s</string>
+    <string name="shop_image">Gambar Toko</string>
+    <string name="shop_settings_max_file_size">Besar file maksimum:</string>
+    <string name="shop_settings_image_size">10 Megabytes (10 MB)</string>
+    <string name="shop_settings_info_allowed_file">File yang diperbolehkan:</string>
+    <string name="shop_settings_info_type_file_image">.JPG .JPEG .PNG</string>
+
 </resources>
