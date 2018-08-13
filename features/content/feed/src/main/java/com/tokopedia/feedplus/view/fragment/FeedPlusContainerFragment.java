@@ -93,10 +93,14 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private void initView() {
         setAdapter();
+        if (shouldGoToExplore()) {
+            viewPager.setCurrentItem(tabLayout.getTabCount() - 1);
+        }
     }
 
     private void setAdapter() {
         List<FeedPlusTabItem> tabItemList = new ArrayList<>();
+
         if (userSession.isLoggedIn()) {
             tabItemList.add(new FeedPlusTabItem(
                     getString(R.string.tab_my_feed),
@@ -106,28 +110,35 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         } else {
             tabLayout.setVisibility(View.GONE);
         }
+
         tabItemList.add(new FeedPlusTabItem(
                 getString(R.string.tab_explore),
-                getContentExploreFragment())
+                getContentExploreFragment(getArguments() != null ? getArguments() : new Bundle()))
         );
+
         FeedPlusTabAdapter adapter = new FeedPlusTabAdapter(getChildFragmentManager());
         adapter.setItemList(tabItemList);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    public FeedPlusFragment getFeedPlusFragment() {
+    private FeedPlusFragment getFeedPlusFragment() {
         if (feedPlusFragment == null) {
             feedPlusFragment = FeedPlusFragment.newInstance();
         }
         return feedPlusFragment;
     }
 
-    public ContentExploreFragment getContentExploreFragment() {
+    private ContentExploreFragment getContentExploreFragment(Bundle bundle) {
         if (contentExploreFragment == null) {
-            Bundle bundle = new Bundle();
             contentExploreFragment = ContentExploreFragment.newInstance(bundle);
         }
         return contentExploreFragment;
+    }
+
+    private boolean shouldGoToExplore() {
+        return getArguments() != null
+                && getArguments().getString(ContentExploreFragment.PARAM_CATEGORY_ID) != null
+                && tabLayout.getTabCount() - 1 >= 0;
     }
 }
