@@ -28,15 +28,6 @@ public class ReviewProductActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    protected void setupLayout(Bundle savedInstanceState) {
-        super.setupLayout(savedInstanceState);
-        if (getSupportActionBar()!= null) {
-            String productName = getIntent().getExtras().getString(EXTRA_PRODUCT_NAME);
-            getSupportActionBar().setTitle(getString(R.string.title_activity_reputation) + " " + productName);
-        }
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         String productId = getIntent().getExtras().getString(ReviewProductFragment.EXTRA_PRODUCT_ID);
         return ReviewProductFragment.getInstance(productId);
