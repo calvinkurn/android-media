@@ -52,10 +52,9 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:clickable="false"
-            app:theme="@style/ProductAddEditRadioButtonCheckbox"
+            style="@style/ProductAddEditCheckbox"
             android:padding="@dimen/dp_4"
-            android:gravity="center"
-            android:button="@drawable/selector_checkbox"/>
+            android:gravity="center" />
 
     </LinearLayout>
 </LinearLayout>
