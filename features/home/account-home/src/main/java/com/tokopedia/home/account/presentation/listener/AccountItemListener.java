@@ -39,4 +39,14 @@ public interface AccountItemListener {
     void onTokopediaPayItemClicked(String applink);
 
     void onDepositClicked(ShopCardViewModel element);
+
+    void onTopadsInfoClicked();
+
+    void onGMInfoClicked();
+
+    void onSellerCenterInfoClicked();
+
+    void onOpenShopClicked();
+
+    void onLearnMoreSellerClicked();
 }

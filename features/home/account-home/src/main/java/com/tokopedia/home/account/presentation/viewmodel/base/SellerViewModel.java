@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class SellerViewModel implements Parcelable {
     private List<ParcelableViewModel> items = new ArrayList<>();
+    private Boolean isSeller;
 
     public List<ParcelableViewModel> getItems() {
         return items;
@@ -20,6 +21,13 @@ public class SellerViewModel implements Parcelable {
         this.items = items;
     }
 
+    public Boolean getSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(Boolean seller) {
+        isSeller = seller;
+    }
 
     @Override
     public int describeContents() {
@@ -29,6 +37,7 @@ public class SellerViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.items);
+        dest.writeValue(this.isSeller);
     }
 
     public SellerViewModel() {
@@ -37,6 +46,7 @@ public class SellerViewModel implements Parcelable {
     protected SellerViewModel(Parcel in) {
         this.items = new ArrayList<>();
         in.readList(this.items, ParcelableViewModel.class.getClassLoader());
+        this.isSeller = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 
     public static final Creator<SellerViewModel> CREATOR = new Creator<SellerViewModel>() {

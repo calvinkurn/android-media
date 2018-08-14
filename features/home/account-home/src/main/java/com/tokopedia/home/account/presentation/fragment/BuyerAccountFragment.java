@@ -6,35 +6,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.BuyerAccountComponent;
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
-import com.tokopedia.home.account.presentation.listener.AccountItemListener;
-import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -51,10 +38,9 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
     @Inject
     BuyerAccount.Presenter presenter;
 
-    public static Fragment newInstance(BuyerViewModel model) {
+    public static Fragment newInstance() {
         Fragment fragment = new BuyerAccountFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUYER_DATA, model);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -67,10 +53,12 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buyer_account, container, false);
         recyclerView = view.findViewById(R.id.recycler_buyer);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
+                .VERTICAL, false));
         return view;
     }
 
@@ -80,10 +68,11 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
         adapter = new BuyerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        if (getArguments() != null
-                && getArguments().getParcelable(BUYER_DATA) != null
-                && getArguments().getParcelable(BUYER_DATA) instanceof BuyerViewModel) {
-            loadData(((BuyerViewModel) getArguments().getParcelable(BUYER_DATA)).getItems());
+        if (getContext() != null) {
+            GraphqlClient.init(getContext());
+
+            presenter.getBuyerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                    .query_buyer_account_home));
         }
     }
 
@@ -93,10 +82,10 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
     }
 
     @Override
-    public void loadData(List<? extends Visitable> visitables) {
-        if(visitables != null) {
+    public void loadBuyerData(BuyerViewModel model) {
+        if (model.getItems() != null) {
             adapter.clearAllElements();
-            adapter.setElement(visitables);
+            adapter.setElement(model.getItems());
         }
     }
 

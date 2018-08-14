@@ -10,8 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
+import com.tokopedia.home.account.di.component.SellerAccountComponent;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
@@ -19,7 +23,8 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author okasurya on 7/16/18.
@@ -31,12 +36,20 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private RecyclerView recyclerView;
     private SellerAccountAdapter adapter;
 
-    public static Fragment newInstance(SellerViewModel sellerViewModel) {
+    @Inject
+    SellerAccount.Presenter presenter;
+
+    public static Fragment newInstance() {
         Fragment fragment = new SellerAccountFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(SELLER_DATA, sellerViewModel);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initInjector();
     }
 
     @Nullable
@@ -54,23 +67,34 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        if (getArguments() != null
-                && getArguments().getParcelable(SELLER_DATA) != null
-                && getArguments().getParcelable(SELLER_DATA) instanceof SellerViewModel) {
-            loadData(((SellerViewModel) getArguments().getParcelable(SELLER_DATA)).getItems());
+        if (getContext() != null) {
+            GraphqlClient.init(getContext());
+
+            presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                    .query_seller_account_home));
         }
     }
 
     @Override
-    public void loadData(List<? extends Visitable> visitables) {
-        if(visitables != null) {
+    public void loadSellerData(SellerViewModel model) {
+        if(model.getItems() != null) {
             adapter.clearAllElements();
-            adapter.setElement(visitables);
+            adapter.setElement(model.getItems());
         }
     }
 
     @Override
     protected String getScreenName() {
         return TAG;
+    }
+
+    private void initInjector() {
+        SellerAccountComponent component = DaggerSellerAccountComponent.builder()
+                .baseAppComponent(
+                        ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
+                ).build();
+
+        component.inject(this);
+        presenter.attachView(this);
     }
 }

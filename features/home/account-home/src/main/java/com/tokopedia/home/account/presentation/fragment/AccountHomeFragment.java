@@ -17,25 +17,19 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
-import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
-import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import q.rorbin.badgeview.QBadgeView;
 
@@ -44,9 +38,6 @@ import q.rorbin.badgeview.QBadgeView;
  */
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         AccountHome.View, NotificationListener {
-
-    @Inject
-    AccountHomePresenter presenter;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -66,7 +57,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
         initView(view);
         return view;
@@ -76,9 +68,18 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getContext() != null) {
-            GraphqlClient.init(getContext());
+            List<AccountFragmentItem> fragmentItems = new ArrayList<>();
+            AccountFragmentItem item = new AccountFragmentItem();
+            item.setFragment(BuyerAccountFragment.newInstance());
+            item.setTitle(getContext().getString(R.string.label_account_buyer));
+            fragmentItems.add(item);
 
-            presenter.getAccount(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_account_home));
+            item = new AccountFragmentItem();
+            item.setFragment(SellerAccountFragment.newInstance());
+            item.setTitle(getContext().getString(R.string.label_account_seller));
+            fragmentItems.add(item);
+
+            adapter.setItems(fragmentItems);
         }
     }
 
@@ -87,41 +88,16 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         return null;
     }
 
-    @Override
-    public void renderData(AccountViewModel accountViewModel) {
-        if(getContext() != null) {
-            List<AccountFragmentItem> fragmentItems = new ArrayList<>();
-            AccountFragmentItem item = new AccountFragmentItem();
-            item.setFragment(BuyerAccountFragment.newInstance(accountViewModel.getBuyerViewModel()));
-            item.setTitle(getContext().getString(R.string.label_account_buyer));
-            fragmentItems.add(item);
-
-            if (accountViewModel.isSeller()) {
-                item = new AccountFragmentItem();
-                item.setFragment(SellerAccountFragment.newInstance(accountViewModel.getSellerViewModel()));
-                item.setTitle(getContext().getString(R.string.label_account_seller));
-                fragmentItems.add(item);
-            } else {
-                item = new AccountFragmentItem();
-                item.setFragment(SellerEmptyAccountFragment.newInstance());
-                item.setTitle(getContext().getString(R.string.label_account_seller));
-                fragmentItems.add(item);
-            }
-
-            adapter.setItems(fragmentItems);
-        }
-    }
-
     private void initInjector() {
         AccountHomeComponent component =
-            ((AccountHomeRouter) getActivity().getApplicationContext())
-            .getAccountHomeInjection()
-            .getAccountHomeComponent(
-                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()
-            );
+                ((AccountHomeRouter) getActivity().getApplicationContext())
+                        .getAccountHomeInjection()
+                        .getAccountHomeComponent(
+                                ((BaseMainApplication) getActivity().getApplicationContext())
+                                        .getBaseAppComponent()
+                        );
 
         component.inject(this);
-        presenter.attachView(this);
     }
 
     private void initView(View view) {
@@ -140,8 +116,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         menuNotification = toolbar.findViewById(R.id.action_notification);
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
-        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent(getActivity())));
-        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION));
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
+                (getActivity())));
+        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst
+                .NOTIFICATION));
 
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);

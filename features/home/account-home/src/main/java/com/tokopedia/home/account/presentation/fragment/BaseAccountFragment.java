@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -110,5 +111,41 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onDepositClicked(ShopCardViewModel element) {
         openApplink(ApplinkConst.DEPOSIT);
+    }
+
+    @Override
+    public void onTopadsInfoClicked() {
+        if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+            ((AccountHomeRouter) getContext().getApplicationContext()).
+                    gotoTopAdsDashboard(getContext());
+        }
+    }
+
+    @Override
+    public void onGMInfoClicked() {
+        if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+            ((AccountHomeRouter) getContext().getApplicationContext()).
+                    goToGMSubscribe(getContext());
+        }
+    }
+
+    @Override
+    public void onSellerCenterInfoClicked() {
+        openApplink(ApplinkConst.SELLER_CENTER);
+    }
+
+    @Override
+    public void onOpenShopClicked() {
+        if(getContext().getApplicationContext() instanceof AccountHomeRouter){
+            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
+                    getIntentCreateShop(getContext()));
+        }
+    }
+
+    @Override
+    public void onLearnMoreSellerClicked() {
+        openApplink(String.format("%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                AccountConstants.Url.MORE_SELLER));
     }
 }
