@@ -22,20 +22,14 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewViewModel
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recent_view_product;
 
-    private RecyclerView recyclerView;
-    private TextView seeAllButton;
     private HistoryProductRecyclerViewAdapter adapter;
-
 
     public RecentViewViewHolder(View itemView, final FeedPlus.View viewListener) {
         super(itemView);
-        recyclerView = (RecyclerView) itemView.findViewById(R.id.history_product_recycler_view);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all);
-        seeAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onSeeAllRecentView();
-            }
+        RecyclerView recyclerView = itemView.findViewById(R.id.history_product_recycler_view);
+        TextView seeAllButton = itemView.findViewById(R.id.see_all);
+        seeAllButton.setOnClickListener(v -> {
+
         });
 
         final LinearLayoutManager layoutManager = new GridLayoutManager(

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.Snackbar;
@@ -45,7 +46,6 @@ import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
-import com.tokopedia.feedplus.view.activity.RecentViewActivity;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
@@ -75,9 +75,7 @@ import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
-import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -119,10 +117,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
-
-    public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
-    public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
-    public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
 
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -178,7 +172,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(FIRST_CURSOR, firstCursor);
     }
@@ -244,7 +238,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         setRetainInstance(true);
@@ -326,7 +320,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -539,14 +533,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
-        adapter.unsetEndlessScrollListener();
-        adapter.showEmpty();
-        adapter.addList(listFeed);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onShowEmpty() {
         adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
@@ -642,12 +628,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getColor(int color) {
         return MethodChecker.getColor(getActivity(), color);
-    }
-
-    @Override
-    public void onSeeAllRecentView() {
-        Intent intent = RecentViewActivity.getCallingIntent(getActivity());
-        getActivity().startActivity(intent);
     }
 
     @Override
