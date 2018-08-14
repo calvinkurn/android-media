@@ -168,7 +168,8 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                     viewHolder.bankName.setOnClickListener(null);
                 } else {
                     viewHolder.bankName.setText(thisItem.getBankName());
-                    viewHolder.bankAccountName.setText(thisItem.getBankAccountName());
+                    viewHolder.bankAccountName.setText(
+                            String.format("%s • %s", thisItem.getBankAccountNumber(), thisItem.getBankAccountName()));
                 }
                 break;
         }
