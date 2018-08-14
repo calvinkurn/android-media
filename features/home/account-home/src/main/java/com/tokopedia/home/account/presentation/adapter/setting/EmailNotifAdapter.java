@@ -16,9 +16,16 @@ import com.tokopedia.home.account.presentation.viewmodel.EmailNotifViewModel;
 import java.util.HashMap;
 import java.util.List;
 
-public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.EmailNotifViewHolder>{
+public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.EmailNotifViewHolder> {
+
     private static final String SELECTED = "1";
     private static final String NOT_SELECTED = "0";
+
+    public interface EmailNotificationListener {
+        void onClickEmailNotif(String key);
+    }
+
+    private EmailNotificationListener emailNotificationListener;
 
     private List<EmailNotifViewModel> items;
     private AppNotificationSettingModel notification;
@@ -37,6 +44,10 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
     public EmailNotifViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new EmailNotifViewHolder(LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.item_notif_setting, parent, false));
+    }
+
+    public void setEmailNotificationListener(EmailNotificationListener emailNotificationListener) {
+        this.emailNotificationListener = emailNotificationListener;
     }
 
     @Override
@@ -76,7 +87,11 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
             aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) ->
                     selectedSetting.put(items.get(getAdapterPosition()).getId(), isChecked ? SELECTED : NOT_SELECTED));
 
-            itemView.setOnClickListener(view -> aSwitch.toggle());
+            itemView.setOnClickListener(view -> {
+                if (emailNotificationListener != null)
+                    emailNotificationListener.onClickEmailNotif(items.get(getAdapterPosition()).getId());
+                aSwitch.toggle();
+            });
         }
 
         public void bind(EmailNotifViewModel item){

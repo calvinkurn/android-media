@@ -443,7 +443,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                         if (fragment instanceof FeedPlusFragment)
                             ((FeedPlusFragment) fragment).scrollToTop();
                         else if (fragment instanceof HomeFragment)
-                            ((HomeFragment) fragment).scrollToTop();
+                            ((HomeFragment) fragment).onScrollToTop();
                     }
                 }
             }
@@ -550,18 +550,18 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (SessionHandler.isV4Login(this)) {
-            getMenuInflater().inflate(R.menu.main, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
-            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
-            if (CartCache > 0) {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
-            } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new);
-            }
-        } else {
-            getMenuInflater().inflate(R.menu.menu_guest, menu);
-        }
+//        if (SessionHandler.isV4Login(this)) {
+//            getMenuInflater().inflate(R.menu.main, menu);
+//            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+//            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
+//            if (CartCache > 0) {
+//                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
+//            } else {
+//                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new);
+//            }
+//        } else {
+//            getMenuInflater().inflate(R.menu.menu_guest, menu);
+//        }
         return true;
     }
 
@@ -654,7 +654,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, messageTAG + "onResume");
+        Log.d(TAG, messageTAG + "onActivityResult");
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
@@ -691,11 +691,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
-        Cache.applyEditor();
-        invalidateOptionsMenu();
-        MainApplication.resetCartStatus(false);
+//        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+//        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
+//        Cache.applyEditor();
+//        invalidateOptionsMenu();
+//        MainApplication.resetCartStatus(false);
     }
 
     private void updateCartNotification() {

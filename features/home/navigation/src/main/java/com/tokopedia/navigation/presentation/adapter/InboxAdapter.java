@@ -68,7 +68,13 @@ public class InboxAdapter extends BaseListAdapter<Inbox, InboxAdapter.InboxViewH
             if (item.getTotalBadge() != null
                     && !item.getTotalBadge().isEmpty()
                     && !item.getTotalBadge().equalsIgnoreCase("0")) {
-                labelView.setBadgeCounter(item.getTotalBadge());
+                try {
+                    labelView.setBadgeCounter(Integer.parseInt(item.getTotalBadge()));
+                } catch (NumberFormatException e) {
+                    //ignore
+                }
+            } else {
+                labelView.setBadgeCounter(0);
             }
             labelView.showRightArrow(false);
         }

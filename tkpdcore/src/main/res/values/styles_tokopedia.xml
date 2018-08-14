@@ -286,7 +286,6 @@
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
         <item name="android:actionMenuTextColor">@color/abc_primary_text_material_dark</item>
         <item name="android:textColorSecondary">@color/abc_primary_text_material_dark</item>
-        <item name="android:itemTextAppearance">@style/TextAppearance</item>
     </style>
 
     <style name="TextAppearance">

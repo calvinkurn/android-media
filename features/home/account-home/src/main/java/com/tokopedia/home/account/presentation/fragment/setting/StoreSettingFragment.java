@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
@@ -15,11 +16,22 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+
 public class StoreSettingFragment extends BaseGeneralSettingFragment{
+
     private static final String TAG = StoreSettingFragment.class.getSimpleName();
+
+    private AccountAnalytics accountAnalytics;
 
     public static Fragment createInstance() {
         return new StoreSettingFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        accountAnalytics = new AccountAnalytics(getActivity());
     }
 
     @Override
@@ -59,23 +71,29 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
             AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
             switch (settingId) {
                 case SettingConstant.SETTING_SHOP_ETALASE_ID:
+                    accountAnalytics.eventClickShopSetting(ETALASE);
                     if (getActivity().getApplication() instanceof AccountHomeRouter) {
                         router.goToManageShopEtalase(getActivity());
                     }
                     break;
                 case SettingConstant.SETTING_SHOP_LOCATION_ID:
+                    accountAnalytics.eventClickShopSetting(LOCATION);
                     router.goToManageShopLocation(getActivity());
                     break;
                 case SettingConstant.SETTING_SHOP_SHIPMENT_ID:
+                    accountAnalytics.eventClickShopSetting(SHIPPING);
                     router.goToManageShopShipping(getActivity());
                     break;
                 case SettingConstant.SETTING_SHOP_NOTE_ID:
+                    accountAnalytics.eventClickShopSetting(NOTES);
                     router.goTotManageShopNotes(getActivity());
                     break;
                 case SettingConstant.SETTING_SHOP_INFO_ID:
+                    accountAnalytics.eventClickShopSetting(INFORMATION);
                     router.goToShopEditor(getActivity());
                     break;
                 case SettingConstant.SETTING_SHOP_PRODUCT_ID:
+                    accountAnalytics.eventClickShopSetting(PRODUCT);
                     router.goToManageShopProduct(getActivity());
                     break;
                 default:

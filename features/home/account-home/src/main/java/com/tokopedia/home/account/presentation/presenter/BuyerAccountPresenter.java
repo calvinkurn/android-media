@@ -24,6 +24,7 @@ public class BuyerAccountPresenter implements BuyerAccount.Presenter {
 
     @Override
     public void getBuyerData(String query) {
+        view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(AccountConstants.QUERY, query);
@@ -37,12 +38,14 @@ public class BuyerAccountPresenter implements BuyerAccount.Presenter {
 
             @Override
             public void onError(Throwable throwable) {
-
+                view.showError(throwable.getLocalizedMessage());
+                view.hideLoading();
             }
 
             @Override
             public void onNext(BuyerViewModel buyerViewModel) {
                 view.loadBuyerData(buyerViewModel);
+                view.hideLoading();
             }
         });
     }

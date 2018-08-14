@@ -2,8 +2,6 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.AlertDialog;
-import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +26,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
@@ -49,6 +49,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
 
@@ -57,11 +59,19 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     private View loadingView;
     private View baseSettingView;
 
+    private AccountAnalytics accountAnalytics;
+
     public static Fragment createInstance() {
         return new GeneralSettingFragment();
     }
 
     private static final String TAG = GeneralSettingFragment.class.getSimpleName();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        accountAnalytics = new AccountAnalytics(getActivity());
+    }
 
     @Nullable
     @Override
@@ -133,34 +143,44 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     public void onItemClicked(int settingId) {
         switch (settingId){
             case SettingConstant.SETTING_ACCOUNT_ID:
+                accountAnalytics.eventClickSetting(ACCOUNT);
                 startActivity(AccountSettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_SHOP_ID:
+                accountAnalytics.eventClickSetting(String.format("%s %s", SHOP, SETTING));
                 startActivity(StoreSettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_TKPD_PAY_ID:
+                accountAnalytics.eventClickSetting(PAYMENT_METHOD);
                 startActivity(TkpdPaySettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
+                accountAnalytics.eventClickSetting(NOTIFICATION);
                 startActivity(NotificationSettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_TNC_ID:
+                accountAnalytics.eventClickSetting(TERM_CONDITION);
                 gotoWebviewActivity(SettingConstant.Url.PATH_TERM_CONDITION, getString(R.string.title_tnc_setting));
                 break;
             case SettingConstant.SETTING_PRIVACY_ID:
+                accountAnalytics.eventClickSetting(PRIVACY_POLICY);
                 gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting));
                 break;
             case SettingConstant.SETTING_APP_REVIEW_ID:
+                accountAnalytics.eventClickSetting(APPLICATION_REVIEW);
                 goToPlaystore();
                 break;
             case SettingConstant.SETTING_HELP_CENTER_ID:
+                accountAnalytics.eventClickSetting(HELP_CENTER);
                 RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
                 break;
             case SettingConstant.SETTING_OUT_ID:
+                accountAnalytics.eventClickSetting(LOGOUT);
                 showDialogLogout();
                 break;
             case SettingConstant.SETTING_DEV_OPTIONS:
                 if(GlobalConfig.isAllowDebuggingTools()) {
+                    accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS);
                     RouteManager.route(getActivity(), ApplinkConst.DEVELOPER_OPTIONS);
                 }
                 break;
@@ -183,17 +203,17 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     }
 
     private void showDialogLogout() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity())
-                .setIcon(R.mipmap.ic_launcher)
-                .setTitle(getString(R.string.logout)+" dari Tokopedia")
-                .setMessage(R.string.logout_confirmation)
-                .setPositiveButton(R.string.logout, (dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                    doLogout();
-                })
-                .setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dialogInterface.dismiss()));
-        alertDialog.create().show();
-
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.logout)+" dari Tokopedia");
+        dialog.setDesc(getString(R.string.logout_confirmation));
+        dialog.setBtnOk(getString(R.string.logout));
+        dialog.setBtnCancel(getString(R.string.cancel));
+        dialog.setOnOkClickListener(v -> {
+            dialog.dismiss();
+            doLogout();
+        });
+        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void doLogout() {
@@ -250,6 +270,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     public void onChangeChecked(int settingId, boolean value) {
         switch (settingId){
             case SettingConstant.SETTING_SHAKE_ID:
+                accountAnalytics.eventClickSetting(SHAKE_SHAKE);
                 saveSettingValue(getString(R.string.pref_receive_shake), value);
                 break;
             default:

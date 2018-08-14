@@ -75,10 +75,14 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
 
         if (getContext() != null) {
             GraphqlClient.init(getContext());
-
-            presenter.getBuyerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                    .query_buyer_account_home));
+            getData();
+            swipeRefreshLayout.setOnRefreshListener(this::getData);
         }
+    }
+
+    private void getData() {
+        presenter.getBuyerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                .query_buyer_account_home));
     }
 
     @Override
@@ -124,5 +128,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
         if (getView() != null) {
             ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
         }
+
+
     }
 }

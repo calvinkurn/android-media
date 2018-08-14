@@ -43,6 +43,7 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
 
     @Override
     public void getSellerData(String query) {
+        view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(QUERY, query);
@@ -56,12 +57,14 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
 
             @Override
             public void onError(Throwable throwable) {
-
+                view.showError(throwable.getLocalizedMessage());
+                view.hideLoading();
             }
 
             @Override
             public void onNext(SellerViewModel model) {
                 view.loadSellerData(model);
+                view.hideLoading();
             }
         });
     }

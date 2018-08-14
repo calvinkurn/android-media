@@ -18,6 +18,10 @@ import com.tokopedia.design.base.BaseCustomView;
  */
 public class ToolbarRemoveWithBackView extends BaseCustomView {
 
+    private ImageView btnBack;
+    private TextView textView;
+    private Button btnRemove;
+
     public ToolbarRemoveWithBackView(@NonNull Context context) {
         super(context);
         init();
@@ -32,10 +36,6 @@ public class ToolbarRemoveWithBackView extends BaseCustomView {
         super(context, attrs, defStyleAttr);
         init();
     }
-
-    private ImageView btnBack;
-    private TextView textView;
-    private Button btnRemove;
 
     private void init() {
         View view = inflate(getContext(), R.layout.toolbar_delete_with_back, this);

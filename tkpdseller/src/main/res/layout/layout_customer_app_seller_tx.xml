@@ -8,27 +8,26 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/Toolbar.White" />
+            android:layout_height="?actionBarSize"
+            android:theme="@style/Toolbar.White"
+            app:contentInsetLeft="@dimen/dp_0"
+            app:contentInsetStart="@dimen/dp_0"
+            app:contentInsetStartWithNavigation="@dimen/dp_0"
+            app:subtitleTextAppearance="@style/SubTitleTextAppearance"
+            app:titleTextAppearance="@style/TitleTextAppearance"/>
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/indicator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="scrollable"
-            app:tabGravity="fill"
-            app:tabSelectedTextColor="@color/tkpd_main_green"
-            app:tabTextColor="@color/font_black_disabled_38"
+            app:tabBackground="@color/white"
             app:tabTextAppearance="@style/Tabs.Secondary"
-            app:tabIndicatorColor="@color/tkpd_main_green"
-            android:theme="@style/ThemeOverlay.AppCompat.Light" />
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            app:tabType="secondary"/>
 
     </android.support.design.widget.AppBarLayout>
 

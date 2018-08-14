@@ -88,14 +88,14 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         }
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser && !isLoaded) {
-//            getData();
-//            isLoaded = !isLoaded;
-//        }
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && !isLoaded) {
+            getData();
+            isLoaded = !isLoaded;
+        }
+    }
 
     private void getData() {
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw

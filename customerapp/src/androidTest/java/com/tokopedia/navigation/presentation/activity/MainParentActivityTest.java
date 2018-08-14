@@ -20,8 +20,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.MapperUtil;
-import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -40,7 +38,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
@@ -49,10 +46,8 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
-import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
-import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerTestAccountHomeComponent;
 import com.tokopedia.home.account.di.component.TestAccountHomeComponent;
 import com.tokopedia.home.account.di.module.TestAccountHomeModule;
@@ -65,20 +60,17 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
-import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.common.di.DaggerKolComponent;
 import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
-import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.DaggerTestGlobalNavComponent;
-import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
-import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.di.TestGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.TestGlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.module.DaggerTestBerandaComponent;
 import com.tokopedia.navigation.presentation.module.TestBerandaComponent;
+import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpd.ConsumerRouterApplication;
@@ -111,7 +103,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtL
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.tokopedia.tkpd.Utils.getField;
 import static com.tokopedia.tkpd.Utils.nthChildOf;
 import static com.tokopedia.tkpd.Utils.setField;
 import static com.tokopedia.tkpd.Utils.withCustomConstraints;
@@ -122,7 +113,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static rx.Observable.just;
 
@@ -132,6 +122,7 @@ import com.tokopedia.usecase.RequestParams;
 
 import retrofit2.Response;
 import rx.Observable;
+import android.content.SharedPreferences;
 
 
 /**
@@ -142,6 +133,11 @@ public class MainParentActivityTest {
 
     private String jsons[] = {"feed_check_whitelist.json", "feed_query.json", "recent_product_views.json", "inbox_home.json"};
 
+    private static final String Feed_TAG = "Feed";
+    private static final String Inbox_TAG = "Inbox";
+    private static final String Keranjang_TAG = "Keranjang";
+    private static final String Akun_TAG = "Akun";
+    private static final String Home_TAG = "Home";
 
     @Inject
     HomePresenter homePresenter;
@@ -163,9 +159,21 @@ public class MainParentActivityTest {
         BaseMainApplication application = (BaseMainApplication)InstrumentationRegistry.getTargetContext().getApplicationContext();
         baseAppComponent = application.reinitBaseAppComponent(testAppModule = new TestAppModule(application));
 
+        userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
+        disableOnBoard(application);
+
         // disable showcase
         final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
         ShowCasePreference.setShown(application, showCaseTag, true);
+    }
+
+    private boolean disableOnBoard(BaseMainApplication baseMainApplication){
+        SharedPreferences sharedPreferences = baseMainApplication.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
+        return sharedPreferences.edit().putBoolean("IS_FIRST_TIME_NEW_ONBOARDING", false).commit();
     }
 
     @After
@@ -181,6 +189,36 @@ public class MainParentActivityTest {
     }
 
     @Test
+    public void test_notification_navigation_bar() throws Exception{
+        prepareForFullSmartLockBundle();
+
+        startEmptyActivity();
+
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        // reset all inbox state
+        TestGlobalNavComponent navComponent = DaggerTestGlobalNavComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .testGlobalNavModule(new TestGlobalNavModule())
+                .build();
+
+        getDrawerNotificationUseCase = navComponent.getGetDrawerNotificationUseCase();
+
+        MainParentPresenter mainParentPresenter = navComponent.mainParentPresenter();
+
+        doReturn(Observable.just(provideNotificationEntity()))
+                .when(getDrawerNotificationUseCase)
+                .createObservable(any(RequestParams.class));
+
+        mIntentsRule.getActivity().reInitInjector(
+                navComponent);
+
+        mIntentsRule.getActivity().runOnUiThread(mainParentPresenter::onResume);
+
+
+    }
+
+    @Test
     public void test_load_account_home_first_time_without_login() throws Exception{
         UserSession userSession = baseAppComponent.userSession();
 
@@ -191,15 +229,14 @@ public class MainParentActivityTest {
 
         startEmptyActivity();
 
-        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Feed_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         doReturn(true).when(userSession).isLoggedIn();
         doReturn("1234").when(userSession).getUserId();
 
-
-        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Inbox_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Keranjang_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Akun_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         AccountHomeFragment fragment = (AccountHomeFragment) mIntentsRule.getActivity().getFragment(4);
 
@@ -240,14 +277,13 @@ public class MainParentActivityTest {
 
         startEmptyActivity();
 
-        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Feed_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         doReturn(true).when(userSession).isLoggedIn();
         doReturn("1234").when(userSession).getUserId();
 
-
-        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Inbox_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Keranjang_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         CartFragment fragment = (CartFragment) mIntentsRule.getActivity().getFragment(3);
 
@@ -270,7 +306,7 @@ public class MainParentActivityTest {
 
         Thread.sleep(5_000);
 
-        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Akun_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
     }
 
     @Test
@@ -284,13 +320,13 @@ public class MainParentActivityTest {
 
         startEmptyActivity();
 
-        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Feed_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         doReturn(true).when(userSession).isLoggedIn();
         doReturn("1234").when(userSession).getUserId();
 
-
-        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Inbox_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Inbox_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         // reset all inbox state
         TestGlobalNavComponent navComponent = DaggerTestGlobalNavComponent.builder()
@@ -317,29 +353,8 @@ public class MainParentActivityTest {
             // verify inbox is good enough
         }
 
-        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-    }
-
-    /**
-     * somehow mock user as already login, the all screen get freezes.
-     */
-
-    @FlakyTest
-    public void test_load_inbox_first_time(){
-        UserSession userSession = baseAppComponent.userSession();
-
-        doReturn(true).when(userSession).isLoggedIn();
-        doReturn("1234").when(userSession).getUserId();
-
-        prepareForFullSmartLockBundle();
-
-        startEmptyActivity();
-
-        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-        onView(allOf(withText("Keranjang"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
-        onView(allOf(withText("Akun"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Keranjang_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Akun_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
     }
 
     @Test
@@ -350,7 +365,7 @@ public class MainParentActivityTest {
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
-        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Feed_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         KolComponent kolComponent = DaggerKolComponent.builder()
                 .baseAppComponent(baseAppComponent)
@@ -359,8 +374,6 @@ public class MainParentActivityTest {
         FeedPlusComponent component = DaggerFeedPlusComponent.builder()
                 .kolComponent(kolComponent)
                 .build();
-
-        UserSession userSession = component.userSession();
 
         doReturn(true).when(userSession).isLoggedIn();
         doReturn("1234").when(userSession).getUserId();
@@ -386,7 +399,7 @@ public class MainParentActivityTest {
 
             fragment.getPresenter().setGetFirstPageFeedsCloudUseCase(getFirstPageFeedsCloudUseCase);
 
-            doReturn(Observable.just(test3())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
+            doReturn(Observable.just(provideFeedResult())).when(getFirstPageFeedsCloudUseCase).createObservable(any(RequestParams.class));
 
             onView(allOf(withId(R.id.swipe_refresh_layout), withTagValue(is((Object) "swipe_to_refresh_feed_plus")))).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
@@ -409,20 +422,20 @@ public class MainParentActivityTest {
 
         startEmptyActivity();
 
-        onView(allOf(withText("Feed"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Feed_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
         onView(withText("Feed masih kosong")).check(matches(isDisplayed()));
 
         when(userSession.isLoggedIn()).thenReturn(true);
 
-        mockAlreadyLogin3();
+        mockAlreadyLogin();
 
-        onView(allOf(withText("Inbox"), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+        onView(allOf(withText(Inbox_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
     }
 
     @Test
-    public void testHomeFragment() throws Exception {
+    public void test_home_fragment() throws Exception{
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -450,43 +463,11 @@ public class MainParentActivityTest {
                 doReturn(fragment).when(fragment.getPresenter()).getView();
 
                 doAnswer(invocation -> {
-                    fragment.getPresenter().getView().setItems(test2());
+                    fragment.getPresenter().getView().setItems(provideHomeFragmentPageOne());
                     return null;
                 }).when(fragment.getPresenter()).getHomeData();
 
-                onView(withId(R.id.sw_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
             });
-        }
-    }
-
-    @Test
-    public void testHomeFragment2() throws Exception {
-        prepareForFullSmartLockBundle();
-
-        startEmptyActivity();
-
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-
-        HomeFragment fragment = (HomeFragment) mIntentsRule.getActivity().getFragment(0);
-        if (fragment != null && fragment.isMainViewVisible()) {
-            homePresenter = spy(fragment.getPresenter());
-            fragment.setPresenter(homePresenter);
-
-            when(homePresenter.hasNextPageFeed()).thenReturn(true);
-
-            Thread.sleep(5_000);
-
-            mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.clearAll();
-
-                doAnswer(invocation -> {
-                    homePresenter.getView().setItems(test2());
-                    return null;
-                }).when(homePresenter).getHomeData();
-
-            });
-
-            Thread.sleep(1_000);
 
             onView(withId(R.id.sw_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
@@ -524,8 +505,7 @@ public class MainParentActivityTest {
                 , NotificationEntity.class);
     }
 
-    private FeedResult test3() {
-        
+    private FeedResult provideFeedResult() {
         FeedQuery homeData = CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[1])
                 , FeedQuery.class);
@@ -540,20 +520,20 @@ public class MainParentActivityTest {
                 .map(new FeedResultMapper(FeedResult.SOURCE_CLOUD))
                 .defaultIfEmpty(null).toBlocking().first();
 
-        ProductItemData productItemData = CacheUtil.convertStringToModel(
-                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[2])
-                , ProductItemData.class);
-
-        DataResponse<ProductItemData> dataResponse
-                = new DataResponse<>();
-        dataResponse.setData(productItemData);
-
-        Response<DataResponse<ProductItemData>> response1 =
-                Response.success(dataResponse);
-
-        feedResult.getFeedDomain().setRecentProduct(just(response1)
-                .map(new RecentProductMapper(new Gson()))
-                .defaultIfEmpty(null).toBlocking().first());
+//        ProductItemData productItemData = CacheUtil.convertStringToModel(
+//                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[2])
+//                , ProductItemData.class);
+//
+//        DataResponse<ProductItemData> dataResponse
+//                = new DataResponse<>();
+//        dataResponse.setData(productItemData);
+//
+//        Response<DataResponse<ProductItemData>> response1 =
+//                Response.success(dataResponse);
+//
+//        feedResult.getFeedDomain().setRecentProduct(just(response1)
+//                .map(new RecentProductMapper(new Gson()))
+//                .defaultIfEmpty(null).toBlocking().first());
 
         WhitelistQuery whitelistQuery = CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[0])
@@ -561,11 +541,11 @@ public class MainParentActivityTest {
         feedResult.getFeedDomain().setWhitelist(
                 GetFirstPageFeedsCloudUseCase.getWhitelistDomain(whitelistQuery)
         );
-        
+
         return feedResult;
     }
 
-    private List<Visitable> test2() {
+    private List<Visitable> provideHomeFragmentPageOne() {
         HomeData homeData = CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource("home_header.json")
                 , HomeData.class);
@@ -581,38 +561,9 @@ public class MainParentActivityTest {
 
     }
 
-    private BannerViewModel test(){
-        BannerViewModel bannerViewModel = new BannerViewModel();
-
-
-        List<BannerSlidesModel> slides = new ArrayList<>();
-        BannerSlidesModel bannerSlidesModel = new BannerSlidesModel();
-        bannerSlidesModel.setApplink("tokopedia://promo/digital-cashback-11");
-        bannerSlidesModel.setId(47);
-        bannerSlidesModel.setImageUrl("https://ecs7.tokopedia.net/img/cache/1242/banner/2018/7/20/25618007/25618007_3e48f2b4-3d81-44c9-870b-7782b14e6a6b.jpg");
-        bannerSlidesModel.setRedirectUrl("tokopedia://promo/digital-cashback-11");
-        bannerSlidesModel.setTitle("DG_SENINTRAVEL_CB300K");
-
-        BannerSlidesModel bannerSlidesModel1 = new BannerSlidesModel();
-        bannerSlidesModel1.setApplink("tokopedia://promo/digital-cashback-11");
-        bannerSlidesModel1.setId(47);
-        bannerSlidesModel1.setImageUrl("https://ecs7.tokopedia.net/img/cache/1242/banner/2018/7/20/25618007/25618007_3e48f2b4-3d81-44c9-870b-7782b14e6a6b.jpg");
-        bannerSlidesModel1.setRedirectUrl("tokopedia://promo/digital-cashback-11");
-        bannerSlidesModel1.setTitle("DG_SENINTRAVEL_CB300K");
-        slides.add(bannerSlidesModel);
-        slides.add(bannerSlidesModel1);
-
-        bannerViewModel.setSlides(slides);
-        return bannerViewModel;
-    }
-
     private void prepareForFullSmartLockBundle() {
         Intent resultData = new Intent();
         Bundle bundle = new Bundle();
-        String phoneNumber = "123-345-6789";
-        bundle.putString("phone", phoneNumber);
-        bundle.putString("username", "cincin.jati+47@tokopedia.com");
-        bundle.putString("password", "optimus");
 
         resultData.putExtras(bundle);
         Instrumentation.ActivityResult result =
@@ -621,32 +572,9 @@ public class MainParentActivityTest {
         intending(hasComponent(LoginActivity.class.getName())).respondWith(result);
     }
 
-    private void mockAlreadyLogin2(){
-        mIntentsRule.getActivity().setUserSession(userSession);
-    }
-
-    private void mockAlreadyLogin3(){
-        setField(mIntentsRule.getActivity().getClass(), mIntentsRule.getActivity(), "userSession", userSession);
-    }
-
     private void mockAlreadyLogin(){
-        Context applicationContext = InstrumentationRegistry.getTargetContext().getApplicationContext();
-        if(applicationContext != null && applicationContext instanceof ConsumerRouterApplication){
-            ConsumerRouterApplication routerApplication = (ConsumerRouterApplication) applicationContext;
-
-            setField(ConsumerRouterApplication.class, routerApplication, "userSession", userSession);
-
-        }
-    }
-
-    private Matcher<View> bottomNavViewMatcher(@IdRes final int id_) {
-        return allOf(nthChildOf(
-                withId(R.id.bottomnav),
-                0), withId(id_));
-    }
-
-    private ViewInteraction bottomNavViewTextMatcher(Matcher<View> parent) {
-        return onView(nthChildOf(nthChildOf(parent, 2), 0 ));
+        doReturn(true).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
     }
 
     private void startEmptyActivity() {

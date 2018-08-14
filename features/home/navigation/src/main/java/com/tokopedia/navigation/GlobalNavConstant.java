@@ -20,7 +20,6 @@ public class GlobalNavConstant {
         static final String PAGE = "page";
 
         static final String INBOX = "inbox";
-
         static final String NOTIFICATION = "notification";
 
         static final String IMPRESSION = "Impression";
@@ -35,6 +34,11 @@ public class GlobalNavConstant {
         static final String LABEL_OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti";
         static final String LABEL_FORCE_CANCEL_APP_UPDATE = "Clicked Tutup";
 
+    }
+
+    public class Cache {
+        public static final String KEY_FIRST_TIME = "FIRST_TIME";
+        public static final String KEY_IS_FIRST_TIME = "is_first_time";
     }
 
     public static final String QUERY = "Query";

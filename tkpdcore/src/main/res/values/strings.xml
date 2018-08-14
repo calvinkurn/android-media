@@ -283,11 +283,6 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     </string-array>
     <!-- End of Strings related Inbox Ticket -->
 
-
-    <!-- Strings related Navigation Drawer -->
-    <!-- end of Strings related Navigation Drawer -->
-
-
     <!-- Strings related Navigation Drawer -->
     <string name="title_myshop">Toko Saya</string>
     <string name="title_create_shop">Buka Toko</string>
@@ -298,9 +293,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_customer_care">Layanan Pengguna</string>
     <string name="verified_account">Verified Account</string>
     <string name="online">Online</string>
-
     <!-- Strings related Navigation Drawer -->
-
 
     <!-- Strings related to product info -->
     <string name="title_viewed">Dilihat</string>
