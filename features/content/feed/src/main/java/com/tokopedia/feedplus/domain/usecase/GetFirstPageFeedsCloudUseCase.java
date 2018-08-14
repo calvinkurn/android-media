@@ -65,14 +65,28 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
         if (query == null) return null;
         else {
             WhitelistDomain domain = new WhitelistDomain();
-            domain.setError(query.getWhitelist().getError());
-            domain.setUrl(query.getWhitelist().getUrl());
+            domain.setError(query.getWhitelist().getError() != null ?
+                    query.getWhitelist().getError() :
+                    "");
+            domain.setUrl(query.getWhitelist().getUrl() != null ?
+                    query.getWhitelist().getUrl() :
+                    "");
             domain.setWhitelist(query.getWhitelist().isWhitelist());
-            domain.setTitle(query.getWhitelist().getTitle() != null ? query.getWhitelist().getTitle() : "");
-            domain.setDesc(query.getWhitelist().getDescription());
-            domain.setTitleIdentifier(query.getWhitelist().getTitleIdentifier());
-            domain.setPostSuccessMessage(query.getWhitelist().getPostSuccessMessage());
-            domain.setImage(query.getWhitelist().getImageUrl());
+            domain.setTitle(query.getWhitelist().getTitle() != null ?
+                    query.getWhitelist().getTitle() :
+                    "");
+            domain.setDesc(query.getWhitelist().getDescription() != null ?
+                    query.getWhitelist().getDescription() :
+                    "");
+            domain.setTitleIdentifier(query.getWhitelist().getTitleIdentifier() != null ?
+                    query.getWhitelist().getTitleIdentifier() :
+                    "");
+            domain.setPostSuccessMessage(query.getWhitelist().getPostSuccessMessage() != null ?
+                    query.getWhitelist().getPostSuccessMessage() :
+                    "");
+            domain.setImage(query.getWhitelist().getImageUrl() != null ?
+                    query.getWhitelist().getImageUrl() :
+                    "");
             return domain;
         }
     }

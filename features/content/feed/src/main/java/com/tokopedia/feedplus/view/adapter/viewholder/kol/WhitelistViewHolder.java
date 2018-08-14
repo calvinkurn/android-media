@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
@@ -42,8 +43,8 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     }
 
     private void initView(WhitelistViewModel model) {
-        tvTitle.setText(model.getWhitelist().getTitle());
-        tvDesc.setText(model.getWhitelist().getDesc());
+        tvTitle.setText(MethodChecker.fromHtml(model.getWhitelist().getTitle()));
+        tvDesc.setText(MethodChecker.fromHtml(model.getWhitelist().getDesc()));
         ImageHandler.loadImageCircle2(ivPhoto.getContext(), ivPhoto, model.getWhitelist().getImage());
     }
 
