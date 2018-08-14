@@ -66,6 +66,7 @@
         tools:ignore="VectorDrawableCompat" />
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp_80"
@@ -197,8 +198,8 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-                <com.tokopedia.challenges.view.customview.ExpandableTextView
-                    android:id="@+id/tv_expandable_description"
+                <TextView
+                    android:id="@+id/short_description"
                     style="@style/TextView.Small.Black40"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -206,13 +207,23 @@
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:ellipsize="end"
-                    android:maxLines="3"
-                    app:animation_duration="300"
+                    android:lines="3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_about"
                     tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " />
 
+                <WebView
+                    android:id="@+id/markdownView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/short_description"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/seemorebutton_description"
@@ -223,7 +234,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/expand"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_expandable_description" />
+                    app:layout_constraintTop_toBottomOf="@+id/markdownView" />
             </android.support.constraint.ConstraintLayout>
 
 
@@ -310,11 +321,53 @@
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/cl_submissions"
+                android:id="@+id/cl_winners"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/cl_awards">
+
+
+                <View
+                    android:id="@+id/divider7"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/grey_200"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_winners"
+                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/challenege_winners"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider7" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_winners"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:clipToPadding="false"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    app:layout_constraintTop_toBottomOf="@id/tv_winners" />
+            </android.support.constraint.ConstraintLayout>
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_submissions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/cl_winners">
 
 
                 <View

@@ -24,6 +24,7 @@ public class Me implements Parcelable{
 
     protected Me(Parcel in) {
         id = in.readString();
+        submissionCounts = in.readParcelable(SubmissionCounts.class.getClassLoader());
         liked = in.readByte() != 0;
         authProvider = in.readParcelable(AuthProvider.class.getClassLoader());
     }
@@ -80,6 +81,7 @@ public class Me implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
+        parcel.writeParcelable(submissionCounts, i);
         parcel.writeByte((byte) (liked ? 1 : 0));
         parcel.writeParcelable(authProvider, i);
     }

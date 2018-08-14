@@ -41,6 +41,7 @@
     <string name="video">Video</string>
     <string name="awards">Awards</string>
     <string name="recent_submissions">Recent Submissions</string>
+    <string name="challenege_winners">Winners</string>
     <string name="generate_buzz_points">How Do you Generate Buzz Points?</string>
     <string name="terms_conditions"><![CDATA[Terms & Conditions]]></string>
 </resources>
