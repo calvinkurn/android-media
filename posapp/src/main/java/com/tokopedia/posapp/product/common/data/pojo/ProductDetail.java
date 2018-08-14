@@ -115,6 +115,9 @@ public class ProductDetail {
     @SerializedName("product_price_original")
     @Expose
     private double productPriceOriginal;
+    @SerializedName("product_price_original_format")
+    @Expose
+    private String productPriceOriginalFormat;
 
     private ProductCampaign productCampaign;
 
@@ -412,5 +415,13 @@ public class ProductDetail {
 
     public void setProductPriceOriginal(double productPriceOriginal) {
         this.productPriceOriginal = productPriceOriginal;
+    }
+
+    public String getProductPriceOriginalFormat() {
+        return productPriceOriginalFormat;
+    }
+
+    public void setProductPriceOriginalFormat(String productPriceOriginalFormat) {
+        this.productPriceOriginalFormat = productPriceOriginalFormat;
     }
 }
