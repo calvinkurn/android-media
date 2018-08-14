@@ -1,22 +1,18 @@
 package com.tokopedia.challenges.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.GetTermsNConditionUseCase;
-import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
-import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
+import com.tokopedia.challenges.domain.usecase.GetWinnersUseCase;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -30,12 +26,14 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
     GetTermsNConditionUseCase getTermsNConditionUseCase;
     GetChallengeDetailsUseCase getChallengeDetailsUseCase;
+    GetWinnersUseCase getWinnersUseCase;
 
     @Inject
-    public ChallengeSubmissionPresenter(GetChallengeDetailsUseCase getChallengeDetailsUseCase, GetSubmissionChallengesUseCase getSubmissionChallengesUseCase, GetTermsNConditionUseCase getTermsNConditionUseCase) {
+    public ChallengeSubmissionPresenter(GetChallengeDetailsUseCase getChallengeDetailsUseCase, GetSubmissionChallengesUseCase getSubmissionChallengesUseCase, GetTermsNConditionUseCase getTermsNConditionUseCase, GetWinnersUseCase getWinnersUseCase) {
         this.getSubmissionChallengesUseCase = getSubmissionChallengesUseCase;
         this.getTermsNConditionUseCase = getTermsNConditionUseCase;
         this.getChallengeDetailsUseCase = getChallengeDetailsUseCase;
+        this.getWinnersUseCase = getWinnersUseCase;
     }
 
     @Override
@@ -83,34 +81,55 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                     getView().hideProgressBar();
                     getView().showCollapsingHeader();
                     getView().renderChallengeDetail(challengeResult);
-                    loadCountdownView(challengeResult);
                     loadSubmissions();
                 }
             });
         } else {
             getView().renderChallengeDetail(challengeResult);
-            loadCountdownView(challengeResult);
             loadSubmissions();
         }
 
     }
 
-    private void loadCountdownView(Result challengeResult) {
+    public void loadCountdownView(Result challengeResult) {
         if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null) {
-            if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
+            if (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate())) {
+                getView().setCountDownView("Completed");
+                getWinnerList();
+            } else if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
                 getView().setCountDownView("Approved");
             } else if (challengeResult.getMe().getSubmissionCounts().getDeclined() > 0) {
                 getView().setCountDownView("Declined");
             } else if (challengeResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-                getView().setCountDownView("Waiting");
-            } else if (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate())) {
-                getView().setCountDownView("Completed");
+                getView().setCountDownView("Pending");
             } else {
                 getView().setCountDownView("");
             }
         } else {
             getView().setCountDownView("");
         }
+    }
+
+    private void getWinnerList() {
+        getWinnersUseCase.setRequestParams(getView().getSubmissionsParams());
+        getWinnersUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                RestResponse res1 = typeRestResponseMap.get(SubmissionResponse.class);
+                SubmissionResponse submissionResponse = res1.getData();
+                getView().renderWinnerItems(submissionResponse);
+            }
+        });
     }
 
 

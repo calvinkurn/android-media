@@ -45,6 +45,8 @@ public class ChallengeSubmissonContractor {
         void renderTnC(TermsNCondition termsNCondition);
 
         void setCountDownView(String participatedText);
+
+        void renderWinnerItems(SubmissionResponse submissionResponse);
     }
 
     public interface Presenter extends CustomerPresenter<ChallengeSubmissonContractor.View> {
