@@ -45,12 +45,12 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         view.setOnClickListener(view1 -> {
             Intent intent = new Intent(view1.getContext(), ChallengeDetailActivity.class);
             intent.putExtra("challengesResult", challengesResult);
+            intent.putExtra("isPastChallenge", isPastChallenge);
             view1.getContext().startActivity(intent);
         });
 
         imgShare.setOnClickListener(v -> {
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage());
-
             // ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge( context,ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengesResult.getTitle(),challengesResult.getThumbnailUrl(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
         });
     }
