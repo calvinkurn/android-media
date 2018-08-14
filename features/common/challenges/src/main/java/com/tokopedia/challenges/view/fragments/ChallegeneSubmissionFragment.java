@@ -63,7 +63,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements ChallengeSubmissonContractor.View, View.OnClickListener, SubmissionItemAdapter.INavigateToActivityRequest {
+public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements ChallengeSubmissonContractor.View, View.OnClickListener, SubmissionItemAdapter.INavigateToActivityRequest, CustomVideoPlayer.CustomVideoPlayerListener {
 
     @Inject
     ChallengeSubmissionPresenter mPresenter;
@@ -280,7 +280,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             description.setVisibility(View.GONE);
         }
         if (challengeResult.getSharing().getAssets() != null && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
-            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false);
+            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false, this);
         } else {
             clVideoPlayer.setVisibility(View.GONE);
         }
@@ -295,6 +295,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         submitButton.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
+
     }
 
     @Override
@@ -426,5 +427,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     public void onDestroyView() {
         mPresenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void OnVideoStart() {
     }
 }

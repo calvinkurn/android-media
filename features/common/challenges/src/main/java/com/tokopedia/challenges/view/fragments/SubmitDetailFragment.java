@@ -28,7 +28,7 @@ import com.tokopedia.challenges.view.share.ShareBottomSheet;
 
 import javax.inject.Inject;
 
-public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDetailContract.View {
+public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDetailContract.View, CustomVideoPlayer.CustomVideoPlayerListener {
     private LinearLayout statusView;
     private ImageView closeBtn;
     private TextView statusText;
@@ -104,14 +104,14 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-           ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
 
         });
 
         likeBtn.setOnClickListener(v -> {
             presenter.likeBtnClick(model);
             if (model.getMe() != null) {
-                    setLikes(!model.getMe().isLiked());
+                setLikes(!model.getMe().isLiked());
             }
         });
     }
@@ -131,7 +131,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setChallengeImage(String thumbnailUrl, String videoUrl) {
-        challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false);
+        challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false, this);
     }
 
     public void setLikesCountView(String likesCount) {
@@ -176,12 +176,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void updateLikeCount(boolean liked) {
-        if(!TextUtils.isEmpty(likesCountView.getText())) {
+        if (!TextUtils.isEmpty(likesCountView.getText())) {
             int count = Integer.parseInt(likesCountView.getText().toString());
             if (count >= 0 && liked) {
-                likesCountView.setText(""+(count + 1));
-            } else if(count > 0){
-                likesCountView.setText(""+(count - 1));
+                likesCountView.setText("" + (count + 1));
+            } else if (count > 0) {
+                likesCountView.setText("" + (count - 1));
             }
         }
     }
@@ -211,5 +211,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             likeBtn.setImageResource(R.drawable.ic_wishlist_unchecked);
             likesImageView.setImageResource(R.drawable.ic_wishlist_unchecked);
         }
+    }
+
+    @Override
+    public void OnVideoStart() {
+        presenter.sendBuzzPointEvent(model.getId());
     }
 }

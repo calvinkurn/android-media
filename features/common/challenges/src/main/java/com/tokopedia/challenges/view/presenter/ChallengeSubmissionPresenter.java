@@ -1,17 +1,22 @@
 package com.tokopedia.challenges.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.GetTermsNConditionUseCase;
+import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
+import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.Map;

@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -18,10 +19,13 @@ import rx.Subscriber;
 
 public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContract.View> implements SubmitDetailContract.Presenter {
     private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
+    private PostBuzzPointEventUseCase postBuzzPointEventUseCase;
+
 
     @Inject
-    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase) {
+    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase) {
         this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
+        this.postBuzzPointEventUseCase = postBuzzPointEventUseCase;
     }
 
     @Override
@@ -30,6 +34,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setProfileText(model.getUser().getTitle());
         if (model.getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
             getView().setChallengeImage(model.getMedia().get(0).getImageUrl(), "");
+            sendBuzzPointEvent(model.getId());
         } else if (model.getMedia() != null && model.getMedia().get(0).getVideo() != null && model.getMedia().get(0).getVideo().getSources() != null) {
             getView().setChallengeImage(model.getThumbnailUrl(), model.getMedia().get(0).getVideo().getSources().get(1).getSource());
         }
@@ -37,11 +42,11 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setLikesCountView(String.valueOf(model.getLikes()));
         getView().setPointsView(String.valueOf(model.getPoints()));
         String status = model.getStatus();
-        if(status.equalsIgnoreCase("approved") || status.equalsIgnoreCase("participated")){
+        if (status.equalsIgnoreCase("approved") || status.equalsIgnoreCase("participated")) {
             getView().setApprovedView(status);
-        } else if(status.equalsIgnoreCase("declined")){
+        } else if (status.equalsIgnoreCase("declined")) {
             getView().setDeclinedView(status);
-        } else if(status.equalsIgnoreCase("pending")){
+        } else if (status.equalsIgnoreCase("pending")) {
             getView().showStatusInfo();
             getView().setPendingView(status);
         }
@@ -74,5 +79,27 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             }
         });
 
+    }
+
+    public void sendBuzzPointEvent(String submissionId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
+        postBuzzPointEventUseCase.setRequestParams(requestParams);
+        postBuzzPointEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+
+            }
+        });
     }
 }
