@@ -1,6 +1,7 @@
 package com.tokopedia.core;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -25,7 +26,8 @@ import com.tokopedia.core.util.SessionHandler;
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String IS_CHUCK_ENABLED = "is_enable";
-    public static boolean isReleaseMode = true;
+    public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
+    public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     //developer test
 
     private TextView vCustomIntent;
@@ -38,6 +40,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private AppCompatButton remoteConfigCheckBtn;
     private AppCompatButton remoteConfigSaveBtn;
     private ToggleButton toggleReactDeveloperMode;
+    private SharedPreferences sharedPreferences;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -118,6 +121,30 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             }
         });
 
+        sharedPreferences = getSharedPreferences(SP_REACT_DEVELOPMENT_MODE, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(IS_RELEASE_MODE)){
+            boolean stateReleaseMode = sharedPreferences.getBoolean(IS_RELEASE_MODE, false);
+            Toast.makeText(DeveloperOptions.this, "Just works! " + stateReleaseMode, Toast.LENGTH_SHORT).show();
+            toggleReactDeveloperMode.setChecked(stateReleaseMode);
+        }
+
+        toggleReactDeveloperMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    Toast.makeText(DeveloperOptions.this, "ON", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(IS_RELEASE_MODE, true);
+                    editor.apply();
+                } else {
+                    Toast.makeText(DeveloperOptions.this, "OFF", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(IS_RELEASE_MODE, false);
+                    editor.apply();
+                }
+            }
+        });
+
         toggleChuck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
@@ -160,16 +187,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 actionSaveValueRemoteConfig();
             }
         });
-    }
-
-    private void toggleReactClick(View view){
-        if (toggleReactDeveloperMode.isChecked()){
-            Toast.makeText(DeveloperOptions.this, "ON", Toast.LENGTH_SHORT).show();
-            isReleaseMode = true;
-        } else {
-            Toast.makeText(DeveloperOptions.this, "OFF", Toast.LENGTH_SHORT).show();
-            isReleaseMode = false;
-        }
     }
 
     private void actionSaveValueRemoteConfig() {

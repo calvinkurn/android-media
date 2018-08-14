@@ -194,7 +194,6 @@
                     android:layout_height="wrap_content" />
                 <ToggleButton
                     android:id="@+id/toggle_reactnative_mode"
-                    android:onClick="toggleReactClick"
                     android:background="@drawable/btn_share"
                     android:textColor="@color/white"
                     android:layout_width="match_parent"
