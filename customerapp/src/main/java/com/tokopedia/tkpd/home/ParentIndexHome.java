@@ -562,7 +562,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 //        } else {
 //            getMenuInflater().inflate(R.menu.menu_guest, menu);
 //        }
-//        return true;
+        return true;
     }
 
     @Override

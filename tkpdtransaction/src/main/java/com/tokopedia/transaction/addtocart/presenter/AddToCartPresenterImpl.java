@@ -22,8 +22,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
@@ -31,7 +29,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.transaction.TransactionConstant;
 import com.tokopedia.transaction.addtocart.activity.AddToCartActivity;
 import com.tokopedia.transaction.addtocart.interactor.AddToCartNetInteractor;
 import com.tokopedia.transaction.addtocart.interactor.AddToCartNetInteractorImpl;
@@ -516,10 +513,10 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void setCacheCart(@NonNull Context context, int quantity) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, TransactionConstant.CART);
-        int existing = cache.getInt(TransactionConstant.IS_HAS_CART, 0);
-        cache.putInt(TransactionConstant.IS_HAS_CART, existing + quantity);
-        cache.applyEditor();
+//        LocalCacheHandler cache = new LocalCacheHandler(context, TransactionConstant.CART);
+//        int existing = cache.getInt(TransactionConstant.IS_HAS_CART, 0);
+//        cache.putInt(TransactionConstant.IS_HAS_CART, existing + quantity);
+//        cache.applyEditor();
     }
 
     private void createDialogAtcSuccess(final Context context, String message) {

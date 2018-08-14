@@ -156,7 +156,6 @@ import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
@@ -185,6 +184,7 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
+import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
@@ -343,7 +343,7 @@ import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
-import com.tokopedia.transaction.TransactionConstant;
+import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -2308,14 +2308,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setCartCount(Context context, int count) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TransactionConstant.CART);
-        localCacheHandler.putInt(TransactionConstant.IS_HAS_CART, count);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
+        localCacheHandler.applyEditor();
     }
 
     @Override
     public int getCartCount(Context context) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TransactionConstant.CART);
-        return localCacheHandler.getInt(TransactionConstant.IS_HAS_CART, 0);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
     }
 
     @Override
