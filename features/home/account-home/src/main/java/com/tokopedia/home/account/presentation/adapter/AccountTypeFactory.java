@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.SellerEmptyViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -20,6 +21,7 @@ import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 
@@ -51,6 +53,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new ShopCardViewHolder(parent, listener);
         } else if (type == AddProductViewHolder.LAYOUT) {
             return new AddProductViewHolder(parent, listener);
+        } else if (type == SellerEmptyViewHolder.LAYOUT) {
+            return new SellerEmptyViewHolder(parent, listener);
         }
         return super.createViewHolder(parent, type);
     }
@@ -85,5 +89,9 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(AddProductViewModel viewModel) {
         return AddProductViewHolder.LAYOUT;
+    }
+
+    public int type(SellerEmptyViewModel viewModel) {
+        return SellerEmptyViewHolder.LAYOUT;
     }
 }
