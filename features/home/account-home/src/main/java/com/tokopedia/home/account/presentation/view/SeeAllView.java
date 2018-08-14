@@ -161,9 +161,9 @@ public class SeeAllView extends BottomSheets {
 //        );
 //        list.add(gridItem);
 
-        // karina.nana [3:08 PM]
-        //donasi itu omsnya sama ama topup & tagihan
-        //jadi donasi diilangin dulu aja
+//        karina.nana [3:08 PM]
+//        donasi itu omsnya sama ama topup & tagihan
+//        jadi donasi diilangin dulu aja
 
 //        gridItem = new MenuGridItemViewModel(
 //                R.drawable.ic_donation,
