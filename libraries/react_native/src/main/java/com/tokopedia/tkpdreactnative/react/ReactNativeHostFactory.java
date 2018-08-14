@@ -1,9 +1,13 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -21,16 +25,23 @@ import java.util.List;
 
 public class ReactNativeHostFactory {
     private static ReactNativeHostFactory instance;
+    private static SharedPreferences sharedPreferences;
 
     protected ReactNativeHostFactory() {}
 
     public static ReactNativeHost init(Application application) {
         if(instance == null) instance = new ReactNativeHostFactory();
 
-        if (DeveloperOptions.isReleaseMode){
-            return instance.createReactNativeHost(application);
+        sharedPreferences = application.getSharedPreferences(DeveloperOptions.SP_REACT_DEVELOPMENT_MODE, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(DeveloperOptions.IS_RELEASE_MODE)){
+            boolean isReleaseMode = sharedPreferences.getBoolean(DeveloperOptions.IS_RELEASE_MODE, true);
+            if (isReleaseMode){
+                return instance.createReactNativeHost(application);
+            } else {
+                return instance.createReactNativeHostDev(application);
+            }
         } else {
-            return instance.createReactNativeHostDev(application);
+            return instance.createReactNativeHost(application);
         }
     }
 
