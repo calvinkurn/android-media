@@ -45,6 +45,7 @@
     <color name="green_500">#259b24</color>
     <color name="green_600">#0a8f08</color>
     <color name="green_800">#056f00</color>
+    <color name="lightish_green">#77db80</color>
 
     <color name="orange_300">#ffb74d</color>
     <color name="orange_900">#e65100</color>

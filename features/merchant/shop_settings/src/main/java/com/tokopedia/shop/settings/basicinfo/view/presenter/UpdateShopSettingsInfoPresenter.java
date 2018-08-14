@@ -1,10 +1,15 @@
 package com.tokopedia.shop.settings.basicinfo.view.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase;
+import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel;
+import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -16,19 +21,23 @@ public class UpdateShopSettingsInfoPresenter extends BaseDaggerPresenter<UpdateS
 
     private GetShopBasicDataUseCase getShopBasicDataUseCase;
     private UpdateShopBasicDataUseCase updateShopBasicDataUseCase;
+    private UploadShopImageUseCase uploadShopImageUseCase;
 
     public interface View extends CustomerView {
         void onSuccessUpdateShopBasicData(String successMessage);
         void onErrorUpdateShopBasicData(Throwable throwable);
         void onSuccessGetShopBasicData(ShopBasicDataModel shopBasicDataModel);
         void onErrorGetShopBasicData(Throwable throwable);
+        void onErrorUploadShopImage(Throwable throwable);
     }
 
     @Inject
     public UpdateShopSettingsInfoPresenter(GetShopBasicDataUseCase getShopBasicDataUseCase,
-                                           UpdateShopBasicDataUseCase updateShopBasicDataUseCase) {
+                                           UpdateShopBasicDataUseCase updateShopBasicDataUseCase,
+                                           UploadShopImageUseCase uploadShopImageUseCase) {
         this.getShopBasicDataUseCase = getShopBasicDataUseCase;
         this.updateShopBasicDataUseCase = updateShopBasicDataUseCase;
+        this.uploadShopImageUseCase = uploadShopImageUseCase;
     }
 
     public void getShopBasicData(){
@@ -55,16 +64,39 @@ public class UpdateShopSettingsInfoPresenter extends BaseDaggerPresenter<UpdateS
         });
     }
 
-    public void updateShopBasicData(String tagline, String description, String logoCode) {
+    public void uploadShopImage(String imagePath, String tagline, String description) {
+        uploadShopImageUseCase.unsubscribe();
+        uploadShopImageUseCase.execute(UploadShopImageUseCase.createRequestParams(imagePath),
+                new Subscriber<UploadShopEditImageModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()){
+                    getView().onErrorUploadShopImage(e);
+                }
+            }
+
+            @Override
+            public void onNext(UploadShopEditImageModel uploadShopEditImageModel) {
+                updateShopBasicData(tagline, description, uploadShopEditImageModel.getData().getImage().getPicCode());
+            }
+        });
+    }
+
+    public void updateShopBasicData(String tagline, String description) {
+        updateShopBasicDataUseCase.unsubscribe();
+        updateShopBasicDataUseCase.execute(UpdateShopBasicDataUseCase.createRequestParams(tagline,
+                description, null, null, null), createUpdateBasicInfoSubscriber());
+    }
+
+    private void updateShopBasicData(String tagline, String description, String logoCode) {
         updateShopBasicDataUseCase.unsubscribe();
         updateShopBasicDataUseCase.execute(UpdateShopBasicDataUseCase.createRequestParams(tagline,
                 description, logoCode, null, null), createUpdateBasicInfoSubscriber());
-    }
-
-    public void updateShopBasicData(String tagline, String description, String filePath, String fileName) {
-        updateShopBasicDataUseCase.unsubscribe();
-        updateShopBasicDataUseCase.execute(UpdateShopBasicDataUseCase.createRequestParams(tagline,
-                description, null, filePath, fileName), createUpdateBasicInfoSubscriber());
     }
 
     private Subscriber<String> createUpdateBasicInfoSubscriber() {
@@ -95,6 +127,7 @@ public class UpdateShopSettingsInfoPresenter extends BaseDaggerPresenter<UpdateS
         super.detachView();
         getShopBasicDataUseCase.unsubscribe();
         updateShopBasicDataUseCase.unsubscribe();
+        uploadShopImageUseCase.unsubscribe();
     }
 
 

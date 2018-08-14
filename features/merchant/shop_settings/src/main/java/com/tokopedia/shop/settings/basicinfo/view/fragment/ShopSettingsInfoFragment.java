@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.basicinfo.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -17,11 +18,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity;
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 
@@ -30,6 +33,7 @@ import javax.inject.Inject;
 public class ShopSettingsInfoFragment extends BaseDaggerFragment implements ShopSettingsInfoPresenter.View {
 
     private static final int REQUEST_EDIT_BASIC_INFO = 781;
+    private static final int REQUEST_EDIT_SCHEDULE = 782;
     @Inject
     ShopSettingsInfoPresenter shopSettingsInfoPresenter;
     private View loadingView;
@@ -43,6 +47,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     private TextView tvMembershipName;
     private TextView tvMembershipDescription;
     private View lvShopBasicInfo;
+    private boolean needReload;
 
     public static ShopSettingsInfoFragment newInstance() {
         return new ShopSettingsInfoFragment();
@@ -86,7 +91,8 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         lvShopStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "status cahnge", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), ShopEditScheduleActivity.class);
+                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE);
             }
         });
         return view;
@@ -106,6 +112,28 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadShopBasicData();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_EDIT_BASIC_INFO:
+            case REQUEST_EDIT_SCHEDULE:
+                if (resultCode == Activity.RESULT_OK) {
+                    needReload = true;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (needReload) {
+            loadShopBasicData();
+            needReload = false;
+        }
     }
 
     private void loadShopBasicData() {
@@ -131,7 +159,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     }
 
     private void setUIShopBasicData(ShopBasicDataModel shopBasicDataModel) {
-        tvShopName.setText(shopBasicDataModel.getName());
+        tvShopName.setText(MethodChecker.fromHtml(shopBasicDataModel.getName()));
         tvShopDomain.setText(shopBasicDataModel.getDomain());
         tvShopSlogan.setText(shopBasicDataModel.getTagline());
         tvShopDescription.setText(shopBasicDataModel.getDescription());

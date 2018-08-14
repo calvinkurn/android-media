@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vgRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:descendantFocusability="beforeDescendants"
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/partial_toolbar_save_button" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@drawable/bg_line_separator" />
+
+    <ScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_16">
+
+            <TextView
+                style="@style/TextView.Title.Bold"
+                android:layout_gravity="start"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:text="@string/shop_status_current_label" />
+
+            <com.tokopedia.design.label.RadioButtonLabelView
+                android:id="@+id/labelOpen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rblv_title="@string/label_open" />
+
+            <com.tokopedia.design.label.RadioButtonLabelView
+                android:id="@+id/labelClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rblv_title="@string/label_close_now"/>
+
+            <LinearLayout
+                android:id="@+id/vgScheduleSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:foreground="?attr/selectableItemBackground">
+
+                <TextView
+                    style="@style/TextView.Title"
+                    android:text="@string/schedule_your_shop_close"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"/>
+
+                <Switch style="@style/Switch"
+                    android:id="@+id/switchWidget"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/vgScheduleSwitchContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

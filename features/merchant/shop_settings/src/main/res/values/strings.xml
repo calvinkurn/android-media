@@ -16,5 +16,14 @@
     <string name="shop_settings_image_size">10 Megabytes (10 MB)</string>
     <string name="shop_settings_info_allowed_file">File yang diperbolehkan:</string>
     <string name="shop_settings_info_type_file_image">.JPG .JPEG .PNG</string>
+    <string name="choose_shop_picture">Pilih Gambar Toko</string>
+    <string name="shop_slogan_must_be_filled">Slogan Toko harus diisi.</string>
+    <string name="shop_desc_must_be_filled">Deskripsi Toko harus diisi.</string>
+    <string name="shop_status_current_label">Status Toko Saat ini</string>
+    <string name="shop_settings_shop_status">Status Toko</string>
+    <string name="label_close_now">Tutup Sekarang</string>
+    <string name="schedule_your_shop_close">Jadwalkan Tutup Toko</string>
+    <string name="date_start_shop_close">Tanggal Mulai Tutup</string>
+    <string name="date_end_shop_close">Tanggal berakhir</string>
 
 </resources>
