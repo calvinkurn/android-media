@@ -99,9 +99,6 @@ public class BranchSdkUtils {
             } else {
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
                 LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
-                linkProperties.addControlParameter("$og_url", og_url);
-                linkProperties.addControlParameter("og_title", og_title);
-                linkProperties.addControlParameter("og_image_url", og_image_url);
                 branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
                     @Override
                     public void onLinkCreate(String url, BranchError error) {
@@ -160,6 +157,10 @@ public class BranchSdkUtils {
         linkProperties.setFeature(data.getType());
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
+        linkProperties.addControlParameter("$og_url", data.getOgUrl());
+        linkProperties.addControlParameter("$og_title", data.getOgTitle());
+        linkProperties.addControlParameter("$og_image_url", data.getOgImageUrl());
+
         return linkProperties;
     }
 

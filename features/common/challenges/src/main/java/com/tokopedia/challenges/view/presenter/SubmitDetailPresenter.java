@@ -28,7 +28,11 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     public void setDataInFields(SubmissionResult model) {
         getView().setProfilePic(model.getUser().getThumbnailImage());
         getView().setProfileText(model.getUser().getTitle());
-        getView().setChallengeImage(model.getThumbnailUrl());
+        if (model.getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
+            getView().setChallengeImage(model.getMedia().get(0).getImageUrl(), "");
+        } else if (model.getMedia() != null && model.getMedia().get(0).getVideo() != null && model.getMedia().get(0).getVideo().getSources() != null) {
+            getView().setChallengeImage(model.getThumbnailUrl(), model.getMedia().get(0).getVideo().getSources().get(1).getSource());
+        }
         getView().setLikes(model.getMe().isLiked());
         getView().setLikesCountView(String.valueOf(model.getLikes()));
         getView().setPointsView(String.valueOf(model.getPoints()));

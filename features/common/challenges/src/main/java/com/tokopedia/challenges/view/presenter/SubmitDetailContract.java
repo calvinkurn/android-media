@@ -2,7 +2,6 @@ package com.tokopedia.challenges.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public interface SubmitDetailContract {
@@ -19,7 +18,7 @@ public interface SubmitDetailContract {
 
         void setProfileText(String text);
 
-        void setChallengeImage(String text);
+        void setChallengeImage(String thumbnailUrl, String videoUrl);
 
         void setLikesCountView(String text);
 

@@ -56,23 +56,21 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
     @Override
     public void onBindViewHolder(BottomSheetShareAdapter.ShareViewHolder holder, int position) {
 
-        CharSequence title;
-        String type;
-        Drawable resources;
-        if(mActivities.size()<=position){
-            return;
-        }
+        CharSequence title =null;
+        String type = null;
+        Drawable resources =null;
 
-//        if (isPositionCopy(position)) {
-//            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.core.R.drawable.ic_copy_clipboard);
-//            title = holder.labelView.getContext().getString(com.tokopedia.core.R.string.copy);
-//            type = ShareBottomSheet.KEY_COPY;
-//        } else
-        if (isPositionOther(position)) {
-            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.design.R.drawable.ic_btn_other);
-            title = "other";//holder.labelView.getContext().getString(com.tokopedia.design.R.string.other);
-            type = ShareBottomSheet.KEY_OTHER;
-        } else {
+        if (isPositionCopy(position)) {
+            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.design.R.drawable.ic_btn_copy);
+            title = "Copy";
+            type = ShareBottomSheet.KEY_COPY;
+        }
+//        else if (isPositionOther(position)) {
+//            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.design.R.drawable.ic_btn_other);
+//            title = "other";//holder.labelView.getContext().getString(com.tokopedia.design.R.string.other);
+//            type = ShareBottomSheet.KEY_OTHER;
+//        }
+        else if (mActivities.size() > position) {
             final ResolveInfo activity = mActivities.get(position);
             resources = activity.loadIcon(mPackageManager);
             title = activity.loadLabel(mPackageManager);
@@ -97,7 +95,7 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
 
     @Override
     public int getItemCount() {
-        return mActivities.size() + 2; // for salin link and lainnya
+        return mActivities.size() + 1; // for salin link and lainnya
     }
 
     public static class ShareViewHolder extends RecyclerView.ViewHolder {

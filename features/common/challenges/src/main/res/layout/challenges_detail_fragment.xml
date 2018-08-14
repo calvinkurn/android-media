@@ -181,7 +181,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_300"
+                    android:background="@color/grey_200"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -240,7 +240,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_300"
+                    android:background="@color/grey_200"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -280,7 +280,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_300"
+                    android:background="@color/grey_200"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -324,7 +324,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_300"
+                    android:background="@color/grey_200"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -371,7 +371,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/grey_300"
+                android:background="@color/grey_200"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_submissions" />
@@ -382,6 +382,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
+                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider4">
 
@@ -402,6 +403,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:lines="3"
+                    android:ellipsize="end"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…"
                     app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points" />
 
@@ -415,6 +418,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points_text" />
             </android.support.constraint.ConstraintLayout>
 
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/grey_200"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_how_buzzpoints" />
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/cl_tnc"
@@ -422,10 +436,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cl_how_buzzpoints">
+                app:layout_constraintTop_toBottomOf="@+id/divider6">
 
                 <TextView
                     android:id="@+id/tv_tnc"
@@ -444,6 +458,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:lines="3"
+                    android:ellipsize="end"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…"
                     app:layout_constraintTop_toBottomOf="@+id/tv_tnc" />
 

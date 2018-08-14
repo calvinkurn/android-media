@@ -31,11 +31,9 @@ public class FullScreenVideoActivity extends BaseActivity implements CustomMedia
         videoView = findViewById(R.id.videoView);
 
         String fullScreen = getIntent().getStringExtra("fullScreenInd");
-        if ("y".equals(fullScreen)) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            getSupportActionBar().hide();
-        }
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
 
         videoUrl = getIntent().getStringExtra("videoUrl");
         pos = getIntent().getIntExtra("seekPos", 0);

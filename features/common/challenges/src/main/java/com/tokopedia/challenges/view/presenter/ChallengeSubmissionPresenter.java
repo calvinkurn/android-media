@@ -36,7 +36,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     @Override
     public void initialize(boolean loadFromApi, Result challengeResult) {
         getSubmissionChallenges(loadFromApi, challengeResult);
-        getTermsNCondition();
+        getTermsNCondition(challengeResult.getId());
     }
 
     @Override
@@ -131,8 +131,8 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         });
     }
 
-    public void getTermsNCondition() {
-        getTermsNConditionUseCase.setRequestParams(getView().getSubmissionsParams());
+    public void getTermsNCondition(String id) {
+        getTermsNConditionUseCase.setCollectionID(id);
         getTermsNConditionUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {

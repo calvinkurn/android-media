@@ -16,17 +16,19 @@ import java.util.List;
  */
 
 public class ChallengesListAdapter extends RecyclerView.Adapter<ChallengesViewHolder> {
-    List<Result> challengesResultList;
-    Context context;
+    private List<Result> challengesResultList;
+    private Context context;
+    private  boolean isPastChallenge;
 
-    public ChallengesListAdapter(Context context, List<Result> challengesResultList) {
+    public ChallengesListAdapter(Context context, List<Result> challengesResultList, boolean isPastChallenge) {
         this.context = context;
         this.challengesResultList = challengesResultList;
+        this.isPastChallenge=isPastChallenge;
     }
 
     @Override
     public ChallengesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ChallengesViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_challenge_list_item, parent, false));
+        return new ChallengesViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_challenge_list_item, parent, false),isPastChallenge);
     }
 
     @Override
