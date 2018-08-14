@@ -8,6 +8,8 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 public interface SubmitDetailContract {
     public interface Presenter extends CustomerPresenter<View> {
         void setDataInFields(SubmissionResult model);
+
+        void likeBtnClick(SubmissionResult result);
     }
 
     public interface View extends CustomerView {
@@ -23,7 +25,7 @@ public interface SubmitDetailContract {
 
         void setPointsView(String text);
 
-        void setShareView(String text);
+        void setLikes(boolean text);
 
         void setApprovedView(String text);
 
@@ -37,5 +39,6 @@ public interface SubmitDetailContract {
 
         void setParticipateTitle(String title);
 
+        void updateLikeCount(boolean liked);
     }
 }
