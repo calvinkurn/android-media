@@ -112,7 +112,8 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
                                 });
                             }
                         });
-                        customVideoPlayerListener.OnVideoStart();
+                        if (customVideoPlayerListener != null)
+                            customVideoPlayerListener.OnVideoStart();
 
                     }
                 });

@@ -298,7 +298,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
 
         if (challengeResult.getSharing().getAssets() != null && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
-            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false);
+            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false, null);
         } else {
             clVideoPlayer.setVisibility(View.GONE);
         }
@@ -329,13 +329,13 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             tvParticipated.setText(participatedText);
             if (participatedText.equalsIgnoreCase("Approved")) {
-                setTextStatus(getResources().getColor(R.color.accepted_green_textcolor),getResources().getDrawable(R.drawable.bg_round_solid_green_radius_huge), tvParticipated);
+                setTextStatus(getResources().getColor(R.color.accepted_green_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_green_radius_huge), tvParticipated);
             } else if (participatedText.equalsIgnoreCase("Pending")) {
-                setTextStatus(getResources().getColor(R.color.pending_yellow_textcolor),getResources().getDrawable(R.drawable.bg_round_solid_yellow_radius_huge), tvParticipated);
+                setTextStatus(getResources().getColor(R.color.pending_yellow_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_yellow_radius_huge), tvParticipated);
             } else if (participatedText.equalsIgnoreCase("Declined")) {
-                setTextStatus(getResources().getColor(R.color.declined_red_textcolor),getResources().getDrawable(R.drawable.bg_round_solid_red_radius_huge), tvParticipated);
+                setTextStatus(getResources().getColor(R.color.declined_red_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_red_radius_huge), tvParticipated);
             } else {
-                setTextStatus(getResources().getColor(R.color.completed_gray_textcolor),getResources().getDrawable(R.drawable.bg_round_solid_gray_radius_huge), tvParticipated);
+                setTextStatus(getResources().getColor(R.color.completed_gray_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_gray_radius_huge), tvParticipated);
             }
         }
     }
