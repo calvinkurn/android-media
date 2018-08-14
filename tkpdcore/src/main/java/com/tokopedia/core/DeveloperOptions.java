@@ -124,7 +124,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         sharedPreferences = getSharedPreferences(SP_REACT_DEVELOPMENT_MODE, Context.MODE_PRIVATE);
         if (sharedPreferences.contains(IS_RELEASE_MODE)){
             boolean stateReleaseMode = sharedPreferences.getBoolean(IS_RELEASE_MODE, false);
-            Toast.makeText(DeveloperOptions.this, "Just works! " + stateReleaseMode, Toast.LENGTH_SHORT).show();
             toggleReactDeveloperMode.setChecked(stateReleaseMode);
         }
 
@@ -132,12 +131,12 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
-                    Toast.makeText(DeveloperOptions.this, "ON", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeveloperOptions.this, "React Native set to released mode", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(IS_RELEASE_MODE, true);
                     editor.apply();
                 } else {
-                    Toast.makeText(DeveloperOptions.this, "OFF", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeveloperOptions.this, "React Native set to development mode", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(IS_RELEASE_MODE, false);
                     editor.apply();
