@@ -929,7 +929,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                         etQuantity.getText().toString());
                 presenter.processAddToCartSuccess(this,
                         resultData.getString(ATCIntentService.EXTRA_MESSAGE));
-                presenter.setCacheCart(this);
+                presenter.setCacheCart(this, Integer.parseInt(etQuantity.getText().toString()));
                 break;
             case ATCIntentService.RESULT_ADD_TO_CART_RUNNING:
                 showProgressLoading();

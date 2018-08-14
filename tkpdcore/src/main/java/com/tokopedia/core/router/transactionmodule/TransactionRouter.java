@@ -42,4 +42,7 @@ public interface TransactionRouter {
         void onDataReady();
     }
 
+    void setCartCount(Context context, int count);
+
+    int getCartCount(Context context);
 }

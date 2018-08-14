@@ -59,4 +59,6 @@ public interface PdpRouter {
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
     void goToCreateTopadsPromo(Context context, String productId, String shopId, String sourceCreateTopadsManageProduct);
+
+    int getCartCount(Context context);
 }

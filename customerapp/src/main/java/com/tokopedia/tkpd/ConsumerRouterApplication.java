@@ -156,7 +156,6 @@ import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
@@ -344,6 +343,7 @@ import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
+import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -2304,6 +2304,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             goToCreateMerchantRedirect(context);
             UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
+    }
+
+    @Override
+    public void setCartCount(Context context, int count) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
+        localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public int getCartCount(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
     }
 
     @Override
