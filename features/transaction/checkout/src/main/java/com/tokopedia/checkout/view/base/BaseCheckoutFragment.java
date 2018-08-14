@@ -21,8 +21,6 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     protected Bundle savedState;
     protected Unbinder unbinder;
 
-    private View containerView;
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -64,7 +62,11 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.containerView = view;
+        injectView(view);
+        initView(view);
+        initialVar();
+        setViewListener();
+        setActionVar();
     }
 
     @Override
@@ -85,14 +87,8 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
         loadData();
     }
 
-    private void loadData() {
-        if (containerView != null) {
-            injectView(containerView);
-            initView(containerView);
-            initialVar();
-            setViewListener();
-            setActionVar();
-        }
+    protected void loadData() {
+        
     }
 
     protected abstract void onFirstTimeLaunched();
