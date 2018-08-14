@@ -296,8 +296,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCartItemModel.isUseCourierRecommendation()) {
             renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                     recipientAddressModel, shipmentCartItemModel.getShopShipmentList());
+            if (showCaseObjectList.size() == 1) {
+                setShowCase(llSelectShipmentRecommendation, showCaseObjectList);
+            }
         } else {
             renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
+            if (showCaseObjectList.size() == 1) {
+                setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+            }
         }
         renderError(shipmentCartItemModel);
         renderWarnings(shipmentCartItemModel);
@@ -305,10 +311,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         renderDropshipper(shipmentCartItemModel);
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
-
-        if (showCaseObjectList.size() == 1) {
-            setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
-        }
     }
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
