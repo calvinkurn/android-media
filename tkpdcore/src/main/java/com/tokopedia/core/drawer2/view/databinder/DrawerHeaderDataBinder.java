@@ -130,7 +130,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         TextView tvTokoPointCount;
 
         @BindView(R2.id.drawer_tokocard)
-        TextView tokocardLayout;
+        RelativeLayout tokocardLayout;
 
 
         public ViewHolder(View itemView) {
