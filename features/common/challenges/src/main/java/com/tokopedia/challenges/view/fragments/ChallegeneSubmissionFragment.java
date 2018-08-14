@@ -56,18 +56,17 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ChallengeSubmissionPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
+import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.usecase.RequestParams;
 
-import org.markdownj.MarkdownProcessor;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import us.feras.mdv.MarkdownView;
 
 public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements ChallengeSubmissonContractor.View, View.OnClickListener, SubmissionItemAdapter.INavigateToActivityRequest {
 
