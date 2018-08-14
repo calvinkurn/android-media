@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView profileText;
     private CustomVideoPlayer challengeImage;
     private TextView challengeTitle;
+    private ImageView likesImageView;
     private TextView likesCountView;
     private TextView pointsView;
     private FloatingActionButton likeBtn;
@@ -73,6 +75,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
         challengeTitle = view.findViewById(R.id.challenge_title);
 
+        likesImageView = view.findViewById(R.id.likes_img);
         likesCountView = view.findViewById(R.id.tv_likes);
         pointsView = view.findViewById(R.id.tv_points);
 
@@ -101,9 +104,15 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            //((ChallengesModuleRouter)(getActivity().getApplication())).shareChallenge(getActivity(), ChallengesUrl.AppLink.CHALLENGES_DETAILS,model.getTitle(),model.getThumbnailUrl(),model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(),model.getSharing().getMetaTags().getOgImage());
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
+           ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
 
+        });
+
+        likeBtn.setOnClickListener(v -> {
+            presenter.likeBtnClick(model);
+            if (model.getMe() != null) {
+                    setLikes(!model.getMe().isLiked());
+            }
         });
     }
 
@@ -133,8 +142,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         this.pointsView.setText(points);
     }
 
-    public void setShareView(String url) {
-    }
 
     private void statusContent(TextView view, String text) {
         view.setVisibility(View.VISIBLE);
@@ -168,6 +175,18 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     @Override
+    public void updateLikeCount(boolean liked) {
+        if(!TextUtils.isEmpty(likesCountView.getText())) {
+            int count = Integer.parseInt(likesCountView.getText().toString());
+            if (count >= 0 && liked) {
+                likesCountView.setText(""+(count + 1));
+            } else if(count > 0){
+                likesCountView.setText(""+(count - 1));
+            }
+        }
+    }
+
+    @Override
     protected void initInjector() {
         getComponent(ChallengesComponent.class).inject(this);
 
@@ -178,5 +197,19 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    public void setLikes(boolean isLiked) {
+
+        model.getMe().setLiked(isLiked);
+        if (isLiked) {
+            updateLikeCount(true);
+            likeBtn.setImageResource(R.drawable.ic_wishlist_checked);
+            likesImageView.setImageResource(R.drawable.ic_wishlist_checked);
+        } else {
+            updateLikeCount(false);
+            likeBtn.setImageResource(R.drawable.ic_wishlist_unchecked);
+            likesImageView.setImageResource(R.drawable.ic_wishlist_unchecked);
+        }
     }
 }

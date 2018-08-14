@@ -50,7 +50,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
                 if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
-                    getView().setChallengeDataToUI(mainDataObject.getResults());
+                    getView().setChallengeDataToUI(mainDataObject.getResults(),false);
                 } else {
                     getView().renderEmptyList();
                 }
@@ -81,7 +81,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
                 if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
-                    getView().setChallengeDataToUI(mainDataObject.getResults());
+                    getView().setChallengeDataToUI(mainDataObject.getResults() , true);
                 } else {
                    getView().renderEmptyList();
                 }

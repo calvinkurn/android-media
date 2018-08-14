@@ -82,6 +82,7 @@ public class SubmissionResult implements Parcelable
         channel = in.readParcelable(Channel.class.getClassLoader());
         collection = in.readParcelable(Collection.class.getClassLoader());
         user = in.readParcelable(User.class.getClassLoader());
+        me = in.readParcelable(Me.class.getClassLoader());
         sharing = in.readParcelable(Sharing.class.getClassLoader());
     }
 
@@ -101,6 +102,7 @@ public class SubmissionResult implements Parcelable
         dest.writeParcelable(channel, flags);
         dest.writeParcelable(collection, flags);
         dest.writeParcelable(user, flags);
+        dest.writeParcelable(me, flags);
         dest.writeParcelable(sharing, flags);
     }
 
