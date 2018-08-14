@@ -126,6 +126,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         if (hasVariant) {
             wholesaleVariantInfoTextView.setText(getActivity().getText(R.string.product_add_wholesale_notice_variant));
             wholesaleVariantInfoTextView.setVisibility(View.VISIBLE);
+        }else{
+            wholesaleVariantInfoTextView.setVisibility(View.GONE);
         }
         addWholesaleTextView = root.findViewById(R.id.text_view_add_wholesale);
         addWholesaleTextView.setOnClickListener(v -> {
@@ -229,6 +231,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     @Override
     public void setButtonSubmit(boolean state) {
+        texViewMenu.setEnabled(state);
         if(state){
             texViewMenu.setTextColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         } else {
