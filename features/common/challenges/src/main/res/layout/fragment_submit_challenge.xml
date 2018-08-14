@@ -144,6 +144,7 @@
                 app:layout_constraintEnd_toEndOf="@id/selected_image"
                 app:layout_constraintTop_toTopOf="@id/selected_image"
                 app:srcCompat="@drawable/ic_black_cross"
+                android:visibility="gone"
                 tools:ignore="VectorDrawableCompat" />
 
 

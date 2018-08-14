@@ -20,6 +20,8 @@
             android:name=".view.activity.FullScreenVideoActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <service android:name=".view.service.UploadChallengeService"/>
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import com.tokopedia.challenges.view.fragments.ChallengesFragment;
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitFragment;
 import com.tokopedia.challenges.view.fragments.MySubmissionsFragment;
 import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
+import com.tokopedia.challenges.view.service.UploadChallengeService;
 
 import dagger.Component;
 
@@ -26,4 +27,6 @@ public interface ChallengesComponent {
     void inject(AllSubmissionFragment allSubmissionFragment);
 
     void inject(SubmissionItemAdapter submissionItemAdapter);
+
+    void inject(UploadChallengeService uploadChallengeService);
 }

@@ -8,6 +8,9 @@
     <string name="choose_an_image_title">Choose an Image or Video</string>
 
     <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
+    <string name="error_msg_wrong_video_size">Ups! Ukuran video yang di-upload lebih dari 100MB</string>
+    <string name="error_msg_wrong_title_size">Title length should between 1 to 50</string>
+    <string name="error_msg_wrong_descirption_size">Description length should between 1 to 300</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="collapse">Sembunyikan</string>
