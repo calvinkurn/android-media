@@ -251,13 +251,15 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
         selectedAlbumItem = albumItem;
 
-        labelViewAlbum.setContent(albumItem.isAll() ?
-                getString(R.string.default_all_album) :
-                albumItem.getDisplayName());
-        if (albumItem.isAll() && albumItem.isEmpty()) {
-            NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
-        } else {
-            getLoaderManager().restartLoader(MEDIA_LOADER_ID, null, this);
+        if(isAdded()){
+            labelViewAlbum.setContent(albumItem.isAll() ?
+                    getString(R.string.default_all_album) :
+                    albumItem.getDisplayName());
+            if (albumItem.isAll() && albumItem.isEmpty()) {
+                NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
+            } else {
+                getLoaderManager().restartLoader(MEDIA_LOADER_ID, null, this);
+            }
         }
     }
 
