@@ -90,9 +90,8 @@ public class Tabs extends TabLayout {
         this.setTabMode(MODE_SCROLLABLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.setElevation(4);
-            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.bg_tabs);
-            this.setBackground(drawable);
+            this.setElevation(10);
+            this.setBackgroundResource(R.color.white);
         } else {
             this.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
