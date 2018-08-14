@@ -45,9 +45,11 @@
 
                     <android.support.v7.widget.AppCompatTextView
                         style="@style/TextView.Micro"
+                        android:textSize="@dimen/dp_11"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.6"
+                        android:layout_gravity="center_vertical"
                         android:text="@string/train_countdown_label" />
 
                     <com.tokopedia.train.seat.presentation.widget.CountdownTimeView

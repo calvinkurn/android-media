@@ -54,10 +54,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     public void bind(ProductAttachmentViewModel element) {
         super.bind(element);
         prerequisiteUISetup(element);
-
         setupChatBubbleAlignment(chatBalloon, element);
         setupProductUI(element, chatBalloon);
-
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {
@@ -82,7 +80,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         productContainerView.setBackground(context.getResources().getDrawable(R.drawable
                 .attach_product_right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, productContainerView);
-        chatStatus.setVisibility(View.VISIBLE);
+        setChatReadStatus(element);
     }
 
     protected void prerequisiteUISetup(final ProductAttachmentViewModel element) {
@@ -102,8 +100,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 }
             }
         });
-
-        setChatReadStatus(element);
 
         if (element.getFromRole() != null
                 && !TextUtils.isEmpty(element.getFromRole())
