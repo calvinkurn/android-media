@@ -85,9 +85,6 @@ public class BuyerCardView extends BaseCustomView {
             textProfileCompletion.setText(R.string.verified_account);
             textProfileCompletion.setTypeface(null, Typeface.ITALIC);
             progressBar.setVisibility(GONE);
-            imageProfile.getLayoutParams().width = 130;
-            imageProfile.getLayoutParams().height = 130;
-            imageProfile.requestLayout();
         }
     }
 

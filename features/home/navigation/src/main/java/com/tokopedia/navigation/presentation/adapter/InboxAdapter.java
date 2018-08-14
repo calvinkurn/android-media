@@ -73,6 +73,8 @@ public class InboxAdapter extends BaseListAdapter<Inbox, InboxAdapter.InboxViewH
                 } catch (NumberFormatException e) {
                     //ignore
                 }
+            } else {
+                labelView.setBadgeCounter(0);
             }
             labelView.showRightArrow(false);
         }

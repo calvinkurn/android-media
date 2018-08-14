@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_margin="@dimen/dp_32"
+              android:layout_margin="@dimen/dp_16"
               android:orientation="vertical"
-              android:padding="@dimen/dp_16">
+              android:paddingTop="@dimen/dp_16"
+              android:paddingLeft="@dimen/dp_16"
+              android:paddingRight="@dimen/dp_16">
 
     <TextView
         android:id="@+id/tv_title_dialog"
@@ -14,26 +16,26 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textSize="@dimen/sp_16"
         android:textColor="@color/font_black_primary_70"
-        android:textStyle="bold"
-        tools:text="apakah anda yakin?"/>
+        tools:text="Title Goes Here"/>
 
     <TextView
         android:id="@+id/tv_desc_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24"
         android:lineSpacingExtra="@dimen/sp_5"
         android:textColor="@color/font_black_secondary_54"
         android:textSize="@dimen/sp_14"
-        tools:text="apakah anda yakin?"/>
+        tools:text="Make the copy compact to communicate what you want, approx 50 character like this"/>
 
     <LinearLayout
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_24"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
+        android:layout_gravity="end"
         android:orientation="horizontal">
 
-        <Button
+        <TextView
             android:id="@+id/btn_cancel_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,9 +43,10 @@
             android:textAllCaps="false"
             android:textColor="@color/font_black_secondary_54"
             android:textSize="@dimen/sp_14"
-            tools:text="no"/>
+            android:padding="@dimen/dp_8"
+            tools:text="CTA Here"/>
 
-        <Button
+        <TextView
             android:id="@+id/btn_ok_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +54,8 @@
             android:textAllCaps="false"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/sp_14"
-            tools:text="yes"/>
+            android:padding="@dimen/dp_8"
+            tools:text="CTA Here"/>
 
     </LinearLayout>
 
