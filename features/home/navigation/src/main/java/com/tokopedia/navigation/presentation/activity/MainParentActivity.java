@@ -154,6 +154,21 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         titles = titles();
         fragmentList = fragments();
 
+//        if (isFirstTime()) {
+//            trackFirstTime();
+//        }
+//        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+//        cacheHandler = new AnalyticsCacheHandler();
+
+        handleAppLinkBottomNavigation(savedInstanceState);
+
+        checkAppUpdate();
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
+
+        initHockeyBroadcastReceiver();
+    }
+
+    private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
         if (getIntent().getExtras() != null) {
             int tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
             switch (tabPosition) {
@@ -169,19 +184,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             }
         } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-            this.currentFragment = fragmentList.get(0);
+            this.currentFragment = fragmentList.get(HOME_MENU);
         }
-
-//        if (isFirstTime()) {
-//            trackFirstTime();
-//        }
-//        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-//        cacheHandler = new AnalyticsCacheHandler();
-
-        checkAppUpdate();
-        checkIsHaveApplinkComeFromDeeplink(getIntent());
-
-        initHockeyBroadcastReceiver();
     }
 
     @Override
@@ -264,7 +268,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                     ft.hide(frag); // hide all fragment
                 }
             }
-            scrollToTop(currentFrag);
+            scrollToTop(currentFrag); // enable feature scroll to top for home & feed
         } else {
             ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
         }
@@ -400,6 +404,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
             invalidateOptionsMenu();
         }
+    }
+
+    @Override
+    public void onNotifyCart() {
+        if (presenter != null)
+            this.presenter.getNotificationData();
     }
 
     /**
@@ -547,11 +557,5 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
-    }
-
-    @Override
-    public void onNotifyCart() {
-        if (presenter != null)
-            this.presenter.getNotificationData();
     }
 }
