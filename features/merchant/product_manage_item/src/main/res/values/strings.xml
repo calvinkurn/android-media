@@ -93,6 +93,7 @@
     <string name="product_label_information_product">Keterangan Produk</string>
     <string name="product_label_feature_product">Fitur Produk</string>
     <string name="product_label_condition_product">Kondisi Baru</string>
+    <string name="product_label_product_wholesale">Harga Grosir</string>
 
     <string name="product_label_product_stock">Status Stok</string>
     <string name="product_label_product_sku">SKU Produk</string>
