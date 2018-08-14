@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view;
 
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -24,6 +25,12 @@ public class ShippingCourierConverter {
         courierItemData.setInsuranceUsedInfo(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedInfo());
         courierItemData.setInsuranceUsedDefault(shippingCourierViewModel.getProductData().getInsurance().getInsuranceUsedDefault());
         courierItemData.setUsePinPoint(shippingCourierViewModel.getProductData().getIsShowMap() == 1);
+        if (!courierItemData.isUsePinPoint()) {
+            if (shippingCourierViewModel.getProductData().getError() != null &&
+                    shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+                courierItemData.setUsePinPoint(true);
+            }
+        }
         courierItemData.setAllowDropshiper(shippingCourierViewModel.isAllowDropshipper());
         courierItemData.setAdditionalPrice(shippingCourierViewModel.getAdditionalFee());
         courierItemData.setSelected(true);

@@ -47,7 +47,6 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shippingCourierViewModel.setSelected(!shippingCourierViewModel.isSelected());
                 shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition);
             }
         });
