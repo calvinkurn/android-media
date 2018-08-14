@@ -1,15 +1,31 @@
 package com.tokopedia.challenges.view.presenter;
 
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.challenges.data.model.IndiUserModel;
-import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+import android.text.TextUtils;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
+import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+import com.tokopedia.challenges.view.utils.Utils;
+import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.usecase.RequestParams;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContract.View> implements SubmitDetailContract.Presenter {
+    private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
+    private PostBuzzPointEventUseCase postBuzzPointEventUseCase;
+
+
     @Inject
-    public SubmitDetailPresenter() {
+    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase) {
+        this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
+        this.postBuzzPointEventUseCase = postBuzzPointEventUseCase;
     }
 
     @Override
@@ -18,22 +34,72 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setProfileText(model.getUser().getTitle());
         if (model.getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
             getView().setChallengeImage(model.getMedia().get(0).getImageUrl(), "");
+            sendBuzzPointEvent(model.getId());
         } else if (model.getMedia() != null && model.getMedia().get(0).getVideo() != null && model.getMedia().get(0).getVideo().getSources() != null) {
             getView().setChallengeImage(model.getThumbnailUrl(), model.getMedia().get(0).getVideo().getSources().get(1).getSource());
         }
+        getView().setLikes(model.getMe().isLiked());
         getView().setLikesCountView(String.valueOf(model.getLikes()));
         getView().setPointsView(String.valueOf(model.getPoints()));
         String status = model.getStatus();
-        if(status.equalsIgnoreCase("approved") || status.equalsIgnoreCase("participated")){
+        if (status.equalsIgnoreCase("approved") || status.equalsIgnoreCase("participated")) {
             getView().setApprovedView(status);
-        } else if(status.equalsIgnoreCase("declined")){
+        } else if (status.equalsIgnoreCase("declined")) {
             getView().setDeclinedView(status);
-        } else if(status.equalsIgnoreCase("pending")){
+        } else if (status.equalsIgnoreCase("pending")) {
             getView().showStatusInfo();
             getView().setPendingView(status);
         }
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
         getView().setParticipateTitle(model.getChannel().getTitle());
+    }
+
+    @Override
+    public void likeBtnClick(SubmissionResult result) {
+
+        RequestParams requestParams = RequestParams.create();
+        if (result.getMe() != null)
+            requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
+        if (!TextUtils.isEmpty(result.getId()))
+            requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
+        postSubmissionLikeUseCase.setRequestParams(requestParams);
+        postSubmissionLikeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().setLikes(result.getMe().isLiked());
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            }
+        });
+
+    }
+
+    public void sendBuzzPointEvent(String submissionId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
+        postBuzzPointEventUseCase.setRequestParams(requestParams);
+        postBuzzPointEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+
+            }
+        });
     }
 }

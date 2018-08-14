@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ChallengesBaseContract {
     interface View extends CustomerView {
-        void setChallengeDataToUI(List<Result> resultList);
+        void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge);
 
         void showErrorNetwork(String errorMessage);
 

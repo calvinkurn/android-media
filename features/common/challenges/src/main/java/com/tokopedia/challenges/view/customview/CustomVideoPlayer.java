@@ -22,12 +22,12 @@ import com.tokopedia.challenges.view.activity.FullScreenVideoActivity;
 
 public class CustomVideoPlayer extends FrameLayout implements CustomMediaController.ICurrentPos {
 
+    private VideoView videoView;
+    private ImageView thumbNail;
+    private CustomMediaController mediaController;
+    private CustomVideoPlayerListener customVideoPlayerListener;
 
-    VideoView videoView;
-    ImageView thumbNail;
-    CustomMediaController mediaController;
-
-    String videoUrl;
+    private String videoUrl;
     private boolean isFullScreen;
 
     public CustomVideoPlayer(@NonNull Context context) {
@@ -52,10 +52,11 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
         thumbNail = view.findViewById(R.id.video_thumbnail);
     }
 
-    public void setVideoThumbNail(String thumbNailUrl, String videoUrl, boolean isFullScreen) {
+    public void setVideoThumbNail(String thumbNailUrl, String videoUrl, boolean isFullScreen, CustomVideoPlayerListener customVideoPlayerListener) {
         ImageHandler.loadImageThumbs(getContext(), thumbNail, thumbNailUrl);
         this.videoUrl = videoUrl;
         this.isFullScreen = isFullScreen;
+        this.customVideoPlayerListener = customVideoPlayerListener;
         startPlay(0);
     }
 
@@ -111,6 +112,9 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
                                 });
                             }
                         });
+                        if (customVideoPlayerListener != null)
+                            customVideoPlayerListener.OnVideoStart();
+
                     }
                 });
             }
@@ -128,5 +132,9 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
             intent.putExtra("videoUrl", videoUrl);
             ((Activity) getContext()).startActivityForResult(intent, 100);
         }
+    }
+
+    public interface CustomVideoPlayerListener {
+        void OnVideoStart();
     }
 }
