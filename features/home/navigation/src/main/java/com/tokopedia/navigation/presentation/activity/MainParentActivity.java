@@ -156,11 +156,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         titles = titles();
         fragmentList = fragments();
 
-        if (savedInstanceState == null) {
-            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-            this.currentFragment = fragmentList.get(0);
-        }
-
         if (isFirstTime()) {
             globalNavAnalytics.trackFirstTime(this);
         }
