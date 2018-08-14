@@ -48,17 +48,15 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     @Override
     public void bind(MessageViewModel element) {
         super.bind(element);
-
         message.setText(MethodChecker.fromHtml(element.getMessage()));
-
         setupChatBubbleAlignment(chatBalloon, element);
-        setReadStatus(element);
         setRole(element);
     }
 
     private void setupChatBubbleAlignment(View chatBalloon, MessageViewModel element) {
         if (element.isSender()) {
             setChatRight(chatBalloon);
+            setReadStatus(element);
         } else {
             setChatLeft(chatBalloon);
         }
