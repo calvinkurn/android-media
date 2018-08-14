@@ -45,7 +45,6 @@ import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
-import com.tokopedia.feedplus.view.activity.RecentViewActivity;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
@@ -533,14 +532,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
-        adapter.unsetEndlessScrollListener();
-        adapter.showEmpty();
-        adapter.addList(listFeed);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onShowEmpty() {
         adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
@@ -636,12 +627,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getColor(int color) {
         return MethodChecker.getColor(getActivity(), color);
-    }
-
-    @Override
-    public void onSeeAllRecentView() {
-        Intent intent = RecentViewActivity.getCallingIntent(getActivity());
-        getActivity().startActivity(intent);
     }
 
     @Override

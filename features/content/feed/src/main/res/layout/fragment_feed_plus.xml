@@ -20,7 +20,6 @@
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/dp_10"
             android:scrollbars="vertical"
             android:tag="feed_plus_list"
             tools:listitem="@layout/kol_post_layout"/>
