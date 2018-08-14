@@ -120,7 +120,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             startActivityForResult(ProductAddWholesaleActivity
                     .getIntent(context, wholesalePrice, selectedCurrencyType, spinnerCounterInputViewPrice
                             .counterEditText.text.toString().replace(",", "").toDouble(),
-                            true, true), REQUEST_CODE_GET_WHOLESALE) }
+                            isOfficialStore, hasVariant), REQUEST_CODE_GET_WHOLESALE) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
