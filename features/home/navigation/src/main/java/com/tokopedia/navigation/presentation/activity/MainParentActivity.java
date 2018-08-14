@@ -305,6 +305,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             reloadPage(this);
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
+
         registerBroadcastHockeyApp();
     }
 

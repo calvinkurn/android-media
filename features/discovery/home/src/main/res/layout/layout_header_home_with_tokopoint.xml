@@ -160,17 +160,6 @@
 
             </LinearLayout>
 
-            <TextView
-                style="@style/TokoPointHeaderNewLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_10"
-                android:lines="1"
-                android:singleLine="true"
-                android:text="@string/home_header_tokopoint_new_label" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -247,8 +236,8 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
 
     </LinearLayout>
+
 </LinearLayout>
