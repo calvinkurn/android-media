@@ -53,6 +53,14 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+
+    public void addItem(BankAccountViewModel bankViewModel) {
+        this.listBank.remove(listBank.size()-1);
+        this.listBank.add(bankViewModel);
+        this.listBank.add(new BankAccountViewModel());
+        notifyItemRangeChanged(listBank.size()-1, 2);
+    }
+
     public List<BankAccountViewModel> getListBank() {
         return listBank;
     }
@@ -70,8 +78,11 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView text;
+
         public ViewHolder(View itemView) {
             super(itemView);
+            text = itemView.findViewById(R.id.text);
         }
     }
 
@@ -98,7 +109,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         View parentView;
         if (viewType == 1) {
             parentView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_add_bank, parent, false);
+                    .inflate(R.layout.item_add_bank_withdraw, parent, false);
             return new ViewHolder(parentView);
         }
 
@@ -112,10 +123,21 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
         switch (holder.getItemViewType()) {
             case 1:
+                if(listBank.size()<4){
+                    holder.text.setText(context.getStringResource(R.string.title_add_account_bank));
+                }else {
+                    holder.text.setText(context.getStringResource(R.string.title_set_account_bank));
+                }
+
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        context.goToAddBank();
+                        if(listBank.size()<4){
+                            context.goToAddBank();
+                        }else {
+                            context.goToSettingBank();
+                        }
+
                     }
                 });
                 break;

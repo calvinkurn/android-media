@@ -1,5 +1,6 @@
 package com.tokopedia.withdraw.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,9 +27,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
+import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
+import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
@@ -49,6 +53,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     private static final int BANK_INTENT = 34275;
     private static final int CONFIRM_PASSWORD_INTENT = 5964;
+    private static final int BANK_SETTING_INTENT = 1324;
     private TextView wrapperTotalWithdrawal;
     private CloseableBottomSheetDialog infoDialog;
     RecyclerView bankRecyclerView;
@@ -56,6 +61,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private View withdrawAll;
     private TextView withdrawError;
     private BankAdapter bankAdapter;
+    private Snackbar snackBarInfo;
     private Snackbar snackBarError;
     private EditText totalBalance;
     private EditText totalWithdrawal;
@@ -176,6 +182,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         }
 
         totalWithdrawal.addTextChangedListener(currencyTextWatcher);
+        totalWithdrawal.setText("");
 
         info.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +192,15 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
         snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
+                "", BaseToaster.LENGTH_LONG)
+                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackBarError.dismiss();
+                    }
+                });
+
+        snackBarInfo = ToasterNormal.make(getActivity().findViewById(android.R.id.content),
                 "", BaseToaster.LENGTH_LONG)
                 .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
                     @Override
@@ -275,10 +291,29 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
+    public void goToSettingBank() {
+        Intent intent = new Intent(getActivity(), SettingBankActivity.class);
+        Bundle bundle = new Bundle();
+        intent.putExtras(bundle);
+        startActivityForResult(intent, BANK_SETTING_INTENT);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case BANK_INTENT:
+                if(resultCode == Activity.RESULT_OK){
+                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
+                    BankAccountViewModel model = new BankAccountViewModel();
+                    model.setBankId(Integer.parseInt(parcelable.getBankId()));
+                    model.setBankName(parcelable.getBankName());
+                    model.setBankAccountId(parcelable.getAccountId());
+                    model.setBankAccountName(parcelable.getAccountName());
+                    model.setBankAccountNumber(parcelable.getAccountNumber());
+                    bankAdapter.addItem(model);
+                    snackBarInfo.setText(getActivity().getString(R.string.success_add_bank));
+                }
                 break;
             case CONFIRM_PASSWORD_INTENT:
                 break;

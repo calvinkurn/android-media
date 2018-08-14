@@ -26,12 +26,12 @@ public class WithdrawActivity extends BaseSimpleActivity {
 
     private void setToolbar() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(MethodChecker.getColor(this, R.color.white)));
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.grey_700));
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.black_70));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
         toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), 30, toolbar.getPaddingBottom());
-
+        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
 
         Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {

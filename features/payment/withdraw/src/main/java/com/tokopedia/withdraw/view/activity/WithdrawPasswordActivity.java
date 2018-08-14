@@ -37,13 +37,13 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity {
 
     private void setToolbar() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(MethodChecker.getColor(this, R.color.white)));
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.grey_700));
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.black_70));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
         toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), 30, toolbar.getPaddingBottom());
 
-
+        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
         Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_close);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);

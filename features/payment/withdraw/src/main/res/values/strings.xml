@@ -25,6 +25,8 @@
     <string name="title_forgot_password">Lupa kata sandi?</string>
     <string name="title_close">Tutup</string>
     <string name="title_add_account_bank">Tambah Rekening</string>
+    <string name="title_set_account_bank">Atur Rekening</string>
+
 
     <string name="title_info_withdrawal_1">Minimum Penarikan</string>
     <string name="body_1">BCA, BNI, BRI, Mandiri- Rp 10.000\nBank lain - Rp 50.000</string>

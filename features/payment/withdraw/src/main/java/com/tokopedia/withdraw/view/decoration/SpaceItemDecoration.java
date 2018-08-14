@@ -58,7 +58,6 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
             divider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
 
-//            parent.setPadding(parent.getPaddingLeft(), parent.getPaddingTop(), parent.getPaddingRight(), bottom - parent.getBottom());
             divider.draw(canvas);
         }
     }
