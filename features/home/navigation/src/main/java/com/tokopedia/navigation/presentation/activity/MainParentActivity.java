@@ -120,13 +120,14 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     @Override
     protected void onStart() {
+        super.onStart();
         if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
             this.finish();
             return;
         }
-        super.onStart();
+
     }
 
     @Override
