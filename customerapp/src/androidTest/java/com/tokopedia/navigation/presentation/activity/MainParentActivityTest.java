@@ -23,13 +23,16 @@ import com.tokopedia.checkout.domain.mapper.MapperUtil;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.TestAppModule;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.DaggerTestCartListComponent;
 import com.tokopedia.checkout.view.di.component.TestCartListComponent;
+import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TestCartListModule;
 import com.tokopedia.checkout.view.di.module.TestTrackingAnalyticsModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.entity.home.ProductItemData;
@@ -119,6 +122,7 @@ import com.tokopedia.usecase.RequestParams;
 
 import retrofit2.Response;
 import rx.Observable;
+import android.content.SharedPreferences;
 
 
 /**
@@ -516,20 +520,20 @@ public class MainParentActivityTest {
                 .map(new FeedResultMapper(FeedResult.SOURCE_CLOUD))
                 .defaultIfEmpty(null).toBlocking().first();
 
-        ProductItemData productItemData = CacheUtil.convertStringToModel(
-                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[2])
-                , ProductItemData.class);
-
-        DataResponse<ProductItemData> dataResponse
-                = new DataResponse<>();
-        dataResponse.setData(productItemData);
-
-        Response<DataResponse<ProductItemData>> response1 =
-                Response.success(dataResponse);
-
-        feedResult.getFeedDomain().setRecentProduct(just(response1)
-                .map(new RecentProductMapper(new Gson()))
-                .defaultIfEmpty(null).toBlocking().first());
+//        ProductItemData productItemData = CacheUtil.convertStringToModel(
+//                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[2])
+//                , ProductItemData.class);
+//
+//        DataResponse<ProductItemData> dataResponse
+//                = new DataResponse<>();
+//        dataResponse.setData(productItemData);
+//
+//        Response<DataResponse<ProductItemData>> response1 =
+//                Response.success(dataResponse);
+//
+//        feedResult.getFeedDomain().setRecentProduct(just(response1)
+//                .map(new RecentProductMapper(new Gson()))
+//                .defaultIfEmpty(null).toBlocking().first());
 
         WhitelistQuery whitelistQuery = CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[0])
