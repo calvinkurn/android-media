@@ -21,8 +21,6 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     protected Bundle savedState;
     protected Unbinder unbinder;
 
-//    private View containerView;
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
