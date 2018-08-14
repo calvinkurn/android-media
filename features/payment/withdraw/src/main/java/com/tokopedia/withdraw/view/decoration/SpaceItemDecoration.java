@@ -38,8 +38,6 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
-        outRect.top = space;
-        outRect.bottom = space;
     }
 
     @Override
@@ -57,7 +55,6 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
             int dividerBottom = dividerTop + divider.getIntrinsicHeight();
 
             divider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
-
             divider.draw(canvas);
         }
     }

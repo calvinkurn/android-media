@@ -46,7 +46,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
             @Override
             public void onError(Throwable throwable) {
                 getView().hideLoading();
-                getView().showError(throwable.toString());
+                getView().showError(throwable.getMessage().toString());
             }
 
             @Override
