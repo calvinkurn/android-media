@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
@@ -148,15 +149,24 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
     }
 
     private void setRecyclerViewLeftMargin(int margin) {
-        ViewGroup.MarginLayoutParams layoutParams =
-                (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-        layoutParams.setMargins(
-                margin,
-                0,
-                0,
-                0
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                        ViewGroup.MarginLayoutParams layoutParams =
+                                (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+                        layoutParams.setMargins(
+                                margin,
+                                0,
+                                0,
+                                0
+                        );
+                        recyclerView.requestLayout();
+                    }
+                }
         );
-        recyclerView.requestLayout();
     }
 
     private View.OnClickListener getOnInfoClickListener() {
