@@ -36,7 +36,7 @@ import static android.view.View.VISIBLE;
  */
 
 public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeViewModel>
-        implements BaseKolListener, YoutubeInitializer.OnVideoThumbnailInitialListener {
+        implements BaseKolListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_post_youtube_layout;
@@ -67,7 +67,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         topShadow = itemView.findViewById(R.id.top_shadow);
-
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content_youtube);
         RelativeLayout mainView = view.findViewById(R.id.main_view);
@@ -90,9 +89,31 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             topShadow.setVisibility(View.GONE);
         }
         baseKolView.setViewListener(this, element);
-        thumbnailView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
-                YoutubeInitializer.videoThumbnailInitializer(element.getYoutubeLink(), this));
-        thumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener(element));
+        try {
+            thumbnailView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
+                    YoutubeInitializer.videoThumbnailInitializer(element.getYoutubeLink(), new YoutubeInitializer.OnVideoThumbnailInitialListener() {
+                        @Override
+                        public void onSuccessInitializeThumbnail(YouTubeThumbnailLoader loader, YouTubeThumbnailView youTubeThumbnailView) {
+                            thumbnailView.setVisibility(VISIBLE);
+                            thumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener(element));
+                            youTubeThumbnailLoader = loader;
+                            loader.release();
+                            destroyReleaseProcess();
+                            ivPlay.setVisibility(VISIBLE);
+                            loadingBar.setVisibility(GONE);
+                        }
+
+                        @Override
+                        public void onErrorInitializeThumbnail(String error) {
+                            destroyReleaseProcess();
+                            ivPlay.setVisibility(VISIBLE);
+                            loadingBar.setVisibility(GONE);
+                        }
+                    }));
+        } catch (Exception e) {
+            loadingBar.setVisibility(VISIBLE);
+            thumbnailView.setVisibility(GONE);
+        }
 
         if (TextUtils.isEmpty(element.getTagsCaption())) {
             tooltipClickArea.setVisibility(View.GONE);
@@ -101,22 +122,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             tooltipClickArea.setVisibility(View.VISIBLE);
             tooltipClickArea.setOnClickListener(v -> tooltipAreaClicked(element));
         }
-    }
-
-    @Override
-    public void onSuccessInitializeThumbnail(YouTubeThumbnailLoader loader, YouTubeThumbnailView youTubeThumbnailView) {
-        youTubeThumbnailLoader = loader;
-        loader.release();
-        destroyReleaseProcess();
-        ivPlay.setVisibility(VISIBLE);
-        loadingBar.setVisibility(GONE);
-    }
-
-    @Override
-    public void onErrorInitializeThumbnail(String error) {
-        destroyReleaseProcess();
-        ivPlay.setVisibility(VISIBLE);
-        loadingBar.setVisibility(GONE);
     }
 
     @Override

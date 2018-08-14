@@ -369,8 +369,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private boolean isAllowLoadMore() {
-        return getUserVisibleHint()
-                && presenter.hasNextPageFeed()
+        return presenter.hasNextPageFeed()
                 && !adapter.isLoading()
                 && !adapter.isRetryShown()
                 && !refreshLayout.isRefreshing()

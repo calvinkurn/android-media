@@ -64,7 +64,6 @@ public interface Constants {
         String HOME_FEED = "tokopedia://home/feed";
         String FEED = "tokopedia://feed";
         String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
-        String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
@@ -131,7 +130,6 @@ public interface Constants {
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
-        String FAVORITE = "tokopedia://home/favorite";
         String PROFILE_COMPLETION = "tokopedia://profilecompletion";
 
         String EVENTS = "tokopedia://events";

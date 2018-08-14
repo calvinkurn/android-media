@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
@@ -21,12 +21,12 @@ public class SolutionDetailFragmentPresenter
         extends BaseDaggerPresenter<SolutionDetailFragmentListener.View>
         implements SolutionDetailFragmentListener.Presenter {
 
-    SolutionDetailFragmentListener.View mainView;
-    SolutionViewModel solutionViewModel;
-    ResultViewModel resultViewModel;
-    EditAppealSolutionModel editAppealSolutionModel;
-    PostEditSolutionUseCase postEditSolutionUseCase;
-    PostAppealSolutionUseCase postAppealSolutionUseCase;
+    private SolutionDetailFragmentListener.View mainView;
+    private SolutionViewModel solutionViewModel;
+    private ResultViewModel resultViewModel;
+    private EditAppealSolutionModel editAppealSolutionModel;
+    private PostEditSolutionUseCase postEditSolutionUseCase;
+    private PostAppealSolutionUseCase postAppealSolutionUseCase;
 
     @Inject
     public SolutionDetailFragmentPresenter(PostEditSolutionUseCase postEditSolutionUseCase,

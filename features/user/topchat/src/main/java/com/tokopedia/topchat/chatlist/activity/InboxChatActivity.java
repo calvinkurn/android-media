@@ -16,7 +16,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -31,14 +30,13 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
-import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.TopChatRouter;
-import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.chatlist.fragment.InboxChatFragment;
 import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;
+import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.common.InboxMessageConstant;
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
+import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,10 +85,18 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((TopChatRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(channelListIntent);
-        }
+        taskStackBuilder.addNextIntent(channelListIntent);
         return taskStackBuilder;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxChatActivity.class);
+    }
+
+    public static Intent getChannelCallingIntent(Context context) {
+        Intent intent = new Intent(context, InboxChatActivity.class);
+        intent.putExtra(ACTIVE_INDICATOR_POSITION, POSITION_GROUP_CHAT);
+        return intent;
     }
 
     @Override
@@ -165,11 +171,6 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
 
     }
 
-    private boolean isEnabledGroupChat() {
-        return getApplicationContext() instanceof TkpdInboxRouter
-                && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat();
-    }
-
     private boolean isIndicatorVisible() {
         return getApplicationContext() instanceof TkpdInboxRouter
                 && ((TkpdInboxRouter) getApplicationContext()).isIndicatorVisible();
@@ -241,10 +242,6 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
         titleTextView.setText(titleToolbar);
     }
 
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, InboxChatActivity.class);
-    }
-
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
@@ -303,12 +300,6 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
         fragmentTransaction.commit();
     }
 
-    public static Intent getChannelCallingIntent(Context context) {
-        Intent intent = new Intent(context, InboxChatActivity.class);
-        intent.putExtra(ACTIVE_INDICATOR_POSITION, POSITION_GROUP_CHAT);
-        return intent;
-    }
-
     public void hideIndicators() {
         indicatorLayout.setVisibility(View.GONE);
     }
@@ -319,7 +310,24 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
         }
     }
 
-    public void updateNotifDrawerData(){
+    public void updateNotifDrawerData() {
         updateDrawerData();
     }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        menu.add(Menu.NONE, R.id.action_organize, 0, "");
+//        MenuItem menuItem = menu.findItem(R.id.action_reset); // OR THIS
+//        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//        menuItem.setIcon(getDetailMenuItem());
+//        return true;
+//    }
+//
+//    private Drawable getDetailMenuItem() {
+//        TextDrawable drawable = new TextDrawable(this);
+//        drawable.setText(getResources().getString(R.string.option_organize));
+//        drawable.setTextColor(Color.parseColor("#42b549"));
+//        return drawable;
+//    }
 }

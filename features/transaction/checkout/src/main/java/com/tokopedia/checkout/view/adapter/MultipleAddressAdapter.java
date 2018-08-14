@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,10 +70,10 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             MultipleAddressAdapterData data = (MultipleAddressAdapterData)
                     adapterObjectList.get(position);
             itemViewHolder.bindAdapterView(addressData, data, this, listener, compositeSubscription, isFirstItem(data));
-        } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
+        } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT) {
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
-
+        }
     }
 
     private boolean isFirstItem(MultipleAddressAdapterData data) {

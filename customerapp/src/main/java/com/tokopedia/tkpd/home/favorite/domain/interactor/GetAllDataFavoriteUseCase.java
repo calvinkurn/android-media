@@ -9,6 +9,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
+import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
@@ -27,6 +28,7 @@ import rx.functions.Func2;
 public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
 
     private final GetFavoriteShopUsecase getFavoriteShopUsecase;
+    private final GetWishlistUtil getWishlistUtil;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
     private final Context context;
     private final CacheHandler cacheHandler;
@@ -35,10 +37,12 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
     public GetAllDataFavoriteUseCase(Context context, ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetFavoriteShopUsecase getFavoriteShopUsecase,
+                                     GetWishlistUtil getWishlistUtil,
                                      GetTopAdsShopUseCase GetTopAdsShopUseCase) {
         super(threadExecutor, postExecutionThread);
         this.context = context;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
+        this.getWishlistUtil = getWishlistUtil;
         this.getTopAdsShopUseCase = GetTopAdsShopUseCase;
         this.cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         random = new Random();
@@ -85,6 +89,12 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
                 = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY);
         requestParams.putInt(GetTopAdsShopUseCase.KEY_DEP_ID, getRandomId(preferredCacheList));
         return getTopAdsShopUseCase.createObservable(requestParams);
+    }
+
+    private Observable<DomainWishlist> getWishlist() {
+        RequestParams defaultParams = GetWishlistUtil.getDefaultParams();
+        defaultParams.putBoolean(GetWishlistUtil.KEY_IS_FORCE_REFRESH, true);
+        return getWishlistUtil.getWishListData(defaultParams);
     }
 
     private Observable<FavoriteShop> getFavoriteShopList(){

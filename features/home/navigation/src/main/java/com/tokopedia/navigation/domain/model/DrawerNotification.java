@@ -15,11 +15,18 @@ public class DrawerNotification {
 
         private Integer id;
         private String title;
+        private String applink;
         private Integer badge;
 
         public ChildDrawerNotification(Integer id, String title) {
             this.id = id;
             this.title = title;
+        }
+
+        public ChildDrawerNotification(Integer id, String title, String applink) {
+            this.id = id;
+            this.title = title;
+            this.applink = applink;
         }
 
         public String getTitle() {
@@ -28,6 +35,14 @@ public class DrawerNotification {
 
         public void setTitle(String title) {
             this.title = title;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public void setApplink(String applink) {
+            this.applink = applink;
         }
 
         public Integer getBadge() {

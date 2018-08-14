@@ -9,7 +9,7 @@
     <string name="label_user_voucher">Kupon Saya</string>
     <string name="title_account_setting">Akun</string>
     <string name="title_shop_setting">Toko</string>
-    <string name="title_tkpd_pay_setting">Tokopedia Pay</string>
+    <string name="title_tkpd_pay_setting">Pembayaran</string>
     <string name="title_notification_setting">Notifikasi</string>
     <string name="title_touch_id_setting">Touch ID</string>
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
@@ -17,8 +17,8 @@
     <string name="title_help_center_setting">Pusat Bantuan</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
-    <string name="subtitle_tkpd_pay_setting">TokoCash, Kartu Kredit, dan Metode Lainnya</string>
-    <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan Lainnya</string>
+    <string name="subtitle_tkpd_pay_setting">TokoCash, Kartu Kredit, dan Metode lainnya</string>
+    <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan lainnya</string>
     <string name="logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
@@ -35,7 +35,7 @@
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
-    <string name="screentitle_tkpd_pay_setting">Atur Tokopedia Pay</string>
+    <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
@@ -94,14 +94,18 @@
     <string name="label_menu_order_processed">Pesanan Diproses</string>
     <string name="label_menu_shipping">Sedang Dikirim</string>
     <string name="label_menu_delivered">Sampai Tujuan</string>
-    <string name="title_menu_complaint">Komplain</string>
-    <string name="label_menu_complaint">Selesaikan komplain belanja anda</string>
+    <string name="title_menu_buyer_complain">Komplain Sebagai Pembeli</string>
+    <string name="label_menu_buyer_complain">Selesaikan komplain belanja anda</string>
+    <string name="title_menu_seller_complain">Komplain Sebagai Penjual</string>
+    <string name="label_menu_seller_complain">Lihat status komplain di sini</string>
     <string name="title_menu_other_transaction">Transaksi Lainnya</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_last_seen">Terakhir Dilihat</string>
     <string name="label_menu_last_seen">Cek produk terakhir yang dilihat</string>
     <string name="title_menu_favorite_shops">Toko Favorit</string>
     <string name="label_menu_favorite_shops">Lihat Toko yang sudah Anda favoritkan</string>
+    <string name="title_menu_mybills"><![CDATA[MyBills]]></string>
+    <string name="label_menu_mybills"><![CDATA[Atur & bayar tagihan dalam satu tempat]]></string>
     <string name="title_menu_top_up_bill_subscription"><![CDATA[Langganan Top Up & Tagihan]]></string>
     <string name="label_menu_top_up_bill_subscription"><![CDATA[Lihat langganan Top Up & Tagihan]]></string>
     <string name="title_menu_top_up_numbers"><![CDATA[Nomor Top Up & Tagihan]]></string>
@@ -120,15 +124,17 @@
     <string name="title_menu_gold">Emas</string>
     <string name="title_menu_zakat">Zakat</string>
     <string name="title_menu_donation">Donasi</string>
-    <string name="title_menu_show_all">Lihat Semua</string>
+    <string name="title_menu_show_all">Lihat\nSemua</string>
     <string name="title_menu_sales">Penjualan</string>
     <string name="label_menu_new_order">Pesanan Baru</string>
     <string name="label_menu_ready_to_ship">Siap Dikirim</string>
     <string name="label_menu_shipped">Sedang Dikirim</string>
     <string name="label_menu_arrive_at_destination">Sampai Tujuan</string>
     <string name="title_menu_product">Produk</string>
-    <string name="title_menu_product_list">Daftar Produk</string>
+    <string name="title_menu_product_list">Pengaturan Produk</string>
     <string name="label_menu_product_list">Lihat dan atur semua produk</string>
+    <string name="title_menu_product_feature">Produk Unggulan</string>
+    <string name="label_menu_product_feature">Tampilkan 5 produk terbaik toko Anda</string>
     <string name="title_menu_product_draft">Draft Produk</string>
     <string name="label_menu_product_draft">Selesaikan kelengkapan detail produk</string>
     <string name="title_menu_other_features">Fitur Lainnya</string>
@@ -166,4 +172,6 @@
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
+    <string name="message_success_change_password">Kata sandi berhasil diubah</string>
+
 </resources>

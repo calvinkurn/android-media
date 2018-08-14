@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +32,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class EmailNotificationSettingFragment extends BaseDaggerFragment implements EmailNotificationView {
+    @Inject
+    EmailNotificationPresenter presenter;
     private RecyclerView recyclerView;
     private EmailNotifAdapter adapter;
     private View loadingView;
-    @Inject EmailNotificationPresenter presenter;
 
-    public static Fragment createInstance(){
+    public static Fragment createInstance() {
         return new EmailNotificationSettingFragment();
     }
 
@@ -117,7 +117,7 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     @Override
     public void onSuccesSaveSetting(SettingEditResponse data) {
         loadingView.setVisibility(View.GONE);
-        if (data.getMessageError() == null || data.getMessageError().size() < 1){
+        if (data.getMessageError() == null || data.getMessageError().size() < 1) {
             getSetting(true);
             Toast.makeText(getActivity(), data.getMessageStatus().get(0), Toast.LENGTH_SHORT).show();
         } else {

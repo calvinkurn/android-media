@@ -2,7 +2,7 @@ package com.tokopedia.navigation.presentation.presenter;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.data.GlobalNavConstant;
+import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.subscriber.DrawerNotificationSubscriber;
 import com.tokopedia.navigation.presentation.view.NotificationView;

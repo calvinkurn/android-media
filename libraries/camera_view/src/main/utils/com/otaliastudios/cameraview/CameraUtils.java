@@ -203,7 +203,7 @@ public class CameraUtils {
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                 temp.recycle();
             }
-        } catch (OutOfMemoryError e) {
+        } catch (Throwable e) {
             // Create blank bitmap if out of memory to avoid crash
             int dummySize = 100;
             bitmap = Bitmap.createBitmap(dummySize, dummySize, Bitmap.Config.ARGB_8888); // this creates a MUTABLE bitmap

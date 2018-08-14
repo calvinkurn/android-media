@@ -16,29 +16,28 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.design.component.Tabs;
-import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
-import com.tokopedia.inbox.inboxtalk.listener.InboxTalkActivityView;
-import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkActivityPresenterImpl;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.component.Tabs;
+import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
+import com.tokopedia.inbox.inboxtalk.listener.InboxTalkActivityView;
+import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkActivityPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,16 +60,13 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
     ViewPager mViewPager;
     @BindView(R2.id.indicator)
     Tabs indicator;
-
-
+    InboxTalkResultReceiver mReceiver;
     private Boolean ContextualStats = false;
     private ActionMode mode;
     private Boolean isLogin;
     private String[] contentArray;
-
     private Boolean fromNotif = false;
     private Boolean forceUnread;
-    InboxTalkResultReceiver mReceiver;
 
     @DeepLink(Constants.Applinks.TALK)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -320,6 +316,18 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
                 InboxTalkIntentService.ACTION_REPORT);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
+    }
+
     public class PagerAdapter extends FragmentStatePagerAdapter {
 
         private List<Fragment> fragmentList = new ArrayList<>();
@@ -338,18 +346,6 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
         public int getCount() {
             return fragmentList.size();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
-            startActivity(SellerAppRouter.getSellerHomeActivity(this));
-            finish();
-        } else if (isTaskRoot()) {
-            startActivity(HomeRouter.getHomeActivity(this));
-            finish();
-        }
-        super.onBackPressed();
     }
 
 }

@@ -30,7 +30,7 @@ public class FavoriteShopsActivity extends BaseSimpleActivity {
         return FavoriteShopsFragment.TAG;
     }
 
-    @DeepLink(ApplinkConst.FAVORITE_SHOPS)
+    @DeepLink(ApplinkConst.FAVORITE)
     public static Intent getCallingFavShop(Context context, Bundle bundle) {
         return FavoriteShopsActivity.newInstance(context);
     }

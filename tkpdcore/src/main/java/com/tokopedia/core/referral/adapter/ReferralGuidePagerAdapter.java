@@ -64,8 +64,6 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
         if (position == HOW_TO_USE_POSITION) {
             TextView btnShare = layout.findViewById(R.id.btn_app_share);
             TextView tvHelpLink = layout.findViewById(R.id.tv_referral_help_link);
-            TextView tvHelpReceive = layout.findViewById(R.id.tv_help_receive);
-            tvHelpReceive.setText(Html.fromHtml(context.getString(R.string.referral_help_receive)));
 
             btnShare.setOnClickListener(view1 -> {
                 listener.onShareClick();

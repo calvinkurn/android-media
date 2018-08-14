@@ -23,6 +23,7 @@
         <activity
             android:name=".rescenter.create.activity.CreateResCenterActivity"
             android:label="@string/title_activity_create_reso_center"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".rescenter.edit.activity.EditResCenterActivity"
@@ -68,24 +69,29 @@
         <activity
             android:name=".rescenter.createreso.view.activity.ProductProblemListActivity"
             android:label="@string/title_activity_product_problem"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".rescenter.createreso.view.activity.ProductProblemDetailActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".rescenter.createreso.view.activity.SolutionListActivity"
             android:label="@string/title_activity_solution_list"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".rescenter.createreso.view.activity.SolutionDetailActivity"
             android:label="@string/title_activity_solution_detail"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".rescenter.createreso.view.activity.AttachmentActivity"
             android:label="@string/title_activity_attachment"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".rescenter.createreso.view.activity.FreeReturnActivity"

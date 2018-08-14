@@ -10,28 +10,6 @@
             android:name=".common.imageeditor.GalleryCropActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".shop.open.view.activity.ShopOpenRoutingActivity"
-            android:label="@string/title_open_shop"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shop.open.view.activity.ShopOpenCreateSuccessActivity"
-            android:label="@string/title_shop_is_active"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shop.open.view.activity.ShopOpenReserveDomainSuccessActivity"
-            android:label="@string/title_shop_is_active"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shop.open.view.activity.ShopOpenDomainActivity"
-            android:label="@string/title_open_shop"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
-            android:exported="true"
-            android:label="@string/title_shop_setting"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".common.imageeditor.GalleryCropWatermarkActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class CartShipmentAddressFormData implements Parcelable {
+    private boolean hasError;
     private boolean isError;
     private String errorMessage;
 
@@ -21,6 +22,14 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String keroDiscomToken;
     private int keroUnixTime;
     private Donation donation;
+
+    public boolean isHasError() {
+        return hasError;
+    }
+
+    public void setHasError(boolean hasError) {
+        this.hasError = hasError;
+    }
 
     public boolean isError() {
         return isError;
@@ -98,6 +107,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     }
 
     protected CartShipmentAddressFormData(Parcel in) {
+        hasError = in.readByte() != 0;
         isError = in.readByte() != 0;
         errorMessage = in.readString();
         errorCode = in.readInt();
@@ -111,6 +121,7 @@ public class CartShipmentAddressFormData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (hasError ? 1 : 0));
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorMessage);
         dest.writeInt(errorCode);

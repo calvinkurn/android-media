@@ -17,21 +17,30 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.presentation.BuyerAccount;
+import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
+import com.tokopedia.home.account.presentation.listener.BaseAccountView;
+import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
+import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import q.rorbin.badgeview.QBadgeView;
+import retrofit2.http.HEAD;
 
 /**
  * @author okasurya on 7/16/18.
@@ -43,7 +52,9 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private ViewPager viewPager;
     private AccountHomePagerAdapter adapter;
 
+    private BadgeView badgeView;
     private Toolbar toolbar;
+    private ImageButton menuNotification;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -67,8 +78,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setPage();
+    }
+
+    public void setPage() {
         if (getContext() != null) {
             List<AccountFragmentItem> fragmentItems = new ArrayList<>();
+
             AccountFragmentItem item = new AccountFragmentItem();
             item.setFragment(BuyerAccountFragment.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_buyer));
@@ -107,8 +123,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         setAdapter();
     }
 
-    private ImageButton menuNotification;
-
     private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.toolbar_title);
@@ -135,18 +149,39 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
     }
 
-    private QBadgeView badgeView;
-
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (menuNotification == null)
+        if (menuNotification == null || getActivity() == null)
             return;
         if (badgeView == null)
-            badgeView = new QBadgeView(getActivity());
+            badgeView = new BadgeView(getActivity());
 
         badgeView.bindTarget(menuNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
         badgeView.setBadgeNumber(number);
-        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void showLoading() {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof CustomerView) {
+            ((BaseAccountView)currentFragment).showLoading();
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof CustomerView) {
+            ((BaseAccountView)currentFragment).hideLoading();
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof CustomerView) {
+            ((BaseAccountView)currentFragment).showError(message);
+        }
     }
 }

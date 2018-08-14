@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.domain.model.Notification;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
@@ -30,8 +34,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import q.rorbin.badgeview.QBadgeView;
-
 /**
  * Created by meta on 19/06/18.
  */
@@ -42,13 +44,20 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
     public static final int HELP_MENU = 3;
+
     @Inject
     InboxPresenter presenter;
+
+    @Inject
+    GlobalNavAnalytics globalNavAnalytics;
+
+    private List<Inbox> inboxes;
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
     private ImageButton menuItemNotification;
     private TextView toolbarTitle;
-    private QBadgeView badgeView;
+    private BadgeView badgeView;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -64,6 +73,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.intiInjector();
         presenter.setView(this);
 
+        inboxes = getData();
+
         adapter = new InboxAdapter(getActivity());
 
         swipeRefreshLayout = view.findViewById(R.id.swipe);
@@ -73,12 +84,36 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
-        adapter.addAll(getData());
+        adapter.addAll(inboxes);
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
+            Inbox inbox = inboxes.get(position);
+            if (inbox == null)
+                return;
+
+            globalNavAnalytics.eventInboxPage(inbox.getTitle().toString().toLowerCase());
             getCallingIntent(position);
         });
+
+        setMenuNotification();
+    }
+
+    private void setMenuNotification() {
+        if (getActivity() instanceof MainParentActivity) {
+            Notification notification = ((MainParentActivity)getActivity()).getNotification();
+            if (notification != null) {
+                onNotifyBadgeNotification(notification.getTotalNotif());
+            }
+        }
+    }
+
+    private void intiInjector() {
+        DaggerGlobalNavComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .globalNavModule(new GlobalNavModule())
+                .build()
+                .inject(this);
     }
 
     private List<Inbox> getData() {
@@ -88,14 +123,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
         inboxList.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
         return inboxList;
-    }
-
-    private void intiInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
-                .inject(this);
     }
 
     private void getCallingIntent(int position) {
@@ -183,11 +210,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onNotifyBadgeNotification(int number) {
-        if (menuItemNotification == null)
+        if (menuItemNotification == null || getActivity() == null)
             return;
 
         if (badgeView == null)
-            badgeView = new QBadgeView(getActivity());
+            badgeView = new BadgeView(getActivity());
 
         badgeView.bindTarget(menuItemNotification);
         badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
@@ -195,7 +222,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void reInitInjector(GlobalNavComponent component) { }
+    public void reInitInjector(GlobalNavComponent component) {
+        component.inject(this);
+        presenter.setView(this);
+    }
 
     @Override
     public InboxPresenter getPresenter() {

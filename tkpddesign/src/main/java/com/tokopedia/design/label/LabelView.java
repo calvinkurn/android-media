@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
@@ -45,8 +44,8 @@ public class LabelView extends BaseCustomView {
     private int titleColorValue;
     private int contentTextStyleValue;
 
-    private String contentText;
     private String badgeCounter;
+    private String contentText;
     @ColorInt
     private int contentColorValue;
     private int titleTextStyleValue;
@@ -87,10 +86,10 @@ public class LabelView extends BaseCustomView {
             imageHeight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_height, imageWidth);
             imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_margin_right, getResources().getDimension(R.dimen.dp_8));
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
-            badgeCounter = styledAttributes.getString(R.styleable.LabelView_lv_badge);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
             subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
             contentText = styledAttributes.getString(R.styleable.LabelView_lv_content);
+            badgeCounter = styledAttributes.getString(R.styleable.LabelView_lv_badge);
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_content_text_style, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_title_text_style, Typeface.NORMAL);
@@ -141,18 +140,19 @@ public class LabelView extends BaseCustomView {
         } else {
             subTitleTextView.setVisibility(View.GONE);
         }
+
+        if (!TextUtils.isEmpty(badgeCounter)) {
+            badgeTextView.setText(badgeCounter);
+            badgeTextView.setVisibility(View.VISIBLE);
+        } else {
+            badgeTextView.setVisibility(View.GONE);
+        }
+
         contentTextView.setText(contentText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
         contentTextView.setMaxLines(maxLines);
         contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
-
-        if (!TextUtils.isEmpty(badgeCounter)) {
-            badgeTextView.setText(badgeCounter);
-            badgeTextView.setVisibility(VISIBLE);
-        } else {
-            badgeTextView.setVisibility(GONE);
-        }
 
         rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
 
@@ -226,13 +226,6 @@ public class LabelView extends BaseCustomView {
         return contentTextView.getText().toString();
     }
 
-    public void setBadgeCounter(String badge) {
-        badgeTextView.setText(badge);
-        badgeTextView.setVisibility(VISIBLE);
-        invalidate();
-        requestLayout();
-    }
-
     public void setContentTypeface(int typefaceType) {
         contentTextView.setTypeface(null, typefaceType);
         invalidate();
@@ -268,6 +261,13 @@ public class LabelView extends BaseCustomView {
             titleTextView.setPadding(0, 0, 0, 0);
             subTitleTextView.setPadding(0, 0, 0, 0);
         }
+        invalidate();
+        requestLayout();
+    }
+
+    public void setBadgeCounter(String badge){
+        badgeTextView.setText(badge);
+        badgeTextView.setVisibility(TextUtils.isEmpty(badge) ? View.GONE : View.VISIBLE);
         invalidate();
         requestLayout();
     }

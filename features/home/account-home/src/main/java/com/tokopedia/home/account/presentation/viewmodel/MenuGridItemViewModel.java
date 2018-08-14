@@ -15,18 +15,27 @@ public class MenuGridItemViewModel implements Parcelable {
     private String applink;
     private int count;
 
-    public MenuGridItemViewModel(int resourceId, String description, String applink, int count) {
+    private String titleTrack; // for tracking
+    private String sectionTrack;
+
+    public MenuGridItemViewModel(int resourceId, String description, String applink, int count,
+                                 String titleTrack, String sectionTrack) {
         this.resourceId = resourceId;
         this.description = description;
         this.applink = applink;
         this.count = count;
+        this.titleTrack = titleTrack;
+        this.sectionTrack = sectionTrack;
     }
 
-    public MenuGridItemViewModel(String imageUrl, String description, String applink, int count) {
+    public MenuGridItemViewModel(String imageUrl, String description, String applink, int count,
+                                 String titleTrack, String sectionTrack) {
         this.imageUrl = imageUrl;
         this.description = description;
         this.applink = applink;
         this.count = count;
+        this.titleTrack = titleTrack;
+        this.sectionTrack = sectionTrack;
     }
 
     public int getResourceId() {
@@ -69,6 +78,21 @@ public class MenuGridItemViewModel implements Parcelable {
         this.count = count;
     }
 
+    public String getTitleTrack() {
+        return titleTrack;
+    }
+
+    public void setTitleTrack(String titleTrack) {
+        this.titleTrack = titleTrack;
+    }
+
+    public String getSectionTrack() {
+        return sectionTrack;
+    }
+
+    public void setSectionTrack(String sectionTrack) {
+        this.sectionTrack = sectionTrack;
+    }
 
     @Override
     public int describeContents() {
@@ -82,6 +106,8 @@ public class MenuGridItemViewModel implements Parcelable {
         dest.writeString(this.description);
         dest.writeString(this.applink);
         dest.writeInt(this.count);
+        dest.writeString(this.titleTrack);
+        dest.writeString(this.sectionTrack);
     }
 
     protected MenuGridItemViewModel(Parcel in) {
@@ -90,6 +116,8 @@ public class MenuGridItemViewModel implements Parcelable {
         this.description = in.readString();
         this.applink = in.readString();
         this.count = in.readInt();
+        this.titleTrack = in.readString();
+        this.sectionTrack = in.readString();
     }
 
     public static final Creator<MenuGridItemViewModel> CREATOR = new Creator<MenuGridItemViewModel>() {

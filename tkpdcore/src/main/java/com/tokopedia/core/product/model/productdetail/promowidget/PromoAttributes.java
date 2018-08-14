@@ -30,6 +30,9 @@ public class PromoAttributes implements Parcelable{
     @SerializedName("short_cond_html")
     @Expose
     private String shortCondHtml;
+    @SerializedName("applinks")
+    @Expose
+    private String applinks;
 
     //below two attributes is used only for caching
     @SerializedName("target_type")
@@ -127,6 +130,14 @@ public class PromoAttributes implements Parcelable{
         return customPromoId;
     }
 
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -144,6 +155,7 @@ public class PromoAttributes implements Parcelable{
         dest.writeString(this.userId);
         dest.writeString(this.shopType);
         dest.writeString(this.customPromoId);
+        dest.writeString(this.applinks);
     }
 
     protected PromoAttributes(Parcel in) {
@@ -157,6 +169,7 @@ public class PromoAttributes implements Parcelable{
         this.userId = in.readString();
         this.shopType = in.readString();
         this.customPromoId = in.readString();
+        this.applinks = in.readString();
     }
 
     public static final Creator<PromoAttributes> CREATOR = new Creator<PromoAttributes>() {

@@ -1,7 +1,12 @@
 <resources>
+    <string name="home">Home</string>
+    <string name="feed">Feed</string>
+    <string name="inbox">Inbox</string>
+    <string name="keranjang">Keranjang</string>
+    <string name="akun">Akun</string>
+
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
 
-    <string name="inbox">Inbox</string>
 
     <string name="chat">Chat</string>
     <string name="chat_desc">Percakapan pribadi Anda</string>
@@ -23,6 +28,7 @@
     <string name="pembelian">Pembelian</string>
     <string name="komplain_saya">Komplain Saya</string>
 
+    <string name="menunggu_pembayaran">Menunggu Pembayaran</string>
     <string name="menunggu_konfirmasi">Menunggu Konfirmasi</string>
     <string name="pesanan_diproses">Pesanan Diproses</string>
 
@@ -40,4 +46,5 @@
 
     <string name="previous">Sebelumnya</string>
     <string name="next">Selanjutnya</string>
+    <string name="coupon_copy_text">Kode voucher tersalin</string>
 </resources>

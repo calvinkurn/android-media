@@ -118,7 +118,7 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().hide();
     }
 
-    private void setLightToolbarStyle() {
+    protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);

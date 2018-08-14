@@ -19,6 +19,8 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+
 /**
  * @author by alvinatin on 01/08/18.
  */
@@ -77,16 +79,19 @@ public class SeeAllView extends BottomSheets{
                 R.drawable.ic_top_up_bill,
                 getContext().getString(R.string.title_menu_top_up_bill),
                 ApplinkConst.DIGITAL_ORDER,
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_train,
                 getContext().getString(R.string.title_menu_train),
-                //TODO change this
-                ApplinkConst.DIGITAL_ORDER,
-                0
+                AccountConstants.Navigation.TRAIN_ORDER_LIST,
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
@@ -94,7 +99,9 @@ public class SeeAllView extends BottomSheets{
                 R.drawable.ic_deals,
                 getContext().getString(R.string.title_menu_deals),
                 ApplinkConst.DEALS_ORDER,
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
@@ -102,7 +109,9 @@ public class SeeAllView extends BottomSheets{
                 R.drawable.ic_flight,
                 getContext().getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
@@ -112,7 +121,9 @@ public class SeeAllView extends BottomSheets{
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
                         AccountConstants.Url.REKSA_DANA_URL),
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
@@ -120,7 +131,9 @@ public class SeeAllView extends BottomSheets{
                 R.drawable.ic_event,
                 getContext().getString(R.string.title_menu_event),
                 ApplinkConst.EVENTS,
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
@@ -130,7 +143,9 @@ public class SeeAllView extends BottomSheets{
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
                         AccountConstants.Url.EMAS_URL),
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
@@ -140,7 +155,9 @@ public class SeeAllView extends BottomSheets{
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
                         AccountConstants.Url.Pulsa.ZAKAT_URL),
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 
@@ -150,7 +167,9 @@ public class SeeAllView extends BottomSheets{
                 String.format("%s?%s",
                         ApplinkConst.DIGITAL_PRODUCT,
                         "category_id=12"),
-                0
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
 

@@ -20,6 +20,8 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -39,6 +41,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     private static final String TAB_POSITION = "tab_position";
     private Spinner mSpinnerLoanAmount;
+
 
     @Inject
     InstantLoanPresenter presenter;
@@ -111,20 +114,21 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
                 return;
             }
 
+            sendCariPinjamanClickEvent();
             openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
                     mSpinnerLoanAmount.getSelectedItem().toString()
                             .split(" ")[1].replace(".", ""));
         });
     }
 
+    private void sendCariPinjamanClickEvent() {
+        String eventLabel = getScreenName() + " - " + mSpinnerLoanAmount.getSelectedItem().toString();
+        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    public String getScreenNameId() {
-        return "";
     }
 
     @Override
@@ -148,7 +152,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected String getScreenName() {
-        return getScreenNameId();
+        return InstantLoanEventConstants.Screen.TANPA_AGUNAN_SCREEN_NAME;
     }
 
     public static TanpaAgunanFragment createInstance(int position) {

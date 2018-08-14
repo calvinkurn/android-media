@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
 
 
@@ -127,6 +128,14 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
                 EventName.CLICK_SHIPPING,
                 EventCategory.CART_CHANGE_ADDRESS,
                 EventAction.CLICK_PLUS_ICON_FROM_TUJUAN_PENGIRIMAN
+        );
+    }
+
+    public void eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman() {
+        sendEventCategoryAction(
+                EventName.CLICK_SHIPPING,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_TAMBAH_FROM_ALAMAT_PENGIRIMAN
         );
     }
 
@@ -275,6 +284,113 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
                 EventName.CLICK_SHIPPING,
                 EventCategory.CART_CHANGE_ADDRESS,
                 EventAction.CLICK_RADIO_BUTTON_FROM_PILIH_ALAMAT_LAINNYA
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressClickAlamatSebagaiPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressClickChecklistAlamatSebagaiPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_CHECKLIST_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressClickNamaPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_NAMA_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressClickTeleponPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_TELEPON_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressClickAlamatPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_ALAMAT_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+
+    public void eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressErrorValidationNamaPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressErrorValidationTeleponPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressErrorValidationKotaKecamatanPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressErrorValidationKodePosPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressErrorValidationAlamatPadaTambahAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
+                EventLabel.NOT_SUCCESS
         );
     }
 

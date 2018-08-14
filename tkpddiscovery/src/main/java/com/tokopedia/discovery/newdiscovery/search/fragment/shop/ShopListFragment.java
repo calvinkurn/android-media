@@ -251,8 +251,7 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            String message = String.format(getString(R.string.empty_search_content_template), query);
-            adapter.showEmptyState(message);
+            adapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
@@ -323,6 +322,16 @@ public class ShopListFragment extends SearchSectionFragment
         SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
+    }
+
+    @Override
+    public void onBannerAdsClicked(String appLink) {
+
+    }
+
+    @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
     }
 
     @Override

@@ -11,7 +11,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -46,12 +45,10 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
     private static final String LOCAL_PATH_IMAGE_LIST = "loca_img_list";
     private static final String DESC_IMAGE_LIST = "desc_img_list";
     private static final String HAS_SAVED_INSTA_TO_DRAFT = "saved_insta_to_draft";
-
-    private TkpdProgressDialog progressDialog;
-    private boolean hasSaveInstagramToDraft;
-
     @Inject
     ProductDraftSaveBulkPresenter productDraftSaveBulkPresenter;
+    private TkpdProgressDialog progressDialog;
+    private boolean hasSaveInstagramToDraft;
 
     public static void startInstagramSaveBulkFromLocal(Context context, ArrayList<String> instagramLocalPaths, ArrayList<String> instagramDescList) {
         Intent intent = createInstanceFromLocalPaths(context, instagramLocalPaths, instagramDescList);

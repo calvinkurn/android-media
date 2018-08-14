@@ -154,10 +154,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 goToPlaystore();
                 break;
             case SettingConstant.SETTING_HELP_CENTER_ID:
-                Application application = getActivity().getApplication();
-                if (application instanceof AccountHomeRouter){
-                    ((AccountHomeRouter) application).goToHelpCenter(getActivity());
-                }
+                RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
                 break;
             case SettingConstant.SETTING_OUT_ID:
                 showDialogLogout();
@@ -187,7 +184,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
     private void showDialogLogout() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity())
-                .setIcon(R.drawable.launch_screen)
+                .setIcon(R.mipmap.ic_launcher)
                 .setTitle(getString(R.string.logout)+" dari Tokopedia")
                 .setMessage(R.string.logout_confirmation)
                 .setPositiveButton(R.string.logout, (dialogInterface, i) -> {

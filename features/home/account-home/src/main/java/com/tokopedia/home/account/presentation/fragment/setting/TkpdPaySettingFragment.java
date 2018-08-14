@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.DaggerTkpdPaySettingComponent;
@@ -92,13 +93,9 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                     WalletModel walletModel = walletPref.retrieveWallet();
                     if (walletModel != null){
                         if (walletModel.isLinked()){
-                            router.goToTokoCash(walletModel.getApplink(),
-                                    walletModel.getRedirectUrl(),
-                                    getActivity());
+                            RouteManager.route(getActivity(), walletModel.getApplink());
                         } else {
-                            router.goToTokoCash(walletModel.getAction().getApplink(),
-                                    walletModel.getAction().getRedirectUrl(),
-                                    getActivity());
+                            RouteManager.route(getActivity(), walletModel.getAction().getApplink());
                         }
                     }
                     break;

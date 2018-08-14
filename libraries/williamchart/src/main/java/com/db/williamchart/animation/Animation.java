@@ -368,9 +368,9 @@ public class Animation {
 			long initTime = 0;
 			if (mInitTime != null && mInitTime.length > 0 && mInitTime.length > i) {
 				initTime = mInitTime[i];
+				diff = currentTime - initTime;
+				mCurrentDuration[i] = diff < 0 ? 0 : diff;
 			}
-			diff = currentTime - initTime;
-			mCurrentDuration[i] = diff < 0 ? 0 : diff;
 		}
 
 		// In case current duration slightly goes over the

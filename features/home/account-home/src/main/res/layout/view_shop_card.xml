@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/dp_8"
     app:elevation="@dimen/dp_6">
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +32,7 @@
 
         <TextView
             android:id="@+id/text_shop_name"
-            style="@style/TextView.TitleBig.Bold"
+            style="@style/TextView.TitleMedium.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -55,7 +56,7 @@
         <View
             android:id="@+id/separator"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="0.5dp"
             android:layout_marginTop="16dp"
             android:background="@color/grey_300"
             app:layout_constraintEnd_toEndOf="parent"

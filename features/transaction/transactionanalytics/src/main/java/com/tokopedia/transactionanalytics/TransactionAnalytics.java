@@ -1,6 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 

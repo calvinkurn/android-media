@@ -105,6 +105,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           userPhoto
           userInfo
           userUrl
+          headerTitle
           userId
           content {
             __typename

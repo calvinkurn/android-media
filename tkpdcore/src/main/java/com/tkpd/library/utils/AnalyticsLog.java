@@ -42,6 +42,26 @@ public class AnalyticsLog {
         );
     }
 
+    public static void logForceLogoutToken(String url) {
+        String baseUrl = getBaseUrl(url);
+
+        AnalyticsLog.log("ErrorType=Force Logout Token!"
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
+                .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
+                + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
+
+        );
+    }
+
+
     public static void logNetworkError(String url, int errorCode) {
         String baseUrl = getBaseUrl(url);
 
@@ -62,7 +82,6 @@ public class AnalyticsLog {
 
         );
     }
-
 
     private static String getBaseUrl(String url) {
         try {

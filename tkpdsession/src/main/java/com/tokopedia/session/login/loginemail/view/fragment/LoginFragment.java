@@ -76,6 +76,7 @@ import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.util.ArrayList;
 
@@ -509,7 +510,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> listProvider) {
-        listProvider.add(2, getLoginPhoneNumberBean());
+        if (!GlobalConfig.isSellerApp()) listProvider.add(2, getLoginPhoneNumberBean());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 20, 0, 15);

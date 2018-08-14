@@ -1,5 +1,8 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import android.text.TextUtils;
+
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
@@ -23,6 +26,9 @@ import javax.inject.Inject;
  */
 
 public class ShipmentMapper implements IShipmentMapper {
+    private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+    private static final String SHOP_TYPE_REGULER = "reguler";
     private final IMapperUtil mapperUtil;
 
     @Inject
@@ -160,6 +166,21 @@ public class ShipmentMapper implements IShipmentMapper {
                                     : groupShop.getProducts()) {
                                 Product productResult = new Product();
 
+                                AnalyticsProductCheckoutData analyticsProductCheckoutData = new AnalyticsProductCheckoutData();
+                                analyticsProductCheckoutData.setProductId(String.valueOf(product.getProductId()));
+                                analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
+                                analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
+                                analyticsProductCheckoutData.setProductCategory(product.getProductCategory());
+                                analyticsProductCheckoutData.setProductCategoryId(String.valueOf(product.getProductCatId()));
+                                analyticsProductCheckoutData.setProductName(product.getProductName());
+                                analyticsProductCheckoutData.setProductPrice(String.valueOf(product.getProductPrice()));
+                                analyticsProductCheckoutData.setProductShopId(String.valueOf(groupShop.getShop().getShopId()));
+                                analyticsProductCheckoutData.setProductShopName(groupShop.getShop().getShopName());
+                                analyticsProductCheckoutData.setProductShopType(generateShopType(groupShop.getShop()));
+                                analyticsProductCheckoutData.setProductVariant("");
+                                analyticsProductCheckoutData.setProductBrand("");
+                                analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
+
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 productResult.setErrorMessage(mapperUtil.convertToString(product.getErrors()));
 
@@ -190,6 +211,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductFcancelPartial(product.getProductFcancelPartial() == 1);
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
+                                productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
                                 if (!mapperUtil.isEmpty(product.getFreeReturns())) {
                                     productResult.setFreeReturnLogo(product.getFreeReturns().getFreeReturnsLogo());
                                 }
@@ -241,8 +263,42 @@ public class ShipmentMapper implements IShipmentMapper {
                 groupAddressListResult.add(groupAddressResult);
             }
             dataResult.setGroupAddress(groupAddressListResult);
+            dataResult.setHasError(checkCartHasError(dataResult));
         }
 
         return dataResult;
     }
+
+    private boolean checkCartHasError(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        boolean hasError = false;
+        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+            if (groupAddress.isError() || groupAddress.isWarning()) {
+                hasError = true;
+                break;
+            }
+            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                if (groupShop.isError() || groupShop.isWarning()) {
+                    hasError = true;
+                    break;
+                }
+                for (Product product : groupShop.getProducts()) {
+                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                        hasError = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return hasError;
+    }
+
+    private String generateShopType(com.tokopedia.transactiondata.entity.response.shippingaddressform.Shop shop) {
+        if (shop.getIsOfficial() == 1)
+            return SHOP_TYPE_OFFICIAL_STORE;
+        else if (shop.getIsGold() == 1)
+            return SHOP_TYPE_GOLD_MERCHANT;
+        else return SHOP_TYPE_REGULER;
+    }
+
 }

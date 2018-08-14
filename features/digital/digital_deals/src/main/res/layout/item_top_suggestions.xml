@@ -8,30 +8,26 @@
 
     <TextView
         android:id="@+id/tv_simple_item"
+        style="@style/TextView.Small.BlackPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
-        android:textColor="@color/black_39"
-        android:textSize="@dimen/sp_14"
         tools:text="Durian Soup + Ice Cream for 2 persons on Weekdays…" />
 
     <TextView
         android:id="@+id/tv_brand_name"
+        style="@style/TextView.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
-        android:fontFamily="sans-serif"
         android:lineSpacingExtra="2sp"
         android:paddingEnd="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
         tools:text="Hong Tang" />
 
     <View

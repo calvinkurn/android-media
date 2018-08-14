@@ -1,6 +1,9 @@
 package com.tokopedia.transactionanalytics;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -298,6 +301,17 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_SELECT_COURIER_ON_CART
         );
+    }
+
+    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
     }
 
 

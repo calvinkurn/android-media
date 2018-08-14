@@ -290,4 +290,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
         sendEnhancedEcommerce(dataLayer);
     }
+
+    public void enhancedECommerceGoToCheckoutStep1(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.CHECKOUT,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
 }

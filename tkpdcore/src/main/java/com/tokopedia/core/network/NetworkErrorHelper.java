@@ -81,7 +81,11 @@ public class NetworkErrorHelper {
     }
 
     public static SnackbarRetry createSnackbarWithAction(Activity activity, final RetryClickedListener listener) {
-        return createSnackbarWithAction(activity, activity.getResources().getString(R.string.msg_network_error), listener);
+        String message = "";
+        if (activity != null) {
+            message = activity.getResources().getString(R.string.msg_network_error);
+        }
+        return createSnackbarWithAction(activity, message, listener);
     }
 
     public static SnackbarRetry createSnackbarWithAction(

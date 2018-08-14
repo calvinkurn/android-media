@@ -1,14 +1,13 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
+import com.google.gson.JsonObject;
+import com.tokopedia.inbox.rescenter.createreso.data.source.CreateResolutionSource;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
-import org.json.JSONObject;
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -21,30 +20,28 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
     public static final String PARAM_RESOLUTION_ID = "resolutionID";
     public static final String PARAM_PROBLEM = "problem";
 
-    private SolutionRepository solutionRepository;
+    private CreateResolutionSource createResolutionSource;
 
-    public GetSolutionUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              SolutionRepository solutionRepository) {
-        super(threadExecutor, postExecutionThread);
-        this.solutionRepository = solutionRepository;
+    @Inject
+    public GetSolutionUseCase(CreateResolutionSource createResolutionSource) {
+        this.createResolutionSource = createResolutionSource;
     }
 
     @Override
     public Observable<SolutionResponseDomain> createObservable(RequestParams requestParams) {
-        return solutionRepository.getSolutionFromCloud(requestParams);
+        return createResolutionSource.getSolution(requestParams);
     }
 
     public RequestParams getSolutionUseCaseParams(ResultViewModel resultViewModel) {
-        JSONObject problemObject = new JSONObject();
+        JsonObject problemObject = new JsonObject();
         try {
-            problemObject.put(PARAM_PROBLEM, resultViewModel.getProblemArray());
+            problemObject.add(PARAM_PROBLEM, resultViewModel.getProblemArray());
             if (resultViewModel.resolutionId != null) {
-                problemObject.put(PARAM_RESOLUTION_ID, Integer.valueOf(resultViewModel.resolutionId));
+                problemObject.addProperty(PARAM_RESOLUTION_ID, Integer.valueOf(resultViewModel.resolutionId));
             }
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
-            params.putString(PARAM_PROBLEM, problemObject.toString());
+            params.putObject(PARAM_PROBLEM, problemObject);
 
             return params;
         } catch (Exception e) {
@@ -52,5 +49,4 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
         }
         return null;
     }
-
 }

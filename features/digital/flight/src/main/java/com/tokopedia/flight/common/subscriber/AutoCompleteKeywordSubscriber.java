@@ -22,7 +22,7 @@ public class AutoCompleteKeywordSubscriber extends Subscriber<String> {
     @Override
     public void onNext(String keyword) {
         if (!isUnsubscribed()) {
-            listener.onTextReceive(keyword);
+            listener.onTextReceive(keyword.trim());
         }
     }
 }

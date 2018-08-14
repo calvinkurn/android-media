@@ -28,7 +28,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onEditPickupPoint(RecipientAddressModel addressAdapterData);
 
-    void onTotalPaymentChange(ShipmentCostModel shipmentCostModel);
+    void onTotalPaymentChange(String totalPayment);
 
     void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> data, List<DataCheckoutRequest> checkoutRequest);
 
@@ -50,7 +50,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onInsuranceCheckedForTrackingAnalytics();
 
-    void onChoosePaymentMethodButtonClicked(boolean ableToCheckout);
+    void onChoosePaymentMethodButtonClicked();
 
     void onDonationChecked(boolean checked);
 

@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.base.IBaseView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -79,6 +80,8 @@ public interface ICartListView extends IBaseView {
 
     void renderDetailInfoSubTotal(String qty, String subtotalPrice);
 
+    void updateCashback(double cashback);
+
     void renderPromoVoucher();
 
     void showToastMessageRed(String message);
@@ -94,4 +97,6 @@ public interface ICartListView extends IBaseView {
     void renderCancelAutoApplyCouponError();
 
     Activity getActivity();
+
+    void sendAnalyticsOnSuccessToShipment(Map<String, Object> stringObjectMap);
 }

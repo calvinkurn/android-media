@@ -12,7 +12,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.view
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.ListCatalogViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.topads.sdk.base.Config;
 
 /**
@@ -47,11 +49,9 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
         }
     }
 
-
-
     @Override
-    public int type(EmptyModel viewModel) {
-        return EmptyViewHolder.LAYOUT;
+    public int type(EmptySearchModel emptySearchModel) {
+        return EmptySearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -61,8 +61,8 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
             viewHolder = new ListCatalogViewHolder(parent, mItemClickListener);
         } else if (type == GridCatalogViewHolder.LAYOUT) {
             viewHolder = new GridCatalogViewHolder(parent, mItemClickListener);
-        } else if (type == EmptyViewHolder.LAYOUT) {
-            viewHolder = new EmptyViewHolder(parent, mItemClickListener);
+        } else if (type == EmptySearchViewHolder.LAYOUT) {
+            viewHolder = new EmptySearchViewHolder(parent, mItemClickListener, null);
         } else if (type == CatalogHeaderViewHolder.LAYOUT) {
             viewHolder = new CatalogHeaderViewHolder(parent, mItemClickListener, topAdsConfig);
         } else {

@@ -7,11 +7,11 @@
 
     <com.tokopedia.design.component.Tabs
         android:id="@+id/indicator"
+        app:tabTextAppearance="@style/Tabs.Secondary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabType="secondary"
-        app:tabMode="fixed"
-        app:tabTextAppearance="@style/Tabs.Secondary"/>
+        android:layout_height="@dimen/dp_40"
+        app:tabIndicatorHeight="@dimen/dp_1"
+        app:tabType="secondary"/>
 
     <TextView
         android:id="@+id/ticker"

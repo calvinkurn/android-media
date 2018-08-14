@@ -3,14 +3,12 @@ package com.tokopedia.tkpd.home.favorite.di.modul;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
@@ -22,6 +20,7 @@ import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseC
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,11 +39,10 @@ public class FavoriteModule {
                                            Gson gson,
                                            ServiceV4 serviceVersion4,
                                            TopAdsService topAdsService,
-                                           MojitoService mojitoService,
                                            GlobalCacheManager cacheManager) {
 
         return new FavoriteFactory(
-                context, gson, serviceVersion4, topAdsService, mojitoService, cacheManager);
+                context, gson, serviceVersion4, topAdsService, cacheManager);
     }
 
     @FavoriteScope
@@ -77,9 +75,10 @@ public class FavoriteModule {
                                                             ThreadExecutor threadExecutor,
                                                             PostExecutionThread postExecutor,
                                                             GetFavoriteShopUsecase favUseCase,
-                                                            GetTopAdsShopUseCase topAdsShopUseCase){
+                                                            GetWishlistUtil wishlistUseCase,
+                                                            GetTopAdsShopUseCase topAdsShopUseCase) {
         return new GetAllDataFavoriteUseCase(context,
-                threadExecutor, postExecutor, favUseCase, topAdsShopUseCase);
+                threadExecutor, postExecutor, favUseCase, wishlistUseCase, topAdsShopUseCase);
     }
 
     @FavoriteScope
@@ -98,6 +97,7 @@ public class FavoriteModule {
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             GetFavoriteShopUsecase getFavoriteShopUsecase,
+            GetWishlistUtil getWishlistUse,
             GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         return new GetInitialDataPageUsecase(
@@ -105,6 +105,7 @@ public class FavoriteModule {
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,
+                getWishlistUse,
                 getTopAdsShopUseCase);
     }
 
@@ -119,12 +120,6 @@ public class FavoriteModule {
     @Provides
     TopAdsService provideTopAdsService(@TopAdsQualifier Retrofit retrofit) {
         return retrofit.create(TopAdsService.class);
-    }
-
-    @FavoriteScope
-    @Provides
-    MojitoService provideMojitoService(@MojitoQualifier Retrofit retrofit) {
-        return retrofit.create(MojitoService.class);
     }
 
     @FavoriteScope

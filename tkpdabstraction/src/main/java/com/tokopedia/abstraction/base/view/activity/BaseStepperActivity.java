@@ -22,7 +22,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     protected StepperModel stepperModel;
     private RoundCornerProgressBar progressStepper;
-    int currentPosition = 1;
+    protected int currentPosition = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_stepper_toolbar;
+        return R.layout.activity_base_stepper;
     }
 
     @Override

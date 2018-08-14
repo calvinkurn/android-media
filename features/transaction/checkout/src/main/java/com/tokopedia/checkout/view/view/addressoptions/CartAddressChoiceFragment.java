@@ -47,6 +47,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXT
  * Aghny A. Putra on 27/02/18
  */
 
+@Deprecated
 public class CartAddressChoiceFragment extends BaseCheckoutFragment
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 

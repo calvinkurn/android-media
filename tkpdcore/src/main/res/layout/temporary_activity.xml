@@ -9,7 +9,6 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlayWhite.White"
         app:elevation="@dimen/dp_4">
 
         <android.support.v7.widget.Toolbar
@@ -17,10 +16,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
+            android:background="@color/tkpd_main_green"
+            android:theme="@style/AppBarTheme"
+            app:subtitleTextAppearance="@style/ToolbarSubtitleText"
+            app:titleTextAppearance="@style/ToolbarText"
             app:contentInsetLeft="@dimen/dp_0"
             app:contentInsetStart="@dimen/dp_0"
-            app:contentInsetStartWithNavigation="@dimen/dp_0"
-            app:titleTextAppearance="@style/Toolbar.TitleText"/>
+            app:contentInsetStartWithNavigation="@dimen/dp_0"/>
 
     </android.support.design.widget.AppBarLayout>
 

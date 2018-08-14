@@ -30,7 +30,6 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordListView;
@@ -142,7 +141,7 @@ public abstract class TopAdsKeywordAdListFragment extends TopAdsBaseListFragment
     @Override
     public void onCreateAd() {
         presenter.saveSourceTagging(getSourceTagging());
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
+        TopAdsKeywordNewChooseGroupActivity.Companion.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive(), null);
     }
 
     @Override

@@ -25,12 +25,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
+import com.tokopedia.design.component.badge.BadgeView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-
-import q.rorbin.badgeview.QBadgeView;
 
 /**
  * Created by by yu on 2016/11/10
@@ -869,7 +868,7 @@ public class BottomNavigation extends BottomNavigationView {
     /**
      * Handle badge notification
      */
-    private SparseArray<QBadgeView> mBadgeViews = new SparseArray<>();
+    private SparseArray<BadgeView> mBadgeViews = new SparseArray<>();
 
     public void setNotification(int badgeNumber, int positionItem) {
         if (getBottomNavigationItemView(positionItem) == null) {
@@ -877,9 +876,9 @@ public class BottomNavigation extends BottomNavigationView {
             return;
         }
 
-        QBadgeView badgeView = mBadgeViews.get(positionItem);
+        BadgeView badgeView = mBadgeViews.get(positionItem);
         if (badgeView == null) {
-            badgeView = new QBadgeView(getContext());
+            badgeView = new BadgeView(getContext());
             mBadgeViews.put(positionItem, badgeView);
         }
 

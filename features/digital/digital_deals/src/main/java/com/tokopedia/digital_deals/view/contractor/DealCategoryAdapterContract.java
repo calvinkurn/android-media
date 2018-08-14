@@ -17,7 +17,7 @@ public class DealCategoryAdapterContract {
 
         void notifyDataSetChanged(int position);
 
-        void showLoginSnackbar(String message);
+        void showLoginSnackbar(String message, int position);
 
     }
 

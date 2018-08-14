@@ -14,7 +14,7 @@ import java.util.Map;
  * @author by alvarisi on 6/29/2016.
  */
 public class EventTracking {
-    private Map<String, Object> eventTracking = new HashMap<>();
+    protected Map<String, Object> eventTracking = new HashMap<>();
 
     public EventTracking() {
     }

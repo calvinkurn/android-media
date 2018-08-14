@@ -15,6 +15,8 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_CATA
 
 public class DetailProductRouter {
 
+    public static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
+
     private static final String ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID";
 
     private static final String CATALOG_DETAIL_ACTIVITY
@@ -27,8 +29,13 @@ public class DetailProductRouter {
             = "com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment";
 
     public static Intent getCatalogDetailActivity(Context context, String catalogId) {
+        return getCatalogDetailActivity(context, catalogId, false);
+    }
+
+    public static Intent getCatalogDetailActivity(Context context, String catalogId, boolean isActivityPaused) {
         Intent intent = RouterUtils.getActivityIntent(context, CATALOG_DETAIL_ACTIVITY);
         intent.putExtra(EXTRA_CATALOG_ID, catalogId);
+        intent.putExtra(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
         return intent;
     }
 

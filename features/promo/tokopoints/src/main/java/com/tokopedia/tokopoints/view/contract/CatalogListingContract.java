@@ -46,6 +46,8 @@ public interface CatalogListingContract {
         int getSelectedCategoryId();
 
         void updateSelectedCategoryId(int id);
+
+        boolean isAddedView();
     }
 
     interface Presenter extends CustomerPresenter<View> {

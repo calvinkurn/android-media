@@ -85,7 +85,10 @@ public class GTMContainer implements IGTMContainer {
     }
 
     private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
-        long lastRefresh = containerHolder.getContainer().getLastRefreshTime();
+        long lastRefresh = 0;
+        if (containerHolder.getContainer() != null) {
+            lastRefresh = containerHolder.getContainer().getLastRefreshTime();
+        }
         Log.i("GTM TKPD", "Last refresh " + CommonUtils.getDate(lastRefresh));
         return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
@@ -340,9 +343,9 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public String getString(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable())
-            if (GTMContainer.getContainer() != null)
-                return GTMContainer.getContainer().getString(key);
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
+            return GTMContainer.getContainer().getString(key);
+        }
         return "";
     }
 
@@ -456,20 +459,25 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public boolean getBoolean(String key) {
-        return ContainerHolderSingleton.isContainerHolderAvailable() && GTMContainer.getContainer().getBoolean(key);
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
+            return GTMContainer.getContainer().getBoolean(key);
+        }
+        return false;
     }
 
     @Override
     public long getLong(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable())
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
             return GTMContainer.getContainer().getLong(key);
+        }
         return -1;
     }
 
     @Override
     public double getDouble(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable())
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
             return GTMContainer.getContainer().getDouble(key);
+        }
         return -1;
     }
 

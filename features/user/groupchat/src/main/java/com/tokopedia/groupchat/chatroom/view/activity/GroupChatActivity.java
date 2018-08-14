@@ -126,9 +126,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChatRoom()) {
-            taskStackBuilder.addNextIntent(detailsIntent);
-        }
+        taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
 
@@ -142,9 +140,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
-        }
+        taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
@@ -160,9 +156,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
-        }
+        taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
@@ -225,9 +219,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isEnabledGroupChatRoom()) {
-            finish();
-        }
 
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
@@ -262,11 +253,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         initData();
         initPreference();
     }
-
-    private boolean isEnabledGroupChatRoom() {
-        return ((GroupChatModuleRouter) getApplicationContext()).isEnabledGroupChatRoom();
-    }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -982,9 +968,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
-        if (((GroupChatModuleRouter) getApplicationContext()).isEnabledIdleKick()) {
-            kickIfIdleForTooLong();
-        }
+        kickIfIdleForTooLong();
 
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !isFirstTime) {
@@ -1283,19 +1267,19 @@ public class GroupChatActivity extends BaseSimpleActivity
         setVisibilityHeader(View.VISIBLE);
         setToolbarPlain();
         setChannelNotFoundView(View.VISIBLE);
-        if(findViewById(R.id.tab) != null) {
+        if (findViewById(R.id.tab) != null) {
             findViewById(R.id.tab).setVisibility(View.GONE);
         }
-        if(findViewById(R.id.sponsor_layout) != null) {
+        if (findViewById(R.id.sponsor_layout) != null) {
             findViewById(R.id.sponsor_layout).setVisibility(View.GONE);
         }
-        if(findViewById(R.id.shadow_layer) != null) {
+        if (findViewById(R.id.shadow_layer) != null) {
             findViewById(R.id.shadow_layer).setVisibility(View.GONE);
         }
     }
 
-    private void setChannelNotFoundView(int visibility){
-        if(findViewById(R.id.card_retry) != null){
+    private void setChannelNotFoundView(int visibility) {
+        if (findViewById(R.id.card_retry) != null) {
             findViewById(R.id.card_retry).setVisibility(visibility);
             findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1359,8 +1343,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             vibratePhone();
         } else if (map instanceof AdsViewModel) {
             updateAds((AdsViewModel) map);
-        } else if(map instanceof GroupChatQuickReplyViewModel){
-            updateQuickReply(((GroupChatQuickReplyViewModel)map).getList());
+        } else if (map instanceof GroupChatQuickReplyViewModel) {
+            updateQuickReply(((GroupChatQuickReplyViewModel) map).getList());
         }
 
         if (currentFragmentIsChat()) {

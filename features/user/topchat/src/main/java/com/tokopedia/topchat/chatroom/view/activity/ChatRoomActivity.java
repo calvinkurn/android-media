@@ -62,6 +62,7 @@ public class ChatRoomActivity extends BasePresenterActivity
     public static final String ROLE_USER = "Pengguna";
     public static final String ROLE_SELLER = "Penjual";
     final static String SELLER = "shop";
+    final static String USER = "user";
     public static final String IS_HAS_ATTACH_BUTTON = "has_attachment";
     public static final String PARAM_AVATAR = "avatar";
 
@@ -150,18 +151,26 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     @DeepLink(ApplinkConst.TOPCHAT)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        Intent homeIntent = null;
+        Intent detailsIntent;
+        extras.putBoolean(PARAM_WEBSOCKET, true);
+        detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        if(TextUtils.equals(extras.getString(TkpdInboxRouter.CREATE_TASK_STACK), "false")) {
+            taskStackBuilder.addNextIntent(detailsIntent);
+            return taskStackBuilder;
+        }
+
         String urlQueryValueTrue = "true";
+        Intent homeIntent = null;
         if (GlobalConfig.isSellerApp()) {
             homeIntent = SellerAppRouter.getSellerHomeActivity(context);
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
-        Intent detailsIntent;
+
         Intent parentIntent;
 
-        extras.putBoolean(PARAM_WEBSOCKET, true);
-        detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
+
         if (TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT), urlQueryValueTrue)
                 && context.getApplicationContext() instanceof TopChatRouter) {
             parentIntent = ((TopChatRouter) context.getApplicationContext()).getHelpPageActivity(
@@ -171,7 +180,7 @@ public class ChatRoomActivity extends BasePresenterActivity
             parentIntent = new Intent(context, InboxChatActivity.class);
         }
 
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
@@ -325,6 +334,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(InboxMessageConstant.PARAM_SENDER_NAME, userName);
         bundle.putString(PARAM_SOURCE, source);
         bundle.putString(InboxMessageConstant.PARAM_SENDER_TAG, ROLE_USER);
+        bundle.putString(PARAM_SENDER_ROLE, USER);
         bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
         bundle.putString(InboxMessageConstant.PARAM_SENDER_IMAGE, avatar);
         bundle.putBoolean(PARAM_WEBSOCKET, false);

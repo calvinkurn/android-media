@@ -3,11 +3,15 @@ package com.tokopedia.kol.feature.post.di;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
 import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase;
 import com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase;
 import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
 
 import dagger.Module;
@@ -46,4 +50,13 @@ public class KolProfileModule {
     }
 
 
+    @KolProfileScope
+    @Provides
+    KolPostDetailContract.Presenter
+    provideKolPostDetailPresenter(GetKolPostDetailUseCase getKolPostDetailUseCase,
+                                  LikeKolPostUseCase likeKolPostUseCase,
+                                  FollowKolPostGqlUseCase followKolPostGqlUseCase) {
+        return new KolPostDetailPresenter(getKolPostDetailUseCase, likeKolPostUseCase,
+                followKolPostGqlUseCase);
+    }
 }
