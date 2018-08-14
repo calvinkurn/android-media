@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.home.account.R;
 
-public class CustomSwitchPreference extends SwitchPreference{
+public class CustomSwitchPreference extends SwitchPreference {
 
     public CustomSwitchPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);

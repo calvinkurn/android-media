@@ -47,4 +47,76 @@ public class AccountAnalytics {
                 ""
         );
     }
+
+    public void eventClickAccountSetting(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                String.format("%s %s", ACCOUNT, SETTING),
+                String.format("%s %s", CLICK, item),
+                ""
+        );
+    }
+
+    public void eventClickShopSetting(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                String.format("%s %s", SHOP, SETTING),
+                String.format("%s %s", CLICK, item),
+                ""
+        );
+    }
+
+    public void eventClickPaymentSetting(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                String.format("%s %s", SHOP, SETTING),
+                String.format("%s %s", CLICK, item),
+                ""
+        );
+    }
+
+    public void eventClickNotificationSetting(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                String.format("%s %s", NOTIFICATION, SETTING),
+                String.format("%s %s", CLICK, item),
+                ""
+        );
+    }
+
+    public void eventClickApplicationSetting(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                String.format("%s %s", APPLICATION, SETTING),
+                String.format("%s %s", CLICK, item),
+                ""
+        );
+    }
+
+    public void eventClickEmailSetting(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                String.format("%s %s", EMAIL, SETTING),
+                String.format("%s %s", CLICK, item),
+                ""
+        );
+    }
 }
