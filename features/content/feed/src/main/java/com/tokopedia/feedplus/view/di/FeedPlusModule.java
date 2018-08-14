@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.view.di;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -24,7 +23,6 @@ import com.tokopedia.feedplus.data.factory.FeedFactory;
 import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
@@ -176,12 +174,6 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    RecentProductMapper provideRecentProductMapper(Gson gson) {
-        return new RecentProductMapper(gson);
-    }
-
-    @FeedPlusScope
-    @Provides
     FeedRepository provideFeedRepository(FeedFactory feedFactory) {
         return new FeedRepositoryImpl(feedFactory);
     }
@@ -196,7 +188,6 @@ public class FeedPlusModule {
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
-                                   RecentProductMapper recentProductMapper,
                                    CheckNewFeedMapper checkNewFeedMapper) {
         return new FeedFactory(
                 context,
@@ -207,7 +198,6 @@ public class FeedPlusModule {
                 feedResultMapperCloud,
                 globalCacheManager,
                 mojitoService,
-                recentProductMapper,
                 checkNewFeedMapper
         );
     }

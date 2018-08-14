@@ -74,6 +74,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
+    public static final String ARGS_TAB_POSITION = "TAB_POSITION";
+    public static final String ARGS_EXPLORE_CATEGORY = "EXPLORE_CATEGORY";
     public static final int ONBOARDING_REQUEST = 101;
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
@@ -106,13 +108,19 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return start(context);
     }
 
-    @DeepLink({ApplinkConst.HOME_FEED, ApplinkConst.FEED})
+    @DeepLink({ApplinkConst.HOME_FEED, ApplinkConst.FEED, ApplinkConst.CONTENT_EXPLORE})
     public static Intent getApplinkFeedIntent(Context context, Bundle bundle) {
-        // TODO: 8/7/18 oka add bundle for change tab
         Intent intent = start(context);
-        intent.putExtra("TAB_POSITION", FEED_MENU);
+        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
         return intent;
     }
+
+//    @DeepLink({ApplinkConst.CONTENT_EXPLORE})
+//    public static Intent getApplinkExplorentent(Context context, Bundle bundle) {
+//        Intent intent = start(context);
+//        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+//        return intent;
+//    }
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -146,7 +154,20 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         titles = titles();
         fragmentList = fragments();
 
-        if (savedInstanceState == null) {
+        if (getIntent().getExtras() != null) {
+            int tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+            switch (tabPosition) {
+                case FEED_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
+                    break;
+                case HOME_MENU:
+                default:
+                    bottomNavigation.getMenu().findItem(R.id.menu_home).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
+                    break;
+            }
+        } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
             this.currentFragment = fragmentList.get(0);
         }
@@ -299,7 +320,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment());
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance());
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
             fragmentList.add(AccountHomeFragment.newInstance());

@@ -25,7 +25,6 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.analytics.ContentExloreEventTracking;
 import com.tokopedia.explore.di.DaggerExploreComponent;
-import com.tokopedia.explore.view.activity.ContentExploreActivity;
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
@@ -50,6 +49,9 @@ import javax.inject.Inject;
 public class ContentExploreFragment extends BaseDaggerFragment
         implements ContentExploreContract.View, SearchInputView.Listener,
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
+
+    public static String PARAM_CATEGORY_ID = "category_id";
+    public static String DEFAULT_CATEGORY = "0";
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
@@ -175,8 +177,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void initVar() {
         if (getArguments() != null) {
             categoryId = Integer.valueOf(getArguments().getString(
-                    ContentExploreActivity.PARAM_CATEGORY_ID,
-                    ContentExploreActivity.DEFAULT_CATEGORY)
+                    PARAM_CATEGORY_ID,
+                    DEFAULT_CATEGORY)
             );
             presenter.updateCategoryId(categoryId);
         }
