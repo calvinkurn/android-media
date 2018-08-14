@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">common-travel</string>
+
+    <string name="train_passenger_error_salutation">Sapaan harus dipilih</string>
+    <string name="train_passenger_error_contact_name">Nama Lengkap harus diisi</string>
+    <string name="train_passenger_error_phone_number">Nomor Telepon harus diisi</string>
+    <string name="train_passenger_error_identity_number">Nomor Identitas harus diisi</string>
+    <string name="train_passenger_error_identity_number_min">Nomor Identitas minimal 5 huruf</string>
+    <string name="train_passenger_error_identity_number_max">Nomor Identitas maksimal 20 huruf</string>
+    <string name="train_passenger_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
+    <string name="train_passenger_contact_name_max">Nama kontak maksimal 60 huruf</string>
+    <string name="train_passenger_contact_name_containt_alphabet">Nama penumpang hanya boleh alphabet</string>
+    <string name="train_passenger_error_identity_alphanumeric">Nomor ID harus alphanumeric</string>
+    <string name="train_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 15 digit</string>
+    <string name="train_passenger_choose_salutation">Pilih Sapaan</string>
+    <string name="train_buyer_full_name">Nama Lengkap</string>
+    <string name="train_buyer_full_name_hint">Isi Nama Lengkap</string>
+    <string name="train_passenger_identity_number">Nomor Identitas (KTP/SIM/Paspor)</string>
+    <string name="train_passenger_identity_number_hint">Isi Nomor Identitas</string>
+    <string name="train_passenger_additional_info">Bila tidak ada, mohon masukkan tanggal lahir dalam format (DDMMYYYY)</string>
+    <string name="train_buyer_phone_number">Nomor Telepon/HP</string>
+    <string name="train_buyer_phone_number_hint">+6281234567890</string>
+    <string name="train_select_passenger_submit_button">Simpan</string>
+
 </resources>

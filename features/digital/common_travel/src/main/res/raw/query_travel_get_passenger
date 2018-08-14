@@ -1,0 +1,15 @@
+query GetPassenger {
+  kaiPassengers {
+    passengerList {
+      id
+      userId
+      idNumber
+      name
+      salutationId
+      birthDate
+      phoneNumber
+      isBuyer
+      paxType
+    }
+  }
+}
