@@ -35,4 +35,16 @@ public class AccountAnalytics {
                 ""
         );
     }
+
+    public void eventClickSetting(String item) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                String.format("%s %s", USER, SETTING),
+                String.format("%s %s", CLICK, item),
+                ""
+        );
+    }
 }

@@ -2533,8 +2533,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getFeedPlusFragment() {
-        return FeedPlusContainerFragment.newInstance();
+    public Fragment getFeedPlusFragment(Bundle bundle) {
+        return FeedPlusContainerFragment.newInstance(bundle);
     }
 
     @Override

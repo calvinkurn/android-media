@@ -7,6 +7,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
 
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)

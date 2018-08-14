@@ -64,6 +64,32 @@ public class AccountConstants {
 
         public static final String PENJUAL = "penjual";
 
+        public static final String USER = "user";
+
+        public static final String SETTING = "setting";
+
+        public static final String SHOP = "shop";
+
+        public static final String ACCOUNT = "account";
+
+        public static final String PAYMENT_METHOD = "payment method";
+
+        public static final String NOTIFICATION = "notification";
+
+        public static final String SHAKE_SHAKE = "shake - shake";
+
+        public static final String TERM_CONDITION = "terms & condition";
+
+        public static final String PRIVACY_POLICY = "privacy policy";
+
+        public static final String APPLICATION_REVIEW = "application review";
+
+        public static final String HELP_CENTER = "help center";
+
+        public static final String DEVELOPER_OPTIONS = "developer options";
+
+        public static final String LOGOUT = "logout";
+
 
     }
 }

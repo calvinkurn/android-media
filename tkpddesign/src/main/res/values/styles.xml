@@ -199,7 +199,7 @@
         <item name="android:background">@drawable/bg_used_voucher</item>
     </style>
 
-    <style name="Tabs">
+    <style name="Tabs" parent="Widget.Design.TabLayout">
         <item name="selectedBold">true</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/border_bottom_no_rounded</item>
