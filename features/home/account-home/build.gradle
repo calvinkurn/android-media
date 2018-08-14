@@ -35,6 +35,5 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.badge
     implementation rootProject.ext.networkDependencies.glide
 }

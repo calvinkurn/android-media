@@ -44,7 +44,7 @@ public class LabelView extends BaseCustomView {
     private int titleColorValue;
     private int contentTextStyleValue;
 
-    private String badgeCounter;
+    private int badgeCounter;
     private String contentText;
     @ColorInt
     private int contentColorValue;
@@ -89,7 +89,7 @@ public class LabelView extends BaseCustomView {
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
             subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
             contentText = styledAttributes.getString(R.styleable.LabelView_lv_content);
-            badgeCounter = styledAttributes.getString(R.styleable.LabelView_lv_badge);
+            badgeCounter = styledAttributes.getInt(R.styleable.LabelView_lv_badge, 0);
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_content_text_style, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_title_text_style, Typeface.NORMAL);
@@ -141,8 +141,8 @@ public class LabelView extends BaseCustomView {
             subTitleTextView.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(badgeCounter)) {
-            badgeTextView.setText(badgeCounter);
+        if (badgeCounter > 0) {
+            badgeTextView.setText(badgeCounter(badgeCounter));
             badgeTextView.setVisibility(View.VISIBLE);
         } else {
             badgeTextView.setVisibility(View.GONE);
@@ -265,10 +265,18 @@ public class LabelView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setBadgeCounter(String badge){
-        badgeTextView.setText(badge);
-        badgeTextView.setVisibility(TextUtils.isEmpty(badge) ? View.GONE : View.VISIBLE);
+    public void setBadgeCounter(int badge){
+        badgeTextView.setText(badgeCounter(badge));
+        badgeTextView.setVisibility(badge > 0 ? View.VISIBLE : View.GONE);
         invalidate();
         requestLayout();
+    }
+
+    private String badgeCounter(int badge) {
+        String counter = String.valueOf(badge);
+        if (badge > 99) {
+            counter = "99+";
+        }
+        return counter;
     }
 }

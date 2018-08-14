@@ -37,6 +37,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
 
+    private int badgeNumber;
+
     public static FeedPlusContainerFragment newInstance(Bundle bundle) {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
         fragment.setArguments(bundle);
@@ -82,6 +84,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     @Override
     public void onNotifyBadgeNotification(int number) {
+        this.badgeNumber = number;
         if (mainToolbar != null || getActivity() != null) {
             mainToolbar.setNotificationNumber(number);
         }
@@ -96,6 +99,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (shouldGoToExplore()) {
             viewPager.setCurrentItem(tabLayout.getTabCount() - 1);
         }
+        onNotifyBadgeNotification(badgeNumber); // notify badge after toolbar created
     }
 
     private void setAdapter() {

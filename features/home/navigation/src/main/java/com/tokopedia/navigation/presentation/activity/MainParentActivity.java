@@ -26,6 +26,11 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
@@ -49,8 +54,6 @@ import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -67,7 +70,7 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener {
+        MainParentView, ShowCaseListener, CartNotifyListener {
 
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -127,8 +130,19 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GraphqlClient.init(this); // initialize graphql
-        this.initInjector(); // initialize di
+        if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+            startActivity(((GlobalNavRouter) getApplicationContext())
+                    .getOnBoardingIntent(this));
+            this.finish();
+            return;
+        }
+
+        createView(savedInstanceState);
+    }
+
+    private void createView(Bundle savedInstanceState) {
+        GraphqlClient.init(this);
+        this.initInjector();
         presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
 
@@ -161,22 +175,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 //        if (isFirstTime()) {
 //            trackFirstTime();
 //        }
-//
 //        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-//
 //        cacheHandler = new AnalyticsCacheHandler();
-
-        Thread t = new Thread(() -> {
-            if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
-
-                //  Launch app intro
-                Intent i = ((GlobalNavRouter) getApplicationContext()).getOnBoardingIntent(this);
-                startActivityForResult(i, ONBOARDING_REQUEST);
-
-            }
-        });
-
-        t.start();
 
         checkAppUpdate();
         checkIsHaveApplinkComeFromDeeplink(getIntent());
@@ -203,6 +203,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                 .globalNavModule(new GlobalNavModule())
                 .build()
                 .inject(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(GlobalNavComponent globalNavComponent){
+        globalNavComponent.inject(this);
+
+        presenter.setView(this);
     }
 
     @Override
@@ -252,28 +259,28 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             for (int i = 0; i < manager.getFragments().size(); i++) {
                 Fragment frag = manager.getFragments().get(i);
                 if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                    scrollToTop(frag);
                     ft.show(frag); // only show fragment what you want to show
                 } else {
                     ft.hide(frag); // hide all fragment
                 }
             }
+            scrollToTop(currentFrag);
         } else {
             ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
         }
         ft.commit();
     }
 
+    private void scrollToTop(Fragment fragment) {
+        if (fragment.isVisible() && fragment instanceof FragmentListener) {
+            ((FragmentListener) fragment).onScrollToTop();
+        }
+    }
+
     private boolean isUserLogin() {
         if (!userSession.isLoggedIn())
             RouteManager.route(this, ApplinkConst.LOGIN);
         return userSession.isLoggedIn();
-    }
-
-    private void scrollToTop(Fragment frag) {
-        if (frag.isVisible() && frag instanceof FragmentListener) {
-            ((FragmentListener) frag).onScrollToTop();
-        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -300,7 +307,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.onDestroy();
+        if (presenter != null)
+            presenter.onDestroy();
     }
 
     private void reloadPage(Activity activity) {
@@ -539,5 +547,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
+    }
+
+    @Override
+    public void onNotifyCart() {
+        if (presenter != null)
+            this.presenter.getNotificationData();
     }
 }

@@ -2,8 +2,10 @@ package com.tokopedia.home.account.presentation.view;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -78,7 +80,14 @@ public class BuyerCardView extends BaseCustomView {
         animation.start();
         if(progress > 0 && progress < 100) {
             textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
-            textProfileCompletion.setVisibility(VISIBLE);
+            textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        } else {
+            textProfileCompletion.setText(R.string.verified_account);
+            textProfileCompletion.setTypeface(null, Typeface.ITALIC);
+            progressBar.setVisibility(GONE);
+            imageProfile.getLayoutParams().width = 130;
+            imageProfile.getLayoutParams().height = 130;
+            imageProfile.requestLayout();
         }
     }
 
