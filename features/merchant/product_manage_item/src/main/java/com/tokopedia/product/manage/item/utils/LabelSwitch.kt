@@ -107,7 +107,7 @@ class LabelSwitch : BaseCustomView {
     }
 
     private fun init() {
-        val view = View.inflate(context, R.layout.widget_label_switch, this)
+        val view = View.inflate(context, R.layout.widget_label_switch_product, this)
         titleTextView = view.findViewById(R.id.title_text_view)
         summaryTextView = view.findViewById(R.id.summary_text_view)
         switchTextView = view.findViewById(R.id.switch_text_view)

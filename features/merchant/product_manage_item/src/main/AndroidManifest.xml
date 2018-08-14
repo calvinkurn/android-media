@@ -102,6 +102,11 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".wholesale.activity.ProductAddWholesaleActivity"
+            android:label="@string/product_label_information_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>
