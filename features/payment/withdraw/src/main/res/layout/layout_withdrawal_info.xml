@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
         android:paddingTop="@dimen/dp_8">
 
         <RelativeLayout
@@ -118,33 +119,6 @@
                 android:text="@string/body_info_withdrawal_3"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/item_4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp_8">
-
-            <TextView
-                android:id="@+id/dot_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="@dimen/dp_8"
-                android:text="@string/dot"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_12" />
-
-            <TextView
-                android:id="@+id/title_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/dot_4"
-                android:paddingBottom="@dimen/dp_2"
-                android:text="@string/title_info_withdrawal_4"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_12" />
-
         </RelativeLayout>
 
     </LinearLayout>

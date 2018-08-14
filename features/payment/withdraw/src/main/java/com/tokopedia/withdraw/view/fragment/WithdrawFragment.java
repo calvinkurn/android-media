@@ -12,6 +12,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +31,9 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.intdef.CurrencyEnum;
+import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
@@ -181,8 +185,22 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             totalWithdrawal.removeTextChangedListener(currencyTextWatcher);
         }
 
+
+
         totalWithdrawal.addTextChangedListener(currencyTextWatcher);
         totalWithdrawal.setText("");
+
+        totalWithdrawal.addTextChangedListener(new AfterTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                int withdrawal = (int) StringUtils.convertToNumeric(s.toString(),false);
+                if(withdrawal < 10000){
+                    showErrorWithdrawal(getActivity().getString(R.string.minimal_withdrawal));
+                }else{
+                    showErrorWithdrawal(null);
+                }
+            }
+        });
 
         info.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,6 +280,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showErrorWithdrawal(String stringResource) {
+        if(TextUtils.isEmpty(stringResource)){
+            withdrawError.setVisibility(View.GONE);
+            return;
+        }
         withdrawError.setText(stringResource);
         withdrawError.setVisibility(View.VISIBLE);
         withdrawError.requestFocus();
