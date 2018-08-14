@@ -247,7 +247,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         if (router.isSupportedDelegateDeepLink(appLink)) {
             router.actionApplink(getActivity(), appLink);
         } else if (appLink != "") {
-            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            Intent intent = new Intent(getContext(), BannerWebView.class);
             intent.putExtra("url", appLink);
             startActivity(intent);
         }
