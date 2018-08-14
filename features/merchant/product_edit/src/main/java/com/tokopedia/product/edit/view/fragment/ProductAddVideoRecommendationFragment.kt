@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.video.view.fragment
+package com.tokopedia.product.edit.view.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -11,14 +11,14 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.video.view.adapter.ProductAddVideoRecommendationAdapterTypeFactory
-import com.tokopedia.product.manage.item.video.view.listener.ProductAddVideoRecommendationView
-import com.tokopedia.product.manage.item.video.view.fragment.ProductAddVideoFragment.Companion.MAX_VIDEO
-import com.tokopedia.product.manage.item.video.view.listener.VideoRecommendationListener
-import com.tokopedia.product.manage.item.video.view.model.ProductAddVideoRecommendationBaseViewModel
-import com.tokopedia.product.manage.item.video.view.model.TitleVideoRecommendationViewModel
-import com.tokopedia.product.manage.item.video.view.model.VideoRecommendationViewModel
+import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.view.adapter.ProductAddVideoRecommendationAdapterTypeFactory
+import com.tokopedia.product.edit.view.listener.ProductAddVideoRecommendationView
+import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.MAX_VIDEO
+import com.tokopedia.product.edit.view.listener.VideoRecommendationListener
+import com.tokopedia.product.edit.view.viewmodel.ProductAddVideoRecommendationBaseViewModel
+import com.tokopedia.product.edit.view.viewmodel.TitleVideoRecommendationViewModel
+import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
 import kotlinx.android.synthetic.main.fragment_product_add_video_recommendation.*
 import java.util.ArrayList
 
