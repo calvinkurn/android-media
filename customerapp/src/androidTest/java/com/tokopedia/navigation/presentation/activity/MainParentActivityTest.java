@@ -144,7 +144,6 @@ public class MainParentActivityTest {
 
     GetDrawerNotificationUseCase getDrawerNotificationUseCase;
 
-    private UserSession userSession;
 
     @Rule
     public GuessTokopediaTestRule<MainParentActivity> mIntentsRule = new GuessTokopediaTestRule<>(
@@ -158,11 +157,6 @@ public class MainParentActivityTest {
     public void before(){
         BaseMainApplication application = (BaseMainApplication)InstrumentationRegistry.getTargetContext().getApplicationContext();
         baseAppComponent = application.reinitBaseAppComponent(testAppModule = new TestAppModule(application));
-
-        userSession = baseAppComponent.userSession();
-
-        doReturn(false).when(userSession).isLoggedIn();
-        doReturn("1234").when(userSession).getUserId();
 
         disableOnBoard(application);
 
@@ -359,6 +353,11 @@ public class MainParentActivityTest {
 
     @Test
     public void test_load_first_time_feed_plus() throws Exception {
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -412,12 +411,13 @@ public class MainParentActivityTest {
         }
     }
 
-    /**
-     *
-     * @throws Exception
-     */
     @Test
     public void testInitialUI() throws Exception {
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -428,7 +428,7 @@ public class MainParentActivityTest {
 
         when(userSession.isLoggedIn()).thenReturn(true);
 
-        mockAlreadyLogin();
+        mockAlreadyLogin(userSession);
 
         onView(allOf(withText(Inbox_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
@@ -436,6 +436,12 @@ public class MainParentActivityTest {
 
     @Test
     public void test_home_fragment() throws Exception{
+
+        UserSession userSession = baseAppComponent.userSession();
+
+        doReturn(false).when(userSession).isLoggedIn();
+        doReturn("1234").when(userSession).getUserId();
+
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -444,7 +450,7 @@ public class MainParentActivityTest {
 
         TestBerandaComponent berandaComponent
                 = DaggerTestBerandaComponent.builder()
-                .baseAppComponent(((BaseMainApplication) mIntentsRule.getActivity().getApplication()).getBaseAppComponent())
+                .baseAppComponent(baseAppComponent)
                 .build();
 
         berandaComponent.inject(this);
@@ -454,8 +460,6 @@ public class MainParentActivityTest {
             fragment.reInitInjector(berandaComponent);
 
             when(homePresenter.hasNextPageFeed()).thenReturn(true);
-
-            Thread.sleep(5_000);
 
             mIntentsRule.getActivity().runOnUiThread(() -> {
                 fragment.clearAll();
@@ -467,11 +471,15 @@ public class MainParentActivityTest {
                     return null;
                 }).when(fragment.getPresenter()).getHomeData();
 
+
             });
+
+            // this must be set in order to work properly
+            Thread.sleep(10_000);
 
             onView(withId(R.id.sw_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
-            // Get total item of myRecyclerView
+//                // Get total item of myRecyclerView
             RecyclerView recyclerView =fragment.getView().findViewById(R.id.list);
             int itemCount = recyclerView.getAdapter().getItemCount();
 
@@ -520,21 +528,6 @@ public class MainParentActivityTest {
                 .map(new FeedResultMapper(FeedResult.SOURCE_CLOUD))
                 .defaultIfEmpty(null).toBlocking().first();
 
-//        ProductItemData productItemData = CacheUtil.convertStringToModel(
-//                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[2])
-//                , ProductItemData.class);
-//
-//        DataResponse<ProductItemData> dataResponse
-//                = new DataResponse<>();
-//        dataResponse.setData(productItemData);
-//
-//        Response<DataResponse<ProductItemData>> response1 =
-//                Response.success(dataResponse);
-//
-//        feedResult.getFeedDomain().setRecentProduct(just(response1)
-//                .map(new RecentProductMapper(new Gson()))
-//                .defaultIfEmpty(null).toBlocking().first());
-
         WhitelistQuery whitelistQuery = CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[0])
                 , WhitelistQuery.class);
@@ -572,14 +565,12 @@ public class MainParentActivityTest {
         intending(hasComponent(LoginActivity.class.getName())).respondWith(result);
     }
 
-    private void mockAlreadyLogin(){
+    private void mockAlreadyLogin(UserSession userSession){
         doReturn(true).when(userSession).isLoggedIn();
         doReturn("1234").when(userSession).getUserId();
     }
 
     private void startEmptyActivity() {
-        userSession = mock(UserSession.class);
-
         mIntentsRule.launchActivity(null);
     }
 }
