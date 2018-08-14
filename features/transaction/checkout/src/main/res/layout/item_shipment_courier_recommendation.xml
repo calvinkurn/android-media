@@ -75,7 +75,6 @@
 
             <TextView
                 android:id="@+id/tv_change_selected_duration"
-                style="@style/TextSmallNormalBlack54"
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -87,8 +86,10 @@
                 android:paddingLeft="@dimen/dp_27"
                 android:paddingRight="@dimen/dp_27"
                 android:paddingTop="@dimen/dp_9"
+                android:text="@string/label_button_change_shipping_duration"
                 android:textColor="@color/black_54"
-                android:text="@string/label_button_change_shipping_duration" />
+                android:textSize="@dimen/sp_11"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -128,7 +129,6 @@
 
             <TextView
                 android:id="@+id/tv_change_selected_courier_recommendation"
-                style="@style/TextSmallMedium"
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -141,7 +141,9 @@
                 android:paddingRight="@dimen/dp_27"
                 android:paddingTop="@dimen/dp_9"
                 android:text="@string/label_button_change_courier_recommendation"
-                android:textColor="@color/black_54" />
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/sp_11"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

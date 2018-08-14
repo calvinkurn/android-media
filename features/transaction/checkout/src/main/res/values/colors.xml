@@ -10,6 +10,7 @@
     <color name="background_cashback_enable">#e3f9e3</color>
     <color name="cashback_text_color">#42b549</color>
     <color name="black_56">#8f000000</color>
+    <color name="shipping_duration_info_black">#d2000000</color>
 
     <color name="checkout_shadow_color_1">#00AAAAAA</color>
     <color name="checkout_shadow_color_2">#10AAAAAA</color>

@@ -16,6 +16,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:fontFamily="sans-serif-medium"
         android:text="@string/label_hardcoded_shipping_duration_info"
+        android:textColor="@color/shipping_duration_info_black"
         android:textSize="@dimen/sp_11" />
 
     <TextView
