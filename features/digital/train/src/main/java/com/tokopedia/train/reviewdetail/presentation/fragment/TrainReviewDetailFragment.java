@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
@@ -61,9 +62,11 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     private static final String HACHIKO_TRAIN_KEY = "train";
 
-    private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
+
+    private static final String PARAM_CHECKOUT_CLIENT = "android";
+    private static final String PARAM_CHECKOUT_VERSION = "kai-" + GlobalConfig.VERSION_NAME;
 
     @Inject
     TrainAnalytics trainAnalytics;
@@ -156,8 +159,10 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         ArrayList<String> messages = new ArrayList<>();
         messages.add("Cek kembali detail pesanan Anda sebelum lanjut ke halaman pembayaran");
+        tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(getActivity(), R.color.yellow_200));
+        tickerView.hideCloseButton();
         tickerView.buildView();
 
         cardDepartureTrip.setActionListener(() -> {
@@ -191,8 +196,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
                     trainSoftbook.getReservationCode(),
                     appliedVoucherCode,
-                    "web",
-                    "7");
+                    PARAM_CHECKOUT_CLIENT,
+                    PARAM_CHECKOUT_VERSION);
         });
 
         viewTrainReviewDetailPriceSection.showScheduleTripsPrice(trainSoftbook);
@@ -250,8 +255,15 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         String timeDepartureArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, departureTrip.getArrivalTimestamp());
 
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, departureTrip.getDepartureTimestamp());
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, departureTrip.getArrivalTimestamp());
+        int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
+        String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
+
         cardDepartureTrip.setSubContentInfo(getString(R.string.train_review_trip_time_and_duration,
-                timeDepartureDepartureString, timeDepartureArrivalString, departureTrip.getDisplayDuration()));
+                timeDepartureDepartureString, timeDepartureArrivalString + deviationDayString));
 
         trainReviewDetailPresenter.getPassengers(trainSoftbook, departureTrip.getOrigin(),
                 departureTrip.getDestination());
@@ -272,8 +284,15 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         String timeReturnArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, returnTrip.getArrivalTimestamp());
 
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, returnTrip.getDepartureTimestamp());
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, returnTrip.getArrivalTimestamp());
+        int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
+        String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
+
         cardReturnTrip.setSubContentInfo(getString(R.string.train_review_trip_time_and_duration,
-                timeReturnDepartureString, timeReturnArrivalString, returnTrip.getDisplayDuration()));
+                timeReturnDepartureString, timeReturnArrivalString + deviationDayString));
     }
 
     @Override

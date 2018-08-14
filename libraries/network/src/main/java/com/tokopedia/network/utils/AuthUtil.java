@@ -1,6 +1,5 @@
 package com.tokopedia.network.utils;
 
-import android.content.Context;
 import android.os.Build;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
@@ -48,6 +47,7 @@ public class AuthUtil {
     private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
     private static final String HEADER_SESSION_ID = "tkpd-SessionId";
+    private static final String HEADER_OS_VERSION = "os_version";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -113,7 +113,7 @@ public class AuthUtil {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        headerMap.put(HEADER_OS_TYPE, String.valueOf(Build.VERSION.SDK_INT));
+        headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
