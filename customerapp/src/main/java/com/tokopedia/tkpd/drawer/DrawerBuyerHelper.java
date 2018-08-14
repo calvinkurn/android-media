@@ -798,6 +798,11 @@ public class DrawerBuyerHelper extends DrawerHelper
         AnalyticsEventTrackingHelper.hamburgerTokopointsClick(TokoPointWebviewActivity.class.getName());
     }
 
+    @Override
+    public void onGotoTokoCard() {
+        ((TkpdCoreRouter) context.getApplication()).actionOpenGeneralWebView(context, "https://www.tokopedia.com/tokocard/");
+    }
+
     private void onGoToCreateShop() {
         Intent intent = SellerRouter.getActivityShopCreateEdit(context);
         context.startActivity(intent);

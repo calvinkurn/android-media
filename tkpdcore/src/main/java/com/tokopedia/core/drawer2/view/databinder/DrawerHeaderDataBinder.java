@@ -50,6 +50,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
 
         void onTokoPointActionClicked(String mainPageUrl, String title);
+
+        void onGotoTokoCard();
     }
 
     public interface RetryTokoCashListener {
@@ -126,6 +128,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         TextView tvTokoPointAction;
         @BindView(R2.id.tv_tokopoint_count)
         TextView tvTokoPointCount;
+
+        @BindView(R2.id.drawer_tokocard)
+        TextView tokocardLayout;
 
 
         public ViewHolder(View itemView) {
@@ -330,6 +335,12 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             @Override
             public void onClick(View view) {
                 listener.onGoToProfileCompletion();
+            }
+        });
+        holder.tokocardLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onGotoTokoCard();
             }
         });
     }
