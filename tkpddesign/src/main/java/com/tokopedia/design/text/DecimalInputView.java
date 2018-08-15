@@ -165,11 +165,7 @@ public class DecimalInputView extends BaseCustomView {
 
     public void setMaxLength(int maxLengthInput) {
         if (maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH) {
-            InputFilter[] editFilters = editText.getFilters();
-            InputFilter[] newFilters = new InputFilter[editFilters.length + 1];
-            System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
-            newFilters[editFilters.length] = new InputFilter.LengthFilter(maxLengthInput);
-            editText.setFilters(newFilters);
+            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
         }
     }
 }
