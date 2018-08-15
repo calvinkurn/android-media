@@ -379,7 +379,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     public void scrollToTop() {
         if (exploreImageRv != null) {
-            exploreImageRv.smoothScrollToPosition(0);
+            exploreImageRv.scrollToPosition(0);
         }
     }
 
