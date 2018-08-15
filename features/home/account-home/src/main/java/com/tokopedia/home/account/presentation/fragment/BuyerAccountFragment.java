@@ -112,14 +112,12 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
 
     @Override
     public void showLoading() {
-        if (adapter != null)
-            adapter.showLoading();
+        if (adapter != null) adapter.showLoading();
     }
 
     @Override
     public void hideLoading() {
-        if (adapter != null)
-            adapter.hideLoading();
+        if (adapter != null) adapter.hideLoading();
 
         if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
@@ -130,8 +128,6 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         if (getView() != null) {
             ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
         }
-
-
     }
 
     @Override

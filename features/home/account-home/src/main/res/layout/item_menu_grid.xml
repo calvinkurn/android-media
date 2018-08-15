@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="@dimen/dp_16"
     android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16">
+    android:layout_marginStart="@dimen/dp_16"
+    android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/text_title"

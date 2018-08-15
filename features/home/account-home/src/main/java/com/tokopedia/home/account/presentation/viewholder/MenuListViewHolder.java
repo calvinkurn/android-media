@@ -33,9 +33,7 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     public void bind(MenuListViewModel element) {
         layout.setOnClickListener(v -> listener.onMenuListClicked(element));
         labelView.setTitle(element.getMenu());
-        if(element.getCount() > 0) {
-            labelView.setBadgeCounter(element.getCount());
-        }
+        labelView.setBadgeCounter(element.getCount());
         labelView.setSubTitle(element.getMenuDescription());
         labelView.showRightArrow(false);
     }
