@@ -463,7 +463,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         productPrice?.price ?: 0.0,
                         getStatusStockViewVariant(productStock?: ProductStock()),
                         officialStore, productStock?.sku, isEdittingDraft(),
-                        productSizeChart,  == true,
+                        productSizeChart, hasOriginalVariantLevel1 == true,
                         hasOriginalVariantLevel2 == true,
                         hasWholesale)
                 startActivityForResult(intent, REQUEST_CODE_VARIANT)
