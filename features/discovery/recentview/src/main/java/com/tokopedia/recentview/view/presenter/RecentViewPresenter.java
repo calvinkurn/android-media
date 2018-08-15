@@ -1,10 +1,10 @@
 package com.tokopedia.recentview.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.recentview.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.recentview.view.listener.RecentView;
 import com.tokopedia.recentview.view.subscriber.RecentViewSubscriber;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;

@@ -22,8 +22,8 @@ public class CloudRecentProductDataSource {
     private RecentProductMapper recentProductMapper;
 
     @Inject
-    public CloudRecentProductDataSource(MojitoService mojitoService,
-                                        RecentProductMapper recentProductMapper) {
+    CloudRecentProductDataSource(MojitoService mojitoService,
+                                 RecentProductMapper recentProductMapper) {
         this.mojitoService = mojitoService;
         this.recentProductMapper = recentProductMapper;
     }

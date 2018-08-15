@@ -21,7 +21,7 @@ public class GetRecentViewUseCase extends UseCase<List<RecentViewProductDomain>>
     private final CloudRecentProductDataSource cloudRecentProductDataSource;
 
     @Inject
-    public GetRecentViewUseCase(CloudRecentProductDataSource cloudRecentProductDataSource) {
+    GetRecentViewUseCase(CloudRecentProductDataSource cloudRecentProductDataSource) {
         this.cloudRecentProductDataSource = cloudRecentProductDataSource;
     }
 

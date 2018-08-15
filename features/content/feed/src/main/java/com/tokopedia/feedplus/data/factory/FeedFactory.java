@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.data.factory;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
@@ -33,7 +32,6 @@ public class FeedFactory {
                        FeedListMapper feedListMapper, FeedResultMapper feedResultMapperLocal,
                        FeedResultMapper feedResultMapperCloud,
                        GlobalCacheManager globalCacheManager,
-                       MojitoService mojitoService,
                        CheckNewFeedMapper checkNewFeedMapper) {
         this.context = context;
         this.feedApi = feedApi;

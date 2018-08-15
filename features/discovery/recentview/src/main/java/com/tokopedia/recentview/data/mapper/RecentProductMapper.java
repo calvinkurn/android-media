@@ -3,7 +3,6 @@ package com.tokopedia.recentview.data.mapper;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.core.var.Label;
@@ -17,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -27,10 +28,8 @@ import rx.functions.Func1;
 public class RecentProductMapper
         implements Func1<Response<DataResponse<ProductItemData>>, List<RecentViewProductDomain>> {
 
-    private final Gson gson;
-
-    public RecentProductMapper(Gson gson) {
-        this.gson = gson;
+    @Inject
+    RecentProductMapper() {
     }
 
     @Override
