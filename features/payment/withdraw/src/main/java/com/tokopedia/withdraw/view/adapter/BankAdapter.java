@@ -2,6 +2,7 @@ package com.tokopedia.withdraw.view.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,22 +25,24 @@ import java.util.List;
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
     int selectedItem;
-
     public interface OnBankClickListener {
+
         void onClick(int position);
     }
-
     private final List<BankAccountViewModel> listBank;
+
     private int isEmpty = 0;
     private WithdrawContract.View context;
     private String selectedBankId;
     private OnBankClickListener listener;
+    private BankAccountViewModel accountButton;
 
     public BankAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
         this.context = context;
         this.listBank = listBank;
         this.selectedBankId = "";
         this.selectedItem = -1;
+        this.accountButton = new BankAccountViewModel();
     }
 
     public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
@@ -46,18 +50,25 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     public void setList(List<BankAccountViewModel> listBank) {
+//        this.listBank.clear();
+//        this.listBank.addAll(listBank);
+//        this.listBank.add(new BankAccountViewModel());
+//        notifyDataSetChanged();
+        
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
+                new Callback(new ArrayList<>(this.listBank), new ArrayList<>(listBank)));
+        diffResult.dispatchUpdatesTo(this);
+
         this.listBank.clear();
         this.listBank.addAll(listBank);
-        selectedItem = 0;
-        this.listBank.add(new BankAccountViewModel());
-        notifyDataSetChanged();
+        this.listBank.add(accountButton);
     }
 
 
     public void addItem(BankAccountViewModel bankViewModel) {
-        this.listBank.remove(listBank.size()-1);
+        this.listBank.remove(accountButton);
         this.listBank.add(bankViewModel);
-        this.listBank.add(new BankAccountViewModel());
+        this.listBank.add(accountButton);
         notifyItemRangeChanged(listBank.size()-1, 2);
     }
 
@@ -147,13 +158,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 BankAccountViewModel thisItem = listBank.get(position);
 
                 View.OnClickListener l = (View v) -> {
-                    if (selectedItem >= 0 && selectedItem < listBank.size()) {
-                        listBank.get(selectedItem).setChecked(false);
-                    }
-                    listBank.get(position).setChecked(true);
-                    selectedItem = position;
-                    notifyItemRangeChanged(0, listBank.size());
-                    this.context.itemSelected();
+                    changeItemSelected(position);
                 };
                 holder.itemView.setOnClickListener(l);
 
@@ -176,6 +181,16 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         }
     }
 
+    public void changeItemSelected(int position) {
+        if (selectedItem >= 0 && selectedItem < listBank.size()) {
+            listBank.get(selectedItem).setChecked(false);
+        }
+        listBank.get(position).setChecked(true);
+        selectedItem = position;
+        notifyItemRangeChanged(0, listBank.size());
+        this.context.itemSelected();
+    }
+
     @Override
     public int getItemCount() {
         return listBank.size() + isEmpty;
@@ -191,5 +206,58 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
             return null;
         }
         return listBank.get(selectedItem);
+    }
+
+    public void setDefault(int defaultBank) {
+        selectedItem = defaultBank;
+    }
+
+    static class Callback extends DiffUtil.Callback {
+        private final List<Object> oldList;
+        private final List<Object> newList;
+
+        public Callback(List<Object> oldList, List<Object> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList == null ? 0 : oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList == null ? 0 : newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            Object oldItem = oldList.get(oldItemPosition);
+            Object newItem = newList.get(newItemPosition);
+
+            if (oldItem instanceof BankAccountViewModel) {
+                return newItem instanceof BankAccountViewModel
+                        && ((BankAccountViewModel) oldItem).getBankAccountId()
+                        == ((BankAccountViewModel) oldItem).getBankAccountId();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            Object oldItem = oldList.get(oldItemPosition);
+            Object newItem = newList.get(newItemPosition);
+
+            if (oldItem instanceof BankAccountViewModel && newItem instanceof BankAccountViewModel) {
+                BankAccountViewModel oldPost = ((BankAccountViewModel) oldItem);
+                BankAccountViewModel newPost = ((BankAccountViewModel) newItem);
+
+                return oldPost.getBankName() == newPost.getBankAccountName()
+                        && oldPost.getBankAccountNumber() == newPost.getBankAccountNumber()
+                        && oldPost.getBankAccountName() == newPost.getBankAccountName();
+            }
+            return oldItem.equals(newItem);
+        }
     }
 }

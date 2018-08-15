@@ -36,7 +36,6 @@ public class DepositInfoMapper implements Func1<Response<DataResponse<InfoDeposi
             BankAccountViewModel item = new BankAccountViewModel();
             BankAccount data = temp.getBankAccount().get(i);
 
-
             item.setBankAccountId(data.getBankAccountId());
             item.setBankAccountName(data.getBankAccountName());
             item.setBankAccountNumber(data.getBankAccountNumber());
@@ -44,6 +43,11 @@ public class DepositInfoMapper implements Func1<Response<DataResponse<InfoDeposi
             item.setBankId(data.getBankId());
             item.setBankName(data.getBankName());
             item.setBankBranch(data.getBankBranch());
+
+            item.setChecked(data.getIsDefaultBank() == 1);
+            if(data.getIsDefaultBank() == 1){
+                model.setDefaultBank(i);
+            }
 
             list.add(item);
         }

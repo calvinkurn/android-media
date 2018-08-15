@@ -11,6 +11,7 @@ public class InfoDepositDomainModel {
     private int useableDeposit;
     private String useableDepositIdr;
     private List<BankAccountViewModel> bankAccount = null;
+    private int defaultBank;
 
     public int getUseableDeposit() {
         return useableDeposit;
@@ -36,4 +37,11 @@ public class InfoDepositDomainModel {
         this.bankAccount = bankAccount;
     }
 
+    public int getDefaultBank() {
+        return defaultBank;
+    }
+
+    public void setDefaultBank(int defaultBank) {
+        this.defaultBank = defaultBank;
+    }
 }

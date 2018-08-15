@@ -22,7 +22,7 @@ public class WithdrawContract {
 
         void hideLoading();
 
-        void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount);
+        void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank);
 
         void showError(String throwable);
 
@@ -48,5 +48,7 @@ public class WithdrawContract {
         void getWithdrawForm();
 
         void doWithdraw(String totalBalance, String totalWithdrawal, BankAccountViewModel selectedBank);
+
+        void refreshBankList();
     }
 }

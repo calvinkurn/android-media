@@ -52,7 +52,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
             @Override
             public void onNext(InfoDepositDomainModel infoDepositDomainModel) {
                 getView().hideLoading();
-                getView().onSuccessGetWithdrawForm(infoDepositDomainModel.getBankAccount());
+                getView().onSuccessGetWithdrawForm(infoDepositDomainModel.getBankAccount(), infoDepositDomainModel.getDefaultBank());
 
             }
         });
@@ -82,8 +82,14 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
     }
 
     @Override
+    public void refreshBankList() {
+        getWithdrawForm();
+    }
+
+    @Override
     public void detachView() {
         depositUseCase.unsubscribe();
         super.detachView();
     }
+
 }

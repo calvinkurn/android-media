@@ -38,7 +38,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
-import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
@@ -215,6 +214,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             public void afterTextChanged(Editable s) {
                 int withdrawal = (int) StringUtils.convertToNumeric(s.toString(), false);
                 checkMinimumWithdrawal(withdrawal);
+                checkDepositIsSufficient(withdrawal);
             }
         });
 
@@ -225,14 +225,15 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             public Boolean call(String text) {
                 int withdrawal = (int) StringUtils.convertToNumeric(text, false);
                 int min = checkSelectedBankMinimumWithdrawal();
-                return (withdrawal > 0) && (withdrawal > min);
+                int deposit = (int) StringUtils.convertToNumeric(totalBalance.getText().toString(), false);
+                return (withdrawal > 0) && (withdrawal > min) && (withdrawal <= deposit);
             }
         });
 
         Observable<Boolean> allField = nominalMapper.map(new Func1<Boolean, Boolean>() {
             @Override
             public Boolean call(Boolean isValidNominal) {
-                return isValidNominal && isBankSelected();
+                 return isValidNominal && isBankSelected();
             }
         });
 
@@ -272,6 +273,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         presenter.getWithdrawForm();
 
+    }
+
+    private void checkDepositIsSufficient(int withdrawal) {
+        int deposit = (int) StringUtils.convertToNumeric(totalBalance.getText().toString(), false);
+        if(withdrawal > deposit){
+            showErrorWithdrawal(getStringResource(R.string.error_withdraw_exceed_balance));
+        }
     }
 
     private boolean checkMinimumWithdrawal(int withdrawal) {
@@ -321,7 +329,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
 
     public void canProceed(TextView textView, boolean can) {
-//        proceed.setEnabled(can);
         if (can) {
             textView.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
             textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
@@ -352,8 +359,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
-    public void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount) {
+    public void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank) {
         bankAdapter.setList(bankAccount);
+        bankAdapter.setDefault(defaultBank);
     }
 
     @Override
@@ -428,16 +436,20 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case BANK_INTENT:
+            case BANK_SETTING_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccountViewModel model = new BankAccountViewModel();
-                    model.setBankId(Integer.parseInt(parcelable.getBankId()));
-                    model.setBankName(parcelable.getBankName());
-                    model.setBankAccountId(parcelable.getAccountId());
-                    model.setBankAccountName(parcelable.getAccountName());
-                    model.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAdapter.addItem(model);
-                    snackBarInfo.setText(getActivity().getString(R.string.success_add_bank));
+//                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
+//                    BankAccountViewModel model = new BankAccountViewModel();
+//                    model.setBankId(Integer.parseInt(parcelable.getBankId()));
+//                    model.setBankName(parcelable.getBankName());
+//                    model.setBankAccountId(parcelable.getAccountId());
+//                    model.setBankAccountName(parcelable.getAccountName());
+//                    model.setBankAccountNumber(parcelable.getAccountNumber());
+//                    model.setChecked(true);
+//                    bankAdapter.addItem(model);
+//                    bankAdapter.changeItemSelected(listBank.size()-2);
+//                    snackBarInfo.setText(getActivity().getString(R.string.success_add_bank));
+                    presenter.refreshBankList();
                 }
                 break;
             case CONFIRM_PASSWORD_INTENT:
