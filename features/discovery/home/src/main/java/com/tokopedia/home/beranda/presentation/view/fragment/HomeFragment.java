@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -193,11 +194,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    private AppBarLayout appBarLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mainToolbar = view.findViewById(R.id.toolbar);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.sw_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
@@ -884,6 +888,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onScrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
+        if (appBarLayout != null) appBarLayout.setExpanded(true);
     }
 
     /**

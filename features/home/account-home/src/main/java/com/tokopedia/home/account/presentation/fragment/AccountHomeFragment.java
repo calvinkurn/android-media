@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -18,23 +19,18 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
-import com.tokopedia.home.account.presentation.BuyerAccount;
-import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
-import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
-import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 
 import java.util.ArrayList;
@@ -42,24 +38,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.http.HEAD;
-
 /**
  * @author okasurya on 7/16/18.
  */
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
-        AccountHome.View, NotificationListener {
-
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private AccountHomePagerAdapter adapter;
-
-    private BadgeView badgeView;
-    private Toolbar toolbar;
-    private ImageButton menuNotification;
+        AccountHome.View, NotificationListener, FragmentListener {
 
     @Inject
     AccountHome.Presenter presenter;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private AppBarLayout appBarLayout;
+    private AccountHomePagerAdapter adapter;
+    private BadgeView badgeView;
+    private Toolbar toolbar;
+    private ImageButton menuNotification;
+    private int counterNumber = 0;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -95,7 +89,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if(!hidden) presenter.sendUserAttributeTracker();
+        if (!hidden) presenter.sendUserAttributeTracker();
     }
 
     public void setPage() {
@@ -136,6 +130,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     private void initView(View view) {
         setToolbar(view);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
         setAdapter();
@@ -165,10 +160,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
+
+        onNotifyBadgeNotification(counterNumber);
     }
 
     @Override
     public void onNotifyBadgeNotification(int number) {
+        this.counterNumber = number;
         if (menuNotification == null || getActivity() == null)
             return;
         if (badgeView == null)
@@ -183,7 +181,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void showLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof CustomerView) {
-            ((BaseAccountView)currentFragment).showLoading();
+            ((BaseAccountView) currentFragment).showLoading();
         }
     }
 
@@ -191,7 +189,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void hideLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof CustomerView) {
-            ((BaseAccountView)currentFragment).hideLoading();
+            ((BaseAccountView) currentFragment).hideLoading();
         }
     }
 
@@ -199,7 +197,17 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void showError(String message) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof CustomerView) {
-            ((BaseAccountView)currentFragment).showError(message);
+            ((BaseAccountView) currentFragment).showError(message);
         }
+    }
+
+    @Override
+    public void onScrollToTop() {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof FragmentListener) {
+            ((FragmentListener) currentFragment).onScrollToTop();
+        }
+        if (appBarLayout != null)
+            appBarLayout.setExpanded(true);
     }
 }

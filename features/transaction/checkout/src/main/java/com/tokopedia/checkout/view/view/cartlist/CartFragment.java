@@ -103,6 +103,7 @@ public class CartFragment extends BaseCheckoutFragment implements
         RefreshHandler.OnRefreshHandlerListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
+    private View toolbar;
     private View parentView;
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
@@ -130,7 +131,7 @@ public class CartFragment extends BaseCheckoutFragment implements
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
 
-    private ActionListener mDataPasserListener;
+//    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -232,12 +233,13 @@ public class CartFragment extends BaseCheckoutFragment implements
     }
 
     private void setupToolbar(View view) {
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        Toolbar appbar = view.findViewById(R.id.toolbar);
         if (isToolbarWithBackButton) {
-            toolbar.addView(toolbarRemoveWithBackView());
+            toolbar = toolbarRemoveWithBackView();
         } else {
-            toolbar.addView(toolbarRemoveView());
+            toolbar = toolbarRemoveView();
         }
+        appbar.addView(toolbar);
     }
 
     private ToolbarRemoveWithBackView toolbarRemoveWithBackView() {
@@ -570,6 +572,7 @@ public class CartFragment extends BaseCheckoutFragment implements
         refreshHandler.finishRefresh();
         this.cartListData = cartListData;
         cartListAdapter.resetData();
+        rlContent.setVisibility(View.VISIBLE);
 
         CartItemPromoHolderData cartItemPromoHolderData;
         if (cartListData.getAutoApplyData() != null && cartListData.getAutoApplyData().isSuccess()) {
@@ -621,6 +624,7 @@ public class CartFragment extends BaseCheckoutFragment implements
             getActivity().invalidateOptionsMenu();
         }
         cartListAdapter.checkForShipmentForm();
+        setVisibilityRemoveButton(true);
     }
 
     private void showErrorLayout(String message) {
@@ -828,6 +832,7 @@ public class CartFragment extends BaseCheckoutFragment implements
         cartPageAnalytics.eventViewAtcCartImpressionCartEmpty();
         refreshHandler.finishRefresh();
         bottomLayout.setVisibility(View.GONE);
+        rlContent.setVisibility(View.GONE);
         mIsMenuVisible = false;
         getActivity().invalidateOptionsMenu();
 
@@ -889,6 +894,18 @@ public class CartFragment extends BaseCheckoutFragment implements
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
         }
+        setVisibilityRemoveButton(false);
+    }
+
+    private void setVisibilityRemoveButton(boolean state) {
+        if (toolbar != null) {
+            if (toolbar instanceof ToolbarRemoveView) {
+                ((ToolbarRemoveView)toolbar).setVisibilityRemove(state);
+            } else if (toolbar instanceof ToolbarRemoveWithBackView) {
+                ((ToolbarRemoveWithBackView)toolbar).setVisibilityRemove(state);
+            }
+        }
+        notifyBottomCartParent();
     }
 
     @Override
@@ -932,9 +949,25 @@ public class CartFragment extends BaseCheckoutFragment implements
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            cartListAdapter.resetData();
+            dPresenter.processInitialGetCartData();
+            notifyBottomCartParent();
+        }
+    }
+
+    @Override
+    protected void loadData() {
+        super.loadData();
+        cartListAdapter.resetData();
+        dPresenter.processInitialGetCartData();
+    }
+
+    @Override
     public void renderLoadGetCartData() {
         bottomLayout.setVisibility(View.GONE);
-        notifyBottomCartParent();
     }
 
     @Override
@@ -1115,11 +1148,11 @@ public class CartFragment extends BaseCheckoutFragment implements
 //        }
 //    }
 
-    public interface ActionListener {
-
-        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
-
-    }
+//    public interface ActionListener {
+//
+//        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
+//
+//    }
 
     @Override
     protected String getScreenName() {
