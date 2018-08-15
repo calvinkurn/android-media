@@ -25,6 +25,8 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.graphql.data.GraphqlClient;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -176,6 +178,11 @@ public class TravelPassengerBookingFragment extends BaseDaggerFragment
     @Override
     public int getSpinnerPosition() {
         return spTitle.getSpinnerPosition();
+    }
+
+    @Override
+    public void renderPassengerList(List<TravelPassenger> travelPassengerList) {
+
     }
 
     @Override

@@ -1,20 +1,22 @@
 package com.tokopedia.common.travel.presentation;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.domain.GetTravelPassengersUseCase;
 import com.tokopedia.common.travel.domain.entity.ResponseTravelPassengerList;
+import com.tokopedia.common.travel.domain.entity.TravelPassengerEntity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
 import com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
-import okhttp3.Response;
 import rx.Subscriber;
 
 /**
@@ -52,7 +54,23 @@ public class TravelPassengerBookingPresenter extends BaseDaggerPresenter<TravelP
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 ResponseTravelPassengerList responseTravelPassengerList = graphqlResponse.getData(ResponseTravelPassengerList.class);
-                Log.d("TAG", "onNext: " + responseTravelPassengerList.getTravelPassengerListEntity().getTravelPassengerEntityList().size());
+                List<TravelPassengerEntity> travelPassengerEntities = responseTravelPassengerList.getTravelPassengerListEntity().getTravelPassengerEntityList();
+
+                List<TravelPassenger> travelPassengerList = new ArrayList<>();
+                for (TravelPassengerEntity travelPassengerEntity : travelPassengerEntities) {
+                    TravelPassenger travelPassenger = new TravelPassenger();
+                    travelPassenger.setPhoneNumber(travelPassengerEntity.getPhoneNumber());
+                    travelPassenger.setBirthDate(travelPassengerEntity.getBirthDate());
+                    travelPassenger.setId(travelPassengerEntity.getId());
+                    travelPassenger.setIdentityNumber(travelPassengerEntity.getIdNumber());
+                    travelPassenger.setIsBuyer(travelPassengerEntity.getIsBuyer());
+                    travelPassenger.setName(travelPassengerEntity.getName());
+                    travelPassenger.setPaxType(travelPassengerEntity.getPaxType());
+                    travelPassenger.setSalutationId(travelPassengerEntity.getSalutationId());
+                    travelPassenger.setUserId(travelPassengerEntity.getUserId());
+                    travelPassengerList.add(travelPassenger);
+                }
+                getView().renderPassengerList(travelPassengerList);
             }
         });
     }
@@ -123,5 +141,11 @@ public class TravelPassengerBookingPresenter extends BaseDaggerPresenter<TravelP
             default:
                 return 0;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        detachView();
+        getTravelPassengersUseCase.unsubscribe();
     }
 }
