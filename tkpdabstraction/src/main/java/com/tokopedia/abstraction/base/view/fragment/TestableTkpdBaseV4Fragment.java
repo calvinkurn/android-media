@@ -4,8 +4,6 @@ import android.support.annotation.RestrictTo;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 
-import dagger.Component;
-
 /**
  * Created by meta on 19/06/18.
  */
