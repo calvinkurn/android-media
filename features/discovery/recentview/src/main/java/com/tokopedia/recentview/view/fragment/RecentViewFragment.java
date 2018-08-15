@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.recentview.R;
@@ -169,7 +169,7 @@ public class RecentViewFragment extends BaseDaggerFragment
     @Override
     public void onEmptyGetRecentView() {
         adapter.dismissLoading();
-        getActivity().finish();
+        adapter.showEmpty();
     }
 
     @Override

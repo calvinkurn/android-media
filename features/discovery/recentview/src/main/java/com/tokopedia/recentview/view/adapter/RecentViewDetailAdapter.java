@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
@@ -20,14 +21,16 @@ import java.util.List;
 
 public class RecentViewDetailAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private List<Visitable> list;
+    private final List<Visitable> list;
     private final RecentViewTypeFactory typeFactory;
-    private LoadingModel loadingModel;
+    private final LoadingModel loadingModel;
+    private final EmptyResultViewModel emptyResultViewModel;
 
     public RecentViewDetailAdapter(RecentViewTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
         this.loadingModel = new LoadingModel();
+        this.emptyResultViewModel = new EmptyResultViewModel();
     }
 
     @Override
@@ -53,6 +56,31 @@ public class RecentViewDetailAdapter extends RecyclerView.Adapter<AbstractViewHo
         return list.get(position).type(typeFactory);
     }
 
+    private void add(Visitable visitable) {
+        int position = this.list.size();
+        if (this.list.add(visitable)) {
+            notifyItemInserted(position);
+        }
+    }
+
+    private void remove(Visitable visitable) {
+        int position = this.list.indexOf(visitable);
+        if (this.list.remove(visitable)) {
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void showEmpty() {
+        if (!this.list.contains(emptyResultViewModel)) {
+            add(emptyResultViewModel);
+        }
+    }
+
+    public void hideEmpty() {
+        if (this.list.contains(emptyResultViewModel)) {
+            remove(emptyResultViewModel);
+        }
+    }
 
     public void showLoading() {
         this.list.add(loadingModel);
