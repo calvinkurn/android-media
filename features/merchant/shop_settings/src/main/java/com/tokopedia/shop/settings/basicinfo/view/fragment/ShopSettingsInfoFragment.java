@@ -53,8 +53,8 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     private ImageView ivShopMembership;
     private TextView tvMembershipName;
     private TextView tvMembershipDescription;
-    private View lvShopBasicInfo;
     private boolean needReload;
+    private View vgShopInfoContainer;
 
     public static ShopSettingsInfoFragment newInstance() {
         return new ShopSettingsInfoFragment();
@@ -85,9 +85,9 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         ivShopMembership = view.findViewById(R.id.ivShopMembership);
         tvMembershipName = view.findViewById(R.id.tvMembershipName);
         tvMembershipDescription = view.findViewById(R.id.tvMembershipDescription);
+        vgShopInfoContainer = view.findViewById(R.id.vgShopInfoContainer);
 
-        lvShopBasicInfo = view.findViewById(R.id.lvShopBasicInfo);
-        lvShopBasicInfo.setOnClickListener(new View.OnClickListener() {
+        vgShopInfoContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ShopEditBasicInfoActivity.class);

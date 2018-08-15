@@ -12,8 +12,8 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageView"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         tools:srcCompat="@drawable/ic_calendar_grey" />
