@@ -141,8 +141,8 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        getActivity().finish();
                         getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
                     }
                 })
                 .show();

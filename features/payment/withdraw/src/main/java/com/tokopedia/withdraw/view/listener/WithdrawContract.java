@@ -22,7 +22,7 @@ public class WithdrawContract {
 
         void hideLoading();
 
-        void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank);
+        void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank, boolean verifiedAccount);
 
         void showError(String throwable);
 

@@ -48,5 +48,10 @@
     <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses penarikan paling lama 48 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
     <string name="minimal_withdrawal">Jumlah minimum penarikan dana sebesar Rp %1$s</string>
 
+    <string name="alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
+    <string name="alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
+    <string name="alert_not_verified_yet_positive">Verifikasi</string>
+    <string name="alert_not_verified_yet_negative">Tidak</string>
+
 
 </resources>

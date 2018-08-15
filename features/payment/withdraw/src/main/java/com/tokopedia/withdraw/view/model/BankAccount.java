@@ -176,4 +176,7 @@ public class BankAccount {
         this.isDefaultBank = isDefaultBank;
     }
 
+    public int getIsVerifiedAccount() {
+        return isVerifiedAccount;
+    }
 }

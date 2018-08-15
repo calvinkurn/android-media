@@ -48,6 +48,9 @@ public class DepositInfoMapper implements Func1<Response<DataResponse<InfoDeposi
             if(data.getIsDefaultBank() == 1){
                 model.setDefaultBank(i);
             }
+            if(data.getIsVerifiedAccount() == 1){
+                model.setVerifiedAccount(true);
+            }
 
             list.add(item);
         }

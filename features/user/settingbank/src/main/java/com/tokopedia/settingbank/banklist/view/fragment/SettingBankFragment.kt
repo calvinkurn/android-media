@@ -354,7 +354,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
                 REQUEST_EDIT_BANK -> resultMessage = getString(R.string.success_edit_bank_account)
             }
             presenter.refreshBankList(resultMessage)
-            activity?.setResult(Activity.RESULT_OK,  Intent())
+
         }
 
     }

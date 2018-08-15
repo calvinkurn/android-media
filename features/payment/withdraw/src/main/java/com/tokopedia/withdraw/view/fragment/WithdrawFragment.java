@@ -11,6 +11,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -359,9 +360,32 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
-    public void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank) {
+    public void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank, boolean verifiedAccount) {
         bankAdapter.setList(bankAccount);
         bankAdapter.setDefault(defaultBank);
+        if(!verifiedAccount){
+            showMustVerify();
+        }
+    }
+
+    private void showMustVerify() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(getActivity().getString(R.string.alert_not_verified_yet_title))
+                .setMessage(getActivity().getString(R.string.alert_not_verified_yet_body))
+                .setPositiveButton(getActivity().getString(R.string.alert_not_verified_yet_positive), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton(getActivity().getString(R.string.alert_not_verified_yet_negative), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getActivity().finish();
+                    }
+                })
+
+                .show();
     }
 
     @Override
@@ -438,17 +462,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             case BANK_INTENT:
             case BANK_SETTING_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-//                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-//                    BankAccountViewModel model = new BankAccountViewModel();
-//                    model.setBankId(Integer.parseInt(parcelable.getBankId()));
-//                    model.setBankName(parcelable.getBankName());
-//                    model.setBankAccountId(parcelable.getAccountId());
-//                    model.setBankAccountName(parcelable.getAccountName());
-//                    model.setBankAccountNumber(parcelable.getAccountNumber());
-//                    model.setChecked(true);
-//                    bankAdapter.addItem(model);
-//                    bankAdapter.changeItemSelected(listBank.size()-2);
-//                    snackBarInfo.setText(getActivity().getString(R.string.success_add_bank));
                     presenter.refreshBankList();
                 }
                 break;

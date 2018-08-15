@@ -12,6 +12,7 @@ public class InfoDepositDomainModel {
     private String useableDepositIdr;
     private List<BankAccountViewModel> bankAccount = null;
     private int defaultBank;
+    private boolean verifiedAccount;
 
     public int getUseableDeposit() {
         return useableDeposit;
@@ -43,5 +44,13 @@ public class InfoDepositDomainModel {
 
     public void setDefaultBank(int defaultBank) {
         this.defaultBank = defaultBank;
+    }
+
+    public boolean getVerifiedAccount() {
+        return verifiedAccount;
+    }
+
+    public void setVerifiedAccount(boolean verifiedAccount) {
+        this.verifiedAccount = verifiedAccount;
     }
 }
