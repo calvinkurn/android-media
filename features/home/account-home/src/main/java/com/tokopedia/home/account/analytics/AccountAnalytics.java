@@ -1,8 +1,11 @@
 package com.tokopedia.home.account.analytics;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.*;
@@ -13,13 +16,16 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 public class AccountAnalytics {
 
     private AnalyticTracker analyticTracker;
+    private Context context;
 
     public AccountAnalytics(Context context) {
         if (context == null)
             return;
 
-        if (context.getApplicationContext() instanceof AccountHomeRouter) {
-            analyticTracker = ((AccountHomeRouter) context.getApplicationContext())
+        this.context = context;
+
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
+            analyticTracker = ((AbstractionRouter) context.getApplicationContext())
                     .getAnalyticTracker();
         }
     }
@@ -96,6 +102,7 @@ public class AccountAnalytics {
         );
     }
 
+
     public void eventClickApplicationSetting(String item) {
         if (analyticTracker == null)
             return;
@@ -118,5 +125,9 @@ public class AccountAnalytics {
                 String.format("%s %s", CLICK, item),
                 ""
         );
+    }
+
+    public void setUserAttributes(UserAttributeData data) {
+        ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
     }
 }

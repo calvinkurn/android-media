@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.widget.CustomSwitchPreference;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.*;

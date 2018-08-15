@@ -91,9 +91,7 @@ public class GlobalNavAnalytics {
     }
 
     public void trackFirstTime(Context context) {
-        // TODO: 8/10/18 oka analytics appsflyer
-//        TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
-
+        ((GlobalNavRouter) context.getApplicationContext()).sendAnalyticsFirstTime();
         LocalCacheHandler cache = new LocalCacheHandler(context, GlobalNavConstant.Cache.KEY_FIRST_TIME);
         cache.putBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, true);
         cache.applyEditor();

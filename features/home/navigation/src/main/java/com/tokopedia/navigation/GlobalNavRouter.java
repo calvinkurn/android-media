@@ -32,4 +32,6 @@ public interface GlobalNavRouter {
     int getCartCount(Context context);
 
     void setCartCount(Context context, int count);
+
+    void sendAnalyticsFirstTime();
 }

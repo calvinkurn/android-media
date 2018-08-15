@@ -9,7 +9,7 @@ import com.tokopedia.home.account.presentation.listener.BaseAccountView;
  */
 public interface AccountHome {
     interface Presenter extends CustomerPresenter<View> {
-
+        void sendUserAttributeTracker();
     }
 
     interface View extends BaseAccountView {

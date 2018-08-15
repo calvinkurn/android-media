@@ -40,6 +40,8 @@ import com.tokopedia.navigation_common.listener.NotificationListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.http.HEAD;
 
 /**
@@ -55,6 +57,9 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private BadgeView badgeView;
     private Toolbar toolbar;
     private ImageButton menuNotification;
+
+    @Inject
+    AccountHome.Presenter presenter;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -79,6 +84,18 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setPage();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.sendUserAttributeTracker();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden) presenter.sendUserAttributeTracker();
     }
 
     public void setPage() {
@@ -114,6 +131,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
                         );
 
         component.inject(this);
+        presenter.attachView(this);
     }
 
     private void initView(View view) {

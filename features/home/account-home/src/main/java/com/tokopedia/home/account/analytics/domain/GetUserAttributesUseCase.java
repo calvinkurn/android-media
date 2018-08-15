@@ -11,7 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -27,7 +27,7 @@ import rx.functions.Func1;
 /**
  * @author okasurya on 8/13/18.
  */
-public class GetUserAttributesUseCase extends UseCase<AccountModel> {
+public class GetUserAttributesUseCase extends UseCase<UserAttributeData> {
     private static final long cacheDuration = TimeUnit.HOURS.toSeconds(3);
     private static final String PARAM_USER_ID = "userID"; //do not change this key
     private static final String OPERATION_NAME_VALUE = "ConsumerDrawerData";
@@ -46,13 +46,13 @@ public class GetUserAttributesUseCase extends UseCase<AccountModel> {
     }
 
     @Override
-    public Observable<AccountModel> createObservable(RequestParams requestParams) {
+    public Observable<UserAttributeData> createObservable(RequestParams requestParams) {
         return Observable.just(requestParams)
                 .map(param -> {
                     String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_user_attribute);
                     Map<String, Object> variables = new HashMap<>();
-                    variables.put(PARAM_USER_ID, userSession.getUserId())
-                    return new GraphqlRequest(query, AccountModel.class, variables);
+                    variables.put(PARAM_USER_ID, Integer.parseInt(userSession.getUserId()));
+                    return new GraphqlRequest(query, UserAttributeData.class, variables);
                 })
                 .flatMap((Func1<GraphqlRequest, Observable<GraphqlResponse>>) request -> {
                     GraphqlCacheStrategy cacheStrategy =
@@ -62,6 +62,12 @@ public class GetUserAttributesUseCase extends UseCase<AccountModel> {
                     graphqlUseCase.addRequest(request);
                     graphqlUseCase.setCacheStrategy(cacheStrategy);
                     return graphqlUseCase.createObservable(null);
-                }).map(graphqlResponse -> graphqlResponse.getData(AccountModel.class));
+                }).map(graphqlResponse -> graphqlResponse.getData(UserAttributeData.class));
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        graphqlUseCase.unsubscribe();
     }
 }
