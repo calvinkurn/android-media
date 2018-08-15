@@ -67,7 +67,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     public void initialize() {
-        initializeDrawer();
+         initializeDrawer();
     }
 
     public void initializeDrawer() {
