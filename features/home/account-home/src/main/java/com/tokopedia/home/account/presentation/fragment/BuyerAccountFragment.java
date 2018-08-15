@@ -22,6 +22,7 @@ import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,8 @@ import javax.inject.Inject;
 /**
  * @author okasurya on 7/16/18.
  */
-public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAccount.View {
+public class BuyerAccountFragment extends BaseAccountFragment implements
+        BuyerAccount.View, FragmentListener {
 
     public static final String TAG = BuyerAccountFragment.class.getSimpleName();
     private static final String BUYER_DATA = "buyer_data";
@@ -130,5 +132,12 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
         }
 
 
+    }
+
+    @Override
+    public void onScrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 }

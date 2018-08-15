@@ -87,9 +87,7 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
         loadData();
     }
 
-    protected void loadData() {
-        
-    }
+    protected void loadData() { }
 
     protected abstract void onFirstTimeLaunched();
 

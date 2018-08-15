@@ -932,6 +932,14 @@ public class CartFragment extends BaseCheckoutFragment implements
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            dPresenter.processInitialGetCartData();
+        }
+    }
+
+    @Override
     public void renderLoadGetCartData() {
         bottomLayout.setVisibility(View.GONE);
         notifyBottomCartParent();

@@ -28,6 +28,7 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.InfoCardView;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ import javax.inject.Inject;
  * @author okasurya on 7/16/18.
  */
 public class SellerAccountFragment extends BaseAccountFragment implements AccountItemListener,
-        SellerAccount.View {
+        SellerAccount.View, FragmentListener {
 
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
@@ -146,5 +147,11 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         if (getView() != null) {
             ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onScrollToTop() {
+        if (recyclerView != null)
+            recyclerView.scrollToPosition(0);
     }
 }
