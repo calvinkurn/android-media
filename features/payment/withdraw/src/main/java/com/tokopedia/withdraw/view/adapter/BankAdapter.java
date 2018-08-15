@@ -146,13 +146,14 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 Context context = viewHolder.itemView.getContext();
                 BankAccountViewModel thisItem = listBank.get(position);
 
-                View.OnClickListener l = v -> {
+                View.OnClickListener l = (View v) -> {
                     if (selectedItem >= 0 && selectedItem < listBank.size()) {
                         listBank.get(selectedItem).setChecked(false);
                     }
                     listBank.get(position).setChecked(true);
                     selectedItem = position;
                     notifyItemRangeChanged(0, listBank.size());
+                    this.context.itemSelected();
                 };
                 holder.itemView.setOnClickListener(l);
 

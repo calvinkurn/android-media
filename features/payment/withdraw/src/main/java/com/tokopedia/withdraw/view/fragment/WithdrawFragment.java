@@ -3,6 +3,7 @@ package com.tokopedia.withdraw.view.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,8 +25,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -49,9 +52,14 @@ import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View {
 
@@ -79,6 +87,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private List<BankAccountViewModel> listBank;
     private NetworkErrorHelper progressDialog;
     private BottomSheetDialog confirmPassword;
+    private Observable<String> nominalObservable;
+    private Observable<String> listBankObservable;
+    private List<String> listBankWithdrawal;
 
 
     @Override
@@ -153,6 +164,16 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        listBank = new ArrayList<>();
+        bankAdapter = BankAdapter.createAdapter(this, listBank);
+        bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        bankRecyclerView.setAdapter(bankAdapter);
+        bankAdapter.setList(listBank);
+
+
+        listBankWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
+                "bank rakyat indonesia");
+
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_8)
                 , MethodChecker.getDrawable(getActivity(), R.drawable.divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
@@ -186,21 +207,43 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         }
 
 
-
         totalWithdrawal.addTextChangedListener(currencyTextWatcher);
         totalWithdrawal.setText("");
 
         totalWithdrawal.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                int withdrawal = (int) StringUtils.convertToNumeric(s.toString(),false);
-                if(withdrawal < 10000){
-                    showErrorWithdrawal(getActivity().getString(R.string.minimal_withdrawal));
-                }else{
-                    showErrorWithdrawal(null);
-                }
+                int withdrawal = (int) StringUtils.convertToNumeric(s.toString(), false);
+                checkMinimumWithdrawal(withdrawal);
             }
         });
+
+        nominalObservable = EventsWatcher.text(totalWithdrawal);
+
+        Observable<Boolean> nominalMapper = nominalObservable.map(new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String text) {
+                int withdrawal = (int) StringUtils.convertToNumeric(text, false);
+                int min = checkSelectedBankMinimumWithdrawal();
+                return (withdrawal > 0) && (withdrawal > min);
+            }
+        });
+
+        Observable<Boolean> allField = nominalMapper.map(new Func1<Boolean, Boolean>() {
+            @Override
+            public Boolean call(Boolean isValidNominal) {
+                return isValidNominal && isBankSelected();
+            }
+        });
+
+        allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton));
+        allField.subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                canProceed((TextView) withdrawButton, aBoolean);
+            }
+        });
+
 
         info.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,12 +272,63 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         presenter.getWithdrawForm();
 
-        listBank = new ArrayList<>();
-        bankAdapter = BankAdapter.createAdapter(this, listBank);
-        bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        bankRecyclerView.setAdapter(bankAdapter);
-        bankAdapter.setList(listBank);
+    }
 
+    private boolean checkMinimumWithdrawal(int withdrawal) {
+        if(withdrawal == 0){
+            showErrorWithdrawal(null);
+            return false;
+        }
+        int min = checkSelectedBankMinimumWithdrawal();
+        if (withdrawal < min) {
+            showErrorWithdrawal(getActivity().getString(R.string.minimal_withdrawal, String.valueOf(min)));
+            return false;
+        } else {
+            showErrorWithdrawal(null);
+            return true;
+        }
+    }
+
+    private int checkSelectedBankMinimumWithdrawal() {
+        BankAccountViewModel selectedBank = bankAdapter.getSelectedBank();
+        if(selectedBank == null){
+            return 0;
+        }
+        String selectedBankName = selectedBank.getBankName().toLowerCase();
+        if (inBankGroup(selectedBankName)) {
+            return 10000;
+        } else {
+            return 50000;
+        }
+    }
+
+    private boolean inBankGroup(String selectedBankName) {
+        for (String s : listBankWithdrawal) {
+            if(selectedBankName.contains(s)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isBankSelected() {
+        if(bankAdapter == null){
+            return false;
+        }
+        BankAccountViewModel bankAccountViewModel = bankAdapter.getSelectedBank();
+        return bankAccountViewModel != null;
+    }
+
+
+    public void canProceed(TextView textView, boolean can) {
+//        proceed.setEnabled(can);
+        if (can) {
+            textView.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
+            textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+        } else {
+            textView.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
+            textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+        }
     }
 
     @Override
@@ -280,7 +374,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showErrorWithdrawal(String stringResource) {
-        if(TextUtils.isEmpty(stringResource)){
+        if (TextUtils.isEmpty(stringResource)) {
             withdrawError.setVisibility(View.GONE);
             return;
         }
@@ -321,11 +415,20 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
+    public void itemSelected() {
+        String withdrawalString = totalWithdrawal.getText().toString();
+        int withdrawal = (int) StringUtils.convertToNumeric(withdrawalString, false);
+        boolean isValid = checkMinimumWithdrawal(withdrawal);
+        canProceed((TextView) withdrawButton, isValid);
+        withdrawButton.setEnabled(isValid);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case BANK_INTENT:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
                     BankAccountViewModel model = new BankAccountViewModel();
                     model.setBankId(Integer.parseInt(parcelable.getBankId()));
@@ -338,6 +441,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 }
                 break;
             case CONFIRM_PASSWORD_INTENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    getActivity().finish();
+                }
                 break;
             default:
                 break;

@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.view.util;
+package com.tokopedia.abstraction.common.utils.view;
 
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,14 +12,12 @@ import rx.functions.Action1;
 
 /**
  * Created by stevenfredian on 7/13/17.
- * see Properties on abstraction
  */
 
-@Deprecated
-public final class Properties {
+public final class PropertiesEventsWatcher {
 
     // no instances of helper class
-    private Properties() { }
+    private PropertiesEventsWatcher() { }
 
     /**
      * Updates the <em>enabled</em> property of a view for each event received.

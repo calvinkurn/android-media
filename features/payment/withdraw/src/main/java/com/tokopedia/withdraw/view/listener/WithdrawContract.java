@@ -39,6 +39,8 @@ public class WithdrawContract {
         void goToAddBank();
 
         void goToSettingBank();
+
+        void itemSelected();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

@@ -1,5 +1,6 @@
 package com.tokopedia.withdraw.view.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -141,6 +142,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         getActivity().finish();
+                        getActivity().setResult(Activity.RESULT_OK);
                     }
                 })
                 .show();

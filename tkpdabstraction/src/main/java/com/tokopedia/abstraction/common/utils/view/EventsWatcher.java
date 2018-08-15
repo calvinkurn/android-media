@@ -1,4 +1,9 @@
-package com.tokopedia.profilecompletion.view.util;
+package com.tokopedia.abstraction.common.utils.view;
+
+/**
+ * @author by StevenFredian on 14/08/18.
+ */
+
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,20 +17,10 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-/**
- * Created by stevenfredian on 7/13/17.
- */
-
-
-/**
-  * Use @EventsWatcher on abstraction
- */
-
-@Deprecated
-public class Events {
+public class EventsWatcher {
 
     // no instances for helper class
-    private Events() {
+    private EventsWatcher() {
     }
 
     /*
@@ -84,9 +79,10 @@ public class Events {
         view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                subject.onNext(i+1);
+                subject.onNext(i + 1);
             }
         });
         return subject;
     }
 }
+

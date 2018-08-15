@@ -37,7 +37,7 @@
     <string name="title_info_withdrawal_4">Biaya Tambahan Ditanggung Pengguna</string>
     <string name="exceed_limit_withdraw">Anda telah melewati batas maksimal penarikan dana per hari</string>
 
-    <string name="error_withdraw_exceed_balance">Total penarikan melebihi saldo Anda</string>
+    <string name="error_withdraw_exceed_balance">Saldo Tokopedia Anda tidak mencukupi</string>
     <string name="withdrawal">Tarik Saldo</string>
     <string name="confirm_password">Konfirmasi dengan kata sandi akun Tokopedia Anda</string>
     <string name="tokopedia_password">Kata Sandi Tokopedia</string>
@@ -46,7 +46,7 @@
     <string name="alert_success_withdraw_title">Penarikan Saldo</string>
     <string name="alert_success_withdraw_positive">Ok</string>
     <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses penarikan paling lama 48 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
-    <string name="minimal_withdrawal">Jumlah minimum penarikan dana sebesar Rp 10.000</string>
+    <string name="minimal_withdrawal">Jumlah minimum penarikan dana sebesar Rp %1$s</string>
 
 
 </resources>

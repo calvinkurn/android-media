@@ -73,7 +73,6 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
             return;
         }
 
-
         if(selectedBank == null){
             getView().showError(getView().getStringResource(R.string.has_no_bank));
             return;

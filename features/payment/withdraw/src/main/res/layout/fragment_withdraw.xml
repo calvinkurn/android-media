@@ -22,7 +22,7 @@
             android:minHeight="@dimen/dp_48"
             android:padding="@dimen/dp_8"
             android:text="@string/title_action_withdraw"
-            android:textColor="#ffffff"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_13" />
 
         <ScrollView
@@ -92,6 +92,8 @@
                             android:layout_toLeftOf="@id/withdraw_all"
                             android:background="@null"
                             android:enabled="false"
+                            android:textStyle="bold"
+                            android:textColor="@color/black_70"
                             android:paddingTop="@dimen/dp_5" />
 
                     </RelativeLayout>
