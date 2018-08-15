@@ -76,6 +76,7 @@ ext {
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdTravelVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",

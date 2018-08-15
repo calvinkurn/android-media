@@ -10,7 +10,7 @@ android {
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdTrain']
+                arguments = ['targetModuleName': 'TkpdTravel']
             }
         }
     }
@@ -31,7 +31,7 @@ buildscript {
 project.ext {
     artifactId = 'common_travel'
     groupId = 'com.tokopedia.common.travel'
-    versionName = "${tkpdTrainVersion}"
+    versionName = "${tkpdTravelVersion}"
     artifactName ="commontravel-release"
 }
 

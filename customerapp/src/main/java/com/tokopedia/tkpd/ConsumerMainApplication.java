@@ -33,6 +33,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.common.travel.database.TravelDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -309,6 +310,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
         TrainDatabase.init(getApplicationContext());
+        TravelDatabase.init(getApplicationContext());
         TkpdFlight.initDatabase(getApplicationContext());
         PushNotification.initDatabase(getApplicationContext());
         Analytics.initDB(getApplicationContext());
