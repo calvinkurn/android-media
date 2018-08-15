@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,8 +26,13 @@ import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopShedulePresenter;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
+import com.tokopedia.shop.settings.common.util.ShopDateUtil;
+import com.tokopedia.shop.settings.common.widget.ImageLabelView;
 import com.tokopedia.shop.settings.common.widget.RadioButtonLabelView;
 import com.tokopedia.shop.settings.common.widget.SwitchLabelView;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -41,14 +48,12 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     private RadioButtonLabelView labelOpen;
     private RadioButtonLabelView labelClosed;
     private View vgScheduleSwitchContent;
-    private View vgCloseNowContent;
-    private View vgLabelEndCloseNow;
-    private TextView tvShopEndCloseNow;
-    private TextView tvShopStartClose;
-    private TextView tvShopEndClose;
     private TkpdHintTextInputLayout tilShopCloseNote;
     private EditText etShopCloseNote;
     private SwitchLabelView scheduleSwitch;
+    private ImageLabelView labelStartClose;
+    private ImageLabelView labelEndClose;
+
     //    private View vgOpen;
 //    private View vgClose;
 
@@ -68,8 +73,8 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
         labelClosed = findViewById(R.id.labelClose);
         scheduleSwitch = findViewById(R.id.scheduleSwitch);
         vgScheduleSwitchContent = findViewById(R.id.vgScheduleSwitchContent);
-        tvShopStartClose = findViewById(R.id.tvShopStartClose);
-        tvShopEndClose = findViewById(R.id.tvShopEndClose);
+        labelStartClose = findViewById(R.id.labelStartClose);
+        labelEndClose = findViewById(R.id.labelEndClose);
         tilShopCloseNote = findViewById(R.id.tilShopCloseNote);
         etShopCloseNote = findViewById(R.id.etShopCloseNote);
 
@@ -97,6 +102,26 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
                 } else {
                     hideCloseScheduleContent();
                 }
+            }
+        });
+        labelStartClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Test", "Test");
+                Date minDate = ShopDateUtil.getCurrentDate();
+                Calendar maxDateCalendar = ShopDateUtil.getCurrentCalendar();
+                maxDateCalendar.set(Calendar.HOUR_OF_DAY, ShopDateUtil.DEFAULT_LAST_HOUR_IN_DAY);
+                maxDateCalendar.set(Calendar.MINUTE, ShopDateUtil.DEFAULT_LAST_MIN_IN_DAY);
+                maxDateCalendar.set(Calendar.SECOND, ShopDateUtil.DEFAULT_LAST_SEC_IN_DAY);
+
+//                Date selectedDate = ShopDateUtil.unixToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
+//                getView().showDepartureDatePickerDialog(selectedDate, minDate, maxDateCalendar.getTime());
+            }
+        });
+        labelEndClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Test", "Test");
             }
         });
 

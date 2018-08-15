@@ -20,6 +20,8 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
+        <attr name="ilv_drawable" format="reference" />
+        <attr name="ilv_content_hint" format="string" />
     </declare-styleable>
 
     <declare-styleable name="SwitchLabelView">

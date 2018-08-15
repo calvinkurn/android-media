@@ -12,17 +12,13 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.shop.settings.R;
-
-/**
- * Created by hendry on 15/08/18.
- */
 
 public class ImageLabelView extends FrameLayout {
     private String titleText;
@@ -35,6 +31,7 @@ public class ImageLabelView extends FrameLayout {
     ImageView imageView;
     private int drawableRes;
     private TextView tvContent;
+    private String contentHint;
 
     public ImageLabelView(Context context) {
         super(context);
@@ -68,6 +65,7 @@ public class ImageLabelView extends FrameLayout {
         titleTextView.setTextColor(titleColorValue);
         imageView = view.findViewById(R.id.imageView);
         tvContent = view.findViewById(R.id.tvContent);
+        tvContent.setHint(contentHint);
         setImage(drawableRes);
     }
 
@@ -75,10 +73,11 @@ public class ImageLabelView extends FrameLayout {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ImageLabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.ImageLabelView_ilv_title);
-            titleColorValue = styledAttributes.getColor(R.styleable.ImageLabelView_ilv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+            titleColorValue = styledAttributes.getColor(R.styleable.ImageLabelView_ilv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ImageLabelView_ilv_title_text_style, Typeface.NORMAL);
-            titleTextSize = styledAttributes.getDimension(R.styleable.ImageLabelView_ilv_title_text_size, getResources().getDimension(R.dimen.sp_16));
-            drawableRes = styledAttributes.getResourceId(R.styleable.TitleCardView_tcv_loading_layout, 0);
+            titleTextSize = styledAttributes.getDimension(R.styleable.ImageLabelView_ilv_title_text_size, getResources().getDimension(R.dimen.sp_12));
+            drawableRes = styledAttributes.getResourceId(R.styleable.ImageLabelView_ilv_drawable, 0);
+            contentHint = styledAttributes.getString(R.styleable.ImageLabelView_ilv_content_hint);
         } finally {
             styledAttributes.recycle();
         }
@@ -104,11 +103,11 @@ public class ImageLabelView extends FrameLayout {
     }
 
     public void setContent(String content) {
-        if (TextUtils.isEmpty(content)) {
-            tvContent.setVisibility(View.GONE);
-        } else {
-            tvContent.setText(content);
-            tvContent.setVisibility(View.VISIBLE);
-        }
+        tvContent.setText(content);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return true;
     }
 }

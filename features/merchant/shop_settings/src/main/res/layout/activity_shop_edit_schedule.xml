@@ -65,48 +65,20 @@
                 tools:visibility="visible">
 
                 <com.tokopedia.shop.settings.common.widget.ImageLabelView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <LinearLayout
-                    android:id="@+id/vgLabelEndClose"
+                    android:id="@+id/labelStartClose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:minHeight="?android:attr/listPreferredItemHeight"
-                    android:orientation="horizontal">
+                    app:ilv_drawable="@drawable/ic_calendar_grey"
+                    app:ilv_title="@string/date_start_shop_close"
+                    app:ilv_content_hint="@string/hint_date"/>
 
-                    <android.support.v7.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_32"
-                        android:layout_height="@dimen/dp_32"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        app:srcCompat="@drawable/ic_calendar_grey" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/TextView.Micro.BlackDisabled"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/date_end_shop_close" />
-
-                        <TextView
-                            android:id="@+id/tvShopEndClose"
-                            style="@style/TextView.Title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_2"
-                            tools:text="Sen, 4 Juni 2018" />
-
-                    </LinearLayout>
-                </LinearLayout>
+                <com.tokopedia.shop.settings.common.widget.ImageLabelView
+                    android:id="@+id/labelEndClose"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:ilv_drawable="@drawable/ic_calendar_grey"
+                    app:ilv_title="@string/date_end_shop_close"
+                    app:ilv_content_hint="@string/hint_date"/>
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/tilShopCloseNote"
