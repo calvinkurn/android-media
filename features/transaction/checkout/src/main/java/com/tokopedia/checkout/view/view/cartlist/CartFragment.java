@@ -130,7 +130,7 @@ public class CartFragment extends BaseCheckoutFragment implements
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
 
-    private ActionListener mDataPasserListener;
+//    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -517,6 +517,7 @@ public class CartFragment extends BaseCheckoutFragment implements
     @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
+        notifyBottomCartParent();
     }
 
     @Override
@@ -940,9 +941,14 @@ public class CartFragment extends BaseCheckoutFragment implements
     }
 
     @Override
+    protected void loadData() {
+        super.loadData();
+        dPresenter.processInitialGetCartData();
+    }
+
+    @Override
     public void renderLoadGetCartData() {
         bottomLayout.setVisibility(View.GONE);
-        notifyBottomCartParent();
     }
 
     @Override
@@ -1123,11 +1129,11 @@ public class CartFragment extends BaseCheckoutFragment implements
 //        }
 //    }
 
-    public interface ActionListener {
-
-        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
-
-    }
+//    public interface ActionListener {
+//
+//        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
+//
+//    }
 
     @Override
     protected String getScreenName() {
