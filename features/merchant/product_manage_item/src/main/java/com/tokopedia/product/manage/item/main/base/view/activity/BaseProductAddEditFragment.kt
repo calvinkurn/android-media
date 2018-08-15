@@ -229,7 +229,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         saveDraft(false)
                         UnifyTracking.eventClickYesGoldMerchantAddProduct()
                         goToGoldMerchantPage()
-                        activity!!.finish()
+                        activity?.finish()
                     }
                     currentProductAddViewModel?.productPrice = productPrice
                 }

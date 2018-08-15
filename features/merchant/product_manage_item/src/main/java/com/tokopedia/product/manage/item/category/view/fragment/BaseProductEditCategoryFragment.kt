@@ -55,7 +55,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             productCategory = getParcelable(EXTRA_CATEGORY)?: ProductCategory()
             productCatalog = getParcelable(EXTRA_CATALOG)?: ProductCatalog()
             name = getString(EXTRA_NAME, "")
-            isCategoryLocked = getBoolean(EXTRA_CATEGORY_LOCKED)
+            isCategoryLocked = getBoolean(EXTRA_CATEGORY_LOCKED, false)
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_CATEGORY)) {
@@ -129,15 +129,18 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
 
     private fun onLabelCategoryClicked() {
         if (isCategoryLocked) {
-            val builder = AlertDialog.Builder(activity!!,
-                    R.style.AppCompatAlertDialogStyle)
-            builder.setTitle(R.string.product_category_locked)
-            builder.setMessage(R.string.product_category_locked_description)
-            builder.setCancelable(true)
-            builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
+            activity?.run {
+                val builder = AlertDialog.Builder(this,
+                        R.style.AppCompatAlertDialogStyle)
+                builder.setTitle(R.string.product_category_locked)
+                builder.setMessage(R.string.product_category_locked_description)
+                builder.setCancelable(true)
+                builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
 
-            val alert = builder.create()
-            alert.show()
+                val alert = builder.create()
+                alert.show()
+            }
+
         } else {
             if (appRouter != null && appRouter is ProductEditModuleRouter){
                 startActivityForResult((appRouter as ProductEditModuleRouter)
@@ -228,11 +231,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessLoadCatalog(keyword: String, departmentId: Long, catalogs: List<Catalog>) {
-        if (catalogs.isEmpty()) {
-            setVisibilityCatalog(false)
-        } else {
-            setVisibilityCatalog(true)
-        }
+        setVisibilityCatalog(!catalogs.isEmpty())
     }
 
     override fun onErrorLoadCatalog(errorMessage: String?) {
