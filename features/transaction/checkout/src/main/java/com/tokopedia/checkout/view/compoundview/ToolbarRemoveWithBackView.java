@@ -58,4 +58,10 @@ public class ToolbarRemoveWithBackView extends BaseCustomView {
         if (btnRemove != null)
             btnRemove.setOnClickListener(v -> clickRemove.onToolbarRemoveAllCart());
     }
+
+    public void setVisibilityRemove(boolean state) {
+        if (btnRemove != null) {
+            btnRemove.setVisibility(state ? VISIBLE : GONE);
+        }
+    }
 }
