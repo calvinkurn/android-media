@@ -51,7 +51,9 @@ public class ShippingCourierBottomsheet extends BottomSheets
         ShippingCourierBottomsheet shippingCourierBottomsheet =
                 new ShippingCourierBottomsheet();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        if (shippingCourierViewModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        }
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         shippingCourierBottomsheet.setArguments(bundle);
