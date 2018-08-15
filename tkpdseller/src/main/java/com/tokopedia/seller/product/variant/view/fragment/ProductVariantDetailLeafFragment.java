@@ -175,7 +175,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
                     if (TextUtils.isEmpty(sString)) {
                         stock = 1;
                     } else {
-                        stock = Integer.parseInt(sString);
+                        stock = (int)counterInputViewStock.getDoubleValue();
                     }
                     counterInputViewStock.setValue(stock);
                     checkStockValid(stock);
