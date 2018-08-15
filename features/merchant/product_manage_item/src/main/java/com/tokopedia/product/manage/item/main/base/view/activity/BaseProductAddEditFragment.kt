@@ -229,7 +229,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         saveDraft(false)
                         UnifyTracking.eventClickYesGoldMerchantAddProduct()
                         goToGoldMerchantPage()
-                        activity!!.finish()
+                        activity?.finish()
                     }
                     currentProductAddViewModel?.productPrice = productPrice
                 }
@@ -350,8 +350,10 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (!TextUtils.isEmpty(currentProductViewModel.productDescription?.description)) {
             labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
             labelViewDescriptionProduct.setSubTitle("")
+        }else{
+            labelViewDescriptionProduct.setContent("")
+            labelViewDescriptionProduct.setSubTitle(getString(R.string.product_subtitle_product_description))
         }
-        labelViewNameProduct.setContent(currentProductViewModel.productName?.name)
         if ((currentProductViewModel.productPrice?.price ?: 0.0) > 0) {
             labelViewPriceProduct.setSubTitle("")
             val currencyString = CurrencyFormatUtil.convertPriceValue(currentProductViewModel.productPrice?.price?:0.0, true)
@@ -361,7 +363,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 else -> labelViewPriceProduct.setContent(getString(R.string.rupiah_format, currencyString))
             }
         }
-        labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
         if (currentProductViewModel.productLogistic?.weight ?: 0 > 0) {
             labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType!!))}")
             labelViewWeightLogisticProduct.setSubTitle("")
@@ -389,6 +390,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         } else if (currentProductViewModel.productVariantByCatModelList.size > 0) {
             labelViewVariantProduct.visibility = View.VISIBLE
             labelViewVariantProduct.resetContentText()
+            labelViewVariantProduct.setSubTitle(getString(R.string.product_subtitle_product_variant))
         } else {
             labelViewVariantProduct.visibility = View.GONE
         }
@@ -494,7 +496,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun isEdittingDraft() = isEditStatus() && productDraftId > 0
 
-    private fun isEditStatus() = statusUpload == ProductStatus.EDIT
+    open fun isEditStatus() = statusUpload == ProductStatus.EDIT
 
     private fun isAddStatus() = statusUpload == ProductStatus.ADD
 

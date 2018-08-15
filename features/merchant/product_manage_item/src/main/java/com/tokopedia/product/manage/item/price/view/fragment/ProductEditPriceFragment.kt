@@ -120,7 +120,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             startActivityForResult(ProductAddWholesaleActivity
                     .getIntent(context, wholesalePrice, selectedCurrencyType, spinnerCounterInputViewPrice
                             .counterEditText.text.toString().replace(",", "").toDouble(),
-                            true, true), REQUEST_CODE_GET_WHOLESALE) }
+                            isOfficialStore, hasVariant), REQUEST_CODE_GET_WHOLESALE) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -151,10 +151,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
         setLabelViewWholesale(wholesalePrice)
-        if(productPrice.minOrder > 0)
-            editTextMinOrder.text = productPrice.minOrder.toString()
+
+        editTextMinOrder.text = if(productPrice.minOrder > 0)
+            productPrice.minOrder.toString()
         else
-            editTextMinOrder.text = MIN_ORDER
+            MIN_ORDER
+
         editTextMaxOrder.text = productPrice.maxOrder.toString()
         if(productPrice.maxOrder > 0) {
             editTextMaxOrder.text = productPrice.maxOrder.toString()

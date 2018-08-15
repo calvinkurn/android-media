@@ -112,10 +112,7 @@ class ProductEditWeightLogisticFragment : Fragment() {
         labelCheckboxInsurance.isChecked = productLogistic.insurance
         labelCheckboxFreeReturn.isChecked = productLogistic.freeReturn
         labelSwitchPreOrder.isChecked = productLogistic.preOrder
-        if(labelSwitchPreOrder.isChecked)
-            layoutProcessTime.visibility = View.VISIBLE
-        else
-            layoutProcessTime.visibility = View.GONE
+        layoutProcessTime.visibility = if(labelSwitchPreOrder.isChecked) View.VISIBLE else View.GONE
 
         if(isFreeReturn) {
             labelCheckboxFreeReturn.visibility = View.VISIBLE
@@ -202,7 +199,9 @@ class ProductEditWeightLogisticFragment : Fragment() {
         checkedBottomSheetMenu.addItem(ProductEditWeightType.KILOGRAM, getString(getWeightTypeTitle(ProductEditWeightType.KILOGRAM)),
                 selectedWeightType == ProductEditWeightType.KILOGRAM)
 
-        checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
+        activity?.run {
+            checkedBottomSheetMenu.show(this.supportFragmentManager, javaClass.simpleName)
+        }
     }
 
     private fun showBottomSheetsPreOrder() {

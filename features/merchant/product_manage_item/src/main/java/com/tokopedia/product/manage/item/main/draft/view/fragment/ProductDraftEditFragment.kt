@@ -38,7 +38,7 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
         if(model?.productCategory != null){
             presenter.fetchProductVariantByCat(model.productCategory.categoryId)
         }
-        currentProductAddViewModel = model?.convertToProductAddViewModel()
+        currentProductAddViewModel = model?.convertToProductAddViewModel(isEditStatus())
         populateView(currentProductAddViewModel)
     }
 
@@ -49,7 +49,7 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        draftProductId = arguments?.getLong(DRAFT_PRODUCT_ID)!!
+        draftProductId = arguments?.getLong(DRAFT_PRODUCT_ID)?:0L
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
     }

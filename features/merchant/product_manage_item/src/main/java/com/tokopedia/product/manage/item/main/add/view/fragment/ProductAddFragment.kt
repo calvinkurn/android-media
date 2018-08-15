@@ -35,10 +35,13 @@ class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<Pr
         if(currentProductAddViewModel == null){
             currentProductAddViewModel = ProductAddViewModel()
         }
-        currentProductAddViewModel?.productCatalog = arguments?.get(EXTRA_CATALOG) as ProductCatalog?
-        currentProductAddViewModel?.productCategory = arguments?.get(EXTRA_CATEGORY) as ProductCategory?
-        currentProductAddViewModel?.productName = arguments?.get(EXTRA_NAME) as ProductName?
-        currentProductAddViewModel?.productPictureList = arguments?.getStringArrayList(EXTRA_IMAGES)?.convertImageListResult()
+        currentProductAddViewModel?.let {
+            it.productCatalog = arguments?.get(EXTRA_CATALOG) as ProductCatalog?
+            it.productCategory = arguments?.get(EXTRA_CATEGORY) as ProductCategory?
+            it.productName = arguments?.get(EXTRA_NAME) as ProductName?
+            it.productPictureList = arguments?.getStringArrayList(EXTRA_IMAGES)?.convertImageListResult()
+        }
+
     }
 
     companion object {

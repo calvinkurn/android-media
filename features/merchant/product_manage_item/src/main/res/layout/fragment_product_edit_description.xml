@@ -48,7 +48,7 @@
     <com.tokopedia.product.manage.item.utils.LabelSwitch
         android:id="@+id/labelSwitchNewCondition"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dp_16"

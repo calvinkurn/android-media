@@ -43,6 +43,9 @@ class ProductEditCategoryPresenter
                     override fun onCompleted() {}
 
                     override fun onError(throwable: Throwable?) {
+                        if(!isViewAttached){
+                            return
+                        }
                         view?.onErrorLoadRecommendationCategory(throwable)
                     }
                 })

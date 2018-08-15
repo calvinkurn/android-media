@@ -19,7 +19,7 @@ open class ProductAddActivity : BaseProductAddEditActivity(){
 
     override fun needDeleteCacheOnBack() = true
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val productCatalog = intent.getParcelableExtra<ProductCatalog>(EXTRA_CATALOG)
         val productCategory = intent.getParcelableExtra<ProductCategory>(EXTRA_CATEGORY)
         val productName = intent.getParcelableExtra<ProductName>(EXTRA_NAME)

@@ -19,7 +19,7 @@ class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductCo
     private var productName: String = ""
     private var productCatalog: ProductCatalog? = null
     private var productCategory: ProductCategory? = null
-    private var isCategoryLocked: Boolean? = false
+    private var isCategoryLocked: Boolean = false
 
     override fun getComponent(): ProductComponent = (application as ProductEditModuleRouter).getProductComponent()
 
@@ -32,7 +32,7 @@ class ProductEditCategoryActivity : BaseSimpleActivity(), HasComponent<ProductCo
     }
 
     override fun getNewFragment(): Fragment = ProductEditCategoryFragment
-            .createInstance(productName, productCategory, productCatalog, isCategoryLocked?:false)
+            .createInstance(productName, productCategory, productCatalog, isCategoryLocked)
 
     override fun getLayoutRes() = R.layout.activity_product_edit_with_menu
 

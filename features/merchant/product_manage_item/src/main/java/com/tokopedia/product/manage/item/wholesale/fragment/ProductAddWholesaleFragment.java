@@ -100,14 +100,32 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         texViewMenu.setText(getString(R.string.label_save));
         texViewMenu.setOnClickListener(view -> {
             if (hasVariant) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                        .setTitle(getString(R.string.dialog_add_wholesale_title))
-                        .setMessage(getString(R.string.dialog_add_wholesale_message))
-                        .setPositiveButton(getString(R.string.label_add), (dialogInterface, i) -> exitWholesaleActivity()).setNegativeButton(getString(R.string.label_cancel), (arg0, arg1) -> {
+                if(wholesaleAdapter.getItemCount() > 0) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                            .setTitle(getString(R.string.dialog_add_wholesale_title))
+                            .setMessage(getString(R.string.dialog_add_wholesale_message))
+                            .setPositiveButton(getString(R.string.label_add), (dialogInterface, i) -> exitWholesaleActivity()).setNegativeButton(getString(R.string.label_cancel), (arg0, arg1) -> {
 
-                        });
-                AlertDialog dialog = alertDialogBuilder.create();
-                dialog.show();
+                            });
+                    AlertDialog dialog = alertDialogBuilder.create();
+                    dialog.show();
+                }else{
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                            .setTitle(getString(R.string.dialog_delete_wholesale_title))
+                            .setMessage(getString(R.string.dialog_delete_wholesale_message))
+                            .setPositiveButton(getString(R.string.label_delete), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    exitWholesaleActivity();
+                                }
+                            }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface arg0, int arg1) {
+
+                                }
+                            });
+                    AlertDialog dialog = alertDialogBuilder.create();
+                    dialog.show();
+                }
             } else {
                 exitWholesaleActivity();
             }
@@ -126,6 +144,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         if (hasVariant) {
             wholesaleVariantInfoTextView.setText(getActivity().getText(R.string.product_add_wholesale_notice_variant));
             wholesaleVariantInfoTextView.setVisibility(View.VISIBLE);
+        }else{
+            wholesaleVariantInfoTextView.setVisibility(View.GONE);
         }
         addWholesaleTextView = root.findViewById(R.id.text_view_add_wholesale);
         addWholesaleTextView.setOnClickListener(v -> {
@@ -217,9 +237,6 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     private void updateWholesaleButton() {
         addWholesaleTextView.setVisibility(wholesaleAdapter.getItemCount() < MAX_WHOLESALE ? View.VISIBLE : View.GONE);
-        if(wholesaleAdapter.getItemCount()==0){
-            setButtonSubmit(false);
-        }
     }
 
     @Override
@@ -229,6 +246,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     @Override
     public void setButtonSubmit(boolean state) {
+        texViewMenu.setEnabled(state);
         if(state){
             texViewMenu.setTextColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         } else {
