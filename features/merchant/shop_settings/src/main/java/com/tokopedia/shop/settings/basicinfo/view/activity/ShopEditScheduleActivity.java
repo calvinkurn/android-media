@@ -2,6 +2,7 @@ package com.tokopedia.shop.settings.basicinfo.view.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -38,6 +40,9 @@ import javax.inject.Inject;
 
 public class ShopEditScheduleActivity extends BaseSimpleActivity implements UpdateShopSettingsInfoPresenter.View, UpdateShopShedulePresenter.View {
 
+    public static final String SAVED_SELECTED_START_DATE = "svd_selected_start_date";
+    public static final String SAVED_SELECTED_END_DATE = "svd_selected_end_date";
+
     @Inject
     UpdateShopShedulePresenter updateShopShedulePresenter;
 
@@ -54,12 +59,16 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     private ImageLabelView labelStartClose;
     private ImageLabelView labelEndClose;
 
-    //    private View vgOpen;
-//    private View vgClose;
+    private long selectedStartCloseUnixTime;
+    private long selectedEndCloseUnixTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
+        if (savedInstanceState!= null){
+            selectedStartCloseUnixTime = savedInstanceState.getLong(SAVED_SELECTED_START_DATE);
+            selectedEndCloseUnixTime = savedInstanceState.getLong(SAVED_SELECTED_END_DATE);
+        }
         super.onCreate(savedInstanceState);
 
         DaggerShopSettingsComponent.builder()
@@ -91,6 +100,8 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
             public void onChecked(boolean isChecked) {
                 if (isChecked) {
                     labelOpen.setChecked(false);
+                    scheduleSwitch.setChecked(true);
+                    setStartCloseDate(ShopDateUtil.getCurrentDate());
                 }
             }
         });
@@ -107,40 +118,57 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
         labelStartClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("Test", "Test");
                 Date minDate = ShopDateUtil.getCurrentDate();
-                Calendar maxDateCalendar = ShopDateUtil.getCurrentCalendar();
-                maxDateCalendar.set(Calendar.HOUR_OF_DAY, ShopDateUtil.DEFAULT_LAST_HOUR_IN_DAY);
-                maxDateCalendar.set(Calendar.MINUTE, ShopDateUtil.DEFAULT_LAST_MIN_IN_DAY);
-                maxDateCalendar.set(Calendar.SECOND, ShopDateUtil.DEFAULT_LAST_SEC_IN_DAY);
-
-//                Date selectedDate = ShopDateUtil.unixToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
-//                getView().showDepartureDatePickerDialog(selectedDate, minDate, maxDateCalendar.getTime());
+                Date selectedDate = ShopDateUtil.unixToDate(selectedStartCloseUnixTime);
+                showStartDatePickerDialog(selectedDate, minDate);
             }
         });
         labelEndClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("Test", "Test");
+                Date minDate = ShopDateUtil.unixToDate(selectedStartCloseUnixTime);
+                Date selectedDate = ShopDateUtil.unixToDate(selectedEndCloseUnixTime);
+                showEndDatePickerDialog(selectedDate, minDate);
             }
         });
-
         loadShopBasicData();
     }
-//
-//    private void disableScheduleSwitch(){
-//        vgScheduleSwitch.setEnabled(false);
-//        switchWidget.setChecked(false);
-//        switchWidget.setEnabled(false);
-//        hideCloseScheduleContent();
-//    }
-//
-//    private void enableScheduleSwitch(){
-//        vgScheduleSwitch.setEnabled(true);
-//        switchWidget.setChecked(false);
-//        switchWidget.setEnabled(true);
-//        hideCloseScheduleContent();
-//    }
+
+    public void showStartDatePickerDialog(Date selectedDate, Date minDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Date selectedDate = ShopDateUtil.toDate(year, month, dayOfMonth);
+                setStartCloseDate(selectedDate);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker1 = datePicker.getDatePicker();
+        datePicker1.setMinDate(minDate.getTime());
+        datePicker.show();
+    }
+
+    public void showEndDatePickerDialog(Date selectedDate, Date minDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Date selectedDate = ShopDateUtil.toDate(year, month, dayOfMonth);
+                selectedEndCloseUnixTime = selectedDate.getTime();
+                labelEndClose.setContent(ShopDateUtil.toString(selectedDate));
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker1 = datePicker.getDatePicker();
+        datePicker1.setMinDate(minDate.getTime());
+        datePicker.show();
+    }
+
+    private void setStartCloseDate(Date date){
+        selectedStartCloseUnixTime = date.getTime();
+        labelStartClose.setContent(ShopDateUtil.toString(date));
+    }
 
     private void hideCloseScheduleContent(){
         vgScheduleSwitchContent.setVisibility(View.GONE);
@@ -150,9 +178,6 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
         vgScheduleSwitchContent.setVisibility(View.VISIBLE);
     }
 
-//    selectOpen(){
-//
-//    }
 
     private void onSaveButtonClicked() {
         if (isInputInvalid()) {
@@ -258,6 +283,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     public void onSuccessGetShopBasicData(ShopBasicDataModel shopBasicDataModel) {
         this.shopBasicDataModel = shopBasicDataModel;
         setUIShopSchedule(shopBasicDataModel);
+        scheduleSwitch.setVisibility(View.VISIBLE);
         tvSave.setVisibility(View.VISIBLE);
     }
 
@@ -317,7 +343,8 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-//        outState.putString(SAVED_IMAGE_PATH, savedLocalImageUrl);
+        outState.putLong(SAVED_SELECTED_START_DATE, selectedStartCloseUnixTime);
+        outState.putLong(SAVED_SELECTED_END_DATE, selectedEndCloseUnixTime);
     }
 
     @Override
