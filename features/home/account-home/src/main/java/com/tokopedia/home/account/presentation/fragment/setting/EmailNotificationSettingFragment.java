@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingType;
 import com.tokopedia.home.account.data.model.AppNotificationSettingModel;
@@ -31,12 +32,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class EmailNotificationSettingFragment extends BaseDaggerFragment implements EmailNotificationView {
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+
+public class EmailNotificationSettingFragment extends BaseDaggerFragment implements
+        EmailNotificationView, EmailNotifAdapter.EmailNotificationListener {
     @Inject
     EmailNotificationPresenter presenter;
     private RecyclerView recyclerView;
     private EmailNotifAdapter adapter;
     private View loadingView;
+
+    private AccountAnalytics accountAnalytics;
 
     public static Fragment createInstance() {
         return new EmailNotificationSettingFragment();
@@ -46,6 +52,7 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     public void onCreate(Bundle savedInstanceState) {
         NetworkClient.init(getActivity());
         super.onCreate(savedInstanceState);
+        accountAnalytics = new AccountAnalytics(getActivity());
     }
 
     @Nullable
@@ -82,6 +89,7 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
         items.add(new EmailNotifViewModel(getString(R.string.label_chat_admin), getString(R.string.label_chat_admin_summary), SettingType.FLAG_ADMIN_MESSAGE));
         items.add(new EmailNotifViewModel(getString(R.string.label_bulletin), getString(R.string.label_bulletin_summary), SettingType.FLAG_NEWSLETTER));
         adapter = new EmailNotifAdapter(items);
+        adapter.setEmailNotificationListener(this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -129,5 +137,20 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     public void onDestroyView() {
         presenter.detachView();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onClickEmailNotif(String key) {
+        if (key.equals(getString(R.string.label_review))) {
+            accountAnalytics.eventClickEmailSetting(String.format("%s %s", REVIEW, NOTIFICATION));
+        } else if (key.equals(getString(R.string.label_talk))) {
+            accountAnalytics.eventClickEmailSetting(String.format("%s %s", DISCUSSION, NOTIFICATION));
+        } else if (key.equals(getString(R.string.label_chat))) {
+            accountAnalytics.eventClickEmailSetting(String.format("%s %s", CHAT, NOTIFICATION));
+        } else if (key.equals(getString(R.string.label_chat_admin))) {
+            accountAnalytics.eventClickEmailSetting(String.format("%s %s %s", CHAT, TOKOPEDIA, NOTIFICATION));
+        } else if (key.equals(getString(R.string.label_bulletin))) {
+            accountAnalytics.eventClickEmailSetting(String.format("%s %s", NEWS_LETTER, NOTIFICATION));
+        }
     }
 }

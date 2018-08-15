@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 
 import com.tokopedia.home.account.AccountConstants;
+
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
@@ -34,7 +35,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 /**
  * @author okasurya on 7/26/18.
  */
-public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
+public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
+        AccountItemListener {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
 
@@ -62,11 +64,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             seeAllView.setListener(this);
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
         } else if (applink.equals(AccountConstants.Navigation.TOPADS)
-                    && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
+                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard
+                    (getContext());
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
-                    && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent(getContext());
+                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
+                    (getContext());
         }
 
         return false;
@@ -146,7 +150,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onAddProductClicked() {
-        sendTracking(PENJUAL, getString(R.string.title_menu_product), getString(R.string.label_button_add_product));
+        sendTracking(PENJUAL, getString(R.string.title_menu_product), getString(R.string
+                .label_button_add_product));
         openApplink(ApplinkConst.PRODUCT_ADD);
     }
 
@@ -159,6 +164,42 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onDepositClicked(ShopCardViewModel element) {
         openApplink(ApplinkConst.DEPOSIT);
+    }
+
+    @Override
+    public void onTopadsInfoClicked() {
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).
+                    gotoTopAdsDashboard(getContext());
+        }
+    }
+
+    @Override
+    public void onGMInfoClicked() {
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).
+                    goToGMSubscribe(getContext());
+        }
+    }
+
+    @Override
+    public void onSellerCenterInfoClicked() {
+        openApplink(ApplinkConst.SELLER_CENTER);
+    }
+
+    @Override
+    public void onOpenShopClicked() {
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
+                    getIntentCreateShop(getContext()));
+        }
+    }
+
+    @Override
+    public void onLearnMoreSellerClicked() {
+        openApplink(String.format("%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                AccountConstants.Url.MORE_SELLER));
     }
 
     private void sendTracking(String title, String section, String item) {

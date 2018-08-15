@@ -1,8 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,20 +12,21 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
-import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 
 public class AccountSettingFragment extends TkpdBaseV4Fragment {
+
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
     private static int REQUEST_ADD_PASSWORD = 1234;
     private static final int REQUEST_CHANGE_PASSWORD = 123;
+
     private UserSession userSession;
+    private AccountAnalytics accountAnalytics;
 
     public static Fragment createInstance() {
         return new AccountSettingFragment();
@@ -37,6 +36,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         userSession = ((AbstractionRouter)context.getApplicationContext()).getSession();
+        accountAnalytics = new AccountAnalytics(getActivity());
     }
 
     @Nullable
@@ -66,9 +66,11 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
             AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
             switch (settingId) {
                 case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
+                    accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
                     startActivityForResult(router.getManageProfileIntent(getActivity()), 0);
                     break;
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
+                    accountAnalytics.eventClickAccountSetting(PASSWORD);
                     if (userSession.isHasPassword()) {
                         startActivity(router.getManagePasswordIntent(getActivity()));
                         startActivityForResult(router.getManagePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
@@ -77,6 +79,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
                     }
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
+                    accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
                     startActivity(router.getManageAddressIntent(getActivity()));
                     break;
                 default:

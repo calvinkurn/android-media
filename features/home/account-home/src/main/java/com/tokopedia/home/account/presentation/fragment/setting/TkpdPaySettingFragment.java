@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.DaggerTkpdPaySettingComponent;
@@ -27,15 +28,26 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+
+public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
+
     private static final int REQUEST_CHANGE_PASSWORD = 1234;
     @Inject WalletPref walletPref;
+
+    private AccountAnalytics accountAnalytics;
 
     public static Fragment createInstance() {
         return new TkpdPaySettingFragment();
     }
 
     private static final String TAG = TkpdPaySettingFragment.class.getSimpleName();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        accountAnalytics = new AccountAnalytics(getActivity());
+    }
 
     @Nullable
     @Override
@@ -80,6 +92,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
             AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
             switch (settingId) {
                 case SettingConstant.SETTING_BANK_ACCOUNT_ID:
+                    accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
                     if (userSession.isHasPassword()) {
                         router.goToManageBankAccount(getActivity());
                     } else {
@@ -87,9 +100,11 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                     }
                     break;
                 case SettingConstant.SETTING_CREDIT_CARD_ID:
+                    accountAnalytics.eventClickPaymentSetting(CREDIT_CARD);
                     router.goToManageCreditCard(getActivity());
                     break;
                 case SettingConstant.SETTING_TOKOCASH_ID:
+                    accountAnalytics.eventClickPaymentSetting(TOKOCASH);
                     WalletModel walletModel = walletPref.retrieveWallet();
                     if (walletModel != null){
                         if (walletModel.isLinked()){
@@ -100,6 +115,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment{
                     }
                     break;
                 case SettingConstant.SETTING_SALDO_ID:
+                    accountAnalytics.eventClickPaymentSetting(BALANCE);
                     router.goToSaldo(getActivity());
                     break;
                 default:
