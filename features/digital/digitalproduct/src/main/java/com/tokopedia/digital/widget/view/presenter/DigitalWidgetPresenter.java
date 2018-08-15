@@ -1,19 +1,21 @@
 package com.tokopedia.digital.widget.view.presenter;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
+import com.tokopedia.common_digital.product.presentation.model.CategoryData;
+import com.tokopedia.common_digital.product.presentation.model.HistoryClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.ProductDigitalData;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
-import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.HistoryClientNumber;
-import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -29,18 +31,19 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     private final String PARAM_VALUE_SORT = "label";
 
-    private Context context;
     private IDigitalWidgetView digitalWidgetView;
     private GetCategoryByIdUseCase getCategoryByIdUseCase;
 
-    public DigitalWidgetPresenter(Context context,
-                                  LocalCacheHandler localCacheHandler,
-                                  IDigitalWidgetView digitalWidgetView,
-                                  GetCategoryByIdUseCase getCategoryByIdUseCase) {
-        super(context, localCacheHandler);
-        this.context = context;
-        this.digitalWidgetView = digitalWidgetView;
+    @Inject
+    public DigitalWidgetPresenter(LocalCacheHandler localCacheHandler,
+            GetCategoryByIdUseCase getCategoryByIdUseCase) {
+        super(localCacheHandler);
         this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+    }
+
+    @Override
+    public void attachView(CustomerView view) {
+        this.digitalWidgetView = (IDigitalWidgetView) view;
     }
 
     @Override
@@ -98,7 +101,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
-                    .renderCategoryDataAndBannerToView(context,
+                    .renderCategoryDataAndBannerToView(digitalWidgetView.getContext(),
                             categoryData.getOperatorStyle());
 
             digitalWidgetView.renderCategory(digitalProductView, categoryData, historyClientNumber);

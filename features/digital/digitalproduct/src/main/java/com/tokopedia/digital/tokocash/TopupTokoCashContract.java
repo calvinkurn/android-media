@@ -5,8 +5,8 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.common_digital.product.presentation.model.CategoryData;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.view.model.CategoryData;
 
 /**
  * Created by nabillasabbaha on 2/28/18.

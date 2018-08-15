@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.BannerData;
+import com.tokopedia.common_digital.product.presentation.model.BannerTitle;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.view.model.BannerData;
-import com.tokopedia.digital.product.view.model.BannerTitle;
 
 import java.util.ArrayList;
 import java.util.List;

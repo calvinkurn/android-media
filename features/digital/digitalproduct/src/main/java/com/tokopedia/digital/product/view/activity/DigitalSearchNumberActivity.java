@@ -7,11 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalSearchNumberFragment;
-import com.tokopedia.digital.product.view.model.ClientNumber;
-import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.common_digital.product.presentation.model.GuideData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.adapter.GuideAdapter;
-import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 
 import java.util.ArrayList;

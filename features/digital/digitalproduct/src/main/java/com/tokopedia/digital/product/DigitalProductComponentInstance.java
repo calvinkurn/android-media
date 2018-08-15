@@ -3,7 +3,8 @@ package com.tokopedia.digital.product;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.digital.product.di.DaggerDigitalProductComponent;
+import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
+import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.digital.product.di.DigitalProductComponent;
 
 /**
@@ -16,9 +17,12 @@ public class DigitalProductComponentInstance {
 
     public static DigitalProductComponent getDigitalProductComponent(Application application) {
         if (digitalProductComponent == null) {
-            digitalProductComponent = DaggerDigitalProductComponent.builder().baseAppComponent(
-                    ((BaseMainApplication)application).getBaseAppComponent()).build();
+            DigitalComponent digitalComponent = DaggerDigitalComponent.builder().baseAppComponent(
+                    ((BaseMainApplication) application).getBaseAppComponent()).build();
+            digitalProductComponent = DaggerDigitalProductComponent.builder().digitalComponent(
+                    digitalComponent).build();
         }
         return digitalProductComponent;
     }
+
 }

@@ -10,10 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.view.model.Product;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

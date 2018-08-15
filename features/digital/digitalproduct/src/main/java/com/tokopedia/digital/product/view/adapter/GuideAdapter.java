@@ -10,10 +10,10 @@ import android.widget.ProgressBar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.tokopedia.common_digital.product.presentation.model.GuideData;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.activity.DigitalYoutubeActivity;
-import com.tokopedia.digital.product.view.model.GuideData;
 
 import java.util.ArrayList;
 import java.util.List;

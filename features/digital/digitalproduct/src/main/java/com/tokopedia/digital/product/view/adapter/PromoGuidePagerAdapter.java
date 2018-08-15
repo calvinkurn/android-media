@@ -6,12 +6,12 @@ import android.content.Context;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
+import com.tokopedia.common_digital.product.presentation.model.BannerData;
+import com.tokopedia.common_digital.product.presentation.model.GuideData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
 import com.tokopedia.digital.product.view.fragment.DigitalGuideFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalPromoFragment;
-import com.tokopedia.digital.product.view.model.BannerData;
-import com.tokopedia.digital.product.view.model.GuideData;
 
 import java.util.List;
 
