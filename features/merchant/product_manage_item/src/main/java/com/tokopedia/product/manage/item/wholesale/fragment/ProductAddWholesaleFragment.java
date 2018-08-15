@@ -100,14 +100,32 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
         texViewMenu.setText(getString(R.string.label_save));
         texViewMenu.setOnClickListener(view -> {
             if (hasVariant) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                        .setTitle(getString(R.string.dialog_add_wholesale_title))
-                        .setMessage(getString(R.string.dialog_add_wholesale_message))
-                        .setPositiveButton(getString(R.string.label_add), (dialogInterface, i) -> exitWholesaleActivity()).setNegativeButton(getString(R.string.label_cancel), (arg0, arg1) -> {
+                if(wholesaleAdapter.getItemCount() > 0) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                            .setTitle(getString(R.string.dialog_add_wholesale_title))
+                            .setMessage(getString(R.string.dialog_add_wholesale_message))
+                            .setPositiveButton(getString(R.string.label_add), (dialogInterface, i) -> exitWholesaleActivity()).setNegativeButton(getString(R.string.label_cancel), (arg0, arg1) -> {
 
-                        });
-                AlertDialog dialog = alertDialogBuilder.create();
-                dialog.show();
+                            });
+                    AlertDialog dialog = alertDialogBuilder.create();
+                    dialog.show();
+                }else{
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                            .setTitle(getString(R.string.dialog_delete_wholesale_title))
+                            .setMessage(getString(R.string.dialog_delete_wholesale_message))
+                            .setPositiveButton(getString(R.string.label_delete), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    exitWholesaleActivity();
+                                }
+                            }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface arg0, int arg1) {
+
+                                }
+                            });
+                    AlertDialog dialog = alertDialogBuilder.create();
+                    dialog.show();
+                }
             } else {
                 exitWholesaleActivity();
             }
