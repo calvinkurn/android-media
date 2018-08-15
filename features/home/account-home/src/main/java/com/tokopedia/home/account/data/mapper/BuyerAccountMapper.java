@@ -80,7 +80,11 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_waiting_for_payment));
         menuList.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
-        menuList.setCount(accountModel.getNotifications().getBuyerOrder().getPaymentStatus());
+        try {
+            menuList.setCount(Integer.parseInt(accountModel.getNotifications().getBuyerOrder().getPaymentStatus()));
+        } catch (NumberFormatException e) {
+            menuList.setCount(0);
+        }
         menuList.setApplink(ApplinkConst.PMS);
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));

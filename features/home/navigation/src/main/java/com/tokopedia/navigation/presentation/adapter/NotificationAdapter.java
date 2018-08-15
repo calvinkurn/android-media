@@ -18,6 +18,7 @@ import java.util.List;
 import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
 import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
+import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
@@ -140,7 +141,13 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                 List<DrawerNotification.ChildDrawerNotification> childs = item.getChilds();
                 for (DrawerNotification.ChildDrawerNotification child : childs) {
                     if (item.getId() == PEMBELIAN) {
-                        if (child.getId() == MENUNGGU_KONFIRMASI) {
+                        if (child.getId() == MENUNGGU_PEMBAYARAN) {
+                            try {
+                                child.setBadge(Integer.parseInt(data.getBuyerOrder().getPaymentStatus()));
+                            } catch (NumberFormatException e) {
+                                child.setBadge(0);
+                            }
+                        } else if (child.getId() == MENUNGGU_KONFIRMASI) {
                             child.setBadge(data.getBuyerOrder().getConfirmed());
                         } else if (child.getId() == PESANAN_DIPROSES) {
                             child.setBadge(data.getBuyerOrder().getProcessed());

@@ -49,9 +49,12 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
     }
 
     private Action1<NotificationEntity> saveCartCount() {
-        return notificationEntity ->
-                cartListener.setCartCount(
-                        Integer.parseInt(notificationEntity.getNotifications().getTotalCart())
-                );
+        return notificationEntity -> {
+            try {
+                cartListener.setCartCount(Integer.parseInt(notificationEntity.getNotifications().getTotalCart()));
+            } catch (NumberFormatException e) {
+                cartListener.setCartCount(0);
+            }
+        };
     }
 }

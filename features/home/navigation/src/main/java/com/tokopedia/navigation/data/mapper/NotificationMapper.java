@@ -3,6 +3,7 @@ package com.tokopedia.navigation.data.mapper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
+import com.tokopedia.navigation.util.IntegerUtil;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import rx.functions.Func1;
@@ -27,7 +28,7 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
     public static Notification notificationMapper(NotificationsModel entity) {
         Notification data = new Notification();
         try {
-            data.setTotalCart(Integer.parseInt(entity.getTotalCart()));
+            data.setTotalCart(IntegerUtil.tryParseInt(entity.getTotalCart()));
             data.setTotalInbox(totalInbox(entity));
             data.setTotalNotif(totalNotif(entity));
         } catch (NumberFormatException e) {
@@ -38,30 +39,27 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
 
     private static Integer totalNotif(NotificationsModel entity) {
         Integer total = 0;
-        try {
-            total += entity.getSellerInfo().getNotification();
-            total += entity.getBuyerOrder().getConfirmed();
-            total += entity.getBuyerOrder().getProcessed();
-            total += entity.getBuyerOrder().getShipped();
-            total += entity.getBuyerOrder().getArriveAtDestination();
-            total += entity.getSellerOrder().getNewOrder();
-            total += entity.getSellerOrder().getShipped();
-            total += entity.getSellerOrder().getReadyToShip();
-            total += entity.getSellerOrder().getArriveAtDestination();
-            total += entity.getResolution().getBuyer();
-            total += entity.getResolution().getSeller();
-        } catch (NumberFormatException e) { /*ignore*/ }
+        total += entity.getSellerInfo().getNotification();
+        total += IntegerUtil.tryParseInt(entity.getBuyerOrder().getPaymentStatus());
+        total += entity.getBuyerOrder().getConfirmed();
+        total += entity.getBuyerOrder().getProcessed();
+        total += entity.getBuyerOrder().getShipped();
+        total += entity.getBuyerOrder().getArriveAtDestination();
+        total += entity.getSellerOrder().getNewOrder();
+        total += entity.getSellerOrder().getShipped();
+        total += entity.getSellerOrder().getReadyToShip();
+        total += entity.getSellerOrder().getArriveAtDestination();
+        total += entity.getResolution().getBuyer();
+        total += entity.getResolution().getSeller();
         return total;
     }
 
     private static Integer totalInbox(NotificationsModel entity) {
         Integer total = 0;
-        try {
-            total += Integer.parseInt(entity.getChat().getUnreads());
-            total += Integer.parseInt(entity.getInbox().getTalk());
-            total += Integer.parseInt(entity.getInbox().getReview());
-            total += Integer.parseInt(entity.getInbox().getTicket());
-        } catch (NumberFormatException e) { /*ignore*/ }
+        total += IntegerUtil.tryParseInt(entity.getChat().getUnreads());
+        total += IntegerUtil.tryParseInt(entity.getInbox().getTalk());
+        total += IntegerUtil.tryParseInt(entity.getInbox().getReview());
+        total += IntegerUtil.tryParseInt(entity.getInbox().getTicket());
         return total;
     }
 }

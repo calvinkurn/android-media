@@ -110,6 +110,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     HomePresenter presenter;
     private RecyclerView recyclerView;
+    private AppBarLayout appBarLayout;
     private TabLayout tabLayout;
     private CoordinatorLayout root;
     private SectionContainer tabContainer;
@@ -193,8 +194,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             floatingTextButton.setVisibility(View.GONE);
         }
     }
-
-    private AppBarLayout appBarLayout;
 
     @Nullable
     @Override
