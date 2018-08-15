@@ -96,7 +96,6 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
             public void onChecked(boolean isChecked) {
                 if (isChecked) {
                     labelOpen.setChecked(false);
-                    scheduleSwitch.setChecked(true);
                     labelStartClose.setEnabled(false);
                     setStartCloseDate(ShopDateUtil.getCurrentDate());
                 }
@@ -290,6 +289,8 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
                 Date shopOpenDate = ShopDateUtil.unixToDate(shopOpenScheduleUnix);
                 setEndCloseDate(shopOpenDate);
             }
+        } else {
+            scheduleSwitch.setChecked(false);
         }
         etShopCloseNote.setText(shopBasicDataModel.getCloseNote());
     }
