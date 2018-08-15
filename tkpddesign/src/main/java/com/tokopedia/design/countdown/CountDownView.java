@@ -57,6 +57,7 @@ public class CountDownView extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Jakarta"));
         rootView = inflate(context, R.layout.widget_count_down_view, this);
         hourView = (TextView) rootView.findViewById(R.id.hourView);
         minuteView = (TextView) rootView.findViewById(R.id.minuteView);
