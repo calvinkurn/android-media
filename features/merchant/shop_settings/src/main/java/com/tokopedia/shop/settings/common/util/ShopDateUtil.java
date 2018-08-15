@@ -12,11 +12,9 @@ import java.util.Locale;
  */
 
 public class ShopDateUtil {
-    public static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
-    public static final int DEFAULT_LAST_MIN_IN_DAY = 59;
-    public static final int DEFAULT_LAST_SEC_IN_DAY = 59;
 
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
+    public static final String FORMAT_DATE = "EEE, dd MMM yyyy";
 
     public static Calendar getCurrentCalendar() {
         return Calendar.getInstance();
@@ -26,6 +24,7 @@ public class ShopDateUtil {
         Calendar now = getCurrentCalendar();
         return now.getTime();
     }
+
     public static Date stringToDate(String format, String input) {
         DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
         try {
@@ -36,9 +35,32 @@ public class ShopDateUtil {
         }
     }
 
-    public static Date unixToDate(String unixTime) {
+    public static String toString(Date date) {
+        DateFormat fromFormat = new SimpleDateFormat(FORMAT_DATE, DEFAULT_LOCALE);
         try {
-            return new Date(Long.parseLong(unixTime));
+            return fromFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Date doesnt valid");
+        }
+    }
+
+    public static final Date toDate(int year, int month, int dayOfMonth) {
+        try {
+            Calendar now =  getCurrentCalendar();
+            now.set(Calendar.YEAR, year);
+            now.set(Calendar.MONTH, month);
+            now.set(Calendar.DATE, dayOfMonth);
+            return now.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Date doesnt valid");
+        }
+    }
+
+    public static Date unixToDate(long unixTime) {
+        try {
+            return new Date(unixTime);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Date doesnt valid (" + unixTime + ")");
