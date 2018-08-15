@@ -118,6 +118,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.district_recommendation.view.ShopSettingDistrictRecommendationActivity;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
@@ -227,9 +228,11 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.settings.address.view.ShopSettingsAddressActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -361,7 +364,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanRouter,
         TopChatRouter,
         TokopointRouter,
-        OtpModuleRouter {
+        OtpModuleRouter,
+        ShopSettingRouter{
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2295,5 +2299,30 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public void goToShopEditor(Context context) {
+
+    }
+
+    @Override
+    public void goToManageShopEtalase(Context context) {
+
+    }
+
+    @Override
+    public void goToManageShopNotes(Context context) {
+
+    }
+
+    @Override
+    public Intent getManageShopLocationIntent(Context context) {
+        return ShopSettingsAddressActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getDistrictRecommendationIntent(Activity activity) {
+        return ShopSettingDistrictRecommendationActivity.createInstance(activity);
     }
 }

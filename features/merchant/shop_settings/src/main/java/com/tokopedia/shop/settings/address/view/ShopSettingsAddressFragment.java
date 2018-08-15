@@ -5,15 +5,16 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.AddShopLocationUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.DeleteShopLocationUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.GetShopLocationUseCase;
-import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.ReorderShopLocationUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.UpdateShopLocationUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -41,7 +42,7 @@ public class ShopSettingsAddressFragment extends BaseDaggerFragment {
         super.onCreate(savedInstanceState);
         GraphqlClient.init(getContext());
         GetShopLocationUseCase useCase = new GetShopLocationUseCase(getContext());
-        useCase.execute(RequestParams.EMPTY, new Subscriber<ArrayList<ShopLocationModel>>() {
+        useCase.execute(RequestParams.EMPTY, new Subscriber<List<ShopLocationModel>>() {
             @Override
             public void onCompleted() {
 
@@ -53,7 +54,7 @@ public class ShopSettingsAddressFragment extends BaseDaggerFragment {
             }
 
             @Override
-            public void onNext(ArrayList<ShopLocationModel> shopLocationModelArrayList) {
+            public void onNext(List<ShopLocationModel> shopLocationModelArrayList) {
                 Log.i("Test", "test");
             }
         });

@@ -22,6 +22,7 @@ import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
+import com.tokopedia.shop.common.router.ShopSettingRouter;
 
 import java.util.ArrayList;
 
@@ -72,34 +73,37 @@ public class FragmentSettingShop extends TkpdFragment{
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				Intent intent = null;
-				switch(pos) {
-					case 0:
-						intent = new Intent(getActivity(), ShopEditorActivity.class);
-						intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-						UnifyTracking.eventManageShopInfo();
-						startActivityForResult(intent, 0);
-						break;
-					case 1:
-						intent = new Intent(getActivity(), EditShippingActivity.class);
-						UnifyTracking.eventManageShopShipping();
-						startActivity(intent);
-						break;
-					case 2:
-						UnifyTracking.eventManageShopEtalase();
-						intent = new Intent(getActivity(), EtalaseShopEditor.class);
-						startActivity(intent);
-						break;
-					case 3:
-						UnifyTracking.eventManageShopNotes();
-						intent = new Intent(getActivity(), ManageShopNotesActivity.class);
-						startActivity(intent);
-						break;
-					case 4:
-						UnifyTracking.eventManageShopLocation();
-						intent = new Intent(getActivity(), ManageShopAddress.class);
-						startActivity(intent);
-						break;
+				if (getActivity().getApplication() instanceof ShopSettingRouter){
+					ShopSettingRouter router = (ShopSettingRouter) getActivity().getApplication();
+
+					Intent intent;
+					switch(pos) {
+						case 0:
+							intent = new Intent(getActivity(), ShopEditorActivity.class);
+							intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+							UnifyTracking.eventManageShopInfo();
+							startActivityForResult(intent, 0);
+							break;
+						case 1:
+							intent = new Intent(getActivity(), EditShippingActivity.class);
+							UnifyTracking.eventManageShopShipping();
+							startActivity(intent);
+							break;
+						case 2:
+							UnifyTracking.eventManageShopEtalase();
+							intent = new Intent(getActivity(), EtalaseShopEditor.class);
+							startActivity(intent);
+							break;
+						case 3:
+							UnifyTracking.eventManageShopNotes();
+							intent = new Intent(getActivity(), ManageShopNotesActivity.class);
+							startActivity(intent);
+							break;
+						case 4:
+							UnifyTracking.eventManageShopLocation();
+							startActivity(router.getManageShopLocationIntent(getActivity()));
+							break;
+					}
 				}
 			}
 		});

@@ -6,19 +6,19 @@ import com.tokopedia.shop.common.graphql.data.GraphQLResult;
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel;
 import com.tokopedia.shop.common.graphql.domain.mapper.HasGraphQLResult;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hendry on 08/08/18.
  */
 
-public class ShopLocationQuery implements HasGraphQLResult<ArrayList<ShopLocationModel>>{
+public class ShopLocationQuery implements HasGraphQLResult<List<ShopLocationModel>>{
     @SerializedName("shopLocations")
     @Expose
-    GraphQLResult<ArrayList<ShopLocationModel>> shopLocationResult;
+    private GraphQLResult<List<ShopLocationModel>> shopLocationResult;
 
     @Override
-    public GraphQLResult<ArrayList<ShopLocationModel>> getResult() {
+    public GraphQLResult<List<ShopLocationModel>> getResult() {
         return shopLocationResult;
     }
 }
