@@ -8,8 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -17,13 +16,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.design.label.RadioButtonLabelView;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopShedulePresenter;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
+import com.tokopedia.shop.settings.common.widget.RadioButtonLabelView;
+import com.tokopedia.shop.settings.common.widget.SwitchLabelView;
 
 import javax.inject.Inject;
 
@@ -38,8 +40,15 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     private TextView tvSave;
     private RadioButtonLabelView labelOpen;
     private RadioButtonLabelView labelClosed;
-    private View vgScheduleSwitch;
-    private Switch switchWidget;
+    private View vgScheduleSwitchContent;
+    private View vgCloseNowContent;
+    private View vgLabelEndCloseNow;
+    private TextView tvShopEndCloseNow;
+    private TextView tvShopStartClose;
+    private TextView tvShopEndClose;
+    private TkpdHintTextInputLayout tilShopCloseNote;
+    private EditText etShopCloseNote;
+    private SwitchLabelView scheduleSwitch;
     //    private View vgOpen;
 //    private View vgClose;
 
@@ -57,8 +66,13 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
         tvSave = findViewById(R.id.tvSave);
         labelOpen = findViewById(R.id.labelOpen);
         labelClosed = findViewById(R.id.labelClose);
-        vgScheduleSwitch = findViewById(R.id.vgScheduleSwitch);
-        switchWidget = findViewById(R.id.switchWidget);
+        scheduleSwitch = findViewById(R.id.scheduleSwitch);
+        vgScheduleSwitchContent = findViewById(R.id.vgScheduleSwitchContent);
+        tvShopStartClose = findViewById(R.id.tvShopStartClose);
+        tvShopEndClose = findViewById(R.id.tvShopEndClose);
+        tilShopCloseNote = findViewById(R.id.tilShopCloseNote);
+        etShopCloseNote = findViewById(R.id.etShopCloseNote);
+
         labelOpen.setOnRadioButtonLabelViewListener(new RadioButtonLabelView.OnRadioButtonLabelViewListener() {
             @Override
             public void onChecked(boolean isChecked) {
@@ -75,21 +89,40 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
                 }
             }
         });
-        vgScheduleSwitch.setOnClickListener(new View.OnClickListener() {
+        scheduleSwitch.setOnSwitchLabelViewListener(new SwitchLabelView.OnSwitchLabelViewListener() {
             @Override
-            public void onClick(View v) {
-                switchWidget.setChecked(!switchWidget.isChecked());
-            }
-        });
-        switchWidget.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onChecked(boolean isChecked) {
                 if (isChecked) {
-
+                    showCloseScheduleContent();
+                } else {
+                    hideCloseScheduleContent();
                 }
             }
         });
+
         loadShopBasicData();
+    }
+//
+//    private void disableScheduleSwitch(){
+//        vgScheduleSwitch.setEnabled(false);
+//        switchWidget.setChecked(false);
+//        switchWidget.setEnabled(false);
+//        hideCloseScheduleContent();
+//    }
+//
+//    private void enableScheduleSwitch(){
+//        vgScheduleSwitch.setEnabled(true);
+//        switchWidget.setChecked(false);
+//        switchWidget.setEnabled(true);
+//        hideCloseScheduleContent();
+//    }
+
+    private void hideCloseScheduleContent(){
+        vgScheduleSwitchContent.setVisibility(View.GONE);
+    }
+
+    private void showCloseScheduleContent(){
+        vgScheduleSwitchContent.setVisibility(View.VISIBLE);
     }
 
 //    selectOpen(){
@@ -204,6 +237,15 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     }
 
     private void setUIShopSchedule(ShopBasicDataModel shopBasicDataModel) {
+        int shopStatus = shopBasicDataModel.getStatus();
+        switch (shopStatus) {
+            case ShopStatusDef.OPEN:
+                labelOpen.setChecked(true);
+                break;
+            default: // closed
+                labelOpen.setChecked(false);
+                break;
+        }
 //        updatePhotoUI(shopBasicDataModel);
 //        etShopSlogan.setText(shopBasicDataModel.getTagline());
 //        etShopSlogan.setSelection(etShopSlogan.getText().length());

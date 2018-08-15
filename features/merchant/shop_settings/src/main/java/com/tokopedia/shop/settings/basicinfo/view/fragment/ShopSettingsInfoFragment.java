@@ -170,13 +170,13 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             lvShopStatus.setSubTitle(getString(R.string.label_open));
         } else {
             lvShopStatus.setSubTitle(getString(R.string.label_close));
+            shopBasicDataModel.getOpenSchedule();
         }
     }
 
     private void setUIMembership(ShopBasicDataModel shopBasicDataModel) {
         if (shopBasicDataModel.isRegular()) {
             ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm);
-            ivShopMembership.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorGray), PorterDuff.Mode.SRC_IN);
             ivShopMembership.setPadding(0, 0, 0, 0);
             tvMembershipName.setText(getString(R.string.label_regular_merchant));
             tvMembershipDescription.setText(getString(R.string.shop_settings_gold_merchant_invite));
@@ -188,7 +188,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
                 tvMembershipName.setText(getString(R.string.label_official_store));
                 tvMembershipDescription.setText(getString(R.string.valid_until_x, shopBasicDataModel.getExpired()));
             } else if (shopBasicDataModel.isGold()) {
-                ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm);
+                ivShopMembership.setImageResource(R.drawable.ic_badge_shop_regular);
                 ivShopMembership.setPadding(0, 0, 0, 0);
                 tvMembershipName.setText(getString(R.string.label_gold_merchant));
                 tvMembershipDescription.setText(getString(R.string.valid_until_x, shopBasicDataModel.getExpired()));

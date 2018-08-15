@@ -115,8 +115,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:hint="@string/shop_slogan_label"
                 app:counterEnabled="true"
-                app:counterMaxLength="@integer/max_slogan_char"
-                app:helperEnabled="true">
+                app:counterMaxLength="@integer/max_slogan_char">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/etShopSlogan"
@@ -133,8 +132,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:hint="@string/shop_description_label"
                 app:counterEnabled="true"
-                app:counterMaxLength="@integer/max_shop_desc_char"
-                app:helperEnabled="true">
+                app:counterMaxLength="@integer/max_shop_desc_char">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/etShopDesc"

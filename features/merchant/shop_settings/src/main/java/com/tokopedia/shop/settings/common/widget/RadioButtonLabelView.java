@@ -1,4 +1,4 @@
-package com.tokopedia.design.label;
+package com.tokopedia.shop.settings.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
+import com.tokopedia.shop.settings.R;
 
 public class RadioButtonLabelView extends FrameLayout {
 
