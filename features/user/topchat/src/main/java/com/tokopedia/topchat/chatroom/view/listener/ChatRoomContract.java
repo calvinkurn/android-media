@@ -176,6 +176,8 @@ public class ChatRoomContract {
         void setChatShopInfoData(ChatShopInfoViewModel viewModel);
 
         void setMenuVisible(boolean isVisible);
+
+        void setFollowStatus(boolean isFollow);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

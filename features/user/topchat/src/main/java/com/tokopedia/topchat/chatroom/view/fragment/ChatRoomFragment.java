@@ -1620,7 +1620,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void setChatShopInfoData(ChatShopInfoViewModel viewModel) {
         getArguments().putBoolean(IS_FAVORITE_KEY,viewModel.isFavorited());
         getArguments().putBoolean(IS_SHOP_KEY,viewModel.isShop());
+    }
 
+    @Override
+    public void setFollowStatus(boolean isFollow) {
+        getArguments().putBoolean(IS_FAVORITE_KEY,isFollow);
     }
 
     @Override
