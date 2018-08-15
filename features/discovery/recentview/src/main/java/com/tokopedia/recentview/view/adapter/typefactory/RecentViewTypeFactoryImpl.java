@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.recentview.view.listener.RecentView;
-import com.tokopedia.recentview.view.viewholder.RecentViewDetailProductViewHolder;
+import com.tokopedia.recentview.view.adapter.viewholder.RecentViewDetailProductViewHolder;
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
 
 /**

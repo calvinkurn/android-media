@@ -1,4 +1,4 @@
-package com.tokopedia.recentview.view.viewholder;
+package com.tokopedia.recentview.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.content.res.AppCompatResources;
@@ -27,40 +27,40 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recent_view_product_detail;
 
-    public TextView productName;
-    public TextView productPrice;
-    public ImageView productImage;
-    public ImageView wishlist;
-    public RatingBar productRating;
+    private TextView productName;
+    private TextView productPrice;
+    private ImageView productImage;
+    private ImageView wishlist;
+    private RatingBar productRating;
     private RecyclerView labels;
     public TextView shopName;
-    public TextView shopLocation;
-    public ImageView iconLocation;
+    private TextView shopLocation;
+    private ImageView iconLocation;
 
-    public ImageView freeReturn;
-    public ImageView goldMerchant;
-    public ImageView officialStore;
+    private ImageView freeReturn;
+    private ImageView goldMerchant;
+    private ImageView officialStore;
 
-    public View mainView;
+    private View mainView;
 
     private final RecentView.View viewListener;
     private LabelsAdapter labelsAdapter;
 
     public RecentViewDetailProductViewHolder(View itemView, RecentView.View viewListener) {
         super(itemView);
-        productName = (TextView) itemView.findViewById(R.id.product_name);
-        productPrice = (TextView) itemView.findViewById(R.id.product_price);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
-        wishlist = (ImageView) itemView.findViewById(R.id.wishlist);
-        productRating = (RatingBar) itemView.findViewById(R.id.product_rating);
-        labels = (RecyclerView) itemView.findViewById(R.id.labels);
-        freeReturn = (ImageView) itemView.findViewById(R.id.free_return);
+        productName = itemView.findViewById(R.id.product_name);
+        productPrice = itemView.findViewById(R.id.product_price);
+        productImage = itemView.findViewById(R.id.product_image);
+        wishlist = itemView.findViewById(R.id.wishlist);
+        productRating = itemView.findViewById(R.id.product_rating);
+        labels = itemView.findViewById(R.id.labels);
+        freeReturn = itemView.findViewById(R.id.free_return);
         mainView = itemView.findViewById(R.id.main_view);
-        goldMerchant = (ImageView) itemView.findViewById(R.id.gold_merchant);
-        officialStore = (ImageView) itemView.findViewById(R.id.official_store);
-        shopName = (TextView) itemView.findViewById(R.id.shop_name);
-        shopLocation = (TextView) itemView.findViewById(R.id.shop_location);
-        iconLocation = (ImageView)  itemView.findViewById(R.id.ic_location);
+        goldMerchant = itemView.findViewById(R.id.gold_merchant);
+        officialStore = itemView.findViewById(R.id.official_store);
+        shopName = itemView.findViewById(R.id.shop_name);
+        shopLocation = itemView.findViewById(R.id.shop_location);
+        iconLocation = itemView.findViewById(R.id.ic_location);
         this.viewListener = viewListener;
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext
