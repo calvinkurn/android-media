@@ -123,7 +123,7 @@ fun ProductAddViewModel.isDataValid(listenerOnError: ListenerOnErrorAddProduct):
     return true
 }
 
-fun ProductViewModel.convertToProductAddViewModel(): ProductAddViewModel? {
+fun ProductViewModel.convertToProductAddViewModel(isEditStatus : Boolean): ProductAddViewModel? {
     val productAddViewModel = ProductAddViewModel()
     productAddViewModel.productPictureList = productPictureViewModelList as ArrayList<ProductPictureViewModel>?
     productAddViewModel.productName = ProductName(this.productName)
@@ -140,8 +140,10 @@ fun ProductViewModel.convertToProductAddViewModel(): ProductAddViewModel? {
             ?: ""),
             this.productPreorder?.preorderProcessTime?.toInt()
                     ?: ProductEditPreOrderTimeType.DAY, this.productPreorder?.preorderTimeUnit?.toInt() ?: ProductEditPreOrderTimeType.DAY)
-    productAddViewModel.hasOriginalVariantLevel1 = checkOriginalVariantLevel1(this)
-    productAddViewModel.hasOriginalVariantLevel2 = checkOriginalVariantLevel2(this)
+    if(isEditStatus) {
+        productAddViewModel.hasOriginalVariantLevel1 = checkOriginalVariantLevel1(this)
+        productAddViewModel.hasOriginalVariantLevel2 = checkOriginalVariantLevel2(this)
+    }
     productAddViewModel.productSizeChart = this.productSizeChart
     productAddViewModel.productVariantViewModel = this.productVariant
     productAddViewModel.etalaseName = this.productEtalase?.etalaseName

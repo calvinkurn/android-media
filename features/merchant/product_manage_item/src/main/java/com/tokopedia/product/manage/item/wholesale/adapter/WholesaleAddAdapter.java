@@ -36,6 +36,7 @@ import static com.tokopedia.product.manage.item.common.util.CurrencyUsdPrefixEdi
 
 public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapter.ViewHolder> {
 
+    public static final int MINIMUM_QTY = 1;
     private List<WholesaleModel> wholesaleModels;
     private Listener listener;
     private int currentPositionFocusPrice = 0;
@@ -273,6 +274,11 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                     return;
                 }
                 if (model.getQtyMin() <= getItem(position-1).getQtyMin()) {
+                    model.setStatusQty(tilRangeWholesale.getContext().getString(R.string.wholesale_qty_not_valid));
+                    return;
+                }
+            }else if(position == 0){
+                if (model.getQtyMin() <= MINIMUM_QTY) {
                     model.setStatusQty(tilRangeWholesale.getContext().getString(R.string.wholesale_qty_not_valid));
                     return;
                 }

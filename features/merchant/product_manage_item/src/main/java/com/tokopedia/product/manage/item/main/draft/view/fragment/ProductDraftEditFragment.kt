@@ -38,7 +38,7 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
         if(model?.productCategory != null){
             presenter.fetchProductVariantByCat(model.productCategory.categoryId)
         }
-        currentProductAddViewModel = model?.convertToProductAddViewModel()
+        currentProductAddViewModel = model?.convertToProductAddViewModel(isEditStatus())
         populateView(currentProductAddViewModel)
     }
 

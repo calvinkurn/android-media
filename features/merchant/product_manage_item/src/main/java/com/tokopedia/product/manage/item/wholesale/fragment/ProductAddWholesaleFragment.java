@@ -219,9 +219,6 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
 
     private void updateWholesaleButton() {
         addWholesaleTextView.setVisibility(wholesaleAdapter.getItemCount() < MAX_WHOLESALE ? View.VISIBLE : View.GONE);
-        if(wholesaleAdapter.getItemCount()==0){
-            setButtonSubmit(false);
-        }
     }
 
     @Override

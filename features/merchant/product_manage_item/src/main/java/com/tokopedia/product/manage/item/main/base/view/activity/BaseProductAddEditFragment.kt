@@ -463,7 +463,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         productPrice?.price ?: 0.0,
                         getStatusStockViewVariant(productStock?: ProductStock()),
                         officialStore, productStock?.sku, isEdittingDraft(),
-                        productSizeChart, hasOriginalVariantLevel1 == true,
+                        productSizeChart,  == true,
                         hasOriginalVariantLevel2 == true,
                         hasWholesale)
                 startActivityForResult(intent, REQUEST_CODE_VARIANT)
@@ -496,7 +496,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun isEdittingDraft() = isEditStatus() && productDraftId > 0
 
-    private fun isEditStatus() = statusUpload == ProductStatus.EDIT
+    open fun isEditStatus() = statusUpload == ProductStatus.EDIT
 
     private fun isAddStatus() = statusUpload == ProductStatus.ADD
 
