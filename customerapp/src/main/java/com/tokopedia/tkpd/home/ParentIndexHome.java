@@ -396,22 +396,22 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private void setMoengageUserAttributes() {
 
-        AnalyticsCacheHandler.GetUserDataListener listener
-                = new AnalyticsCacheHandler.GetUserDataListener() {
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onSuccessGetUserAttr(UserData data) {
-                if (data != null)
-                    TrackingUtils.setMoEUserAttributes(data);
-            }
-        };
-
-        cacheHandler.getUserAttrGraphQLCache(listener);
+//        AnalyticsCacheHandler.GetUserDataListener listener
+//                = new AnalyticsCacheHandler.GetUserDataListener() {
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onSuccessGetUserAttr(UserData data) {
+//                if (data != null)
+//                    TrackingUtils.setMoEUserAttributes(data);
+//            }
+//        };
+//
+//        cacheHandler.getUserAttrGraphQLCache(listener);
 
     }
 

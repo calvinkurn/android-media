@@ -27,7 +27,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.home.account.AccountAnalytics;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;

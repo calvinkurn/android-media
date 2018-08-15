@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
 

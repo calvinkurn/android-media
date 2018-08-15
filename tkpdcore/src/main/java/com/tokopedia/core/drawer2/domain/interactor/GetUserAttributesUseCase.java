@@ -15,8 +15,10 @@ import rx.Observable;
 
 /**
  * Created by Herdi_WORK on 03.10.17.
+ *
+ * Moved to account-home
  */
-
+@Deprecated
 public class GetUserAttributesUseCase extends UseCase<UserData> {
     public static final String PARAM_USER_ID = "userID"; //do not change this key
     private static final String OPERATION_NAME_VALUE = "ConsumerDrawerData";

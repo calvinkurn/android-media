@@ -181,6 +181,7 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.presentation.AccountHomeRouter;
@@ -305,6 +306,7 @@ import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
+import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
@@ -908,6 +910,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTrainOrderListIntent(Context context) {
         return DigitalWebActivity.newInstance(context, TrainUrl.TRAIN_ORDER_LIST);
+    }
+
+    @Override
+    public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
+        HomeAnalytics.setUserAttribute(this, userAttributeData);
     }
 
     @Override
@@ -2312,6 +2319,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
         localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
         localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public void sendAnalyticsFirstTime() {
+        TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
     }
 
     @Override

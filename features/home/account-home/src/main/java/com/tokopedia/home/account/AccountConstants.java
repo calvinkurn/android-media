@@ -47,8 +47,7 @@ public class AccountConstants {
     }
 
     public static class Analytics {
-
-        static final String CLICK_HOME_PAGE = "clickHomePage";
+        public static final String CLICK_HOME_PAGE = "clickHomePage";
         public static final String AKUN_SAYA = "akun saya";
         public static final String CLICK = "click";
         public static final String PROFILE = "profile";
@@ -69,6 +68,7 @@ public class AccountConstants {
         public static final String HELP_CENTER = "help center";
         public static final String DEVELOPER_OPTIONS = "developer options";
         public static final String LOGOUT = "logout";
+        public static final String USER_DATA = "user_data";
         public static final String PERSONAL_DATA = "personal data";
         public static final String ADDRESS_LIST = "address list";
         public static final String PASSWORD = "password";

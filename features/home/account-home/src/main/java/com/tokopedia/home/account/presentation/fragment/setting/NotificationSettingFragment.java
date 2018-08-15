@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.home.account.AccountAnalytics;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.AppNotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.EmailNotificationSettingActivity;
