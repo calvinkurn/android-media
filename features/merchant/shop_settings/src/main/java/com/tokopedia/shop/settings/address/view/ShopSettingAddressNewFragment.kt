@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
 import com.tokopedia.shop.settings.address.di.component.ShopLocationComponent
@@ -68,8 +71,24 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
     override fun onErrorLoadAddresses(throwable: Throwable?) {
     }
 
+    override fun onSuccessDeleteAddress(string: String?) {
+        ToasterNormal.make(view, getString(R.string.success_delete_shop_address), BaseToaster.LENGTH_SHORT)
+                .setAction(R.string.close){}.show()
+        presenter.getShopAddress()
+    }
+
+    override fun onErrorDeleteAddress(throwable: Throwable?) {
+        throwable?.let {ToasterError.make(view, it.localizedMessage, BaseToaster.LENGTH_SHORT)
+                .setAction(R.string.close){}.show()}
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_add_shop_address, menu)
+    }
+
+    override fun onDestroyView() {
+        presenter.detachView()
+        super.onDestroyView()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -117,10 +136,11 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
     }
 
     private fun editShopAddress(item: ShopLocationViewModel) {
-        activity?.run {startActivityForResult(ShopSettingAddressAddEditActivity
-                .createIntent(this, item, false), REQUEST_CODE_EDIT_ADDRESS)}
+        activity?.run {
+            startActivityForResult(ShopSettingAddressAddEditActivity
+                    .createIntent(this, item, false), REQUEST_CODE_EDIT_ADDRESS)
+        }
     }
-
 
     private fun isValidToAdd() = adapter.dataSize < 3
 }

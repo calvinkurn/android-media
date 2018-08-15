@@ -2,6 +2,7 @@ package com.tokopedia.shop.settings.address.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.DeleteShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.GetShopLocationUseCase
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
 import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
@@ -9,11 +10,12 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ShopLocationPresenter @Inject
-    constructor(private val getShopLocationUseCase: GetShopLocationUseCase)
+    constructor(private val getShopLocationUseCase: GetShopLocationUseCase, private val deleteShopLocationUseCase: DeleteShopLocationUseCase)
     : BaseDaggerPresenter<ShopLocationView>(){
 
     override fun detachView() {
         getShopLocationUseCase.unsubscribe()
+        deleteShopLocationUseCase.unsubscribe()
         super.detachView()
     }
 
@@ -38,7 +40,18 @@ class ShopLocationPresenter @Inject
     }
 
     fun deleteItem(item: ShopLocationViewModel) {
+        deleteShopLocationUseCase.execute(DeleteShopLocationUseCase.createRequestParams(item.id), object : Subscriber<String>(){
+            override fun onNext(string: String?) {
+                view?.onSuccessDeleteAddress(string)
+            }
 
+            override fun onCompleted() {}
+
+            override fun onError(throwable: Throwable?) {
+                view?.onErrorDeleteAddress(throwable)
+            }
+
+        })
     }
 
 

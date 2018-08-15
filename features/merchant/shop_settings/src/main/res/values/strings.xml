@@ -55,4 +55,5 @@
     <string name="header_list_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
     <string name="title_dialog_delete_shop_address">Hapus Lokasi</string>
     <string name="desc_dialog_delete_shop_address">Hapus lokasi “%1$s”?</string>
+    <string name="success_delete_shop_address">Lokasi berhasil dihapus</string>
 </resources>

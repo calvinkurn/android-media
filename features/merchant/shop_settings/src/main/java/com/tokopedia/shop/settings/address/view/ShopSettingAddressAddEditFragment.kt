@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.*
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress
 import com.tokopedia.shop.common.router.ShopSettingRouter
@@ -41,11 +42,6 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_address_add, container, false)
@@ -127,26 +123,6 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_shop_address_add_edit, menu)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        super.onPrepareOptionsMenu(menu)
-        val menuItem = menu?.findItem(R.id.menu_add_edit)
-        menuItem?.title = if (isAddNew) getString(R.string.save) else getString(R.string.label_change)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.menu_add_edit){
-            if (isDataValidToSave()){
-
-            }
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == DISTRICT_RECOMMENDATION_REQUEST_CODE){
@@ -170,5 +146,17 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
         val hedader = getString(R.string.header_list_postal_code)
         if (!zipCodes.contains(hedader)) zipCodes.add(0, hedader)
         zipCodesAdapter.notifyDataSetChanged()
+    }
+
+    fun saveAddress() {
+        if (isDataValidToSave()){
+
+        }
+    }
+
+    fun updateAddess() {
+        if (isDataValidToSave()){
+
+        }
     }
 }
