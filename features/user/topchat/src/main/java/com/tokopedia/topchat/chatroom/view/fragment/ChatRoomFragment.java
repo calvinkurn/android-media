@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +26,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -54,8 +54,8 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -66,7 +66,6 @@ import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.topchat.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.topchat.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
-import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
@@ -88,6 +87,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
@@ -122,6 +122,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.MESSAGE_ID;
 import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
 /**
@@ -132,6 +133,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+    public static final int CHAT_DELETED_RESULT_CODE = 101;
+
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
@@ -143,6 +146,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     public static final String STATUS_DESC_KEY = "CHAT_STATUS_DESC";
     public static final String STATUS_KEY = "CHAT_STATUS";
+    public static final String IS_FAVORITE_KEY = "IS_FAVORITE";
 
     private static final long MILIS_TO_SECOND = 1000;
     @Inject
@@ -183,6 +187,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private Observable<Boolean> replyIsTyping;
     private int mode;
     private View notifier;
+    private ImageButton headerMenuButton;
+//    private Menus headerMenu;
 
     private String title, avatarImage, lastOnline;
     private boolean isOnline = false;
@@ -248,6 +254,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
         maximize = rootView.findViewById(R.id.maximize);
         notifier = rootView.findViewById(R.id.notifier);
         replyWatcher = Events.text(replyColumn);
+        headerMenuButton = toolbar.findViewById(R.id.header_menu);
+        headerMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomSheetMenu();
+            }
+        });
         recyclerView.setHasFixedSize(true);
         templateRecyclerView.setHasFixedSize(true);
         presenter.attachView(this);
@@ -659,6 +672,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void setHeader() {
         if (toolbar != null) {
+//            toolbar.setOverflowIcon(getContext().
+//                    getResources()
+//                    .getDrawable(R.drawable.ic_toolbar_overflow_level_two_black));
             mainHeader.setVisibility(View.VISIBLE);
             avatar = toolbar.findViewById(R.id.user_avatar);
             onlineStatus = toolbar.findViewById(R.id.online_status);
@@ -1515,7 +1531,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         }
                     });
         }
-
         reasonBottomSheet.show();
     }
 
@@ -1525,4 +1540,93 @@ public class ChatRoomFragment extends BaseDaggerFragment
         this.isOnline = isOnline;
         setOnlineDesc(status,isOnline);
     }
+
+    public void showBottomSheetMenu(){
+        boolean isFavorited = getArguments().getBoolean(IS_FAVORITE_KEY,false);
+        boolean isShop = getArguments().
+                getString(InboxMessageConstant.PARAM_SENDER_TAG,"").equalsIgnoreCase
+                (InboxChatConstant.SELLER_TAG);
+
+        Menus headerMenu = new Menus(getContext());
+        List<Menus.ItemMenus> listMenu = new ArrayList<>();
+        String viewProfileText = "Lihat Profil "+title;
+        String profileText = "Follow toko";
+        if(isFavorited) profileText = "Following";
+
+        listMenu.add(new Menus.ItemMenus(viewProfileText,R.drawable.ic_set_profile));
+        if(isShop) listMenu.add(new Menus.ItemMenus(profileText,R.drawable.ic_add_black_70));
+        listMenu.add(new Menus.ItemMenus("Hapus percakapan",R.drawable.ic_trash));
+
+        headerMenu.setItemMenuList(listMenu);
+        headerMenu.setActionText(getString(R.string.cancel));
+        headerMenu.setOnActionClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                headerMenu.dismiss();
+            }
+        });
+        headerMenu.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                if(itemMenus.title.equalsIgnoreCase("Hapus percakapan")) {
+                    showDeleteChatDialog();
+                } else if(pos == 0){
+                    presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE));
+                } else if(itemMenus.title.equalsIgnoreCase("Following") ||
+                        itemMenus.title.equalsIgnoreCase("Follow toko")){
+                    presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+                }
+                headerMenu.dismiss();
+            }
+        });
+        headerMenu.show();
+    }
+
+    @Override
+    public void successDeleteChat() {
+        String messageId = getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID,"");
+        Intent data = new Intent();
+        data.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID,messageId);
+        getActivity().setResult(CHAT_DELETED_RESULT_CODE,data);
+        getActivity().finish();
+    }
+
+    private void showDeleteChatDialog(){
+        final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+        myAlertDialog.setTitle("Hapus chat?");
+        myAlertDialog.setMessage("Chat akan terhapus selamanya");
+        myAlertDialog.setPositiveButton("Hapus", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        presenter.deleteChat(getArguments().getString(MESSAGE_ID));
+                    }
+                });
+        myAlertDialog.setNegativeButton(getActivity().getString(R.string.cancel), new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        Dialog dialog = myAlertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
+    public void setFollowStatus(boolean followStatus) {
+        getArguments().putBoolean(IS_FAVORITE_KEY,followStatus);
+    }
+
+    @Override
+    public void setMenuVisible(boolean isVisible) {
+        if(headerMenuButton != null) {
+            if(isVisible) headerMenuButton.setVisibility(View.VISIBLE);
+            else headerMenuButton.setVisibility(View.GONE);
+        }
+    }
+
+
 }

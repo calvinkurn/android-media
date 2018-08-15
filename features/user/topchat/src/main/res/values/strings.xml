@@ -77,4 +77,5 @@ yang ditemukan</string>
     <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
     <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
     <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
+    <string name="delete_chat_default_error_message">Hapus chat gagal!</string>
 </resources>

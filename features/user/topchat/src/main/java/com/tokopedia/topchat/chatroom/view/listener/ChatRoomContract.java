@@ -15,6 +15,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
@@ -169,6 +170,12 @@ public class ChatRoomContract {
         void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons);
 
         void setUserStatus(String status, boolean isOnline);
+
+        void successDeleteChat();
+
+        void setFollowStatus(boolean isFollow);
+
+        void setMenuVisible(boolean isVisible);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -202,5 +209,11 @@ public class ChatRoomContract {
         void sendReasonRating(String messageId, long replyTimeNano, String reason);
 
         void getUserStatus(String userId, String role);
+
+        void deleteChat(String messageId);
+
+        void getFollowStatus(String shopId);
+
+        void doFollowUnfollowToggle(String shopId);
     }
 }
