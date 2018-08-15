@@ -28,7 +28,7 @@ public class ChatShopInfoViewModel {
         return isShop;
     }
 
-    public void setShop(boolean shop) {
+    public void setIsShop(boolean shop) {
         isShop = shop;
     }
 }

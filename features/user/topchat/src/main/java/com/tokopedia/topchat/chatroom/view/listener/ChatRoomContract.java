@@ -173,7 +173,7 @@ public class ChatRoomContract {
 
         void successDeleteChat();
 
-        void setFollowStatus(boolean isFollow);
+        void setChatShopInfoData(ChatShopInfoViewModel viewModel);
 
         void setMenuVisible(boolean isVisible);
     }

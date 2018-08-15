@@ -15,6 +15,7 @@ public class ShopInfoFavoritedMapper implements Func1<ShopInfo, ChatShopInfoView
             String favoriteStatus = shopInfo.getInfo().getShopAlreadyFavorited();
             ChatShopInfoViewModel chatShopInfoViewModel = new ChatShopInfoViewModel();
             chatShopInfoViewModel.setFavorited(!favoriteStatus.equals("0"));
+            chatShopInfoViewModel.setIsShop(!shopInfo.getInfo().getShopId().equals("0"));
             return chatShopInfoViewModel;
         }
         throw new RuntimeException("");

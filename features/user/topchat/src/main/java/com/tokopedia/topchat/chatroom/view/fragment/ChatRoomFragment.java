@@ -147,7 +147,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public static final String STATUS_DESC_KEY = "CHAT_STATUS_DESC";
     public static final String STATUS_KEY = "CHAT_STATUS";
     public static final String IS_FAVORITE_KEY = "IS_FAVORITE";
-
+    public static final String IS_SHOP_KEY = "IS_SHOP";
     private static final long MILIS_TO_SECOND = 1000;
     @Inject
     ChatRoomPresenter presenter;
@@ -878,7 +878,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
             label = toolbar.findViewById(R.id.label);
             ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable
                     .ic_image_avatar_boy);
-            user.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME));
+            title = getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME);
+            user.setText(title);
             label.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG));
             setOnlineDesc(this.lastOnline,this.isOnline);
         }
@@ -1616,8 +1617,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setFollowStatus(boolean followStatus) {
-        getArguments().putBoolean(IS_FAVORITE_KEY,followStatus);
+    public void setChatShopInfoData(ChatShopInfoViewModel viewModel) {
+        getArguments().putBoolean(IS_FAVORITE_KEY,viewModel.isFavorited());
+        getArguments().putBoolean(IS_SHOP_KEY,viewModel.isShop());
+
     }
 
     @Override

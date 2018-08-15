@@ -30,7 +30,7 @@ public class ChatRoomGetShopInfoSubscriber extends Subscriber<ChatShopInfoViewMo
 
     @Override
     public void onNext(ChatShopInfoViewModel chatShopInfoViewModel) {
-        view.setFollowStatus(chatShopInfoViewModel.isFavorited());
+        view.setChatShopInfoData(chatShopInfoViewModel);
         view.setMenuVisible(true);
     }
 }
