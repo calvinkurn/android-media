@@ -7,18 +7,18 @@ import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
 
 data class ShopLocationViewModel(
         val id: String = "",
-        val name: String = "",
-        val address: String = "",
-        val districtId: Int = -1,
-        val districtName: String = "",
-        val cityId: Int = -1,
-        val cityName: String = "",
-        val stateId: Int = -1,
-        val stateName: String = "",
-        val postalCode: Int = -1,
-        val email: String = "",
-        val phone: String = "",
-        val fax: String = ""
+        var name: String = "",
+        var address: String = "",
+        var districtId: Int = -1,
+        var districtName: String = "",
+        var cityId: Int = -1,
+        var cityName: String = "",
+        var stateId: Int = -1,
+        var stateName: String = "",
+        var postalCode: Int = -1,
+        var email: String = "",
+        var phone: String = "",
+        var fax: String = ""
 ): Visitable<ShopLocationTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel) : this(

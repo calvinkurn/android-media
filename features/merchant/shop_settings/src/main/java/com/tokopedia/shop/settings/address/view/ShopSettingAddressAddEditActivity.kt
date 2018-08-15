@@ -3,12 +3,20 @@ package com.tokopedia.shop.settings.address.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.address.di.component.DaggerShopLocationComponent
+import com.tokopedia.shop.settings.address.di.component.ShopLocationComponent
 
-class ShopSettingAddressAddEditActivity: BaseSimpleActivity() {
+class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<ShopLocationComponent> {
+    override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(
+            (application as BaseMainApplication).getBaseAppComponent()).build()
+
     private var shopLocationViewModel: ShopLocationViewModel? = null
     private var isAddNew = true
 
@@ -32,13 +40,9 @@ class ShopSettingAddressAddEditActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         saveTextView?.run {
-            if(isAddNew){
-                text = getString(R.string.save)
-                setOnClickListener { (fragment as ShopSettingAddressAddEditFragment).saveAddress() }
-            } else {
-                text = getString(R.string.label_change)
-                setOnClickListener { (fragment as ShopSettingAddressAddEditFragment).updateAddess() }
-            }
+            text = getString( if(isAddNew) R.string.save else R.string.label_change)
+            setOnClickListener { (fragment as ShopSettingAddressAddEditFragment).saveAddEditAddress() }
+            visibility = View.VISIBLE
         }
     }
 

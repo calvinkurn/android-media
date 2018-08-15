@@ -1,10 +1,13 @@
 package com.tokopedia.shop.settings.address.view
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
@@ -28,6 +31,10 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
     companion object {
         private const val REQUEST_CODE_ADD_ADDRESS = 1
         private const val REQUEST_CODE_EDIT_ADDRESS = 2
+
+        private const val PARAM_EXTRA_IS_SUCCESS = "is_success"
+        private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
+
         fun createInstance() = ShopSettingAddressNewFragment()
     }
 
@@ -74,11 +81,11 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
     override fun onSuccessDeleteAddress(string: String?) {
         ToasterNormal.make(view, getString(R.string.success_delete_shop_address), BaseToaster.LENGTH_SHORT)
                 .setAction(R.string.close){}.show()
-        presenter.getShopAddress()
+        loadInitialData()
     }
 
     override fun onErrorDeleteAddress(throwable: Throwable?) {
-        throwable?.let {ToasterError.make(view, it.localizedMessage, BaseToaster.LENGTH_SHORT)
+        throwable?.let {ToasterError.make(view, ErrorHandler.getErrorMessage(activity, it), BaseToaster.LENGTH_SHORT)
                 .setAction(R.string.close){}.show()}
     }
 
@@ -143,4 +150,17 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
     }
 
     private fun isValidToAdd() = adapter.dataSize < 3
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val isSuccess = data.getBooleanExtra(PARAM_EXTRA_IS_SUCCESS, false)
+            val isNew = data.getBooleanExtra(PARAM_EXTRA_IS_ADD_NEW, false)
+            if (isSuccess){
+                loadInitialData()
+                ToasterNormal.make(view, getString(if (isNew) R.string.success_add_address else R.string.success_edit_address),
+                        BaseToaster.LENGTH_SHORT).setAction(R.string.close){}.show()
+            }
+        }
+    }
 }

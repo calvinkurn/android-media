@@ -7,15 +7,22 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.*
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
+import com.tokopedia.shop.settings.address.di.component.ShopLocationComponent
+import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
+import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
 import kotlinx.android.synthetic.main.fragment_shop_address_add.*
+import javax.inject.Inject
 
-class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
+class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddressAddEditView {
+
     private var shopLocationViewModel: ShopLocationViewModel? = null
     private var isAddNew = true
     private var selectedDistrictId = -1
@@ -23,14 +30,18 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
     private var selectedProvinceId = -1
     private val zipCodes: MutableList<String> = mutableListOf()
     private val zipCodesAdapter: ArrayAdapter<String>  by lazy {
-        ArrayAdapter(activity, R.layout.item_autocomplete_text_double_row, R.id.item, zipCodes)
+        ArrayAdapter<String>(activity, R.layout.item_autocomplete_text_double_row, R.id.item, zipCodes)
     }
+
+    @Inject lateinit var presenter: ShopSettingAddressAddEditPresenter
 
     companion object {
         private const val DISTRICT_RECOMMENDATION_REQUEST_CODE = 1
         private const val PARAM_EXTRA_ADDRESS = "district_recommendation_address"
         private const val PARAM_EXTRA_SHOP_ADDRESS = "shop_address"
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
+
+        private const val PARAM_EXTRA_IS_SUCCESS = "is_success"
 
         fun createInstance(shopAddressViewModel: ShopLocationViewModel?, isAddNew: Boolean) =
                 ShopSettingAddressAddEditFragment().also { it.arguments = Bundle().apply {
@@ -39,6 +50,8 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
                 }}
     }
     override fun initInjector() {
+        getComponent(ShopLocationComponent::class.java).inject(this)
+        presenter.attachView(this)
     }
 
     override fun getScreenName(): String? = null
@@ -51,6 +64,11 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             shopLocationViewModel = it.getParcelable(PARAM_EXTRA_SHOP_ADDRESS)
+            shopLocationViewModel?.let {
+                selectedProvinceId = it.stateId
+                selectedCityId = it.cityId
+                selectedDistrictId = it.districtId
+            }
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
 
@@ -148,15 +166,41 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment() {
         zipCodesAdapter.notifyDataSetChanged()
     }
 
-    fun saveAddress() {
+    fun saveAddEditAddress() {
         if (isDataValidToSave()){
+            presenter.saveAddress(populateData(), isAddNew)
+        }
+    }
+
+    private fun populateData(): ShopLocationViewModel {
+        shopLocationViewModel = shopLocationViewModel ?: ShopLocationViewModel()
+        return shopLocationViewModel!!.apply {
+            name = edit_text_name.text.toString()
+            address = edit_text_address.text.toString()
+            districtId = selectedDistrictId
+            cityId = selectedCityId
+            stateId = selectedProvinceId
+            postalCode = postal_code.text.toString().toInt()
+            phone = edit_text_phone.text.toString()
+            email = edit_text_email.text.toString()
+            fax = edit_text_fax.text.toString()
 
         }
     }
 
-    fun updateAddess() {
-        if (isDataValidToSave()){
-
+    override fun onSuccesAddEdit(string: String?) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().putExtras(Bundle().apply {
+                putBoolean(PARAM_EXTRA_IS_SUCCESS, !TextUtils.isEmpty(string))
+                putBoolean(PARAM_EXTRA_IS_ADD_NEW, isAddNew)
+            }))
+            finish()
         }
+    }
+
+    override fun onErrorAddEdit(throwable: Throwable?) {
+        if (view != null && activity != null)
+            ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
+                    .setAction(R.string.title_retry){ presenter.saveAddress(populateData(), isAddNew) }.show()
     }
 }

@@ -12,7 +12,7 @@ import com.tokopedia.shop.settings.address.di.component.DaggerShopLocationCompon
 
 class ShopSettingsAddressActivity : BaseSimpleActivity(), HasComponent<ShopLocationComponent> {
     override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).getBaseAppComponent()).build();
+            (application as BaseMainApplication).getBaseAppComponent()).build()
 
     override fun getNewFragment(): Fragment = ShopSettingAddressNewFragment.createInstance()
 
