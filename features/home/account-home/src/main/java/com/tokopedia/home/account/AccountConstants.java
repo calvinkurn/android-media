@@ -48,7 +48,7 @@ public class AccountConstants {
 
     public static class Analytics {
 
-        static final String CLICK_HOME_PAGE = "clickHomePage";
+        public static final String CLICK_HOME_PAGE = "clickHomePage";
 
         public static final String AKUN_SAYA = "akun saya";
 
@@ -90,6 +90,6 @@ public class AccountConstants {
 
         public static final String LOGOUT = "logout";
 
-
+        public static final String USER_DATA = "user_data";
     }
 }

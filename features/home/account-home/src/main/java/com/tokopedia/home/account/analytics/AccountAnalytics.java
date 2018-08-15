@@ -1,4 +1,4 @@
-package com.tokopedia.home.account;
+package com.tokopedia.home.account.analytics;
 
 import android.content.Context;
 
@@ -46,5 +46,9 @@ public class AccountAnalytics {
                 String.format("%s %s", CLICK, item),
                 ""
         );
+    }
+
+    public void getUserAttribute() {
+
     }
 }

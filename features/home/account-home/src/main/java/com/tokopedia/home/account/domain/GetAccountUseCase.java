@@ -40,10 +40,10 @@ public class GetAccountUseCase extends UseCase<AccountViewModel> {
     }
 
     @Override
-    public Observable<AccountViewModel> createObservable(RequestParams requestParams) {
+    public Observable<AccountViewModel> createObservable(RequestParams requestParam) {
         return Observable
-                .just(true)
-                .flatMap((Func1<Boolean, Observable<GraphqlResponse>>) status -> {
+                .just(requestParam)
+                .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) requestParams -> {
                     String query = requestParams.getString(QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) requestParams.getObject(VARIABLES);
 
