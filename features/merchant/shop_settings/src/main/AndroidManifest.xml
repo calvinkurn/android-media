@@ -9,6 +9,18 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".basicinfo.view.activity.ShopEditBasicInfoActivity"
+            android:label="@string/shop_settings_basic_info"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".basicinfo.view.activity.ShopEditScheduleActivity"
+            android:label="@string/shop_settings_shop_status"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".address.view.ShopSettingsAddressActivity"
             android:label="@string/shop_settings_manage_address"
             android:theme="@style/Theme.White"

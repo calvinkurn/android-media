@@ -38,7 +38,7 @@ public class GetShopBasicDataUseCase extends UseCase<ShopBasicDataModel> {
         .onErrorResumeNext(new Func1<Throwable, Observable<? extends ShopBasicDataModel>>() {
             @Override
             public Observable<? extends ShopBasicDataModel> call(Throwable throwable) {
-                String jsonString = "{\"shopBasicData\":{\"result\":{\"domain\":\"tokoku\",\"name\":\"Toko Ku\",\"status\":1,\"closeSchedule\":\"1530403200\",\"openSchedule\":\"1530403300\",\"tagline\":\"awesome\",\"description\":\"Toko Awesome\",\"logo\":\"https://cdn-tokopedia.com/logo.png\",\"level\":2,\"expired\":\"1530403200\"}}}";
+                String jsonString = "{\"shopBasicData\":{\"result\":{\"domain\":\"tokoku\",\"name\":\"Toko Ku\",\"status\":1,\"closeSchedule\":\"1530403200\",\"openSchedule\":\"1530403300\",\"tagline\":\"awesome\",\"description\":\"Toko Awesome\",\"logo\":\"https://imagerouter.tokopedia.com/img/100-square/default_picture_user/default_toped-18.jpg\",\"level\":2,\"expired\":\"1530403200\"}}}";
                 ShopBasicDataQuery response = new Gson().fromJson(jsonString, ShopBasicDataQuery.class);
                 return Observable.just(response).flatMap(new GraphQLResultMapper<>());
             }

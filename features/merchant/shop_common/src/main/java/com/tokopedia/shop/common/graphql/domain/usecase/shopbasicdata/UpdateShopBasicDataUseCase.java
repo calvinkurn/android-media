@@ -84,12 +84,17 @@ public class UpdateShopBasicDataUseCase extends UseCase<String> {
                                                     //optional, either code only, or (filePath & fileName) only
                                                     String logoCode,
                                                     String filePath, String fileName) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(TAGLINE, tagline);
-        requestParams.putString(DESCRIPTION, description);
+        RequestParams requestParams = createRequestParams(tagline, description);
         requestParams.putString(LOGO_CODE, logoCode);
         requestParams.putString(FILE_PATH, filePath);
         requestParams.putString(FILE_NAME, fileName);
+        return requestParams;
+    }
+
+    public static RequestParams createRequestParams(String tagline, String description) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(TAGLINE, tagline);
+        requestParams.putString(DESCRIPTION, description);
         return requestParams;
     }
 

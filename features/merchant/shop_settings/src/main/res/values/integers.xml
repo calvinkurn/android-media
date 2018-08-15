@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="product_max_character_postal_code">5</integer>
+    <integer name="max_slogan_char">48</integer>
+    <integer name="max_shop_desc_char">140</integer>
 </resources>
