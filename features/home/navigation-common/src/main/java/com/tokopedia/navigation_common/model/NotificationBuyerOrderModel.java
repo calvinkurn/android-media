@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationBuyerOrderModel {
     @SerializedName("paymentStatus")
     @Expose
-    private Integer paymentStatus;
+    private String paymentStatus;
     @SerializedName("confirmed")
     @Expose
     private Integer confirmed;
@@ -23,11 +23,11 @@ public class NotificationBuyerOrderModel {
     @Expose
     private Integer arriveAtDestination;
 
-    public Integer getPaymentStatus() {
+    public String getPaymentStatus() {
         return paymentStatus;
     }
 
-    public void setPaymentStatus(Integer paymentStatus) {
+    public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 

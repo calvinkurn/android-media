@@ -26,19 +26,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
-import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
-import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
-import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
-import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
-import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
-import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
-import static com.tokopedia.navigation.GlobalNavConstant.SAMPAI_TUJUAN;
-import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
-import static com.tokopedia.navigation.GlobalNavConstant.SELLER_INFO;
-import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
-import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
-import static com.tokopedia.navigation.GlobalNavConstant.SEDANG_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.*;
 
 /**
  * Created by meta on 24/07/18.
