@@ -29,6 +29,7 @@
                 app:lv_content="@string/label_manage"
                 app:lv_content_color="@color/tkpd_main_green"
                 app:lv_title="@string/shop_status_label"
+                app:lv_sub_title_text_size="@dimen/sp_12"
                 tools:lv_sub_title="Buka" />
 
             <include layout="@layout/partial_shop_settings_info_membership" />

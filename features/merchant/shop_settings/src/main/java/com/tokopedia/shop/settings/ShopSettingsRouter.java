@@ -14,4 +14,7 @@ public interface ShopSettingsRouter {
     void goToManageShopNotes(Context context);
 
     void goToManageShopLocation(Context context);
+
+    void goToMerchantRedirect(Context context);
+
 }

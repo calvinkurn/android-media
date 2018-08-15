@@ -129,10 +129,12 @@ public class LabelView extends BaseCustomView {
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         titleTextView.setTextColor(titleColorValue);
         titleTextView.setMinWidth(minTitleWidth);
+
+        subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subtitleTextSize);
+        subTitleTextView.setTextColor(subtitleColorValue);
+
         if (!TextUtils.isEmpty(subTitleText)) {
             subTitleTextView.setText(subTitleText);
-            subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subtitleTextSize);
-            subTitleTextView.setTextColor(subtitleColorValue);
             subTitleTextView.setVisibility(View.VISIBLE);
         } else {
             subTitleTextView.setVisibility(View.GONE);

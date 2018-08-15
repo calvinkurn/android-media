@@ -2,17 +2,22 @@ package com.tokopedia.shop.settings.basicinfo.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -23,10 +28,12 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.settings.R;
+import com.tokopedia.shop.settings.ShopSettingsRouter;
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity;
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
+import com.tokopedia.shop.settings.common.util.ShopDateUtil;
 
 import javax.inject.Inject;
 
@@ -167,36 +174,84 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
 
     private void setUIStatus(ShopBasicDataModel shopBasicDataModel) {
         if (shopBasicDataModel.isOpen()) {
-            lvShopStatus.setSubTitle(getString(R.string.label_open));
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(getString(R.string.label_open));
+
+            String closeScheduleUnixString = shopBasicDataModel.getCloseSchedule();
+            if (!TextUtils.isEmpty(closeScheduleUnixString)) {
+                String closeString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, closeScheduleUnixString);
+                stringBuilder.append(", ");
+                stringBuilder.append(getString(R.string.closed_schedule, closeString));
+            }
+
+            String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
+            if (!TextUtils.isEmpty(openScheduleUnixString)) {
+                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
+                stringBuilder.append(" - ");
+                stringBuilder.append(openString);
+            }
+            lvShopStatus.setSubTitle(stringBuilder.toString());
         } else {
-            lvShopStatus.setSubTitle(getString(R.string.label_close));
-            shopBasicDataModel.getOpenSchedule();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(getString(R.string.label_close));
+            String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
+            if (!TextUtils.isEmpty(openScheduleUnixString)) {
+                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
+                stringBuilder.append(getString(R.string.reopen_at, openString));
+            }
+            lvShopStatus.setSubTitle(stringBuilder.toString());
         }
     }
 
     private void setUIMembership(ShopBasicDataModel shopBasicDataModel) {
         if (shopBasicDataModel.isRegular()) {
-            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm);
+            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_regular);
             ivShopMembership.setPadding(0, 0, 0, 0);
             tvMembershipName.setText(getString(R.string.label_regular_merchant));
-            tvMembershipDescription.setText(getString(R.string.shop_settings_gold_merchant_invite));
-        } else {
-            if (shopBasicDataModel.isOfficialStore()) {
-                ivShopMembership.setImageResource(R.drawable.ic_badge_shop_official);
-                int padding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
-                ivShopMembership.setPadding(padding, padding, padding, padding);
-                tvMembershipName.setText(getString(R.string.label_official_store));
-                tvMembershipDescription.setText(getString(R.string.valid_until_x, shopBasicDataModel.getExpired()));
-            } else if (shopBasicDataModel.isGold()) {
-                ivShopMembership.setImageResource(R.drawable.ic_badge_shop_regular);
-                ivShopMembership.setPadding(0, 0, 0, 0);
-                tvMembershipName.setText(getString(R.string.label_gold_merchant));
-                tvMembershipDescription.setText(getString(R.string.valid_until_x, shopBasicDataModel.getExpired()));
-            }
-            ivShopMembership.clearColorFilter();
+
+            String goldMerchantInviteString = getString(R.string.shop_settings_gold_merchant_invite);
+            String goldMerchantString = getString(R.string.label_gold_merchant);
+            Spannable spannable = new SpannableString(goldMerchantInviteString);
+            int indexStart = goldMerchantInviteString.indexOf(goldMerchantString);
+            int indexEnd = indexStart + goldMerchantString.length();
+
+            int color = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
+            spannable.setSpan(new ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    navigateToAboutGM();
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                    ds.setColor(color);
+                }
+            };
+            spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tvMembershipDescription.setMovementMethod(LinkMovementMethod.getInstance());
+            tvMembershipDescription.setText(spannable);
+
+        } else if (shopBasicDataModel.isOfficialStore()) {
+            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_official);
+            int padding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
+            ivShopMembership.setPadding(padding, padding, padding, padding);
+            tvMembershipName.setText(getString(R.string.label_official_store));
+            tvMembershipDescription.setText(getString(R.string.valid_until_x,
+                    ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, shopBasicDataModel.getExpired())));
+        } else if (shopBasicDataModel.isGold()) {
+            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm);
+            ivShopMembership.setPadding(0, 0, 0, 0);
+            tvMembershipName.setText(getString(R.string.label_gold_merchant));
+            tvMembershipDescription.setText(getString(R.string.valid_until_x, shopBasicDataModel.getExpired()));
         }
     }
 
+    private void navigateToAboutGM() {
+        ((ShopSettingsRouter) getActivity().getApplication()).goToMerchantRedirect(getActivity());
+    }
 
     @Override
     public void onErrorGetShopBasicData(Throwable throwable) {

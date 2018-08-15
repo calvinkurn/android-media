@@ -102,6 +102,17 @@ public class ImageLabelView extends FrameLayout {
         }
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        setClickable(enabled);
+        if (enabled) {
+            tvContent.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+        } else {
+            tvContent.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+        }
+    }
+
     public void setContent(String content) {
         tvContent.setText(content);
     }
