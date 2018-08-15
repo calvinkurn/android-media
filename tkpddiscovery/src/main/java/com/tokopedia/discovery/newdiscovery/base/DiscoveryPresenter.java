@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
@@ -47,6 +48,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStore) {
         super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, false);
+        enrichWithForceSearchParam(requestParams, forceSearch);
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("query", searchParameter.getQueryKey());
@@ -62,6 +64,10 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         graphqlUseCase.execute(
                 new DefaultGqlSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView(), false)
         );
+    }
+
+    private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
+        requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
     }
 
     @Override

@@ -76,7 +76,9 @@ public class ProductViewModelHelper {
         SearchProductGqlResponse.Suggestion gqlSuggestionResponse = searchProductResponse.getSuggestion();
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(gqlSuggestionResponse.getText());
-        model.setSuggestedQuery(gqlSuggestionResponse.getQuery());
+        String suggestedQuery
+                = NetworkParamHelper.getQueryValue(gqlSuggestionResponse.getQuery());
+        model.setSuggestedQuery(suggestedQuery);
         model.setSuggestionCurrentKeyword(gqlSuggestionResponse.getCurrentKeyword());
         //model.setFormattedResultCount(Long.toString(searchProductResponse.getCount()));
         return model;
