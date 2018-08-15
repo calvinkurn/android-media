@@ -5,6 +5,7 @@ import android.app.Application;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.digital.product.di.DaggerDigitalProductComponent;
 import com.tokopedia.digital.product.di.DigitalProductComponent;
 
 /**
