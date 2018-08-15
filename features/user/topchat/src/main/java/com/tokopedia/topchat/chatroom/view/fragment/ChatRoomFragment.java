@@ -1544,9 +1544,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     public void showBottomSheetMenu(){
         boolean isFavorited = getArguments().getBoolean(IS_FAVORITE_KEY,false);
-        boolean isShop = getArguments().
-                getString(InboxMessageConstant.PARAM_SENDER_TAG,"").equalsIgnoreCase
-                (InboxChatConstant.SELLER_TAG);
+        boolean isShop = getArguments().getBoolean(IS_SHOP_KEY,false);
 
         Menus headerMenu = new Menus(getContext());
         List<Menus.ItemMenus> listMenu = new ArrayList<>();
