@@ -58,7 +58,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.gql_search_product_first_page), SearchProductGqlResponse.class, variables);
-
+        graphqlUseCase.clearRequest();
         graphqlUseCase.setRequest(graphqlRequest);
 
         graphqlUseCase.execute(
