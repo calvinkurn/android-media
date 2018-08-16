@@ -23,13 +23,11 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
     private GetBalanceTokoCashUseCase balanceTokoCashUseCase;
     private GetHistoryDataUseCase getHistoryDataUseCase;
 
+    @Inject
     public HomeTokoCashPresenter(GetBalanceTokoCashUseCase balanceTokoCashUseCase, GetHistoryDataUseCase getHistoryDataUseCase) {
         this.balanceTokoCashUseCase = balanceTokoCashUseCase;
         this.getHistoryDataUseCase = getHistoryDataUseCase;
     }
-
-    @Inject
-
 
     //This method is just for refreshing token wallet when token is expired from applinks
     @Override

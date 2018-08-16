@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -20,12 +19,12 @@ import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.BalanceTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.ReceivedTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.HomeTokoCashContract;
 import com.tokopedia.tokocash.historytokocash.presentation.presenter.HomeTokoCashPresenter;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
 import javax.inject.Inject;
 
