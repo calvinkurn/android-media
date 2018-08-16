@@ -166,9 +166,9 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun getPriceValue() = spinnerCounterInputViewPrice.counterValue
 
-    private fun getMinOrderValue() = editTextMinOrder.text.removeCommaToInt()
+    private fun getMinOrderValue() = editTextMinOrder.doubleValue
 
-    private fun getMaxOrderValue() = editTextMaxOrder.text.removeCommaToInt()
+    private fun getMaxOrderValue() = editTextMaxOrder.doubleValue
 
     private fun String.removeCommaToInt() = toString().replace(",", "").toInt()
 
@@ -355,8 +355,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             currencyType = selectedCurrencyType
             price = getPriceValue()
             wholesalePrice = this@ProductEditPriceFragment.wholesalePrice
-            minOrder = getMinOrderValue()
-            maxOrder = getMaxOrderValue()
+            minOrder = getMinOrderValue().toInt()
+            maxOrder = getMaxOrderValue().toInt()
         }
 
     private fun isDataValid(): Boolean{

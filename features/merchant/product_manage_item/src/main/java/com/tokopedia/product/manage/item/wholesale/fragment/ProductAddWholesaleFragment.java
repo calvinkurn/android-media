@@ -109,7 +109,7 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                             });
                     AlertDialog dialog = alertDialogBuilder.create();
                     dialog.show();
-                }else{
+                }else if(productWholesaleViewModelListTemp != null && productWholesaleViewModelListTemp.size() > 0) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
                             .setTitle(getString(R.string.dialog_delete_wholesale_title))
                             .setMessage(getString(R.string.dialog_delete_wholesale_message))
@@ -125,6 +125,8 @@ public class ProductAddWholesaleFragment extends BaseDaggerFragment implements W
                             });
                     AlertDialog dialog = alertDialogBuilder.create();
                     dialog.show();
+                }else{
+                    exitWholesaleActivity();
                 }
             } else {
                 exitWholesaleActivity();

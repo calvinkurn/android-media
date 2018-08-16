@@ -174,8 +174,11 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun addVideoIDfromURL(videoID: String) {
-        videoIDs.filter { it == videoID }.map {
-            showSnackbarRed(getString(R.string.product_add_message_exist_video_chosen))
+        for(id in videoIDs){
+            if(id == videoID){
+                showSnackbarRed(getString(R.string.product_add_message_exist_video_chosen))
+                return
+            }
         }
         productAddVideoPresenter.getYoutubaDataVideoUrl(videoID)
     }
