@@ -25,7 +25,7 @@
     <string name="weight_place_holder">(WEIGHT)</string>
     <string name="item_place_holder"># item</string>
 
-    <string name="label_payment_setting">Pengaturan Pembayaran</string>
+    <string name="label_payment_setting">Kartu Kredit</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
