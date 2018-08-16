@@ -11,13 +11,10 @@ import rx.functions.Func1;
 public class ShopInfoFavoritedMapper implements Func1<ShopInfo, ChatShopInfoViewModel> {
     @Override
     public ChatShopInfoViewModel call(ShopInfo shopInfo) {
-        if(shopInfo != null && shopInfo.getInfo() != null) {
-            String favoriteStatus = shopInfo.getInfo().getShopAlreadyFavorited();
-            ChatShopInfoViewModel chatShopInfoViewModel = new ChatShopInfoViewModel();
-            chatShopInfoViewModel.setFavorited(!favoriteStatus.equals("0"));
-            chatShopInfoViewModel.setIsShop(!shopInfo.getInfo().getShopId().equals("0"));
-            return chatShopInfoViewModel;
-        }
-        throw new RuntimeException("");
+        String favoriteStatus = shopInfo.getInfo().getShopAlreadyFavorited();
+        ChatShopInfoViewModel chatShopInfoViewModel = new ChatShopInfoViewModel();
+        chatShopInfoViewModel.setFavorited(!favoriteStatus.equals("0"));
+        chatShopInfoViewModel.setIsShop(!shopInfo.getInfo().getShopId().equals("0"));
+        return chatShopInfoViewModel;
     }
 }
