@@ -129,14 +129,12 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     public void showLoading() {
-        if (adapter != null)
-            adapter.showLoading();
+        if (adapter != null) adapter.showLoading();
     }
 
     @Override
     public void hideLoading() {
-        if (adapter != null)
-            adapter.hideLoading();
+        if (adapter != null) adapter.hideLoading();
 
         if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);

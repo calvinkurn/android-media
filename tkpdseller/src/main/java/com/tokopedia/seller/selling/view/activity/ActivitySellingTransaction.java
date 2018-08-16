@@ -115,20 +115,28 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @DeepLink(ApplinkConst.SELLER_SHIPMENT)
     public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
-                .putExtras(extras);
+        if(GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
+        }
     }
 
     @DeepLink(ApplinkConst.SELLER_STATUS)
     public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS)
-                .putExtras(extras);
+        if(GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
+        }
     }
 
     @DeepLink(ApplinkConst.SELLER_HISTORY)
