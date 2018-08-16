@@ -14,7 +14,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.adapter.MySubmissionsListAdpater;
+import com.tokopedia.challenges.view.adapter.MySubmissionsListAdapter;
+import com.tokopedia.challenges.view.adapter.MySubmissionsViewHolder;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
@@ -27,11 +28,11 @@ import javax.inject.Inject;
 /**
  * Created by ashwanityagi on 06/08/18.
  */
-public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmissionsBaseContract.View {
+public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmissionsBaseContract.View, MySubmissionsViewHolder.ISubmissionsViewHolderListner {
 
     @Inject
     public MySubmissionsHomePresenter mySubmissionsHomePresenter;
-    private MySubmissionsListAdpater listAdpater;
+    private MySubmissionsListAdapter listAdpater;
     private RecyclerView recyclerView;
     private LinearLayout emptyLayout;
     private ProgressBar progressBar;
@@ -56,8 +57,8 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_submissions, container, false);
         recyclerView = view.findViewById(R.id.rv_home_submissions);
-        emptyLayout= view.findViewById(R.id.empty_view);
-        progressBar=view.findViewById(R.id.progressbar);
+        emptyLayout = view.findViewById(R.id.empty_view);
+        progressBar = view.findViewById(R.id.progressbar);
         mySubmissionsHomePresenter.getMySubmissionsList();
         return view;
     }
@@ -66,7 +67,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     public void setSubmissionsDataToUI(List<SubmissionResult> resultList) {
         recyclerView.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
-        listAdpater = new MySubmissionsListAdpater(getActivity(), resultList);
+        listAdpater = new MySubmissionsListAdapter(getActivity(), resultList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(listAdpater);
@@ -125,5 +126,10 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
             public void onRetryClicked() {
             }
         };
+    }
+
+    @Override
+    public void onLikeClick(SubmissionResult challengesResult) {
+        mySubmissionsHomePresenter.setSubmissionLike(challengesResult);
     }
 }

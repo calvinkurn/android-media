@@ -29,6 +29,7 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
+    compile project(path: ':libraries:applink')
 }
 
 apply from: '../../../publish_local.gradle'

@@ -1,6 +1,5 @@
 package com.tokopedia.challenges.view.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,14 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 
-class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
+public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvTitle;
     private TextView tvPoints;
@@ -29,7 +27,7 @@ class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
     private SubmissionResult submissionsResult;
 
-    MySubmissionsViewHolder(Context context, View view) {
+    MySubmissionsViewHolder(Context context, View view, ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
         super(view);
         this.context = context;
         tvTitle = view.findViewById(R.id.tv_title);
@@ -45,7 +43,17 @@ class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         });
         //imgShare.setOnClickListener(v -> ((ChallengesModuleRouter) (((Activity) context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getThumbnailUrl(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
         imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
-
+        imgLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
+                if (submissionsResult.getMe().isLiked()) {
+                    imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
+                } else {
+                    imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
+                }
+            }
+        });
     }
 
     void bind(SubmissionResult challengesResult) {
@@ -56,5 +64,7 @@ class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         //  tvStatus.setText(submissionsResult.getSubmissionCount());
         ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
     }
-
+    public interface ISubmissionsViewHolderListner {
+        void onLikeClick(SubmissionResult challengesResult);
+    }
 }
