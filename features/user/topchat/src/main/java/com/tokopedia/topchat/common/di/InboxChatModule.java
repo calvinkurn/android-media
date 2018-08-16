@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -18,7 +17,6 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
-import com.tokopedia.core.network.apiservices.shop.apis.ShopApi;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
@@ -72,6 +70,7 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
+import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
 import com.tokopedia.topchat.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.topchat.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.topchat.uploadimage.data.mapper.UploadImageMapper;
@@ -278,7 +277,7 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    public ShopCommonWSApi provideShopCommonWsApi(@RetrofitTomeDomainQualifier Retrofit retrofit) {
+    public ShopCommonWSApi provideShopCommonWsApi(@RetrofitWsDomainQualifier Retrofit retrofit) {
         return retrofit.create(ShopCommonWSApi.class);
     }
 
@@ -503,10 +502,20 @@ public class InboxChatModule {
     }
 
     @InboxChatScope
+    @RetrofitWsDomainQualifier
+    @Provides
+    Retrofit provideWsRetrofitDomain(OkHttpClient okHttpClient,
+                                       Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @InboxChatScope
     @RetrofitTomeDomainQualifier
     @Provides
     Retrofit provideTomeRetrofitDomain(OkHttpClient okHttpClient,
-                                       Retrofit.Builder retrofitBuilder) {
+                                     Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN)
                 .client(okHttpClient)
                 .build();

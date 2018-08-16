@@ -188,7 +188,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private int mode;
     private View notifier;
     private ImageButton headerMenuButton;
-//    private Menus headerMenu;
 
     private String title, avatarImage, lastOnline;
     private boolean isOnline = false;
@@ -598,7 +597,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (needCreateWebSocket()) {
             presenter.getReply(mode);
         } else {
-            //progressBar.setVisibility(View.GONE);
             presenter.getExistingChat();
         }
 
@@ -672,9 +670,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void setHeader() {
         if (toolbar != null) {
-//            toolbar.setOverflowIcon(getContext().
-//                    getResources()
-//                    .getDrawable(R.drawable.ic_toolbar_overflow_level_two_black));
             mainHeader.setVisibility(View.VISIBLE);
             avatar = toolbar.findViewById(R.id.user_avatar);
             onlineStatus = toolbar.findViewById(R.id.online_status);
@@ -1548,13 +1543,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         Menus headerMenu = new Menus(getContext());
         List<Menus.ItemMenus> listMenu = new ArrayList<>();
-        String viewProfileText = "Lihat Profil "+title;
-        String profileText = "Follow toko";
-        if(isFavorited) profileText = "Following";
+        String viewProfileText = getString(R.string.view_profile_container_string,title);
+        String profileText = getString(R.string.follow_store);
+        if(isFavorited) profileText = getString(R.string.already_follow_store);
 
         listMenu.add(new Menus.ItemMenus(viewProfileText,R.drawable.ic_set_profile));
         if(isShop) listMenu.add(new Menus.ItemMenus(profileText,R.drawable.ic_add_black_70));
-        listMenu.add(new Menus.ItemMenus("Hapus percakapan",R.drawable.ic_trash));
+        listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation),R.drawable.ic_trash));
 
         headerMenu.setItemMenuList(listMenu);
         headerMenu.setActionText(getString(R.string.cancel));
@@ -1567,13 +1562,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
         headerMenu.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
             @Override
             public void onClick(Menus.ItemMenus itemMenus, int pos) {
-                if(itemMenus.title.equalsIgnoreCase("Hapus percakapan")) {
+                if(itemMenus.title.equalsIgnoreCase(getString(R.string.delete_conversation))) {
                     showDeleteChatDialog();
                 } else if(pos == 0){
                     presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE));
-                } else if(itemMenus.title.equalsIgnoreCase("Following") ||
-                        itemMenus.title.equalsIgnoreCase("Follow toko")){
+                } else if(itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store)) ||
+                        itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))){
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
                 }
                 headerMenu.dismiss();
@@ -1593,9 +1588,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private void showDeleteChatDialog(){
         final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-        myAlertDialog.setTitle("Hapus chat?");
-        myAlertDialog.setMessage("Chat akan terhapus selamanya");
-        myAlertDialog.setPositiveButton("Hapus", new
+        myAlertDialog.setTitle(R.string.delete_chat_question);
+        myAlertDialog.setMessage(R.string.delete_chat_warning_message);
+        myAlertDialog.setPositiveButton(getString(R.string.delete), new
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1621,8 +1616,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setFollowStatus(boolean isFollow) {
-        getArguments().putBoolean(IS_FAVORITE_KEY,isFollow);
+    public void toggleFollowSuccess() {
+        boolean isFollow = getArguments().getBoolean(IS_FAVORITE_KEY,false);
+        getArguments().putBoolean(IS_FAVORITE_KEY,!isFollow);
     }
 
     @Override

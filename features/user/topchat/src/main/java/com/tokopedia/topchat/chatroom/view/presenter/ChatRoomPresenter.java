@@ -657,8 +657,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if(!TextUtils.isEmpty(messageId) && TextUtils.isDigitsOnly(messageId)) {
             deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId), new
                     ChatRoomDeleteMessageSubsciber(getView()));
-        } else {
-            //This should not happen at all vruh... but should log and store stack trace if happen
         }
     }
 
@@ -672,7 +670,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void doFollowUnfollowToggle(String shopId) {
-        toggleFavouriteShopUseCase.execute(new Subscriber<Boolean>() {
+        getView().hideMainLoading();
+        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                new Subscriber<Boolean>() {
             @Override
             public void onCompleted() { }
 
@@ -681,7 +681,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
             @Override
             public void onNext(Boolean aBoolean) {
-                getView().setFollowStatus(aBoolean);
+                if(aBoolean) getView().toggleFollowSuccess();
             }
         });
     }

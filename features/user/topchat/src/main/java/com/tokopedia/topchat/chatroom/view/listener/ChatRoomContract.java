@@ -177,7 +177,7 @@ public class ChatRoomContract {
 
         void setMenuVisible(boolean isVisible);
 
-        void setFollowStatus(boolean isFollow);
+        void toggleFollowSuccess();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
