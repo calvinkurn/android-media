@@ -4,38 +4,30 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.filters.FlakyTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.module.TestAppModule;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.mapper.CartMapper;
 import com.tokopedia.checkout.domain.mapper.MapperUtil;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
-import com.tokopedia.abstraction.common.di.module.TestAppModule;
-import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.DaggerTestCartListComponent;
 import com.tokopedia.checkout.view.di.component.TestCartListComponent;
-import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TestCartListModule;
 import com.tokopedia.checkout.view.di.module.TestTrackingAnalyticsModule;
-import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
@@ -56,9 +48,7 @@ import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
-import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.kol.common.di.DaggerKolComponent;
 import com.tokopedia.kol.common.di.KolComponent;
@@ -73,26 +63,28 @@ import com.tokopedia.navigation.presentation.module.TestBerandaComponent;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.tkpd.ConsumerRouterApplication;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.usecase.RequestParams;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
+import rx.Observable;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.openLinkWithText;
 import static android.support.test.espresso.action.ViewActions.swipeDown;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -100,14 +92,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDis
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.tokopedia.tkpd.Utils.nthChildOf;
-import static com.tokopedia.tkpd.Utils.setField;
 import static com.tokopedia.tkpd.Utils.withCustomConstraints;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -116,14 +104,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static rx.Observable.just;
 
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.usecase.RequestParams;
-
-import retrofit2.Response;
-import rx.Observable;
-import android.content.SharedPreferences;
-
 
 /**
  * Created by normansyahputa on 26/7/18.
@@ -131,31 +111,26 @@ import android.content.SharedPreferences;
 @RunWith(AndroidJUnit4.class)
 public class MainParentActivityTest {
 
-    private String jsons[] = {"feed_check_whitelist.json", "feed_query.json", "recent_product_views.json", "inbox_home.json"};
-
     private static final String Feed_TAG = "Feed";
     private static final String Inbox_TAG = "Inbox";
     private static final String Keranjang_TAG = "Keranjang";
     private static final String Akun_TAG = "Akun";
     private static final String Home_TAG = "Home";
-
-    @Inject
-    HomePresenter homePresenter;
-
-    GetDrawerNotificationUseCase getDrawerNotificationUseCase;
-
-
     @Rule
     public GuessTokopediaTestRule<MainParentActivity> mIntentsRule = new GuessTokopediaTestRule<>(
             MainParentActivity.class, true, false, 3
     );
+    @Inject
+    HomePresenter homePresenter;
 
+    GetDrawerNotificationUseCase getDrawerNotificationUseCase;
+    private String jsons[] = {"feed_check_whitelist.json", "feed_query.json", "recent_product_views.json", "inbox_home.json"};
     private BaseAppComponent baseAppComponent;
     private TestAppModule testAppModule;
 
     @Before
-    public void before(){
-        BaseMainApplication application = (BaseMainApplication)InstrumentationRegistry.getTargetContext().getApplicationContext();
+    public void before() {
+        BaseMainApplication application = (BaseMainApplication) InstrumentationRegistry.getTargetContext().getApplicationContext();
         baseAppComponent = application.reinitBaseAppComponent(testAppModule = new TestAppModule(application));
 
         disableOnBoard(application);
@@ -165,13 +140,13 @@ public class MainParentActivityTest {
         ShowCasePreference.setShown(application, showCaseTag, true);
     }
 
-    private boolean disableOnBoard(BaseMainApplication baseMainApplication){
+    private boolean disableOnBoard(BaseMainApplication baseMainApplication) {
         SharedPreferences sharedPreferences = baseMainApplication.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
         return sharedPreferences.edit().putBoolean("IS_FIRST_TIME_NEW_ONBOARDING", false).commit();
     }
 
     @After
-    public void after(){
+    public void after() {
         // disable showcase
         final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
         ShowCasePreference.setShown(baseAppComponent.getContext(), showCaseTag, false);
@@ -183,7 +158,7 @@ public class MainParentActivityTest {
     }
 
     @Test
-    public void test_notification_navigation_bar() throws Exception{
+    public void test_notification_navigation_bar() throws Exception {
         prepareForFullSmartLockBundle();
 
         startEmptyActivity();
@@ -208,12 +183,10 @@ public class MainParentActivityTest {
                 navComponent);
 
         mIntentsRule.getActivity().runOnUiThread(mainParentPresenter::onResume);
-
-
     }
 
     @Test
-    public void test_load_account_home_first_time_without_login() throws Exception{
+    public void test_load_account_home_first_time_without_login() throws Exception {
         UserSession userSession = baseAppComponent.userSession();
 
         doReturn(false).when(userSession).isLoggedIn();
@@ -244,24 +217,33 @@ public class MainParentActivityTest {
 
         GetAccountUseCase getAccountUseCase = testAccountHomeModule.getGetAccountUseCase();
 
-        doReturn(Observable.just(provideAccountViewModel()))
+        doReturn(Observable.just(provideAccountViewModel(mIntentsRule.getActivity())))
                 .when(getAccountUseCase)
                 .createObservable(any(RequestParams.class));
 
 
-        if(fragment != null && fragment.isVisible()){
+        if (fragment != null && fragment.isVisible()) {
             fragment.reInitInjector(accountHomeComponent);
 
             mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.renderData(provideAccountViewModel());
+                fragment.renderData(provideAccountViewModel(mIntentsRule.getActivity()));
             });
         }
 
-        Thread.sleep(5_000);
+        Thread.sleep(2_000);
+
+        onView(withId(R.id.pager_home_account))
+                .perform(withCustomConstraints(swipeLeft(), isDisplayingAtLeast(85)));
+
+        if (fragment != null && fragment.isVisible()) {
+            mIntentsRule.getActivity().runOnUiThread(() -> {
+                fragment.renderData(provide_account_view_model_without_shop(mIntentsRule.getActivity()));
+            });
+        }
     }
 
     @Test
-    public void test_load_cart_first_time_without_login() throws Exception{
+    public void test_load_cart_first_time_without_login() throws Exception {
         UserSession userSession = baseAppComponent.userSession();
 
         doReturn(false).when(userSession).isLoggedIn();
@@ -288,7 +270,7 @@ public class MainParentActivityTest {
                 .testTrackingAnalyticsModule(new TestTrackingAnalyticsModule())
                 .build();
 
-        if(fragment != null && fragment.isVisible()){
+        if (fragment != null && fragment.isVisible()) {
             fragment.reInitInjector(navComponent);
 
             mIntentsRule.getActivity().runOnUiThread(() -> {
@@ -304,7 +286,7 @@ public class MainParentActivityTest {
     }
 
     @Test
-    public void test_load_inbox_first_time_without_login(){
+    public void test_load_inbox_first_time_without_login() {
         UserSession userSession = baseAppComponent.userSession();
 
         doReturn(false).when(userSession).isLoggedIn();
@@ -336,7 +318,7 @@ public class MainParentActivityTest {
 
         InboxFragment fragment = (InboxFragment) mIntentsRule.getActivity().getFragment(2);
 
-        if(fragment != null && fragment.isVisible()){
+        if (fragment != null && fragment.isVisible()) {
             fragment.reInitInjector(navComponent);
 
             mIntentsRule.getActivity().runOnUiThread(() -> {
@@ -385,8 +367,8 @@ public class MainParentActivityTest {
             fragment.resetToFirstTime();
 
             // Get total item of myRecyclerView
-            RecyclerView recyclerView =fragment.getView().findViewById(R.id.recycler_view);
-            FeedPlusAdapter adapter = (FeedPlusAdapter)recyclerView.getAdapter();
+            RecyclerView recyclerView = fragment.getView().findViewById(R.id.recycler_view);
+            FeedPlusAdapter adapter = (FeedPlusAdapter) recyclerView.getAdapter();
             mIntentsRule.getActivity().runOnUiThread(() -> {
                 adapter.clearData();
             });
@@ -435,7 +417,7 @@ public class MainParentActivityTest {
     }
 
     @Test
-    public void test_home_fragment() throws Exception{
+    public void test_home_fragment() throws Exception {
 
         UserSession userSession = baseAppComponent.userSession();
 
@@ -480,7 +462,7 @@ public class MainParentActivityTest {
             onView(withId(R.id.sw_refresh_layout)).perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
 //                // Get total item of myRecyclerView
-            RecyclerView recyclerView =fragment.getView().findViewById(R.id.list);
+            RecyclerView recyclerView = fragment.getView().findViewById(R.id.list);
             int itemCount = recyclerView.getAdapter().getItemCount();
 
             Log.d("Item count is ", String.valueOf(itemCount));
@@ -492,14 +474,22 @@ public class MainParentActivityTest {
         }
     }
 
-    private AccountViewModel provideAccountViewModel(){
+    private AccountViewModel provideAccountViewModel(Context context, String jsonPath) {
         AccountModel accountModel = CacheUtil.convertStringToModel(
-                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource("account_home.json")
+                mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsonPath)
                 , AccountModel.class);
-        return AccountMapper.from(baseAppComponent.getContext(), accountModel);
+        return AccountMapper.from(context, accountModel);
     }
 
-    private CartListData provideGetCartListUseCase(Context context){
+    private AccountViewModel provideAccountViewModel(Context context) {
+        return provideAccountViewModel(context, "account_home.json");
+    }
+
+    private AccountViewModel provide_account_view_model_without_shop(Context context) {
+        return provideAccountViewModel(context, "account_home_without_shop.json");
+    }
+
+    private CartListData provideGetCartListUseCase(Context context) {
         CartDataListResponse cartDataListResponse = CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource("empty_cart.json")
                 , CartDataListResponse.class);
@@ -507,7 +497,7 @@ public class MainParentActivityTest {
         return cartMapper.convertToCartItemDataList(context, cartDataListResponse);
     }
 
-    private NotificationEntity provideNotificationEntity(){
+    private NotificationEntity provideNotificationEntity() {
         return CacheUtil.convertStringToModel(
                 mIntentsRule.getBaseJsonFactory().convertFromAndroidResource(jsons[3])
                 , NotificationEntity.class);
@@ -565,7 +555,7 @@ public class MainParentActivityTest {
         intending(hasComponent(LoginActivity.class.getName())).respondWith(result);
     }
 
-    private void mockAlreadyLogin(UserSession userSession){
+    private void mockAlreadyLogin(UserSession userSession) {
         doReturn(true).when(userSession).isLoggedIn();
         doReturn("1234").when(userSession).getUserId();
     }

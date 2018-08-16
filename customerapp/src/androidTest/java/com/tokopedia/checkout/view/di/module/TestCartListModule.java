@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -74,7 +73,7 @@ public class TestCartListModule {
     }
 
     public GetCartListUseCase getGetCartListUseCase() {
-        return getCartListUseCase = (getCartListUseCase == null ) ? (getCartListUseCase = mock(GetCartListUseCase.class)) :getCartListUseCase;
+        return getCartListUseCase = (getCartListUseCase == null) ? (getCartListUseCase = mock(GetCartListUseCase.class)) : getCartListUseCase;
     }
 
     @Provides

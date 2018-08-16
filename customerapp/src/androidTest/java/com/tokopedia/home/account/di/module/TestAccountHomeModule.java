@@ -22,16 +22,16 @@ public class TestAccountHomeModule {
     private GetAccountUseCase getAccountUseCase;
 
     @Provides
-    WalletPref provideWalletPref(@ApplicationContext Context context, Gson gson){
+    WalletPref provideWalletPref(@ApplicationContext Context context, Gson gson) {
         return walletPref == null ? (walletPref = mock(WalletPref.class)) : walletPref;
     }
 
     @Provides
     AccountHomePresenter provideAccountHomePresenter(
             GetAccountUseCase getAccountUseCase
-    ){
+    ) {
 
-        if(this.getAccountUseCase==null){
+        if (this.getAccountUseCase == null) {
             this.getAccountUseCase = mock(GetAccountUseCase.class);
         }
         return new AccountHomePresenter(this.getAccountUseCase);
