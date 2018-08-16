@@ -75,4 +75,9 @@
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_edit_note">Ubah Catatan</string>
     <string name="shop_settings_edit_address">Ubah Lokasi</string>
+    <string name="shop_etalase_label_name">Nama Etalase</string>
+    <string name="shop_etalase_title_required">Nama Etalase harus diisi</string>
+    <string name="shop_etalase_title_already_exist">Nama Etalase duplikat</string>
+    <string name="shop_settings_add_etalase">Tambah Etalase</string>
+    <string name="shop_settings_edit_etalase">Ubah Etalase</string>
 </resources>

@@ -28,7 +28,6 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
         private const val PARAM_IS_EDIT = "IS_EDIT"
         private const val PARAM_SHOP_NOTE = "SHOP_NOTE"
 
-
         fun createIntent(context: Context, isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteModel = ShopNoteModel()) =
                 Intent(context, ShopSettingNotesAddEditActivity::class.java)
                         .putExtra(PARAM_SHOP_NOTE, shopNoteModel)

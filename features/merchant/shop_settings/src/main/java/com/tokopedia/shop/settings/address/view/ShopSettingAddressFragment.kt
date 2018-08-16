@@ -24,6 +24,7 @@ import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
 import javax.inject.Inject
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolder
+import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
 
 class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopLocationTypeFactory>(),
         ShopLocationView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
@@ -118,8 +119,8 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
 
     private fun createAddress() {
         if (isValidToAdd()){
-            activity?.run {startActivityForResult(ShopSettingAddressAddEditActivity
-                    .createIntent(this, null, true), REQUEST_CODE_ADD_ADDRESS)}
+            activity?.run {startActivityForResult(ShopSettingsEtalaseAddEditActivity
+                    .createIntent(this, false), REQUEST_CODE_ADD_ADDRESS)}
         } else {
             Toast.makeText(activity, getString(R.string.error_max_shop_address), Toast.LENGTH_SHORT).show()
         }
