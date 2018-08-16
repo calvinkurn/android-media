@@ -14,4 +14,6 @@ interface ShopSettingRouter{
     fun getManageShopLocationIntent(context: Context): Intent
 
     fun getDistrictRecommendationIntent(activity: Activity): Intent
+
+    fun goToMerchantRedirect(context: Context)
 }
