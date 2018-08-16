@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -25,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,7 +35,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -48,7 +45,6 @@ import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.customview.CountDownView;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
-import com.tokopedia.challenges.view.customview.ExpandableTextView;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
@@ -134,7 +130,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             this.challengeResult = getArguments().getParcelable("challengesResult");
         }
-        isWinnerList = true;
+        isWinnerList = getArguments().getBoolean("isPastChallenge", false);
         setHasOptionsMenu(true);
         this.firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
@@ -214,9 +210,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             mPresenter.initialize(false, challengeResult);
         }
 
-        if (isWinnerList) {
-            mPresenter.loadCountdownView(challengeResult);
-        }
+        mPresenter.loadCountdownView(challengeResult, true);
         return view;
     }
 
@@ -270,7 +264,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             clSubmissions.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             submissionRecyclerView.setLayoutManager(mLayoutManager);
-            submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+            submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
             submissionRecyclerView.setAdapter(submissionItemAdapter);
         }
     }
@@ -284,8 +278,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             challengeTitle.setVisibility(View.GONE);
         }
-        challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
-                Utils.convertUTCToString(challengeResult.getEndDate())));
+        if (!TextUtils.isEmpty(challengeResult.getEndDate())) {
+            challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
+                    Utils.convertUTCToString(challengeResult.getEndDate())));
+        }
         if (!TextUtils.isEmpty(challengeResult.getHashTag()))
             tvHashTag.setText(challengeResult.getHashTag());
         else {
@@ -346,14 +342,22 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void renderWinnerItems(SubmissionResponse submissionResponse) {
-        winnerResults = submissionResponse.getSubmissionResults();
-        if (winnerResults != null && winnerResults.size() > 0) {
+        submissionResults = submissionResponse.getSubmissionResults();
+        if (submissionResults != null && submissionResults.size() > 0) {
             clWinners.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             winnerRecyclerView.setLayoutManager(mLayoutManager);
-            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
             winnerRecyclerView.setAdapter(winnerItemAdapter);
         }
+//        winnerResults = submissionResponse.getSubmissionResults();
+//        if (winnerResults != null && winnerResults.size() > 0) {
+//            clWinners.setVisibility(View.VISIBLE);
+//            LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+//            winnerRecyclerView.setLayoutManager(mLayoutManager);
+//            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+//            winnerRecyclerView.setAdapter(winnerItemAdapter);
+//        }
     }
 
     @Override

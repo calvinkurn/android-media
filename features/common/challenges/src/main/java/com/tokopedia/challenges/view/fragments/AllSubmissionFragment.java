@@ -50,10 +50,12 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     private static final int SORT_RECENT = 1;
     private static final int SORT_POINTS = 2;
     private int currentFilter;
+    private boolean isPastChallenge;
 
 
-    public static Fragment createInstance() {
+    public static Fragment createInstance(Bundle extras) {
         AllSubmissionFragment categoryFragment = new AllSubmissionFragment();
+        categoryFragment.setArguments(extras);
         return categoryFragment;
     }
 
@@ -63,6 +65,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         setHasOptionsMenu(true);
         if (fragmentCallbacks.getSubmissions() != null)
             mPresenter.setPageStart(fragmentCallbacks.getSubmissions().size());
+        this.isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
 
     }
 
@@ -73,7 +76,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         setUpVariables(view);
         if (fragmentCallbacks != null) {
             showProgressBar();
-            recyclerview.setAdapter(new SubmissionItemAdapter(fragmentCallbacks.getSubmissions(), this, LinearLayoutManager.VERTICAL));
+            recyclerview.setAdapter(new SubmissionItemAdapter(fragmentCallbacks.getSubmissions(), this, LinearLayoutManager.VERTICAL, isPastChallenge));
             mPresenter.setChallengeId(fragmentCallbacks.getChallengeId());
             hideProgressBar();
         }

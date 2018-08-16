@@ -69,7 +69,8 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
         this.submissions = submissions;
         this.challengeId = challengeId;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, AllSubmissionFragment.createInstance());
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
+        transaction.add(R.id.parent_view, AllSubmissionFragment.createInstance(getIntent().getExtras()));
         transaction.addToBackStack(null);
         transaction.commit();
     }

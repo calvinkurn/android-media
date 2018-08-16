@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
@@ -48,10 +49,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView detailContent;
     private TextView participateTitle;
     private TextView btnShare;
+    private boolean isPastChallenge;
 
     @Inject
     SubmitDetailPresenter presenter;
     private SubmissionResult model;
+    private TextView participateTextView;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -87,9 +90,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         detailContent = view.findViewById(R.id.detail_content);
 
         participateTitle = view.findViewById(R.id.participate_content);
+        participateTextView = view.findViewById(R.id.participate_title);
         btnShare = view.findViewById(R.id.btn_share);
 
         model = getArguments().getParcelable("submissionsResult");
+
+        isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
 
         setClickListeners();
         presenter.setDataInFields(model);
@@ -171,7 +177,19 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setParticipateTitle(String participateTitle) {
-        this.participateTitle.setText(participateTitle);
+        if (!isPastChallenge) {
+            this.participateTitle.setText(participateTitle);
+            String applink = "tokopedia://challenges/challenge/" + model.getId();
+            this.participateTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RouteManager.route(getContext(), applink);
+                }
+            });
+        } else {
+            this.participateTitle.setVisibility(View.GONE);
+            this.participateTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override

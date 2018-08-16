@@ -3,7 +3,6 @@ package com.tokopedia.challenges.view.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
@@ -43,15 +41,17 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private INavigateToActivityRequest navigateToActivityRequest;
     private boolean isFooterAdded;
     private int orientation;
+    private boolean isPastChallenge;
 
 
-    public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation) {
+    public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation, boolean isPastChallenge) {
         if (categoryItems == null)
             this.categoryItems = new ArrayList<>();
         else
             this.categoryItems = categoryItems;
         this.navigateToActivityRequest = navigateToActivityRequest;
         this.orientation = orientation;
+        this.isPastChallenge = isPastChallenge;
     }
 
     @Override
@@ -249,6 +249,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
                 detailsIntent.putExtra("submissionsResult", categoryItems.get(getIndex()));
+                detailsIntent.putExtra("isPastChallenge", isPastChallenge);
                 navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
             }
         }
