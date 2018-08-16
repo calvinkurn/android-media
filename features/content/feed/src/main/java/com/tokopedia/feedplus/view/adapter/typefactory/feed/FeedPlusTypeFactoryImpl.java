@@ -23,7 +23,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewH
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.promo.PromotedProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.promo.PromotedShopViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.recentview.RecentViewViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.topads.FeedTopadsViewHolder;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
@@ -43,7 +42,6 @@ import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
-import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
@@ -123,11 +121,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(AddFeedModel addFeedModel) {
         return AddFeedViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(RecentViewViewModel recentViewViewModel) {
-        return RecentViewViewHolder.LAYOUT;
     }
 
     @Override
@@ -227,8 +220,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new VideoBlogViewHolder(view, viewListener);
         else if (type == PromotedProductViewHolder.LAYOUT)
             viewHolder = new PromotedProductViewHolder(view, viewListener);
-        else if (type == RecentViewViewHolder.LAYOUT)
-            viewHolder = new RecentViewViewHolder(view, viewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener);
         else if (type == FeedTopadsViewHolder.LAYOUT)

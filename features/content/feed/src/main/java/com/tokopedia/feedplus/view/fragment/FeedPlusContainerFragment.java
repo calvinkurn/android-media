@@ -96,8 +96,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private void initView() {
         setAdapter();
-        if (shouldGoToExplore()) {
-            viewPager.setCurrentItem(tabLayout.getTabCount() - 1);
+        if (hasCategoryIdParam()) {
+            goToExplore();
         }
         onNotifyBadgeNotification(badgeNumber); // notify badge after toolbar created
     }
@@ -140,9 +140,20 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         return contentExploreFragment;
     }
 
-    private boolean shouldGoToExplore() {
+    public void goToExplore() {
+        if (shouldGoToExplore()) {
+            viewPager.setCurrentItem(tabLayout.getTabCount() - 1);
+        }
+    }
+
+    private boolean hasCategoryIdParam() {
         return getArguments() != null
-                && getArguments().getString(ContentExploreFragment.PARAM_CATEGORY_ID) != null
+                && getArguments().getString(ContentExploreFragment.PARAM_CATEGORY_ID) != null;
+    }
+
+    private boolean shouldGoToExplore() {
+        return viewPager != null
+                && tabLayout != null
                 && tabLayout.getTabCount() - 1 >= 0;
     }
 }

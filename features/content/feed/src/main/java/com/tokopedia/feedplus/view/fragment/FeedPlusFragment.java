@@ -954,7 +954,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        feedModuleRouter.openRedirectUrl(getActivity(), url);
+        if (getParentFragment() instanceof FeedPlusContainerFragment) {
+            ((FeedPlusContainerFragment) getParentFragment()).goToExplore();
+        } else {
+            feedModuleRouter.openRedirectUrl(getActivity(), url);
+        }
     }
 
     @Override

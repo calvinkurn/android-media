@@ -32,6 +32,8 @@ public interface ContentExploreContract {
 
         void onCategoryClicked(int position, int categoryId, String categoryName);
 
+        void showRefreshing();
+
         void showLoading();
 
         void dismissLoading();

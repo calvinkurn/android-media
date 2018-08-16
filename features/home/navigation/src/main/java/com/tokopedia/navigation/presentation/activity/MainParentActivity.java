@@ -117,13 +117,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return intent;
     }
 
-//    @DeepLink({ApplinkConst.CONTENT_EXPLORE})
-//    public static Intent getApplinkExplorentent(Context context, Bundle bundle) {
-//        Intent intent = start(context);
-//        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
-//        return intent;
-//    }
-
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
