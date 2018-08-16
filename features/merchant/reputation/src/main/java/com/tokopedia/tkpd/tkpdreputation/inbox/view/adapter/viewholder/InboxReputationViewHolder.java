@@ -65,7 +65,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         name.setText(MethodChecker.fromHtml(element.getRevieweeName()));
         date.setText(getDate(element.getCreateTime()));
         invoice.setText(element.getInvoice());
-        ImageHandler.LoadImage(avatar, element.getRevieweePicture());
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getRevieweePicture());
         setDeadline(element);
         setReputation(element);
         setAction(element);
@@ -102,8 +102,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
 
     private void setAction(InboxReputationItemViewModel inboxReputationItemViewModel) {
-        action.setText(inboxReputationItemViewModel.getReputationDataViewModel()
-                .getActionMessage());
+        action.setText(inboxReputationItemViewModel.getReputationDataViewModel().getActionMessage());
     }
 
     private void setReputation(InboxReputationItemViewModel element) {
@@ -136,7 +135,6 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         } else {
             deadline.setVisibility(View.INVISIBLE);
             textDeadline.setVisibility(View.INVISIBLE);
-
         }
     }
 
