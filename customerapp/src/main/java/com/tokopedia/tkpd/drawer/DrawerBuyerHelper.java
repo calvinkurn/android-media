@@ -80,6 +80,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     private static final int VAL_DEFAULT = 0;
+    private static final String TOKOCARD_WEB_LINK = "https://www.tokopedia.com/tokocard/";
 
     private TextView shopName;
     private TextView shopLabel;
@@ -794,13 +795,13 @@ public class DrawerBuyerHelper extends DrawerHelper
                 context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
         }
 
-
         AnalyticsEventTrackingHelper.hamburgerTokopointsClick(TokoPointWebviewActivity.class.getName());
     }
 
     @Override
     public void onGotoTokoCard() {
-        ((TkpdCoreRouter) context.getApplication()).actionOpenGeneralWebView(context, "https://www.tokopedia.com/tokocard/");
+        ((TkpdCoreRouter) context.getApplication()).actionOpenGeneralWebView(context, TOKOCARD_WEB_LINK);
+        AnalyticsEventTrackingHelper.hamburgerTokoCardClick(TOKOCARD_WEB_LINK);
     }
 
     private void onGoToCreateShop() {
