@@ -28,6 +28,9 @@ public class Whitelist {
     @SerializedName("post_success")
     private String postSuccessMessage;
 
+    @SerializedName("image_url")
+    private String imageUrl;
+
     public boolean isWhitelist() {
         return isWhitelist;
     }
@@ -54,5 +57,9 @@ public class Whitelist {
 
     public String getPostSuccessMessage() {
         return postSuccessMessage;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }
