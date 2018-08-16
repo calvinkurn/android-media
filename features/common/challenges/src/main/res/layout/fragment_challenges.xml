@@ -47,39 +47,27 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_error_network" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Empty"
-            android:textSize="@dimen/sp_20"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="No data found"
-            android:textSize="@dimen/sp_14" />
+        <include layout="@layout/empty_view" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_16"
-        android:indeterminate="true" />
+        android:orientation="vertical">
+
+        <include layout="@layout/home_challenge_list_item_loader" />
+
+        <include layout="@layout/home_challenge_list_item_loader" />
+
+        <include layout="@layout/home_challenge_list_item_loader" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_home_challenges"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16" />
 </LinearLayout>

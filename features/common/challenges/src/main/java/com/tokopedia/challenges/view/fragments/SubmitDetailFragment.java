@@ -103,6 +103,21 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+            if (challengeImage != null)
+                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (challengeImage != null)
+            ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
+    }
     private void setClickListeners() {
         closeBtn.setOnClickListener(view -> {
             closeBtn.setVisibility(View.GONE);
