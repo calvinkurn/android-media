@@ -69,5 +69,6 @@
     <string name="reorder_note">Atur posisi Catatan</string>
     <string name="shop_has_no_notes_search">Tidak terdapat Catatan untuk kata kunci ini</string>
     <string name="shop_notes_use_other_keyword">Silakan gunakan kata kunci lain</string>
+    <string name="note_success_delete">Catatan berhasil dihapus</string>
 
 </resources>

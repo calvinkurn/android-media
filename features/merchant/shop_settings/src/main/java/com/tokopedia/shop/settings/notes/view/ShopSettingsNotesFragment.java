@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.notes.view;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -16,12 +17,17 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteFactory;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
+import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter;
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter;
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder;
 
@@ -37,7 +43,9 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
     @Inject
     ShopSettingNoteListPresenter shopSettingNoteListPresenter;
     private ArrayList<ShopNoteViewModel> shopNoteModels;
-    private BaseListAdapter<ShopNoteViewModel, ShopNoteFactory> shopNoteAdapter;
+    private ShopNoteAdapter shopNoteAdapter;
+    private ProgressDialog progressDialog;
+    private String shopNoteIdToDelete;
 
     public static ShopSettingsNotesFragment newInstance() {
         return new ShopSettingsNotesFragment();
@@ -240,7 +248,7 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
     @NonNull
     @Override
     protected BaseListAdapter<ShopNoteViewModel, ShopNoteFactory> createAdapterInstance() {
-        shopNoteAdapter = super.createAdapterInstance();
+        shopNoteAdapter = new ShopNoteAdapter(getAdapterTypeFactory(), this);
         return shopNoteAdapter;
     }
 
@@ -273,8 +281,9 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
                     //TODO go to edit notes
                     Toast.makeText(getContext(), "go to edit notes " + shopNoteViewModel.getId(), Toast.LENGTH_LONG).show();
                 } else {
-                    //TODO go to delete notes
-                    Toast.makeText(getContext(), "go to delete notes " + shopNoteViewModel.getId(), Toast.LENGTH_LONG).show();
+                    shopNoteIdToDelete = shopNoteViewModel.getId();
+                    showSubmitLoading(getString(R.string.title_loading));
+                    shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete);
                 }
                 menus.dismiss();
             }
@@ -333,12 +342,55 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
 
     @Override
     public void onSuccessDeleteShopNote(String successMessage) {
-
+        hideSubmitLoading();
+        ToasterNormal.make(getActivity().findViewById(android.R.id.content),
+                getString(R.string.note_success_delete), BaseToaster.LENGTH_LONG)
+                .setAction(getString(R.string.close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // no-op
+                    }
+                }).show();
+        // if somehow id is not there, or if size is 1, we want to reload, so empty state can be shown.
+        if (TextUtils.isEmpty(shopNoteIdToDelete) ||
+                shopNoteAdapter.getDataSize() == 1) {
+            loadInitialData();
+        } else {
+            shopNoteAdapter.deleteNote(shopNoteIdToDelete);
+        }
     }
 
     @Override
     public void onErrorDeleteShopNote(Throwable throwable) {
+        hideSubmitLoading();
+        String message = ErrorHandler.getErrorMessage(getContext(), throwable);
+        ToasterError.make(getActivity().findViewById(android.R.id.content),
+                message, BaseToaster.LENGTH_LONG)
+                .setAction(getString(R.string.close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // no-op
+                    }
+                }).show();
+    }
 
+    public void showSubmitLoading(String message) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.setMessage(message);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+    }
+
+    public void hideSubmitLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
     }
 
     @Override

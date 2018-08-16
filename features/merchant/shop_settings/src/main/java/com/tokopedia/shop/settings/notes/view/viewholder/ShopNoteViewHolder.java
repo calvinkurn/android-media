@@ -1,11 +1,13 @@
 package com.tokopedia.shop.settings.notes.view.viewholder;
 
-import android.text.TextUtils;
+import android.support.v4.content.ContextCompat;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.settings.R;
+import com.tokopedia.shop.settings.common.util.SpanTextUtil;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 
 /**
@@ -18,6 +20,7 @@ public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
     private View ivMenuMore;
     private TextView tvNoteName;
     private TextView tvLastUpdate;
+    private ForegroundColorSpan boldColor;
 
     public ShopNoteViewHolder(View itemView,
                               OnShopNoteViewHolderListener onOnShopNoteViewHolderListener) {
@@ -26,6 +29,7 @@ public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
         ivMenuMore = itemView.findViewById(R.id.ivMenuMore);
         tvNoteName = itemView.findViewById(R.id.tvNoteName);
         tvLastUpdate = itemView.findViewById(R.id.tvLastUpdate);
+        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
     }
 
     private OnShopNoteViewHolderListener onOnShopNoteViewHolderListener;
@@ -36,13 +40,11 @@ public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
 
     @Override
     public void bind(ShopNoteViewModel shopNoteViewModel) {
+        String keyword = "";
         if (onOnShopNoteViewHolderListener!= null) {
-            String keyword = onOnShopNoteViewHolderListener.getKeyword();
-            if (!TextUtils.isEmpty(keyword)) {
-
-            }
+            keyword = onOnShopNoteViewHolderListener.getKeyword();
         }
-        tvNoteName.setText(shopNoteViewModel.getTitle());
+        tvNoteName.setText(SpanTextUtil.getSpandableColorText(shopNoteViewModel.getTitle(),keyword, boldColor));
         tvLastUpdate.setText(shopNoteViewModel.getUpdateTime());
         ivMenuMore.setOnClickListener(new View.OnClickListener() {
             @Override
