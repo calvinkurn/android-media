@@ -131,16 +131,12 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void removeWithMessageId(String messageId){
-        if(!list.isEmpty()){
-            for(Visitable visitable:list){
-                if(visitable instanceof ChatListViewModel){
-                    if(messageId.equals(((ChatListViewModel) visitable).getId())){
-                        int position = list.indexOf(visitable);
-                        list.remove(visitable);
-                        notifyItemRemoved(position);
-                        break;
-                    }
-                }
+        for(Visitable visitable:list){
+            if(visitable instanceof ChatListViewModel
+                    && messageId.equals(((ChatListViewModel) visitable).getId())){
+                int position = list.indexOf(visitable);
+                list.remove(visitable);
+                notifyItemRemoved(position);
             }
         }
     }
