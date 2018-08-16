@@ -2,6 +2,8 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transactiondata.entity.response.cartlist.cartlistnew.Donation;
+import com.tokopedia.transactiondata.entity.response.cartlist.cartlistnew.ShopGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +32,18 @@ public class CartDataListResponse {
     @SerializedName("promo_suggestion")
     @Expose
     private PromoSuggestion promoSuggestion;
-    @SerializedName("cart_list")
-    @Expose
-    private List<CartList> cartList = new ArrayList<>();
-    @SerializedName("default_promo_dialog_tab")
-    @Expose
-    private String defaultPromoDialogTab;
     @SerializedName("autoapply")
     @Expose
     private AutoApply autoApply;
+    @SerializedName("default_promo_dialog_tab")
+    @Expose
+    private String defaultPromoDialogTab;
+    @SerializedName("shop_group")
+    @Expose
+    private List<ShopGroup> shopGroups = new ArrayList<>();
+    @SerializedName("donation")
+    @Expose
+    private Donation donation;
 
     public int getIsCouponActive() {
         return isCouponActive;
@@ -64,9 +69,9 @@ public class CartDataListResponse {
         return promoSuggestion;
     }
 
-    public List<CartList> getCartList() {
-        return cartList;
-    }
+//    public List<CartList> getCartList() {
+//        return cartList;
+//    }
 
     public String getDefaultPromoDialogTab() {
         return defaultPromoDialogTab;
@@ -74,5 +79,13 @@ public class CartDataListResponse {
 
     public AutoApply getAutoApply() {
         return autoApply;
+    }
+
+    public List<ShopGroup> getShopGroups() {
+        return shopGroups;
+    }
+
+    public Donation getDonation() {
+        return donation;
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.transactiondata.repository;
 
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.cartlistnew.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
