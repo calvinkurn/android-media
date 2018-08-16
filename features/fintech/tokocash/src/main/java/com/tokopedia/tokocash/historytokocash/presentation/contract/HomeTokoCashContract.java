@@ -18,8 +18,6 @@ public interface HomeTokoCashContract {
 
         void hideProgressLoading();
 
-        void showToastMessage(String message);
-
         void showErrorMessage();
 
         void renderBalanceTokoCash(BalanceTokoCash balanceTokoCash);
@@ -32,7 +30,7 @@ public interface HomeTokoCashContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void processGetCategoryTopUp();
+        void getHistoryTokocashForRefreshingTokenWallet();
 
         void processGetBalanceTokoCash();
 

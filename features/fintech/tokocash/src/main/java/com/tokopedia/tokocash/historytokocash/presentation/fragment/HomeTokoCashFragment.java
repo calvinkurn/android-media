@@ -77,6 +77,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         super.onViewCreated(view, savedInstanceState);
         this.topUpAvailable = getArguments().getBoolean(EXTRA_TOP_UP_AVAILABLE, true);
         bottomSheetTokoCashView = new BottomSheetView(getActivity());
+        presenter.getHistoryTokocashForRefreshingTokenWallet();
         presenter.processGetBalanceTokoCash();
 
         if (savedInstanceState == null) {
@@ -111,11 +112,6 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
             progressLoading.setVisibility(View.GONE);
             mainContent.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void showToastMessage(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
