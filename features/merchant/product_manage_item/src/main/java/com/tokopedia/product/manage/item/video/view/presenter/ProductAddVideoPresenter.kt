@@ -71,6 +71,13 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
         })
     }
 
+    override fun detachView() {
+        graphqlUseCase.unsubscribe()
+        getYoutubeVideoDetailUseCase.unsubscribe()
+        getYoutubeVideoListDetailUseCase.unsubscribe()
+        super.detachView()
+    }
+
     fun getYoutubeDataVideoChosen(videoIDs: ArrayList<String>) {
         getYoutubeVideoData(videoIDs, VIDEO_CHOSEN)
     }

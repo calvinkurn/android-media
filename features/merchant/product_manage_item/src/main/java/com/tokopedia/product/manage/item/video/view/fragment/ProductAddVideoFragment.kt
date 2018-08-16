@@ -95,6 +95,11 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        productAddVideoPresenter.detachView()
+    }
+
     override fun getAdapterTypeFactory(): ProductAddVideoAdapterTypeFactory {
         return ProductAddVideoAdapterTypeFactory(this, this)
     }
@@ -174,11 +179,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun addVideoIDfromURL(videoID: String) {
-        for(id in videoIDs){
-            if(id == videoID){
-                showSnackbarRed(getString(R.string.product_add_message_exist_video_chosen))
-                return
-            }
+        videoIDs.filter { it == videoID }.map {
+            showSnackbarRed(getString(R.string.product_add_message_exist_video_chosen))
         }
         productAddVideoPresenter.getYoutubaDataVideoUrl(videoID)
     }
@@ -257,7 +259,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onVideoChosenDeleteClicked(position : Int) {
-       showDialogDeleteVideoChosen(adapter.data[position] as VideoViewModel)
+        showDialogDeleteVideoChosen(adapter.data[position] as VideoViewModel)
     }
 
     override fun showSnackbarRed(message: String) {
