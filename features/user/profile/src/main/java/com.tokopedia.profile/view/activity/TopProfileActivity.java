@@ -284,17 +284,21 @@ public class TopProfileActivity extends BaseSimpleActivity
             }
         });
 
-        buttonFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        buttonFollow.setOnClickListener(v -> {
+            if (((AbstractionRouter) getContext().getApplicationContext())
+                    .getSession().isLoggedIn()) {
                 followUnfollowKol();
+            } else {
+                onGoToLoginPage();
             }
         });
 
-        buttonFollowToolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        buttonFollowToolbar.setOnClickListener(v -> {
+            if (((AbstractionRouter) getContext().getApplicationContext())
+                    .getSession().isLoggedIn()) {
                 followUnfollowKol();
+            } else {
+                onGoToLoginPage();
             }
         });
     }
