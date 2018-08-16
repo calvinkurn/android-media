@@ -224,6 +224,7 @@ public class HeaderHomeView extends BaseCustomView {
             } else {
                 imageInfoBtn.setVisibility(GONE);
                 tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
+                tvBalanceTokocash.setVisibility(GONE);
                 tvActionTokocash.setVisibility(VISIBLE);
                 tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));

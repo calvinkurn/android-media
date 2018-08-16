@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.domain.subscriber;
 
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.presentation.view.MainParentView;

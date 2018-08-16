@@ -1,25 +1,15 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
-import com.tokopedia.home.IHomeRouter;
-import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
@@ -33,7 +23,6 @@ import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubsc
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;

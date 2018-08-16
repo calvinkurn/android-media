@@ -287,7 +287,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onResume();
+        onRefresh();
     }
 
     @Override
