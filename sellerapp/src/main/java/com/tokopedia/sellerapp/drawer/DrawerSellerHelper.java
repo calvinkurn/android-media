@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -452,7 +454,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
                     if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
-                        intent = TransactionPurchaseRouter.createIntentOrderListSummary(context);
+                        intent = RouteManager.getIntent(context, ApplinkConst.DIGITAL_ORDER);
                     else
                         intent = ((IDigitalModuleRouter) context.getApplication())
                                 .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
