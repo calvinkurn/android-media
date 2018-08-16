@@ -226,7 +226,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter {
+        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, WithdrawRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;

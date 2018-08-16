@@ -51,6 +51,7 @@ import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import rx.Observable;
 
@@ -293,6 +294,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public Intent getWithdrawIntent(Context context) {
-        return null;
+        return WithdrawActivity.getCallingIntent(context);
     }
 }

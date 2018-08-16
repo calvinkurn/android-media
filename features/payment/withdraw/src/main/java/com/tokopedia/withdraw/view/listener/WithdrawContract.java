@@ -26,8 +26,6 @@ public class WithdrawContract {
 
         void showError(String throwable);
 
-        void showProgress();
-
         String getStringResource(int id);
 
         void showErrorWithdrawal(String stringResource);

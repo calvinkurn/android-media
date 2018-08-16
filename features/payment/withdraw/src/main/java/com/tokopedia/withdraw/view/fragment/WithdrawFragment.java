@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -43,6 +42,7 @@ import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivit
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
@@ -73,7 +73,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     RecyclerView bankRecyclerView;
     private View withdrawButton;
     private View withdrawAll;
-//    private TextView withdrawError;
     private BankAdapter bankAdapter;
     private Snackbar snackBarInfo;
     private Snackbar snackBarError;
@@ -87,10 +86,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final String DEFAULT_TOTAL_BALANCE = "Rp.0,-";
     private View info;
     private List<BankAccountViewModel> listBank;
-    private NetworkErrorHelper progressDialog;
     private BottomSheetDialog confirmPassword;
     private Observable<String> nominalObservable;
-    private Observable<String> listBankObservable;
     private List<String> listBankWithdrawal;
 
 
@@ -155,7 +152,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawAll = view.findViewById(R.id.withdraw_all);
         totalBalance = view.findViewById(R.id.total_balance);
         totalWithdrawal = view.findViewById(R.id.total_withdrawal);
-//        withdrawError = view.findViewById(R.id.total_withdrawal_error);
         loadingLayout = view.findViewById(R.id.loading_layout);
         info = view.findViewById(R.id.info_container);
 
@@ -377,7 +373,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setPositiveButton(getActivity().getString(R.string.alert_not_verified_yet_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        Intent intent = ((WithdrawRouter) getActivity().getApplicationContext())
+                                .getProfileSettingIntent(getActivity());
+                        startActivity(intent);
+                        getActivity().finish();
                     }
                 })
                 .setNegativeButton(getActivity().getString(R.string.alert_not_verified_yet_negative), new DialogInterface.OnClickListener() {
@@ -394,11 +393,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     public void showError(String error) {
         snackBarError.setText(error);
         snackBarError.show();
-    }
-
-    @Override
-    public void showProgress() {
-
     }
 
     @Override
