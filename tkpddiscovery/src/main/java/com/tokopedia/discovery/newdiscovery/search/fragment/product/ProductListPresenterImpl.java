@@ -176,8 +176,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             } else {
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 getView().removeLoading();
-                                if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
-                                    list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
+                                if(!productViewModel.getAdsModel().getData().isEmpty()) {
+                                    list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
                                 }
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);

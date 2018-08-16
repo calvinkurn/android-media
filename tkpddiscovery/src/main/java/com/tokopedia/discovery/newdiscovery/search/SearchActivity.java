@@ -75,7 +75,6 @@ public class SearchActivity extends DiscoveryActivity
     public static final int TAB_PRODUCT = 0;
 
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
-    private static final String EXTRA_TOPADS_DATA = "TOPADS_DATA_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
     private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
 
@@ -130,13 +129,11 @@ public class SearchActivity extends DiscoveryActivity
 
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel,
-                              TopAdsModel adsModel,
                               boolean forceSwipeToShop,
                               boolean isActivityPaused) {
         if (activity != null) {
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
-            intent.putExtra(EXTRA_TOPADS_DATA, adsModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
             intent.putExtra(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
             activity.startActivity(intent);
@@ -165,7 +162,6 @@ public class SearchActivity extends DiscoveryActivity
         initResources();
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-        TopAdsModel topAdsModel = intent.getParcelableExtra(EXTRA_TOPADS_DATA);
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
 
@@ -175,7 +171,7 @@ public class SearchActivity extends DiscoveryActivity
 
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
-            loadSection(productViewModel, topAdsModel, forceSwipeToShop);
+            loadSection(productViewModel, forceSwipeToShop);
             setToolbarTitle(productViewModel.getQuery());
             bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
@@ -297,14 +293,14 @@ public class SearchActivity extends DiscoveryActivity
         shopTabTitle = getString(R.string.shop_tab_title);
     }
 
-    private void loadSection(ProductViewModel productViewModel, TopAdsModel topAdsModel, boolean forceSwipeToShop) {
+    private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
 
         List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
 
         if (productViewModel.isHasCatalog()) {
-            populateThreeTabItem(searchSectionItemList, productViewModel, topAdsModel);
+            populateThreeTabItem(searchSectionItemList, productViewModel);
         } else {
-            populateTwoTabItem(searchSectionItemList, productViewModel, topAdsModel);
+            populateTwoTabItem(searchSectionItemList, productViewModel);
         }
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
@@ -332,9 +328,9 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
-                                      ProductViewModel productViewModel, TopAdsModel topAdsModel) {
+                                      ProductViewModel productViewModel) {
 
-        productListFragment = getProductFragment(productViewModel, topAdsModel);
+        productListFragment = getProductFragment(productViewModel);
         catalogFragment = getCatalogFragment(productViewModel.getQuery());
         shopListFragment = getShopFragment(productViewModel.getQuery());
 
@@ -380,8 +376,8 @@ public class SearchActivity extends DiscoveryActivity
         return CatalogFragment.createInstanceByQuery(query);
     }
 
-    private ProductListFragment getProductFragment(ProductViewModel productViewModel, TopAdsModel topAdsModel) {
-        return ProductListFragment.newInstance(productViewModel, topAdsModel);
+    private ProductListFragment getProductFragment(ProductViewModel productViewModel) {
+        return ProductListFragment.newInstance(productViewModel);
     }
 
     private ShopListFragment getShopFragment(String query) {
@@ -389,9 +385,9 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void populateTwoTabItem(List<SearchSectionItem> searchSectionItemList,
-                                    ProductViewModel productViewModel, TopAdsModel topAdsModel) {
+                                    ProductViewModel productViewModel) {
 
-        productListFragment = getProductFragment(productViewModel, topAdsModel);
+        productListFragment = getProductFragment(productViewModel);
         shopListFragment = getShopFragment(productViewModel.getQuery());
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));

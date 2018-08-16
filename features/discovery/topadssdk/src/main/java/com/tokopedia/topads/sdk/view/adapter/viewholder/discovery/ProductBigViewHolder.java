@@ -85,15 +85,19 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     }
 
     private void bindShop(Shop shop) {
-        if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
+        if (shop.getBadges() != null && shop.getLocation() != null && !shop.getLocation().isEmpty()) {
+            shopLocation.setVisibility(View.VISIBLE);
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
             if(isBadgesExist(shop.getBadges())) {
                 shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
             } else {
                 shopLocation.setText(shop.getLocation());
             }
-        } else {
+        } else if (shop.getLocation() != null && !shop.getLocation().isEmpty()) {
+            shopLocation.setVisibility(View.VISIBLE);
             shopLocation.setText(shop.getLocation());
+        } else {
+            shopLocation.setVisibility(View.GONE);
         }
     }
 

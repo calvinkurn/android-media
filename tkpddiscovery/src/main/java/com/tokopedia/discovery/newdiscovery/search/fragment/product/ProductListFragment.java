@@ -84,7 +84,6 @@ public class ProductListFragment extends SearchSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
-    private static final String ARG_TOPADS_MODEL = "ARG_TOPADS_MODEL";
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
@@ -102,19 +101,17 @@ public class ProductListFragment extends SearchSectionFragment
     private Config topAdsConfig;
     private ProductListAdapter adapter;
     private ProductViewModel productViewModel;
-    private TopAdsModel topAdsModel;
     private ProductListTypeFactory productListTypeFactory;
     private SearchParameter searchParameter;
     private boolean forceSearch;
 
     private ArrayList<Option> quickFilterOptions;
-    private SimilarSearchManager similarSearchManager ;
+    private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
 
-    public static ProductListFragment newInstance(ProductViewModel productViewModel, TopAdsModel topAdsModel) {
+    public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
-        args.putParcelable(ARG_TOPADS_MODEL, topAdsModel);
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
         return productListFragment;
@@ -136,7 +133,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
         productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
-        topAdsModel = savedInstanceState.getParcelable(ARG_TOPADS_MODEL);
         quickFilterOptions = savedInstanceState.getParcelableArrayList(EXTRA_QUICK_FILTER_LIST);
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
@@ -145,7 +141,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void loadDataFromArguments() {
         productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
-        topAdsModel = getArguments().getParcelable(ARG_TOPADS_MODEL);
         if (productViewModel != null) {
 
             if (productViewModel.getSearchParameter() != null)
@@ -246,9 +241,12 @@ public class ProductListFragment extends SearchSectionFragment
         if (quickFilterOptions != null && !quickFilterOptions.isEmpty()) {
             headerViewModel.setQuickFilterList(quickFilterOptions);
         }
+        if (productViewModel.getCpmModel() != null) {
+            headerViewModel.setCpmModel(productViewModel.getCpmModel());
+        }
         list.add(headerViewModel);
-        if(!topAdsModel.getData().isEmpty()){
-            list.add(new TopAdsViewModel(topAdsModel));
+        if (!productViewModel.getAdsModel().getData().isEmpty()) {
+            list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
         }
         list.addAll(productViewModel.getProductList());
         return list;
@@ -480,7 +478,6 @@ public class ProductListFragment extends SearchSectionFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
-        outState.putParcelable(ARG_TOPADS_MODEL, topAdsModel);
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
         outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch());
         outState.putParcelableArrayList(EXTRA_QUICK_FILTER_LIST, quickFilterOptions);
@@ -569,7 +566,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onLongClick(ProductItem item, int adapterPosition) {
-        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getQueryKey(),item);
+        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getQueryKey(), item);
 
     }
 
@@ -910,9 +907,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
 
-
     private boolean isShowCaseAllowed(String tag) {
-        if(getActivity() == null) {
+        if (getActivity() == null) {
             return false;
         }
         return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
@@ -921,7 +917,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     public void startShowCase() {
         final String showCaseTag = ProductListFragment.class.getName();
-        if (!isShowCaseAllowed(showCaseTag)){
+        if (!isShowCaseAllowed(showCaseTag)) {
             return;
         }
         if (showCaseDialog != null) {
@@ -958,8 +954,9 @@ public class ProductListFragment extends SearchSectionFragment
             }
         }, 300);
     }
+
     private ShowCaseDialog createShowCaseDialog() {
-        return  new ShowCaseBuilder()
+        return new ShowCaseBuilder()
                 .customView(R.layout.item_top_ads_show_case)
                 .titleTextColorRes(R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
@@ -978,10 +975,10 @@ public class ProductListFragment extends SearchSectionFragment
 
 
     public View scrollToShowCaseItem() {
-        if(recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
+        if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
             recyclerView.stopScroll();
             recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
-            return ((GridLayoutManager)recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
+            return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
         }
         return null;
     }

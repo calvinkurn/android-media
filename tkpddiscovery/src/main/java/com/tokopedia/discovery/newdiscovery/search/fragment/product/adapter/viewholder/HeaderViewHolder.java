@@ -60,8 +60,14 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
-        initTopAds(topAdsConfig);
+//        initTopAds(topAdsConfig);
         initQuickFilterRecyclerView();
+        adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                clickListener.onBannerAdsClicked(applink);
+            }
+        });
     }
 
     private void initTopAds(Config topAdsConfig) {
@@ -77,12 +83,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 .build();
         adsBannerView.setConfig(newConfig);
         adsBannerView.loadTopAds();
-        adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
-            @Override
-            public void onBannerAdsClicked(String applink) {
-                clickListener.onBannerAdsClicked(applink);
-            }
-        });
     }
 
     private void initQuickFilterRecyclerView() {
@@ -93,7 +93,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @Override
     public void bind(final HeaderViewModel element) {
-
+        adsBannerView.displayAds(element.getCpmModel());
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);

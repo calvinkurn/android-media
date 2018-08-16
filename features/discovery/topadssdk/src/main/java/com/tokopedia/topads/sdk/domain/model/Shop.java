@@ -66,8 +66,8 @@ public class Shop implements Parcelable {
     private String ownerId;
     @SerializedName(KEY_IS_OWNER)
     private boolean isOwner;
-    @SerializedName(KEY_BADGES)
     private boolean loaded;
+    @SerializedName(KEY_BADGES)
     private List<Badge> badges = new ArrayList<>();
 
     public Shop() {

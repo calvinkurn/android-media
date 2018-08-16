@@ -22,7 +22,7 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseHotlist(String url, String query);
 
-        void onHandleResponseSearch(ProductViewModel productViewModel, TopAdsModel adsModel);
+        void onHandleResponseSearch(ProductViewModel productViewModel);
 
         void onHandleImageResponseSearch(ProductViewModel productViewModel);
 

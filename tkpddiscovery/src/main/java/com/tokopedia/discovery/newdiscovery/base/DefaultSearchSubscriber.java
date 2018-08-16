@@ -90,7 +90,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         model.setSearchParameter(searchParameter);
         model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
-        discoveryView.onHandleResponseSearch(model, new TopAdsModel());
+        discoveryView.onHandleResponseSearch(model);
     }
 
     private int defineResponse(SearchResultModel data) {

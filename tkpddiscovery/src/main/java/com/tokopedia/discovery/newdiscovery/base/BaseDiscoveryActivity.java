@@ -106,10 +106,10 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleResponseSearch(ProductViewModel productViewModel, TopAdsModel adsModel) {
+    public void onHandleResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         finish();
-        SearchActivity.moveTo(this, productViewModel, adsModel, isForceSwipeToShop(), isPausing());
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override

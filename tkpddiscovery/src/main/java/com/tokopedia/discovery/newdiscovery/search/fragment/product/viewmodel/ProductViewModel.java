@@ -9,6 +9,9 @@ import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.topads.sdk.domain.model.CpmModel;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.List;
 
@@ -29,6 +32,71 @@ public class ProductViewModel implements Parcelable {
     private boolean forceSearch;
     private boolean imageSearch;
     private DynamicFilterModel dynamicFilterModel;
+    private TopAdsModel adsModel;
+    private CpmModel cpmModel;
+
+    protected ProductViewModel(Parcel in) {
+        officialStoreBannerModel = in.readParcelable(OfficialStoreBannerModel.class.getClassLoader());
+        productList = in.createTypedArrayList(ProductItem.CREATOR);
+        hasCatalog = in.readByte() != 0;
+        query = in.readString();
+        shareUrl = in.readString();
+        additionalParams = in.readString();
+        suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
+        totalData = in.readInt();
+        searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
+        forceSearch = in.readByte() != 0;
+        imageSearch = in.readByte() != 0;
+        dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
+        adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
+        cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(officialStoreBannerModel, flags);
+        dest.writeTypedList(productList);
+        dest.writeByte((byte) (hasCatalog ? 1 : 0));
+        dest.writeString(query);
+        dest.writeString(shareUrl);
+        dest.writeString(additionalParams);
+        dest.writeParcelable(suggestionModel, flags);
+        dest.writeInt(totalData);
+        dest.writeParcelable(searchParameter, flags);
+        dest.writeByte((byte) (forceSearch ? 1 : 0));
+        dest.writeByte((byte) (imageSearch ? 1 : 0));
+        dest.writeParcelable(dynamicFilterModel, flags);
+        dest.writeParcelable(adsModel, flags);
+        dest.writeParcelable(cpmModel, flags);
+    }
+
+    public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
+        @Override
+        public ProductViewModel createFromParcel(Parcel in) {
+            return new ProductViewModel(in);
+        }
+
+        @Override
+        public ProductViewModel[] newArray(int size) {
+            return new ProductViewModel[size];
+        }
+    };
+
+    public TopAdsModel getAdsModel() {
+        return adsModel;
+    }
+
+    public void setAdsModel(TopAdsModel adsModel) {
+        this.adsModel = adsModel;
+    }
+
+    public CpmModel getCpmModel() {
+        return cpmModel;
+    }
+
+    public void setCpmModel(CpmModel cpmModel) {
+        this.cpmModel = cpmModel;
+    }
 
     public boolean isImageSearch() {
         return imageSearch;
@@ -135,46 +203,5 @@ public class ProductViewModel implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.officialStoreBannerModel, flags);
-        dest.writeTypedList(this.productList);
-        dest.writeByte(this.hasCatalog ? (byte) 1 : (byte) 0);
-        dest.writeString(this.query);
-        dest.writeString(this.shareUrl);
-        dest.writeString(this.additionalParams);
-        dest.writeParcelable(this.suggestionModel, flags);
-        dest.writeInt(this.totalData);
-        dest.writeParcelable(this.searchParameter, flags);
-        dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.dynamicFilterModel, flags);
-    }
 
-    protected ProductViewModel(Parcel in) {
-        this.officialStoreBannerModel = in.readParcelable(OfficialStoreBannerModel.class.getClassLoader());
-        this.productList = in.createTypedArrayList(ProductItem.CREATOR);
-        this.hasCatalog = in.readByte() != 0;
-        this.query = in.readString();
-        this.shareUrl = in.readString();
-        this.additionalParams = in.readString();
-        this.suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
-        this.totalData = in.readInt();
-        this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
-        this.forceSearch = in.readByte() != 0;
-        this.imageSearch = in.readByte() != 0;
-        this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
-    }
-
-    public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
-        @Override
-        public ProductViewModel createFromParcel(Parcel source) {
-            return new ProductViewModel(source);
-        }
-
-        @Override
-        public ProductViewModel[] newArray(int size) {
-            return new ProductViewModel[size];
-        }
-    };
 }
