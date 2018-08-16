@@ -35,10 +35,12 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.intdef.CurrencyEnum;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
+import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
@@ -66,12 +68,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final int BANK_INTENT = 34275;
     private static final int CONFIRM_PASSWORD_INTENT = 5964;
     private static final int BANK_SETTING_INTENT = 1324;
-    private TextView wrapperTotalWithdrawal;
+    private TkpdHintTextInputLayout wrapperTotalWithdrawal;
     private CloseableBottomSheetDialog infoDialog;
     RecyclerView bankRecyclerView;
     private View withdrawButton;
     private View withdrawAll;
-    private TextView withdrawError;
+//    private TextView withdrawError;
     private BankAdapter bankAdapter;
     private Snackbar snackBarInfo;
     private Snackbar snackBarError;
@@ -153,7 +155,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawAll = view.findViewById(R.id.withdraw_all);
         totalBalance = view.findViewById(R.id.total_balance);
         totalWithdrawal = view.findViewById(R.id.total_withdrawal);
-        withdrawError = view.findViewById(R.id.total_withdrawal_error);
+//        withdrawError = view.findViewById(R.id.total_withdrawal_error);
         loadingLayout = view.findViewById(R.id.loading_layout);
         info = view.findViewById(R.id.info_container);
 
@@ -407,17 +409,16 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public void showErrorWithdrawal(String stringResource) {
         if (TextUtils.isEmpty(stringResource)) {
-            withdrawError.setVisibility(View.GONE);
+            wrapperTotalWithdrawal.setError(null);
             return;
         }
-        withdrawError.setText(stringResource);
-        withdrawError.setVisibility(View.VISIBLE);
-        withdrawError.requestFocus();
+
+        wrapperTotalWithdrawal.setError(stringResource);
     }
 
     @Override
     public void resetView() {
-        withdrawError.setVisibility(View.GONE);
+        wrapperTotalWithdrawal.setError(null);
     }
 
     @Override
@@ -460,6 +461,21 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case BANK_INTENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
+                    BankAccountViewModel model = new BankAccountViewModel();
+                    model.setBankId(Integer.parseInt(parcelable.getBankId()));
+                    model.setBankName(parcelable.getBankName());
+                    model.setBankAccountId(parcelable.getAccountId());
+                    model.setBankAccountName(parcelable.getAccountName());
+                    model.setBankAccountNumber(parcelable.getAccountNumber());
+                    bankAdapter.addItem(model);
+                    bankAdapter.changeItemSelected(listBank.size()-2);
+
+                    snackBarInfo.setText(R.string.success_add_bank);
+                    snackBarInfo.show();
+                }
+                break;
             case BANK_SETTING_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
                     presenter.refreshBankList();
