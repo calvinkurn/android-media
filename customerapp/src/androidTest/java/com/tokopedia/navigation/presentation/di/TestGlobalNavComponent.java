@@ -1,10 +1,7 @@
 package com.tokopedia.navigation.presentation.di;
+
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.navigation.presentation.activity.MainParentActivityTest;
-import com.tokopedia.navigation.presentation.fragment.InboxFragment;
-import com.tokopedia.navigation.presentation.fragment.NotificationFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 
 import dagger.Component;
@@ -14,7 +11,7 @@ import dagger.Component;
  */
 @Component(modules = TestGlobalNavModule.class, dependencies = BaseAppComponent.class)
 @GlobalNavScope
-public interface TestGlobalNavComponent extends GlobalNavComponent{
+public interface TestGlobalNavComponent extends GlobalNavComponent {
 
     GetDrawerNotificationUseCase getGetDrawerNotificationUseCase();
 
