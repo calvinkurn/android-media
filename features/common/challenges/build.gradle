@@ -25,6 +25,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
 }
 
 apply from: '../../../publish_local.gradle'

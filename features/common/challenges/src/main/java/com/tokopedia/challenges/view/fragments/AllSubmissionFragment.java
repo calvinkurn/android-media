@@ -38,7 +38,7 @@ import javax.inject.Inject;
 public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubmissionContract.View, SubmissionItemAdapter.INavigateToActivityRequest, View.OnClickListener {
 
     private LinearLayout baseMainContent;
-    private FrameLayout progressBarLayout;
+    private View progressBarLayout;
     LinearLayoutManager layoutManager;
     private RecyclerView recyclerview;
     @Inject

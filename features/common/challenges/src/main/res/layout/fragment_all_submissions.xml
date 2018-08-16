@@ -77,22 +77,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16" />
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/progress_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black_12"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="gone">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/prog_bar"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
-                android:layout_gravity="center" />
-        </FrameLayout>
+            <include layout="@layout/home_challenge_list_item_loader" />
 
+            <include layout="@layout/home_challenge_list_item_loader" />
+
+            <include layout="@layout/home_challenge_list_item_loader" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

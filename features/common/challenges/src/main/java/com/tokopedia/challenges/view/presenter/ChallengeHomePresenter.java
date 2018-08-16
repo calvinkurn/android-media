@@ -6,9 +6,12 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetActiveChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.GetPastChallengesUseCase;
 import com.tokopedia.challenges.view.model.Challenge;
+import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.common.network.data.model.RestResponse;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
