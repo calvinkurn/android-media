@@ -13,10 +13,16 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tokocash.ApplinkConstant;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.accountsetting.presentation.activity.AccountSettingActivity;
+import com.tokopedia.tokocash.activation.presentation.activity.ActivateTokoCashActivity;
+import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+
+import javax.inject.Inject;
 
 /**
  * Created by nabillasabbaha on 2/5/18.
@@ -26,6 +32,9 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
         implements HomeTokoCashFragment.ActionListener {
 
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
+
+    @Inject
+    WalletUserSession walletUserSession;
 
     @SuppressWarnings("unused")
     @DeepLink(ApplinkConstant.WALLET_HOME)
@@ -43,6 +52,22 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initInjector();
+
+        if (isUserInactiveTokoCash()) {
+            startActivity(ActivateTokoCashActivity.newInstance(getApplicationContext()));
+            finish();
+        }
+    }
+
+    private boolean isUserInactiveTokoCash() {
+        return walletUserSession != null && walletUserSession.getTokenWallet().equals("");
+    }
+
+    private void initInjector() {
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getApplication());
+        tokoCashComponent.inject(this);
     }
 
     @Override
@@ -65,7 +90,7 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
             Application application = this.getApplication();
             if (application != null && application instanceof TokoCashRouter) {
                 Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(this,
-                WalletUrl.BaseUrl.WEB_DOMAIN + WalletUrl.Wallet.WEBVIEW_HELP_CENTER, getString(R.string.title_help_history));
+                        WalletUrl.BaseUrl.WEB_DOMAIN + WalletUrl.Wallet.WEBVIEW_HELP_CENTER, getString(R.string.title_help_history));
                 startActivity(intent);
             }
             return true;
