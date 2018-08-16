@@ -46,6 +46,11 @@ public interface InboxBaseContract {
 
         void setSnackBarErrorMessage(String message);
 
+        void clearSearch();
+
+        boolean isSearchEmpty();
+
+        void toggleSearch(int visibility);
     }
 
     interface InboxBasePresenter extends CustomerPresenter<InboxBaseView> {
@@ -60,5 +65,7 @@ public interface InboxBaseContract {
         boolean onOptionsItemSelected(MenuItem item);
 
         void reAttachView();
+
+        void clickCloseSearch();
     }
 }

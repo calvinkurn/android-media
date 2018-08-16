@@ -67,11 +67,13 @@
         <activity
             android:name=".inboxticket2.view.activity.InboxListActivity"
             android:exported="true"
+            android:label="Inbox"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".inboxticket2.view.activity.InboxDetailActivity"
             android:exported="true"
+            android:label="Detail Kendala"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

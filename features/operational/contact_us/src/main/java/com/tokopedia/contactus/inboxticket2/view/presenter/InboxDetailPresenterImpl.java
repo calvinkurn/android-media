@@ -14,6 +14,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
+import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
 import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
@@ -27,6 +29,7 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 import com.tokopedia.contactus.inboxticket2.view.fragment.BottomSheetFragment;
+import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.ImageUploadResult;
@@ -69,6 +72,7 @@ public class InboxDetailPresenterImpl
     private Tickets mTicketDetail;
     private GetTicketDetailUseCase mUsecase;
     private String fileUploaded;
+    private List<Integer> searchIndices;
     private PostMessageUseCase postMessageUseCase;
     private PostMessageUseCase2 postMessageUseCase2;
     private PostRatingUseCase postRatingUseCase;
@@ -81,6 +85,8 @@ public class InboxDetailPresenterImpl
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
     private String rateCommentID;
+    private int next;
+    private Utils utils;
 
     public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase,
                                     PostMessageUseCase messageUseCase,
@@ -145,13 +151,42 @@ public class InboxDetailPresenterImpl
     }
 
     @Override
-    public void onSearchSubmitted(String text) {
+    public void clickCloseSearch() {
+        if (mView.isSearchEmpty()) {
+            mView.toggleSearch(View.GONE);
+            if (mTicketDetail.isShowRating()) {
+                mView.toggleTextToolbar(View.GONE);
+            } else if (mTicketDetail.getStatus().equalsIgnoreCase("closed")
+                    && !mTicketDetail.isShowRating()) {
+                mView.showIssueClosed();
+            } else {
+                mView.toggleTextToolbar(View.VISIBLE);
+            }
+        } else {
+            mView.clearSearch();
+        }
+    }
 
+    @Override
+    public void onSearchSubmitted(String text) {
+        text = text.trim();
+        if (text.length() > 0) {
+            search(text);
+        } else {
+            mView.enterSearchMode("");
+            searchIndices.clear();
+        }
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        text = text.trim();
+        if (text.length() > 0) {
+            search(text);
+        } else {
+            mView.enterSearchMode("");
+            searchIndices.clear();
+        }
     }
 
     private void getTicketDetails(String id) {
@@ -178,6 +213,36 @@ public class InboxDetailPresenterImpl
                 TicketDetailResponse ticketDetailResponse = (TicketDetailResponse) ticketListResponse.getData();
                 if (ticketDetailResponse != null && ticketDetailResponse.getTickets() != null) {
                     mTicketDetail = ticketDetailResponse.getTickets();
+                    CommentsItem topItem = new CommentsItem();
+                    topItem.setAttachment(mTicketDetail.getAttachment());
+                    topItem.setMessagePlaintext(mTicketDetail.getMessage());
+                    topItem.setCreatedBy(mTicketDetail.getCreatedBy());
+                    topItem.setCreateTime(mTicketDetail.getCreateTime());
+                    List<CommentsItem> commentsItems = mTicketDetail.getComments();
+                    if (commentsItems == null) {
+                        commentsItems = new ArrayList<>();
+                        mTicketDetail.setComments(commentsItems);
+                        commentsItems.add(topItem);
+                    } else {
+                        commentsItems.add(0, topItem);
+                    }
+                    for (CommentsItem item : commentsItems) {
+                        String createTime = item.getCreateTime();
+                        createTime = createTime.substring(0, createTime.lastIndexOf("+"));
+                        createTime = getUtils().getDateTime(createTime);
+                        item.setCreateTime(createTime);
+                        int i;
+                        int count = 0;
+                        for (i = 0; i < createTime.length(); i++) {
+                            char c = createTime.charAt(i);
+                            if (c == ' ') {
+                                count++;
+                                if (count == 2)
+                                    break;
+                            }
+                        }
+                        item.setShortTime(createTime.substring(0, i));
+                    }
                     mView.renderMessageList(mTicketDetail);
                     mView.hideProgressBar();
                 }
@@ -448,6 +513,36 @@ public class InboxDetailPresenterImpl
         sendRating();
     }
 
+    @Override
+    public int getNextResult() {
+        if (searchIndices != null && searchIndices.size() > 0) {
+            if (next >= -1 && next < searchIndices.size() - 1) {
+                return searchIndices.get(++next);
+            } else {
+                mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
+                return -1;
+            }
+        } else {
+            mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
+            return -1;
+        }
+    }
+
+    @Override
+    public int getPreviousResult() {
+        if (searchIndices != null && searchIndices.size() > 0) {
+            if (next > -1 && next < searchIndices.size()) {
+                return searchIndices.get(next--);
+            } else {
+                mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
+                return -1;
+            }
+        } else {
+            mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
+            return -1;
+        }
+    }
+
     private Observable<List<ImageUpload>> uploadFile(final Context context, List<ImageUpload> imageUploads) {
         return Observable
                 .from(imageUploads)
@@ -575,12 +670,9 @@ public class InboxDetailPresenterImpl
                 DataResponse ticketListResponse = res1.getData();
                 RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
                 if (ratingResponse.getIsSuccess() > 0) {
-                    if (ratingResponse.getData().getRating().equals("YES")) {
-                        mView.showIssueClosed();
-                    } else {
-                        mView.toggleTextToolbar(View.VISIBLE);
-                        getTicketDetails(mTicketDetail.getId());
-                    }
+                    mView.toggleTextToolbar(View.VISIBLE);
+                } else {
+                    mView.toggleTextToolbar(View.GONE);
                 }
             }
         });
@@ -592,5 +684,65 @@ public class InboxDetailPresenterImpl
             badReasonAdapter = new BadReasonAdapter(badReasons, mView.getActivity(), this);
         }
         return badReasonAdapter;
+    }
+
+    private void search(String searchText) {
+        mView.showProgressBar();
+        if (searchIndices == null)
+            searchIndices = new ArrayList<>();
+        searchIndices.clear();
+        Observable.from(mTicketDetail.getComments()).map(new Func1<CommentsItem, Integer>() {
+            private int count = -1;
+
+            @Override
+            public Integer call(CommentsItem commentsItem) {
+                count++;
+                if (utils.containsIgnoreCase(commentsItem.getMessagePlaintext(), searchText)) {
+                    return count;
+                } else {
+                    return -1;
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+
+                    @Override
+                    public void onCompleted() {
+                        next = 0;
+                        mView.hideProgressBar();
+                        mView.enterSearchMode(searchText);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        if (integer != -1) {
+                            searchIndices.add(integer);
+                        }
+                    }
+                });
+
+    }
+
+    @Override
+    public Utils getUtils() {
+        if (utils == null) {
+            utils = new Utils(mView.getActivity());
+        }
+        return utils;
+    }
+
+    @Override
+    public void showImagePreview(int position, List<AttachmentItem> imagesLoc) {
+        ArrayList<String> imagesURL = new ArrayList<>();
+        for (AttachmentItem item : imagesLoc) {
+            imagesURL.add(item.getUrl());
+        }
+        mView.showImagePreview(position, imagesURL);
     }
 }

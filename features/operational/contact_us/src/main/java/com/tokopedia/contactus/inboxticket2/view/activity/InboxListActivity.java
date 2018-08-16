@@ -14,6 +14,7 @@ import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 
@@ -72,8 +73,7 @@ public class InboxListActivity extends InboxBaseActivity
 
     @Override
     public void toggleSearch(int visibility) {
-        editText.setVisibility(visibility);
-        clearSearch.setVisibility(visibility);
+        searchView.setVisibility(visibility);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class InboxListActivity extends InboxBaseActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.layout_email_activity;
+        return R.layout.layout_ticket_list_activity;
     }
 
     @Override
@@ -115,8 +115,8 @@ public class InboxListActivity extends InboxBaseActivity
     }
 
     @Override
-    public Type getType() {
-        return InboxListActivity.class;
+    public InboxBaseContract.InboxBasePresenter getPresenter() {
+        return component.getTicketListPresenter();
     }
 
     @Override
@@ -135,9 +135,14 @@ public class InboxListActivity extends InboxBaseActivity
         return true;
     }
 
-    @OnClick(R2.id.btn_filter)
-    void onClickFilter() {
-        ((InboxListContract.InboxListPresenter) mPresenter).onClickFilter();
+    @OnClick({R2.id.btn_filter,
+            R2.id.close_search})
+    void onClickFilter(View v) {
+        if (v.getId() == R.id.btn_filter) {
+            ((InboxListContract.InboxListPresenter) mPresenter).onClickFilter();
+        } else if (v.getId() == R.id.close_search) {
+            mPresenter.clickCloseSearch();
+        }
     }
 
     @OnClick(R2.id.tv_raise_ticket)
@@ -148,14 +153,20 @@ public class InboxListActivity extends InboxBaseActivity
         finish();
     }
 
-    @OnClick(R2.id.close_search)
-    void clearSearch() {
-        editText.setText("");
+    @Override
+    public boolean isSearchEmpty() {
+        return editText.getText().length() <= 0;
     }
+
 
     @Override
     public void updateDataSet() {
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void clearSearch() {
+        editText.setText("");
     }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {

@@ -22,8 +22,6 @@ import com.tokopedia.contactus.inboxticket2.di.InboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxModule;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 
-import java.lang.reflect.Type;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -35,7 +33,7 @@ import butterknife.ButterKnife;
 public abstract class InboxBaseActivity extends BaseSimpleActivity implements InboxBaseContract.InboxBaseView {
 
 
-    abstract Type getType();
+    abstract InboxBaseContract.InboxBasePresenter getPresenter();
 
     abstract void initView();
 
@@ -49,6 +47,8 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     InboxBaseContract.InboxBasePresenter mPresenter;
 
     BottomSheetDialogFragment bottomFragment;
+
+    Menu mMenu;
 
     protected InboxComponent component;
 
@@ -108,11 +108,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
         ButterKnife.bind(this);
         executeInjector();
         NetworkClient.init(this);
-        if (getType() == InboxListActivity.class) {
-            mPresenter = component.getTicketListPresenter();
-        } else if (getType() == InboxDetailActivity.class) {
-            mPresenter = component.getInboxDetailPresenter();
-        }
+        mPresenter = getPresenter();
         initView();
         mPresenter.attachView(this);
     }
@@ -165,8 +161,10 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (getMenuRes() != -1)
+        if (getMenuRes() != -1) {
             getMenuInflater().inflate(getMenuRes(), menu);
+            mMenu = menu;
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

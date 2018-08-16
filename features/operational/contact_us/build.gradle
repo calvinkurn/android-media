@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

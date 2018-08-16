@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,14 +18,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.domain.Tickets;
-import com.tokopedia.contactus.inboxticket2.view.adapter.AttachmentAdapter;
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
+import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
+import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
+import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.core.GalleryBrowser;
@@ -32,10 +35,10 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -45,6 +48,10 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by pranaymohapatra on 02/07/18.
@@ -54,8 +61,6 @@ public class InboxDetailActivity extends InboxBaseActivity
         implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick {
     @BindView(R2.id.tv_ticket_title)
     TextView tvTicketTitle;
-    @BindView(R2.id.tv_ticket_status)
-    TextView tvTicketStatus;
     @BindView(R2.id.tv_id_num)
     TextView tvIdNum;
     @BindView(R2.id.rv_message_list)
@@ -70,16 +75,6 @@ public class InboxDetailActivity extends InboxBaseActivity
     ImageView ivSendButton;
     @BindView(R2.id.tv_view_transaction)
     TextView viewTransaction;
-    @BindView(R2.id.tv_message)
-    TextView tvMessage;
-    @BindView(R2.id.iv_profile)
-    ImageView ivProfile;
-    @BindView(R2.id.tv_message_time)
-    TextView tvMsgTime;
-    @BindView(R2.id.tv_name)
-    TextView tvName;
-    @BindView(R2.id.rv_attached_image)
-    RecyclerView rvAttachment;
     @BindView(R2.id.ed_message)
     EditText edMessage;
     @BindView(R2.id.send_progress)
@@ -90,13 +85,23 @@ public class InboxDetailActivity extends InboxBaseActivity
     View textToolbar;
     @BindView(R2.id.view_link_bottom)
     View viewLinkBottom;
+    @BindView(R2.id.custom_search)
+    CustomEditText editText;
+    @BindView(R2.id.close_search)
+    View clearSearch;
+    @BindView(R2.id.inbox_search_view)
+    View searchView;
+    @BindView(R2.id.iv_previous_up)
+    View ivPrevious;
+    @BindView(R2.id.iv_next_down)
+    View ivNext;
 
     private ImageUploadHandler imageUploadHandler;
     private ImageUploadAdapter imageUploadAdapter;
+    private InboxDetailAdapter detailAdapter;
 
     private String rateCommentID;
 
-    private AttachmentAdapter attachmentAdapter;
     private boolean isCustomReason;
 
 
@@ -113,28 +118,32 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void renderMessageList(Tickets ticketDetail) {
         List<CommentsItem> commentsItems = ticketDetail.getComments();
-        tvTicketTitle.setText(ticketDetail.getSubject());
-
+        Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
         if (ticketDetail.isShowRating()) {
             viewHelpRate.setVisibility(View.VISIBLE);
             textToolbar.setVisibility(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
+        } else {
+            viewHelpRate.setVisibility(View.GONE);
+            textToolbar.setVisibility(View.VISIBLE);
         }
 
         if (ticketDetail.getStatus().equalsIgnoreCase("solved")) {
-            tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_yellow);
-            tvTicketStatus.setText(R.string.on_going);
-            tvTicketStatus.setTextColor(getResources().getColor(R.color.black_38));
+            tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
+                    getResources().getColor(R.color.yellow_110),
+                    getResources().getColor(R.color.black_38), 11));
+
         } else if (ticketDetail.getStatus().equalsIgnoreCase("closed")
                 && !ticketDetail.isShowRating()) {
-            tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_grey);
-            tvTicketStatus.setTextColor(getResources().getColor(R.color.black_38));
-            tvTicketStatus.setText(R.string.closed);
+            tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.closed),
+                    getResources().getColor(R.color.grey_200),
+                    getResources().getColor(R.color.black_38), 11));
             showIssueClosed();
+
         } else if (ticketDetail.isShowRating()) {
-            tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_orange);
-            tvTicketStatus.setTextColor(getResources().getColor(R.color.red_150));
-            tvTicketStatus.setText(R.string.need_rating);
+            tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
+                    getResources().getColor(R.color.red_30),
+                    getResources().getColor(R.color.red_150), 11));
         }
 
         if (!TextUtils.isEmpty(ticketDetail.getInvoice())) {
@@ -143,27 +152,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else
             tvIdNum.setVisibility(View.GONE);
 
-
-
-        tvMsgTime.setText(ticketDetail.getCreateTime());
-        tvMsgTime.setVisibility(View.VISIBLE);
-        tvMessage.setText(ticketDetail.getMessage());
-        tvMessage.setVisibility(View.VISIBLE);
-        tvName.setText(ticketDetail.getCreatedBy().getName());
-        tvName.setVisibility(View.VISIBLE);
-        ImageHandler imageHandler = new ImageHandler(this);
-        ivProfile.setVisibility(View.VISIBLE);
-        imageHandler.loadImage(ivProfile, ticketDetail.getCreatedBy().getPicture());
-
-        if (ticketDetail.getAttachment() != null && ticketDetail.getAttachment().size() > 0) {
-            attachmentAdapter = new AttachmentAdapter(this, ticketDetail.getAttachment());
-            rvAttachment.setAdapter(attachmentAdapter);
-            rvAttachment.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            rvAttachment.setVisibility(View.VISIBLE);
-        }
-
         if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
-            InboxDetailAdapter detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(),
+            detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(),
                     (InboxDetailContract.InboxDetailPresenter) mPresenter);
             rvMessageList.setAdapter(detailAdapter);
             rvMessageList.setVisibility(View.VISIBLE);
@@ -174,7 +164,12 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void toggleSearch(int visibility) {
-
+        searchView.setVisibility(visibility);
+        if (visibility == View.VISIBLE) {
+            mMenu.findItem(R.id.action_search).setVisible(false);
+        } else {
+            mMenu.findItem(R.id.action_search).setVisible(true);
+        }
     }
 
     @Override
@@ -183,19 +178,25 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
-    protected int getLayoutRes() {
-        return R.layout.layout_ticket_details;
+    public void clearSearch() {
+        editText.setText("");
     }
 
     @Override
-    Type getType() {
-        return InboxDetailActivity.class;
+    protected int getLayoutRes() {
+        return R.layout.layout_ticket_details_activity;
+    }
+
+    @Override
+    InboxBaseContract.InboxBasePresenter getPresenter() {
+        return component.getInboxDetailPresenter();
     }
 
     @Override
     void initView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvMessageList.setLayoutManager(layoutManager);
+        editText.setListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).getSearchListener());
     }
 
     @Override
@@ -356,53 +357,46 @@ public class InboxDetailActivity extends InboxBaseActivity
         }
     }
 
-    @OnClick(R2.id.holder_top)
-    void onClickHolderTop() {
-        if (isTopCollapsed()) {
-            toggleTop(View.VISIBLE);
-        } else {
-            toggleTop(View.GONE);
-        }
-    }
-
     @OnClick({R2.id.btn_no,
             R2.id.btn_yes,
-            R2.id.txt_hyper})
-    void onClickRate(View v) {
-        if (v.getId() == R.id.btn_yes) {
+            R2.id.txt_hyper,
+            R2.id.close_search,
+            R2.id.tv_view_transaction})
+    void onClickListener(View v) {
+        int id = v.getId();
+        if (id == R.id.btn_yes) {
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_yes, rateCommentID);
-        } else if (v.getId() == R.id.btn_no) {
+        } else if (id == R.id.btn_no) {
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_no, rateCommentID);
-        } else if (v.getId() == R.id.txt_hyper) {
+        } else if (id == R.id.txt_hyper) {
             setResult(RESULT_FINISH);
             finish();
+        } else if (id == R.id.close_search) {
+            mPresenter.clickCloseSearch();
+        } else if (id == R.id.tv_view_transaction) {
+
         }
     }
 
-    private void toggleTop(int visibility) {
-        ivProfile.setVisibility(visibility);
-        tvName.setVisibility(visibility);
-        tvMsgTime.setVisibility(visibility);
-        tvMessage.setVisibility(visibility);
-        if (visibility != View.VISIBLE) {
-            tvTicketTitle.setMaxLines(1);
-            tvTicketTitle.setEllipsize(TextUtils.TruncateAt.END);
+    @OnClick({R2.id.iv_next_down,
+            R2.id.iv_previous_up})
+    void onClickNextPrev(View v) {
+        int id = v.getId();
+        int index;
+        if (id == R.id.iv_next_down) {
+            index = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getNextResult();
         } else {
-            tvTicketTitle.setMaxLines(Integer.MAX_VALUE);
-            tvTicketTitle.setEllipsize(null);
+            index = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getPreviousResult();
         }
-        if (attachmentAdapter != null && attachmentAdapter.getItemCount() > 0 && visibility == View.VISIBLE)
-            rvAttachment.setVisibility(View.VISIBLE);
-        else
-            rvAttachment.setVisibility(View.GONE);
+        scrollToResult(index);
     }
 
-    private boolean isTopCollapsed() {
-        boolean collapsed;
-        collapsed = ivProfile.getVisibility() == View.GONE;
-        return collapsed;
-    }
+    private void scrollToResult(int index) {
+        if (index != -1) {
+            rvMessageList.smoothScrollToPosition(index);
+        }
 
+    }
 
     @Override
     public void addimage(ImageUpload image) {
@@ -447,10 +441,39 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void showIssueClosed() {
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.GONE);
-        tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_grey);
-        tvTicketStatus.setTextColor(getResources().getColor(R.color.black_38));
-        tvTicketStatus.setText(R.string.closed);
         viewLinkBottom.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void enterSearchMode(String search) {
+        textToolbar.setVisibility(View.GONE);
+        viewHelpRate.setVisibility(View.GONE);
+        viewLinkBottom.setVisibility(View.GONE);
+        detailAdapter.enterSearchMode(search);
+    }
+
+    @Override
+    public void exitSearchMode() {
+        detailAdapter.exitSearchMode();
+    }
+
+    @Override
+    public void showImagePreview(int position, ArrayList<String> imagesURL) {
+        ImageViewerFragment imageViewerFragment = (ImageViewerFragment) getSupportFragmentManager().findFragmentByTag(ImageViewerFragment.TAG);
+        if (imageViewerFragment == null) {
+            imageViewerFragment = ImageViewerFragment.newInstance(position, imagesURL);
+        } else {
+            imageViewerFragment.setImageData(position, imagesURL);
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.fragment_container, imageViewerFragment, ImageViewerFragment.TAG);
+        transaction.addToBackStack(ImageViewerFragment.TAG);
+        transaction.commit();
+    }
+
+    @Override
+    public boolean isSearchEmpty() {
+        return editText.getText().length() <= 0;
     }
 
     @Override
@@ -482,5 +505,36 @@ public class InboxDetailActivity extends InboxBaseActivity
     protected void onRestart() {
         super.onRestart();
 
+    }
+
+    public void scrollTo(int position) {
+        Observable.timer(300, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (((LinearLayoutManager) rvMessageList.getLayoutManager()).findFirstCompletelyVisibleItemPosition() != position)
+                            rvMessageList.smoothScrollToPosition(position);
+                    }
+                });
+
+//        rvMessageList.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (((LinearLayoutManager) rvMessageList.getLayoutManager()).findFirstCompletelyVisibleItemPosition() != position)
+//                    rvMessageList.smoothScrollToPosition(position);
+//            }
+//        }, 300);
     }
 }

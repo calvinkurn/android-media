@@ -11,12 +11,14 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by pranaymohapatra on 05/07/18.
@@ -27,12 +29,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
     private List<AttachmentItem> attachmentList;
     private Context mContext;
     private ImageHandler imageHandler;
+    private InboxDetailPresenter mPresenter;
 
-    public AttachmentAdapter(Context context, List<AttachmentItem> data) {
+    AttachmentAdapter(Context context, List<AttachmentItem> data, InboxDetailPresenter presenter) {
         mContext = context;
         attachmentList = new ArrayList<>();
         attachmentList.addAll(data);
         imageHandler = new ImageHandler(mContext);
+        mPresenter = presenter;
     }
 
     @Override
@@ -67,6 +71,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
 
         void bindView(int index) {
             imageHandler.loadImage(ivAttachment, attachmentList.get(index).getThumbnail());
+        }
+
+        @OnClick(R2.id.iv_attachment)
+        void previewImage() {
+            mPresenter.showImagePreview(getAdapterPosition(), attachmentList);
         }
     }
 }

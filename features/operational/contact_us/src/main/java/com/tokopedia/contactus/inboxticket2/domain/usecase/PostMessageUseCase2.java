@@ -27,7 +27,7 @@ public class PostMessageUseCase2 extends RestRequestUseCase {
     private Map<String, Object> queryMap;
 
     @Inject
-    public PostMessageUseCase2() {
+    PostMessageUseCase2() {
         queryMap = new HashMap<>();
     }
 

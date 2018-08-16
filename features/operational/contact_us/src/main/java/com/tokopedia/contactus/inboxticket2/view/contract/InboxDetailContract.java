@@ -2,10 +2,13 @@ package com.tokopedia.contactus.inboxticket2.view.contract;
 
 import android.text.TextWatcher;
 
+import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
+import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +22,6 @@ public interface InboxDetailContract {
         void hideMessages();
 
         void renderMessageList(Tickets ticketDetail);
-
-        void toggleSearch(int visibility);
 
         void addimage(ImageUpload image);
 
@@ -39,6 +40,12 @@ public interface InboxDetailContract {
         void askCustomReason();
 
         void showIssueClosed();
+
+        void enterSearchMode(String search);
+
+        void exitSearchMode();
+
+        void showImagePreview(int position, ArrayList<String> imagesURL);
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {
@@ -55,5 +62,13 @@ public interface InboxDetailContract {
         void setBadRating(int position);
 
         void sendCustomReason(String customReason);
+
+        int getNextResult();
+
+        int getPreviousResult();
+
+        Utils getUtils();
+
+        void showImagePreview(int position, List<AttachmentItem> imagesURL);
     }
 }

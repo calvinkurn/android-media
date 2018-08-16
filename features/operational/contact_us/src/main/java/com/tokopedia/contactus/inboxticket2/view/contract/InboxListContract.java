@@ -20,8 +20,6 @@ public interface InboxListContract {
 
         void showFilter();
 
-        void toggleSearch(int visibility);
-
         void toggleEmptyLayout(int visibility);
 
         void removeFooter();

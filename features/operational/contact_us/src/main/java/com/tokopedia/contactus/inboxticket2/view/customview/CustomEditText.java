@@ -18,15 +18,17 @@ import java.util.concurrent.TimeUnit;
 
 public class CustomEditText extends AppCompatEditText {
 
-    private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.SECONDS.toMillis(0);
+    private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.SECONDS.toMillis(1);
     private String searchText;
     private String searchHint;
     private long delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
     private Listener listener;
     private ResetListener reset;
+
     public CustomEditText(Context context) {
         super(context);
     }
+
     public CustomEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

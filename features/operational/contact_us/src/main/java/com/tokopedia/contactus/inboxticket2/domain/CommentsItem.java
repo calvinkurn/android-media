@@ -33,6 +33,16 @@ public class CommentsItem {
     @SerializedName("created_by")
     private CreatedBy createdBy;
 
+    private String shortTime;
+
+    public String getShortTime() {
+        return shortTime;
+    }
+
+    public void setShortTime(String shortTime) {
+        this.shortTime = shortTime;
+    }
+
     public void setNote(String note) {
         this.note = note;
     }

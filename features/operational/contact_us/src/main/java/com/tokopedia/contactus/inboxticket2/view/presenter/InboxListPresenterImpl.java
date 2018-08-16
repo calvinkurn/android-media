@@ -224,6 +224,15 @@ public class InboxListPresenterImpl
         getTicketList();
     }
 
+    @Override
+    public void clickCloseSearch() {
+        if(mView.isSearchEmpty()){
+            mView.toggleSearch(View.GONE);
+        } else {
+            mView.clearSearch();
+        }
+    }
+
     private void checkIfToLoad(LinearLayoutManager layoutManager) {
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();

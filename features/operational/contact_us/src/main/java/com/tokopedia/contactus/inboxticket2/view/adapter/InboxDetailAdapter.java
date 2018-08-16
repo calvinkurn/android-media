@@ -13,7 +13,9 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
+import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 
 import java.util.List;
 
@@ -33,12 +35,17 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
     private InboxDetailContract.InboxDetailPresenter mPresenter;
     private ImageHandler imageHandler;
     private boolean collapsed;
+    private boolean searchMode;
+    private String searchText;
+    private Utils utils;
+
 
     public InboxDetailAdapter(Context context, List<CommentsItem> data, InboxDetailContract.InboxDetailPresenter presenter) {
         mContext = context;
         commentList = data;
         mPresenter = presenter;
         imageHandler = new ImageHandler(mContext);
+        utils = new Utils(mContext);
     }
 
     @Override
@@ -52,6 +59,20 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
     @Override
     public void onBindViewHolder(DetailViewHolder holder, int position) {
         holder.bindViewHolder(position);
+    }
+
+    public void enterSearchMode(String text) {
+        collapsed = false;
+        searchMode = true;
+        searchText = text;
+        notifyDataSetChanged();
+    }
+
+    public void exitSearchMode() {
+        collapsed = true;
+        searchMode = false;
+        searchText = "";
+        notifyDataSetChanged();
     }
 
     @Override
@@ -68,6 +89,8 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         TextView tvDateRecent;
         @BindView(R2.id.tv_comment)
         TextView comment;
+        @BindView(R2.id.tv_collapsed_time)
+        TextView tvCollapsedTime;
         @BindView(R2.id.layout_item_message)
         View itemView;
         @BindView(R2.id.rv_attached_image)
@@ -86,30 +109,39 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         void bindViewHolder(int position) {
             if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0) {
                 if (attachmentAdapter == null) {
-                    attachmentAdapter = new AttachmentAdapter(mContext, commentList.get(position).getAttachment());
+                    attachmentAdapter = new AttachmentAdapter(mContext, commentList.get(position).getAttachment(), mPresenter);
                 } else {
                     attachmentAdapter.addAll(commentList.get(position).getAttachment());
                 }
                 rvAttachedImage.setAdapter(attachmentAdapter);
                 rvAttachedImage.setVisibility(View.VISIBLE);
+                tvCollapsedTime.setCompoundDrawablesWithIntrinsicBounds(R.drawable.attach_rotated, 0, 0, 0);
             } else {
                 rvAttachedImage.setVisibility(View.GONE);
+                tvCollapsedTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
             CommentsItem item = commentList.get(position);
             imageHandler.loadImage(ivProfile, item.getCreatedBy().getPicture());
             tvName.setText(item.getCreatedBy().getName());
-            if (!collapsed) {
+            if (!collapsed || position == commentList.size() - 1) {
                 tvDateRecent.setText(item.getCreateTime());
-                comment.setText(item.getMessagePlaintext());
+                tvCollapsedTime.setText("");
+                if (searchMode) {
+                    comment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
+                } else {
+                    comment.setText(item.getMessagePlaintext());
+                }
                 comment.setVisibility(View.VISIBLE);
                 if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
                     rvAttachedImage.setVisibility(View.VISIBLE);
             } else {
                 tvDateRecent.setText(item.getMessagePlaintext());
                 comment.setText("");
+                tvCollapsedTime.setText(item.getShortTime());
                 comment.setVisibility(View.GONE);
                 rvAttachedImage.setVisibility(View.GONE);
             }
+
         }
 
         @OnClick({
@@ -121,6 +153,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             if (getAdapterPosition() != commentList.size() - 1) {
                 collapsed = !collapsed;
                 notifyItemRangeChanged(0, commentList.size() - 1);
+                if (!collapsed)
+                    ((InboxDetailActivity) mContext).scrollTo(getAdapterPosition());
+                else
+                    ((InboxDetailActivity) mContext).scrollTo(0);
             }
         }
     }
