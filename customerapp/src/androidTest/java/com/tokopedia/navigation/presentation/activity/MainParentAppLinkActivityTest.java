@@ -132,7 +132,7 @@ public class MainParentAppLinkActivityTest {
 
         startDeepLinkActivity(ApplinkConst.PMS);
 
-        intended(hasComponent(LoginActivity.class.getName()));
+        intended(hasComponent(PaymentListActivity.class.getName()));
     }
 
     private void prepareForFullSmartLockBundle() {
