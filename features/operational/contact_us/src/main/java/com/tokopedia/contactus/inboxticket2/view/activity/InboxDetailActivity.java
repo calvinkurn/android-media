@@ -119,14 +119,6 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void renderMessageList(Tickets ticketDetail) {
         List<CommentsItem> commentsItems = ticketDetail.getComments();
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
-        if (ticketDetail.isShowRating()) {
-            viewHelpRate.setVisibility(View.VISIBLE);
-            textToolbar.setVisibility(View.GONE);
-            rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
-        } else {
-            viewHelpRate.setVisibility(View.GONE);
-            textToolbar.setVisibility(View.VISIBLE);
-        }
 
         if (ticketDetail.getStatus().equalsIgnoreCase("solved")) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
@@ -147,7 +139,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         }
 
         if (!TextUtils.isEmpty(ticketDetail.getInvoice())) {
-            tvIdNum.setText(String.format(getString(R.string.invoice_id), ticketDetail.getInvoice()));
+            tvIdNum.setText(String.format(getString(R.string.invoice_id), ticketDetail.getNumber()));
             tvIdNum.setVisibility(View.VISIBLE);
         } else
             tvIdNum.setVisibility(View.GONE);
@@ -159,6 +151,17 @@ public class InboxDetailActivity extends InboxBaseActivity
             rvMessageList.setVisibility(View.VISIBLE);
         } else {
             rvMessageList.setVisibility(View.GONE);
+        }
+
+        if (ticketDetail.isShowRating()) {
+            viewHelpRate.setVisibility(View.VISIBLE);
+            textToolbar.setVisibility(View.GONE);
+            rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
+            rvMessageList.setPadding(0, 0, 0, viewHelpRate.getHeight());
+        } else {
+            viewHelpRate.setVisibility(View.GONE);
+            textToolbar.setVisibility(View.VISIBLE);
+            rvMessageList.setPadding(0, 0, 0, textToolbar.getHeight());
         }
     }
 
@@ -420,10 +423,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void toggleTextToolbar(int visibility) {
-        if (visibility == View.VISIBLE)
+        View view = textToolbar;
+        if (visibility == View.VISIBLE) {
             viewHelpRate.setVisibility(View.GONE);
-        else
+        } else {
             viewHelpRate.setVisibility(View.VISIBLE);
+            view = viewHelpRate;
+        }
+        rvMessageList.setPadding(0, 0, 0, view.getHeight());
         textToolbar.setVisibility(visibility);
     }
 
@@ -434,6 +441,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         edMessage.clearComposingText();
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
+        rvMessageList.setPadding(0, 0, 0, textToolbar.getHeight());
         isCustomReason = true;
     }
 
@@ -442,6 +450,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.VISIBLE);
+        rvMessageList.setPadding(0, 0, 0, viewLinkBottom.getHeight());
     }
 
     @Override
@@ -450,6 +459,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         viewHelpRate.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.GONE);
         detailAdapter.enterSearchMode(search);
+        rvMessageList.setPadding(0, 0, 0, 0);
     }
 
     @Override

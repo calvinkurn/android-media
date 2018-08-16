@@ -78,6 +78,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         if (imageUpload.size() < maxPicUpload) {
             imageUpload.add(imageUpload.size() - 1, image);
             notifyDataSetChanged();
+        } else if (imageUpload.size() == maxPicUpload) {
+            imageUpload.remove(imageUpload.size() - 1);
+            imageUpload.add(image);
+            notifyDataSetChanged();
         } else {
             Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show();
         }
