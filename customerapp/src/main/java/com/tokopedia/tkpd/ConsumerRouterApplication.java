@@ -2030,7 +2030,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getWithdrawIntent(Context context){
-        return WithdrawActivity.getCallingIntent(context);
+        if (remoteConfig.getBoolean("mainapp_is_enabled_new_withdraw", true))
+            return WithdrawActivity.getCallingIntent(context);
+        else {
+            return com.tokopedia.core.deposit.activity.WithdrawActivity.createInstance(context);
+        }
     }
 
     @Override

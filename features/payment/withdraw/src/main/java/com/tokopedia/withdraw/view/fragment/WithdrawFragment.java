@@ -385,6 +385,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         getActivity().finish();
                     }
                 })
+                .setCancelable(false)
 
                 .show();
     }

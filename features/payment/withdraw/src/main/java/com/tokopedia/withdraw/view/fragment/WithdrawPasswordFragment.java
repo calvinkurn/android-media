@@ -145,6 +145,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                         getActivity().finish();
                     }
                 })
+                .setCancelable(false)
                 .show();
     }
 }

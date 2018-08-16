@@ -768,4 +768,9 @@ public class PosRouterApplication extends MainApplication implements
 //        There is no setting bank in pos
         return null;
     }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
+        return null;
+    }
 }

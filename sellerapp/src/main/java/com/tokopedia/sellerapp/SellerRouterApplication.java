@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -53,9 +52,8 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -72,28 +70,13 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
-import com.tokopedia.shop.open.ShopOpenRouter;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -106,6 +89,7 @@ import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -168,6 +152,7 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
+import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -180,6 +165,7 @@ import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
@@ -202,6 +188,8 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1542,6 +1530,15 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProfileSettingIntent(Context context) {
         return ManagePeopleProfileActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getWithdrawIntent(Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_withdraw", true))
+            return WithdrawActivity.getCallingIntent(context);
+        else {
+            return com.tokopedia.core.deposit.activity.WithdrawActivity.createInstance(context);
+        }
     }
 
     @Override

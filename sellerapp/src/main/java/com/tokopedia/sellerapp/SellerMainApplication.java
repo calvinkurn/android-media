@@ -292,8 +292,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    @Override
-    public Intent getWithdrawIntent(Context context) {
-        return WithdrawActivity.getCallingIntent(context);
-    }
 }
