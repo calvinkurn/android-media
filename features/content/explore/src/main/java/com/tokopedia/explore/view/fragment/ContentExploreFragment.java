@@ -294,6 +294,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showRefreshing() {
+        swipeToRefresh.setRefreshing(true);
+    }
+
+    @Override
     public void showLoading() {
         if (!isLoading()) {
             imageAdapter.showLoading();

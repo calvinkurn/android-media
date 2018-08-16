@@ -62,6 +62,8 @@ import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
+import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -124,7 +126,8 @@ import io.branch.referral.BranchError;
         TokopointApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
-        InstantLoanAppLinkModule.class
+        InstantLoanAppLinkModule.class,
+        RecentViewApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -165,7 +168,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TokopointApplinkModuleLoader(),
                 new HomeNavigationApplinkModuleLoader(),
                 new AccountHomeApplinkModuleLoader(),
-                new InstantLoanAppLinkModuleLoader()
+                new InstantLoanAppLinkModuleLoader(),
+                new RecentViewApplinkModuleLoader()
         );
     }
 

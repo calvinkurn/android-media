@@ -3,14 +3,11 @@ package com.tokopedia.feedplus.view.di;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
-import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -32,7 +29,6 @@ import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.vote.di.VoteModule;
-import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
@@ -75,31 +71,6 @@ public class FeedPlusModule {
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .addInterceptor(feedAuthInterceptor);
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            clientBuilder.addInterceptor(httpLoggingInterceptor);
-            clientBuilder.addInterceptor(chuckInterceptor);
-        }
-
-        return clientBuilder.build();
-    }
-
-    @FeedPlusScope
-    @Provides
-    @FeedMojitoQualifier
-    OkHttpClient provideMojitoOkHttpClient(@ApplicationScope HttpLoggingInterceptor
-                                                   httpLoggingInterceptor,
-                                           @FeedPlusQualifier OkHttpRetryPolicy retryPolicy,
-                                           @FeedPlusChuckQualifier Interceptor chuckInterceptor,
-                                           HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                           MojitoInterceptor mojitoInterceptor) {
-
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
-                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .addInterceptor(mojitoInterceptor)
-                .addInterceptor(errorResponseInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
@@ -156,24 +127,6 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    MojitoService provideRecentProductService(Retrofit.Builder builder,
-                                              @FeedMojitoQualifier OkHttpClient okHttpClient) {
-        return builder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN)
-                .client(okHttpClient)
-                .build()
-                .create(MojitoService.class);
-    }
-
-    @FeedPlusScope
-    @Provides
-    MojitoInterceptor provideMojitoInterceptor(@ApplicationContext Context context,
-                                               AbstractionRouter abstractionRouter,
-                                               UserSession userSession) {
-        return new MojitoInterceptor(context, abstractionRouter, userSession);
-    }
-
-    @FeedPlusScope
-    @Provides
     FeedRepository provideFeedRepository(FeedFactory feedFactory) {
         return new FeedRepositoryImpl(feedFactory);
     }
@@ -187,7 +140,6 @@ public class FeedPlusModule {
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
                                    GlobalCacheManager globalCacheManager,
-                                   MojitoService mojitoService,
                                    CheckNewFeedMapper checkNewFeedMapper) {
         return new FeedFactory(
                 context,
@@ -197,7 +149,6 @@ public class FeedPlusModule {
                 feedResultMapperLocal,
                 feedResultMapperCloud,
                 globalCacheManager,
-                mojitoService,
                 checkNewFeedMapper
         );
     }

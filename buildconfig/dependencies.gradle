@@ -76,6 +76,7 @@ ext {
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdRecentviewVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -324,6 +325,7 @@ ext {
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
             home                  : ":features:discovery:home",
+            recentview            : ":features:discovery:recentview",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
             groupchat             : ":features:user:groupchat",
