@@ -59,9 +59,9 @@ public class ReorderShopNoteUseCase extends UseCase<String> {
 
     }
 
-    public static RequestParams createRequestParams(ArrayList<String> etalaseIdList) {
+    public static RequestParams createRequestParams(ArrayList<String> noteIdList) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(IDS, etalaseIdList);
+        requestParams.putObject(IDS, noteIdList);
         return requestParams;
     }
 

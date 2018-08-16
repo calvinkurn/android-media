@@ -41,7 +41,7 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center_horizontal"
-                app:srcCompat="@drawable/ic_shop_settings_more_vert_grey"/>
+                app:srcCompat="@drawable/ic_three_dots_more_menu"/>
 
         </LinearLayout>
 

@@ -63,5 +63,11 @@
     <string name="button_shop_settings_empty_address">Tambah Lokasi</string>
     <string name="closed_schedule">Jadwal Tutup: %1$s</string>
     <string name="reopen_at">Kembali buka pada %1$s, 23:59</string>
+    <string name="shop_has_no_notes">Toko Anda belum memiliki Catatan</string>
+    <string name="shop_notes_info"><![CDATA[Tambah Catatan untuk menuliskan informasi Syarat & Ketentuan Toko]]></string>
+    <string name="add_note">Tambah Catatan</string>
+    <string name="reorder_note">Atur posisi Catatan</string>
+    <string name="shop_has_no_notes_search">Tidak terdapat Catatan untuk kata kunci ini</string>
+    <string name="shop_notes_use_other_keyword">Silakan gunakan kata kunci lain</string>
 
 </resources>
