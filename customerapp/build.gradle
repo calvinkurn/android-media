@@ -439,6 +439,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
 
+    compile project(path: ':features:digital:common_digital')
 }
 
 

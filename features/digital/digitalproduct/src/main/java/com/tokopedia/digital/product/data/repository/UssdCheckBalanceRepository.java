@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.common_digital.common.data.api.DigitalApi;
+import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
@@ -18,10 +18,10 @@ import rx.Observable;
  */
 
 public class UssdCheckBalanceRepository implements IUssdCheckBalanceRepository {
-    private final DigitalApi digitalApi;
+    private final DigitalRestApi digitalApi;
     private final USSDMapper ussdMapper;
 
-    public UssdCheckBalanceRepository(DigitalApi digitalApi,
+    public UssdCheckBalanceRepository(DigitalRestApi digitalApi,
                                       USSDMapper ussdMapper) {
         this.digitalApi = digitalApi;
         this.ussdMapper = ussdMapper;

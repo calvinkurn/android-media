@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.common_digital.common.data.api.DigitalApi;
+import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -35,9 +35,9 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    IUssdCheckBalanceRepository provideUssdCheckBalanceRepository(DigitalApi digitalApi,
+    IUssdCheckBalanceRepository provideUssdCheckBalanceRepository(DigitalRestApi digitalRestApi,
                                                                   USSDMapper ussdMapper) {
-        return new UssdCheckBalanceRepository(digitalApi, ussdMapper);
+        return new UssdCheckBalanceRepository(digitalRestApi, ussdMapper);
     }
 
     @Provides

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.common_digital.common.data.api.DigitalApi;
+import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseCase;
 import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
 
@@ -20,7 +20,7 @@ public interface DigitalComponent {
     @ApplicationContext
     Context context();
 
-    DigitalApi digitalApi();
+    DigitalRestApi digitalApi();
 
     GetCategoryByIdUseCase getCategoryByIdUseCase();
 

@@ -40,7 +40,6 @@ public class CategoryDetailDataSource {
     private ProductDigitalMapper productDigitalMapper;
     private Context context;
 
-    @Inject
     public CategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
                                     CacheManager cacheManager,
                                     ProductDigitalMapper productDigitalMapper,

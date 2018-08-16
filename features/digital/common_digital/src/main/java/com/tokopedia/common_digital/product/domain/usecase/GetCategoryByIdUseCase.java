@@ -1,13 +1,9 @@
 package com.tokopedia.common_digital.product.domain.usecase;
 
-import android.content.Context;
-
 import com.tokopedia.common_digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.common_digital.product.presentation.model.HistoryClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.ProductDigitalData;
-import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -103,10 +99,5 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         requestParams.putBoolean(PARAM_NEED_FAVORITE_LIST, needFavoriteList);
         return requestParams;
     }
-
-//    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-//            TKPDMapParam<String, String> originParams) {
-//        return AuthUtil.generateParamsNetwork(context, originParams);
-//    }
 
 }

@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.common_digital.common.data.api.DigitalApi;
-import com.tokopedia.common_digital.common.DigitalInterceptor;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalUrl;
+import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.common.data.api.DigitalGqlApi;
+import com.tokopedia.common_digital.common.data.api.DigitalInterceptor;
 import com.tokopedia.common_digital.product.data.datasource.CategoryDetailDataSource;
 import com.tokopedia.common_digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.common_digital.product.data.repository.DigitalCategoryRepository;
@@ -22,6 +22,8 @@ import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseC
 import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -71,14 +73,45 @@ public class DigitalModule {
 
     @Provides
     @DigitalScope
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            DigitalRouter digitalRouter, DigitalInterceptor digitalInterceptor) {
+    @DigitalRestApiClient
+    public OkHttpClient provideDigitalRestApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                                          DigitalRouter digitalRouter,
+                                                          DigitalInterceptor digitalInterceptor,
+                                                          NetworkRouter networkRouter,
+                                                          UserSession userSession) {
         OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
+
         builder.addInterceptor(digitalInterceptor);
+        builder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
+        builder.addInterceptor(new ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse.class));
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(digitalRouter.getChuckInterceptor());
+        }
+
+        return builder.build();
+    }
+
+    @Provides
+    @DigitalScope
+    @DigitalGqlApiClient
+    public OkHttpClient provideDigitalGqlApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                                         @ApplicationContext Context context,
+                                                         DigitalRouter digitalRouter,
+                                                         NetworkRouter networkRouter,
+                                                         UserSession userSession) {
+        OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
+
+        builder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
+        builder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse.class));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
@@ -91,23 +124,23 @@ public class DigitalModule {
     @Provides
     @DigitalScope
     @DigitalRestApiRetrofit
-    public Retrofit provideDigitalApiRetrofit(OkHttpClient okHttpClient,
-                                    Retrofit.Builder retrofitBuilder) {
+    public Retrofit provideDigitalRestApiRetrofit(@DigitalRestApiClient OkHttpClient okHttpClient,
+                                                  Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(DigitalUrl.BASE_URL).client(okHttpClient).build();
     }
 
     @Provides
     @DigitalScope
     @DigitalGqlApiRetrofit
-    public Retrofit provideDigitalGqlApiRetrofit(OkHttpClient okHttpClient,
-                                    Retrofit.Builder retrofitBuilder) {
+    public Retrofit provideDigitalGqlApiRetrofit(@DigitalGqlApiClient OkHttpClient okHttpClient,
+                                                 Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.HOME_DATA_BASE_URL).client(okHttpClient).build();
     }
 
     @Provides
     @DigitalScope
-    public DigitalApi provideTrainApi(@DigitalRestApiRetrofit Retrofit retrofit) {
-        return retrofit.create(DigitalApi.class);
+    public DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
+        return retrofit.create(DigitalRestApi.class);
     }
 
     @Provides
@@ -125,9 +158,9 @@ public class DigitalModule {
     @Provides
     @DigitalScope
     CategoryDetailDataSource provideCategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
-                             CacheManager cacheManager,
-                             ProductDigitalMapper productDigitalMapper,
-                             @ApplicationContext Context context) {
+                                                             CacheManager cacheManager,
+                                                             ProductDigitalMapper productDigitalMapper,
+                                                             @ApplicationContext Context context) {
         return new CategoryDetailDataSource(digitalGqlApi, cacheManager, productDigitalMapper, context);
     }
 

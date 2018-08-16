@@ -21,7 +21,7 @@ import rx.Observable;
 /**
  * Created by Rizky on 13/08/18.
  */
-public interface DigitalApi {
+public interface DigitalRestApi {
 
     @GET(DigitalUrl.PATH_STATUS)
     Observable<Response<TkpdDigitalResponse>> getStatus();
