@@ -655,7 +655,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onStop();
         needToRefresh = true;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, messageTAG + "onResume");
