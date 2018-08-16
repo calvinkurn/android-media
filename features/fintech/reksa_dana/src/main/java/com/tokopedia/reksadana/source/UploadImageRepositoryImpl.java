@@ -1,7 +1,5 @@
 package com.tokopedia.reksadana.source;
 
-import android.content.Context;
-
 import com.tokopedia.reksadana.domain.UploadImageFactory;
 import com.tokopedia.reksadana.domain.UploadImageRepository;
 

@@ -1,14 +1,13 @@
 package com.tokopedia.reksadana.view.presenter;
 
-import android.util.Log;
-
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.reksadana.R;
+import com.tokopedia.reksadana.domain.UploadImageUseCase;
 import com.tokopedia.reksadana.view.data.common.Result;
 import com.tokopedia.reksadana.view.data.initdata.Data;
 import com.tokopedia.reksadana.view.data.initdata.FieldData;
@@ -16,11 +15,8 @@ import com.tokopedia.reksadana.view.data.initdata.Register;
 import com.tokopedia.reksadana.view.data.signimageurl.GetSignUrl;
 import com.tokopedia.reksadana.view.data.signimageurl.ImageDetails;
 import com.tokopedia.reksadana.view.data.submit.UserDetails;
-import com.tokopedia.reksadana.domain.UploadImageUseCase;
 import com.tokopedia.usecase.RequestParams;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

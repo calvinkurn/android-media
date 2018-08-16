@@ -4,35 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.reksadana.R;
-import com.tokopedia.reksadana.view.fragment.ReksaDanaHomeFragment;
+import com.tokopedia.reksadana.di.ReksaDanaComponent;
+import com.tokopedia.reksadana.view.fragment.DashBoardFragment;
+import com.tokopedia.reksadana.view.fragment.RegisterFragment;
 import com.tokopedia.reksadana.view.utils.Constants;
 
-public class ReksaDanaHomeActivity extends BaseSimpleActivity {
+public class ReksaDanaHomeActivity extends BaseSimpleActivity implements HasComponent<ReksaDanaComponent>{
     @Override
     protected Fragment getNewFragment() {
-        return SimpleWebViewWithFilePickerFragment.createInstanceWithWebClient(Constants.BASE_URL,new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if(url.equals(Constants.FORM_URL)){
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.parent_view, new ReksaDanaHomeFragment(), ReksaDanaHomeFragment.class.getSimpleName()).addToBackStack(null)
-                            .commit();
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
+        return DashBoardFragment.createInstance();
     }
 
     public static Intent createIntent(Context context) {
@@ -54,18 +41,29 @@ public class ReksaDanaHomeActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle arg) {
         super.onCreate(arg);
+        updateTitle("Tokopedia Reksa Dana");
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         }
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
-
     }
 
     public void moveToDashboard() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.parent_view, SimpleWebViewWithFilePickerFragment.createInstance(Constants.DASHBOARD_URL), ReksaDanaHomeFragment.class.getSimpleName())
+                .replace(R.id.parent_view, DashBoardFragment.createInstance(), DashBoardFragment.class.getSimpleName())
                 .commit();
+    }
+    public void navigateToRegistration() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.parent_view, RegisterFragment.newInstance(), RegisterFragment.class.getSimpleName())
+                .addToBackStack(null)
+                .commit();
+    }
+    @Override
+    public ReksaDanaComponent getComponent() {
+        return null;
     }
 }

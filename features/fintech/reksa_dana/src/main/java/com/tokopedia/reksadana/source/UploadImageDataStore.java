@@ -2,7 +2,7 @@ package com.tokopedia.reksadana.source;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.reksadana.source.api.UploadImageApi;
 
 import java.io.File;

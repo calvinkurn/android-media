@@ -5,8 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
 
@@ -35,8 +33,8 @@ public class ReksaDanaAuthInterceptor extends TkpdAuthInterceptor {
             generateHmacAuthRequest(originRequest, newRequest);
             newRequest.addHeader(HEADER_SESSION_ID,userSession.getDeviceId());
             newRequest.removeHeader("Authorization")
-                    .addHeader("Accounts-Authorization", "Bearer " + SessionHandler.getAccessToken())
-                    .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
+                    .addHeader("Accounts-Authorization", "Bearer " + "")
+                    .addHeader("Tkpd-UserId", "");
 
             final Request finalRequest = newRequest.build();
             Response response = getResponse(chain, finalRequest);

@@ -1,9 +1,7 @@
 package com.tokopedia.reksadana.domain;
 
-import android.content.Context;
-
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.reksadana.source.UploadImageDataStore;
 import com.tokopedia.reksadana.source.api.UploadImageApi;
 

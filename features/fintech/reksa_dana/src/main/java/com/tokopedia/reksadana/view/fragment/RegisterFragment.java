@@ -22,7 +22,6 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,22 +37,18 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.reksadana.R;
+import com.tokopedia.reksadana.di.DaggerReksaDanaComponent;
 import com.tokopedia.reksadana.view.activities.ReksaDanaHomeActivity;
 import com.tokopedia.reksadana.view.data.initdata.DropdownValues;
 import com.tokopedia.reksadana.view.data.initdata.FieldData;
 import com.tokopedia.reksadana.view.data.signimageurl.ImageDetails;
 import com.tokopedia.reksadana.view.data.submit.UserDetails;
-import com.tokopedia.reksadana.di.DaggerReksaDanaComponent;
 import com.tokopedia.reksadana.di.ReksaDanaComponent;
 import com.tokopedia.reksadana.view.presenter.ReksaDanaContract;
 import com.tokopedia.reksadana.view.presenter.ReksaDanaPresenter;
@@ -76,7 +71,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDanaContract.View {
+public class RegisterFragment extends BaseDaggerFragment implements ReksaDanaContract.View {
 
     ReksaDanaComponent reksaDanaComponent;
     private TextView name;
@@ -126,7 +121,7 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
     private Signature mSignature;
 
     public static Fragment newInstance() {
-        return new ReksaDanaHomeFragment();
+        return new RegisterFragment();
     }
 
     @Override
@@ -226,13 +221,13 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
                 myAlertDialog.setPositiveButton(getActivity().getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ReksaDanaHomeFragmentPermissionsDispatcher.uploadIdImageGalleryWithCheck(ReksaDanaHomeFragment.this);
+                        RegisterFragmentPermissionsDispatcher.uploadIdImageGalleryWithCheck(RegisterFragment.this);
                     }
                 });
                 myAlertDialog.setNegativeButton(getActivity().getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ReksaDanaHomeFragmentPermissionsDispatcher.uploadIdImageCameraWithCheck(ReksaDanaHomeFragment.this);
+                        RegisterFragmentPermissionsDispatcher.uploadIdImageCameraWithCheck(RegisterFragment.this);
 
                     }
 
@@ -389,15 +384,15 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         uploadType = UPLOAD_ID;
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
-        startActivityForResult(intent, ImageUploadHandler.REQUEST_CODE);
+        //startActivityForResult(intent, ImageUploadHandler.REQUEST_CODE);
 
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void uploadIdImageGallery() {
         uploadType = UPLOAD_ID;
-        Intent imageGallery = new Intent(getActivity(), GalleryBrowser.class);
-        startActivityForResult(imageGallery, ImageGallery.TOKOPEDIA_GALLERY);
+        //Intent imageGallery = new Intent(getActivity(), GalleryBrowser.class);
+        //startActivityForResult(imageGallery, ImageGallery.TOKOPEDIA_GALLERY);
 
     }
 
@@ -450,7 +445,7 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (model.cameraFileLoc != null
+        /*if (model.cameraFileLoc != null
                 && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ID)) {
@@ -465,7 +460,7 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
             uploadedImage.setVisibility(View.VISIBLE);
             loadImageToImageView(uploadedImage, data.getStringExtra(ImageGallery.EXTRA_URL));
             //fileLoc = data.getStringExtra(ImageGallery.EXTRA_URL);
-        }
+        }*/
     }
 
     private void loadImageToImageView(ImageView idImage, String fileLoc) {
@@ -483,7 +478,7 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ReksaDanaHomeFragmentPermissionsDispatcher.onRequestPermissionsResult(ReksaDanaHomeFragment.this,
+        RegisterFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterFragment.this,
                 requestCode, grantResults);
 
     }
@@ -500,32 +495,32 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         listPermission.add(Manifest.permission.CAMERA);
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+        //RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
 
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+        //RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+        //RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+        //RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+       // RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+       // RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
@@ -535,7 +530,7 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         listPermission.add(Manifest.permission.CAMERA);
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+        //RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
@@ -544,8 +539,8 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+//
+  //      RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     public void save(View v, String StoredPath) {

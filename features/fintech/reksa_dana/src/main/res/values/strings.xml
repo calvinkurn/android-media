@@ -20,5 +20,35 @@
     <string name="sumber_hint">Pilih Sumber Pendapatan</string>
     <string name="jumlah_hint">Pilih Jumlah Pendapatan</string>
     <string name="jumlah">Jumlah</string>
+    <string name="status_info">Anda dapat beli Reksa Dana sebelum mendaftar Order akan diproses setelah pendaftaran berhasil.</string>
+    <string name="investment_label">Dana Investasi</string>
+    <string name="register_label">Ayo daftarkan diri Anda untuk mulai investasi!</string>
+    <string name="register_btn">Daftar Tokopedia ReksaDana</string>
+    <string name="beli">Beli</string>
+    <string name="reksa_dana">Tokopedia Reksa Dana</string>
+    <string name="min_buy_amnt">Nominal beli (Minimum Rp10.000)</string>
+    <string name="amount_hint">Rp 1.000.000</string>
+    <string name="instant_input_text">Instant Input:</string>
+    <string name="instant_buy">Instant Buy dengan Tokocash</string>
+    <string name="input_error_text">Input harus berupa nominal angka</string>
+    <string name="under_process_text">Reksa Dana akan diproses 48 jam setelah transaksi berhasil.</string>
+    <string name="buy_btn_text">Beli Reksa Dana</string>
+    <string name="help_text">Dengan mengklik tombol ini Anda sudah menyetujui syarat dan ketentuan yang berlaku.</string>
+    <string name="min_val_text">Nominal Jual (Minimum Rp10.000)</string>
+    <string name="sell_checkbox_text">Jual Semua Investasi</string>
+    <string name="error_message_sell">Input harus berupa nominal angka</string>
+    <string name="sell_mf">Jual Reksa Dana</string>
+    <string name="sell_info_text">Dengan mengklik tombol ini Anda sudah menyetujui syarat dan ketentuan yang berlaku.</string>
+    <string name="email_label">Alamat Email Tokopedia</string>
+    <string name="code_verification_text">Kami telah mengirimkan Kode Verifikasi ke</string>
+    <string name="amount_invested">Jumlah investasi Anda</string>
+    <string name="amount_invested_text">Jumlah investasi</string>
+    <string name="profit_label">Keuntungan Harian</string>
+    <string name="Rp_sample">Rp400.100</string>
+    <string name="jumlah_investasi">Jumlah Investasi</string>
+    <string name="default_error_text">Gagal Memuat</string>
+    <string name="reksa_dana_help_string">Pelajari lebih lanjut tentang Reksa dana, disini.</string>
+    <string name="detail">Detail</string>
+    <string name="capital_text">PT. Syailendra Capital - Reksa Dana Pasar U</string>
 
 </resources>

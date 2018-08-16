@@ -13,7 +13,7 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-
+    <color name="pin_normal">#6B767E</color>
     <color name="countdown_background">#ff3b30</color>
     <color name="background_apps">@color/grey_200</color>
     <color name="background_error">#D50000</color>

@@ -12,7 +12,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tkpd.library.utils.CommonUtils;
+
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 import java.io.FileOutputStream;
 
