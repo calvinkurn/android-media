@@ -492,11 +492,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
-        if (!shopProductListPresenter.isLogin()) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
-        }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
@@ -606,6 +601,11 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeature) {
+        if (!shopProductListPresenter.isLogin()) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
         if (shopInfo != null) {
             //isFromFeature is always false anyway.
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
