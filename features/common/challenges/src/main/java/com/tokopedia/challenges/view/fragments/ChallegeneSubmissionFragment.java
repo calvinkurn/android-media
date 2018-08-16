@@ -210,7 +210,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             mPresenter.initialize(false, challengeResult);
         }
 
-        mPresenter.loadCountdownView(challengeResult, true);
+        mPresenter.loadCountdownView(challengeResult, isWinnerList);
         return view;
     }
 
@@ -342,22 +342,15 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void renderWinnerItems(SubmissionResponse submissionResponse) {
-        submissionResults = submissionResponse.getSubmissionResults();
-        if (submissionResults != null && submissionResults.size() > 0) {
+
+        winnerResults = submissionResponse.getSubmissionResults();
+        if (winnerResults != null && winnerResults.size() > 0) {
             clWinners.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             winnerRecyclerView.setLayoutManager(mLayoutManager);
             winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
             winnerRecyclerView.setAdapter(winnerItemAdapter);
         }
-//        winnerResults = submissionResponse.getSubmissionResults();
-//        if (winnerResults != null && winnerResults.size() > 0) {
-//            clWinners.setVisibility(View.VISIBLE);
-//            LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-//            winnerRecyclerView.setLayoutManager(mLayoutManager);
-//            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
-//            winnerRecyclerView.setAdapter(winnerItemAdapter);
-//        }
     }
 
     @Override
