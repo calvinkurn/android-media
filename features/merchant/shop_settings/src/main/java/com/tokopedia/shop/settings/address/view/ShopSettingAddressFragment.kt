@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.base.BaseToaster
@@ -23,8 +25,8 @@ import javax.inject.Inject
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolder
 
-class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, ShopLocationTypeFactory>(),
-        ShopLocationView, ShopLocationViewHolder.OnIconMoreClicked {
+class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopLocationTypeFactory>(),
+        ShopLocationView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
 
     @Inject lateinit var presenter: ShopLocationPresenter
 
@@ -35,7 +37,7 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
         private const val PARAM_EXTRA_IS_SUCCESS = "is_success"
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
 
-        fun createInstance() = ShopSettingAddressNewFragment()
+        fun createInstance() = ShopSettingAddressFragment()
     }
 
     override fun getScreenName(): String? = null
@@ -71,6 +73,14 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
         presenter.getShopAddress()
     }
 
+    override fun getEmptyDataViewModel() = EmptyModel().apply {
+        iconRes = R.drawable.ic_shop_settings_empty_address
+        title = getString(R.string.title_shop_settings_empty_address)
+        contentRes = R.string.content_shop_settings_empty_address
+        buttonTitleRes = R.string.button_shop_settings_empty_address
+        callback = this@ShopSettingAddressFragment
+    }
+
     override fun onSuccessLoadAddresses(addresses: List<ShopLocationViewModel>?) {
         super.renderList(addresses ?: listOf())
     }
@@ -100,15 +110,19 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.menu_add){
-            if (isValidToAdd()){
-                activity?.run {startActivityForResult(ShopSettingAddressAddEditActivity
-                        .createIntent(this, null, true), REQUEST_CODE_ADD_ADDRESS)}
-            } else {
-                Toast.makeText(activity, getString(R.string.error_max_shop_address), Toast.LENGTH_SHORT).show()
-            }
+            createAddress()
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun createAddress() {
+        if (isValidToAdd()){
+            activity?.run {startActivityForResult(ShopSettingAddressAddEditActivity
+                    .createIntent(this, null, true), REQUEST_CODE_ADD_ADDRESS)}
+        } else {
+            Toast.makeText(activity, getString(R.string.error_max_shop_address), Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onIconClicked(item: ShopLocationViewModel, pos: Int) {
@@ -162,5 +176,11 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
                         BaseToaster.LENGTH_SHORT).setAction(R.string.close){}.show()
             }
         }
+    }
+
+    override fun onEmptyContentItemTextClicked() {}
+
+    override fun onEmptyButtonClicked() {
+        createAddress()
     }
 }

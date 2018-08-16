@@ -58,4 +58,7 @@
     <string name="success_delete_shop_address">Lokasi berhasil dihapus</string>
     <string name="success_add_address">Berhasil menambahkan Lokasi</string>
     <string name="success_edit_address">Lokasi berhasil diperbaharui</string>
+    <string name="title_shop_settings_empty_address">Toko Anda belum memiliki Lokasi</string>
+    <string name="content_shop_settings_empty_address">Tambah Alamat Kontak agar toko lebih terpercaya &amp; mudah dihubungi</string>
+    <string name="button_shop_settings_empty_address">Tambah Lokasi</string>
 </resources>

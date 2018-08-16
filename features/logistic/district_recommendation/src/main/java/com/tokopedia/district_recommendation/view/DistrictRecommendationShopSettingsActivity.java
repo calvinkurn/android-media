@@ -29,12 +29,12 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class ShopSettingDistrictRecommendationActivity extends DistrictRecommendationActivity {
+public class DistrictRecommendationShopSettingsActivity extends DistrictRecommendationActivity {
     private TkpdProgressDialog progressDialog;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public static Intent createInstance(Activity activity) {
-        return new Intent(activity, ShopSettingDistrictRecommendationActivity.class);
+        return new Intent(activity, DistrictRecommendationShopSettingsActivity.class);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ShopSettingDistrictRecommendationActivity extends DistrictRecommend
 
                             @Override
                             public void onError(Throwable e) {
-                                NetworkErrorHelper.showEmptyState( ShopSettingDistrictRecommendationActivity.this,
+                                NetworkErrorHelper.showEmptyState( DistrictRecommendationShopSettingsActivity.this,
                                         findViewById(R.id.container), new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {

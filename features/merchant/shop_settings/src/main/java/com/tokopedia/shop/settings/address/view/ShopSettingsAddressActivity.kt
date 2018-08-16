@@ -14,7 +14,7 @@ class ShopSettingsAddressActivity : BaseSimpleActivity(), HasComponent<ShopLocat
     override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
 
-    override fun getNewFragment(): Fragment = ShopSettingAddressNewFragment.createInstance()
+    override fun getNewFragment(): Fragment = ShopSettingAddressFragment.createInstance()
 
     companion object {
         @JvmStatic
