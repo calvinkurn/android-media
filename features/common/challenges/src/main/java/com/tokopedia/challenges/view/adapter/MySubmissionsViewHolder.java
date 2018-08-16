@@ -61,7 +61,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         tvTitle.setText(challengesResult.getTitle());
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
         //imgLikes
-        //  tvStatus.setText(submissionsResult.getSubmissionCount());
+        tvStatus.setText(submissionsResult.getStatus());
         ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
     }
     public interface ISubmissionsViewHolderListner {

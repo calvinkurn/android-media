@@ -188,6 +188,13 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setDetailContent(String content) {
+        if(TextUtils.isEmpty(content)){
+            detailTitle.setVisibility(View.GONE);
+            challengeTitle.setVisibility(View.GONE);
+        }else {
+            detailTitle.setVisibility(View.VISIBLE);
+            challengeTitle.setVisibility(View.VISIBLE);
+        }
         this.detailContent.setText(content);
     }
 
