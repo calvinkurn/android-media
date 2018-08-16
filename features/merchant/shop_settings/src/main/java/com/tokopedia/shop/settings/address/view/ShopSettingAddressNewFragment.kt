@@ -143,9 +143,9 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
     }
 
     private fun editShopAddress(item: ShopLocationViewModel) {
-        activity?.run {
+        activity?.let {
             startActivityForResult(ShopSettingAddressAddEditActivity
-                    .createIntent(this, item, false), REQUEST_CODE_EDIT_ADDRESS)
+                    .createIntent(it, item, false), REQUEST_CODE_EDIT_ADDRESS)
         }
     }
 
@@ -153,7 +153,7 @@ class ShopSettingAddressNewFragment : BaseListFragment<ShopLocationViewModel, Sh
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK && data != null && (requestCode == REQUEST_CODE_ADD_ADDRESS || requestCode == REQUEST_CODE_EDIT_ADDRESS)) {
             val isSuccess = data.getBooleanExtra(PARAM_EXTRA_IS_SUCCESS, false)
             val isNew = data.getBooleanExtra(PARAM_EXTRA_IS_ADD_NEW, false)
             if (isSuccess){
