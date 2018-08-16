@@ -143,21 +143,27 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_zakat,
-                getContext().getString(R.string.title_menu_zakat),
-                String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW,
-                        AccountConstants.Url.Pulsa.ZAKAT_URL),
-                0,
-                PEMBELI,
-                getContext().getString(R.string.title_menu_transaction)
-        );
-        list.add(gridItem);
+//        karina.nana [11:46 AM]
+//        meytaa
+//        dengan sangat maap
+//        si zakat diilangin aja
+//        karena itu OMSnya dah masuk ke topup&tagihan
 
-        // karina.nana [3:08 PM]
-        //donasi itu omsnya sama ama topup & tagihan
-        //jadi donasi diilangin dulu aja
+//        gridItem = new MenuGridItemViewModel(
+//                R.drawable.ic_zakat,
+//                getContext().getString(R.string.title_menu_zakat),
+//                String.format("%s?url=%s",
+//                        ApplinkConst.WEBVIEW,
+//                        AccountConstants.Url.Pulsa.ZAKAT_URL),
+//                0,
+//                PEMBELI,
+//                getContext().getString(R.string.title_menu_transaction)
+//        );
+//        list.add(gridItem);
+
+//        karina.nana [3:08 PM]
+//        donasi itu omsnya sama ama topup & tagihan
+//        jadi donasi diilangin dulu aja
 
 //        gridItem = new MenuGridItemViewModel(
 //                R.drawable.ic_donation,

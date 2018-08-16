@@ -12,8 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.BuyerAccountComponent;
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent;
@@ -21,16 +22,17 @@ import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
+import com.tokopedia.navigation_common.listener.FragmentListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
 /**
  * @author okasurya on 7/16/18.
  */
-public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAccount.View {
+public class BuyerAccountFragment extends BaseAccountFragment implements
+        BuyerAccount.View, FragmentListener {
 
     public static final String TAG = BuyerAccountFragment.class.getSimpleName();
     private static final String BUYER_DATA = "buyer_data";
@@ -42,10 +44,9 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
     @Inject
     BuyerAccount.Presenter presenter;
 
-    public static Fragment newInstance(BuyerViewModel model) {
+    public static Fragment newInstance() {
         Fragment fragment = new BuyerAccountFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUYER_DATA, model);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -58,11 +59,13 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buyer_account, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_buyer);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
+                .VERTICAL, false));
         return view;
     }
 
@@ -72,16 +75,16 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
         adapter = new BuyerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        swipeRefreshLayout.setOnRefreshListener(this::getData);
-
-        getData();
+        if (getContext() != null) {
+            GraphqlClient.init(getContext());
+            getData();
+            swipeRefreshLayout.setOnRefreshListener(this::getData);
+        }
     }
 
     private void getData() {
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment != null && parentFragment instanceof AccountHomeFragment) {
-            ((AccountHomeFragment)parentFragment).loadData();
-        }
+        presenter.getBuyerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                .query_buyer_account_home));
     }
 
     @Override
@@ -90,10 +93,10 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
     }
 
     @Override
-    public void loadData(List<? extends Visitable> visitables) {
-        if(visitables != null) {
+    public void loadBuyerData(BuyerViewModel model) {
+        if (model.getItems() != null) {
             adapter.clearAllElements();
-            adapter.setElement(visitables);
+            adapter.setElement(model.getItems());
         }
     }
 
@@ -109,14 +112,12 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
 
     @Override
     public void showLoading() {
-        if (adapter != null)
-            adapter.showLoading();
+        if (adapter != null) adapter.showLoading();
     }
 
     @Override
     public void hideLoading() {
-        if (adapter != null)
-            adapter.hideLoading();
+        if (adapter != null) adapter.hideLoading();
 
         if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
@@ -126,6 +127,13 @@ public class BuyerAccountFragment extends BaseAccountFragment implements BuyerAc
     public void showError(String message) {
         if (getView() != null) {
             ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onScrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
         }
     }
 }

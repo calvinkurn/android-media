@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,27 +17,21 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.fragment.TestableTkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.home.account.presentation.BuyerAccount;
-import com.tokopedia.home.account.presentation.SellerAccount;
-import com.tokopedia.home.account.presentation.listener.BaseAccountView;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
-import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
-import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
+import com.tokopedia.home.account.presentation.listener.BaseAccountView;
+import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,19 +41,19 @@ import javax.inject.Inject;
 /**
  * @author okasurya on 7/16/18.
  */
-public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeComponent, AccountHomePresenter> implements
-        AccountHome.View, NotificationListener {
+public class AccountHomeFragment extends TkpdBaseV4Fragment implements
+        AccountHome.View, NotificationListener, FragmentListener {
 
     @Inject
-    AccountHomePresenter presenter;
-
+    AccountHome.Presenter presenter;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private AppBarLayout appBarLayout;
     private AccountHomePagerAdapter adapter;
-
     private BadgeView badgeView;
     private Toolbar toolbar;
     private ImageButton menuNotification;
+    private int counterNumber = 0;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -72,7 +67,8 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
         initView(view);
         return view;
@@ -81,21 +77,32 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getAccount();
+        setPage();
     }
 
-    public void getAccount() {
-        if (getContext() != null) {
-            GraphqlClient.init(getContext());
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.sendUserAttributeTracker();
+    }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) presenter.sendUserAttributeTracker();
+    }
+
+    public void setPage() {
+        if (getContext() != null) {
             List<AccountFragmentItem> fragmentItems = new ArrayList<>();
+
             AccountFragmentItem item = new AccountFragmentItem();
-            item.setFragment(BuyerAccountFragment.newInstance(null));
+            item.setFragment(BuyerAccountFragment.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_buyer));
             fragmentItems.add(item);
 
             item = new AccountFragmentItem();
-            item.setFragment(SellerAccountFragment.newInstance(null));
+            item.setFragment(SellerAccountFragment.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_seller));
             fragmentItems.add(item);
 
@@ -104,42 +111,18 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    public void loadData() {
-        if (presenter == null)
-            return;
-        presenter.getAccount(GraphqlHelper.loadRawString(getResources(), R.raw.query_account_home));
-    }
-
-    @Override
     protected String getScreenName() {
-        return this.getClass().getName();
-    }
-
-    @Override
-    public void renderData(AccountViewModel accountViewModel) {
-        if (getContext() != null && getActivity() != null) {
-            Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-            if (currentFragment != null) {
-                if (currentFragment instanceof SellerAccount.View) {
-                    ((SellerAccount.View) currentFragment).loadData(accountViewModel);
-                } else if (currentFragment instanceof BuyerAccount.View) {
-                    ((BuyerAccount.View) currentFragment).loadData(accountViewModel.getBuyerViewModel().getItems());
-                }
-            }
-        }
+        return null;
     }
 
     private void initInjector() {
         AccountHomeComponent component =
-            ((AccountHomeRouter) getActivity().getApplicationContext())
-            .getAccountHomeInjection()
-            .getAccountHomeComponent(
-                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()
-            );
+                ((AccountHomeRouter) getActivity().getApplicationContext())
+                        .getAccountHomeInjection()
+                        .getAccountHomeComponent(
+                                ((BaseMainApplication) getActivity().getApplicationContext())
+                                        .getBaseAppComponent()
+                        );
 
         component.inject(this);
         presenter.attachView(this);
@@ -147,6 +130,7 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
 
     private void initView(View view) {
         setToolbar(view);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
         setAdapter();
@@ -159,8 +143,10 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
         menuNotification = toolbar.findViewById(R.id.action_notification);
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
-        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent(getActivity())));
-        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION));
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
+                (getActivity())));
+        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst
+                .NOTIFICATION));
 
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -174,10 +160,13 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
+
+        onNotifyBadgeNotification(counterNumber);
     }
 
     @Override
     public void onNotifyBadgeNotification(int number) {
+        this.counterNumber = number;
         if (menuNotification == null || getActivity() == null)
             return;
         if (badgeView == null)
@@ -189,26 +178,10 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     }
 
     @Override
-    public void reInitInjector(AccountHomeComponent component) {
-        component.inject(this);
-        presenter.attachView(this);
-    }
-
-    @Override
-    public AccountHomePresenter getPresenter() {
-        return null;
-    }
-
-    @Override
-    public void setPresenter(AccountHomeComponent presenter) {
-    }
-
-
-    @Override
     public void showLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof CustomerView) {
-            ((BaseAccountView)currentFragment).showLoading();
+            ((BaseAccountView) currentFragment).showLoading();
         }
     }
 
@@ -216,7 +189,7 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     public void hideLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof CustomerView) {
-            ((BaseAccountView)currentFragment).hideLoading();
+            ((BaseAccountView) currentFragment).hideLoading();
         }
     }
 
@@ -224,7 +197,17 @@ public class AccountHomeFragment extends TestableTkpdBaseV4Fragment<AccountHomeC
     public void showError(String message) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof CustomerView) {
-            ((BaseAccountView)currentFragment).showError(message);
+            ((BaseAccountView) currentFragment).showError(message);
         }
+    }
+
+    @Override
+    public void onScrollToTop() {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof FragmentListener) {
+            ((FragmentListener) currentFragment).onScrollToTop();
+        }
+        if (appBarLayout != null)
+            appBarLayout.setExpanded(true);
     }
 }

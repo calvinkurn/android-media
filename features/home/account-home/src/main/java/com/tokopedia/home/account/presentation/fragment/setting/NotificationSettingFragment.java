@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.AppNotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.EmailNotificationSettingActivity;
@@ -16,11 +17,22 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+
 public class NotificationSettingFragment extends BaseGeneralSettingFragment {
+
     private static final String TAG = NotificationSettingFragment.class.getSimpleName();
+
+    private AccountAnalytics accountAnalytics;
 
     public static Fragment createInstance() {
         return new NotificationSettingFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        accountAnalytics = new AccountAnalytics(getActivity());
     }
 
     @Override
@@ -50,9 +62,11 @@ public class NotificationSettingFragment extends BaseGeneralSettingFragment {
     public void onItemClicked(int settingId) {
         switch (settingId){
             case SettingConstant.SETTING_APP_NOTIF_ID:
+                accountAnalytics.eventClickNotificationSetting(String.format("%s %s", APPLICATION, SETTING));
                 startActivity(AppNotificationSettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_EMAIL_NOTIF_ID:
+                accountAnalytics.eventClickNotificationSetting(String.format("%s %s", EMAIL, SETTING));
                 startActivity(EmailNotificationSettingActivity.createIntent(getActivity()));
                 break;
             default:

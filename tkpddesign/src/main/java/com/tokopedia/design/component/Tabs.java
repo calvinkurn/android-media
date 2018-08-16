@@ -2,6 +2,7 @@ package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -89,7 +90,7 @@ public class Tabs extends TabLayout {
         this.setTabMode(MODE_SCROLLABLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.setElevation(4);
+            this.setElevation(10);
             this.setBackgroundResource(R.color.white);
         } else {
             this.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);

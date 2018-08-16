@@ -38,6 +38,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
@@ -45,6 +46,7 @@ import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Notification;
@@ -147,6 +149,20 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         titles = titles();
         fragmentList = fragments();
 
+        if (isFirstTime()) {
+            globalNavAnalytics.trackFirstTime(this);
+        }
+
+//        cacheHandler = new AnalyticsCacheHandler();
+
+        handleAppLinkBottomNavigation(savedInstanceState);
+        checkAppUpdate();
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
+
+        initHockeyBroadcastReceiver();
+    }
+
+    private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
         if (getIntent().getExtras() != null) {
             int tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
             switch (tabPosition) {
@@ -162,19 +178,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             }
         } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-            this.currentFragment = fragmentList.get(0);
+            this.currentFragment = fragmentList.get(HOME_MENU);
         }
-
-//        if (isFirstTime()) {
-//            trackFirstTime();
-//        }
-//        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-//        cacheHandler = new AnalyticsCacheHandler();
-
-        checkAppUpdate();
-        checkIsHaveApplinkComeFromDeeplink(getIntent());
-
-        initHockeyBroadcastReceiver();
     }
 
     @Override
@@ -257,7 +262,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                     ft.hide(frag); // hide all fragment
                 }
             }
-            scrollToTop(currentFrag);
+            scrollToTop(currentFrag); // enable feature scroll to top for home & feed
         } else {
             ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
         }
@@ -294,6 +299,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             reloadPage(this);
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
+
         registerBroadcastHockeyApp();
     }
 
@@ -395,6 +401,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         }
     }
 
+    @Override
+    public void onNotifyCart() {
+        if (presenter != null)
+            this.presenter.getNotificationData();
+    }
+
     /**
      * Show Case on boarding
      */
@@ -433,6 +445,11 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);
+    }
+
+    private Boolean isFirstTime() {
+        LocalCacheHandler cache = new LocalCacheHandler(this, GlobalNavConstant.Cache.KEY_FIRST_TIME);
+        return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
     private void checkAppUpdate() {
@@ -540,11 +557,5 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
-    }
-
-    @Override
-    public void onNotifyCart() {
-        if (presenter != null)
-            this.presenter.getNotificationData();
     }
 }

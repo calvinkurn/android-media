@@ -1,57 +1,31 @@
 package com.tokopedia.home.account.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
+import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
+import com.tokopedia.home.account.analytics.domain.GetUserAttributesUseCase;
+import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.domain.GetAccountUseCase;
 import com.tokopedia.home.account.presentation.AccountHome;
-import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
-import com.tokopedia.usecase.RequestParams;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-import static com.tokopedia.home.account.AccountConstants.QUERY;
-import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
 /**
  * @author okasurya on 7/20/18.
  */
 public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> implements AccountHome.Presenter {
 
-    private GetAccountUseCase getAccountUseCase;
+    private GetUserAttributesUseCase getUserAttributesUseCase;
+    private AccountAnalytics accountAnalytics;
     private AccountHome.View view;
-    public AccountHomePresenter(GetAccountUseCase getAccountUseCase) {
-        this.getAccountUseCase = getAccountUseCase;
-    }
 
-    @Override
-    public void getAccount(String query) {
-        view.showLoading();
-        RequestParams requestParams = RequestParams.create();
-
-        requestParams.putString(QUERY, query);
-        requestParams.putObject(VARIABLES, new HashMap<>());
-
-        getAccountUseCase.execute(requestParams, new Subscriber<AccountViewModel>() {
-            @Override
-            public void onCompleted() {
-                view.hideLoading();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.showError(e.getMessage());
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(AccountViewModel accountViewModel) {
-                view.renderData(accountViewModel);
-            }
-        });
-
+    public AccountHomePresenter(GetUserAttributesUseCase getUserAttributesUseCase,
+                                AccountAnalytics accountAnalytics) {
+        this.getUserAttributesUseCase = getUserAttributesUseCase;
+        this.accountAnalytics = accountAnalytics;
     }
 
     @Override
@@ -61,7 +35,27 @@ public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> 
 
     @Override
     public void detachView() {
-        getAccountUseCase.unsubscribe();
+        getUserAttributesUseCase.unsubscribe();
         view = null;
+    }
+
+    @Override
+    public void sendUserAttributeTracker() {
+        getUserAttributesUseCase.execute(new Subscriber<UserAttributeData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(UserAttributeData data) {
+                accountAnalytics.setUserAttributes(data);
+            }
+        });
     }
 }

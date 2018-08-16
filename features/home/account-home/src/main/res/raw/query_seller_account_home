@@ -1,0 +1,34 @@
+query {
+  isAuthenticated
+  saldo {
+    deposit
+    deposit_fmt
+  }
+  userShopInfo {
+    info {
+      shop_name
+      shop_avatar
+      shop_id
+      shop_domain
+      shop_is_official
+    }
+    owner {
+      is_gold_merchant
+    }
+  }
+  notifications{
+    resolutionAs {
+      seller
+    }
+    sellerInfo {
+      notification
+    }
+    userSatisfactionSurvey
+    sellerOrderStatus {
+      newOrder
+      readyToShip
+      shipped
+      arriveAtDestination
+    }
+  }
+}

@@ -160,17 +160,6 @@
 
             </LinearLayout>
 
-            <TextView
-                style="@style/TokoPointHeaderNewLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_10"
-                android:lines="1"
-                android:singleLine="true"
-                android:text="@string/home_header_tokopoint_new_label" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -243,24 +232,12 @@
                         tools:text="900000000000000000 Poin"
                         tools:visibility="visible" />
 
-                    <TextView
-                        style="@style/TokoPointHeaderNewLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_5"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginStart="@dimen/dp_5"
-                        android:gravity="center"
-                        android:text="@string/home_header_tokopoint_new_label" />
-
                 </LinearLayout>
 
             </LinearLayout>
 
-
         </LinearLayout>
 
     </LinearLayout>
+
 </LinearLayout>

@@ -2,11 +2,12 @@ package com.tokopedia.home.account.di.module;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.home.account.domain.GetAccountUseCase;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
+import com.tokopedia.home.account.analytics.domain.GetUserAttributesUseCase;
+import com.tokopedia.home.account.di.scope.AccountHomeScope;
+import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
-import com.tokopedia.navigation_common.model.WalletPref;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,17 +16,15 @@ import dagger.Provides;
  * @author okasurya on 7/20/18.
  */
 @Module
+@AccountHomeScope
 public class AccountHomeModule {
-
     @Provides
-    WalletPref provideWalletPref(@ApplicationContext Context context, Gson gson){
-        return new WalletPref(context, gson);
+    AccountAnalytics provideAccountAnalytics(@ApplicationContext Context context) {
+        return new AccountAnalytics(context);
     }
 
     @Provides
-    AccountHomePresenter provideAccountHomePresenter(
-            GetAccountUseCase getAccountUseCase
-    ){
-        return new AccountHomePresenter(getAccountUseCase);
+    AccountHome.Presenter provideAccountHomePresenter(GetUserAttributesUseCase getUserAttributesUseCase, AccountAnalytics accountAnalytics) {
+        return new AccountHomePresenter(getUserAttributesUseCase, accountAnalytics);
     }
 }
