@@ -64,7 +64,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
 
     private PurchaseTabAdapter adapter;
 
-    @DeepLink(TransactionAppLink.ORDER_LIST)
+    @DeepLink(ApplinkConst.ORDER_LIST)
     public static Intent getIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -72,7 +72,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(ApplinkConst.PURCHASE_CONFIRMED)
+    @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -90,7 +90,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink({ApplinkConst.PURCHASE_SHIPPED, TransactionAppLink.PURCHASE_ORDER})
+    @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
     public static Intent getShippedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -99,7 +99,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(ApplinkConst.PURCHASE_DELIVERED)
+    @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
     public static Intent getDeliveredIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)

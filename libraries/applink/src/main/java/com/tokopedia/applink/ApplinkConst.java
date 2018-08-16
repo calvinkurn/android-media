@@ -134,8 +134,10 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
+    String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
     String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
+    String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
     String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
     String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
     String PURCHASE_HISTORY = "tokopedia://buyer/history";
