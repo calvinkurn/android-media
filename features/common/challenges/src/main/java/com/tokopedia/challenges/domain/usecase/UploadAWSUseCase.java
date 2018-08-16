@@ -2,6 +2,8 @@ package com.tokopedia.challenges.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -12,6 +14,7 @@ import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -20,31 +23,51 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import okhttp3.Interceptor;
 import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class UploadAWSUseCase extends RestRequestSupportInterceptorUseCase  {
 
     private final Context context;
     private final Interceptor interceptor;
-    private final String filePath;
-    private final String challengeId;
-    HashMap<String, Object> requestBodyMap = new HashMap<>();
+    private String filePath;
+    private String challengeId;
     private RestApi mApi;
+    private UploadFingerprints uploadFingerprints;
 
-    public UploadAWSUseCase(Interceptor interceptor, Context context,String filePath,String challengeID) {
+    @Inject
+    public UploadAWSUseCase(IndiAuthInterceptor interceptor,@ApplicationContext Context context) {
         super(interceptor, context);
         this.context = context;
         this.interceptor = interceptor;
+    }
+
+
+    public void setFilePath(String filePath) {
         this.filePath = filePath;
-        this.challengeId = challengeID;
+    }
+
+    public void setChallengeId(String challengeId) {
+        this.challengeId = challengeId;
+    }
+
+    public void setUploadFingerprints(UploadFingerprints uploadFingerprints) {
+        this.uploadFingerprints = uploadFingerprints;
     }
 
     @Override
     protected List<RestRequest> buildRequest() {
         return null;
+    }
+
+    @Override
+    public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
+        return createObservableGetNextPart(uploadFingerprints);
     }
 
     public Observable<Map<Type, RestResponse>> createObservableUploadAWS(UploadFingerprints fingerprints) {
@@ -55,12 +78,6 @@ public class UploadAWSUseCase extends RestRequestSupportInterceptorUseCase  {
                     return createObservableGetNextPart(fingerprints);
                 }
             });
-//            return ObservableFactory.create(buildAWSUploadRequest(fingerprints), null, context).flatMap(new Func1<Map<Type, RestResponse>, Observable<Map<Type, RestResponse>>>() {
-//                @Override
-//                public Observable<Map<Type, RestResponse>> call(Map<Type, RestResponse> typeRestResponseMap) {
-//                    return createObservableGetNextPart(fingerprints);
-//                }
-//            });
         }else {
             Map<Type, RestResponse> results = new HashMap<>();
                 RestResponse response = new RestResponse("Upload Success", 200, false);
@@ -80,20 +97,14 @@ public class UploadAWSUseCase extends RestRequestSupportInterceptorUseCase  {
         headers.put("Content-Type", "multipart/form-data; charset=UTF-8");
         this.mApi = NetworkClient.getApiInterfaceWithNoInterceptor(context);
         return  mApi.putMultipart(fingerprints.getUploadUrl(), Utils.generateImageRequestBodySlice(filePath,fingerprints.getBlockStart(),fingerprints.getBlockEnd()),headers);
-
-
-        /*requestBodyMap.put("data", Utils.generateImageRequestBodySlice(filePath,fingerprints.getBlockStart(),fingerprints.getBlockEnd()));
-
-        //String body = new String(Utils.sliceFile(filePath,fingerprints.getBlockStart(),fingerprints.getBlockEnd()));
-        RestRequest restRequest1 = new RestRequest.Builder(fingerprints.getUploadUrl(), String.class)
-                .setRequestType(RequestType.PUT_MULTIPART).setHeaders(headers).setBody(requestBodyMap) .build();
-        tempRequest.add(restRequest1);
-
-        return tempRequest;*/
     }
 
     public Observable<Map<Type, RestResponse>> createObservableGetNextPart(UploadFingerprints fingerprints) {
-        return ObservableFactory.create(getNextPartRequest(fingerprints.getManifestId()), Arrays.asList(interceptor), context).flatMap(new Func1<Map<Type, RestResponse>, Observable<Map<Type, RestResponse>>>() {
+        return ObservableFactory.create(getNextPartRequest(fingerprints.getManifestId()), Arrays.asList(interceptor), context).doOnNext(new Action1<Map<Type, RestResponse>>() {
+            @Override
+            public void call(Map<Type, RestResponse> restResponse) {
+            }
+        }).flatMap(new Func1<Map<Type, RestResponse>, Observable<Map<Type, RestResponse>>>() {
             @Override
             public Observable<Map<Type, RestResponse>> call(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);

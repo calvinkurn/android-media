@@ -141,6 +141,16 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             }
         });
 
+        mDeleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageHandler.loadImageWithId(mSelectedImage,R.drawable.ic_upload);
+                mAttachmentPath = null;
+                mDeleteImage.setVisibility(View.GONE);
+
+            }
+        });
+
 
     }
 
@@ -287,6 +297,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             mAttachmentPath = item.getRealPath();
             ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
         }
+        mDeleteImage.setVisibility(View.VISIBLE);
 
     }
 

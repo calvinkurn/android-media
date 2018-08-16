@@ -103,7 +103,7 @@
                 android:lineSpacingExtra="3sp"
                 android:maxLines="4"
                 android:text="@string/show_more"
-                android:textColor="@color/text_color_participated"
+                android:textColor="@color/accepted_green_textcolor"
                 android:textSize="14sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -144,6 +144,7 @@
                 app:layout_constraintEnd_toEndOf="@id/selected_image"
                 app:layout_constraintTop_toTopOf="@id/selected_image"
                 app:srcCompat="@drawable/ic_black_cross"
+                android:visibility="gone"
                 tools:ignore="VectorDrawableCompat" />
 
 

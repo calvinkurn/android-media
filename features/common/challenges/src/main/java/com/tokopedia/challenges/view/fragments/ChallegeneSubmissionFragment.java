@@ -15,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -54,14 +56,17 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ChallengeSubmissionPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
+import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.usecase.RequestParams;
 
+
 import java.util.List;
 
 import javax.inject.Inject;
+
 
 public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements ChallengeSubmissonContractor.View, View.OnClickListener, SubmissionItemAdapter.INavigateToActivityRequest {
 
@@ -74,10 +79,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     TextView seeMoreButtonDesc;
     TextView seeMoreButtonBuzzPoints;
     TextView seeMoreButtonTnc;
-    ExpandableTextView description;
+    TextView shortDescription;
     View submitButton;
-    RecyclerView submissionRecyclerView, awardRecylerView;
-    List<SubmissionResult> submissionResults;
+    RecyclerView submissionRecyclerView, awardRecylerView, winnerRecyclerView;
+    List<SubmissionResult> submissionResults, winnerResults;
     CustomVideoPlayer videoPlayer;
     ConstraintLayout timerView;
     RelativeLayout rlExpiry;
@@ -85,17 +90,20 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     ConstraintLayout clVideoPlayer;
     ConstraintLayout clAwards;
     ConstraintLayout clSubmissions;
+    ConstraintLayout clWinners;
     ConstraintLayout clHowBuzzPoints;
     ConstraintLayout clTnc;
     ProgressBar timerProgressBar;
     CountDownView countDownView;
     TextView tvHashTag;
     TextView tvTnCText;
+    WebView longDescription;
+    private NestedScrollView nestedScrollView;
     public static int VIDEO_POS = -1;
 
     FrameLayout progressBar;
     FrameLayout flHeader;
-    SubmissionItemAdapter submissionItemAdapter;
+    SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
     CoordinatorLayout mainContent;
     ConstraintLayout baseMainContent;
     private Result challengeResult;
@@ -110,6 +118,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private String challengeId;
     private FloatingActionButton btnShare;
     private FirebaseRemoteConfigImpl firebaseRemoteConfig;
+    private boolean isWinnerList = false;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -125,6 +134,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             this.challengeResult = getArguments().getParcelable("challengesResult");
         }
+        isWinnerList = true;
         setHasOptionsMenu(true);
         this.firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
@@ -158,9 +168,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         timerView = view.findViewById(R.id.cl_timer);
         timerProgressBar = view.findViewById(R.id.progressBar);
         countDownView = view.findViewById(R.id.count_down);
-        description = view.findViewById(R.id.tv_expandable_description);
+        shortDescription = view.findViewById(R.id.short_description);
         seeMoreButtonDesc = view.findViewById(R.id.seemorebutton_description);
         submissionRecyclerView = view.findViewById(R.id.rv_submissions);
+        winnerRecyclerView = view.findViewById(R.id.rv_winners);
         submitButton = view.findViewById(R.id.ll_continue);
         awardRecylerView = view.findViewById(R.id.rv_awards);
         rlExpiry = view.findViewById(R.id.cl_expiry);
@@ -168,6 +179,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         clVideoPlayer = view.findViewById(R.id.cl_video_player);
         clAwards = view.findViewById(R.id.cl_awards);
         clSubmissions = view.findViewById(R.id.cl_submissions);
+        clWinners = view.findViewById(R.id.cl_winners);
         clHowBuzzPoints = view.findViewById(R.id.cl_how_buzzpoints);
         clTnc = view.findViewById(R.id.cl_tnc);
         toolbar = view.findViewById(R.id.toolbar);
@@ -177,7 +189,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         collapsingToolbarLayout.setTitle(" ");
         appBarLayout = view.findViewById(R.id.app_bar);
-        description.setInterpolator(new OvershootInterpolator());
         seeMoreButtonDesc.setOnClickListener(this);
         view.findViewById(R.id.tv_see_all).setOnClickListener(this);
         submitButton.setOnClickListener(this);
@@ -194,11 +205,17 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         baseMainContent = view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
+        longDescription = view.findViewById(R.id.markdownView);
+        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         mPresenter.attachView(this);
         if (!TextUtils.isEmpty(challengeId)) {
             mPresenter.initialize(true, challengeResult);
         } else {
             mPresenter.initialize(false, challengeResult);
+        }
+
+        if (isWinnerList) {
+            mPresenter.loadCountdownView(challengeResult);
         }
         return view;
     }
@@ -275,12 +292,12 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             tvHashTag.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(challengeResult.getDescription())) {
-            description.setText(challengeResult.getDescription());
-        } else {
-            description.setVisibility(View.GONE);
+            shortDescription.setText(challengeResult.getDescription());
+            clAbout.setVisibility(View.VISIBLE);
         }
+
         if (challengeResult.getSharing().getAssets() != null && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
-            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false);
+            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false, null);
         } else {
             clVideoPlayer.setVisibility(View.GONE);
         }
@@ -310,6 +327,32 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             tvParticipated.setVisibility(View.GONE);
         } else {
             tvParticipated.setText(participatedText);
+            if (participatedText.equalsIgnoreCase("Approved")) {
+                setTextStatus(getResources().getColor(R.color.accepted_green_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_green_radius_huge), tvParticipated);
+            } else if (participatedText.equalsIgnoreCase("Pending")) {
+                setTextStatus(getResources().getColor(R.color.pending_yellow_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_yellow_radius_huge), tvParticipated);
+            } else if (participatedText.equalsIgnoreCase("Declined")) {
+                setTextStatus(getResources().getColor(R.color.declined_red_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_red_radius_huge), tvParticipated);
+            } else {
+                setTextStatus(getResources().getColor(R.color.completed_gray_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_gray_radius_huge), tvParticipated);
+            }
+        }
+    }
+
+    public void setTextStatus(int textColor, Drawable bgColor, TextView statusText) {
+        statusText.setTextColor(textColor);
+        statusText.setBackground(bgColor);
+    }
+
+    @Override
+    public void renderWinnerItems(SubmissionResponse submissionResponse) {
+        winnerResults = submissionResponse.getSubmissionResults();
+        if (winnerResults != null && winnerResults.size() > 0) {
+            clWinners.setVisibility(View.VISIBLE);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            winnerRecyclerView.setLayoutManager(mLayoutManager);
+            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+            winnerRecyclerView.setAdapter(winnerItemAdapter);
         }
     }
 
@@ -393,12 +436,19 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.seemorebutton_description) {
-            if (description.isExpanded()) {
+            if (shortDescription.getVisibility() == View.VISIBLE) {
                 seeMoreButtonDesc.setText(R.string.expand);
+                MarkdownProcessor m = new MarkdownProcessor();
+                String html = m.markdown(challengeResult.getDescription());
+                longDescription.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
+                shortDescription.setVisibility(View.GONE);
+                longDescription.setVisibility(View.VISIBLE);
             } else {
                 seeMoreButtonDesc.setText(R.string.collapse);
+                shortDescription.setVisibility(View.VISIBLE);
+                longDescription.setVisibility(View.GONE);
+                nestedScrollView.scrollTo(0, 0);
             }
-            description.toggle();
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
         } else if (v.getId() == R.id.ll_continue) {

@@ -100,10 +100,10 @@ public class Utils {
 
     }
 
-    private static  int KB_1 = 1024;
-    private static  int KB_10 = 10 * KB_1;
-    private static int MB_1 = 1000 * KB_1;
-    private static int MB_10 = 10 * MB_1;
+    public static  int KB_1 = 1024;
+    public static  int KB_10 = 10 * KB_1;
+    public static int MB_1 = 1000 * KB_1;
+    public static int MB_10 = 10 * MB_1;
 
 
     public static byte[] get10KBFile(String path)  {
@@ -113,17 +113,17 @@ public class Utils {
     public static byte[] sliceFile(String path,int start,int end) {
         File file = new File(path);
         int upperBound = end > file.length() ? (int) file.length() : end;
-        byte[] bytesArray = new byte[upperBound - start];
+        byte[] bytesArray = new byte[(int) file.length()];
         try {
             FileInputStream fis = new FileInputStream(file);
-            fis.read(bytesArray,start,upperBound - start-1);
+            fis.read(bytesArray);
             //read file into bytes[]
             fis.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return bytesArray;
+        return Arrays.copyOfRange(bytesArray,start,upperBound);
 
     }
 

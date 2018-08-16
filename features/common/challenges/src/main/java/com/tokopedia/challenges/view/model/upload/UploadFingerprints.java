@@ -2,7 +2,9 @@ package com.tokopedia.challenges.view.model.upload;
 
 import com.google.gson.annotations.SerializedName;
 
-public class UploadFingerprints{
+import java.io.Serializable;
+
+public class UploadFingerprints implements Serializable{
 
 	@SerializedName("AuthorizationDate")
 	private String authorizationDate;

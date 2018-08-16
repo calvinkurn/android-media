@@ -60,23 +60,6 @@ public class IntializeMultiPartUseCase extends RestRequestSupportInterceptorUseC
         this.interceptor = interceptor;
     }
 
-
-    @Override
-    public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return super.createObservable(requestParams).flatMap(new Func1<Map<Type, RestResponse>, Observable<Map<Type, RestResponse>>>() {
-            @Override
-            public Observable<Map<Type, RestResponse>> call(Map<Type, RestResponse> restResponse) {
-                RestResponse res1 = restResponse.get(UploadFingerprints.class);
-                UploadFingerprints fingerprints = res1.getData();
-                UploadAWSUseCase uploadAWSUseCase = new UploadAWSUseCase(interceptor,context,imagePath,challengeID);
-                return uploadAWSUseCase.createObservableUploadAWS(fingerprints);
-            }
-        });
-    }
-
-
-
-
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();

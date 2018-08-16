@@ -21,12 +21,12 @@ import com.tokopedia.challenges.view.utils.Utils;
 
 class ChallengesViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvTitle;
-    TextView tvHastags;
-    ImageView imgChallenge;
-    TextView tvTimeRemaining;
-    TextView tvStatus;
-    ImageView imgShare;
+    private TextView tvTitle;
+    private TextView tvHastags;
+    private ImageView imgChallenge;
+    private TextView tvTimeRemaining;
+    private TextView tvStatus;
+    private ImageView imgShare;
 
     private Result challengesResult;
     private Context context;

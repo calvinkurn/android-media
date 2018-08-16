@@ -1,5 +1,9 @@
 package com.tokopedia.challenges.view.fragments.submit;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -12,7 +16,10 @@ import com.tokopedia.challenges.view.fragments.submit.IChallengesSubmitContract.
 import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
+import com.tokopedia.challenges.view.service.UploadChallengeService;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
@@ -25,12 +32,11 @@ import rx.Subscriber;
 
 public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSubmitContract.View> implements Presenter {
 
-    static private int MB_1 = 1024;
-    static private int MB_10 = 10 * MB_1;
     GetChallengeSettingUseCase mGetChallengeSettingUseCase;
     GetChallegeTermsUseCase mGetChallegeTermsUseCase;
     IntializeMultiPartUseCase mIntializeMultiPartUseCase;
     public ChallengeSettings settings;
+    public static final String ACTION_UPLOAD_COMPLETE =  "action.upload.complete";
 
     @Inject
     public ChallengesSubmitPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallegeTermsUseCase mGetChallegeTermsUseCase, IntializeMultiPartUseCase mIntializeMultiPartUseCase) {
@@ -47,16 +53,19 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
+        getView().showProgress("Configuring");
         mGetChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
 
             @Override
             public void onCompleted() {
-
+                getView().hideProgress();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                getView().hideProgress();
+                getView().showMessage("Configuration Fail");
+                getView().finish();
             }
 
             @Override
@@ -77,57 +86,93 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     public void onSubmitButtonClick() {
         String title = getView().getImageTitle();
         String description = getView().getDescription();
-        String imagePath = getView().getImage();
-        if(imagePath == null || imagePath.isEmpty()) {
+        String filePath = getView().getImage();
+        if(filePath == null || filePath.isEmpty()) {
             getView().setSnackBarErrorMessage("Please select image");
+            return;
         }else if (!isValidateTitle(title)) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));  // TODO update messages
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_title_size));  // TODO update messages
+            return;
         } else if (!isValidateDescription(description)) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
-        } else if (!isValidateSize(imagePath)) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_descirption_size));
+            return;
+        } else if (ImageUtils.isImageType(getView().getContext(),filePath)) {
+            if(!isValidateImageSize(filePath)) {
+                getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
+                return;
+            }
         } else {
-            mIntializeMultiPartUseCase.generateRequestParams(title,description,imagePath);
-            getView().showProgress("Uploading");
-            mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-                @Override
-                public void onCompleted() {
-                    getView().hideProgress();
-                    getView().showMessage("Image Uploaded Success");
-                    getView().finish();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    getView().hideProgress();
-                    e.printStackTrace();
-                    getView().showMessage("Image Uploaded Failed");
-                }
-
-                @Override
-                public void onNext(Map<Type, RestResponse> restResponse) {
-
-                }
-            });
+            if(!isValidateVidoeSize(filePath)) {
+                getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_video_size));
+                return;
+            }
         }
+        mIntializeMultiPartUseCase.generateRequestParams(title,description,filePath);
+        getView().showProgress("Uploading");
+        mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                getView().hideProgress();
+                getView().showMessage("Upload Initiated Please Wait");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgress();
+                e.printStackTrace();
+                getView().showMessage("Image Uploaded Failed");
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> restResponse) {
+                RestResponse res1 = restResponse.get(UploadFingerprints.class);
+                UploadFingerprints fingerprints = res1.getData();
+                getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(),fingerprints,getView().getChallengeResult().getId(),filePath));
+                getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
+            }
+        });
+
 
     }
 
-    private boolean isValidateSize(String fileLoc) {
+
+
+    public void deinit() {
+        getView().getContext().unregisterReceiver(receiver);
+    }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            if(intent.getAction() == ACTION_UPLOAD_COMPLETE) {
+                // launch home
+                getView().finish();
+            }
+            deinit();
+        }
+    };
+
+
+
+    private boolean isValidateImageSize(@NonNull String fileLoc) {
         File file = new File(fileLoc);
-        long size = file.length();
-        return true;
+        return file.length() <= Utils.MB_10;
+    }
+
+    private boolean isValidateVidoeSize(@NonNull String fileLoc) {
+        File file = new File(fileLoc);
+        return file.length() <= (Utils.MB_1 * 100);
     }
 
     private boolean isValidateDescription(@NonNull String description) {
-        if (description.length() > 300)
+        if (description.length() < 0 ||  description.length() > 300)
             return false;
         else
             return true;
     }
 
     private boolean isValidateTitle(@NonNull String title) {
-        if (title.length() > 50)
+        if (title.length() < 0 ||title.length() > 50)
             return false;
         else
             return true;

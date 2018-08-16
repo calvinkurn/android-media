@@ -19,13 +19,13 @@ import com.tokopedia.challenges.view.share.ShareBottomSheet;
 
 class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvTitle;
-    TextView tvPoints;
-    ImageView imgChallenge;
-    ImageView imgLikes;
-    TextView tvStatus;
-    ImageView imgShare;
-    Context context;
+    private TextView tvTitle;
+    private TextView tvPoints;
+    private ImageView imgChallenge;
+    private ImageView imgLikes;
+    private TextView tvStatus;
+    private ImageView imgShare;
+    private Context context;
 
     private SubmissionResult submissionsResult;
 
