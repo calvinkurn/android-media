@@ -40,6 +40,7 @@ import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.Mockito.doReturn;
@@ -112,8 +113,6 @@ public class MainParentAppLinkActivityTest {
 
         onView(allOf(withText(Feed_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
 
-        onView(withText("Feed masih kosong")).check(matches(isDisplayed()));
-
         when(userSession.isLoggedIn()).thenReturn(true);
 
         mockAlreadyLogin(userSession);
@@ -133,7 +132,7 @@ public class MainParentAppLinkActivityTest {
 
         startDeepLinkActivity(ApplinkConst.PMS);
 
-        intended(hasComponent(PaymentListActivity.class.getName()));
+        intended(hasComponent(LoginActivity.class.getName()));
     }
 
     private void prepareForFullSmartLockBundle() {
