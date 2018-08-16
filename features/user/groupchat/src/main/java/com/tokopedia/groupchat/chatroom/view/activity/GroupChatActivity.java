@@ -419,7 +419,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         String link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, viewModel.getChannelUrl());
 
         String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
-                viewModel.getChannelName()), link);
+                viewModel.getChannelName()), "");
 
         ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
                 viewModel.getChannelUuid(), viewModel.getChannelName(), description,

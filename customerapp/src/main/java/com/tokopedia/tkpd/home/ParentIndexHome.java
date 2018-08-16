@@ -658,7 +658,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, messageTAG + "onResume");
+        Log.d(TAG, messageTAG + "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);

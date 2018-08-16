@@ -2,6 +2,7 @@ package com.tokopedia.settingbank.banklist.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.banklist.domain.usecase.DeleteBankAccountUseCase
 import com.tokopedia.settingbank.banklist.domain.usecase.GetBankAccountListUseCase
 import com.tokopedia.settingbank.banklist.domain.usecase.SetDefaultBankAccountUseCase
@@ -36,7 +37,11 @@ class SettingBankPresenter(private val userSession: UserSession,
 
             override fun onError(e: Throwable) {
                 view.hideLoadingFull()
-                view.onErrorGetListBankFirstTime(ErrorHandler.getErrorMessage(view.getContext(), e))
+                if (e is MessageErrorException) {
+                    view.onErrorGetListBankFirstTime(e.message ?: "")
+                } else {
+                    view.onErrorGetListBankFirstTime(ErrorHandler.getErrorMessage(view.getContext(), e))
+                }
             }
 
             override fun onNext(bankAccountList: BankAccountListViewModel) {

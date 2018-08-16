@@ -1,5 +1,5 @@
-query wishlist($user_id: Int, $page: Int, $count: Int){
-  wishlist(user_id: $user_id, page: $page, count: $count){
+query wishlist($page: Int, $count: Int){
+  wishlist(page: $page, count: $count){
 
       has_next_page
       total_data
@@ -7,12 +7,12 @@ query wishlist($user_id: Int, $page: Int, $count: Int){
         id
         name
         url
-        image
-        price
+        image_url
+        raw_price
         condition
         available
         status
-        price_formatted
+        price
         minimum_order
         wholesale_price {
           minimum
