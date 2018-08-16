@@ -33,8 +33,6 @@ import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
-import com.tokopedia.transaction.applink.TransactionApplinkModule;
-import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
 
 /**
@@ -44,7 +42,6 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         DigitalApplinkModule.class,
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
-        TransactionApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
         InboxDeeplinkModule.class,
@@ -61,7 +58,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
-                new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
