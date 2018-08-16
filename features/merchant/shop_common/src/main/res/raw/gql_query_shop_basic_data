@@ -5,6 +5,7 @@ query ShopBasicData {
       name
       status
       closeSchedule
+      closeNote
       openSchedule
       tagline
       description

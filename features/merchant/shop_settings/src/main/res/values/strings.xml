@@ -61,4 +61,7 @@
     <string name="title_shop_settings_empty_address">Toko Anda belum memiliki Lokasi</string>
     <string name="content_shop_settings_empty_address">Tambah Alamat Kontak agar toko lebih terpercaya &amp; mudah dihubungi</string>
     <string name="button_shop_settings_empty_address">Tambah Lokasi</string>
+    <string name="closed_schedule">Jadwal Tutup: %1$s</string>
+    <string name="reopen_at">Kembali buka pada %1$s, 23:59</string>
+
 </resources>

@@ -4,12 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.format.DateUtils;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -20,12 +18,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.shop.common.constant.ShopScheduleActionDef;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopShedulePresenter;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.common.util.ShopDateUtil;
@@ -38,7 +35,8 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-public class ShopEditScheduleActivity extends BaseSimpleActivity implements UpdateShopSettingsInfoPresenter.View, UpdateShopShedulePresenter.View {
+public class ShopEditScheduleActivity extends BaseSimpleActivity
+        implements UpdateShopShedulePresenter.View {
 
     public static final String SAVED_SELECTED_START_DATE = "svd_selected_start_date";
     public static final String SAVED_SELECTED_END_DATE = "svd_selected_end_date";
@@ -47,13 +45,11 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     UpdateShopShedulePresenter updateShopShedulePresenter;
 
     private ProgressDialog progressDialog;
-    private ShopBasicDataModel shopBasicDataModel;
 
     private TextView tvSave;
     private RadioButtonLabelView labelOpen;
     private RadioButtonLabelView labelClosed;
     private View vgScheduleSwitchContent;
-    private TkpdHintTextInputLayout tilShopCloseNote;
     private EditText etShopCloseNote;
     private SwitchLabelView scheduleSwitch;
     private ImageLabelView labelStartClose;
@@ -65,7 +61,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
-        if (savedInstanceState!= null){
+        if (savedInstanceState != null) {
             selectedStartCloseUnixTime = savedInstanceState.getLong(SAVED_SELECTED_START_DATE);
             selectedEndCloseUnixTime = savedInstanceState.getLong(SAVED_SELECTED_END_DATE);
         }
@@ -84,7 +80,6 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
         vgScheduleSwitchContent = findViewById(R.id.vgScheduleSwitchContent);
         labelStartClose = findViewById(R.id.labelStartClose);
         labelEndClose = findViewById(R.id.labelEndClose);
-        tilShopCloseNote = findViewById(R.id.tilShopCloseNote);
         etShopCloseNote = findViewById(R.id.etShopCloseNote);
 
         labelOpen.setOnRadioButtonLabelViewListener(new RadioButtonLabelView.OnRadioButtonLabelViewListener() {
@@ -92,6 +87,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
             public void onChecked(boolean isChecked) {
                 if (isChecked) {
                     labelClosed.setChecked(false);
+                    labelStartClose.setEnabled(true);
                 }
             }
         });
@@ -100,7 +96,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
             public void onChecked(boolean isChecked) {
                 if (isChecked) {
                     labelOpen.setChecked(false);
-                    scheduleSwitch.setChecked(true);
+                    labelStartClose.setEnabled(false);
                     setStartCloseDate(ShopDateUtil.getCurrentDate());
                 }
             }
@@ -131,6 +127,13 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
                 showEndDatePickerDialog(selectedDate, minDate);
             }
         });
+        scheduleSwitch.setVisibility(View.GONE);
+        tvSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSaveButtonClicked();
+            }
+        });
         loadShopBasicData();
     }
 
@@ -156,8 +159,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 Date selectedDate = ShopDateUtil.toDate(year, month, dayOfMonth);
-                selectedEndCloseUnixTime = selectedDate.getTime();
-                labelEndClose.setContent(ShopDateUtil.toString(selectedDate));
+                setEndCloseDate(selectedDate);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -165,32 +167,45 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
         datePicker.show();
     }
 
-    private void setStartCloseDate(Date date){
+    private void setStartCloseDate(Date date) {
         selectedStartCloseUnixTime = date.getTime();
-        labelStartClose.setContent(ShopDateUtil.toString(date));
+        labelStartClose.setContent(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DAY_DATE, date));
+        // move end date to start date, if the end < start
+        if (selectedEndCloseUnixTime > 0 &&
+                selectedEndCloseUnixTime < selectedStartCloseUnixTime) {
+            setEndCloseDate(new Date(selectedStartCloseUnixTime));
+        }
     }
 
-    private void hideCloseScheduleContent(){
+    private void setEndCloseDate(Date date) {
+        selectedEndCloseUnixTime = date.getTime();
+        labelEndClose.setContent(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DAY_DATE, date));
+    }
+
+    private void hideCloseScheduleContent() {
         vgScheduleSwitchContent.setVisibility(View.GONE);
     }
 
-    private void showCloseScheduleContent(){
+    private void showCloseScheduleContent() {
         vgScheduleSwitchContent.setVisibility(View.VISIBLE);
     }
 
 
     private void onSaveButtonClicked() {
-        if (isInputInvalid()) {
-            return;
-        }
         showSubmitLoading(getString(R.string.title_loading));
-//        String tagLine = etShopSlogan.getText().toString();
-//        String desc = etShopDesc.getText().toString();
-//        if (!TextUtils.isEmpty(savedLocalImageUrl)) {
-//            updateShopSettingsInfoPresenter.uploadShopImage(savedLocalImageUrl,tagLine, desc);
-//        } else {
-//            updateShopSettingsInfoPresenter.updateShopBasicData(tagLine, desc);
-//        }
+        @ShopScheduleActionDef int shopAction =
+                labelOpen.isChecked() ?
+                        ShopScheduleActionDef.OPEN :
+                        ShopScheduleActionDef.CLOSED;
+        boolean isScheduleSwitch = scheduleSwitch.isChecked();
+        long closeStart = isScheduleSwitch ? selectedStartCloseUnixTime : 0;
+        long closeEnd = isScheduleSwitch ? selectedEndCloseUnixTime : 0;
+        String closeNote = isScheduleSwitch ? etShopCloseNote.getText().toString() : "";
+        updateShopShedulePresenter.updateShopSchedule(
+                shopAction,
+                closeStart == 0 ? null : String.valueOf(closeStart),
+                closeEnd == 0 ? null : String.valueOf(closeEnd),
+                closeNote);
     }
 
     public void showSubmitLoading(String message) {
@@ -212,21 +227,6 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
         }
     }
 
-    private boolean isInputInvalid() {
-        boolean hasError = false;
-//        String tagLine = etShopSlogan.getText().toString();
-//        if (TextUtils.isEmpty(tagLine)) {
-//            tilShopSlogan.setError(getString(R.string.shop_slogan_must_be_filled));
-//            hasError = true;
-//        }
-//        String desc = etShopDesc.getText().toString();
-//        if (TextUtils.isEmpty(desc)) {
-//            tilShopDesc.setError(getString(R.string.shop_desc_must_be_filled));
-//            hasError = true;
-//        }
-        return hasError;
-    }
-
     private void loadShopBasicData() {
         updateShopShedulePresenter.getShopBasicData();
     }
@@ -245,45 +245,22 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-//            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-//            if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-//                savedLocalImageUrl = imageUrlOrPathList.get(0);
-//            }
-//            needUpdatePhotoUI = true;
-//        }
-    }
-
-    @Override
-    public void onSuccessUpdateShopBasicData(String successMessage) {
+    public void onSuccessUpdateShopSchedule(String successMessage) {
         hideSubmitLoading();
         setResult(Activity.RESULT_OK);
         finish();
     }
 
     @Override
-    public void onErrorUpdateShopBasicData(Throwable throwable) {
+    public void onErrorUpdateShopSchedule(Throwable throwable) {
         hideSubmitLoading();
         showSnackbarErrorSubmitEdit(throwable);
     }
 
     @Override
-    public void onSuccessUpdateShopSchedule(String successMessage) {
-
-    }
-
-    @Override
-    public void onErrorUpdateShopSchedule(Throwable throwable) {
-
-    }
-
-    @Override
     public void onSuccessGetShopBasicData(ShopBasicDataModel shopBasicDataModel) {
-        this.shopBasicDataModel = shopBasicDataModel;
-        setUIShopSchedule(shopBasicDataModel);
         scheduleSwitch.setVisibility(View.VISIBLE);
+        setUIShopSchedule(shopBasicDataModel);
         tvSave.setVisibility(View.VISIBLE);
     }
 
@@ -294,15 +271,28 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
                 labelOpen.setChecked(true);
                 break;
             default: // closed
-                labelOpen.setChecked(false);
+                labelClosed.setChecked(true);
                 break;
         }
-//        updatePhotoUI(shopBasicDataModel);
-//        etShopSlogan.setText(shopBasicDataModel.getTagline());
-//        etShopSlogan.setSelection(etShopSlogan.getText().length());
-//
-//        etShopDesc.setText(shopBasicDataModel.getDescription());
-//        etShopDesc.setSelection(etShopDesc.getText().length());
+        String shopCloseSchedule = shopBasicDataModel.getCloseSchedule();
+        String shopOpenSchedule = shopBasicDataModel.getOpenSchedule();
+        if (!TextUtils.isEmpty(shopCloseSchedule) ||
+                !TextUtils.isEmpty(shopCloseSchedule)) {
+            scheduleSwitch.setChecked(true);
+            if (!TextUtils.isEmpty(shopCloseSchedule)) {
+                long shopCloseScheduleUnix = Long.parseLong(shopCloseSchedule);
+                Date shopCloseDate = ShopDateUtil.unixToDate(shopCloseScheduleUnix);
+                setStartCloseDate(shopCloseDate);
+            }
+            if (!TextUtils.isEmpty(shopOpenSchedule)) {
+                long shopOpenScheduleUnix = Long.parseLong(shopOpenSchedule);
+                Date shopOpenDate = ShopDateUtil.unixToDate(shopOpenScheduleUnix);
+                setEndCloseDate(shopOpenDate);
+            }
+        } else {
+            scheduleSwitch.setChecked(false);
+        }
+        etShopCloseNote.setText(shopBasicDataModel.getCloseNote());
     }
 
     @SuppressLint("Range")
@@ -321,11 +311,6 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity implements Upda
                         loadShopBasicData();
                     }
                 }).show();
-    }
-
-    @Override
-    public void onErrorUploadShopImage(Throwable throwable) {
-        showSnackbarErrorSubmitEdit(throwable);
     }
 
     private void showSnackbarErrorSubmitEdit(Throwable throwable) {

@@ -14,7 +14,8 @@ import java.util.Locale;
 public class ShopDateUtil {
 
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
-    public static final String FORMAT_DATE = "EEE, dd MMM yyyy";
+    public static final String FORMAT_DAY_DATE = "EEE, dd MMM yyyy";
+    public static final String FORMAT_DATE = "dd MMM yyyy";
 
     public static Calendar getCurrentCalendar() {
         return Calendar.getInstance();
@@ -35,17 +36,24 @@ public class ShopDateUtil {
         }
     }
 
-    public static String toString(Date date) {
-        DateFormat fromFormat = new SimpleDateFormat(FORMAT_DATE, DEFAULT_LOCALE);
+    public static String toReadableString(String format, Date date) {
+        DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
         try {
             return fromFormat.format(date);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Date doesnt valid");
+            return date.toString();
         }
     }
 
-    public static final Date toDate(int year, int month, int dayOfMonth) {
+    public static String toReadableString(String format, String unixTime) {
+        try {
+            return toReadableString(format, new Date(Long.parseLong(unixTime)));
+        }catch (Exception e) {
+            return unixTime;
+        }
+    }
+
+    public static Date toDate(int year, int month, int dayOfMonth) {
         try {
             Calendar now =  getCurrentCalendar();
             now.set(Calendar.YEAR, year);
@@ -53,8 +61,7 @@ public class ShopDateUtil {
             now.set(Calendar.DATE, dayOfMonth);
             return now.getTime();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Date doesnt valid");
+            return getCurrentDate();
         }
     }
 
@@ -62,8 +69,7 @@ public class ShopDateUtil {
         try {
             return new Date(unixTime);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Date doesnt valid (" + unixTime + ")");
+            return getCurrentDate();
         }
     }
 }

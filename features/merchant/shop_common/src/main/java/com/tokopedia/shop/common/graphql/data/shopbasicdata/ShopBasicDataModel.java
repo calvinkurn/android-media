@@ -23,6 +23,9 @@ public class ShopBasicDataModel {
     @SerializedName("closeSchedule")
     @Expose
     private String closeSchedule = "";
+    @SerializedName("closeNote")
+    @Expose
+    private String closeNote = "";
     @SerializedName("openSchedule")
     @Expose
     private String openSchedule = "";
@@ -76,6 +79,10 @@ public class ShopBasicDataModel {
 
     public int getLevel() {
         return level;
+    }
+
+    public String getCloseNote() {
+        return closeNote;
     }
 
     public String getExpired() {
