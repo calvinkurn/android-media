@@ -116,7 +116,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationShopSettingsActivity;
+import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;

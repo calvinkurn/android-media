@@ -9,17 +9,17 @@ import android.view.*
 import android.widget.ArrayAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
-import com.tokopedia.shop.settings.address.di.component.ShopLocationComponent
+import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
 import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
-import kotlinx.android.synthetic.main.fragment_shop_address_add.*
 import javax.inject.Inject
+
+import kotlinx.android.synthetic.main.fragment_shop_address_add.*
 
 class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddressAddEditView {
 
@@ -37,10 +37,17 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     companion object {
         private const val DISTRICT_RECOMMENDATION_REQUEST_CODE = 1
-        private const val PARAM_EXTRA_ADDRESS = "district_recommendation_address"
+
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_recommendation_address_district_id"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_recommendation_address_district_name"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "district_recommendation_address_city_id"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "district_recommendation_address_city_name"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "district_recommendation_address_province_id"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "district_recommendation_address_province_name"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "district_recommendation_address_zipcodes"
+
         private const val PARAM_EXTRA_SHOP_ADDRESS = "shop_address"
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
-
         private const val PARAM_EXTRA_IS_SUCCESS = "is_success"
 
         fun createInstance(shopAddressViewModel: ShopLocationViewModel?, isAddNew: Boolean) =
@@ -50,7 +57,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 }}
     }
     override fun initInjector() {
-        getComponent(ShopLocationComponent::class.java).inject(this)
+        getComponent(ShopSettingsComponent::class.java).inject(this)
         presenter.attachView(this)
     }
 
@@ -144,18 +151,22 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == DISTRICT_RECOMMENDATION_REQUEST_CODE){
-            data?.let {
-                val recommendationAddress: DistrictRecommendationAddress? = it.extras.getParcelable(PARAM_EXTRA_ADDRESS)
-                if (recommendationAddress != null){
-                    val fullAddress = "${recommendationAddress.provinceName}, ${recommendationAddress.cityName}, ${recommendationAddress.districtName}"
-                    edit_text_district.setText(fullAddress)
-                    selectedProvinceId = recommendationAddress.provinceId
-                    selectedCityId = recommendationAddress.cityId
-                    selectedDistrictId = recommendationAddress.districtId
-                    zipCodes.clear()
-                    zipCodes.addAll(recommendationAddress.zipCodes)
-                    updateAutoTextZipCodes()
-                }
+            if (data == null) return
+
+            data.extras.let {
+                val districtName = it.getString(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, "")
+                val cityName = it.getString(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, "")
+                val provinceName = it.getString(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "")
+
+                val fullAddress = "$provinceName, $cityName, $districtName"
+                edit_text_district.setText(fullAddress)
+
+                selectedProvinceId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1)
+                selectedCityId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1)
+                selectedDistrictId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1)
+                zipCodes.clear()
+                zipCodes.addAll(it.getStringArrayList(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES) ?: listOf())
+                updateAutoTextZipCodes()
             }
         }
     }

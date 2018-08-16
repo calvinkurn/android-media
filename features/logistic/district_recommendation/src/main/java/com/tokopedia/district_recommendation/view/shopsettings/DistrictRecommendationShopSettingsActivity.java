@@ -1,4 +1,4 @@
-package com.tokopedia.district_recommendation.view;
+package com.tokopedia.district_recommendation.view.shopsettings;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -17,6 +17,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +31,9 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/** temporary implementation to handle request token first in district recommendation page
+ *  for the case this acticity is called without token beforehand
+ */
 public class DistrictRecommendationShopSettingsActivity extends DistrictRecommendationActivity {
     private TkpdProgressDialog progressDialog;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -88,7 +93,7 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
     }
 
     private void showView(Token token) {
-        DistrictRecommendationFragment fragment = DistrictRecommendationFragment.newInstance(token);
+        DistrictRecommendationShopSettingsFragment fragment = DistrictRecommendationShopSettingsFragment.newInstance(token);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.add(R.id.container, fragment,

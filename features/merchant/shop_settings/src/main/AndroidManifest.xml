@@ -43,6 +43,11 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".notes.view.activity.ShopSettingNotesAddEditActivity"
+            android:label="@string/shop_settings_add_note"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

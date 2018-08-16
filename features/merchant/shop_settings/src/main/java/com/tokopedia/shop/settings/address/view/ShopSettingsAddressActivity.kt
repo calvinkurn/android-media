@@ -7,11 +7,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.shop.settings.address.di.component.ShopLocationComponent
-import com.tokopedia.shop.settings.address.di.component.DaggerShopLocationComponent
+import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 
-class ShopSettingsAddressActivity : BaseSimpleActivity(), HasComponent<ShopLocationComponent> {
-    override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(
+class ShopSettingsAddressActivity : BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
+    override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
 
     override fun getNewFragment(): Fragment = ShopSettingAddressFragment.createInstance()

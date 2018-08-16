@@ -78,7 +78,7 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationShopSettingsActivity;
+import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
