@@ -147,7 +147,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_product_feature));
         menuList.setMenuDescription(context.getString(R.string.label_menu_product_feature));
-        menuList.setApplink(ApplinkConst.PRODUCT_DRAFT);
+        menuList.setApplink(AccountConstants.Navigation.FEATURED_PRODUCT);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_product));
         items.add(menuList);

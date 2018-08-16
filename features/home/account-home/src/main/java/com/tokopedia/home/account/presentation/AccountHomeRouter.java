@@ -57,4 +57,6 @@ public interface AccountHomeRouter {
     Intent getTrainOrderListIntent(Context context);
 
     void sendAnalyticsUserAttribute(UserAttributeData userAttributeData);
+
+    void goToCreateMerchantRedirect(Context context);
 }

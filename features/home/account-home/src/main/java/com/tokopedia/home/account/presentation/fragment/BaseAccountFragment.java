@@ -31,6 +31,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
+import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 
 /**
  * @author okasurya on 7/26/18.
@@ -71,6 +72,15 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             ((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
                     (getContext());
+        } else if (applink.equals(AccountConstants.Navigation.FEATURED_PRODUCT)
+            && getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            Intent launchIntent = getContext().getPackageManager()
+                    .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+            if (launchIntent != null) {
+                getContext().startActivity(launchIntent);
+            } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+                ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
+            }
         }
 
         return false;
