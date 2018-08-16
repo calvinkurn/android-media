@@ -914,23 +914,39 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onFollowKolClicked(int rowNumber, int id) {
-        presenter.followKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.followKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnfollowKolClicked(int rowNumber, int id) {
-        presenter.unfollowKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.unfollowKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
 
     }
 
     @Override
     public void onLikeKolClicked(int rowNumber, int id) {
-        presenter.likeKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.likeKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnlikeKolClicked(int rowNumber, int id) {
-        presenter.unlikeKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.unlikeKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
