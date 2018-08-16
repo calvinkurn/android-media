@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -52,9 +51,8 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -71,18 +69,14 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
-import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -95,6 +89,7 @@ import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -119,7 +114,6 @@ import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfil
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
-import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -1449,31 +1443,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public String getStringRemoteConfig(String key) {
-        return remoteConfig.getString(key, "");
-    }
-
-    @Override
-    public void setStringRemoteConfigLocal(String key, String value) {
-        remoteConfig.setString(key, value);
-    }
-
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return null;
-    }
-
-    @Override
     public Intent getSettingBankIntent(Context context) {
         if (remoteConfig.getBoolean("sellerapp_is_enabled_new_setting_bank", true))
             return SettingBankActivity.Companion.createIntent(context);
@@ -1519,4 +1488,9 @@ public abstract class SellerRouterApplication extends MainApplication
         }
     }
 
+    @Override
+    public void showForceLogoutTokenDialog(String response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    }
 }
