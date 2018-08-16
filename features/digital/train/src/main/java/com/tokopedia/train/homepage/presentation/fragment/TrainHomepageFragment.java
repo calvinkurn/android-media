@@ -193,6 +193,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         trainHomepagePresenterImpl.attachView(this);
         trainHomepagePresenterImpl.initialize();
+        initializePromoList();
     }
 
     private void initializePromoList() {
@@ -444,6 +445,11 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void hidePromoList() {
         trainPromoView.hidePromoList();
+    }
+
+    @Override
+    public void showPromoList() {
+        trainPromoView.showPromoList();
     }
 
     @Override
