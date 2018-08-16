@@ -8,13 +8,13 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
-import com.tokopedia.shop.common.util.TextApiUtils
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import kotlinx.android.synthetic.main.partial_shop_page_header.view.*
 

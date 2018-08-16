@@ -113,7 +113,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -127,7 +126,7 @@ import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARA
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
-    private static final int REQUEST_CODE_IMAGE = 1001;
+    private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
@@ -360,9 +359,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                         new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                         ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                        null, null);
-                Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-                startActivityForResult(intent, REQUEST_CODE_IMAGE);
+                        null,null);
+                Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE);
             }
         });
 
@@ -887,8 +886,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     adapter.addReply(temp);
                 }
                 break;
-
-            case REQUEST_CODE_IMAGE:
+            case REQUEST_CODE_CHAT_IMAGE:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
                     if (imagePathList == null || imagePathList.size() <= 0) {
@@ -963,12 +961,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Dialog dialog = myAlertDialog.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        presenter.openCamera();
     }
 
     @Override
