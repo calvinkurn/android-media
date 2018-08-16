@@ -35,7 +35,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private MySubmissionsListAdapter listAdpater;
     private RecyclerView recyclerView;
     private LinearLayout emptyLayout;
-    private ProgressBar progressBar;
+    private View progressBar;
 
 
     @Override
@@ -58,7 +58,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         View view = inflater.inflate(R.layout.fragment_my_submissions, container, false);
         recyclerView = view.findViewById(R.id.rv_home_submissions);
         emptyLayout = view.findViewById(R.id.empty_view);
-        progressBar = view.findViewById(R.id.progressbar);
+        progressBar = view.findViewById(R.id.progress_bar_layout);
         mySubmissionsHomePresenter.getMySubmissionsList();
         return view;
     }
