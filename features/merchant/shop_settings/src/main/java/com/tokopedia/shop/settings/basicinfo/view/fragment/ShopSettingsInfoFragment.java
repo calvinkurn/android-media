@@ -27,8 +27,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
+import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.ShopSettingsRouter;
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity;
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity;
 import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter;
@@ -250,7 +250,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     }
 
     private void navigateToAboutGM() {
-        ((ShopSettingsRouter) getActivity().getApplication()).goToMerchantRedirect(getActivity());
+        ((ShopSettingRouter) getActivity().getApplication()).goToMerchantRedirect(getActivity());
     }
 
     @Override
