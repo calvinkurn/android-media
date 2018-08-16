@@ -285,7 +285,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
         String departureDate;
-        if (!paramViewModel.getSearchParam().getReturnDate().equals("") && paramViewModel.getSearchParam().getReturnDate() != null) {
+        if (!paramViewModel.getSearchParam().isOneWay()) {
             departureDate = paramViewModel.getSearchParam().getReturnDate();
         } else {
             departureDate = paramViewModel.getSearchParam().getDepartureDate();

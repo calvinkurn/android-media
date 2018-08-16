@@ -320,14 +320,12 @@ public class DrawerBuyerHelper extends DrawerHelper
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_FLIGHT_TRANSACTION_MENU)) {
-            buyerMenu.add(new DrawerItem(
-                            context.getString(R.string.drawer_title_travel_flight_transaction_list),
-                            TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST,
-                            drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
-                    )
-            );
-        }
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_travel_flight_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
         buyerMenu.add(new DrawerItem(
                         context.getString(R.string.drawer_title_travel_train_transaction_list),
                         TkpdState.DrawerPosition.PEOPLE_TRAIN_TRANSACTION_LIST,

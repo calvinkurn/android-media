@@ -43,6 +43,8 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
+import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
@@ -51,8 +53,6 @@ import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
-import com.tokopedia.reksadana.deeplink.ReksaDanaDeepLinkModule;
-import com.tokopedia.reksadana.deeplink.ReksaDanaDeepLinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -114,7 +114,7 @@ import io.branch.referral.BranchError;
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
-        ReksaDanaDeepLinkModule.class
+        InstantLoanAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -149,7 +149,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new CustomerCareApplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
                 new TokopointApplinkModuleLoader(),
-                new ReksaDanaDeepLinkModuleLoader()
+                new InstantLoanAppLinkModuleLoader()
         );
     }
 

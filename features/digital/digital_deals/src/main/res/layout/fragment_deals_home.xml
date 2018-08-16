@@ -39,6 +39,7 @@
 
                 <TextView
                     android:id="@+id/search_input_view"
+                    style="@style/TextView.Small.BlackPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_8"
@@ -55,8 +56,6 @@
                     android:maxLines="1"
                     android:orientation="horizontal"
                     android:padding="@dimen/dp_10"
-                    android:textColor="@color/black_70"
-                    android:textSize="@dimen/sp_14"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/tv_location_name"
@@ -65,6 +64,7 @@
 
                 <TextView
                     android:id="@+id/tv_location_name"
+                    style="@style/TextView.Small.BlackPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_16"
@@ -78,9 +78,6 @@
                     android:paddingBottom="@dimen/dp_8"
                     android:paddingTop="@dimen/dp_8"
                     android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintRight_toRightOf="parent"
@@ -104,8 +101,8 @@
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/cl_banners"
                     android:layout_width="match_parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                         android:id="@+id/deals_bannerpager"
@@ -131,14 +128,12 @@
 
                     <TextView
                         android:id="@+id/see_all_promo"
+                        style="@style/TextView.Micro.Green"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/dp_16"
                         android:gravity="top"
                         android:text="@string/promo_button_text"
-                        android:textColor="@color/green_250"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal"
                         app:layout_constraintBottom_toBottomOf="@+id/pager_indicator"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/pager_indicator"
@@ -149,15 +144,12 @@
 
                 <TextView
                     android:id="@+id/tv_popular_category"
+                    style="@style/TextView.Title.FontMedium.BlackPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:fontFamily="sans-serif-medium"
                     android:text="@string/category_voucher"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="normal"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cl_banners" />
 
@@ -184,27 +176,22 @@
 
                     <TextView
                         android:id="@+id/tv_popular_brand"
+                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_32"
-                        android:fontFamily="sans-serif-medium"
                         android:text="@string/popular_brand"
-                        android:textColor="@color/black_39"
-                        android:textSize="@dimen/sp_17"
-                        android:textStyle="normal"
                         app:layout_constraintLeft_toLeftOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_see_all_brands"
+                        style="@style/TextView.Micro.Green"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_16"
                         android:text="@string/see_all"
-                        android:textColor="@color/green_250"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/tv_popular_brand" />
@@ -227,16 +214,13 @@
 
                 <TextView
                     android:id="@+id/tv_popular"
+                    style="@style/TextView.Medium.FontMedium.BlackPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:fontFamily="sans-serif-medium"
                     android:paddingBottom="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_16"
                     android:text="@string/text_trending_deals"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cl_brands" />
 
@@ -272,15 +256,13 @@
 
 
                     <TextView
+                        style="@style/TextView.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_8"
-                        android:fontFamily="sans-serif"
                         android:gravity="center_horizontal"
                         android:text="@string/empty_deals_text"
-                        android:textColor="@color/black_38"
-                        android:textSize="@dimen/sp_14"
-                        android:textStyle="normal" />
+                        android:textColor="@color/black_38" />
 
                 </LinearLayout>
 

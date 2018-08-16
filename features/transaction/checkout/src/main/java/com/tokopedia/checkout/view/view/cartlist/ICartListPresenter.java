@@ -24,17 +24,11 @@ public interface ICartListPresenter {
 
     void processToUpdateCartData();
 
-//    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
-
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
 
-//    void processToShipmentForm(boolean toAddressChoice);
-
     void processResetAndRefreshCartData();
-
-    void processResetCart();
 
     void processCancelAutoApply();
 

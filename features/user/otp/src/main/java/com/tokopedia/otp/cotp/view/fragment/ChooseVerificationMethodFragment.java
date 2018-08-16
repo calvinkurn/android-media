@@ -206,6 +206,9 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     @Override
     public void onErrorGetList(String errorMessage) {
+        if (!isAdded()) {
+            return;
+        }
         if (TextUtils.isEmpty(errorMessage)) {
             NetworkErrorHelper.showEmptyState(getActivity(), mainView,
                     new NetworkErrorHelper.RetryClickedListener() {

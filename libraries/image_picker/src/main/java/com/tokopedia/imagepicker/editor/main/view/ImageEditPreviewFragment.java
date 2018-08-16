@@ -430,8 +430,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void rotateByAngle(float angle) {
-        gestureCropImageView.postRotate(angle);
-        gestureCropImageView.setImageToWrapCropBounds();
+        try {
+            gestureCropImageView.postRotate(angle);
+            gestureCropImageView.setImageToWrapCropBounds();
+        } catch (Exception e) {
+            // Do nothing
+        }
     }
 
     public void onStartEditScrolled() {

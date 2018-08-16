@@ -41,16 +41,21 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,12 +149,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
-//        if (shipmentCartItemModelList != null) {
-//            this.shipmentCartItemModelList.clear();
-//            this.shipmentCartItemModelList.addAll(recipientCartItemList);
-//        } else {
         this.shipmentCartItemModelList = recipientCartItemList;
-//        }
     }
 
     @Override
@@ -255,9 +255,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<CartShipmentAddressFormData>() {
                             @Override
                             public void onCompleted() {
@@ -290,7 +290,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
                                     } else {
                                         initializePresenterData(cartShipmentAddressFormData);
-                                        getView().renderCheckoutPage();
+                                        getView().renderCheckoutPage(!isFromMultipleAddress);
                                     }
                                 }
                             }
@@ -334,9 +334,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<CartShipmentAddressFormData>() {
                             @Override
                             public void onCompleted() {
@@ -426,9 +426,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(
                                 new Subscriber<CartShipmentAddressFormData>() {
                                     @Override
@@ -444,7 +444,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                     @Override
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                        prepareDataAfterReloadCheckoutPage(cartShipmentAddressFormData);
+                                        if (cartShipmentAddressFormData.getGroupAddress() == null ||
+                                                cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                            getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                        } else {
+                                            prepareDataAfterReloadCheckoutPage(cartShipmentAddressFormData);
+                                        }
                                     }
                                 }
                         )
@@ -529,9 +534,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             compositeSubscription.add(
                     getShipmentAddressFormUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.newThread())
+                            .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.newThread())
+                            .unsubscribeOn(Schedulers.io())
                             .subscribe(
                                     new Subscriber<CartShipmentAddressFormData>() {
                                         @Override
@@ -548,30 +553,35 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                         @Override
                                         public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                            boolean isEnableCheckout = true;
-                                            for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                                                if (groupAddress.isError() || groupAddress.isWarning()) {
-                                                    isEnableCheckout = false;
-                                                    break;
-                                                }
-                                                for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                                                    if (groupShop.isError() || groupShop.isWarning()) {
+                                            if (cartShipmentAddressFormData.getGroupAddress() == null ||
+                                                    cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                                getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                            } else {
+                                                boolean isEnableCheckout = true;
+                                                for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+                                                    if (groupAddress.isError() || groupAddress.isWarning()) {
                                                         isEnableCheckout = false;
                                                         break;
                                                     }
-                                                    for (Product product : groupShop.getProducts()) {
-                                                        if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                    for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                                                        if (groupShop.isError() || groupShop.isWarning()) {
                                                             isEnableCheckout = false;
                                                             break;
                                                         }
+                                                        for (Product product : groupShop.getProducts()) {
+                                                            if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                                isEnableCheckout = false;
+                                                                break;
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            if (isEnableCheckout) {
-                                                getView().renderCheckShipmentPrepareCheckoutSuccess();
-                                            } else {
-                                                prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
+                                                if (isEnableCheckout) {
+                                                    getView().renderCheckShipmentPrepareCheckoutSuccess();
+                                                } else {
+                                                    prepareDataAfterProcessShipmentPrepareCheckout(cartShipmentAddressFormData, isNeedToRemoveErrorProduct);
+                                                }
                                             }
                                         }
                                     }
@@ -645,10 +655,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
             compositeSubscription.add(
                     checkoutUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.newThread())
+                            .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.newThread())
-                            .subscribe(getSubscriberCheckoutCart())
+                            .unsubscribeOn(Schedulers.io())
+                            .subscribe(getSubscriberCheckoutCart(checkoutRequest))
             );
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -739,9 +749,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putAllString(param);
         compositeSubscription.add(
                 getThanksToppayUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberThanksTopPay())
         );
     }
@@ -768,9 +778,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 checkPromoCodeCartShipmentUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<PromoCodeCartShipmentData>() {
                             @Override
                             public void onCompleted() {
@@ -821,7 +831,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private Subscriber<CheckoutData> getSubscriberCheckoutCart() {
+    private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -840,6 +850,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     getView().sendAnalyticsChoosePaymentMethodSuccess();
+                    getView().sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest));
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
                     getView().sendAnalyticsChoosePaymentMethodFailed();
@@ -847,6 +858,44 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         };
+    }
+
+    private Map<String, Object> generateCheckoutAnalyticsStep2DataLayer(CheckoutRequest checkoutRequest) {
+
+        Map<String, Object> checkoutMapData = new HashMap<>();
+        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+        enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2);
+        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
+
+        EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
+        for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
+            for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                    EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                            new EnhancedECommerceProductCartMapData();
+                    enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
+                    enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
+                    enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
+                    enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
+                    enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
+                    enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
+                    enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
+                    enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
+                    enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
+                    enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
+                    enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
+                    enhancedECommerceProductCartMapData.setAttribution(productDataCheckoutRequest.getProductAttribution());
+                    enhancedECommerceProductCartMapData.setListName(productDataCheckoutRequest.getProductListName());
+                    enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+                }
+            }
+        }
+        enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
+
+        checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
+
+        return checkoutMapData;
     }
 
     @Override
@@ -861,9 +910,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getGeneratedAuthParamNetwork(param));
         compositeSubscription.add(
                 checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<PromoCodeCartListData>() {
                             @Override
                             public void onCompleted() {
@@ -910,9 +959,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
         compositeSubscription.add(
                 editAddressUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<String>() {
                             @Override
                             public void onCompleted() {
@@ -944,6 +993,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
 
                                 if (response != null && statusSuccess) {
+                                    if (recipientAddressModel != null) {
+                                        recipientAddressModel.setLatitude(Double.parseDouble(latitude));
+                                        recipientAddressModel.setLongitude(Double.parseDouble(longitude));
+                                    } else {
+                                        shipmentCartItemModel.getRecipientAddressModel().setLatitude(Double.parseDouble(latitude));
+                                        shipmentCartItemModel.getRecipientAddressModel().setLongitude(Double.parseDouble(longitude));
+                                    }
                                     getView().renderEditAddressSuccess(latitude, longitude);
                                 } else {
                                     if (TextUtils.isEmpty(messageError)) {
@@ -1020,9 +1076,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void cancelAutoApplyCoupon() {
         compositeSubscription.add(
                 cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<String>() {
                             @Override
                             public void onCompleted() {
@@ -1075,9 +1131,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 changeShippingAddressUseCase.createObservable(requestParam)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<SetShippingAddressData>() {
                             @Override
                             public void onCompleted() {

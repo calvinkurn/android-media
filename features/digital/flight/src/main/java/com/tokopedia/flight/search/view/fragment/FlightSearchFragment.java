@@ -554,6 +554,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    public void showNoRouteFlightEmptyState(String message) {
+        getAdapter().clearAllElements();
+        getAdapter().addElement(getNoFlightRouteDataViewModel(message));
+    }
+
+    @Override
     public void removeBottomPaddingForSortAndFilterActionButton() {
         RecyclerView recyclerView = getRecyclerView(getView());
         recyclerView.setPadding(
@@ -821,6 +827,27 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 }
             });
         }
+        return emptyResultViewModel;
+    }
+
+    protected Visitable getNoFlightRouteDataViewModel(String message) {
+        EmptyResultViewModel emptyResultViewModel;
+        emptyResultViewModel = new EmptyResultViewModel();
+        emptyResultViewModel.setIconRes(R.drawable.ic_flight_empty_state);
+        emptyResultViewModel.setTitle(message);
+        emptyResultViewModel.setButtonTitleRes(R.string.flight_change_search_content_button);
+        emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                getActivity().finish();
+            }
+        });
+
         return emptyResultViewModel;
     }
 

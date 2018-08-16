@@ -74,6 +74,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
+    private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -127,11 +128,13 @@ public class SearchActivity extends DiscoveryActivity
 
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel,
-                              boolean forceSwipeToShop) {
+                              boolean forceSwipeToShop,
+                              boolean isActivityPaused) {
         if (activity != null) {
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
+            intent.putExtra(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
             activity.startActivity(intent);
         }
     }
@@ -160,6 +163,10 @@ public class SearchActivity extends DiscoveryActivity
 
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
+
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
 
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());

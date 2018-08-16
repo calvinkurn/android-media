@@ -23,7 +23,7 @@ import javax.inject.Inject;
 public class CreatePostWebviewFragment extends BaseWebViewFragment {
 
     public static final String FORM_URL = "form_url";
-    public static final String SUCCESS_URL_PATH = "/content/new/success";
+    public static final String SUCCESS_URL_PATH = "/content/new?success=true";
 
     @Inject
     UserSession userSession;

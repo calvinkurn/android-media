@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.view.multipleaddressform;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -181,28 +182,10 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
                 int childPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
                 int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
-                if (newAddress != null && dataList != null && childPosition != -1 && parentPosition != -1) {
-                    if (dataList.size() > 0) {
-                        for (int i = 0; i < dataList.size(); i++) {
-                            if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
-                                boolean findItem = false;
-                                for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
-                                    if (j == childPosition) {
-                                        dataList.get(i).getItemListData().get(j).setRecipientAddressModel(newAddress);
-                                        findItem = true;
-                                        break;
-                                    }
-                                }
-                                if (findItem) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                setNewShipmentRecipientAddress(dataList, newAddress, childPosition, parentPosition);
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-                setRecyclerViewAdapter(dataList, parentPosition);
+                setRecyclerViewAdapter(dataList, parentPosition, false);
             } else if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT) {
                 ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
                 RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
@@ -242,7 +225,31 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 }
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-                setRecyclerViewAdapter(dataList, parentPosition);
+                setRecyclerViewAdapter(dataList, parentPosition, false);
+            }
+        }
+    }
+
+    private void setNewShipmentRecipientAddress(ArrayList<MultipleAddressAdapterData> dataList,
+                                                RecipientAddressModel newAddress,
+                                                int childPosition, int parentPosition) {
+        if (newAddress != null && dataList != null && childPosition != -1 && parentPosition != -1) {
+            if (dataList.size() > 0) {
+                for (int i = 0; i < dataList.size(); i++) {
+                    if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
+                        boolean findItem = false;
+                        for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
+                            if (j == childPosition) {
+                                dataList.get(i).getItemListData().get(j).setRecipientAddressModel(newAddress);
+                                findItem = true;
+                                break;
+                            }
+                        }
+                        if (findItem) {
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -273,7 +280,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void renderCartData(CartListData cartListData) {
-        setRecyclerViewAdapter(initiateAdapterData(cartListData), 0);
+        setRecyclerViewAdapter(initiateAdapterData(cartListData), 0, true);
     }
 
     @Override
@@ -322,7 +329,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                         .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
+                                // Do Nothing, was added just to dismiss toaster
                             }
                         })
                         .show();
@@ -375,19 +382,45 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null) {
+            presenter.processGetCartList();
+        } else {
+            swipeToRefresh.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(CartListData.class.getSimpleName(), presenter.getCartListData());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            presenter.setCartListData(savedInstanceState.getParcelable(CartListData.class.getSimpleName()));
+            renderCartData(presenter.getCartListData());
+        }
+    }
+
+    @Override
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         rvOrderAddressList = view.findViewById(R.id.order_address_list);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvOrderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        presenter.processGetCartList();
     }
 
-    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition) {
+    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition, boolean isInitialSetup) {
         multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
         rvOrderAddressList.setAdapter(multipleAddressAdapter);
-        rvOrderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+        if (isInitialSetup) {
+            rvOrderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+        }
         if (itemPosition != 0) {
             rvOrderAddressList.scrollToPosition(itemPosition);
         }

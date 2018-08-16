@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.similarsearch.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,13 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.discovery.similarsearch.model.Badges;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
@@ -29,21 +26,20 @@ import com.tokopedia.tkpdpdp.customview.RatingView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAdapter.SimilarProdcutItem> {
     private final WishListClickListener wishListClickListener;
     List<ProductsItem> productsItems = new ArrayList<>();
 
     public SimilarSearchdAdapter(WishListClickListener wishListClickListener) {
-       this.wishListClickListener = wishListClickListener;
+        this.wishListClickListener = wishListClickListener;
     }
 
     @Override
     public SimilarProdcutItem onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.similar_product_item, parent, false);
-        RelativeLayout.LayoutParams lp = new  RelativeLayout.LayoutParams(view.getLayoutParams());
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(view.getLayoutParams());
         lp.setMargins(30, 20,
                 0, 30);
         view.setLayoutParams(lp);
@@ -53,17 +49,11 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
 
     @Override
     public void onBindViewHolder(SimilarProdcutItem holder, int position) {
-        holder.updateView(productsItems.get(position),position);
+        holder.updateView(productsItems.get(position), position);
     }
 
     public void setProductsItems(List<ProductsItem> productsItems) {
         this.productsItems = productsItems;
-        if(productsItems != null) {
-            for(ProductsItem productsItem: productsItems) {
-                if(productsItem.getId() != 0)
-                    SimilarSearchTracking.eventUserSeeSimilarProduct(String.valueOf(productsItem.getId()),productsItem);
-            }
-        }
         notifyDataSetChanged();
     }
 
@@ -101,12 +91,13 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
         private TextView mReviewCount;
         private LinearLayout mBadgesContainer;
         private View mLocationContainer;
+
         public SimilarProdcutItem(View itemView) {
             super(itemView);
-            mProductImage =  itemView.findViewById(R.id.product_image);
+            mProductImage = itemView.findViewById(R.id.product_image);
             mTitle = itemView.findViewById(R.id.title);
-            mTextOriginalPrice =  itemView.findViewById(R.id.text_original_price);
-            mPrice =  itemView.findViewById(R.id.price);
+            mTextOriginalPrice = itemView.findViewById(R.id.text_original_price);
+            mPrice = itemView.findViewById(R.id.price);
             mTextDiscount = itemView.findViewById(R.id.text_discount);
             mWishlistButton = itemView.findViewById(R.id.wishlist_button);
             mWishlistButtonContainer = itemView.findViewById(R.id.wishlist_button_container);
@@ -129,18 +120,26 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
                     intent.putExtras(bundle);
                     itemView.getContext().startActivity(intent);
-                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product "+productsItem.getId(),productsItem);
+                    List<Object> dataLayerList = new ArrayList<>();
+                    if (productsItem != null) {
+                        if (productsItem.getId() != 0) {
+                            dataLayerList.add(productsItem.getProductAsObjectDataLayer(String.valueOf(getIndex(String.valueOf(productsItem.getId())))));
+                        }
+                    }
+                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),dataLayerList);
                 }
+
+
             });
 
         }
 
-        public void updateView(ProductsItem productsItem,int position) {
+        public void updateView(ProductsItem productsItem, int position) {
 
 
             this.productsItem = productsItem;
-            int placeholderColors[] = {R.color.light_green1,R.color.light_blue1,R.color.light_red1,R.color.light_yellow1};
-            ImageHandler.loadImage(itemView.getContext(),mProductImage,productsItem.getImageUrl(), new ColorDrawable(ContextCompat.getColor(itemView.getContext(),placeholderColors[position%4])));
+            int placeholderColors[] = {R.color.light_green1, R.color.light_blue1, R.color.light_red1, R.color.light_yellow1};
+            ImageHandler.loadImage(itemView.getContext(), mProductImage, productsItem.getImageUrl(), new ColorDrawable(ContextCompat.getColor(itemView.getContext(), placeholderColors[position % 4])));
             mTitle.setText(productsItem.getName());
             mTextOriginalPrice.setText(productsItem.getOriginalPrice());
             mPrice.setText(productsItem.getPrice());
@@ -157,7 +156,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                 mLocationContainer.setVisibility(View.INVISIBLE);
             }
 
-            if(productsItem.isWishListed())  {
+            if (productsItem.isWishListed()) {
                 mWishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
             } else {
                 mWishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
@@ -172,9 +171,9 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                     }
                 }
             });
-            mTextDiscount.setText(productsItem.getDiscountPercentage()+"%");
+            mTextDiscount.setText(productsItem.getDiscountPercentage() + "%");
 
-            if (productsItem.getRating()!=0) {
+            if (productsItem.getRating() != 0) {
                 mRatingReviewContainer.setVisibility(View.VISIBLE);
                 mRating.setImageResource(
                         RatingView.getRatingDrawable(Math.round(productsItem.getRating()))
@@ -185,13 +184,14 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
             }
             renderBadges(productsItem.getBadges());
         }
+
         protected void renderBadges(List<Badges> badges) {
             mBadgesContainer.removeAllViews();
-            if(badges == null) {
+            if (badges == null) {
                 return;
             }
             for (Badges badgeItem : badges) {
-                    LuckyShopImage.loadImage(itemView.getContext(), badgeItem.getImageUrl(), mBadgesContainer);
+                LuckyShopImage.loadImage(itemView.getContext(), badgeItem.getImageUrl(), mBadgesContainer);
             }
         }
     }
@@ -203,12 +203,10 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
         }
 
         if (productsItem.getShop().isGoldShop()) {
-                return true;
+            return true;
         }
         return false;
     }
-
-
 
 
     public interface WishListClickListener {

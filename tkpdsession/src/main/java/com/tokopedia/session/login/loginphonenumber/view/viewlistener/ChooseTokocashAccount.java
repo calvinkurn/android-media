@@ -16,8 +16,6 @@ import java.util.ArrayList;
 public interface ChooseTokocashAccount {
     interface View extends CustomerView {
 
-        void onSelectedTokocashAccount(AccountTokocash accountTokocash);
-
         void onSuccessLogin();
 
         void showLoadingProgress();
@@ -33,10 +31,14 @@ public interface ChooseTokocashAccount {
         Context getContext();
     }
 
+    public interface ViewAdapter {
+        void onSelectedTokocashAccount(AccountTokocash accountTokocash);
+    }
+
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {
 
         void loginWithTokocash(String accessToken, AccountTokocash accountTokocash);
-
         void checkAutoLogin(String key, int itemCount, ArrayList<AccountTokocash> list);
+
     }
 }

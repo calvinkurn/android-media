@@ -432,10 +432,6 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         // hotlist view type
         public static final int VIEW_STANDARD = 9;
 
-        // instoped view type
-        public static final int VIEW_INSTOPED = 11;
-
-
         public static final int VIEW_FIRST_TIME_USER = 123;
         public static final int VIEW_EMPTY = 0;
         public static final int VIEW_RETRY = 101;

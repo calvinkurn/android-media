@@ -19,7 +19,9 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
@@ -66,6 +68,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private CategoryDetailCallbacks fragmentCallbacks;
     private String locationName;
     private DealsCategoryAdapter dealsAdapter;
+    private int adapterPosition=-1;
 
 
     @Override
@@ -304,6 +307,17 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
                 }
                 break;
+            case DealsHomeActivity.REQUEST_CODE_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    if (userSession.isLoggedIn()) {
+                        if (adapterPosition != -1) {
+                            if (dealsAdapter != null)
+                                dealsAdapter.setLike(adapterPosition);
+                        }
+                    }
+                }
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -336,7 +350,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
+        adapterPosition=position;
         navigateToActivityRequest(intent, requestCode);
     }
 }

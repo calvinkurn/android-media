@@ -163,6 +163,7 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
     public void onBulkActionSuccess(ProductAdBulkAction productAdBulkAction) {
         finishActionMode();
         loadInitialData();
+        setResultAdListChanged();
     }
 
     @Override

@@ -19,7 +19,7 @@
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
         android:paddingTop="@dimen/dp_4"
-        android:textColor="#42b549"
+        android:textColor="@color/cashback_text_color"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
         tools:ignore="SmallSp"

@@ -72,7 +72,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             });
             return true;
         } else {
-            getView().showLoginSnackbar("Please Login to like deals");
+            getView().showLoginSnackbar("Please Login to like deals", position);
             return false;
         }
 
@@ -113,7 +113,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             return true;
 
         } else {
-            getView().showLoginSnackbar("Please Login to like deals");
+            getView().showLoginSnackbar("Please Login to like deals", position);
             return false;
         }
     }

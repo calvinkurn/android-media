@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
@@ -64,6 +66,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private DealsCategoryAdapter dealsCategoryAdapter;
     private int listCount;
     private String searchText;
+    private int adapterPosition=-1;
 
     @Override
     public int getLayoutRes() {
@@ -322,6 +325,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
                 }
                 break;
+            case DealsHomeActivity.REQUEST_CODE_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    if (userSession.isLoggedIn()) {
+                        if (adapterPosition != -1) {
+                            if (dealsCategoryAdapter != null)
+                                dealsCategoryAdapter.setLike(adapterPosition);
+                        }
+                    }
+                }
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -340,12 +354,18 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void goBack() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
         setResult(RESULT_OK);
         super.onBackPressed();
     }
 
     @Override
-    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+    public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
+        this.adapterPosition=position;
         navigateToActivityRequest(intent, requestCode);
     }
 }

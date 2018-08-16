@@ -5,26 +5,26 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bottomnav_bg"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:background="@color/bottomnav_bg">
+    android:focusableInTouchMode="true">
 
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="@dimen/dp_0"
-        android:background="@color/white">
+        android:background="@color/white"
+        app:elevation="@dimen/dp_0">
 
         <com.tokopedia.digital_deals.view.customview.SearchInputView
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_scrollFlags="scroll" />
     </android.support.design.widget.AppBarLayout>
 
@@ -64,25 +64,21 @@
             app:layout_constraintTop_toBottomOf="@+id/search_input_view">
 
             <TextView
+                style="@style/TextView.Medium.FontMedium.BlackPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
-                android:text="@string/empty_search_text_upper"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_17"
-                android:textStyle="normal" />
+                android:text="@string/empty_search_text_upper" />
 
             <TextView
+                style="@style/TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:text="@string/empty_search_brand_text_lower"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal" />
+                android:textColor="@color/black_38" />
         </LinearLayout>
 
     </LinearLayout>

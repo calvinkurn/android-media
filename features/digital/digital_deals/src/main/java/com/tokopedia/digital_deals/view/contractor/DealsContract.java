@@ -53,6 +53,9 @@ public class DealsContract {
 
         void showViews();
 
+        void startOrderListActivity();
+
+        int getRequestCode();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

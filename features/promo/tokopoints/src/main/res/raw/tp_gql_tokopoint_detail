@@ -32,5 +32,23 @@
         appLink
       }
     }
+    ticker {
+      tickerList {
+        id
+        type
+        metadata {
+          text {
+            content
+          }
+          image {
+            url
+          }
+          link {
+            url
+            applink
+          }
+        }
+      }
+    }
   }
 }
