@@ -32,6 +32,7 @@
     <string name="title_shop_note_setting">Catatan</string>
     <string name="screentitle_store_setting">Atur Toko</string>
     <string name="title_tokocash_setting">TokoCash</string>
+    <string name="title_tokocard_setting">TokoCard</string>
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>

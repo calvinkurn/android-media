@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
@@ -71,6 +73,8 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID,
                 getString(R.string.title_tokocash_setting)));
+        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCARD_ID,
+                getString(R.string.title_tokocard_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,
                 getString(R.string.title_saldo_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_BANK_ACCOUNT_ID,
@@ -117,6 +121,11 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                 case SettingConstant.SETTING_SALDO_ID:
                     accountAnalytics.eventClickPaymentSetting(BALANCE);
                     router.goToSaldo(getActivity());
+                    break;
+                case SettingConstant.SETTING_TOKOCARD_ID:
+                    RouteManager.route(getActivity(), String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            AccountConstants.Url.TOKOCARD_URL));
                     break;
                 default:
                     break;
