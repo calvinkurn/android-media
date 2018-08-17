@@ -94,6 +94,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(bannerAdsAdapter);
+        recyclerView.setOnFlingListener(null);
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
         if (cpm != null && cpm.getCpmShop() != null) {

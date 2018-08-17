@@ -18,11 +18,11 @@ public class SearchProductGqlResponse {
     @Expose
     private DynamicFilterModel dynamicFilterModel;
 
-    @SerializedName("displayAdsV3")
+    @SerializedName("productAds")
     @Expose
     private TopAdsModel topAdsModel;
 
-    @SerializedName("displayAdsHeadline")
+    @SerializedName("headlineAds")
     @Expose
     private CpmModel cpmModel;
 
