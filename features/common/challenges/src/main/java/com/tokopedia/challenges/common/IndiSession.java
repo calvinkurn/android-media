@@ -3,7 +3,6 @@ package com.tokopedia.challenges.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
@@ -59,5 +58,12 @@ public class IndiSession {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(INDI_ACCESS_TOKEN, "");
         editor.apply();
+    }
+
+    public void doLogout() {
+        try {
+            setUserId("");
+        } catch (Exception ex) {
+        }
     }
 }

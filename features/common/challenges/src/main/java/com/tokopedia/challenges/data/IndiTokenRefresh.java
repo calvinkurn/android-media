@@ -1,6 +1,6 @@
 package com.tokopedia.challenges.data;
 
-import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,7 +40,7 @@ public class IndiTokenRefresh {
         this.indiSession = indiSession;
     }
 
-    public String refreshToken() throws IOException {
+    public void refreshToken() throws IOException {
         indiSession.clearToken();
         Call<String> responseCall = getRetrofit().create(IndiApi.class).getAccessToken();
 
@@ -60,12 +60,9 @@ public class IndiTokenRefresh {
         }
 
         //if access token is valid, then map the tokopedia user with indi
-        if (model != null) {
+        if (model != null && !TextUtils.isEmpty(indiSession.getUserId())) {
             mapUserWithIndi(indiSession, userSession, model.getAccessToken());
-            return model.getAccessToken();
         }
-
-        return "";
     }
 
     private void mapUserWithIndi(IndiSession indiSession, UserSession userSession, String token) {
@@ -93,8 +90,6 @@ public class IndiTokenRefresh {
     }
 
     private Retrofit getRetrofit() {
-        Gson gson = new Gson();
-
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .addInterceptor(new HttpLoggingInterceptor())
                 .build();
