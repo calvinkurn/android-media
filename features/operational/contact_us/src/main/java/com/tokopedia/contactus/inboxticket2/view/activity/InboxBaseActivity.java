@@ -187,12 +187,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
         TextView tv = snackView.findViewById(R.id.tv_msg);
         tv.setText(message);
         TextView okbtn = snackView.findViewById(R.id.snack_ok);
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snackbar.dismiss();
-            }
-        });
+        okbtn.setOnClickListener(view -> snackbar.dismiss());
         layout.addView(snackView, 0);
         layout.setPadding(0, 0, 0, 0);
         snackbar.show();

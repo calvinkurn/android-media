@@ -8,13 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.TouchImageAdapter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 
 import java.util.ArrayList;
 
@@ -101,6 +101,10 @@ public class ImageViewerFragment extends Fragment {
             ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         }
         vpImageViewer.setCurrentItem(SCROLL_POS);
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickOpenImage,
+                "");
         Log.d(TAG, "onResume");
     }
 

@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
@@ -93,6 +95,7 @@ public class InboxListPresenterImpl
                     originalList.clear();
                     mView.toggleEmptyLayout(View.VISIBLE);
                     mView.showFilter();
+                    fromFilter = false;
                 } else {
                     mView.toggleEmptyLayout(View.VISIBLE);
                     mView.hideFilter();
@@ -120,42 +123,63 @@ public class InboxListPresenterImpl
         final int INPROGRESS = 3;
         final int READ = 4;
         final int CLOSED = 5;
+        String selectedFilter = "";
+        /*        <item>Semua</item>
+        <item>Belum dibaca</item>
+        <item>Belum dinilai</item>
+        <item>Dalam proses</item>
+        <item>Sudah dibaca</item>
+        <item>Ditutup</item>*/
         fromFilter = true;
         switch (position) {
             case ALL:
                 mUseCase.setQueryMap(0, 0, 0);
                 getTicketList();
+                selectedFilter = "Semua";
                 filterAdapter.setSelected(ALL);
                 break;
             case UNREAD:
                 mUseCase.setQueryMap(0, 1, 0);
+                selectedFilter = "Belum dibaca";
                 getTicketList();
                 break;
             case NEEDRATING:
                 mUseCase.setQueryMap(2, 0, 1);
+                selectedFilter = "Belum dinilai";
                 getTicketList();
                 break;
             case INPROGRESS:
                 mUseCase.setQueryMap(1, 0, 0);
+                selectedFilter = "Dalam proses";
                 getTicketList();
                 break;
             case READ:
                 mUseCase.setQueryMap(0, 2, 0);
+                selectedFilter = "Sudah dibaca";
                 getTicketList();
                 break;
             case CLOSED:
                 mUseCase.setQueryMap(2, 0, 2);
+                selectedFilter = "Ditutup";
                 getTicketList();
                 break;
         }
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickFilter,
+                selectedFilter);
         mView.hideBottomFragment();
     }
 
     @Override
     public void onClickTicket(int index) {
         Intent detailIntent = new Intent(mView.getActivity(), InboxDetailActivity.class);
-        detailIntent.putExtra("TICKET_ID", originalList.get(index).getId());
+        detailIntent.putExtra(InboxDetailActivity.PARAM_TICKET_ID, originalList.get(index).getId());
         mView.navigateToActivityRequest(detailIntent, InboxListContract.InboxListView.REQUEST_DETAILS);
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventTicketClick,
+                originalList.get(index).getStatus());
     }
 
     @Override
@@ -226,7 +250,7 @@ public class InboxListPresenterImpl
 
     @Override
     public void clickCloseSearch() {
-        if(mView.isSearchEmpty()){
+        if (mView.isSearchEmpty()) {
             mView.toggleSearch(View.GONE);
         } else {
             mView.clearSearch();

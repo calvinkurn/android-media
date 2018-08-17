@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +55,17 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     @OnClick(R2.id.tv_bottom_sheet_title)
     void closeBottomSheet() {
+        if (getActivity() instanceof InboxDetailActivity) {
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickReason,
+                    "Closing Reason Pop Up");
+        } else {
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickFilter,
+                    "Closing Status Pop Up");
+        }
         dismiss();
     }
 }

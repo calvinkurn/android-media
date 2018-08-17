@@ -14,6 +14,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
@@ -24,6 +26,7 @@ import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCas
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.adapter.BadReasonAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -58,7 +61,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -80,9 +82,7 @@ public class InboxDetailPresenterImpl
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
     private static final String TAG = InboxDetailContract.InboxDetailPresenter.class.getSimpleName();
-    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
     private static final String PARAM_IMAGE_ID = "id";
-    private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
     private String rateCommentID;
     private int next;
@@ -101,7 +101,7 @@ public class InboxDetailPresenterImpl
     @Override
     public void attachView(InboxBaseContract.InboxBaseView view) {
         mView = (InboxDetailContract.InboxDetailView) view;
-        getTicketDetails(mView.getActivity().getIntent().getStringExtra("TICKET_ID"));
+        getTicketDetails(mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID));
     }
 
     @Override
@@ -284,8 +284,16 @@ public class InboxDetailPresenterImpl
     public void onImageSelect(ImageUpload image) {
         if (!fileSizeValid(image.getFileLoc())) {
             showErrorMessage(MESSAGE_WRONG_FILE_SIZE);
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickAttachImage,
+                    InboxTicketTracking.Label.ImageError1);
         } else if (!getBitmapDimens(image.getFileLoc())) {
             showErrorMessage(MESSAGE_WRONG_DIMENSION);
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickAttachImage,
+                    InboxTicketTracking.Label.ImageError2);
         } else {
             mView.addimage(image);
         }
@@ -329,45 +337,39 @@ public class InboxDetailPresenterImpl
         int isValid = isUploadImageValid();
         if (isValid == 1) {
             Observable<List<ImageUpload>> uploadedImage = uploadFile(mView.getActivity(), mView.getImageList());
-            uploadedImage.flatMap(new Func1<List<ImageUpload>, Observable<Map<Type, RestResponse>>>() {
-                @Override
-                public Observable<Map<Type, RestResponse>> call(List<ImageUpload> imageUploads) {
-                    StringBuilder attachmentString = new StringBuilder();
-                    for (ImageUpload imageUpload : imageUploads) {
-                        if (imageUpload != null) {
-                            attachmentString.append("~").append(imageUpload.getImageId());
-                        }
+            uploadedImage.flatMap(imageUploads -> {
+                StringBuilder attachmentString = new StringBuilder();
+                for (ImageUpload imageUpload : imageUploads) {
+                    if (imageUpload != null) {
+                        attachmentString.append("~").append(imageUpload.getImageId());
                     }
-                    attachmentString = new StringBuilder(attachmentString.toString().replace("~~", "~"));
-                    if (attachmentString.length() > 0)
-                        attachmentString = new StringBuilder(attachmentString.substring(1));
-                    postMessageUseCase.setQueryMap(mTicketDetail.getId(),
-                            mView.getUserMessage(), 1, attachmentString.toString());
-                    fileUploaded = getFileUploaded(imageUploads);
-                    return postMessageUseCase.createObservable(RequestParams.create()).subscribeOn(Schedulers.io());
                 }
-            }).flatMap(new Func1<Map<Type, RestResponse>, Observable<Map<Type, RestResponse>>>() {
-                @Override
-                public Observable<Map<Type, RestResponse>> call(Map<Type, RestResponse> typeRestResponseMap) {
-                    Type token = new TypeToken<DataResponse<CreateTicketResult>>() {
-                    }.getType();
-                    RestResponse res1 = typeRestResponseMap.get(token);
-                    DataResponse ticketListResponse = res1.getData();
-                    CreateTicketResult createTicket = (CreateTicketResult) ticketListResponse.getData();
-                    if (createTicket != null && createTicket.getIsSuccess() > 0) {
-                        if (createTicket.getPostKey() != null && createTicket.getPostKey().length() > 0) {
-                            postMessageUseCase2.setQueryMap(fileUploaded, createTicket.getPostKey());
-                            return postMessageUseCase2.createObservable(RequestParams.create());
-                        } else {
-                            mView.hideSendProgress();
-                            getTicketDetails(mTicketDetail.getId());
-                            return Observable.just(null);
-                        }
+                attachmentString = new StringBuilder(attachmentString.toString().replace("~~", "~"));
+                if (attachmentString.length() > 0)
+                    attachmentString = new StringBuilder(attachmentString.substring(1));
+                postMessageUseCase.setQueryMap(mTicketDetail.getId(),
+                        mView.getUserMessage(), 1, attachmentString.toString());
+                fileUploaded = getFileUploaded(imageUploads);
+                return postMessageUseCase.createObservable(RequestParams.create()).subscribeOn(Schedulers.io());
+            }).flatMap(typeRestResponseMap -> {
+                Type token = new TypeToken<DataResponse<CreateTicketResult>>() {
+                }.getType();
+                RestResponse res1 = typeRestResponseMap.get(token);
+                DataResponse ticketListResponse = res1.getData();
+                CreateTicketResult createTicket = (CreateTicketResult) ticketListResponse.getData();
+                if (createTicket != null && createTicket.getIsSuccess() > 0) {
+                    if (createTicket.getPostKey() != null && createTicket.getPostKey().length() > 0) {
+                        postMessageUseCase2.setQueryMap(fileUploaded, createTicket.getPostKey());
+                        return postMessageUseCase2.createObservable(RequestParams.create());
                     } else {
                         mView.hideSendProgress();
-                        mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.");
+                        getTicketDetails(mTicketDetail.getId());
                         return Observable.just(null);
                     }
+                } else {
+                    mView.hideSendProgress();
+                    mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.");
+                    return Observable.just(null);
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -499,6 +501,10 @@ public class InboxDetailPresenterImpl
             mView.showProgressBar();
             mView.toggleTextToolbar(View.VISIBLE);
             sendRating();
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickReason,
+                    badReasonAdapter.getReason(position));
         } else {
             mView.askCustomReason();
         }
@@ -511,6 +517,10 @@ public class InboxDetailPresenterImpl
         mView.showSendProgress();
         postRatingUseCase.setQueryMap(rateCommentID, "NO", 1, 7, customReason);
         sendRating();
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickReason,
+                customReason);
     }
 
     @Override
@@ -546,87 +556,81 @@ public class InboxDetailPresenterImpl
     private Observable<List<ImageUpload>> uploadFile(final Context context, List<ImageUpload> imageUploads) {
         return Observable
                 .from(imageUploads)
-                .flatMap(new Func1<ImageUpload, Observable<ImageUpload>>() {
-                    @Override
-                    public Observable<ImageUpload> call(ImageUpload imageUpload) {
-                        String uploadUrl = "http://u12.tokopedia.net";
-                        NetworkCalculator networkCalculator = new NetworkCalculator(
-                                NetworkConfig.POST, context,
-                                uploadUrl)
-                                .setIdentity()
-                                .addParam(PARAM_IMAGE_ID, imageUpload.getImageId())
-                                .addParam(PARAM_WEB_SERVICE, "1")
-                                .compileAllParam()
-                                .finish();
+                .flatMap(imageUpload -> {
+                    String uploadUrl = "http://u12.tokopedia.net";
+                    NetworkCalculator networkCalculator = new NetworkCalculator(
+                            NetworkConfig.POST, context,
+                            uploadUrl)
+                            .setIdentity()
+                            .addParam(PARAM_IMAGE_ID, imageUpload.getImageId())
+                            .addParam(PARAM_WEB_SERVICE, "1")
+                            .compileAllParam()
+                            .finish();
 
-                        File file;
-                        try {
-                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
-                        } catch (IOException e) {
-                            throw new RuntimeException(context.getString(R.string.error_upload_image));
-                        }
-                        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
-                                networkCalculator.getContent().get(NetworkCalculator.USER_ID));
-                        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
-                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
-                        RequestBody hash = RequestBody.create(MediaType.parse("text/plain"),
-                                networkCalculator.getContent().get(NetworkCalculator.HASH));
-                        RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"),
-                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
-                        RequestBody fileToUpload = RequestBody.create(MediaType.parse("image/*"),
-                                file);
-                        RequestBody imageId = RequestBody.create(MediaType.parse("text/plain"),
-                                networkCalculator.getContent().get(PARAM_IMAGE_ID));
-                        RequestBody web_service = RequestBody.create(MediaType.parse("text/plain"),
-                                networkCalculator.getContent().get(PARAM_WEB_SERVICE));
-
-                        Observable<ImageUploadResult> upload;
-                        if (SessionHandler.isV4Login(context)) {
-                            upload = RetrofitUtils.createRetrofit(uploadUrl)
-                                    .create(UploadImageContactUsParam.class)
-                                    .uploadImage(
-                                            networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
-                                            networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
-                                            networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
-                                            networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
-                                            userId,
-                                            deviceId,
-                                            hash,
-                                            deviceTime,
-                                            fileToUpload,
-                                            imageId, web_service
-
-                                    );
-                        } else {
-                            upload = RetrofitUtils.createRetrofit(uploadUrl)
-                                    .create(UploadImageContactUsParam.class)
-                                    .uploadImagePublic(
-                                            networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
-                                            networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
-                                            networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
-                                            networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
-                                            userId,
-                                            deviceId,
-                                            hash,
-                                            deviceTime,
-                                            fileToUpload,
-                                            imageId,
-                                            web_service);
-                        }
-
-                        return Observable.zip(Observable.just(imageUpload), upload, new Func2<ImageUpload, ImageUploadResult, ImageUpload>() {
-                            @Override
-                            public ImageUpload call(ImageUpload imageUpload, ImageUploadResult imageUploadResult) {
-                                if (imageUploadResult.getData() != null) {
-                                    imageUpload.setPicSrc(imageUploadResult.getData().getPicSrc());
-                                    imageUpload.setPicObj(imageUploadResult.getData().getPicObj());
-                                } else if (imageUploadResult.getMessageError() != null) {
-                                    throw new RuntimeException(imageUploadResult.getMessageError());
-                                }
-                                return imageUpload;
-                            }
-                        });
+                    File file;
+                    try {
+                        file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(context.getString(R.string.error_upload_image));
                     }
+                    RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
+                            networkCalculator.getContent().get(NetworkCalculator.USER_ID));
+                    RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
+                            networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
+                    RequestBody hash = RequestBody.create(MediaType.parse("text/plain"),
+                            networkCalculator.getContent().get(NetworkCalculator.HASH));
+                    RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"),
+                            networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
+                    RequestBody fileToUpload = RequestBody.create(MediaType.parse("image/*"),
+                            file);
+                    RequestBody imageId = RequestBody.create(MediaType.parse("text/plain"),
+                            networkCalculator.getContent().get(PARAM_IMAGE_ID));
+                    RequestBody web_service = RequestBody.create(MediaType.parse("text/plain"),
+                            networkCalculator.getContent().get(PARAM_WEB_SERVICE));
+
+                    Observable<ImageUploadResult> upload;
+                    if (SessionHandler.isV4Login(context)) {
+                        upload = RetrofitUtils.createRetrofit(uploadUrl)
+                                .create(UploadImageContactUsParam.class)
+                                .uploadImage(
+                                        networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
+                                        networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
+                                        networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
+                                        networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
+                                        userId,
+                                        deviceId,
+                                        hash,
+                                        deviceTime,
+                                        fileToUpload,
+                                        imageId, web_service
+
+                                );
+                    } else {
+                        upload = RetrofitUtils.createRetrofit(uploadUrl)
+                                .create(UploadImageContactUsParam.class)
+                                .uploadImagePublic(
+                                        networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
+                                        networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
+                                        networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
+                                        networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
+                                        userId,
+                                        deviceId,
+                                        hash,
+                                        deviceTime,
+                                        fileToUpload,
+                                        imageId,
+                                        web_service);
+                    }
+
+                    return Observable.zip(Observable.just(imageUpload), upload, (imageUpload1, imageUploadResult) -> {
+                        if (imageUploadResult.getData() != null) {
+                            imageUpload1.setPicSrc(imageUploadResult.getData().getPicSrc());
+                            imageUpload1.setPicObj(imageUploadResult.getData().getPicObj());
+                        } else if (imageUploadResult.getMessageError() != null) {
+                            throw new RuntimeException(imageUploadResult.getMessageError());
+                        }
+                        return imageUpload1;
+                    });
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .toList();
@@ -634,6 +638,14 @@ public class InboxDetailPresenterImpl
 
     private int isUploadImageValid() {
         List<ImageUpload> uploadImageList = mView.getImageList();
+        if (mTicketDetail.isNeedAttachment() && (uploadImageList == null || uploadImageList.isEmpty())) {
+            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.attachment_required));
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventNotAttachImageRequired,
+                    "");
+            return -2;
+        }
         int numOfImages = uploadImageList.size();
         if (numOfImages > 0) {
             for (int item = 0; item < numOfImages; item++) {
@@ -712,6 +724,17 @@ public class InboxDetailPresenterImpl
                         next = 0;
                         mView.hideProgressBar();
                         mView.enterSearchMode(searchText);
+                        if (searchIndices.size() > 0) {
+                            ContactUsTracking.sendGTMInboxTicket("",
+                                    InboxTicketTracking.Category.EventInboxTicket,
+                                    InboxTicketTracking.Action.EventClickSearchDetails,
+                                    InboxTicketTracking.Label.GetResult);
+                        } else {
+                            ContactUsTracking.sendGTMInboxTicket("",
+                                    InboxTicketTracking.Category.EventInboxTicket,
+                                    InboxTicketTracking.Action.EventClickSearchDetails,
+                                    InboxTicketTracking.Label.NoResult);
+                        }
                     }
 
                     @Override
@@ -739,6 +762,10 @@ public class InboxDetailPresenterImpl
 
     @Override
     public void showImagePreview(int position, List<AttachmentItem> imagesLoc) {
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickAttachImage,
+                InboxTicketTracking.Label.ImageAttached);
         ArrayList<String> imagesURL = new ArrayList<>();
         for (AttachmentItem item : imagesLoc) {
             imagesURL.add(item.getUrl());

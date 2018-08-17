@@ -4,11 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,8 +20,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter;
@@ -104,6 +110,24 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     private boolean isCustomReason;
 
+    public static final String PARAM_TICKET_ID = "ticket_id";
+
+    @DeepLink(ApplinkConst.TICKET_DETAIL)
+    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Intent parentIntent = new Intent(context, InboxListActivity.class);
+        String ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(getIntent(context, ticketId));
+        return taskStackBuilder;
+    }
+
+    public static Intent getIntent(Context context, String ticketId) {
+        Intent intent = new Intent(context, InboxDetailActivity.class);
+        intent.putExtra(PARAM_TICKET_ID, ticketId);
+        return intent;
+    }
+
 
     @Override
     public void showCollapsedMessages() {
@@ -120,6 +144,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         List<CommentsItem> commentsItems = ticketDetail.getComments();
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
+        edMessage.clearComposingText();
         if (ticketDetail.getStatus().equalsIgnoreCase("solved")) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
                     getResources().getColor(R.color.yellow_110),
@@ -347,6 +372,10 @@ public class InboxDetailActivity extends InboxBaseActivity
     @OnClick(R2.id.iv_upload_img)
     void onClickUpload() {
         showImagePickerDialog();
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickAttachImage,
+                "");
     }
 
     @OnClick(R2.id.iv_send_button)
@@ -358,6 +387,10 @@ public class InboxDetailActivity extends InboxBaseActivity
             isCustomReason = false;
             ivUploadImg.setVisibility(View.VISIBLE);
         }
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickSubmitReply,
+                "");
     }
 
     @OnClick({R2.id.btn_no,
@@ -373,11 +406,18 @@ public class InboxDetailActivity extends InboxBaseActivity
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_no, rateCommentID);
         } else if (id == R.id.txt_hyper) {
             setResult(RESULT_FINISH);
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickHubungi,
+                    InboxTicketTracking.Label.TicketClosed);
             finish();
         } else if (id == R.id.close_search) {
             mPresenter.clickCloseSearch();
         } else if (id == R.id.tv_view_transaction) {
-
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventClickDetailTrasanksi,
+                    "");
         }
     }
 
@@ -546,5 +586,16 @@ public class InboxDetailActivity extends InboxBaseActivity
 //                    rvMessageList.smoothScrollToPosition(position);
 //            }
 //        }, 300);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (textToolbar.getVisibility() == View.VISIBLE && edMessage.isFocused()) {
+            ContactUsTracking.sendGTMInboxTicket("",
+                    InboxTicketTracking.Category.EventInboxTicket,
+                    InboxTicketTracking.Action.EventAbandonReplySubmission,
+                    getString(R.string.batal));
+        }
+        super.onBackPressed();
     }
 }

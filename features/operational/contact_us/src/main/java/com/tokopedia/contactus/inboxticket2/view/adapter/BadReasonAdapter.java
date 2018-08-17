@@ -78,4 +78,8 @@ public class BadReasonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mPresenter.setBadRating(getAdapterPosition());
         }
     }
+
+    public String getReason(int position) {
+        return dataSet.get(position);
+    }
 }

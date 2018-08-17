@@ -60,13 +60,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        ImageUpload image = imageUpload.get(position);
-        if (getItemViewType(position) != VIEW_UPLOAD_BUTTON) {
-            image.setImgSrc(-1);
-        } else {
-            image.setImgSrc(R.drawable.ic_upload);
-        }
-        holder.setImage(image);
+        holder.setImage(imageUpload.get(position));
     }
 
     @Override
@@ -76,10 +70,12 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     public void addImage(ImageUpload image) {
         if (imageUpload.size() < maxPicUpload) {
+            image.setImgSrc(-1);
             imageUpload.add(imageUpload.size() - 1, image);
             notifyDataSetChanged();
-        } else if (imageUpload.size() == maxPicUpload) {
+        } else if (imageUpload.size() == maxPicUpload && imageUpload.get(maxPicUpload - 1).getImgSrc() != -1) {
             imageUpload.remove(imageUpload.size() - 1);
+            image.setImgSrc(-1);
             imageUpload.add(image);
             notifyDataSetChanged();
         } else {
