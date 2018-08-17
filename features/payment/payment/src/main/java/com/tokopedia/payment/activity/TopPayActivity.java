@@ -1,7 +1,6 @@
 package com.tokopedia.payment.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -77,8 +75,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final long FORCE_TIMEOUT = 90000L;
-
-    public final static int ATTACH_FILE_REQUEST = 1;
 
     @Inject
     TopPayPresenter presenter;
@@ -283,7 +279,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 && scroogeWebView.getUrl() != null
                 && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment())) {
             scroogeWebView.loadUrl("javascript:handlePopAndroid();");
-        }else if (isEndThanksPage()) {
+        } else if (isEndThanksPage()) {
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();
@@ -653,7 +649,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if(requestCode == ATTACH_FILE_REQUEST){
+        if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
         }
     }
