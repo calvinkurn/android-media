@@ -4,6 +4,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl;
@@ -37,7 +38,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     @Override
     public Observable<UploadImageModel> createObservable(com.tokopedia.core.base.domain.RequestParams requestParams) {
-        String url = "https://up-staging.tokopedia.net/upload/attachment";
+        String url = TkpdBaseURL.UPDATE_INACTIVE_PHONE_IMAGE_UPLOAD + "upload/attachment";
 
         return uploadImageRepository.uploadImage(url,
                 generateRequestBody(requestParams),

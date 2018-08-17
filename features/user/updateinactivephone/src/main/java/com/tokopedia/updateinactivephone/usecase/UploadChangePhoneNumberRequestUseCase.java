@@ -152,8 +152,6 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
     private RequestParams getUploadIdImageParam(RequestParams requestParams, ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
         RequestParams params = RequestParams.create();
 
-        String uploadUrl = "https://up-staging.tokopedia.net/upload/attachment";
-
         params.putString(USERID,
                 requestParams.getString(USERID,
                         SessionHandler.getTempLoginSession(MainApplication.getAppContext())));
