@@ -254,9 +254,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
     private void setTokoCard(ViewHolder holder){
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
-        boolean showTokoCard = remoteConfig.getBoolean(
-                TkpdCache.RemoteConfigKey.SHOW_TOKOCARD
-        );
+        boolean showTokoCard = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_TOKOCARD, true);
 
         if(!showTokoCard){
             holder.tokocardLayout.setVisibility(View.GONE);
