@@ -27,7 +27,6 @@ import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConsta
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_ID;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH;
-import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_URL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.RESOLUTION;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.SERVER_ID;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.TOKEN;
@@ -94,7 +93,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
 
         return initialObservable.flatMap((Func1<ChangePhoneNumberRequestModel, Observable<GraphqlResponse>>) changePhoneNumberRequestModel13 ->
                 submitImageUseCase.getObservable(getSubmitImageParam(requestParams,
-                changePhoneNumberRequestModel13)));
+                        changePhoneNumberRequestModel13)));
 
 
     }
@@ -104,10 +103,9 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         RequestParams params = RequestParams.create();
         params.putString(SubmitImageUseCase.PARAM_FILE_UPLOADED,
                 generateFileUploaded(requestParams, changePhoneNumberRequestModel));
-//        params.putString(SubmitImageUseCase.PARAM_OS_TYPE, SubmitImageUseCase.DEFAULT_OS_TYPE);
         params.putString(PHONE, requestParams.getString(PHONE, ""));
         params.putString(EMAIL, requestParams.getString(EMAIL, ""));
-        params.putString(USER_ID, requestParams.getString(USER_ID, ""));
+        params.putInt(USER_ID, requestParams.getInt(USER_ID, 0));
         return params;
     }
 
@@ -135,33 +133,18 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
     private RequestParams getUploadBookBankImageParam(RequestParams requestParams, ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
         RequestParams params = RequestParams.create();
 
-        String uploadUrl = "https://up-staging.tokopedia.net/upload/attachment";
-
-
         params.putString(USERID,
                 requestParams.getString(USERID,
                         SessionHandler.getTempLoginSession(MainApplication.getAppContext())));
-
         params.putString(PARAM_DEVICE_ID,
                 requestParams.getString(PARAM_DEVICE_ID,
                         GCMHandler.getRegistrationId(MainApplication.getAppContext())));
 
-        params.putString(PARAM_URL, uploadUrl);
-
         params.putString(PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(PARAM_BANK_BOOK_IMAGE_PATH, ""));
-
-
         params.putInt(SERVER_ID, requestParams.getInt(SERVER_ID, 49));
         params.putInt(RESOLUTION, requestParams.getInt(RESOLUTION, 215));
-
-
-        /*params.putString(UploadImageUseCase.PARAM_IMAGE_ID,
-                requestParams.getString(PARAM_USER_ID, ""));*/
-
         params.putString(TOKEN, requestParams.getString(TOKEN, ""));
-
-
         return params;
     }
 
@@ -171,20 +154,16 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
 
         String uploadUrl = "https://up-staging.tokopedia.net/upload/attachment";
 
-
         params.putString(USERID,
                 requestParams.getString(USERID,
                         SessionHandler.getTempLoginSession(MainApplication.getAppContext())));
         params.putString(PARAM_DEVICE_ID,
                 requestParams.getString(PARAM_DEVICE_ID,
                         GCMHandler.getRegistrationId(MainApplication.getAppContext())));
-        params.putString(PARAM_URL, uploadUrl);
         params.putString(PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(PARAM_KTP_IMAGE_PATH, ""));
         params.putInt(SERVER_ID, requestParams.getInt(SERVER_ID, 49));
         params.putInt(RESOLUTION, requestParams.getInt(RESOLUTION, 215));
-        /*params.putString(UploadImageUseCase.PARAM_IMAGE_ID,
-                requestParams.getString(PARAM_USER_ID, ""));*/
         params.putString(TOKEN, requestParams.getString(TOKEN, ""));
         return params;
     }

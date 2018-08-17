@@ -1,7 +1,6 @@
 package com.tokopedia.updateinactivephone.data.mapper;
 
 import com.tokoepdia.updateinactivephone.model.response.UploadImageData;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.updateinactivephone.model.request.UploadImageModel;
 
 import javax.inject.Inject;
@@ -9,36 +8,31 @@ import javax.inject.Inject;
 import retrofit2.Response;
 import rx.functions.Func1;
 
-public class UploadImageMapper implements Func1<Response<TkpdResponse>, UploadImageModel> {
+public class UploadImageMapper implements Func1<Response<UploadImageData>, UploadImageModel> {
 
     @Inject
-    public UploadImageMapper(){
+    public UploadImageMapper() {
 
     }
 
     @Override
-    public UploadImageModel call(Response<TkpdResponse> response) {
+    public UploadImageModel call(Response<UploadImageData> response) {
         return mappingResponse(response);
     }
 
-    private UploadImageModel mappingResponse(Response<TkpdResponse> response) {
+    private UploadImageModel mappingResponse(Response<UploadImageData> response) {
         UploadImageModel model = new UploadImageModel();
 
         if (response.isSuccessful()) {
-            if (!response.body().isError()) {
-                UploadImageData data = response.body().convertDataObj(UploadImageData.class);
+
+            if (response.body() != null) {
+                UploadImageData data = response.body();
                 model.setSuccess(true);
                 model.setUploadImageData(data);
             } else {
-                if (response.body().getErrorMessages() == null
-                        && response.body().getErrorMessages().isEmpty()) {
-                    model.setSuccess(false);
-                } else {
-                    model.setSuccess(false);
-                    model.setErrorMessage(response.body().getErrorMessageJoined());
-                }
+                model.setSuccess(false);
+
             }
-            model.setStatusMessage(response.body().getStatusMessageJoined());
         } else {
             model.setSuccess(false);
         }

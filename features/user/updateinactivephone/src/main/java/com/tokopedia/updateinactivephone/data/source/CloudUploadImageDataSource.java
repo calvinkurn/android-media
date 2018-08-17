@@ -21,7 +21,7 @@ public class CloudUploadImageDataSource {
     }
 
     public Observable<UploadImageModel> uploadImage(String url,
-                                                    Map<String, RequestBody> params,
+                                                    Map<String, String> params,
                                                     RequestBody imageFile) {
         return uploadImageService.getApi().uploadImage(
                 url,

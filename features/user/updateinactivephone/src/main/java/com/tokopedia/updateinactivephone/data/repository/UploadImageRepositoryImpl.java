@@ -16,13 +16,12 @@ public class UploadImageRepositoryImpl implements UploadImageRepository {
 
     @Inject
     public UploadImageRepositoryImpl(UploadImageSourceFactory uploadImageSourceFactory) {
-
         this.uploadImageSourceFactory = uploadImageSourceFactory;
     }
 
 
     @Override
-    public Observable<UploadImageModel> uploadImage(String url, Map<String, RequestBody> params, RequestBody imageFile) {
+    public Observable<UploadImageModel> uploadImage(String url, Map<String, String> params, RequestBody imageFile) {
         return uploadImageSourceFactory
                 .createCloudUploadImageDataStore()
                 .uploadImage(
@@ -30,4 +29,5 @@ public class UploadImageRepositoryImpl implements UploadImageRepository {
                         params,
                         imageFile);
     }
+
 }

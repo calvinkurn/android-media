@@ -18,15 +18,14 @@ import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_EMAIL;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_PHONE;
 
 public class ChangeInactivePhoneRequestSubmittedActivity extends BaseSimpleActivity {
 
     private boolean isDuplicateRequest;
     private String email;
     private String phone;
-
-    public static final String USER_EMAIL = "user_email";
-    public static final String USER_PHONE = "user_phone";
 
     @Override
     protected Fragment getNewFragment() {

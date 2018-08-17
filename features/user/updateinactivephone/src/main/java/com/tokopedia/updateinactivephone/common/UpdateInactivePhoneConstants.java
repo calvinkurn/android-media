@@ -14,16 +14,18 @@ public interface UpdateInactivePhoneConstants {
         String USERID = "user_id";
         String ID = "id";
         String TOKEN = "token";
-        String SERVER_ID = "SERVERID";
-        String RESOLUTION = "RESOLUTION";
+        String SERVER_ID = "server_id";
+        String RESOLUTION = "resolution";
         String PARAM_KTP_IMAGE_PATH = "ktp_image_path";
         String PARAM_BANK_BOOK_IMAGE_PATH = "account_image_path";
         String PARAM_DEVICE_ID = "device_id";
-        String PARAM_URL = "upload_url";
         String PARAM_FILE_TO_UPLOAD = "fileToUpload";
 
         String PARAM_KTP_IMAGE_ID = "ktp";
         String PARAM_BANKBOOK_IMAGE_ID = "tabungan";
+
+        String USER_EMAIL = "user_mail";
+        String USER_PHONE = "user_phone";
 
     }
 

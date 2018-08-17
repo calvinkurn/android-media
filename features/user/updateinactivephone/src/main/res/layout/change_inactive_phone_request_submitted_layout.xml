@@ -75,7 +75,8 @@
             android:textAlignment="center"
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_12"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/first_request_submission_details"
@@ -103,6 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
                 android:fontFamily="sans-serif"
                 android:textAlignment="center"
                 android:textColor="@color/black_70"
@@ -113,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="@string/email"
+                android:text="@string/email_label"
                 android:textAlignment="center"
                 android:textColor="@color/black_54"
                 android:textSize="12sp"
@@ -141,6 +143,7 @@
             android:background="@drawable/green_button_rounded"
             android:fontFamily="sans-serif"
             android:gravity="center"
+            android:textAllCaps="false"
             android:text="@string/goto_home"
             android:textAlignment="center"
             android:textColor="@color/white"

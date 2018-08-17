@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class GqlUpdatePhoneStatusResponse {
 
-    @SerializedName("changeInactivePhoneQuery")
+    @SerializedName("changeInactivePhone")
     @Expose
     private GqlUpdatePhoneStatusResponse.ChangeInactivePhoneQuery changeInactivePhoneQuery;
 

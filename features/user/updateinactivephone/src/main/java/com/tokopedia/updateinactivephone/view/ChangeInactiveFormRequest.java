@@ -51,6 +51,8 @@ public class ChangeInactiveFormRequest {
         void onInvalidFileUploaded();
 
         void onUpdateDataRequestFailed();
+
+        void onUpdateDataRequestSuccess();
     }
 
     public interface Presenter extends CustomerPresenter<ChangeInactiveFormRequest.View> {

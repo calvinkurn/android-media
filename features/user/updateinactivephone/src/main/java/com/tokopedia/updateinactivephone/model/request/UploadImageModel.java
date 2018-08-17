@@ -6,7 +6,6 @@ public class UploadImageModel {
     private boolean success;
     private UploadImageData uploadImageData;
     private String errorMessage;
-    private String statusMessage;
     private int responseCode;
 
     public boolean isSuccess() {
@@ -31,14 +30,6 @@ public class UploadImageModel {
 
     public void setResponseCode(int responseCode) {
         this.responseCode = responseCode;
-    }
-
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
     }
 
     public boolean isResponseSuccess() {

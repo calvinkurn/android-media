@@ -38,7 +38,7 @@ public class UpdatePhoneNumberSubscriber extends Subscriber<GraphqlResponse> {
                     graphqlResponse.getData(GqlUpdatePhoneStatusResponse.class);
 
             if (gqlUpdatePhoneStatusResponse.getChangeInactivePhoneQuery().isSuccess()) {
-                view.onUserDataValidated();
+                view.onUpdateDataRequestSuccess();
             } else {
                 view.dismissLoading();
                 resolveError(gqlUpdatePhoneStatusResponse.getChangeInactivePhoneQuery().getError());

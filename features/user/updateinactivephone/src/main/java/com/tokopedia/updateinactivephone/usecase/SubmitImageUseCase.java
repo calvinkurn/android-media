@@ -2,9 +2,9 @@ package com.tokopedia.updateinactivephone.usecase;
 
 import android.content.Context;
 
+import com.tokoepdia.updateinactivephone.model.response.GqlUpdatePhoneStatusResponse;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
@@ -47,12 +47,12 @@ public class SubmitImageUseCase {
         Map<String, Object> variables = new HashMap<>();
         variables.put(PHONE, requestParams.getString(PHONE, ""));
         variables.put(EMAIL, requestParams.getString(EMAIL, ""));
-        variables.put(USER_ID, requestParams.getString(USER_ID, ""));
+        variables.put(USER_ID, requestParams.getInt(USER_ID, 0));
         variables.put(FILE_UPLOADED, requestParams.getObject(PARAM_FILE_UPLOADED));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_update_phone_email),
-                GqlWishListDataResponse.class,
+                GqlUpdatePhoneStatusResponse.class,
                 variables);
 
         List<GraphqlRequest> graphqlRequestList = new ArrayList<>();

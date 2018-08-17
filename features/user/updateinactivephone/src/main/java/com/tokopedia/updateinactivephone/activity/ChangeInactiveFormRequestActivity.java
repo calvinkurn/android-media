@@ -30,6 +30,8 @@ import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 import javax.inject.Inject;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_EMAIL;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_PHONE;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
 
 public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implements
@@ -203,9 +205,7 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
 
     @Override
     public void onUserDataValidated() {
-
         presenter.uploadPhotoIdImage(newEmail, newPhoneNumber, userId);
-        // TODO: 8/8/18 upload image
     }
 
     @Override
@@ -305,17 +305,27 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
 
     @Override
     public void onUserNotRegistered() {
-
+        NetworkErrorHelper.showSnackbar(this, getString(R.string.user_not_registered));
     }
 
     @Override
     public void onInvalidFileUploaded() {
-
+        NetworkErrorHelper.showSnackbar(this);
     }
 
     @Override
     public void onUpdateDataRequestFailed() {
+        NetworkErrorHelper.showSnackbar(this);
+    }
 
+    @Override
+    public void onUpdateDataRequestSuccess() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DUPLICATE_REQUEST, false);
+        bundle.putString(USER_EMAIL, newEmail);
+        bundle.putString(USER_PHONE, newPhoneNumber);
+        Intent intent = ChangeInactivePhoneRequestSubmittedActivity.createNewIntent(this, bundle);
+        startActivity(intent);
     }
 
     @Override
