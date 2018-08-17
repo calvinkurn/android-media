@@ -145,7 +145,6 @@ import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartRespon
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
-import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
@@ -1784,10 +1783,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Context context, String platform, String category, String defaultSelectedTab
     ) {
         return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
-    }
-
-    @Override
-    public void digitalDealsEventTracking(String action, String label) {
     }
 
     @Override
