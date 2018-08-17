@@ -93,6 +93,9 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     public void loadCountdownView(Result challengeResult, boolean isPastChallenge) {
+        if (challengeResult == null) {
+            return;
+        }
         if (isPastChallenge) {
             getView().setCountDownView("Completed");
             getWinnerList();

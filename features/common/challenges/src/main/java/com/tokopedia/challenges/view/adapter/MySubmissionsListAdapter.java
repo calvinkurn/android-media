@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 import java.util.ArrayList;
@@ -16,18 +15,20 @@ import java.util.List;
  * Created by ashwanityagi on 07/08/18.
  */
 
-public class MySubmissionsListAdpater extends RecyclerView.Adapter<MySubmissionsViewHolder> {
-    List<SubmissionResult> submissionsResultList = new ArrayList<>();
-    Context context;
+public class MySubmissionsListAdapter extends RecyclerView.Adapter<MySubmissionsViewHolder> {
+    private List<SubmissionResult> submissionsResultList = new ArrayList<>();
+    private Context context;
+    private MySubmissionsViewHolder.ISubmissionsViewHolderListner ISubmissionsViewHolderListner;
 
-    public MySubmissionsListAdpater(Context context, List<SubmissionResult> submissionsResultList) {
+    public MySubmissionsListAdapter(Context context, List<SubmissionResult> submissionsResultList, MySubmissionsViewHolder.ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
         this.context = context;
         this.submissionsResultList = submissionsResultList;
+        this.ISubmissionsViewHolderListner = ISubmissionsViewHolderListner;
     }
 
     @Override
     public MySubmissionsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MySubmissionsViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_submissions_list_item, parent, false));
+        return new MySubmissionsViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_submissions_list_item, parent, false), ISubmissionsViewHolderListner);
     }
 
     @Override

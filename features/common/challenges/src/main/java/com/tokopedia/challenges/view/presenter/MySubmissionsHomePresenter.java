@@ -1,12 +1,19 @@
 package com.tokopedia.challenges.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.domain.usecase.GetActiveChallengesUseCase;
+import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetMySubmissionsListUseCase;
 import com.tokopedia.challenges.domain.usecase.GetPastChallengesUseCase;
+import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -18,10 +25,12 @@ import rx.Subscriber;
 public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmissionsBaseContract.View> implements MySubmissionsBaseContract.Presenter {
 
     private GetMySubmissionsListUseCase getMySubmissionsListUseCase;
+    private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
 
     @Inject
-    public MySubmissionsHomePresenter(GetMySubmissionsListUseCase getMySubmissionsListUseCase) {
+    public MySubmissionsHomePresenter(GetMySubmissionsListUseCase getMySubmissionsListUseCase ,PostSubmissionLikeUseCase postSubmissionLikeUseCase) {
         this.getMySubmissionsListUseCase = getMySubmissionsListUseCase;
+        this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
     }
 
     public void getMySubmissionsList() {
@@ -54,4 +63,27 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
         });
     }
 
+    public void setSubmissionLike(final SubmissionResult result) {
+
+        RequestParams requestParams = RequestParams.create();
+        if (result.getMe() != null)
+            requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
+        if (!TextUtils.isEmpty(result.getId()))
+            requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
+        postSubmissionLikeUseCase.setRequestParams(requestParams);
+        postSubmissionLikeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            }
+        });
+
+    }
 }
