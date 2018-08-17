@@ -37,8 +37,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-;
-
 public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
 
 
@@ -235,7 +233,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvDealDetails.setText(dealDetails.getDisplayName());
 
         tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
-        if (dealDetails.getMrp() != 0) {
+        if(dealDetails.getMrp()!=0 && dealDetail.getMrp() != dealDetail.getSalesPrice()){
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
             tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

@@ -11,19 +11,19 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameFragment;
+import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameRegisterPhoneFragment;
 
 /**
  * @author by yfsx on 22/03/18.
  */
 
-public class AddNameActivity extends BasePresenterActivity implements HasComponent {
+public class AddNameRegisterPhoneActivity extends BasePresenterActivity implements HasComponent {
 
     public static final String PARAM_PHONE = "param_phone";
     private RegisterAnalytics analytics;
 
     public static Intent newInstance(Context context, String phoneNumber) {
-        Intent intent = new Intent(context, AddNameActivity.class);
+        Intent intent = new Intent(context, AddNameRegisterPhoneActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PHONE, phoneNumber);
         intent.putExtras(bundle);
@@ -61,10 +61,10 @@ public class AddNameActivity extends BasePresenterActivity implements HasCompone
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                (AddNameFragment.class.getSimpleName());
+                (AddNameRegisterPhoneFragment.class.getSimpleName());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
-            fragment = AddNameFragment.newInstance(bundle);
+            fragment = AddNameRegisterPhoneFragment.newInstance(bundle);
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();

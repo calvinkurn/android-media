@@ -23,7 +23,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameRegisterPhoneActivity;
 import com.tokopedia.session.register.registerphonenumber.view.listener.AddNameListener;
 import com.tokopedia.session.register.registerphonenumber.view.presenter.AddNamePresenter;
 import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
@@ -35,23 +35,24 @@ import javax.inject.Inject;
  * @author by yfsx on 22/03/18.
  */
 
-public class AddNameFragment extends BaseDaggerFragment implements AddNameListener.View {
+public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements AddNameListener.View {
 
 
     private String phoneNumber;
 
-    private EditText etName;
-    private TextView btnContinue, bottomInfo, message;
+    protected EditText etName;
+    private TextView bottomInfo, message;
+    protected TextView btnContinue;
     private TkpdProgressDialog progressDialog;
     private TkpdHintTextInputLayout wrapperName;
 
     private boolean isError = false;
 
     @Inject
-    AddNamePresenter presenter;
+    protected AddNamePresenter presenter;
 
-    public static AddNameFragment newInstance(Bundle bundle) {
-        AddNameFragment fragment = new AddNameFragment();
+    public static AddNameRegisterPhoneFragment newInstance(Bundle bundle) {
+        AddNameRegisterPhoneFragment fragment = new AddNameRegisterPhoneFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -88,7 +89,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
     }
 
     private void setView() {
-        phoneNumber = getArguments().getString(AddNameActivity.PARAM_PHONE);
+        phoneNumber = getArguments().getString(AddNameRegisterPhoneActivity.PARAM_PHONE);
         disableNextButton();
         btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
@@ -101,7 +102,7 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         ViewUtil.stripUnderlines(bottomInfo);
     }
 
-    private void setViewListener() {
+    protected void setViewListener() {
         etName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -129,20 +130,24 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                KeyboardHandler.DropKeyboard(getActivity(), getView());
-                presenter.registerPhoneNumberAndName(etName.getText().toString());
+               onContinueClick();
             }
         });
         btnContinue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int id, KeyEvent event) {
                 if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
-                    presenter.registerPhoneNumberAndName(etName.getText().toString());
+                    onContinueClick();
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    protected void onContinueClick() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        presenter.registerPhoneNumberAndName(etName.getText().toString());
     }
 
 
@@ -220,6 +225,14 @@ public class AddNameFragment extends BaseDaggerFragment implements AddNameListen
         wrapperName.setErrorEnabled(false);
         wrapperName.setError("");
         message.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccessAddName() {
+        if (getActivity() != null) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
     }
 
     @Override
