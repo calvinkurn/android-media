@@ -10,9 +10,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.search.presentation.fragment.TrainSearchFragment;
-import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 
 /**
  * @author by alvarisi on 3/8/18.
