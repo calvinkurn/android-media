@@ -29,6 +29,8 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneRequestSubmittedActivity;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
 import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
@@ -64,7 +66,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
     @Override
     protected String getScreenName() {
-        return "";
+        return UpdateInactivePhoneEventConstants.Screen.INPUT_OLD_PHONE_SCREEN;
     }
 
     @Override
@@ -120,8 +122,6 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
-//                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-//                    presenter.loginWithPhoneNumber(inputMobileNumber.getText().toString());
                     handled = true;
                 }
                 return handled;
@@ -132,10 +132,9 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
             @Override
             public void onClick(View v) {
                 setErrorText("");
-//                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-//                presenter.loginWithPhoneNumber(inputMobileNumber.getText().toString());
                 presenter.checkPhoneNumberStatus(inputMobileNumber.getText().toString());
                 hideKeyboard(v);
+                UpdateInactivePhoneEventTracking.eventInactivePhoneClick();
             }
         });
     }
@@ -204,12 +203,16 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
         dialog.setDesc(getString(R.string.registered_email_dialog_message));
         dialog.setBtnOk(getString(R.string.drawer_title_login));
         dialog.setOnOkClickListener(v -> {
+            UpdateInactivePhoneEventTracking.eventLoginDialogClick();
             Intent intent = ((ChangeInactivePhoneRouter) MainApplication.getAppContext())
                     .getLoginIntent(getContext());
             startActivity(intent);
         });
         dialog.setBtnCancel(getString(R.string.title_cancel));
-        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        dialog.setOnCancelClickListener(v -> {
+            UpdateInactivePhoneEventTracking.eventCancelDialogClick();
+            dialog.dismiss();
+        });
         dialog.show();
 
         dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_54));

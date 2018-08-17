@@ -24,6 +24,8 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.updateinactivephone.R;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
+        UpdateInactivePhoneEventTracking.eventViewPhotoUploadScreen();
     }
 
     @Override
@@ -117,6 +120,8 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
         idPhotoViewRelativeLayout.setOnClickListener(onUploadPhotoId());
 
         continueButton.setOnClickListener(view -> {
+
+            UpdateInactivePhoneEventTracking.eventClickPhotoProceed();
             selectImageInterface.onContinueButtonClick();
         });
     }
@@ -212,7 +217,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
 
     @Override
     protected String getScreenName() {
-        return "";
+        return UpdateInactivePhoneEventConstants.Screen.SELECT_IMAGE_TO_UPLOAD;
     }
 
     public interface SelectImageInterface {

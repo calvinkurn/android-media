@@ -35,4 +35,7 @@
     <string name="info_desc_1">Disarankan untuk menarik Saldo Tokopedia ke rekening pribadi terlebih dahulu.</string>
     <string name="info_desc_2">Dana TokoCash secara otomatis dipindahkan ke nomor baru. Setelah berhasil dipindahkan, dana tersebut tidak dapat digunakan selama 1x24 jam.</string>
     <string name="user_not_registered">User not registered</string>
+    <string name="change_inactive_phone_heading">Masukkan nomor ponsel yang terhubung dengan akun Anda.</string>
+    <string name="input_phone_number_title">Nomor Ponsel</string>
+    <string name="selanjutnya">Selanjutnya</string>
 </resources>

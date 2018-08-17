@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.updateinactivephone.R;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.OLD_PHONE;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
@@ -36,13 +38,14 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
 
     @Override
     protected String getScreenName() {
-        return "";
+        return UpdateInactivePhoneEventConstants.Screen.INPUT_NEW_PHONE_SCREEN;
     }
 
     @Override
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
+        UpdateInactivePhoneEventTracking.eventViewKirimPengajuan();
     }
 
     @Override
@@ -119,10 +122,14 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
             }
         });
 
-        submissionButton.setOnClickListener(view1 -> updateNewPhoneEmailInteractor.onSubmissionButtonClicked(
-                newEmailEditText.getText().toString(),
-                newPhoneEditText.getText().toString(),
-                userId));
+        submissionButton.setOnClickListener(view1 ->
+        {
+            UpdateInactivePhoneEventTracking.eventClickKirimPengajuan();
+            updateNewPhoneEmailInteractor.onSubmissionButtonClicked(
+                    newEmailEditText.getText().toString(),
+                    newPhoneEditText.getText().toString(),
+                    userId);
+        });
 
     }
 

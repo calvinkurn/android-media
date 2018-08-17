@@ -14,7 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.updateinactivephone.R;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
 import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
@@ -66,9 +69,13 @@ public class ChangeInactivePhoneRequestSubmittedActivity extends BaseSimpleActiv
         TextView duplicateRequestTV = findViewById(R.id.duplicate_request_view);
 
         if (isDuplicateRequest) {
+            ScreenTracking.screen(getWaitingConfirmationScreenName());
+            UpdateInactivePhoneEventTracking.eventViewWaitingForConfirmationPage();
             newRequestDetailLayout.setVisibility(View.GONE);
             duplicateRequestTV.setVisibility(View.VISIBLE);
         } else {
+            ScreenTracking.screen(getSuccessConfirmationScreenName());
+            UpdateInactivePhoneEventTracking.eventViewSubmitSuccessPage();
             newRequestDetailLayout.setVisibility(View.VISIBLE);
             duplicateRequestTV.setVisibility(View.GONE);
             emailTV.setText(email);
@@ -81,6 +88,13 @@ public class ChangeInactivePhoneRequestSubmittedActivity extends BaseSimpleActiv
         });
     }
 
+    private String getSuccessConfirmationScreenName() {
+        return UpdateInactivePhoneEventConstants.Screen.SUBMIT_SUCCESS_REQUEST_PAGE;
+    }
+
+    private String getWaitingConfirmationScreenName() {
+        return UpdateInactivePhoneEventConstants.Screen.WAITING_CONFIRMATION_PAGE;
+    }
 
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
