@@ -24,7 +24,5 @@ public interface DealsModuleRouter {
 
     Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(Context context, String platform, String category, String defaultSelectedTab);
 
-    void digitalDealsEventTracking(String action, String label);
-
     AnalyticTracker getAnalyticTracker();
 }
