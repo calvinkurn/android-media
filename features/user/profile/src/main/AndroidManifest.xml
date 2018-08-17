@@ -9,7 +9,6 @@
         <activity
             android:name=".view.activity.TopProfileActivity"
             android:label=""
-            android:theme="@style/Theme.Green"
             android:screenOrientation="portrait" />
     </application>
 </manifest>
