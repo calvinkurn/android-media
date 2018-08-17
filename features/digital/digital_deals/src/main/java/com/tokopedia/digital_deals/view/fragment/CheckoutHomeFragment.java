@@ -30,7 +30,12 @@ import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -63,9 +68,12 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private FrameLayout progressParLayout;
     private DealFragmentCallbacks fragmentCallbacks;
     private ImageView ivRemovePromo;
+    private int quantity;
 
     @Inject
     CheckoutDealPresenter mPresenter;
+    private DealsDetailsResponse dealDetails;
+    private boolean promoApplied = false;
 
     @Override
     protected void initInjector() {
@@ -148,6 +156,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel) {
 
 
+        this.dealDetails = dealDetails;
+        quantity = packageViewModel.getSelectedQuantity();
         ImageHandler.loadImage(getContext(), imageViewBrand,
                 dealDetails.getImageWeb(),
                 R.color.grey_1100, R.color.grey_1100);
@@ -227,6 +237,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         clPromoApplied.setVisibility(View.VISIBLE);
         tvDiscount.setText(message);
         tvVoucherCode.setText(text);
+        promoApplied = true;
         if (discountAmount != 0) {
             clPromoAmount.setVisibility(View.VISIBLE);
             TextView view = getRootView().findViewById(R.id.tv_promo_discount);
@@ -245,6 +256,12 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
+    public void showFailureMessageProductExpired() {
+        Utils.getSingletonInstance().showSnackBarDeals(getContext().getResources().getString(R.string.product_expired)
+                , getContext(), mainContent, false);
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -258,12 +275,34 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.ll_select_payment_method) {
+            HashMap<String, Object> productMap = new HashMap<>();
+            productMap.put("id", dealDetails.getId());
+            productMap.put("name", dealDetails.getDisplayName());
+            productMap.put("price", dealDetails.getSalesPrice());
+            productMap.put("category", "deals");
+            productMap.put("quantity", quantity);
+            List<HashMap<String, Object>> productMaps = new ArrayList<>();
+            productMaps.add(productMap);
+            HashMap<String, Object> checkout = new HashMap<>();
+            HashMap<String, Object> ecommerce = new HashMap<>();
+            checkout.put("products", productMaps);
+            ecommerce.put("checkout", checkout);
+            String promo;
+            if (promoApplied)
+                promo = "promo";
+            else
+                promo = "non promo";
+            DealsAnalytics.sendEventEcommerce(getContext(), DealsAnalytics.EVENT_CHECKOUT
+                    , DealsAnalytics.EVENT_CLICK_PROCEED_TO_PAYMENT
+                    , String.format("%s - %s - %s", dealDetails.getBrand().getTitle()
+                            , dealDetails.getDisplayName(), promo), ecommerce);
             mPresenter.getPaymentLink();
         } else if (v.getId() == R.id.tv_promocode) {
             mPresenter.clickGoToPromo();
         } else if (v.getId() == R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);
         } else if (v.getId() == R.id.iv_remove_promo) {
+            promoApplied = false;
             mPresenter.updatePromoCode("");
             tvApplyPromo.setVisibility(View.VISIBLE);
             clPromoApplied.setVisibility(View.GONE);

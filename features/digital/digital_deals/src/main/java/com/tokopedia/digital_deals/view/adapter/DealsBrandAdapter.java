@@ -11,11 +11,12 @@ import android.widget.ImageView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
-import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -28,6 +29,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final int ITEM2 = 3;
     private boolean isFooterAdded = false;
     private boolean isShortLayout;
+    private boolean isPopularBrands;
 
 
     public DealsBrandAdapter(List<Brand> brandItems, boolean isShortLayout) {
@@ -41,9 +43,38 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (isPopularBrands) {
+            if (holder instanceof BrandViewHolder) {
+                BrandViewHolder holder1 = ((BrandViewHolder) holder);
+                if (!holder1.isShown()) {
+                    holder1.setShown(true);
+                    HashMap<String, Object> bannerMap = new HashMap<>();
+                    bannerMap.put("id", brandItems.get(((BrandViewHolder) holder).getIndex()).getId());
+                    bannerMap.put("name", "deals - trending");
+                    bannerMap.put("position", holder1.getIndex());
+                    bannerMap.put("creative", brandItems.get(holder1.getIndex()).getTitle());
+                    HashMap<String, Object> ecommerce = new HashMap<>();
+                    ecommerce.put(DealsAnalytics.EVENT_PROMO_VIEW, bannerMap);
+                    DealsAnalytics.sendEventEcommerce(context, DealsAnalytics.EVENT_PROMO_VIEW
+                            , DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND,
+                            String.format("%s - %s", brandItems.get(holder1.getIndex()).getTitle()
+                                    , holder1.getIndex()), ecommerce);
+                }
+            }
+        }
+    }
+
     public void updateAdapter(List<Brand> brands) {
         this.brandItems = brands;
         notifyDataSetChanged();
+    }
+
+    public void setPopularBrands(boolean popularBrands) {
+        this.isPopularBrands = popularBrands;
     }
 
 
@@ -51,6 +82,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private View itemView;
         private ImageView imageViewBrandItem;
         private int index;
+        private boolean isShown;
 
         public BrandViewHolder(View itemView) {
             super(itemView);
@@ -59,6 +91,18 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bindData(final Brand brand, int position) {
+            if (isPopularBrands) {
+                HashMap<String, Object> bannerMap = new HashMap<>();
+                bannerMap.put("id", brand.getId());
+                bannerMap.put("name", "deals - trending");
+                bannerMap.put("position", position);
+                bannerMap.put("creative", brand.getTitle());
+                HashMap<String, Object> ecommerce = new HashMap<>();
+                ecommerce.put(DealsAnalytics.EVENT_PROMO_CLICK, bannerMap);
+                DealsAnalytics.sendEventEcommerce(context, DealsAnalytics.EVENT_PROMO_CLICK
+                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER,
+                        String.format("%s - %s", brand.getTitle(), position), ecommerce);
+            }
             ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
 
 
@@ -73,8 +117,19 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return this.index;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
+
         @Override
         public void onClick(View v) {
+            DealsAnalytics.sendEventDealsDigitalClick(context, DealsAnalytics.EVENT_CLICK_SEARCH_BRAND_RESULT,
+                    String.format("%s - %s", brandItems.get(getIndex()).getTitle(), getIndex()));
+
             Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
             detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, brandItems.get(getIndex()));
             context.startActivity(detailsIntent);

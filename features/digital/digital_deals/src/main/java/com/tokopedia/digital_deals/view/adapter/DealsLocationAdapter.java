@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.model.Location;
 
@@ -20,11 +21,12 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     private Context context;
     private List<Location> locations;
     private ActionListener actionListener;
+    private boolean isPopular;
 
     public DealsLocationAdapter(List<Location> locations, ActionListener actionListener) {
         this.locations = new ArrayList<>();
         this.locations = locations;
-        this.actionListener=actionListener;
+        this.actionListener = actionListener;
     }
 
     public void updateAdapter(List<Location> locations) {
@@ -47,6 +49,10 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     @Override
     public int getItemCount() {
         return (locations == null) ? 0 : locations.size();
+    }
+
+    public void setIsPopular(boolean isPopular) {
+        this.isPopular = isPopular;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -78,11 +84,21 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
         @Override
         public void onClick(View v) {
-            Location location=Utils.getSingletonInstance().getLocation(context);
+            if (isPopular)
+                DealsAnalytics.sendEventDealsDigitalClick(context,
+                        DealsAnalytics.EVENT_CLICK_ON_POPULAR_LOCATION,
+                        String.format("%s - %s", locations.get(getIndex()).getName(), getIndex()));
+            else {
+                DealsAnalytics.sendEventDealsDigitalClick(context,
+                        String.format(DealsAnalytics.EVENT_CLICK_ON_LOCATION, locations.get(getIndex()).getName()),
+                        String.format("%s - %s", locations.get(getIndex()).getName(), getIndex()));
+            }
+            Location location = Utils.getSingletonInstance().getLocation(context);
             Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
-            actionListener.onLocationItemSelected(location!=null);
+            actionListener.onLocationItemSelected(location != null);
         }
     }
+
     public interface ActionListener {
         void onLocationItemSelected(boolean locationUpdated);
     }

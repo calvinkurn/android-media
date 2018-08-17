@@ -138,7 +138,7 @@ public class Utils {
                         && !TextUtils.isEmpty(location.getSearchName())
                         && outlet.getSearchName().equalsIgnoreCase(location.getSearchName()))
                     outlets1.add(outlet);
-                else{
+                else {
                     outlets2.add(outlet);
                 }
             }
@@ -256,8 +256,8 @@ public class Utils {
         }
     }
 
-    public void setSnackBarLocationChange(String locationName, Context context, ViewGroup coordinatorLayout) {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, locationName, Snackbar.LENGTH_LONG);
+    public void showSnackBarDeals(String text, Context context, ViewGroup coordinatorLayout, boolean locationToast) {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
 
         TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
@@ -265,8 +265,16 @@ public class Utils {
 
         LayoutInflater inflater = LayoutInflater.from(context);
         View snackView = inflater.inflate(R.layout.custom_location_change_snackbar, null);
-        TextView tv = snackView.findViewById(R.id.tv_location_ame);
-        tv.setText(locationName.toUpperCase());
+        TextView tvlcn = snackView.findViewById(R.id.tv_location_name);
+        TextView tvmsg = snackView.findViewById(R.id.tv_msg);
+        if (locationToast) {
+            tvmsg.setText(context.getResources().getString(R.string.location_changed_to));
+            tvlcn.setText(text.toUpperCase());
+        } else {
+            tvmsg.setText(text);
+            tvlcn.setVisibility(View.GONE);
+        }
+
         TextView okbtn = snackView.findViewById(R.id.snack_ok);
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override

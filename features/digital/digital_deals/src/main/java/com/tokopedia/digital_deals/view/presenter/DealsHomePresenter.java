@@ -35,6 +35,7 @@ import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -51,9 +52,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-
-;
-
 
 public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         implements DealsContract.Presenter {
@@ -90,7 +88,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public void initialize() {
-        userSession =((AbstractionRouter) getView().getActivity().getApplication()).getSession();
+        userSession = ((AbstractionRouter) getView().getActivity().getApplication()).getSession();
 
     }
 
@@ -135,14 +133,40 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                             currentPage = 0;
                         }
                         mTouchViewPager.setCurrentItem(currentPage, true);
+                        sendEvent();
                     }
                 });
 
 
     }
 
+    private void sendEvent() {
+        if (getView() == null)
+            return;
+        CategoryItem carousel = getCarouselOrTop(categoryItems, CAROUSEL);
+        ProductItem productItem = null;
+        if (carousel != null) {
+            productItem = carousel.getItems().get(currentPage);
+        } else {
+            return;
+        }
+        if (productItem == null)
+            return;
+        HashMap<String, Object> bannerMap = new HashMap<>();
+        bannerMap.put("id", productItem.getId());
+        bannerMap.put("name", "/deals - top banner");
+        bannerMap.put("position", currentPage);
+        bannerMap.put("creative", productItem.getDisplayName());
+        HashMap<String, Object> ecommerce = new HashMap<>();
+        ecommerce.put(DealsAnalytics.EVENT_PROMO_VIEW, bannerMap);
+        DealsAnalytics.sendEventEcommerce(getView().getActivity(), DealsAnalytics.EVENT_PROMO_VIEW
+                , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER,
+                String.format("%s - %s", productItem.getDisplayName(), currentPage), ecommerce);
+    }
+
     @Override
     public void onBannerSlide(int page) {
+        sendEvent();
         currentPage = page;
     }
 
@@ -159,22 +183,37 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
+            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
+                    DealsAnalytics.EVENT_CLICK_PROMO,
+                    "");
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else if (id == R.id.action_booked_history) {
-            if(userSession.isLoggedIn()) {
+            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
+                    DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
+                    "");
+            if (userSession.isLoggedIn()) {
                 getView().startOrderListActivity();
-            }else{
+            } else {
                 Intent intent = ((DealsModuleRouter) getView().getActivity().getApplication()).
                         getLoginIntent(getView().getActivity());
                 getView().navigateToActivityRequest(intent, getView().getRequestCode());
             }
         } else if (id == R.id.action_faq) {
+            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
+                    DealsAnalytics.EVENT_CLICK_BANTUAN,
+                    "");
             getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
         } else if (id == R.id.tv_see_all_brands) {
+            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
+                    DealsAnalytics.EVENT_CLICK_SEE_ALL_BRANDS,
+                    "");
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
         } else if (id == R.id.see_all_promo) {
+            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
+                    DealsAnalytics.EVENT_CLICK_SEE_ALL_PROMO,
+                    "");
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else {
             getView().getActivity().onBackPressed();
@@ -303,17 +342,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             getView().hideProgressBar();
             getView().showViews();
         }
-    }
-
-    public ArrayList<String> getCarouselImages(List<ProductItem> productItems) {
-        ArrayList<String> imagesList = new ArrayList<>();
-        if (productItems != null) {
-            for (ProductItem productItem : productItems
-                    ) {
-                imagesList.add(productItem.getImageWeb());
-            }
-        }
-        return imagesList;
     }
 
     public void onClickBanner() {

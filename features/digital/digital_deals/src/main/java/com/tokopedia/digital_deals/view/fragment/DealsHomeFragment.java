@@ -203,7 +203,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     if (data != null) {
                         boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
                         if (isLocationUpdated) {
-                            Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
+                            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
                         }
                         mPresenter.getDealsList(true);
                     }
@@ -260,15 +260,17 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (top.getItems() != null && top.getItems().size() > 0) {
             rvTrendingDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
-            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(top.getItems(), this, IS_SHORT_LAYOUT);
+            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
             rvTrendingDeals.setAdapter(categoryAdapter);
+            categoryAdapter.addAll(top.getItems(), false);
+            categoryAdapter.notifyDataSetChanged();
         } else {
             rvTrendingDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
         if (carousel.getItems() != null && carousel.getItems().size() > 0) {
             clBanners.setVisibility(View.VISIBLE);
-            setViewPagerListener(new SlidingImageAdapter(mPresenter.getCarouselImages(carousel.getItems()), mPresenter));
+            setViewPagerListener(new SlidingImageAdapter(carousel.getItems(), mPresenter));
             circlePageIndicator.setViewPager(viewPager);
             mPresenter.startBannerSlide(viewPager);
         } else {
@@ -348,11 +350,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             @Override
             public void onPageSelected(int arg0) {
                 mPresenter.onBannerSlide(arg0);
+
             }
 
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-
             }
 
             @Override
@@ -441,7 +443,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void onClick(View v) {
-        ;
         mPresenter.onOptionMenuClick(v.getId());
     }
 

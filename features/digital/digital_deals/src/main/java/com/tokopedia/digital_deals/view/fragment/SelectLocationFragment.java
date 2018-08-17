@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,6 +23,8 @@ import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -92,12 +92,15 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
+        DealsAnalytics.sendEventDealsDigitalClick(getActivity(),
+                String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
         mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        DealsAnalytics.sendEventDealsDigitalClick(getActivity(),
+                String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
         mPresenter.searchTextChanged(text);
 
     }
@@ -108,13 +111,16 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void renderFromSearchResults(List<Location> locationList, boolean isTopLocations) {
+    public void renderFromSearchResults(List<Location> locationList, boolean isTopLocations, String... searchText) {
 
         if (isTopLocations) {
             tvTopDeals.setVisibility(View.VISIBLE);
             baseMainContent.setVisibility(View.VISIBLE);
+            dealsCategoryAdapter.setIsPopular(true);
         } else {
             tvTopDeals.setVisibility(View.GONE);
+            dealsCategoryAdapter.setIsPopular(false);
+
         }
         if (locationList != null && locationList.size() > 0) {
             dealsCategoryAdapter.updateAdapter(locationList);
@@ -126,9 +132,18 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
             }
 
         } else {
+            if (!isTopLocations)
+                if (searchText.length > 0) {
+                    if (searchText[0] != null) {
+                        DealsAnalytics.sendEventDealsDigitalClick(getActivity(),
+                                DealsAnalytics.EVENT_NO_LOCATION,
+                                searchText[0]);
+                    }
+                }
             rvSearchResults.setVisibility(View.GONE);
             llTopEvents.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
+
         }
     }
 

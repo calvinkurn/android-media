@@ -10,23 +10,25 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 
 
+import java.util.HashMap;
 import java.util.List;
-
 
 
 public class SlidingImageAdapter extends PagerAdapter {
 
 
-    private List<String> imagesUrl;
+    private List<ProductItem> productItems;
     private Context context;
     private DealsHomePresenter mPresenter;
 
 
-    public SlidingImageAdapter(List<String> imagesUrl, DealsHomePresenter presenter) {
-        this.imagesUrl = imagesUrl;
+    public SlidingImageAdapter(List<ProductItem> productItems, DealsHomePresenter presenter) {
+        this.productItems = productItems;
         this.mPresenter = presenter;
     }
 
@@ -37,23 +39,33 @@ public class SlidingImageAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return (imagesUrl == null) ? 0 : imagesUrl.size();
+        return (productItems == null) ? 0 : productItems.size();
     }
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
-        this.context=view.getContext();
+        this.context = view.getContext();
         View imageLayout = LayoutInflater.from(context).inflate(R.layout.deals_banner_item, view, false);
 
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.banner_item);
 
-        ImageHandler.loadImage(context, imageView, imagesUrl.get(position), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(context, imageView, productItems.get(position).getImageWeb(), R.color.grey_1100, R.color.grey_1100);
 
         view.addView(imageLayout, 0);
         imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HashMap<String, Object> bannerMap = new HashMap<>();
+                bannerMap.put("id", productItems.get(position).getId());
+                bannerMap.put("name", "deals - top banner");
+                bannerMap.put("position", position);
+                bannerMap.put("creative", productItems.get(position).getDisplayName());
+                HashMap<String, Object> ecommerce = new HashMap<>();
+                ecommerce.put(DealsAnalytics.EVENT_PROMO_CLICK, bannerMap);
+                DealsAnalytics.sendEventEcommerce(context, DealsAnalytics.EVENT_PROMO_CLICK
+                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER,
+                        String.format("%s - %s", productItems.get(position).getDisplayName(), position), ecommerce);
                 mPresenter.onClickBanner();
             }
         });

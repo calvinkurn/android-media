@@ -14,6 +14,8 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
+import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +61,16 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
         @Override
         public void onClick(View v) {
-            CategoriesModel categoriesModel=new CategoriesModel();
+            DealsAnalytics.sendEventDealsDigitalClick(context,
+                    DealsAnalytics.EVENT_SELECT_VOUCHER_CATEGORY,
+                    categoryItems.get(getIndex()).getTitle());
+
+            CategoriesModel categoriesModel = new CategoriesModel();
             categoriesModel.setName(categoryItems.get(getIndex()).getName());
             categoriesModel.setTitle(categoryItems.get(getIndex()).getTitle());
             categoriesModel.setUrl(categoryItems.get(getIndex()).getUrl());
             categoriesModel.setCategoryId(categoryItems.get(getIndex()).getCategoryId());
-            categoriesModel.setPosition(getIndex()+1);
+            categoriesModel.setPosition(getIndex() + 1);
             Intent detailsIntent = new Intent(context, CategoryDetailActivity.class);
             detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
             detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());

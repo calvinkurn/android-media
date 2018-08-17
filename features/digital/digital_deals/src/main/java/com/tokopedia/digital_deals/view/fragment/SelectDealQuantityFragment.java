@@ -27,8 +27,13 @@ import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.SelectQuantityPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -173,6 +178,24 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             setButtons();
 
         } else if (v.getId() == R.id.tv_continue) {
+            HashMap<String, Object> productMap = new HashMap<>();
+            productMap.put("id", dealDetails.getId());
+            productMap.put("name", dealDetails.getDisplayName());
+            productMap.put("price", dealDetails.getSalesPrice());
+            productMap.put("category", "deals");
+            productMap.put("quantity", CURRENT_QUANTITY);
+            HashMap<String, Object> add = new HashMap<>();
+            HashMap<String, Object> ecommerce = new HashMap<>();
+            List<HashMap<String, Object>> productMaps = new ArrayList<>();
+            productMaps.add(productMap);
+            add.put("products", productMaps);
+            ecommerce.put("currencyCode", "IDR");
+            ecommerce.put("detail", add);
+            DealsAnalytics.sendEventEcommerce(getContext(), DealsAnalytics.EVENT_ADD_TO_CART
+                    , DealsAnalytics.EVENT_CHECKOUT
+                    , String.format("%s - %s - %s - %s", dealDetails.getBrand().getTitle()
+                            , dealDetails.getDisplayName(), CURRENT_QUANTITY, dealDetails.getSalesPrice()), ecommerce);
+
             packageViewModel = new PackageViewModel();
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
@@ -212,11 +235,11 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvDealDetails.setText(dealDetails.getDisplayName());
 
         tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
-        if(dealDetails.getMrp()!=0){
+        if (dealDetails.getMrp() != 0) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
             tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }else{
+        } else {
             tvMrp.setVisibility(View.GONE);
         }
         tvSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));

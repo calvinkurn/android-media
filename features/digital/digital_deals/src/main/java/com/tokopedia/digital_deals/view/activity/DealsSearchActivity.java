@@ -34,6 +34,7 @@ import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -104,7 +105,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         EditText etSearch = searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
-        dealsCategoryAdapter = new DealsCategoryAdapter(null, this, !IS_SHORT_LAYOUT);
+        dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
         rvDeals.setAdapter(dealsCategoryAdapter);
         etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -172,6 +173,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             clLocation.setVisibility(View.VISIBLE);
             tvCityName.setText(location.getName());
         } else {
+            DealsAnalytics.sendEventDealsDigitalView(getActivity(),
+                    DealsAnalytics.EVENT_NO_DEALS,
+                    searchText);
             llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
@@ -209,6 +213,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void setTrendingDealsOrSuggestions(List<ProductItem> productItems, boolean isTrendingDeals, String highlight, int count) {
+        DealsAnalytics.sendEventDealsDigitalClick(getActivity(),
+                DealsAnalytics.EVENT_SEARCH_VOUCHER_OR_OUTLET, highlight);
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (productItems != null && !productItems.isEmpty()) {
             rvDeals.clearOnScrollListeners();
@@ -305,7 +311,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                         if (data != null) {
                             boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
                             if (isLocationUpdated)
-                                Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
+                                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
                         }
                         tvCityName.setText(location.getName());
                         if (!TextUtils.isEmpty(searchInputView.getSearchText()))

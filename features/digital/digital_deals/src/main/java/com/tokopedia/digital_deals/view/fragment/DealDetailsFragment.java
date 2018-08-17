@@ -62,10 +62,12 @@ import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -213,7 +215,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         clRedeemInstuctns.setOnClickListener(this);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDeals.setLayoutManager(mLayoutManager);
-        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(new ArrayList<ProductItem>(), this, IS_SHORT_LAYOUT));
+        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(null, DealsCategoryAdapter.DETAIL_PAGE, this, IS_SHORT_LAYOUT));
         recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
     }
 
@@ -330,6 +332,27 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         seeMoreButtonTC.setOnClickListener(this);
         cardView.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
+
+
+        HashMap<String, Object> productMap = new HashMap<>();
+        productMap.put("id", detailsViewModel.getId());
+        productMap.put("name", detailsViewModel.getDisplayName());
+        productMap.put("price", detailsViewModel.getSalesPrice());
+        productMap.put("list", "");
+        HashMap<String, Object> list = new HashMap<>();
+        HashMap<String, Object> detail = new HashMap<>();
+        HashMap<String, Object> ecommerce = new HashMap<>();
+        list.put("list", "");
+        detail.put("actionField", list);
+        List<HashMap<String, Object>> productMaps = new ArrayList<>();
+        productMaps.add(productMap);
+        detail.put("products", productMaps);
+        ecommerce.put("currencyCode", "IDR");
+        ecommerce.put("detail", detail);
+        DealsAnalytics.sendEventEcommerce(getContext(), DealsAnalytics.EVENT_VIEW_PRODUCT
+                , DealsAnalytics.EVENT_VIEW_PRODUCT_DETAILS
+                , String.format("%s - %s", detailsViewModel.getBrand().getTitle()
+                        , detailsViewModel.getDisplayName()), ecommerce);
 
 
     }
@@ -568,12 +591,16 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.expand_view_description) {
+            sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(dealDetail.getLongRichDesc(), getString(R.string.show_description), 0);
         } else if (v.getId() == R.id.expand_view_tnc) {
+            sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(dealDetail.getTnc(), getString(R.string.show_tnc), 0);
         } else if (v.getId() == R.id.tv_see_all_locations) {
+            sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
         } else if (v.getId() == R.id.ll_buynow) {
+            sendEvent(DealsAnalytics.EVENT_CLICK_BELI);
             fragmentCallbacks.replaceFragment(dealDetail, 1);
         } else if (v.getId() == R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
@@ -587,9 +614,17 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 }
             }
         } else if (v.getId() == R.id.cl_redeem_instructions) {
+            sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL);
             startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
 
         }
+    }
+
+
+    void sendEvent(String action) {
+        DealsAnalytics.sendEventDealsDigitalClick(getContext(), action
+                , String.format("%s - %s", tvBrandName.getText().toString(), dealDetail.getDisplayName()));
+
     }
 
     @Override
@@ -608,7 +643,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(getActivity()==null)
+        if (getActivity() == null)
             return;
         if (requestCode == LIKE_REQUEST_CODE) {
             UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
