@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -31,11 +30,16 @@ import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
 
 /**
  * Created by hangnadi on 10/3/17.
@@ -415,10 +419,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onImageSearchClicked() {
+
+        ImagePickerEditorBuilder imagePickerEditorBuilder = new ImagePickerEditorBuilder
+                (new int[]{ACTION_CROP, ACTION_BRIGHTNESS, ACTION_CONTRAST},
+                        false,
+                        null);
+
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
-                null, null);
+                imagePickerEditorBuilder, null);
         Intent intent = ImagePickerActivity.getIntent(this, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
