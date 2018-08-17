@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
@@ -16,6 +17,7 @@ import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +56,11 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         variables.put("query", searchParameter.getQueryKey());
         variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
         variables.put("source", searchParameter.getSource());
+
+        TKPDMapParam<String, String> headlineParams = requestParams.getParamsAllValueInString();
+        headlineParams.put(TopAdsParams.KEY_EP, "headline");
+        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, "6");
+        variables.put("headline_params", UrlParamHelper.generateUrlParamString(headlineParams));
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),

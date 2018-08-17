@@ -1,7 +1,8 @@
 query SearchProduct(
  $params: String,
  $query: String,
- $source: String
+ $source: String,
+ $headline_params: String
 ) {
 searchProduct(params: $params) {
   query
@@ -132,8 +133,8 @@ searchProduct(params: $params) {
           value
           input_type
         }
-      }
-    }
+     }
+  }
   productAds: displayAdsV3(displayParams: $params) {
         status {
           error_code
@@ -207,7 +208,7 @@ searchProduct(params: $params) {
         applinks
       }
     }
-    headlineAds: displayAdsV3(displayParams: $headlineParams) {
+   headlineAds: displayAdsV3(displayParams: $headline_params) {
         status {
           error_code
           message
