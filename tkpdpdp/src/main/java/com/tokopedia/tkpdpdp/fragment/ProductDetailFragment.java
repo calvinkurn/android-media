@@ -1211,7 +1211,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else if (i == R.id.action_share) {
             if (productData != null) {
                 ShareData shareData = ShareData.Builder.aShareData()
-                        .setName(productData.getInfo().getProductName())
+                        .setName(com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductName()).toString())
                         .setTextContent(productData.getInfo().getProductName())
                         .setDescription(productData.getInfo().getProductDescription())
                         .setImgUri(productData.getProductImages().get(0).getImageSrc())
