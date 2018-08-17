@@ -118,6 +118,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         if (challengeImage != null)
             ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
     }
+
     private void setClickListeners() {
         closeBtn.setOnClickListener(view -> {
             closeBtn.setVisibility(View.GONE);
@@ -125,7 +126,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(),"tokopedia://challenges/submission/"+model.getId(),false);
 
         });
 
@@ -188,10 +189,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setDetailContent(String content) {
-        if(TextUtils.isEmpty(content)){
+        if (TextUtils.isEmpty(content)) {
             detailTitle.setVisibility(View.GONE);
             challengeTitle.setVisibility(View.GONE);
-        }else {
+        } else {
             detailTitle.setVisibility(View.VISIBLE);
             challengeTitle.setVisibility(View.VISIBLE);
         }

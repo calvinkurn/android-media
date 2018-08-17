@@ -12,5 +12,12 @@ public interface ChallengesModuleRouter {
 
     Intent getHomeIntent(Context context);
 
-    void shareChallenge(Activity context, String packageName, String url, String title, String imageUrl, String og_url, String og_title, String og_image_url);
+    void generateBranchUrlForChallenge(Activity context, String url, String title, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener branchLinkGenerateListener);
+
+    public interface BranchLinkGenerateListener {
+        void onGenerateLink(String shareContents, String shareUri);
+    }
+
+    void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents);
+
 }

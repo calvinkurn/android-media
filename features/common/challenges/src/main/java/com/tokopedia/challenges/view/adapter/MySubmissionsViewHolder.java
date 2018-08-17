@@ -41,8 +41,8 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             intent.putExtra("submissionsResult", submissionsResult);
             view.getContext().startActivity(intent);
         });
-        //imgShare.setOnClickListener(v -> ((ChallengesModuleRouter) (((Activity) context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getThumbnailUrl(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
-        imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
+        //imgShare.setOnClickListener(v -> ((ChallengesModuleRouter) (((Activity) context).getApplication())).generateBranchUrlForChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getThumbnailUrl(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
+        imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), "", false));
         imgLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +64,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         tvStatus.setText(submissionsResult.getStatus());
         ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
     }
+
     public interface ISubmissionsViewHolderListner {
         void onLikeClick(SubmissionResult challengesResult);
     }

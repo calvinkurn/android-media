@@ -455,9 +455,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         } else if (v.getId() == R.id.fab_share) {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage());
+          //  ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage());
 
-//            ((ChallengesModuleRouter) (getActivity().getApplication())).shareChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
+//            ((ChallengesModuleRouter) (getActivity().getApplication())).generateBranchUrlForChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
 //                    challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(),
 //                    challengeResult.getSharing().getMetaTags().getOgImage());
         }

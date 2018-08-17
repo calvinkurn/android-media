@@ -54,8 +54,9 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage());
-            // ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge( context,ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengesResult.getTitle(),challengesResult.getThumbnailUrl(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
+
+            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage(),challengesResult.getId(),"",true);
+            // ((ChallengesModuleRouter)(((Activity)context).getApplication())).generateBranchUrlForChallenge( context,ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengesResult.getTitle(),challengesResult.getThumbnailUrl(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
         });
     }
 

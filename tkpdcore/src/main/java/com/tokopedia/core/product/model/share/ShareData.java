@@ -46,6 +46,7 @@ public class ShareData implements Parcelable {
     private String ogTitle;
     private String ogDescription;
     private String ogImageUrl;
+    private String deepLink;
 
 
     public ShareData() {
@@ -67,6 +68,7 @@ public class ShareData implements Parcelable {
         ogTitle = in.readString();
         ogDescription = in.readString();
         ogImageUrl = in.readString();
+        deepLink = in.readString();
     }
 
     @Override
@@ -86,6 +88,7 @@ public class ShareData implements Parcelable {
         dest.writeString(ogTitle);
         dest.writeString(ogDescription);
         dest.writeString(ogImageUrl);
+        dest.writeString(deepLink);
     }
 
     @Override
@@ -296,6 +299,14 @@ public class ShareData implements Parcelable {
         this.ogImageUrl = ogImageUrl;
     }
 
+    public String getDeepLink() {
+        return deepLink;
+    }
+
+    public void setDeepLink(String deepLink) {
+        this.deepLink = deepLink;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -312,6 +323,7 @@ public class ShareData implements Parcelable {
         private String ogTitle;
         private String ogDescription;
         private String ogImageUrl;
+        private String deepLink;
 
         private Builder() {
         }
@@ -394,6 +406,11 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setDeepLink(String deepLink) {
+            this.deepLink = deepLink;
+            return this;
+        }
+
         public Builder but() {
             return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -415,6 +432,7 @@ public class ShareData implements Parcelable {
             shareData.setPathSticker(ogTitle);
             shareData.setPathSticker(ogDescription);
             shareData.setPathSticker(ogImageUrl);
+            shareData.setPathSticker(deepLink);
             return shareData;
         }
 

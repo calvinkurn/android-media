@@ -141,6 +141,8 @@ public class BranchSdkUtils {
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
+        } else if (ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }

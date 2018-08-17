@@ -233,8 +233,8 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-               // ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS,categoryItems.get(getIndex()).getTitle(),categoryItems.get(getIndex()).getThumbnailUrl(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
-                ShareBottomSheet.show(((AppCompatActivity)getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
+               // ((ChallengesModuleRouter)(((Activity)context).getApplication())).generateBranchUrlForChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS,categoryItems.get(getIndex()).getTitle(),categoryItems.get(getIndex()).getThumbnailUrl(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
+               // ShareBottomSheet.show(((AppCompatActivity)getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
 
             } else if (v.getId() == R.id.iv_like) {
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());

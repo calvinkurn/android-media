@@ -52,7 +52,6 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -80,15 +79,12 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -136,9 +132,6 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
@@ -2221,34 +2214,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareChallenge(Activity context, String packageName, String url, String title, String imageUrl, String og_url, String og_title, String og_image_url) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.INDI_CHALLENGE_TYPE)
-                .setName(title)
-                .setUri(url)
-                .setImgUri(imageUrl)
-                .setOgUrl(og_url)
-                .setOgTitle(og_title)
-                .setOgImageUrl(og_image_url)
-                .build();
-        ShareSocmedHandler.ShareSpecific(shareData, context, packageName,
-                "text/plain", null, null);
-        // ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), shareData);
-//        BranchSdkUtils.generateBranchLinkWithOGUrl(shareData, (Activity) context, og_url, og_title, og_image_url, new BranchSdkUtils.GenerateShareContents() {
-//            @Override
-//            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-//
-////                Intent share = new Intent(android.content.Intent.ACTION_SEND);
-////                share.setType("text/plain");
-////                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-////                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-////                context.startActivity(Intent.createChooser(share, "Share link!"));
-//
-//            }
-//        });
-    }
-
-    @Override
     public String getUserPhoneNumber() {
         return SessionHandler.getPhoneNumber();
     }
@@ -2534,5 +2499,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         else {
             return ManagePeopleBankActivity.createInstance(context);
         }
+    }
+
+    @Override
+    public void generateBranchUrlForChallenge(Activity context, String url, String title, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.INDI_CHALLENGE_TYPE)
+                .setName(title)
+                .setUri(url)
+                // .setImgUri(challengeShareData.)
+                .setOgUrl(og_url)
+                .setOgTitle(og_title)
+                .setOgImageUrl(og_image)
+                .setDeepLink(deepLink)
+                .build();
+//        ShareSocmedHandler.ShareSpecific(shareData, context, packageName, "text/plain", null, null);
+
+        // ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), shareData);
+        BranchSdkUtils.generateBranchLink(shareData, context, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+
+                listener.onGenerateLink(shareContents, branchUrl);
+            }
+        });
+    }
+
+    @Override
+    public void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents) {
+        ShareSocmedHandler.ShareBranchUrl(context,packageName,"text/plain",url,shareContents);
     }
 }
