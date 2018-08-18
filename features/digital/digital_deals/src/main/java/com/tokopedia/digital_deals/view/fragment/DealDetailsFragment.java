@@ -83,10 +83,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private AppBarLayout appBarLayout;
 
     private RecyclerView recyclerViewDeals;
-    private TextView tvSeeMoreTextDesc;
-    private TextView tvSeeMoreTextTC;
-    private ImageView ivArrowSeeMoreDesc;
-    private ImageView ivArrowSeeMoreTC;
     @Inject
     public DealDetailsPresenter mPresenter;
     @Inject
@@ -171,24 +167,15 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         viewPager = view.findViewById(R.id.deals_images);
         circlePageIndicator = view.findViewById(R.id.pager_indicator);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-
         buyDealNow = view.findViewById(R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-        tvSeeMoreTextDesc = view.findViewById(R.id.seemorebutton_description);
         seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
-        ivArrowSeeMoreDesc = view.findViewById(R.id.down_arrow_description);
         clDescription = view.findViewById(R.id.cl_description);
         clOutlets = view.findViewById(R.id.cl_outlets);
         clTnc = view.findViewById(R.id.cl_tnc);
-
-
         tvExpandableTC = view.findViewById(R.id.tv_expandable_tnc);
-        tvSeeMoreTextTC = view.findViewById(R.id.seemorebutton_tnc);
         seeMoreButtonTC = view.findViewById(R.id.expand_view_tnc);
-        ivArrowSeeMoreTC = view.findViewById(R.id.down_arrow_tnc);
-
         recyclerViewDeals = view.findViewById(R.id.recycler_view);
         circlePageIndicator.setRadius(getResources().getDimension(R.dimen.dp_3));
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);

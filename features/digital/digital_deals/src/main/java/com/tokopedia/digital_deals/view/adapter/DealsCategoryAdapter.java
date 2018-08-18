@@ -17,18 +17,25 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
+import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
+import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
@@ -54,6 +61,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int HEADER = 4;
     private final int ITEM3 = 5;
     private final int HEADER2 = 6;
+    private final int HEADER_BRAND = 7;
     private boolean isFooterAdded;
     private boolean isHeaderAdded;
     private boolean shortLayout;
@@ -62,6 +70,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String highLightText;
     private String lowerhighlight;
     private String upperhighlight;
+    private boolean isBrandHeaderAdded = false;
+
     private INavigateToActivityRequest toActivityRequest;
     public static final int HOME_PAGE = 1;
     public static final int SEARCH_PAGE = 2;
@@ -75,6 +85,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     DealCategoryAdapterPresenter mPresenter;
     private SpannableString headerText;
     private boolean showHighlightText;
+    private String brandHeaderText;
+    private int productCount;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -137,6 +149,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 v = inflater.inflate(R.layout.header_layout_trending_deals, parent, false);
                 holder = new HeaderViewHolder(v);
                 break;
+            case HEADER_BRAND:
+                v = inflater.inflate(R.layout.header_layout_brand_page, parent, false);
+                holder = new HeaderBrandViewHolder(v);
+                break;
             default:
                 break;
         }
@@ -170,6 +186,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 break;
             case HEADER2:
                 break;
+            case HEADER_BRAND:
+                ((HeaderBrandViewHolder) holder).bindData(brandHeaderText, productCount);
+                break;
             default:
                 break;
         }
@@ -186,7 +205,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         :
                         (isLastPosition(position) && isFooterAdded)
                                 ? FOOTER : (position == 0 && isHeaderAdded)
-                                ? HEADER : ITEM));
+                                ? HEADER : (position == 0 && isBrandHeaderAdded && brandPageCard)
+                                ? HEADER_BRAND : ITEM));
     }
 
     private boolean isLastPosition(int position) {
@@ -204,6 +224,17 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (!isHeaderAdded) {
             isHeaderAdded = true;
             headerText = text;
+            categoryItems.add(0, new ProductItem());
+            notifyItemInserted(0);
+        }
+    }
+
+    public void addBrandHeader(String brandDetails, String brandName, int count) {
+        if (!isBrandHeaderAdded) {
+            isBrandHeaderAdded = true;
+            highLightText=brandName;  //brand name
+            brandHeaderText = brandDetails;
+            productCount = count;
             categoryItems.add(0, new ProductItem());
             notifyItemInserted(0);
         }
@@ -808,6 +839,60 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     , String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
                             , categoryItems.get(getIndex()).getDisplayName()
                             , getIndex()), ecommerce);
+        }
+    }
+
+    public class HeaderBrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private ExpandableTextView tvExpandableDesc;
+        private LinearLayout tvSeeMoreBtn;
+        private TextView tvDealsCount;
+        private TextView tvCityName;
+        private View itemView;
+        private TextView tvSeeMore;
+        private ImageView ivArrowSeeMore;
+
+        private HeaderBrandViewHolder(View view) {
+            super(view);
+            this.itemView = view;
+            tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
+            tvSeeMoreBtn = view.findViewById(R.id.expand_view_description);
+            tvDealsCount = view.findViewById(R.id.number_of_locations);
+            tvCityName = view.findViewById(R.id.tv_popular);
+            tvSeeMore = view.findViewById(R.id.seemorebutton_description);
+            ivArrowSeeMore = view.findViewById(R.id.down_arrow_description);
+        }
+
+        public void bindData(final String headerText, int count) {
+            tvExpandableDesc.setText(headerText);
+            Location location=Utils.getSingletonInstance().getLocation(getActivity());
+            if (location != null) {
+                tvCityName.setText(String.format(context.getResources().getString(R.string.deals_brand_detail_location), location.getName()));
+
+            } else {
+                tvCityName.setText(context.getResources().getString(R.string.text_deals));
+            }
+            tvDealsCount.setText(String.format(context.getResources().getString(R.string.number_of_items), count));
+            tvSeeMoreBtn.setOnClickListener(this);
+            tvExpandableDesc.setInterpolator(new OvershootInterpolator());
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.expand_view_description) {
+                DealsAnalytics.sendEventDealsDigitalClick(context, DealsAnalytics.EVENT_CLICK_SEE_MORE_BRAND_DETAIL, highLightText);
+                if (tvExpandableDesc.isExpanded()) {
+                    tvSeeMore.setText(R.string.expand);
+                    ivArrowSeeMore.animate().rotation(0f);
+
+                } else {
+                    tvSeeMore.setText(R.string.collapse);
+                    ivArrowSeeMore.animate().rotation(180f);
+
+                }
+                tvExpandableDesc.toggle();
+            }
         }
     }
 
