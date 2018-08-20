@@ -60,6 +60,7 @@ import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
+import com.tokopedia.session.addname.AddNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
@@ -67,7 +68,7 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
-import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameRegisterPhoneActivity;
 import com.tokopedia.session.register.registerphonenumber.view.activity.RegisterPhoneNumberActivity;
 import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomePageActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
@@ -100,10 +101,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
     private static final int REQUEST_VERIFY_PHONE = 105;
     private static final int REQUEST_WELCOME_PAGE = 106;
-    private static final int REQUEST_ADD_NAME = 107;
+    private static final int REQUEST_ADD_NAME_REGISTER_PHONE = 107;
     private static final int REQUEST_VERIFY_PHONE_TOKOCASH = 108;
     private static final int REQUEST_CHOOSE_ACCOUNT = 109;
     private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 110;
+    private static final int REQUEST_ADD_NAME = 111;
+
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -398,9 +401,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode == Activity.RESULT_OK) {
-            startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber),
-                    REQUEST_ADD_NAME);
-        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+            startActivityForResult(AddNameRegisterPhoneActivity.newInstance(getActivity(), phoneNumber),
+                    REQUEST_ADD_NAME_REGISTER_PHONE);
+        } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
             startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                     REQUEST_WELCOME_PAGE);
         } else if (requestCode == REQUEST_WELCOME_PAGE) {
@@ -424,6 +427,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+        } else if (requestCode == REQUEST_ADD_NAME) {
+            startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                    REQUEST_WELCOME_PAGE);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -629,8 +635,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
+        startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                REQUEST_WELCOME_PAGE);
     }
 
     @Override
@@ -647,6 +654,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         userInfoDomainData.getCreatePasswordList(),
                         String.valueOf(userInfoDomainData.getUserId())));
         startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
+    }
+
+    @Override
+    public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
+        Intent intent = AddNameActivity.newInstance(getActivity());
+        startActivityForResult(intent, REQUEST_ADD_NAME);
     }
 
     @Override
