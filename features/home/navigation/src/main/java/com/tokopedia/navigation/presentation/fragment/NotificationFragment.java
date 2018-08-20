@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
@@ -70,12 +69,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getDrawerNotification());
 
-        adapter.setOnItemClickListener((view1, position) -> {
-            sendTracking(position, 0);
-            DrawerNotification item = adapter.getItem(position);
-            DrawerNotification.ChildDrawerNotification child = item.getChilds().get(0);
-            RouteManager.route(getActivity(), child.getApplink());
-        });
         adapter.setOnNotifClickListener((parent, child) -> {
             sendTracking(parent, child);
             DrawerNotification item = adapter.getItem(parent);
@@ -127,7 +120,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     public void renderNotification(NotificationsModel data, boolean isHasShop) {
         if (!isHasAdded) {
             if (isHasShop) {
-                adapter.add(sellerInfoData(), SELLER_INFO);
                 adapter.add(sellerData(), PENJUALAN);
             }
             adapter.add(complain(isHasShop));
@@ -177,16 +169,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         return complain;
     }
 
-    private DrawerNotification sellerInfoData() {
-        DrawerNotification inbox = new DrawerNotification();
-
-        List<DrawerNotification.ChildDrawerNotification> childInbox = new ArrayList<>();
-        childInbox.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual),
-                ApplinkConst.SELLER_INFO));
-        inbox.setChilds(childInbox);
-        return inbox;
-    }
-
     private DrawerNotification sellerData() {
         DrawerNotification seller = new DrawerNotification();
         seller.setId(PENJUALAN);
@@ -201,6 +183,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                 getString(R.string.sedang_dikirim), ApplinkConst.SELLER_PURCHASE_SHIPPED));
         childSeller.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.SELLER_PURCHASE_DELIVERED));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual),
+                ApplinkConst.SELLER_INFO));
         seller.setChilds(childSeller);
         return seller;
     }

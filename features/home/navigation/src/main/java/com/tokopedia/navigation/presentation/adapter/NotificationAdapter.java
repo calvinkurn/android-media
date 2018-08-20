@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
@@ -26,6 +25,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.SAMPAI_TUJUAN;
 import static com.tokopedia.navigation.GlobalNavConstant.SEDANG_DIKIRIM;
 import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
 
 /**
@@ -33,8 +33,20 @@ import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
  */
 public class NotificationAdapter extends BaseListAdapter<DrawerNotification, BaseViewHolder> {
 
-    private static final int TYPE_ITEM = 2;
-    private static final int TYPE_SINGLE = 3;
+    public NotificationAdapter(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected int getItemResourceLayout(int viewType) {
+        return R.layout.item_notification;
+    }
+
+    @NonNull
+    @Override
+    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new NotificationHolder(getView(parent, viewType));
+    }
 
     public interface OnNotifClickListener {
         void onNotifClick(int parent, int child);
@@ -44,64 +56,6 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
 
     public void setOnNotifClickListener(OnNotifClickListener onNotifClickListener) {
         this.onNotifClickListener = onNotifClickListener;
-    }
-
-    public NotificationAdapter(Context context) {
-        super(context);
-    }
-
-    @Override
-    protected int getItemResourceLayout(int viewType) {
-        if(viewType == TYPE_SINGLE) {
-            return R.layout.item_single_notification;
-        } else if(viewType == TYPE_ITEM) {
-            return R.layout.item_notification;
-        }
-        return 0;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (items.get(position).getTitle() == null || items.get(position).getTitle().isEmpty()) {
-            return TYPE_SINGLE;
-        }
-        return TYPE_ITEM;
-    }
-
-    @NonNull
-    @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_SINGLE) {
-            return new NotificationSingleHolder(getView(parent, viewType), onItemClickListener);
-        }
-        return new NotificationHolder(getView(parent, viewType));
-    }
-
-    public class NotificationSingleHolder extends BaseViewHolder<DrawerNotification> {
-
-        private LabelView labelView;
-        private View separator;
-
-        NotificationSingleHolder(View itemView, BaseListAdapter.OnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
-            labelView = itemView.findViewById(R.id.labelview);
-            separator = itemView.findViewById(R.id.separator);
-        }
-
-        @Override
-        public void bind(DrawerNotification item) {
-            DrawerNotification.ChildDrawerNotification child = item.getChilds().get(0);
-            if (child == null)
-                return;
-
-            labelView.setTitle(child.getTitle());
-
-            if (child.getBadge() != null && child.getBadge() > 0) {
-                labelView.setBadgeCounter(child.getBadge());
-            }
-            labelView.showRightArrow(true);
-            separator.setVisibility(View.GONE);
-        }
     }
 
     public class NotificationHolder extends BaseViewHolder<DrawerNotification> {
@@ -165,6 +119,8 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                             child.setBadge(data.getSellerOrder().getShipped());
                         } else if (child.getId() == SAMPAI_TUJUAN) {
                             child.setBadge(data.getSellerOrder().getArriveAtDestination());
+                        } else if (child.getId() == SELLER_INFO) {
+                            child.setBadge(data.getSellerInfo().getNotification());
                         }
                     } else if (item.getId() == KOMPLAIN) {
                         if (child.getId() == BUYER) {
@@ -174,8 +130,6 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                         }
                     }
                 }
-            } else {
-                item.getChilds().get(0).setBadge(data.getSellerInfo().getNotification());
             }
         }
         notifyDataSetChanged();

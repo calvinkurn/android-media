@@ -43,10 +43,10 @@ public class GlobalNavConstant {
 
     public static final String QUERY = "Query";
 
-    public static final int SELLER_INFO = 0;
-    public static final int PEMBELIAN = 1;
-    public static final int PENJUALAN = 2;
-    public static final int KOMPLAIN = 3;
+    public static final int SELLER_INFO = 13;
+    public static final int PEMBELIAN = 0;
+    public static final int PENJUALAN = 1;
+    public static final int KOMPLAIN = 2;
 
     public static final int MENUNGGU_PEMBAYARAN = 4;
     public static final int MENUNGGU_KONFIRMASI = 5;
