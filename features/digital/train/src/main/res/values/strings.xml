@@ -201,5 +201,6 @@
     <string name="train_sorting_latest_arrival">Waktu Tiba Termalam</string>
     <string name="train_sorting_cheapest">Harga Termurah</string>
     <string name="train_sorting_most_expensive">Harga Termahal</string>
+    <string name="train_error_dialog_default_button">OK</string>
 
 </resources>
