@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
@@ -48,6 +49,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
@@ -92,11 +94,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     RatingBar rating;
     TextView ratingText;
     EditText review;
-    TextInputLayout reviewLayout;
+    TkpdHintTextInputLayout reviewLayout;
     ImageView uploadInfo;
     RecyclerView listImageUpload;
-    Switch shareFbSwitch;
-    Switch anomymousSwitch;
+    SwitchCompat shareFbSwitch;
+    SwitchCompat anomymousSwitch;
     TextView anonymousInfo;
     Button sendButton;
     View tipsHeader;
@@ -148,11 +150,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         rating = (RatingBar) parentView.findViewById(R.id.rating);
         ratingText = (TextView) parentView.findViewById(R.id.rating_text);
         review = (EditText) parentView.findViewById(R.id.review);
-        reviewLayout = (TextInputLayout) parentView.findViewById(R.id.review_layout);
+        reviewLayout = (TkpdHintTextInputLayout) parentView.findViewById(R.id.review_layout);
         uploadInfo = (ImageView) parentView.findViewById(R.id.upload_info);
         listImageUpload = (RecyclerView) parentView.findViewById(R.id.list_image_upload);
-        shareFbSwitch = (Switch) parentView.findViewById(R.id.switch_facebook);
-        anomymousSwitch = (Switch) parentView.findViewById(R.id.switch_anonym);
+        shareFbSwitch = (SwitchCompat) parentView.findViewById(R.id.switch_facebook);
+        anomymousSwitch = (SwitchCompat) parentView.findViewById(R.id.switch_anonym);
         sendButton = (Button) parentView.findViewById(R.id.send_button);
         reviewTips = (RecyclerView) parentView.findViewById(R.id.review_tips);
         tipsHeader = parentView.findViewById(R.id.expand_product_review_tips);
@@ -179,6 +181,19 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 e.printStackTrace();
             }
         }
+
+        review.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkButtonShouldEnabled();
+            }
+        });
 
         adapter = ImageUploadAdapter.createAdapter(getContext());
         adapter.setCanUpload(true);
@@ -373,6 +388,16 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         }
         String anonymouseInfoText = getString(R.string.hint_anonym) + " " + getAnonymousName();
         anonymousInfo.setText(anonymouseInfoText);
+
+        checkButtonShouldEnabled();
+    }
+
+    private void checkButtonShouldEnabled() {
+        if (TextUtils.isEmpty(review.getText().toString())){
+            sendButton.setEnabled(false);
+        } else {
+            sendButton.setEnabled(true);
+        }
     }
 
     private void openImagePicker() {
