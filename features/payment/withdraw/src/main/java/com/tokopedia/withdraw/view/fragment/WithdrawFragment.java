@@ -225,7 +225,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 int withdrawal = (int) StringUtils.convertToNumeric(text, false);
                 int min = checkSelectedBankMinimumWithdrawal();
                 int deposit = (int) StringUtils.convertToNumeric(totalBalance.getText().toString(), false);
-                return (withdrawal > 0) && (withdrawal > min) && (withdrawal <= deposit);
+                return (withdrawal > 0) && (withdrawal >= min) && (withdrawal <= deposit);
             }
         });
 
