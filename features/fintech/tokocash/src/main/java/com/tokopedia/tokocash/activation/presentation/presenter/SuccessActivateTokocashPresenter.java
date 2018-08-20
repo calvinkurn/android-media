@@ -1,5 +1,7 @@
 package com.tokopedia.tokocash.activation.presentation.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
@@ -51,12 +53,13 @@ public class SuccessActivateTokocashPresenter extends BaseDaggerPresenter<Succes
 
             @Override
             public void onError(Throwable e) {
-                getView().failedRefreshToken();
+                if (isViewAttached())
+                    getView().failedRefreshToken(e);
             }
 
             @Override
             public void onNext(String tokenWallet) {
-                if (!tokenWallet.equals("")) {
+                if (!TextUtils.isEmpty(tokenWallet)) {
                     walletUserSession.setTokenWallet(tokenWallet);
                 }
             }
@@ -65,6 +68,7 @@ public class SuccessActivateTokocashPresenter extends BaseDaggerPresenter<Succes
 
     @Override
     public void onDestroyView() {
+        detachView();
         if (getRefreshWalletTokenUseCase != null)
             getRefreshWalletTokenUseCase.unsubscribe();
     }

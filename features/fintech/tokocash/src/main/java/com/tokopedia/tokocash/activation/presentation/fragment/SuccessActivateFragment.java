@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
@@ -83,8 +85,9 @@ public class SuccessActivateFragment extends BaseDaggerFragment implements Succe
     }
 
     @Override
-    public void failedRefreshToken() {
-
+    public void failedRefreshToken(Throwable e) {
+        String message = ErrorHandler.getErrorMessage(getActivity(), e);
+        NetworkErrorHelper.showRedSnackbar(getActivity(), message);
     }
 
     @Override
@@ -92,6 +95,12 @@ public class SuccessActivateFragment extends BaseDaggerFragment implements Succe
         String phoneNumberText = "<b>" + phoneNumber + "</b>";
         String desc = String.format(getActivity().getString(R.string.desc_success_tokocash), phoneNumberText);
         descSuccess.setText(MethodChecker.fromHtml(desc));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroyView();
     }
 
     public interface ActionListener {

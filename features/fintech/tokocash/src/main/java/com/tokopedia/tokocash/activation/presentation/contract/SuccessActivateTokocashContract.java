@@ -10,7 +10,7 @@ public interface SuccessActivateTokocashContract {
 
     interface View extends CustomerView {
 
-        void failedRefreshToken();
+        void failedRefreshToken(Throwable e);
 
         void showUserPhoneNumber(String phoneNumber);
     }
