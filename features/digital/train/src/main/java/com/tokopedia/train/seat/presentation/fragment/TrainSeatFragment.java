@@ -79,6 +79,8 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     public interface InteractionListener {
         void setToolbar(String subtitle);
+
+        int getToolbarHeight();
     }
 
     public static Fragment newInstance(TrainSoftbook trainSoftbook,
@@ -252,6 +254,11 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             @Override
             public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode) {
                 presenter.onPassengerSeatChange(passenger, seat, wagonCode);
+            }
+
+            @Override
+            public int getToolbarHeight() {
+                return interactionListener.getToolbarHeight();
             }
         };
     }
