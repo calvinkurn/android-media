@@ -37,6 +37,7 @@ public class DoWithdrawUseCase extends UseCase<DoWithdrawDomainModel> {
     private static final String PARAM_BANK_BRANCH = "bank_branch";
     private static final String PARAM_PASSWORD = "user_password";
     private static final String PARAM_WITHDRAW = "withdraw_amount";
+    private static final String PARAM_EMAIL= "user_email";
 
     @Inject
     public DoWithdrawUseCase(DoWithdrawSource source) {
@@ -75,6 +76,8 @@ public class DoWithdrawUseCase extends UseCase<DoWithdrawDomainModel> {
 
         params.put(PARAM_PASSWORD, password);
         params.put(PARAM_WITHDRAW, withdrawal);
+
+        params.put(PARAM_EMAIL, userSession.getEmail());
 
         requestParams.putAll(params);
 

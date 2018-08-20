@@ -88,7 +88,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private List<BankAccountViewModel> listBank;
     private BottomSheetDialog confirmPassword;
     private Observable<String> nominalObservable;
-    private List<String> listBankWithdrawal;
+    private List<String> bankWithMinimumWithdrawal;
 
 
     @Override
@@ -169,7 +169,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bankAdapter.setList(listBank);
 
 
-        listBankWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
+        bankWithMinimumWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
                 "bank rakyat indonesia");
 
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_8)
@@ -310,7 +310,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     private boolean inBankGroup(String selectedBankName) {
-        for (String s : listBankWithdrawal) {
+        for (String s : bankWithMinimumWithdrawal) {
             if(selectedBankName.contains(s)){
                 return true;
             }
