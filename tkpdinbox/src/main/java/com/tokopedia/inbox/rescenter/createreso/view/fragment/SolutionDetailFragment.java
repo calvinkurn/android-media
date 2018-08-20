@@ -363,19 +363,6 @@ public class SolutionDetailFragment extends BaseDaggerFragment
         calculateTotalRefund(new ComplaintResult());
     }
 
-    private void calculateFirstTotalRefund() {
-        int totalValue = 0;
-        if (resultViewModel != null && resultViewModel.refundAmount != 0) totalValue = resultViewModel.refundAmount;
-        else if (editAppealSolutionModel != null && editAppealSolutionModel.refundAmount != 0) totalValue = editAppealSolutionModel.refundAmount;
-        else {
-            for (SolutionComplaintModel model : solutionResponseViewModel.getComplaints()) {
-                totalValue += model.getProblem().getAmount().getInteger();
-            }
-        }
-        tvRefundTotal.setText(CurrencyFormatter.formatDotRupiah(String.valueOf(totalValue)));
-        buttonSelected(btnContinue);
-    }
-
     @Override
     public void calculateTotalRefund(ComplaintResult complaintResult) {
         int totalValue = 0;

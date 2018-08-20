@@ -63,6 +63,7 @@ public class OngkirCheckboxSolutionViewHolder extends AbstractViewHolder<OngkirC
                 solutionRefundView.setVisibility(View.GONE);
                 middleSeparator.setVisibility(View.GONE);
             }
+            mainView.calculateTotalRefund(new ComplaintResult());
         });
     }
 }
