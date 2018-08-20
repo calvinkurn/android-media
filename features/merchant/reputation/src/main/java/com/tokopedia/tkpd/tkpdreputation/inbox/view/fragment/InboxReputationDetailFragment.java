@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,6 +124,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             try {
                 passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
                         InboxReputationDetailPassModel.class);
+                setToolbar();
             } catch (Exception e) {
                 // Ignore cache expired exception
             }
@@ -133,6 +135,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         adapter = new InboxReputationDetailAdapter(typeFactory);
     }
 
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
+        toolbar.setTitle(passModel.getInvoice());
+        toolbar.setSubtitle(passModel.getCreateTime());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
