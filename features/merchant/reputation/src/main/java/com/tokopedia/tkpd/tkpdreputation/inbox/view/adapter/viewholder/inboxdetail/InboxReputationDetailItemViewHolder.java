@@ -175,12 +175,12 @@ public class InboxReputationDetailItemViewHolder extends
             productName.setText(
                     MainApplication.getAppContext().getString(R.string.product_is_deleted));
 
-            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_product_deleted);
+            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, R.drawable.ic_product_deleted, 5.0f);
         } else if (element.isProductBanned()) {
             productName.setText(
                     MainApplication.getAppContext().getString(R.string.product_is_banned));
 
-            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_product_deleted);
+            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, R.drawable.ic_product_deleted, 5.0f);
         } else {
             productName.setText(MethodChecker.fromHtml(element.getProductName()));
             productName.setOnClickListener(new View.OnClickListener() {
@@ -191,7 +191,7 @@ public class InboxReputationDetailItemViewHolder extends
                 }
             });
 
-            ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
+            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, element.getProductAvatar());
             productAvatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -418,11 +418,9 @@ public class InboxReputationDetailItemViewHolder extends
     private String getReviewerNameText(InboxReputationDetailItemViewModel element) {
         if (element.isReviewIsAnonymous()
                 && element.getTab() != InboxReputationActivity.TAB_BUYER_REVIEW) {
-            return MainApplication.getAppContext().getString(R.string.by) + " " +
-                    getAnonymousName(element.getReviewerName());
+            return getAnonymousName(element.getReviewerName());
         } else {
-            return MainApplication.getAppContext().getString(R.string.by) + " " +
-                    element.getReviewerName();
+            return element.getReviewerName();
         }
     }
 

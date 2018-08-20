@@ -21,7 +21,8 @@
             android:groupIndicator="@null"
             android:listSelector="@android:color/transparent"
             android:scrollbars="vertical"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            android:paddingBottom="@dimen/dp_10"/>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </RelativeLayout>
