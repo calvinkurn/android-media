@@ -19,7 +19,7 @@ package com.tokopedia.design.touchhelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-/**
+/*
  * HOW TO USE
  * adapter = new Adapter(OnStartDragListener);
  * ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
@@ -37,6 +37,15 @@ import android.support.v7.widget.helper.ItemTouchHelper;
  *   itemTouchHelper.startDrag(viewHolder);
  * }
  *
+ * adapter implements ItemTouchHelperAdapter {
+ *
+ * boolean onItemMove(int fromPosition, int toPosition){
+ *   List<Data> data = getData();
+ *   Data dataFrom = list.get(fromPosition);
+ *   list.remove(fromPosition);
+ *   list.add(toPosition, dataFrom);
+ *   notifyItemMoved(fromPosition, toPosition);
+ * }
  */
 
 /**

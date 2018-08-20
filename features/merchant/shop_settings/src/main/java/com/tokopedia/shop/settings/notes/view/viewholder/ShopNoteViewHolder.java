@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.settings.R;
+import com.tokopedia.shop.settings.common.util.ShopDateUtil;
 import com.tokopedia.shop.settings.common.util.SpanTextUtil;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 
@@ -45,7 +46,7 @@ public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
             keyword = onOnShopNoteViewHolderListener.getKeyword();
         }
         tvNoteName.setText(SpanTextUtil.getSpandableColorText(shopNoteViewModel.getTitle(),keyword, boldColor));
-        tvLastUpdate.setText(shopNoteViewModel.getUpdateTime());
+        tvLastUpdate.setText(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE_TIME, shopNoteViewModel.getUpdateTime()));
         ivMenuMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

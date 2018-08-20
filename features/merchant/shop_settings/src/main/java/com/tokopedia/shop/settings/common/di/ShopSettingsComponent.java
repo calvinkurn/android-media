@@ -7,8 +7,9 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity;
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment;
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment;
+import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesListFragment;
+import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesReorderFragment;
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment;
-import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesFragment;
 
 import dagger.Component;
 
@@ -22,7 +23,8 @@ public interface ShopSettingsComponent {
     void inject(ShopSettingsInfoFragment shopSettingsInfoFragment);
     void inject(ShopEditBasicInfoActivity shopEditBasicInfoActivity);
     void inject(ShopEditScheduleActivity shopEditScheduleActivity);
-    void inject(ShopSettingsNotesFragment shopSettingsNotesFragment);
+    void inject(ShopSettingsNotesListFragment shopSettingsNotesFragment);
+    void inject(ShopSettingsNotesReorderFragment shopSettingsNotesFragment);
 
     void inject(ShopSettingAddressFragment fragment);
     void inject(ShopSettingAddressAddEditFragment fragment);

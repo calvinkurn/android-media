@@ -20,24 +20,19 @@ import rx.Subscriber;
  */
 public class ShopSettingNoteListPresenter extends BaseDaggerPresenter<ShopSettingNoteListPresenter.View> {
     private GetShopNotesUseCase getShopNotesUseCase;
-    private ReorderShopNoteUseCase reorderShopNoteUseCase;
     private DeleteShopNoteUseCase deleteShopNoteUseCase;
 
     public interface View extends CustomerView {
         void onSuccessGetShopNotes(ArrayList<ShopNoteViewModel> shopNoteModels);
         void onErrorGetShopNotes(Throwable throwable);
-        void onSuccessReorderShopNote(String successMessage);
-        void onErrorReorderShopNote(Throwable throwable);
         void onSuccessDeleteShopNote(String successMessage);
         void onErrorDeleteShopNote(Throwable throwable);
     }
 
     @Inject
     public ShopSettingNoteListPresenter(GetShopNotesUseCase getShopNotesUseCase,
-                                        ReorderShopNoteUseCase reorderShopNoteUseCase,
                                         DeleteShopNoteUseCase deleteShopNoteUseCase) {
         this.getShopNotesUseCase = getShopNotesUseCase;
-        this.reorderShopNoteUseCase = reorderShopNoteUseCase;
         this.deleteShopNoteUseCase = deleteShopNoteUseCase;
     }
 
@@ -69,31 +64,6 @@ public class ShopSettingNoteListPresenter extends BaseDaggerPresenter<ShopSettin
         });
     }
 
-    public void reorderShopNotes(ArrayList<String> noteIdList){
-        reorderShopNoteUseCase.unsubscribe();
-        reorderShopNoteUseCase.execute(ReorderShopNoteUseCase.createRequestParams(noteIdList),
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().onErrorReorderShopNote(e);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(String successMessage) {
-                        if (isViewAttached()) {
-                            getView().onSuccessReorderShopNote(successMessage);
-                        }
-                    }
-                });
-    }
-
     public void deleteShopNote(String noteId){
         deleteShopNoteUseCase.unsubscribe();
         deleteShopNoteUseCase.execute(DeleteShopNoteUseCase.createRequestParams(noteId),
@@ -123,7 +93,6 @@ public class ShopSettingNoteListPresenter extends BaseDaggerPresenter<ShopSettin
     public void detachView() {
         super.detachView();
         getShopNotesUseCase.unsubscribe();
-        reorderShopNoteUseCase.unsubscribe();
         deleteShopNoteUseCase.unsubscribe();
     }
 }

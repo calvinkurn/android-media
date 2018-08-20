@@ -42,7 +42,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 
-public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteViewModel, ShopNoteFactory> implements ShopSettingNoteListPresenter.View, ShopNoteViewHolder.OnShopNoteViewHolderListener {
+public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNoteViewModel, ShopNoteFactory>
+        implements ShopSettingNoteListPresenter.View, ShopNoteViewHolder.OnShopNoteViewHolderListener {
 
     private static final int REQUEST_CODE_ADD_NOTE = 818;
     private static final int REQUEST_CODE_EDIT_NOTE = 819;
@@ -54,16 +55,15 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
     private String shopNoteIdToDelete;
     private boolean needReload;
     private RecyclerView recyclerView;
-    private boolean isReorderMode;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private OnShopSettingsNoteFragmentListener onShopSettingsNoteFragmentListener;
-    public interface OnShopSettingsNoteFragmentListener{
-        View getSaveButton();
+    public interface OnShopSettingsNoteFragmentListener {
+        void goToReorderFragment(ArrayList<ShopNoteViewModel> shopNoteViewModels);
     }
 
-    public static ShopSettingsNotesFragment newInstance() {
-        return new ShopSettingsNotesFragment();
+    public static ShopSettingsNotesListFragment newInstance() {
+        return new ShopSettingsNotesListFragment();
     }
 
     @Override
@@ -90,6 +90,12 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        hideSearchInputView();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (shopNoteModels == null || shopNoteModels.size() == 0) {
             inflater.inflate(R.menu.menu_shop_note_list_no_data, menu);
@@ -100,12 +106,9 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        if (isReorderMode) {
-            menu.findItem(R.id.menu_add).setVisible(false);
-            menu.findItem(R.id.menu_reorder).setVisible(false);
-        } else {
-            menu.findItem(R.id.menu_add).setVisible(true);
-            menu.findItem(R.id.menu_reorder).setVisible(true);
+        MenuItem menuItemReorder = menu.findItem(R.id.menu_reorder);
+        if (menuItemReorder != null) {
+            menuItemReorder.setVisible(true);
         }
         super.onPrepareOptionsMenu(menu);
     }
@@ -119,15 +122,7 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
             if (shopNoteModels == null || shopNoteModels.size() == 0) {
                 return true;
             }
-            //to reorder mode list
-            //refresh list first
-            searchInputView.setSearchText(null);
-            recyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    setToReorderMode(true);
-                }
-            });
+            onShopSettingsNoteFragmentListener.goToReorderFragment(shopNoteModels);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -140,35 +135,9 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
         return swipeRefreshLayout;
     }
 
-    private void setToReorderMode(boolean isReorderMode) {
-        this.isReorderMode = isReorderMode;
-        if (isReorderMode) {
-            searchInputView.setVisibility(View.GONE);
-            swipeRefreshLayout.setEnabled(false);
-            onShopSettingsNoteFragmentListener.getSaveButton().setVisibility(View.VISIBLE);
-        } else {
-            searchInputView.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setEnabled(true);
-            onShopSettingsNoteFragmentListener.getSaveButton().setVisibility(View.GONE);
-        }
-        getActivity().invalidateOptionsMenu();
-    }
-
     @Override
     public void onSwipeRefresh() {
         super.onSwipeRefresh();
-    }
-
-    public boolean isReorderMode() {
-        return isReorderMode;
-    }
-
-    public void cancelReorderMode(){
-        setToReorderMode(false);
-    }
-
-    public void saveReorder(){
-        setToReorderMode(false);
     }
 
     @Override
@@ -325,6 +294,7 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
             shopNoteViewModels = shopNoteModels;
         }
         renderList(shopNoteViewModels, false);
+        showSearchViewWithDataSizeCheck();
     }
 
     @Override
@@ -355,16 +325,6 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
     }
 
     @Override
-    public void onSuccessReorderShopNote(String successMessage) {
-
-    }
-
-    @Override
-    public void onErrorReorderShopNote(Throwable throwable) {
-
-    }
-
-    @Override
     public void onSuccessDeleteShopNote(String successMessage) {
         hideSubmitLoading();
         ToasterNormal.make(getActivity().findViewById(android.R.id.content),
@@ -382,6 +342,10 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
         } else {
             shopNoteAdapter.deleteNote(shopNoteIdToDelete);
         }
+    }
+
+    public void refreshData(){
+        loadInitialData();
     }
 
     @Override

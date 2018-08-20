@@ -64,7 +64,11 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     @Override
     public void showGetListError(Throwable throwable) {
         super.showGetListError(throwable);
-        if (getAdapter().getItemCount() > 0) {
+        showSearchViewWithDataSizeCheck();
+    }
+
+    protected void showSearchViewWithDataSizeCheck() {
+        if (getAdapter().getDataSize() > 0) {
             showSearchView(true);
         } else {
             showSearchView(false);
@@ -73,9 +77,17 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
 
     private void showSearchView(boolean isVisible) {
         if (isVisible) {
-            searchInputView.setVisibility(View.VISIBLE);
+            showSearchInputView();
         } else {
-            searchInputView.setVisibility(View.GONE);
+            hideSearchInputView();
         }
+    }
+
+    protected void hideSearchInputView(){
+        searchInputView.setVisibility(View.GONE);
+    }
+
+    protected void showSearchInputView(){
+        searchInputView.setVisibility(View.VISIBLE);
     }
 }

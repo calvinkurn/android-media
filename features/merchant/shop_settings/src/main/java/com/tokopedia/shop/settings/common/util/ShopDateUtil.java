@@ -16,6 +16,7 @@ public class ShopDateUtil {
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     public static final String FORMAT_DAY_DATE = "EEE, dd MMM yyyy";
     public static final String FORMAT_DATE = "dd MMM yyyy";
+    public static final String FORMAT_DATE_TIME = "dd MMM yyyy, 'pukul' HH:mm";
 
     public static Calendar getCurrentCalendar() {
         return Calendar.getInstance();

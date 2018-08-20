@@ -2,14 +2,21 @@ package com.tokopedia.shop.settings.notes.view;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.shop.settings.R;
+import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 
-public class ShopSettingsNotesActivity extends BaseSimpleActivity implements
-        ShopSettingsNotesFragment.OnShopSettingsNoteFragmentListener{
+import java.util.ArrayList;
+import java.util.List;
+
+public class ShopSettingsNotesActivity extends BaseSimpleActivity
+        implements ShopSettingsNotesListFragment.OnShopSettingsNoteFragmentListener,
+        ShopSettingsNotesReorderFragment.OnShopSettingsNotesReorderFragmentListener {
 
     private TextView tvSave;
 
@@ -20,8 +27,8 @@ public class ShopSettingsNotesActivity extends BaseSimpleActivity implements
         tvSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShopSettingsNotesFragment fragment = getCurrentFragment();
-                if (fragment.isReorderMode()) {
+                ShopSettingsNotesReorderFragment fragment = getReorderFragment();
+                if (fragment!= null) {
                     fragment.saveReorder();
                 }
             }
@@ -29,22 +36,23 @@ public class ShopSettingsNotesActivity extends BaseSimpleActivity implements
         tvSave.setVisibility(View.GONE);
     }
 
-    @Override
-    protected Fragment getNewFragment() {
-        return ShopSettingsNotesFragment.newInstance();
+    private ShopSettingsNotesReorderFragment getReorderFragment(){
+        return (ShopSettingsNotesReorderFragment) getSupportFragmentManager()
+                .findFragmentByTag(ShopSettingsNotesReorderFragment.TAG);
     }
 
-
-    private ShopSettingsNotesFragment getCurrentFragment() {
-        return (ShopSettingsNotesFragment) getFragment();
+    @Override
+    protected Fragment getNewFragment() {
+        return ShopSettingsNotesListFragment.newInstance();
     }
 
     @Override
     public void onBackPressed() {
-        ShopSettingsNotesFragment fragment = getCurrentFragment();
-        if (fragment != null && fragment.isReorderMode()) {
-            fragment.cancelReorderMode();
-        } else {
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            tvSave.setVisibility(View.GONE);
+            getSupportFragmentManager().popBackStack();
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -57,4 +65,67 @@ public class ShopSettingsNotesActivity extends BaseSimpleActivity implements
     public View getSaveButton(){
         return tvSave;
     }
+
+    @Override
+    public void goToReorderFragment(ArrayList<ShopNoteViewModel> shopNoteViewModels) {
+        ShopSettingsNotesReorderFragment fragment = ShopSettingsNotesReorderFragment.newInstance(shopNoteViewModels);
+        replaceAndHideOldFragment(fragment,true, ShopSettingsNotesReorderFragment.TAG);
+        tvSave.setVisibility(View.VISIBLE);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onSuccessReorderNotes() {
+        onBackPressed();
+        if (showFragment(getTagFragment())) {
+            ShopSettingsNotesListFragment fragment = (ShopSettingsNotesListFragment) getFragment();
+            if (fragment != null) {
+                fragment.refreshData();
+            }
+        }
+    }
+
+    public void replaceAndHideOldFragment(Fragment fragment, boolean addToBackstack, String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft= fragmentManager.beginTransaction();
+        Fragment currentVisibileFragment = getCurrentVisibleFragment(fragmentManager);
+        if (currentVisibileFragment!= null) {
+            ft.hide(currentVisibileFragment);
+        }
+        if (!addToBackstack) {
+            ft.add(R.id.parent_view, fragment, tag).show(fragment).commit();
+        }
+        else {
+            ft.add(R.id.parent_view, fragment, tag).addToBackStack(tag).show(fragment).commit();
+        }
+    }
+
+    public boolean showFragment(String tag) {
+        Fragment f = getSupportFragmentManager().findFragmentByTag(tag);
+        if (f == null) {
+            return false;
+        } else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction ft= fragmentManager.beginTransaction();
+            Fragment currentVisibileFragment = getCurrentVisibleFragment(fragmentManager);
+            if (currentVisibileFragment!= null) {
+                ft.hide(currentVisibileFragment);
+            }
+            ft.show(f).commit();
+            return true;
+        }
+    }
+
+    // assume only 1 fragment visible
+    private Fragment getCurrentVisibleFragment(FragmentManager fragmentManager){
+        List<Fragment> fragmentList = fragmentManager.getFragments();
+        for (int i =0, sizei = fragmentList.size(); i<sizei; i++) {
+            Fragment f = fragmentList.get(i);
+            if (f!= null && f.isVisible()) {
+                return f;
+            }
+        }
+        return null;
+    }
+
 }

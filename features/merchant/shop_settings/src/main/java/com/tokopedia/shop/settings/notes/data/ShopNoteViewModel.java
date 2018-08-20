@@ -5,9 +5,10 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel;
+import com.tokopedia.shop.settings.basicinfo.view.adapter.BaseShopNoteFactory;
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteFactory;
 
-public class ShopNoteViewModel implements Parcelable, Visitable<ShopNoteFactory>{
+public class ShopNoteViewModel implements Parcelable, Visitable<BaseShopNoteFactory>{
     private String id;
     private String title;
     private String content;
@@ -92,7 +93,7 @@ public class ShopNoteViewModel implements Parcelable, Visitable<ShopNoteFactory>
     };
 
     @Override
-    public int type(ShopNoteFactory typeFactory) {
+    public int type(BaseShopNoteFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

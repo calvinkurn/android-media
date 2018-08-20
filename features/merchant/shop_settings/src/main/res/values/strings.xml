@@ -88,4 +88,5 @@
     <string name="shop_etalase_title_already_exist">Nama Etalase duplikat</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
     <string name="shop_settings_edit_etalase">Ubah Etalase</string>
+    <string name="note_success_reorder">Posisi catatan berhasil diatur</string>
 </resources>
