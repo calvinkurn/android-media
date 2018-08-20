@@ -3,7 +3,6 @@ package com.tokopedia.challenges.view.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
@@ -25,6 +23,7 @@ import com.tokopedia.challenges.view.contractor.SubmissionAdapterContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmissionAdapterPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -43,15 +42,17 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private INavigateToActivityRequest navigateToActivityRequest;
     private boolean isFooterAdded;
     private int orientation;
+    private boolean isPastChallenge;
 
 
-    public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation) {
+    public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation, boolean isPastChallenge) {
         if (categoryItems == null)
             this.categoryItems = new ArrayList<>();
         else
             this.categoryItems = categoryItems;
         this.navigateToActivityRequest = navigateToActivityRequest;
         this.orientation = orientation;
+        this.isPastChallenge = isPastChallenge;
     }
 
     @Override
@@ -233,9 +234,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-               // ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS,categoryItems.get(getIndex()).getTitle(),categoryItems.get(getIndex()).getThumbnailUrl(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(),categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
-                ShareBottomSheet.show(((AppCompatActivity)getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage());
-
+                ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false);
             } else if (v.getId() == R.id.iv_like) {
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
                 if (categoryItems.get(getIndex()).getMe() != null) {
@@ -249,6 +248,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
                 detailsIntent.putExtra("submissionsResult", categoryItems.get(getIndex()));
+                detailsIntent.putExtra("isPastChallenge", isPastChallenge);
                 navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
             }
         }

@@ -5,8 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
-import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 
@@ -15,19 +15,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUseCase {
+public class GetDetailsSubmissionsUseCase extends RestRequestSupportInterceptorUseCase {
 
-    private int start=0;
-    private int size=10;
+    private String postId;
 
     @Inject
-    public GetMySubmissionsListUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
+    public GetDetailsSubmissionsUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 
-    public GetMySubmissionsListUseCase setRequestParams(int start, int size) {
-        this.start = start;
-        this.size = size;
+    public GetDetailsSubmissionsUseCase setRequestParams(String postId) {
+        this.postId = postId;
         return this;
     }
 
@@ -35,7 +33,7 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=all&start="+start+"&size="+size, SubmissionResponse.class)
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.PRIVATE.SUBMISSIONS_DETAILS + postId, SubmissionResult.class)
                 .build();
 
         tempRequest.add(restRequest1);

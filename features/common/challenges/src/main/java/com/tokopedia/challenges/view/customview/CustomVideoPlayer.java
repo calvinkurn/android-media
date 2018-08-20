@@ -24,6 +24,7 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
 
     private VideoView videoView;
     private ImageView thumbNail;
+    private ImageView playIcon;
     private CustomMediaController mediaController;
     private CustomVideoPlayerListener customVideoPlayerListener;
 
@@ -50,13 +51,17 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
         View view = inflate(getContext(), getLayout(), this);
         videoView = view.findViewById(R.id.videoView);
         thumbNail = view.findViewById(R.id.video_thumbnail);
+        playIcon = view.findViewById(R.id.play_icon);
     }
 
     public void setVideoThumbNail(String thumbNailUrl, String videoUrl, boolean isFullScreen, CustomVideoPlayerListener customVideoPlayerListener) {
-        ImageHandler.loadImageThumbs(getContext(), thumbNail, thumbNailUrl);
+        ImageHandler.loadImage(getContext(), thumbNail, thumbNailUrl, R.color.grey_1100, R.color.grey_1100);
         this.videoUrl = videoUrl;
         this.isFullScreen = isFullScreen;
         this.customVideoPlayerListener = customVideoPlayerListener;
+        if (TextUtils.isEmpty(videoUrl)) {
+            playIcon.setVisibility(GONE);
+        }
         startPlay(0);
     }
 
@@ -84,6 +89,7 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
                     @Override
                     public void onClick(View view) {
                         thumbNail.setVisibility(GONE);
+                        playIcon.setVisibility(GONE);
                         Uri video = Uri.parse(videoUrl);
                         if (mediaController == null) {
                             mediaController = new CustomMediaController(getContext(), videoUrl, pos, isFullScreen, CustomVideoPlayer.this);
@@ -96,6 +102,7 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
                             @Override
                             public void onCompletion(MediaPlayer mediaPlayer) {
                                 thumbNail.setVisibility(VISIBLE);
+                                playIcon.setVisibility(VISIBLE);
                                 videoView.seekTo(0);
                                 mediaPlayer.reset();
                             }

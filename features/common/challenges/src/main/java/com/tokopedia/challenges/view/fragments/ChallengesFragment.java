@@ -36,7 +36,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private TextView tvActiveChallenges;
     private TextView tvPastChallenges;
     private LinearLayout emptyLayout;
-    private ProgressBar progressBar;
+    private View progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,17 +57,19 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         tvActiveChallenges = view.findViewById(R.id.tv_active_challenges);
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
         emptyLayout = view.findViewById(R.id.empty_view);
-        progressBar = view.findViewById(R.id.progressbar);
+        progressBar = view.findViewById(R.id.progress_bar_layout);
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
+
         });
 
         tvPastChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getPastChallenges();
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
+
         });
 
         challengeHomePresenter.getOpenChallenges();

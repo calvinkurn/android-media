@@ -12,6 +12,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
@@ -25,6 +26,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    compile project(path: ':libraries:applink')
 }
 
 apply from: '../../../publish_local.gradle'

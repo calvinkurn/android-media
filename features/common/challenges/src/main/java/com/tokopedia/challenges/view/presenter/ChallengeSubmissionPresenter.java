@@ -116,33 +116,41 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                     Result challengeResult = res1.getData();
                     getView().hideProgressBar();
                     getView().showCollapsingHeader();
+                    getView().setChallengeResult(challengeResult);
                     getView().renderChallengeDetail(challengeResult);
+                    getTermsNCondition(challengeResult.getId());
                     loadSubmissions();
                 }
             });
         } else {
             getView().renderChallengeDetail(challengeResult);
+            getTermsNCondition(challengeResult.getId());
             loadSubmissions();
         }
 
     }
 
-    public void loadCountdownView(Result challengeResult) {
-        if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null) {
-            if (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate())) {
-                getView().setCountDownView("Completed");
-                getWinnerList();
-            } else if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
-                getView().setCountDownView("Approved");
-            } else if (challengeResult.getMe().getSubmissionCounts().getDeclined() > 0) {
-                getView().setCountDownView("Declined");
-            } else if (challengeResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-                getView().setCountDownView("Pending");
+    public void loadCountdownView(Result challengeResult, boolean isPastChallenge) {
+        if (challengeResult == null) {
+            return;
+        }
+        if (isPastChallenge) {
+            getView().setCountDownView("Completed");
+            getWinnerList();
+        } else {
+            if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null) {
+                if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
+                    getView().setCountDownView("Approved");
+                } else if (challengeResult.getMe().getSubmissionCounts().getDeclined() > 0) {
+                    getView().setCountDownView("Declined");
+                } else if (challengeResult.getMe().getSubmissionCounts().getWaiting() > 0) {
+                    getView().setCountDownView("Pending");
+                } else {
+                    getView().setCountDownView("");
+                }
             } else {
                 getView().setCountDownView("");
             }
-        } else {
-            getView().setCountDownView("");
         }
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -20,12 +21,15 @@ import rx.Subscriber;
 public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContract.View> implements SubmitDetailContract.Presenter {
     private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
     private PostBuzzPointEventUseCase postBuzzPointEventUseCase;
+    private GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
+
 
 
     @Inject
-    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase) {
+    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase,GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase) {
         this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
         this.postBuzzPointEventUseCase = postBuzzPointEventUseCase;
+        this.getDetailsSubmissionsUseCase = getDetailsSubmissionsUseCase;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         }
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
-        getView().setParticipateTitle(model.getChannel().getTitle());
+        getView().setParticipateTitle(model.getCollection().getTitle());
     }
 
     @Override
@@ -101,5 +105,31 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             }
         });
+    }
+
+    public void getSubmissionDetails(String submissionId){
+        getDetailsSubmissionsUseCase.setRequestParams(submissionId);
+        getDetailsSubmissionsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                RestResponse res1 = typeRestResponseMap.get(SubmissionResult.class);
+                SubmissionResult submissionResult = res1.getData();
+                if (submissionResult != null){
+                    getView().setSubmittResult(submissionResult);
+                    setDataInFields(submissionResult);
+                }
+            }
+        });
+
     }
 }

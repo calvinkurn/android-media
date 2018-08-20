@@ -91,32 +91,6 @@ public class BranchSdkUtils {
         }
     }
 
-    public static void generateBranchLinkWithOGUrl(final ShareData data, final Activity activity, String og_url, String og_title, String og_image_url, final GenerateShareContents ShareContentsCreateListener) {
-
-        if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
-            if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getshareUrl())) {
-                ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl());
-            } else {
-                BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
-                LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
-                branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
-                    @Override
-                    public void onLinkCreate(String url, BranchError error) {
-                        if (error == null) {
-                            ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
-                        } else {
-                            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
-                        }
-                    }
-                });
-            }
-        } else {
-            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), data.renderShareUri());
-
-        }
-    }
-
-
     private static LinkProperties createLinkProperties(ShareData data, String channel, Activity activity) {
         LinkProperties linkProperties = new LinkProperties();
         String deeplinkPath;
@@ -141,6 +115,8 @@ public class BranchSdkUtils {
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
+        } else if (ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }

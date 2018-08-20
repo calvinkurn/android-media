@@ -56,21 +56,15 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
     @Override
     public void onBindViewHolder(BottomSheetShareAdapter.ShareViewHolder holder, int position) {
 
-        CharSequence title =null;
+        CharSequence title = null;
         String type = null;
-        Drawable resources =null;
+        Drawable resources = null;
 
         if (isPositionCopy(position)) {
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.design.R.drawable.ic_btn_copy);
             title = "Copy";
             type = ShareBottomSheet.KEY_COPY;
-        }
-//        else if (isPositionOther(position)) {
-//            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.design.R.drawable.ic_btn_other);
-//            title = "other";//holder.labelView.getContext().getString(com.tokopedia.design.R.string.other);
-//            type = ShareBottomSheet.KEY_OTHER;
-//        }
-        else if (mActivities.size() > position) {
+        } else if (mActivities.size() > position) {
             final ResolveInfo activity = mActivities.get(position);
             resources = activity.loadIcon(mPackageManager);
             title = activity.loadLabel(mPackageManager);

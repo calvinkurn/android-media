@@ -28,6 +28,7 @@ public class CountDownView extends FrameLayout {
     TextView tvHours;
     TextView tvMins;
     TextView tvSecs;
+    TextView tvDays;
     private ProgressBar progressBar;
 
     public CountDownView(Context context, @Nullable AttributeSet attrs) {
@@ -42,6 +43,7 @@ public class CountDownView extends FrameLayout {
 
     private void init() {
         View view = inflate(getContext(), getLayout(), this);
+        tvDays = view.findViewById(R.id.tv_days_value);
         tvHours = view.findViewById(R.id.tv_hours_value);
         tvMins = view.findViewById(R.id.tv_minutes_value);
         tvSecs = view.findViewById(R.id.tv_seconds_value);
@@ -112,10 +114,12 @@ public class CountDownView extends FrameLayout {
     void generateCountdownText(long duration) {
 
         long seconds=duration/1000;
-        long hours = TimeUnit.SECONDS.toHours(seconds);
+        int day = (int) TimeUnit.SECONDS.toDays(seconds);
+        long hours = TimeUnit.SECONDS.toHours(seconds) - (day *24);
         long minute = TimeUnit.SECONDS.toMinutes(seconds) - (TimeUnit.SECONDS.toHours(seconds)* 60);
         long second = TimeUnit.SECONDS.toSeconds(seconds) - (TimeUnit.SECONDS.toMinutes(seconds) *60);
 
+        tvDays.setText(String.valueOf(day));
         if(hours<10)
             tvHours.setText(String.format(getResources().getString(R.string.append_0), hours));
         else

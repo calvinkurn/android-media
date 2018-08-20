@@ -42,6 +42,10 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining = view.findViewById(R.id.tv_time_remaining);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
+        if (isPastChallenge) {
+            imgShare.setVisibility(View.GONE);
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
+        }
         view.setOnClickListener(view1 -> {
             Intent intent = new Intent(view1.getContext(), ChallengeDetailActivity.class);
             intent.putExtra("challengesResult", challengesResult);
@@ -50,8 +54,9 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage());
-            // ((ChallengesModuleRouter)(((Activity)context).getApplication())).shareChallenge( context,ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengesResult.getTitle(),challengesResult.getThumbnailUrl(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
+
+            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPath(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), true);
+            // ((ChallengesModuleRouter)(((Activity)context).getApplication())).generateBranchUrlForChallenge( context,ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengesResult.getTitle(),challengesResult.getThumbnailUrl(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),challengesResult.getSharing().getMetaTags().getOgImage());
         });
     }
 
@@ -75,7 +80,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             tvTimeRemaining.setVisibility(View.VISIBLE);
             tvStatus.setVisibility(View.GONE);
         }
-        ImageHandler.loadImageAndCache(imgChallenge, challengesResult.getThumbnailUrl());
+        ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
     }
 
 }

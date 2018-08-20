@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
@@ -25,6 +26,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -48,10 +50,13 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView detailContent;
     private TextView participateTitle;
     private TextView btnShare;
+    private boolean isPastChallenge;
 
     @Inject
     SubmitDetailPresenter presenter;
     private SubmissionResult model;
+    private TextView participateTextView;
+    private String submissionId;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -87,14 +92,37 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         detailContent = view.findViewById(R.id.detail_content);
 
         participateTitle = view.findViewById(R.id.participate_content);
+        participateTextView = view.findViewById(R.id.participate_title);
         btnShare = view.findViewById(R.id.btn_share);
 
-        model = getArguments().getParcelable("submissionsResult");
-
+        isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
         setClickListeners();
-        presenter.setDataInFields(model);
+        model = getArguments().getParcelable("submissionsResult");
+        if (model == null) {
+            submissionId = getArguments().getString(Utils.QUERY_PARAM_SUBMISSION_ID);
+            presenter.getSubmissionDetails(submissionId);
+        } else {
+            presenter.setDataInFields(model);
+        }
+
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+            if (challengeImage != null)
+                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (challengeImage != null)
+            ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
     }
 
     private void setClickListeners() {
@@ -104,7 +132,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage());
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), model.getSharing().getMetaTags().getOgUrl(), model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, model.getId()), false);
 
         });
 
@@ -167,11 +195,30 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setDetailContent(String content) {
+        if (TextUtils.isEmpty(content)) {
+            detailTitle.setVisibility(View.GONE);
+            challengeTitle.setVisibility(View.GONE);
+        } else {
+            detailTitle.setVisibility(View.VISIBLE);
+            challengeTitle.setVisibility(View.VISIBLE);
+        }
         this.detailContent.setText(content);
     }
 
     public void setParticipateTitle(String participateTitle) {
-        this.participateTitle.setText(participateTitle);
+        if (!isPastChallenge) {
+            this.participateTitle.setText(participateTitle);
+            String applink = "tokopedia://challenges/challenge/" + model.getId();
+            this.participateTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RouteManager.route(getContext(), applink);
+                }
+            });
+        } else {
+            this.participateTitle.setVisibility(View.GONE);
+            this.participateTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -216,5 +263,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void OnVideoStart() {
         presenter.sendBuzzPointEvent(model.getId());
+    }
+
+    @Override
+    public void setSubmittResult(SubmissionResult submissionResult) {
+        model = submissionResult;
     }
 }

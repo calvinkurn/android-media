@@ -84,7 +84,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void bindData(final Prize prize) {
             awardTitle.setText(prize.getTitle());
             awardDescription.setText(prize.getDescription().trim());
-//            ImageHandler.loadImageCircle2(context, awardImage, prize.);
+            ImageHandler.loadImageCircle2(context, awardImage, "");
         }
     }
 }

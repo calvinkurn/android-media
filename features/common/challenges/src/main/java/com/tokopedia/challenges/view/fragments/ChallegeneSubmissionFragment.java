@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -130,7 +131,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             this.challengeResult = getArguments().getParcelable("challengesResult");
         }
-        isWinnerList = true;
+        isWinnerList = getArguments().getBoolean("isPastChallenge", false);
         setHasOptionsMenu(true);
         this.firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
@@ -210,9 +211,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             mPresenter.initialize(false, challengeResult);
         }
 
-        if (isWinnerList) {
-            mPresenter.loadCountdownView(challengeResult);
-        }
+        mPresenter.loadCountdownView(challengeResult, isWinnerList);
         return view;
     }
 
@@ -266,7 +265,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             clSubmissions.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             submissionRecyclerView.setLayoutManager(mLayoutManager);
-            submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+            submissionItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
             submissionRecyclerView.setAdapter(submissionItemAdapter);
         }
     }
@@ -280,8 +279,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             challengeTitle.setVisibility(View.GONE);
         }
-        challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
-                Utils.convertUTCToString(challengeResult.getEndDate())));
+        if (!TextUtils.isEmpty(challengeResult.getEndDate())) {
+            challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
+                    Utils.convertUTCToString(challengeResult.getEndDate())));
+        }
         if (!TextUtils.isEmpty(challengeResult.getHashTag()))
             tvHashTag.setText(challengeResult.getHashTag());
         else {
@@ -342,12 +343,13 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void renderWinnerItems(SubmissionResponse submissionResponse) {
+
         winnerResults = submissionResponse.getSubmissionResults();
         if (winnerResults != null && winnerResults.size() > 0) {
             clWinners.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             winnerRecyclerView.setLayoutManager(mLayoutManager);
-            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL);
+            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
             winnerRecyclerView.setAdapter(winnerItemAdapter);
         }
     }
@@ -454,9 +456,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         } else if (v.getId() == R.id.fab_share) {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage());
-
-//            ((ChallengesModuleRouter) (getActivity().getApplication())).shareChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
+            ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPath(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true);
+//            ((ChallengesModuleRouter) (getActivity().getApplication())).generateBranchUrlForChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
 //                    challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(),
 //                    challengeResult.getSharing().getMetaTags().getOgImage());
         }
@@ -498,6 +499,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public Result getChallengeResult() {
         return challengeResult;
+    }
+
+    @Override
+    public void setChallengeResult(Result challengeResult) {
+        this.challengeResult = challengeResult
     }
 
     @Override

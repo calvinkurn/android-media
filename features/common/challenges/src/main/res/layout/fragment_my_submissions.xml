@@ -15,41 +15,41 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_error_network" />
+            android:text="Oops!"
+            android:textSize="@dimen/dp_24" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Empty"
-            android:textSize="@dimen/sp_20"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="No data found"
+            android:text="There are no challenges available.
+Please check again later."
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_16"
-        android:indeterminate="true" />
+        android:orientation="vertical">
+
+        <include layout="@layout/home_challenge_list_item_loader" />
+
+        <include layout="@layout/home_challenge_list_item_loader" />
+
+        <include layout="@layout/home_challenge_list_item_loader" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_home_submissions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="@dimen/dp_16" />
 </LinearLayout>

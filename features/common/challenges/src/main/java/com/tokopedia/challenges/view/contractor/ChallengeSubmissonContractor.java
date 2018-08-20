@@ -58,6 +58,8 @@ public class ChallengeSubmissonContractor {
         void setSnackBarErrorMessage(String message);
 
         Result getChallengeResult();
+
+        void setChallengeResult(Result challengeResult);
     }
 
     public interface Presenter extends CustomerPresenter<ChallengeSubmissonContractor.View> {

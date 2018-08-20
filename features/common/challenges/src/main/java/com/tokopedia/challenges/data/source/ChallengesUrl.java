@@ -13,6 +13,7 @@ public class ChallengesUrl {
 
     public interface MANAGE {
         String USER_MAP = "manage/users/map";
+        String SHARE_URL_MAP = "manage/submission/share/url";
     }
 
     public interface PRIVATE {
@@ -25,6 +26,8 @@ public class ChallengesUrl {
         String SUBMISSIONS_UNLIKE = "private/%s/track/unlike";
         String CHALLENGES_DETAILS = "private/" + CHALLENGE_ID ;
         String BUZZPOINT_EVENT = "private/%s/track/view";
+        String SUBMISSIONS_DETAILS = "private/";
+
 
 
 
@@ -48,8 +51,8 @@ public class ChallengesUrl {
 
     public interface AppLink {
         String CHALLENGES_HOME = "tokopedia://challenges";
-        String CHALLENGES_DETAILS = "tokopedia://challenges/challenge/{slug}";
-        String SUBMISSION_DETAILS = "tokopedia://challenges/submission/{slug}";
+        String CHALLENGES_DETAILS = "tokopedia://challenges/challenge/{challenge-id}";
+        String SUBMISSION_DETAILS = "tokopedia://challenges/submission/{submission-id}";
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.challenges.view.fragments.submit;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -29,6 +30,7 @@ public interface IChallengesSubmitContract {
         public void selectVideo();
 
         ChallengeSettings getChallengeSettings();
+        Activity getActivity();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
