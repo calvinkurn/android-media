@@ -166,4 +166,14 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         return params;
     }
 
+    @Override
+    public void unsubscribe() {
+        if (uploadImageUseCase != null) {
+            uploadImageUseCase.unsubscribe();
+        }
+        if (submitImageUseCase != null) {
+            submitImageUseCase.unsubscribe();
+        }
+        super.unsubscribe();
+    }
 }
