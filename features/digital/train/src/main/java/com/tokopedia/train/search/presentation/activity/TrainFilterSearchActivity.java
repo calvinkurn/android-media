@@ -26,7 +26,6 @@ import com.tokopedia.train.search.presentation.fragment.TrainFilterSearchFragmen
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.presenter.TrainFilterSearchPresenter;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -248,6 +247,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
+            overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
         }
     }
 
