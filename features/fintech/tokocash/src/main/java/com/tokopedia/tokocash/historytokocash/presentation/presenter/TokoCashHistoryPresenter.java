@@ -2,10 +2,10 @@ package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.TokoCashHistoryContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
+import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
 
 import javax.inject.Inject;
 
@@ -18,16 +18,13 @@ import rx.Subscriber;
 public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistoryContract.View> implements TokoCashHistoryContract.Presenter {
 
     private final GetHistoryDataUseCase getHistoryDataUseCase;
-    private WalletUserSession walletUserSession;
     private UserSession userSession;
     private int page = 1;
 
     @Inject
     public TokoCashHistoryPresenter(GetHistoryDataUseCase getHistoryDataUseCase,
-                                    WalletUserSession walletUserSession,
                                     UserSession userSession) {
         this.getHistoryDataUseCase = getHistoryDataUseCase;
-        this.walletUserSession = walletUserSession;
         this.userSession = userSession;
     }
 
@@ -43,29 +40,25 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().hideWaitingTransaction();
+                        if (e instanceof UserInactivateTokoCashException) {
+                            getView().navigatePageToActivateTokocash();
+                        } else {
+                            getView().hideWaitingTransaction();
+                        }
                     }
 
                     @Override
                     public void onNext(TokoCashHistoryData tokoCashHistoryData) {
                         if (userSession.isLoggedIn()) {
-                            if (isUserInactiveTokoCash()) {
-                                getView().navigatePageToActivateTokocash();
-                            } else {
-                                if (tokoCashHistoryData.getItemHistoryList() != null)
-                                    getView().renderWaitingTransaction(tokoCashHistoryData);
-                                else
-                                    getView().hideWaitingTransaction();
-                            }
+                            if (tokoCashHistoryData.getItemHistoryList() != null)
+                                getView().renderWaitingTransaction(tokoCashHistoryData);
+                            else
+                                getView().hideWaitingTransaction();
                         } else {
                             getView().navigateToLoginPage();
                         }
                     }
                 });
-    }
-
-    private boolean isUserInactiveTokoCash() {
-        return walletUserSession != null && walletUserSession.getTokenWallet().equals("");
     }
 
     @Override

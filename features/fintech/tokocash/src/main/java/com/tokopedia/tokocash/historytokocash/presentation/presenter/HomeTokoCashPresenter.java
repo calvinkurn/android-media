@@ -2,7 +2,6 @@ package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
@@ -24,17 +23,14 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
 
     private GetBalanceTokoCashUseCase balanceTokoCashUseCase;
     private GetHistoryDataUseCase getHistoryDataUseCase;
-    private WalletUserSession walletUserSession;
     private UserSession userSession;
 
     @Inject
     public HomeTokoCashPresenter(GetBalanceTokoCashUseCase balanceTokoCashUseCase,
                                  GetHistoryDataUseCase getHistoryDataUseCase,
-                                 WalletUserSession walletUserSession,
                                  UserSession userSession) {
         this.balanceTokoCashUseCase = balanceTokoCashUseCase;
         this.getHistoryDataUseCase = getHistoryDataUseCase;
-        this.walletUserSession = walletUserSession;
         this.userSession = userSession;
     }
 
@@ -55,24 +51,22 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showEmptyPage(e);
+                        if (e instanceof UserInactivateTokoCashException) {
+                            getView().navigatePageToActivateTokocash();
+                        } else {
+                            getView().showEmptyPage(e);
+                        }
                     }
 
                     @Override
                     public void onNext(TokoCashHistoryData tokoCashHistoryData) {
                         if (userSession.isLoggedIn()) {
-                            if (isUserInactiveTokoCash()) {
-                                getView().navigatePageToActivateTokocash();
-                            }
+                            processGetBalanceTokoCash();
                         } else {
                             getView().navigateToLoginPage();
                         }
                     }
                 });
-    }
-
-    private boolean isUserInactiveTokoCash() {
-        return walletUserSession != null && walletUserSession.getTokenWallet().equals("");
     }
 
     @Override
@@ -89,7 +83,7 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
                 getView().hideProgressLoading();
                 e.printStackTrace();
                 if (e instanceof UserInactivateTokoCashException) {
-                    getView().showErrorMessage();
+                    getView().navigatePageToActivateTokocash();
                 } else {
                     getView().showEmptyPage(e);
                 }
