@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.R;
@@ -13,14 +12,12 @@ import com.tokopedia.challenges.domain.usecase.GetChallegeTermsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.IntializeMultiPartUseCase;
 import com.tokopedia.challenges.view.fragments.submit.IChallengesSubmitContract.Presenter;
-import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 import com.tokopedia.challenges.view.service.UploadChallengeService;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -35,7 +32,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     GetChallengeSettingUseCase mGetChallengeSettingUseCase;
     GetChallegeTermsUseCase mGetChallegeTermsUseCase;
     IntializeMultiPartUseCase mIntializeMultiPartUseCase;
-    public ChallengeSettings settings;
     public static final String ACTION_UPLOAD_COMPLETE =  "action.upload.complete";
 
     @Inject
@@ -53,31 +49,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
-        getView().showProgress("Configuring");
-        mGetChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-
-            @Override
-            public void onCompleted() {
-                getView().hideProgress();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().hideProgress();
-                getView().showMessage("Configuration Fail");
-                getView().finish();
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> restResponse) {
-                RestResponse res1 = restResponse.get(ChallengeSettings.class);
-                settings = res1.getData();
-                if(!settings.isUploadAllowed()) {
-                    getView().showMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
-                    getView().finish();
-                }
-            }
-        });
     }
 
 
@@ -112,8 +83,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                getView().hideProgress();
-                getView().showMessage("Upload Initiated Please Wait");
+              //  getView().hideProgress();
             }
 
             @Override
@@ -127,8 +97,11 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onNext(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
-                getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(),fingerprints,getView().getChallengeResult().getId(),filePath));
-                getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
+                if(fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
+                    getView().showMessage("Upload Initiated Please Wait");
+                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeResult().getId(), filePath));
+                    getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
+                }
             }
         });
 
@@ -146,7 +119,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         public void onReceive(final Context context, final Intent intent) {
             if(intent.getAction() == ACTION_UPLOAD_COMPLETE) {
                 // launch home
-                getView().finish();
+                getView().showMessage("Uploaded Successfully");
+                getView().hideProgress();
+
             }
             deinit();
         }
@@ -185,8 +160,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     @Override
     public void onSelectedImageClick() {
+        ChallengeSettings settings = getView().getChallengeSettings();
         if(settings.isAllowVideos() && settings.isAllowPhotos())  {
-            getView().showImageVideoPicker();
+            getView().selectImageVideo();
         }else if(settings.isAllowPhotos()) {
             getView().selectImage();
             //update UI

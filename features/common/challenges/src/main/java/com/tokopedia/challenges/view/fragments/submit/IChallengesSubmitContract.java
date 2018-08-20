@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 
 public interface IChallengesSubmitContract {
 
@@ -23,9 +24,11 @@ public interface IChallengesSubmitContract {
         public void setChallengeTitle(String text);
         public void setChallengeDescription(String text);
 
-        public void showImageVideoPicker();
+        public void selectImageVideo();
         public void selectImage();
         public void selectVideo();
+
+        ChallengeSettings getChallengeSettings();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

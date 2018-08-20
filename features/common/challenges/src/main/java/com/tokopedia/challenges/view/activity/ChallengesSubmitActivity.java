@@ -6,12 +6,14 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitFragment;
 import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 
 public class ChallengesSubmitActivity extends BaseActivity {
 
-    public static Intent getStartingIntent(Context context, Result challengesResult) {
+    public static Intent getStartingIntent(Context context, Result challengesResult, ChallengeSettings settings) {
         Intent intent = new Intent(context, ChallengesSubmitActivity.class);
         intent.putExtra("challengesResult", challengesResult);
+        intent.putExtra("challengeSettings",settings);
         return intent;
     }
     @Override

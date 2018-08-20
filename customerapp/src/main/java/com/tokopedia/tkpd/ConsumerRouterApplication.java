@@ -66,6 +66,7 @@ import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
+import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -83,6 +84,7 @@ import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -338,6 +340,7 @@ import javax.inject.Inject;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
@@ -888,6 +891,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getGalleryIntent(Activity activity) {
         return GalleryActivity.createIntent(activity, GalleryType.ofImageOnly(), 1, true);
+    }
+
+
+    @Override
+    public Intent getGalleryVideoIntent(Context activity) {
+        return GalleryActivity.createIntent(activity, GalleryType.ofVideoOnly());
+    }
+
+    @Override
+    public Intent getGalleryVideoImageIntent(Context activity) {
+        return GalleryActivity.createIntent(activity, GalleryType.ofAll());
     }
 
     @Override
@@ -2503,6 +2517,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
         actionNavigateByApplinksUrl(activity, applinks, bundle);
     }
+
+    @Override
+    public String getResultSelectionPath(Intent data) {
+        MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
+        return item.getRealPath();
+    }
+
+    public void onShowRationale(Context context, PermissionRequest request, String permission) {
+        RequestPermissionUtil.onShowRationale(context,request,permission);
+    }
+    public void onPermissionDenied(Context context,   String permission) {
+        RequestPermissionUtil.onPermissionDenied(context,permission);
+    }
+    public void onNeverAskAgain(Context context,  String permission) {
+        RequestPermissionUtil.onNeverAskAgain(context,permission);
+    }
+
+
 
     @Override
     public void logoutToHome(Activity activity) {

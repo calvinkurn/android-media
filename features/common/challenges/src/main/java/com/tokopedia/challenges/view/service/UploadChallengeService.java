@@ -65,7 +65,7 @@ public class UploadChallengeService extends BaseService implements IUploadChalle
         uploadFilePath = intent.getStringExtra(UPLOAD_FILE_PATH);
         presenter.uploadChallange();
         createNotification();
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Nullable
@@ -99,6 +99,7 @@ public class UploadChallengeService extends BaseService implements IUploadChalle
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true);
     }
 

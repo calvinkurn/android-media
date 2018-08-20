@@ -1,75 +1,114 @@
 package com.tokopedia.challenges.view.model.upload;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.challenges.view.model.Me;
 import com.tokopedia.challenges.view.model.upload.Collection;
 
-public class ChallengeSettings{
+import java.io.Serializable;
 
-	@SerializedName("UploadAllowed")
-	private boolean uploadAllowed;
+public class ChallengeSettings implements Parcelable {
 
-	@SerializedName("Me")
-	private Me me;
+    @SerializedName("UploadAllowed")
+    private boolean uploadAllowed;
 
-	@SerializedName("Collection")
-	private Collection collection;
+    @SerializedName("Me")
+    private Me me;
 
-	@SerializedName("AllowVideos")
-	private boolean allowVideos;
+    @SerializedName("Collection")
+    private Collection collection;
 
-	@SerializedName("AllowPhotos")
-	private boolean allowPhotos;
+    @SerializedName("AllowVideos")
+    private boolean allowVideos;
 
-	public void setUploadAllowed(boolean uploadAllowed){
-		this.uploadAllowed = uploadAllowed;
-	}
+    @SerializedName("AllowPhotos")
+    private boolean allowPhotos;
 
-	public boolean isUploadAllowed(){
-		return uploadAllowed;
-	}
+    public void setUploadAllowed(boolean uploadAllowed) {
+        this.uploadAllowed = uploadAllowed;
+    }
 
-	public void setMe(Me me){
-		this.me = me;
-	}
+    public boolean isUploadAllowed() {
+        return uploadAllowed;
+    }
 
-	public Me getMe(){
-		return me;
-	}
+    public void setMe(Me me) {
+        this.me = me;
+    }
 
-	public void setCollection(Collection collection){
-		this.collection = collection;
-	}
+    public Me getMe() {
+        return me;
+    }
 
-	public Collection getCollection(){
-		return collection;
-	}
+    public void setCollection(Collection collection) {
+        this.collection = collection;
+    }
 
-	public void setAllowVideos(boolean allowVideos){
-		this.allowVideos = allowVideos;
-	}
+    public Collection getCollection() {
+        return collection;
+    }
 
-	public boolean isAllowVideos(){
-		return allowVideos;
-	}
+    public void setAllowVideos(boolean allowVideos) {
+        this.allowVideos = allowVideos;
+    }
 
-	public void setAllowPhotos(boolean allowPhotos){
-		this.allowPhotos = allowPhotos;
-	}
+    public boolean isAllowVideos() {
+        return allowVideos;
+    }
 
-	public boolean isAllowPhotos(){
-		return allowPhotos;
-	}
+    public void setAllowPhotos(boolean allowPhotos) {
+        this.allowPhotos = allowPhotos;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"ChallengeSettings{" + 
-			"uploadAllowed = '" + uploadAllowed + '\'' + 
-			",me = '" + me + '\'' + 
-			",collection = '" + collection + '\'' + 
-			",allowVideos = '" + allowVideos + '\'' + 
-			",allowPhotos = '" + allowPhotos + '\'' + 
-			"}";
-		}
+    public boolean isAllowPhotos() {
+        return allowPhotos;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "ChallengeSettings{" +
+                        "uploadAllowed = '" + uploadAllowed + '\'' +
+                        ",me = '" + me + '\'' +
+                        ",collection = '" + collection + '\'' +
+                        ",allowVideos = '" + allowVideos + '\'' +
+                        ",allowPhotos = '" + allowPhotos + '\'' +
+                        "}";
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.uploadAllowed ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.allowVideos ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.allowPhotos ? (byte) 1 : (byte) 0);
+    }
+
+    public ChallengeSettings() {
+    }
+
+    protected ChallengeSettings(Parcel in) {
+        this.uploadAllowed = in.readByte() != 0;
+        this.allowVideos = in.readByte() != 0;
+        this.allowPhotos = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<ChallengeSettings> CREATOR = new Parcelable.Creator<ChallengeSettings>() {
+        @Override
+        public ChallengeSettings createFromParcel(Parcel source) {
+            return new ChallengeSettings(source);
+        }
+
+        @Override
+        public ChallengeSettings[] newArray(int size) {
+            return new ChallengeSettings[size];
+        }
+    };
 }
