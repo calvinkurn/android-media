@@ -3,9 +3,9 @@ package com.tokopedia.checkout.view.di.module;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressScope;
-import com.tokopedia.checkout.view.view.multipleaddressform.IMultipleAddressPresenter;
-import com.tokopedia.checkout.view.view.multipleaddressform.IMultipleAddressView;
-import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressPresenter;
+import com.tokopedia.checkout.view.feature.multipleaddressform.IMultipleAddressPresenter;
+import com.tokopedia.checkout.view.feature.multipleaddressform.IMultipleAddressView;
+import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressPresenter;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 

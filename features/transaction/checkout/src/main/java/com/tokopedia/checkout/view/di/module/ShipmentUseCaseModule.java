@@ -1,10 +1,8 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
-import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
