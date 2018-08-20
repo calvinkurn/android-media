@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.tkpdpdp.R
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel
 import com.tokopedia.tkpdpdp.estimasiongkir.constant.RatesEstimationConstant
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel
 import com.tokopedia.tkpdpdp.estimasiongkir.di.RatesEstimationComponent
 import com.tokopedia.tkpdpdp.estimasiongkir.listener.RatesEstimationDetailView
 import com.tokopedia.tkpdpdp.estimasiongkir.presentation.presenter.RatesEstimationDetailPresenter
@@ -34,8 +35,9 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
     @Inject
     lateinit var userSession: UserSession
 
-    private var productId: String = ""
-    private var productWeightFmt: String = ""
+    private var shopDomain: String = ""
+    private var productWeightUnit: String = ""
+    private var productWeight = 0f
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -53,22 +55,25 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            productId = it.getString(RatesEstimationConstant.PARAM_PRODUCT_ID, "")
-            productWeightFmt = it.getString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, "")
+            shopDomain = it.getString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, "")
+            productWeightUnit = it.getString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, "")
+            productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recycler_view.adapter = adapter
         recycler_view.addItemDecoration(DividerItemDecoration(activity))
 
-        shipping_weight.text = getString(R.string.rate_est_detail_weight_fmt, productWeightFmt)
+        shipping_weight.text = getString(R.string.rate_est_detail_weight_fmt, productWeight,
+                if (productWeightUnit.toLowerCase() == "gr") "gram" else productWeightUnit)
 
         getCostEstimation()
     }
 
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
-        presenter.getCostEstimation(GraphqlHelper.loadRawString(resources, R.raw.gql_pdp_estimasi_ongkir), productId)
+        val weightInKg: Float = if (productWeightUnit.toLowerCase() == "gr") (productWeight/1000) else productWeight
+        presenter.getCostEstimation(GraphqlHelper.loadRawString(resources, R.raw.gql_pdp_estimasi_ongkir), weightInKg, shopDomain)
     }
 
     private fun setViewState(viewLoading: Int) {
@@ -95,17 +100,20 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
 
     }
 
-    override fun onSuccesLoadRateEstimaion(ratesModel: RatesModel) {
-        shipping_destination.text = getString(R.string.rate_est_detail_dest_fmt, ratesModel.texts.textDestination)
-        val title = getString(R.string.shipping_receiver_text, userSession!!.name, "Alamat Kantor")
+    override fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel) {
+        val address = ratesEstimationModel.address
+        val ratesEstimation = ratesEstimationModel.rates
+
+        shipping_destination.text = getString(R.string.rate_est_detail_dest_fmt, ratesEstimation.texts.textDestination)
+        val title = getString(R.string.shipping_receiver_text, userSession.name, "Alamat Kantor")
         val spannableString = SpannableString(title)
         spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, userSession.name.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(activity!!, R.color.font_black_disabled_38)),
                 userSession.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         shipping_receiver_name.text = spannableString
         shipping_receiver_address.text = String.format("%s\n%s", "0817 1234 5678",
-                "Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2, Tokopedia Lt. 2, Jakarta")
-        adapter.updateShippingServices(ratesModel.attributes)
+                "${address.address}, ${address.districtName}, ${address.cityName}, ${address.provinceName}, ${address.postalCode}")
+        adapter.updateShippingServices(ratesEstimation.attributes)
         setViewState(VIEW_CONTENT)
     }
 
@@ -113,10 +121,11 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         private val VIEW_CONTENT = 1
         private val VIEW_LOADING = 2
 
-        fun createInstance(productId: String, productWeightFmt: String) = RatesEstimationDetailFragment().apply {
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String) = RatesEstimationDetailFragment().apply {
             arguments = Bundle().apply {
-                putString(RatesEstimationConstant.PARAM_PRODUCT_ID, productId)
-                putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeightFmt)
+                putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
+                putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
+                putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
             }
         }
     }

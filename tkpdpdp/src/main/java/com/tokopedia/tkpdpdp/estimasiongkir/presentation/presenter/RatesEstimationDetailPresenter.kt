@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp.estimasiongkir.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel
 import com.tokopedia.tkpdpdp.estimasiongkir.listener.RatesEstimationDetailView
@@ -18,9 +19,9 @@ constructor(private val useCase: GetRateEstimationUseCase, private val userSessi
         super.detachView()
     }
 
-    fun getCostEstimation(rawQuery: String, productId: String) {
-        useCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productId, userSession.userId),
-                object : Subscriber<RatesModel>() {
+    fun getCostEstimation(rawQuery: String, productWeight: Float, shopDomain: String = "") {
+        useCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productWeight, shopDomain),
+                object : Subscriber<RatesEstimationModel>() {
                     override fun onCompleted() {}
 
                     override fun onError(throwable: Throwable) {
@@ -28,8 +29,8 @@ constructor(private val useCase: GetRateEstimationUseCase, private val userSessi
                         view?.onErrorLoadRateEstimaion(throwable)
                     }
 
-                    override fun onNext(ratesModel: RatesModel) {
-                        view?.onSuccesLoadRateEstimaion(ratesModel)
+                    override fun onNext(ratesEstimationModel: RatesEstimationModel) {
+                        view?.onSuccesLoadRateEstimaion(ratesEstimationModel)
                     }
                 })
     }

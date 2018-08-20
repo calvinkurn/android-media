@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -845,6 +846,19 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
         presenter.processGetGTMTicker();
+
+        float weight = 0f;
+        try {
+            weight = Float.parseFloat(successResult.getInfo().getProductWeight());
+        } catch (Exception e){}
+
+        if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())){
+            weight /= 1000;
+        }
+
+        presenter.getCostEstimation(GraphqlHelper.loadRawString(getResources(), R.raw.gql_pdp_estimasi_ongkir),
+                weight, successResult.getShopInfo().getShopDomain());
+
         this.productData = successResult;
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
@@ -1187,8 +1201,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else {
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
-            presenter.getCostEstimation(GraphqlHelper.loadRawString(getResources(), R.raw.gql_pdp_estimasi_ongkir),
-                    productPass.getProductId(), userSession.getUserId());
         }
     }
 
@@ -2047,8 +2059,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void refreshData() {
         presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
-        presenter.getCostEstimation(GraphqlHelper.loadRawString(getResources(), R.raw.gql_pdp_estimasi_ongkir),
-                productPass.getProductId(), userSession.getUserId());
     }
 
     @Override
@@ -2058,8 +2068,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void moveToEstimationDetail() {
-        startActivity(RatesEstimationDetailActivity.Companion.createIntent(getActivity(), productPass.getProductId(),
-                (productData.getInfo().getProductWeight()+productData.getInfo().getProductWeightUnit())));
+        startActivity(RatesEstimationDetailActivity.Companion.createIntent(getActivity(), productData.getShopInfo().getShopDomain(),
+                Float.parseFloat(productData.getInfo().getProductWeight()), productData.getInfo().getProductWeightUnit()));
     }
 
     private void renderTopAds(int itemSize) {
