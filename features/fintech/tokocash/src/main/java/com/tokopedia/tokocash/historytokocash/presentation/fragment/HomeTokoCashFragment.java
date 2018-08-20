@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -39,6 +40,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     private static final int REQUEST_CODE_LOGIN = 1007;
 
     private RelativeLayout mainContent;
+    private LinearLayout mainHome;
     private ProgressBar progressLoading;
 
     private BalanceTokoCashView balanceTokoCashView;
@@ -69,6 +71,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         mainContent = view.findViewById(R.id.main_content);
         progressLoading = view.findViewById(R.id.pb_main_loading);
         topupFrameLayout = view.findViewById(R.id.topup_tokocash_layout);
+        mainHome = view.findViewById(R.id.main_home);
         return view;
     }
 
@@ -78,7 +81,6 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         this.topUpAvailable = getArguments().getBoolean(EXTRA_TOP_UP_AVAILABLE, true);
         bottomSheetTokoCashView = new BottomSheetView(getActivity());
         presenter.getHistoryTokocashForRefreshingTokenWallet();
-        presenter.processGetBalanceTokoCash();
 
         if (savedInstanceState == null) {
             if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
@@ -103,14 +105,14 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     @Override
     public void showProgressLoading() {
         progressLoading.setVisibility(View.VISIBLE);
-        mainContent.setVisibility(View.GONE);
+        mainHome.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProgressLoading() {
         if (progressLoading.getVisibility() == View.VISIBLE) {
             progressLoading.setVisibility(View.GONE);
-            mainContent.setVisibility(View.VISIBLE);
+            mainHome.setVisibility(View.VISIBLE);
         }
     }
 

@@ -37,36 +37,41 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
     //This method is just for refreshing token wallet when token is expired from applinks
     @Override
     public void getHistoryTokocashForRefreshingTokenWallet() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetHistoryDataUseCase.TYPE, "pending");
-        requestParams.putString(GetHistoryDataUseCase.START_DATE, "");
-        requestParams.putString(GetHistoryDataUseCase.END_DATE, "");
-        requestParams.putString(GetHistoryDataUseCase.PAGE, "1");
-        getHistoryDataUseCase.execute(requestParams,
-                new Subscriber<TokoCashHistoryData>() {
-                    @Override
-                    public void onCompleted() {
+        if (userSession.isLoggedIn()) {
+            getView().showProgressLoading();
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString(GetHistoryDataUseCase.TYPE, "pending");
+            requestParams.putString(GetHistoryDataUseCase.START_DATE, "");
+            requestParams.putString(GetHistoryDataUseCase.END_DATE, "");
+            requestParams.putString(GetHistoryDataUseCase.PAGE, "1");
+            getHistoryDataUseCase.execute(requestParams,
+                    new Subscriber<TokoCashHistoryData>() {
+                        @Override
+                        public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e instanceof UserInactivateTokoCashException) {
-                            getView().navigatePageToActivateTokocash();
-                        } else {
-                            getView().showEmptyPage(e);
                         }
-                    }
 
-                    @Override
-                    public void onNext(TokoCashHistoryData tokoCashHistoryData) {
-                        if (userSession.isLoggedIn()) {
+                        @Override
+                        public void onError(Throwable e) {
+                            if (isViewAttached()) {
+                                if (e instanceof UserInactivateTokoCashException) {
+                                    getView().navigatePageToActivateTokocash();
+                                } else {
+                                    getView().hideProgressLoading();
+                                    getView().showEmptyPage(e);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNext(TokoCashHistoryData tokoCashHistoryData) {
+                            getView().hideProgressLoading();
                             processGetBalanceTokoCash();
-                        } else {
-                            getView().navigateToLoginPage();
                         }
-                    }
-                });
+                    });
+        } else {
+            getView().navigateToLoginPage();
+        }
     }
 
     @Override
@@ -80,11 +85,8 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
 
             @Override
             public void onError(Throwable e) {
-                getView().hideProgressLoading();
-                e.printStackTrace();
-                if (e instanceof UserInactivateTokoCashException) {
-                    getView().navigatePageToActivateTokocash();
-                } else {
+                if (isViewAttached()) {
+                    getView().hideProgressLoading();
                     getView().showEmptyPage(e);
                 }
             }
@@ -99,6 +101,7 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
 
     @Override
     public void onDestroyView() {
+        detachView();
         if (balanceTokoCashUseCase != null)
             balanceTokoCashUseCase.unsubscribe();
     }

@@ -40,60 +40,64 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof UserInactivateTokoCashException) {
-                            getView().navigatePageToActivateTokocash();
-                        } else {
+                        if (isViewAttached())
                             getView().hideWaitingTransaction();
-                        }
                     }
 
                     @Override
                     public void onNext(TokoCashHistoryData tokoCashHistoryData) {
-                        if (userSession.isLoggedIn()) {
-                            if (tokoCashHistoryData.getItemHistoryList() != null)
-                                getView().renderWaitingTransaction(tokoCashHistoryData);
-                            else
-                                getView().hideWaitingTransaction();
-                        } else {
-                            getView().navigateToLoginPage();
-                        }
+                        if (tokoCashHistoryData.getItemHistoryList() != null)
+                            getView().renderWaitingTransaction(tokoCashHistoryData);
+                        else
+                            getView().hideWaitingTransaction();
+
                     }
                 });
     }
 
     @Override
     public void getInitHistoryTokoCash() {
-        page = 1;
-        getHistoryDataUseCase.execute(getView().getHistoryTokoCashParam(false, page),
-                new Subscriber<TokoCashHistoryData>() {
-                    @Override
-                    public void onCompleted() {
+        if (userSession.isLoggedIn()) {
+            page = 1;
+            getHistoryDataUseCase.execute(getView().getHistoryTokoCashParam(false, page),
+                    new Subscriber<TokoCashHistoryData>() {
+                        @Override
+                        public void onCompleted() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().hideLoading();
-                        getView().renderEmptyPage(e);
-                    }
-
-                    @Override
-                    public void onNext(TokoCashHistoryData tokoCashHistoryData) {
-                        getView().hideLoading();
-                        if (tokoCashHistoryData.getItemHistoryList().size() == 0 && !tokoCashHistoryData.isNext_uri()) {
-                            getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
-                            getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
-                        } else {
-                            if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
-                                getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
-                                getView().setHasNextPage(tokoCashHistoryData.isNext_uri());
-                                if (tokoCashHistoryData.isNext_uri()) page++;
-                            } else {
-                                getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                        @Override
+                        public void onError(Throwable e) {
+                            if (isViewAttached()) {
+                                if (e instanceof UserInactivateTokoCashException) {
+                                    getView().navigatePageToActivateTokocash();
+                                } else {
+                                    getView().hideLoading();
+                                    getView().renderEmptyPage(e);
+                                }
                             }
                         }
-                    }
-                });
+
+                        @Override
+                        public void onNext(TokoCashHistoryData tokoCashHistoryData) {
+                            getView().hideLoading();
+                            if (tokoCashHistoryData.getItemHistoryList().size() == 0 && !tokoCashHistoryData.isNext_uri()) {
+                                getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
+                                getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                            } else {
+                                if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
+                                    getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
+                                    getView().setHasNextPage(tokoCashHistoryData.isNext_uri());
+                                    if (tokoCashHistoryData.isNext_uri()) page++;
+                                } else {
+                                    getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                                }
+                            }
+                        }
+                    });
+        } else {
+            getView().navigateToLoginPage();
+        }
     }
 
     @Override
@@ -107,7 +111,8 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().renderErrorMessage(e);
+                        if (isViewAttached())
+                            getView().renderErrorMessage(e);
                     }
 
                     @Override
@@ -123,6 +128,7 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
     @Override
     public void onDestroyPresenter() {
+        detachView();
         if (getHistoryDataUseCase != null) getHistoryDataUseCase.unsubscribe();
     }
 }
