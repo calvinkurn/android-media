@@ -131,9 +131,16 @@ public class Utils {
 
     }
 
-    public static String getApplinkPath(String url, String id) {
+    public static String getApplinkPathForBranch(String url, String id) {
         if (url != null && id != null) {
             url = url.replace(Constants.Schemes.APPLINKS + "://", "");
+            url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
+        }
+        return url;
+    }
+
+    public static String getApplinkPathWithPrefix(String url, String id) {
+        if (url != null && id != null) {
             url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
         }
         return url;

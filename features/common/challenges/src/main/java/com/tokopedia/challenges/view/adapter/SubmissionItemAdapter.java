@@ -234,7 +234,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-                ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false);
+                ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false);
             } else if (v.getId() == R.id.iv_like) {
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
                 if (categoryItems.get(getIndex()).getMe() != null) {

@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -132,7 +130,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), model.getSharing().getMetaTags().getOgUrl(), model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, model.getId()), false);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), model.getSharing().getMetaTags().getOgUrl(), model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, model.getId()), false);
 
         });
 
@@ -208,13 +206,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setParticipateTitle(String participateTitle) {
         if (!isPastChallenge) {
             this.participateTitle.setText(participateTitle);
-            String applink = "tokopedia://challenges/challenge/" + model.getId();
-            this.participateTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    RouteManager.route(getContext(), applink);
-                }
-            });
+
+            String applink = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getCollection().getId());
+            this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
         } else {
             this.participateTitle.setVisibility(View.GONE);
             this.participateTextView.setVisibility(View.GONE);
