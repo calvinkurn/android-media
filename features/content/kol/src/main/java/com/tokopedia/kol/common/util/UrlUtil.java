@@ -38,8 +38,12 @@ public class UrlUtil {
 
     public static void setTextWithClickableTokopediaUrl(TextView textView, String text,
                                                         Object spanBehaviour) {
-        textView.setText(MethodChecker.fromHtml(text));
+        if (spanBehaviour == null) {
+            setTextWithClickableTokopediaUrl(textView, text);
+            return;
+        }
 
+        textView.setText(MethodChecker.fromHtml(text));
         SpannableString spannableText = new SpannableString(textView.getText());
         Matcher matcher = pattern.matcher(spannableText);
         while (matcher.find()) {
