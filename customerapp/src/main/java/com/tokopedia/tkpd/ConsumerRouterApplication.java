@@ -1739,24 +1739,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
         return CartComponentInjector.newInstance(this).getAddToCartUseCase()
                 .createObservable(requestParams)
-                .map(new Func1<AddToCartDataResponse, AddToCartResult>() {
-                    @Override
-                    public AddToCartResult call(AddToCartDataResponse addToCartDataResponse) {
-                        List<String> messageList = addToCartDataResponse.getMessage();
-                        StringBuilder stringBuilder = new StringBuilder();
-                        for (int i = 0; i < messageList.size(); i++) {
-                            String string = messageList.get(i);
-                            stringBuilder.append(string);
-                            stringBuilder.append(" ");
-                        }
-                        return new AddToCartResult.Builder()
-                                .message(stringBuilder.toString())
-                                .success(addToCartDataResponse.getSuccess() == 1)
-                                .cartId(addToCartDataResponse.getData() != null
-                                        ? String.valueOf(addToCartDataResponse.getData().getCartId())
-                                        : "")
-                                .build();
+                .map(addToCartDataResponse -> {
+                    List<String> messageList = addToCartDataResponse.getMessage();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int i = 0; i < messageList.size(); i++) {
+                        String string = messageList.get(i);
+                        stringBuilder.append(string);
+                        stringBuilder.append(" ");
                     }
+                    return new AddToCartResult.Builder()
+                            .message(stringBuilder.toString())
+                            .success(addToCartDataResponse.getSuccess() == 1)
+                            .cartId(addToCartDataResponse.getData() != null
+                                    ? String.valueOf(addToCartDataResponse.getData().getCartId())
+                                    : "")
+                            .build();
                 });
     }
 
