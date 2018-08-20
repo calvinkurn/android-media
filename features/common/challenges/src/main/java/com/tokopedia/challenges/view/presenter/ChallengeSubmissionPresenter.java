@@ -1,16 +1,21 @@
 package com.tokopedia.challenges.view.presenter;
 
+import android.view.View;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsUseCase;
+import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.GetTermsNConditionUseCase;
 import com.tokopedia.challenges.domain.usecase.GetWinnersUseCase;
+import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
+import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 
@@ -23,13 +28,15 @@ import rx.Subscriber;
 
 public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeSubmissonContractor.View> implements ChallengeSubmissonContractor.Presenter {
 
+    private final GetChallengeSettingUseCase getChallengeSettingUseCase;
     GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
     GetTermsNConditionUseCase getTermsNConditionUseCase;
     GetChallengeDetailsUseCase getChallengeDetailsUseCase;
     GetWinnersUseCase getWinnersUseCase;
 
     @Inject
-    public ChallengeSubmissionPresenter(GetChallengeDetailsUseCase getChallengeDetailsUseCase, GetSubmissionChallengesUseCase getSubmissionChallengesUseCase, GetTermsNConditionUseCase getTermsNConditionUseCase, GetWinnersUseCase getWinnersUseCase) {
+    public ChallengeSubmissionPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallengeDetailsUseCase getChallengeDetailsUseCase, GetSubmissionChallengesUseCase getSubmissionChallengesUseCase, GetTermsNConditionUseCase getTermsNConditionUseCase, GetWinnersUseCase getWinnersUseCase) {
+        this.getChallengeSettingUseCase = mGetChallengeSettingUseCase;
         this.getSubmissionChallengesUseCase = getSubmissionChallengesUseCase;
         this.getTermsNConditionUseCase = getTermsNConditionUseCase;
         this.getChallengeDetailsUseCase = getChallengeDetailsUseCase;
@@ -39,6 +46,36 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     @Override
     public void initialize(boolean loadFromApi, Result challengeResult) {
         getSubmissionChallenges(loadFromApi, challengeResult);
+        getTermsNCondition(challengeResult.getId());
+        getChallengeSettingUseCase.setCHALLENGE_ID(challengeResult.getId());
+    }
+
+    @Override
+    public void onSubmitButtonClick() {
+        getView().showProgressBar();
+        getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+
+            @Override
+            public void onCompleted() {
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> restResponse) {
+                RestResponse res1 = restResponse.get(ChallengeSettings.class);
+                ChallengeSettings settings = res1.getData();
+                if(!settings.isUploadAllowed()) {
+                    getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
+                }else {
+                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), getView().getChallengeResult(),settings));;
+                }
+            }
+        });
     }
 
     @Override

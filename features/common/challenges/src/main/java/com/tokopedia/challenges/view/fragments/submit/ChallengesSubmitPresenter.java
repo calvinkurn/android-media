@@ -59,31 +59,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
-        getView().showProgress("Configuring");
-        mGetChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-
-            @Override
-            public void onCompleted() {
-                getView().hideProgress();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().hideProgress();
-                getView().showMessage("Configuration Fail");
-                getView().finish();
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> restResponse) {
-                RestResponse res1 = restResponse.get(ChallengeSettings.class);
-                settings = res1.getData();
-                if (!settings.isUploadAllowed()) {
-                    getView().showMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
-                    getView().finish();
-                }
-            }
-        });
     }
 
 
@@ -117,8 +92,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                getView().hideProgress();
-                getView().showMessage("Upload Initiated Please Wait");
+              //  getView().hideProgress();
             }
 
             @Override
@@ -132,8 +106,11 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onNext(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
-                getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeResult().getId(), filePath));
-                getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
+                if(fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
+                    getView().showMessage("Upload Initiated Please Wait");
+                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeResult().getId(), filePath));
+                    getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
+                }
                 postId = fingerprints.getNewPostId();
             }
         });
@@ -151,6 +128,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         public void onReceive(final Context context, final Intent intent) {
             if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
                 // launch home
+                getView().showMessage("Uploaded Successfully");
+                getView().hideProgress();
+
                 // getView().finish();
                 if (!TextUtils.isEmpty(postId)) {
                     getSubmissionDetail();
@@ -192,6 +172,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     @Override
     public void onSelectedImageClick() {
+        ChallengeSettings settings = getView().getChallengeSettings();
+        if(settings.isAllowVideos() && settings.isAllowPhotos())  {
+            getView().selectImageVideo();
+        }else if(settings.isAllowPhotos()) {
         if (settings.isAllowVideos() && settings.isAllowPhotos()) {
             getView().showImageVideoPicker();
         } else if (settings.isAllowPhotos()) {

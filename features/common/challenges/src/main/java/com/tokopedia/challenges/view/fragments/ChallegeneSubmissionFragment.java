@@ -38,7 +38,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
@@ -56,8 +55,9 @@ import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.usecase.RequestParams;
-
 
 import java.util.List;
 
@@ -449,7 +449,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
         } else if (v.getId() == R.id.ll_continue) {
-            startActivity(ChallengesSubmitActivity.getStartingIntent(getContext(), challengeResult));
+            mPresenter.onSubmitButtonClick();
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
         } else if (v.getId() == R.id.seemorebutton_tnc) {
@@ -469,8 +469,40 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     @Override
+    public void finish() {
+        getActivity().finish();
+    }
+
+    @Override
+    public void setSnackBarErrorMessage(String message, View.OnClickListener listener) {
+        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+
+        ToasterError
+                .make(rootView,
+                        message,
+                        BaseToaster.LENGTH_LONG)
+                .setAction(getResources().getString(R.string.title_ok),
+                        listener)
+                .show();
+    }
+
+    @Override
+    public void setSnackBarErrorMessage(String message) {
+        setSnackBarErrorMessage(message,new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+    }
+
+    @Override
+    public Result getChallengeResult() {
+        return challengeResult;
+    }
+
+    @Override
     public void setChallengeResult(Result challengeResult) {
-        this.challengeResult = challengeResult;
+        this.challengeResult = challengeResult
     }
 
     @Override

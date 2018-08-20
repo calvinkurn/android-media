@@ -3,12 +3,16 @@ package com.tokopedia.challenges.view.contractor;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -47,6 +51,13 @@ public class ChallengeSubmissonContractor {
         void setCountDownView(String participatedText);
 
         void renderWinnerItems(SubmissionResponse submissionResponse);
+        void finish();
+
+        void setSnackBarErrorMessage(String message, android.view.View.OnClickListener listener);
+
+        void setSnackBarErrorMessage(String message);
+
+        Result getChallengeResult();
 
         void setChallengeResult(Result challengeResult);
     }
@@ -54,6 +65,8 @@ public class ChallengeSubmissonContractor {
     public interface Presenter extends CustomerPresenter<ChallengeSubmissonContractor.View> {
 
         void initialize(boolean loadFromApi, Result challengeResult);
+
+        void onSubmitButtonClick();
 
         void onDestroy();
 
