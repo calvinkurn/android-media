@@ -324,7 +324,7 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
 
     @Override
     public void actionImagePicker() {
-        imageUploadHandler.actionImagePicker();
+        
     }
 
     @Override

@@ -6,8 +6,8 @@ package com.tokopedia.shop.common.constant;
 
 public class ShopUrl extends ShopCommonUrl {
 
-    public static String BASE_ACE_URL = "https://ace.tokopedia.com";
-    public static String BASE_OFFICIAL_STORE_URL = "https://mojito.tokopedia.com";
+    public static String BASE_ACE_URL = "https://ace.tokopedia.com/";
+    public static String BASE_OFFICIAL_STORE_URL = "https://mojito.tokopedia.com/";
 
     public static final String SHOP_NOTE_PATH = "v1/shop/shop_note";
     public static final String SHOP_PRODUCT_PATH = "v1/web-service/shop/get_shop_product";

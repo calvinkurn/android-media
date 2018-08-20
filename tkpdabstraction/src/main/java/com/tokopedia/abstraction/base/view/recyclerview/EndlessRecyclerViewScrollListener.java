@@ -12,37 +12,45 @@ import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
  */
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 
-    private static final int STARTING_PAGE_INDEX = 0;
-    private int visibleThreshold = 2;
-    private int currentPage = 0;
-    private int currentItemCount = 0;
-    private boolean loading = false;
-    private boolean hasNextPage = true;
+    protected static final int STARTING_PAGE_INDEX = 0;
+    protected int visibleThreshold = 2;
+    protected int currentPage = 0;
+    protected int currentItemCount = 0;
+    protected boolean loading = false;
+    protected boolean hasNextPage = true;
     private EndlessLayoutManagerListener endlessLayoutManagerListener;
 
     private RecyclerView.LayoutManager layoutManager;
 
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
+        resetState();
         this.layoutManager = layoutManager;
     }
 
     public EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager) {
+        resetState();
         this.layoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
     public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
+        resetState();
         this.layoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
     public EndlessRecyclerViewScrollListener(RecyclerView.LayoutManager layoutManager) {
+        resetState();
         this.layoutManager = layoutManager;
         if (layoutManager instanceof GridLayoutManager) {
             visibleThreshold = visibleThreshold * ((GridLayoutManager)layoutManager).getSpanCount();
         } else if (layoutManager instanceof StaggeredGridLayoutManager){
             visibleThreshold = visibleThreshold * ((StaggeredGridLayoutManager)layoutManager).getSpanCount();
         }
+    }
+
+    protected void init(){
+
     }
 
     public void setEndlessLayoutManagerListener(EndlessLayoutManagerListener endlessLayoutManagerListener) {
@@ -82,10 +90,10 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             return;
         }
         // no need load more if data is empty
-        int totalItemCount = getLayoutManager().getItemCount();
-        if (totalItemCount == 0) {
+        if (isDataEmpty()) {
             return;
         }
+        int totalItemCount = getLayoutManager().getItemCount();
 
         int lastVisibleItemPosition = 0;
         if (getLayoutManager() instanceof StaggeredGridLayoutManager) {
@@ -106,6 +114,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
                 hasNextPage) {
             loadMoreNextPage();
         }
+    }
+
+    protected boolean isDataEmpty(){
+        int totalItemCount = getLayoutManager().getItemCount();
+        return totalItemCount == 0;
     }
 
     public void loadMoreNextPage(){
