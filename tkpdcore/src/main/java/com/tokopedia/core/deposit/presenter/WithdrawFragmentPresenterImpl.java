@@ -179,6 +179,7 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
             @Override
             public void onSuccess(@NonNull WithdrawForm data) {
                 if (viewListener != null && viewListener.getActivity() != null) {
+
                     viewListener.finishLoading();
                     viewListener.enableView();
                     viewListener.setForm(data);
@@ -310,7 +311,7 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
             param.setBankId(viewListener.getBankId());
             param.setBankBranch(viewListener.getBranchName().getText().toString());
         } else {
-            param.setBankAccountId(viewListener.getAdapter().getListBank().get(
+            param.setBankAccountId(viewListener.getAdapter().getList().get(
                     viewListener.getBankList().getSelectedItemPosition() - 1).getBankAccountId()
             );
 
@@ -320,8 +321,8 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
     }
 
     @Override
-    public void onConfirmClicked(boolean hasSelectBank) {
-        if (isValid(hasSelectBank)) {
+    public void onConfirmClicked() {
+        if (isValid()) {
             doWithdraw();
         }
     }
@@ -381,71 +382,72 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
     }
 
     private boolean isAddNewBank(int position) {
-        return position == viewListener.getAdapter().getListBank().size() + 1;
+        return position == viewListener.getAdapter().getList().size() + 1;
     }
 
-    private boolean isValid(boolean hasSelectBank) {
+    private boolean isValid() {
+        boolean Valid = true;
         viewListener.removeError();
 
         if (viewListener.getPassword().length() == 0) {
             viewListener.notifyError(viewListener.getPasswordWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-            return false;
+            Valid = false;
         }
 
-//        if (viewListener.getOTPArea().getVisibility() == View.VISIBLE) {
-//            if (viewListener.getOTP().length() == 0) {
-//                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-//                Valid = false;
-//            } else if (viewListener.getOTP().length() > 6) {
-//                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_max_otp));
-//                Valid = false;
-//            } else if (viewListener.getOTP().length() < 6) {
-//                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_min_otp));
-//                Valid = false;
-//            }
-//        }
+        if (viewListener.getOTPArea().getVisibility() == View.VISIBLE) {
+            if (viewListener.getOTP().length() == 0) {
+                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+                Valid = false;
+            } else if (viewListener.getOTP().length() > 6) {
+                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_max_otp));
+                Valid = false;
+            } else if (viewListener.getOTP().length() < 6) {
+                viewListener.notifyError(viewListener.getOTPWrapper(), viewListener.getActivity().getString(R.string.error_min_otp));
+                Valid = false;
+            }
+        }
 
-//        if (viewListener.getBankForm().getVisibility() == View.VISIBLE) {
-//            if (viewListener.getAccountName().length() == 0) {
-//                viewListener.notifyError(viewListener.getAccountNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-//                Valid = false;
-//            }
-//            if (viewListener.getAccountNumber().length() == 0) {
-//                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-//                viewListener.getAccountNumber().requestFocus();
-//                Valid = false;
-//            } else if (viewListener.getAccountNumber().length() > 30) {
-//                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_max_account_number));
-//                Valid = false;
-//            }
-//
-//            if (viewListener.getBranchName().length() == 0) {
-//                viewListener.notifyError(viewListener.getBranchNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
-//                Valid = false;
-//            }
-//        }
+        if (viewListener.getBankForm().getVisibility() == View.VISIBLE) {
+            if (viewListener.getAccountName().length() == 0) {
+                viewListener.notifyError(viewListener.getAccountNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+                Valid = false;
+            }
+            if (viewListener.getAccountNumber().length() == 0) {
+                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+                viewListener.getAccountNumber().requestFocus();
+                Valid = false;
+            } else if (viewListener.getAccountNumber().length() > 30) {
+                viewListener.notifyError(viewListener.getAccountNumberWrapper(), viewListener.getActivity().getString(R.string.error_max_account_number));
+                Valid = false;
+            }
 
-        if (!hasSelectBank) {
-            viewListener.setError(viewListener.getActivity().getString(R.string.has_no_bank));
-            return false;
+            if (viewListener.getBranchName().length() == 0) {
+                viewListener.notifyError(viewListener.getBranchNameWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+                Valid = false;
+            }
+        }
+
+        if (viewListener.getBankList().getSelectedItemPosition() == 0) {
+            viewListener.setError(viewListener.getActivity().getString(R.string.error_bank_not_selected));
+            Valid = false;
         }
 
         if (viewListener.getTotalWithdrawal().length() == 0) {
-            viewListener.setError(viewListener.getActivity().getString(R.string.error_field_required));
-            return false;
+            viewListener.notifyError(viewListener.getTotalWithdrawalWrapper(), viewListener.getActivity().getString(R.string.error_field_required));
+            Valid = false;
         } else {
             if (Double.parseDouble(viewListener.getTotalWithdrawal().getText().toString().replace(",", "")) < MIN_WITHDRAW) {
-                viewListener.setError(viewListener.getActivity().getString(R.string.error_min_withdraw));
-                return false;
+                viewListener.notifyError(viewListener.getTotalWithdrawalWrapper(), viewListener.getActivity().getString(R.string.error_min_withdraw));
+                Valid = false;
             }
             if (Double.parseDouble(viewListener.getTotalWithdrawal().getText().toString().replace(",", "")) >
                     Integer.parseInt(viewListener.getArguments().getString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE_INT))) {
-                viewListener.setError(viewListener.getActivity().getString(R.string.error_not_enough));
-                return false;
+                viewListener.notifyError(viewListener.getTotalWithdrawalWrapper(), viewListener.getActivity().getString(R.string.error_not_enough));
+                Valid = false;
             }
         }
 
-        return true;
+        return Valid;
     }
 
 

@@ -13,7 +13,7 @@ public interface WithdrawFragmentPresenter {
 
     void doWithdraw();
 
-    void onConfirmClicked(boolean hasSelectBank);
+    void onConfirmClicked();
 
     void onBankListSelected(int position);
 

@@ -120,7 +120,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_withdraw, container, false);
+        View view = inflater.inflate(R.layout.fragment_withdraw_layout, container, false);
 
         wrapperTotalWithdrawal = view.findViewById(R.id.wrapper_total_withdrawal);
 

@@ -160,8 +160,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TkpdCoreRouter router = (TkpdCoreRouter) getActivity().getApplication();
-                presenter.onDrawClicked(router.getWithdrawIntent(context));
+                presenter.onDrawClicked();
             }
         });
         startDate.setOnClickListener(onStartDateClicked());
