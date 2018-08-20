@@ -1,12 +1,14 @@
 package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.tokocash.WalletUserSession;
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.HomeTokoCashContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
-import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -22,11 +24,18 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
 
     private GetBalanceTokoCashUseCase balanceTokoCashUseCase;
     private GetHistoryDataUseCase getHistoryDataUseCase;
+    private WalletUserSession walletUserSession;
+    private UserSession userSession;
 
     @Inject
-    public HomeTokoCashPresenter(GetBalanceTokoCashUseCase balanceTokoCashUseCase, GetHistoryDataUseCase getHistoryDataUseCase) {
+    public HomeTokoCashPresenter(GetBalanceTokoCashUseCase balanceTokoCashUseCase,
+                                 GetHistoryDataUseCase getHistoryDataUseCase,
+                                 WalletUserSession walletUserSession,
+                                 UserSession userSession) {
         this.balanceTokoCashUseCase = balanceTokoCashUseCase;
         this.getHistoryDataUseCase = getHistoryDataUseCase;
+        this.walletUserSession = walletUserSession;
+        this.userSession = userSession;
     }
 
     //This method is just for refreshing token wallet when token is expired from applinks
@@ -46,14 +55,24 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showErrorMessage();
+                        getView().showEmptyPage(e);
                     }
 
                     @Override
                     public void onNext(TokoCashHistoryData tokoCashHistoryData) {
-
+                        if (userSession.isLoggedIn()) {
+                            if (isUserInactiveTokoCash()) {
+                                getView().navigatePageToActivateTokocash();
+                            }
+                        } else {
+                            getView().navigateToLoginPage();
+                        }
                     }
                 });
+    }
+
+    private boolean isUserInactiveTokoCash() {
+        return walletUserSession != null && walletUserSession.getTokenWallet().equals("");
     }
 
     @Override

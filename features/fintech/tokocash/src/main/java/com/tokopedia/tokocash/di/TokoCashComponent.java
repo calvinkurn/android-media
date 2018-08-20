@@ -54,8 +54,4 @@ public interface TokoCashComponent {
     void inject(AutoSweepHomeFragment fragment);
 
     void inject(SetAutoSweepLimitFragment fragment);
-
-    void inject(HomeTokoCashActivity homeTokoCashActivity);
-
-    void inject(HistoryTokoCashActivity historyTokoCashActivity);
 }

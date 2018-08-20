@@ -1,7 +1,6 @@
 package com.tokopedia.tokocash.historytokocash.presentation.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.activation.presentation.activity.ActivateTokoCashActivity;
 import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -36,6 +36,7 @@ import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_
 public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeTokoCashContract.View {
 
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
+    private static final int REQUEST_CODE_LOGIN = 1007;
 
     private RelativeLayout mainContent;
     private ProgressBar progressLoading;
@@ -162,17 +163,25 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     }
 
     @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
-    }
-
-    @Override
     public void addAutoSweepFragment(Bundle bundle) {
         getChildFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_autosweepmf, AutoSweepHomeFragment.newInstance(bundle))
                 .commit();
+    }
 
+    @Override
+    public void navigatePageToActivateTokocash() {
+        startActivity(ActivateTokoCashActivity.newInstance(getActivity()));
+        getActivity().finish();
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+            startActivityForResult(((TokoCashRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+            getActivity().finish();
+        }
     }
 
     @Override

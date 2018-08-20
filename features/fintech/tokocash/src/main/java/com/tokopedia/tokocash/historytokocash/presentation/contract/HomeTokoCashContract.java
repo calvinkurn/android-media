@@ -24,9 +24,11 @@ public interface HomeTokoCashContract {
 
         void showEmptyPage(Throwable throwable);
 
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
         void addAutoSweepFragment(Bundle bundle);
+
+        void navigatePageToActivateTokocash();
+
+        void navigateToLoginPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
