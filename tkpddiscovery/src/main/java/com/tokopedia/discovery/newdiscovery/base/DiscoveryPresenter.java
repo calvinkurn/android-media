@@ -30,6 +30,9 @@ import java.util.Map;
 public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         extends BaseDiscoveryPresenter<T1, D2> {
 
+    public static final String HEADLINE = "headline";
+    public static final String TEMPLATE_VALUE = "6";
+    public static final String ITEM_VALUE = "1";
     private GetProductUseCase getProductUseCase;
     private GetImageSearchUseCase getImageSearchUseCase;
     private GraphqlUseCase graphqlUseCase;
@@ -58,8 +61,9 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         variables.put("source", searchParameter.getSource());
 
         TKPDMapParam<String, String> headlineParams = requestParams.getParamsAllValueInString();
-        headlineParams.put(TopAdsParams.KEY_EP, "headline");
-        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, "6");
+        headlineParams.put(TopAdsParams.KEY_EP, HEADLINE);
+        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, TEMPLATE_VALUE);
+        headlineParams.put(TopAdsParams.KEY_ITEM, ITEM_VALUE);
         variables.put("headline_params", UrlParamHelper.generateUrlParamString(headlineParams));
 
         GraphqlRequest graphqlRequest = new
