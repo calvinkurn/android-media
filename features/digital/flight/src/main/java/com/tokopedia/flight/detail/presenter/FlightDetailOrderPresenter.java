@@ -8,6 +8,7 @@ import android.text.style.RelativeSizeSpan;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -68,7 +69,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Inject
     public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
-                                      UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
+                                      UserSession userSession,
+                                      FlightGetOrderUseCase flightGetOrderUseCase) {
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
@@ -220,6 +222,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList) {
         return flightOrderToCancellationJourneyMapper.transform(flightOrderJourneyList);
+    }
+
+    @Override
+    public void onMoreAirlineInfoClicked() {
+        getView().navigateToWebview(FlightUrl.AIRLINES_CONTACT_URL);
     }
 
     private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
@@ -382,7 +389,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         boolean canGoToCancelPage = false;
         for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
             if (isDepartureDateMoreThan6Hours(
-                    FlightDateUtil.stringToDate(item.getDepartureTime()))) {
+                    FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, item.getDepartureTime()))) {
                 canGoToCancelPage = true;
             }
         }

@@ -41,11 +41,19 @@ public interface FlightOrderListContract {
         void showRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, String departureTime);
 
         void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> item);
+
+        void loadPageData(int page);
+
+        void startAirportSyncInBackground(long airportVersion);
+
+        void navigateToWebview(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void loadData(String selectedFilter, int page, int perPage);
+
+        void onInitialize(boolean isShouldCheckPreload, int page);
 
         void onDestroyView();
 
@@ -57,5 +65,6 @@ public interface FlightOrderListContract {
 
         void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item);
 
+        void onMoreAirlineInfoClicked();
     }
 }

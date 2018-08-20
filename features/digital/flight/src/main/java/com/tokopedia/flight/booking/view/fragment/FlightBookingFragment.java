@@ -322,7 +322,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
                 break;
             case REQUEST_CODE_REVIEW:
-                boolean isCountdownRestarted = false;
+                countdownFinishTransactionView.start();
                 if (data != null) {
                     if (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, -1) != -1) {
                         FlightFlowUtil.actionSetResultAndClose(getActivity(),
@@ -330,19 +330,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                                 data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)
                         );
                     } else {
-                        if (data.getBooleanExtra(FlightBookingReviewFragment.EXTRA_NEED_TO_REFRESH, false)) {
-                            isCountdownRestarted = true;
-                            presenter.onUpdateCart();
-                        }
-
                         if (data.getParcelableExtra(FlightBookingReviewFragment.EXTRA_COUPON_CHANGED) != null) {
                             flightBookingCartData.setVoucherViewModel(data.getParcelableExtra(
                                     FlightBookingReviewFragment.EXTRA_COUPON_CHANGED));
                         }
                     }
-
                 }
-                if (!isCountdownRestarted) countdownFinishTransactionView.start();
                 break;
             case REQUEST_CODE_OTP:
                 if (resultCode == Activity.RESULT_OK) {

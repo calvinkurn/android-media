@@ -511,6 +511,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     private void hideCouponAppliedTicker() {
+        tickerView.setVisibility(View.GONE);
         separatorForTicker.setVisibility(View.GONE);
     }
 }
