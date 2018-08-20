@@ -1210,10 +1210,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             return true;
         } else if (i == R.id.action_share) {
             if (productData != null) {
+                String productName = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductName()).toString();
+                String productDesc = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductDescription()).toString();
                 ShareData shareData = ShareData.Builder.aShareData()
-                        .setName(com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductName()).toString())
-                        .setTextContent(productData.getInfo().getProductName())
-                        .setDescription(productData.getInfo().getProductDescription())
+                        .setName(productName)
+                        .setTextContent(productName)
+                        .setDescription(productDesc)
                         .setImgUri(productData.getProductImages().get(0).getImageSrc())
                         .setPrice(productData.getInfo().getProductPrice())
                         .setUri(productData.getInfo().getProductUrl())
