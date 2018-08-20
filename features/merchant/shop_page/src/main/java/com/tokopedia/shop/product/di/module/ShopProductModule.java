@@ -33,7 +33,6 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
 import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor;
 import com.tokopedia.wishlist.common.data.repository.WishListCommonRepositoryImpl;
@@ -230,12 +229,6 @@ public class ShopProductModule {
     @Provides
     public ShopProductRepository provideShopProductRepository(ShopProductCloudDataSource shopProductDataSource) {
         return new ShopProductRepositoryImpl(shopProductDataSource);
-    }
-
-    @ShopProductScope
-    @Provides
-    public ShopProductMapper provideShopProductMapper() {
-        return new ShopProductMapper();
     }
 
     @ShopProductScope

@@ -40,6 +40,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
     @Override
     public void getTrainSchedules() {
         getView().showLoadingPage();
+        getView().hideFilterAndSortButtonAction();
         getScheduleUseCase.setScheduleVariant(getView().getScheduleVariantSelected());
         getScheduleUseCase.execute(getView().getRequestParam(),
                 new Subscriber<List<AvailabilityKeySchedule>>() {
@@ -95,6 +96,9 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
     @Override
     public void getFilteredAndSortedSchedules() {
+        getView().clearAdapterData();
+        getView().showLoadingPage();
+        getView().hideFilterAndSortButtonAction();
         RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(
                 getView().getFilterParam(), getView().getSortOptionSelected());
 

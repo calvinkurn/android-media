@@ -30,13 +30,17 @@ public interface ContentExploreContract {
 
         void clearData();
 
-        void onCategoryClicked(int position, int categoryId);
+        void onCategoryClicked(int position, int categoryId, String categoryName);
 
         void showLoading();
 
         void dismissLoading();
 
+        void showEmpty();
+
         void goToKolPostDetail(KolPostViewModel kolPostViewModel);
+
+        void dropKeyboard();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -63,9 +63,6 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.GallerySelectedFragment;
-import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -75,7 +72,6 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
@@ -118,6 +114,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -229,10 +226,7 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
-import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
@@ -246,7 +240,10 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
@@ -284,7 +281,9 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
@@ -640,12 +639,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goMultipleInstagramAddProduct(Context context,
-                                              ArrayList<InstagramMediaModel> instagramMediaModelList) {
-        ProductDraftListActivity.startInstagramSaveBulk(context, instagramMediaModelList);
-    }
-
-    @Override
     public void goToProductDetailForResult(Fragment fragment, String productId,
                                            int adapterPosition,
                                            int requestCode) {
@@ -749,21 +742,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
-        InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
-        InstopedActivity.startInstopedActivityForResult(context, fragment, resultCode, maxResult);
-    }
-
-    @Override
-    public void removeInstopedToken() {
-        InstagramMediaPresenterImpl.removeToken();
-    }
-
-    @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
         context.startActivity(intent);
@@ -778,7 +756,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     @Override
@@ -897,25 +875,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
-    }
-
-    @Override
-    public Intent getGalleryIntent(Activity activity) {
-        return GalleryActivity.createIntent(activity, GalleryType.ofImageOnly(), 1, true);
-    }
-
-    @Override
-    public String getGalleryExtraSelectionPathResultKey() {
-        return GallerySelectedFragment.EXTRA_RESULT_SELECTION_PATH;
-    }
-
-    @Override
-    public FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity) {
-        FlightCancellationCameraPassData passData = new FlightCancellationCameraPassData();
-        ImageUploadHandler imageUploadHandler = ImageUploadHandler.createInstance(activity);
-        passData.setDestinationIntent(imageUploadHandler.getCameraIntent());
-        passData.setImagePathLoc(imageUploadHandler.getCameraFileloc());
-        return passData;
     }
 
     @Override
@@ -1414,11 +1373,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxMessageIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropWatermarkActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -2407,6 +2361,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
         else
             return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public void goToShopReview(Context context, String shopId, String shopDomain) {
+        ReputationTracking tracking = new ReputationTracking(this);
+        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));
+        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+    }
+
+    @Override
+    public void goToShopDiscussion(Context context, String shopId) {
+        context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+    }
+
+    @Override
+    public void goToManageShipping(Context context) {
+        context.startActivity(new Intent(context, EditShippingActivity.class));
+    }
+
+    @Override
+    public void goToEditShop(Context context) {
+        Intent intent = new Intent(context, ShopEditorActivity.class);
+        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+        UnifyTracking.eventManageShopInfo();
+
+        context.startActivity(intent);
     }
 
     @Override

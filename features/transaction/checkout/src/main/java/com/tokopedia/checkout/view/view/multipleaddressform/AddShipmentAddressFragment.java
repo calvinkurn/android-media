@@ -539,7 +539,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                 try {
                     int quantity = Integer.parseInt(quantityField.getText().toString());
                     quantityField.setText(String.valueOf(quantity - 1));
-                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -554,7 +553,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                 try {
                     int quantity = Integer.parseInt(quantityField.getText().toString());
                     quantityField.setText(String.valueOf(quantity + 1));
-                    checkoutAnalyticsMultipleAddress.eventClickAtcCartMultipleAddressClickPlusFromUbahFromKirimKeBeberapaAlamat();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
