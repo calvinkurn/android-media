@@ -136,7 +136,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         initVar();
         setViewListener();
         setActionVar();
-        webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
     @Override
@@ -191,7 +190,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private void initVar() {
-
+        webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
     private void initView() {
