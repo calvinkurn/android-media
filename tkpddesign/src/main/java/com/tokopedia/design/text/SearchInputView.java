@@ -204,4 +204,9 @@ public class SearchInputView extends BaseCustomView {
     public String getSearchText() {
         return searchTextView.getText().toString();
     }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+        searchTextView.setText(searchText);
+    }
 }

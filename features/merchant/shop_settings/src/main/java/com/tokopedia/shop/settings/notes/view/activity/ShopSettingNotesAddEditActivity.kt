@@ -12,12 +12,13 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
 
 class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     private var isEdit = false
     private var isReturnablePolicy = false
-    private var shopNote = ShopNoteModel()
+    private var shopNote = ShopNoteViewModel()
 
     private val saveTextView: TextView? by lazy {
         toolbar?.findViewById<TextView>(R.id.tvSave)
@@ -28,7 +29,8 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
         private const val PARAM_IS_EDIT = "IS_EDIT"
         private const val PARAM_SHOP_NOTE = "SHOP_NOTE"
 
-        fun createIntent(context: Context, isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteModel = ShopNoteModel()) =
+        @JvmStatic
+        fun createIntent(context: Context, isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteViewModel = ShopNoteViewModel()) =
                 Intent(context, ShopSettingNotesAddEditActivity::class.java)
                         .putExtra(PARAM_SHOP_NOTE, shopNoteModel)
                         .putExtra(PARAM_IS_RETURNABLE_POLICY, isReturnablePolicy)
@@ -36,7 +38,7 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        shopNote = intent.getParcelableExtra(PARAM_SHOP_NOTE) ?: ShopNoteModel()
+        shopNote = intent.getParcelableExtra(PARAM_SHOP_NOTE) ?: ShopNoteViewModel()
         isEdit = intent.getBooleanExtra(PARAM_IS_EDIT, false)
         isReturnablePolicy = intent.getBooleanExtra(PARAM_IS_RETURNABLE_POLICY, false)
 

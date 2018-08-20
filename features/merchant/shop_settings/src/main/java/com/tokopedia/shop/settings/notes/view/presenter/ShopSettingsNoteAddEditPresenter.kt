@@ -1,9 +1,9 @@
 package com.tokopedia.shop.settings.notes.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.AddShopNoteUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.UpdateShopNoteUseCase
+import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import com.tokopedia.shop.settings.notes.view.listener.ShopSettingsNotesAddEditView
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -19,7 +19,7 @@ class ShopSettingsNoteAddEditPresenter @Inject constructor(private val addShopNo
         super.detachView()
     }
 
-    fun saveNote(shopNoteModel: ShopNoteModel, isEdit: Boolean){
+    fun saveNote(shopNoteModel: ShopNoteViewModel, isEdit: Boolean){
         val useCase: UseCase<String> = if (!isEdit) addShopNoteUseCase else editShopNoteUseCase
         val requestParam = AddShopNoteUseCase.createRequestParams(shopNoteModel.title,
                 shopNoteModel.content, shopNoteModel.terms)

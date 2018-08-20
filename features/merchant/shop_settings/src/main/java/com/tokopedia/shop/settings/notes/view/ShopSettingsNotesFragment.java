@@ -1,14 +1,19 @@
 package com.tokopedia.shop.settings.notes.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -27,6 +32,7 @@ import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteFactory;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
+import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity;
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter;
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter;
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder;
@@ -35,17 +41,26 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-/**
- * Created by Toped10 on 5/19/2016.
- */
+
 public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteViewModel, ShopNoteFactory> implements ShopSettingNoteListPresenter.View, ShopNoteViewHolder.OnShopNoteViewHolderListener {
 
+    private static final int REQUEST_CODE_ADD_NOTE = 818;
+    private static final int REQUEST_CODE_EDIT_NOTE = 819;
     @Inject
     ShopSettingNoteListPresenter shopSettingNoteListPresenter;
     private ArrayList<ShopNoteViewModel> shopNoteModels;
     private ShopNoteAdapter shopNoteAdapter;
     private ProgressDialog progressDialog;
     private String shopNoteIdToDelete;
+    private boolean needReload;
+    private RecyclerView recyclerView;
+    private boolean isReorderMode;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private OnShopSettingsNoteFragmentListener onShopSettingsNoteFragmentListener;
+    public interface OnShopSettingsNoteFragmentListener{
+        View getSaveButton();
+    }
 
     public static ShopSettingsNotesFragment newInstance() {
         return new ShopSettingsNotesFragment();
@@ -72,140 +87,111 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
         GraphqlClient.init(getContext());
         shopSettingNoteListPresenter.getShopNotes();
 
-//        AddShopNoteUseCase addShopNoteUseCase = new AddShopNoteUseCase(getContext());
-//        addShopNoteUseCase.execute(AddShopNoteUseCase.createRequestParams("Kebijakan pengembalian",
-//                "<b>Sebuah kebijakan</b>",
-//                true)
-//                , new Subscriber<String>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.i("Test", "test");
-//                    }
-//
-//                    @Override
-//                    public void onNext(String successMessage) {
-//                        Log.i("Test", successMessage);
-//                    }
-//                });
-//
-//        UpdateShopNoteUseCase updateShopNoteUseCase = new UpdateShopNoteUseCase(getContext());
-//        updateShopNoteUseCase.execute(UpdateShopNoteUseCase.createRequestParams(
-//                "123",
-//                "Kebijakan pengembalian",
-//                "<b>Sebuah kebijakan</b>")
-//                , new Subscriber<String>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.i("Test", "test");
-//                    }
-//
-//                    @Override
-//                    public void onNext(String successMessage) {
-//                        Log.i("Test", successMessage);
-//                    }
-//                });
-//
-//        DeleteShopNoteUseCase deleteShopNoteUseCase = new DeleteShopNoteUseCase(getContext());
-//        deleteShopNoteUseCase.execute(DeleteShopNoteUseCase.createRequestParams("123")
-//                , new Subscriber<String>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.i("Test", "test");
-//                    }
-//
-//                    @Override
-//                    public void onNext(String successMessage) {
-//                        Log.i("Test", successMessage);
-//                    }
-//                });
-//
-//        ReorderShopNoteUseCase reorderShopNoteUseCase = new ReorderShopNoteUseCase(getContext());
-//        ArrayList<String> idList = new ArrayList<>();
-//        idList.add("123");
-//        idList.add("456");
-//        idList.add("789");
-//        idList.add("012");
-//        reorderShopNoteUseCase.execute(ReorderShopNoteUseCase.createRequestParams(idList)
-//                , new Subscriber<String>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.i("Test", "test");
-//                    }
-//
-//                    @Override
-//                    public void onNext(String successMessage) {
-//                        Log.i("Test", successMessage);
-//                    }
-//                });
     }
-
-    //    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-//        inflater?.inflate(R.menu.menu_add_shop_address, menu)
-//    }
-//
-//    override fun onDestroyView() {
-//        presenter.detachView()
-//        super.onDestroyView()
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-//        if (item?.itemId == R.id.menu_add){
-//            createAddress()
-//            return true
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_shop_note_list, menu);
+        if (shopNoteModels == null || shopNoteModels.size() == 0) {
+            inflater.inflate(R.menu.menu_shop_note_list_no_data, menu);
+        } else {
+            inflater.inflate(R.menu.menu_shop_note_list, menu);
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (isReorderMode) {
+            menu.findItem(R.id.menu_add).setVisible(false);
+            menu.findItem(R.id.menu_reorder).setVisible(false);
+        } else {
+            menu.findItem(R.id.menu_add).setVisible(true);
+            menu.findItem(R.id.menu_reorder).setVisible(true);
+        }
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add) {
-            Menus menus = new Menus(getContext());
-            menus.setItemMenuList(getResources().getStringArray(R.array.shop_note_type));
-            menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
-                @Override
-                public void onClick(Menus.ItemMenus itemMenus, int pos) {
-                    if (pos == 0) {
-                        //TODO add new shop note
-                        Toast.makeText(getContext(), "add new shop note", Toast.LENGTH_LONG).show();
-                    } else {
-                        //TODO add new return terms
-                        Toast.makeText(getContext(), "add new return terms", Toast.LENGTH_LONG).show();
-                    }
-                    menus.dismiss();
-                }
-            });
-            menus.show();
+            onAddNoteButtonClicked();
             return true;
         } else if (item.getItemId() == R.id.menu_reorder) {
-            Toast.makeText(getContext(), "go to reorder mode", Toast.LENGTH_LONG).show();
+            if (shopNoteModels == null || shopNoteModels.size() == 0) {
+                return true;
+            }
+            //to reorder mode list
+            //refresh list first
+            searchInputView.setSearchText(null);
+            recyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    setToReorderMode(true);
+                }
+            });
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        swipeRefreshLayout = super.getSwipeRefreshLayout(view);
+        return swipeRefreshLayout;
+    }
+
+    private void setToReorderMode(boolean isReorderMode) {
+        this.isReorderMode = isReorderMode;
+        if (isReorderMode) {
+            searchInputView.setVisibility(View.GONE);
+            swipeRefreshLayout.setEnabled(false);
+            onShopSettingsNoteFragmentListener.getSaveButton().setVisibility(View.VISIBLE);
+        } else {
+            searchInputView.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setEnabled(true);
+            onShopSettingsNoteFragmentListener.getSaveButton().setVisibility(View.GONE);
+        }
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        super.onSwipeRefresh();
+    }
+
+    public boolean isReorderMode() {
+        return isReorderMode;
+    }
+
+    public void cancelReorderMode(){
+        setToReorderMode(false);
+    }
+
+    public void saveReorder(){
+        setToReorderMode(false);
+    }
+
+    @Override
+    public RecyclerView getRecyclerView(View view) {
+        recyclerView = super.getRecyclerView(view);
+        return recyclerView;
+    }
+
+    private void onAddNoteButtonClicked() {
+        Menus menus = new Menus(getContext());
+        menus.setItemMenuList(getResources().getStringArray(R.array.shop_note_type));
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                if (pos == 0) {
+                    goToAddNote(false);
+                } else {
+                    goToAddNote(true);
+                }
+                menus.dismiss();
+            }
+        });
+        menus.show();
     }
 
     @Override
@@ -226,7 +212,7 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
 
                 @Override
                 public void onEmptyButtonClicked() {
-                    Toast.makeText(getContext(), "go to add notes", Toast.LENGTH_LONG).show();
+                    onAddNoteButtonClicked();
                 }
             });
             return emptyModel;
@@ -254,8 +240,19 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
 
     @Override
     public void onItemClicked(ShopNoteViewModel shopNoteViewModel) {
-        //TODO go to edit notes
-        Toast.makeText(getContext(), "go to edit notes " + shopNoteViewModel.getId(), Toast.LENGTH_LONG).show();
+        goToEditNote(shopNoteViewModel);
+    }
+
+    private void goToEditNote(ShopNoteViewModel shopNoteViewModel) {
+        Intent intent = ShopSettingNotesAddEditActivity.createIntent(getContext(),
+                shopNoteViewModel.getTerms(), true, shopNoteViewModel);
+        startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE);
+    }
+
+    private void goToAddNote(boolean isTerms) {
+        Intent intent = ShopSettingNotesAddEditActivity.createIntent(getContext(),
+                isTerms, false, new ShopNoteViewModel());
+        startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
     }
 
     @Override
@@ -278,8 +275,7 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
             @Override
             public void onClick(Menus.ItemMenus itemMenus, int pos) {
                 if (pos == 0) {
-                    //TODO go to edit notes
-                    Toast.makeText(getContext(), "go to edit notes " + shopNoteViewModel.getId(), Toast.LENGTH_LONG).show();
+                    goToEditNote(shopNoteViewModel);
                 } else {
                     shopNoteIdToDelete = shopNoteViewModel.getId();
                     showSubmitLoading(getString(R.string.title_loading));
@@ -299,7 +295,8 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
     @Override
     public void onSuccessGetShopNotes(ArrayList<ShopNoteViewModel> shopNoteModels) {
         this.shopNoteModels = shopNoteModels;
-        renderList(shopNoteModels, false);
+        onSearchSubmitted(getKeyword());
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -309,25 +306,52 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
 
     @Override
     public void onSearchSubmitted(String text) {
-        if (shopNoteModels == null || shopNoteModels.size() == 0) {
-            return;
-        }
-        String textLowerCase = text.toLowerCase();
-        ArrayList<ShopNoteViewModel> shopNoteViewModels = new ArrayList<>();
-        for (ShopNoteViewModel shopNoteModel : shopNoteModels) {
-            if (shopNoteModel.getTitle().toLowerCase().contains(textLowerCase) ||
-                    shopNoteModel.getContent().toLowerCase().contains(textLowerCase)) {
-                shopNoteViewModels.add(shopNoteModel);
-            }
-        }
         shopNoteAdapter.clearAllElements();
         isLoadingInitialData = true;
+        ArrayList<ShopNoteViewModel> shopNoteViewModels;
+        if (shopNoteModels == null) {
+            shopNoteViewModels = new ArrayList<>();
+        } else if (shopNoteModels.size() > 0 &&
+                !TextUtils.isEmpty(text)) {
+            String textLowerCase = text.toLowerCase();
+            shopNoteViewModels = new ArrayList<>();
+            for (ShopNoteViewModel shopNoteModel : shopNoteModels) {
+                if (shopNoteModel.getTitle().toLowerCase().contains(textLowerCase) ||
+                        shopNoteModel.getContent().toLowerCase().contains(textLowerCase)) {
+                    shopNoteViewModels.add(shopNoteModel);
+                }
+            }
+        } else {
+            shopNoteViewModels = shopNoteModels;
+        }
         renderList(shopNoteViewModels, false);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         onSearchSubmitted(text);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_EDIT_NOTE:
+            case REQUEST_CODE_ADD_NOTE:
+                if (resultCode == Activity.RESULT_OK) {
+                    needReload = true;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (needReload) {
+            loadInitialData();
+            needReload = false;
+        }
     }
 
     @Override
@@ -401,5 +425,9 @@ public class ShopSettingsNotesFragment extends BaseSearchListFragment<ShopNoteVi
         }
     }
 
-
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        onShopSettingsNoteFragmentListener = (OnShopSettingsNoteFragmentListener) context;
+    }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import com.tokopedia.shop.settings.notes.view.listener.ShopSettingsNotesAddEditView
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingsNoteAddEditPresenter
 import kotlinx.android.synthetic.main.fragment_shop_notes_add_edit.*
@@ -23,7 +24,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
     private var isEdit = false
     private var isReturnablePolicy = false
-    private var shopNote = ShopNoteModel()
+    private var shopNote = ShopNoteViewModel()
 
     @Inject lateinit var presenter: ShopSettingsNoteAddEditPresenter
 
@@ -37,7 +38,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
 
-        fun createInstance(isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteModel = ShopNoteModel()) =
+        fun createInstance(isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteViewModel = ShopNoteViewModel()) =
                 ShopSettingsNotesAddEditFragment().apply { arguments = Bundle().apply {
                     putParcelable(PARAM_SHOP_NOTE, shopNoteModel)
                     putBoolean(PARAM_IS_RETURNABLE_POLICY, isReturnablePolicy)
@@ -60,7 +61,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         arguments?.let {
             isEdit = it.getBoolean(PARAM_IS_EDIT, false)
             isReturnablePolicy = it.getBoolean(PARAM_IS_RETURNABLE_POLICY, false)
-            shopNote = it.getParcelable(PARAM_SHOP_NOTE) ?: ShopNoteModel()
+            shopNote = it.getParcelable(PARAM_SHOP_NOTE) ?: ShopNoteViewModel()
         }
 
         if (isReturnablePolicy){

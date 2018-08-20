@@ -14,12 +14,27 @@ public class ShopNoteViewModel implements Parcelable, Visitable<ShopNoteFactory>
     private Boolean isTerms;
     private String updateTime;
 
+    public ShopNoteViewModel(){
+    }
+
     public ShopNoteViewModel(ShopNoteModel shopNoteModel){
         this.id = shopNoteModel.getId();
         this.title = shopNoteModel.getTitle();
         this.content = shopNoteModel.getContent();
         this.isTerms = shopNoteModel.getTerms();
         this.updateTime = shopNoteModel.getUpdateTime();
+    }
+
+    public void setTerms(Boolean terms) {
+        isTerms = terms;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getId() {
