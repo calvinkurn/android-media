@@ -1,8 +1,8 @@
 package com.tokopedia.shop.settings.notes.view.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
-import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteFactory;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
+import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package com.tokopedia.shop.settings.notes.view.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter;
-import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteReorderFactory;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
+import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory;
 
 import java.util.List;
 

@@ -29,7 +29,7 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteFactory;
+import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity;

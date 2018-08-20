@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.basicinfo.view.adapter;
+package com.tokopedia.shop.settings.notes.view.adapter.factory;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;

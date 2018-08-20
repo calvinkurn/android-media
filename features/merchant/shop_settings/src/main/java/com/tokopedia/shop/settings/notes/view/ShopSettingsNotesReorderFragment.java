@@ -20,12 +20,11 @@ import com.tokopedia.design.touchhelper.OnStartDragListener;
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteReorderFactory;
+import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter;
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter;
-import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteReorderViewHolder;
 
 import java.util.ArrayList;
 

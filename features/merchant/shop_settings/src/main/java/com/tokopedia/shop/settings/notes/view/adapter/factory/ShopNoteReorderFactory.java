@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.basicinfo.view.adapter;
+package com.tokopedia.shop.settings.notes.view.adapter.factory;
 
 import android.view.View;
 

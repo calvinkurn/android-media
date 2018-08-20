@@ -89,4 +89,5 @@
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
     <string name="shop_settings_edit_etalase">Ubah Etalase</string>
     <string name="note_success_reorder">Posisi catatan berhasil diatur</string>
+    <string name="x_products">%1$d Produk</string>
 </resources>

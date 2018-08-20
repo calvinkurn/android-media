@@ -5,8 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel;
-import com.tokopedia.shop.settings.basicinfo.view.adapter.BaseShopNoteFactory;
-import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopNoteFactory;
+import com.tokopedia.shop.settings.notes.view.adapter.factory.BaseShopNoteFactory;
 
 public class ShopNoteViewModel implements Parcelable, Visitable<BaseShopNoteFactory>{
     private String id;

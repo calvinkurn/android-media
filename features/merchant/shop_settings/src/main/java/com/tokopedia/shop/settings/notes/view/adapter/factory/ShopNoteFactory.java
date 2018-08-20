@@ -1,8 +1,7 @@
-package com.tokopedia.shop.settings.basicinfo.view.adapter;
+package com.tokopedia.shop.settings.notes.view.adapter.factory;
 
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder;
