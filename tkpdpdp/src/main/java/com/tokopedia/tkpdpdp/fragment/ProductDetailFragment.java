@@ -1579,6 +1579,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWordingHtml());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
+            productData.getInfo().setAlwaysAvailable(productStock.isAlwaysAvailable());
             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                     productData.getInfo());
         }
@@ -2040,7 +2041,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void refreshData() {
-        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, true, useVariant);
     }
     private void renderTopAds(int itemSize) {
         if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))

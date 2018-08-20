@@ -66,12 +66,6 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
-        void sendAnalyticsChoosePaymentMethodSuccess();
-
-        void sendAnalyticsChoosePaymentMethodFailed();
-
-        void sendAnalyticsChoosePaymentMethodCourierNotComplete();
-
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
@@ -94,7 +88,25 @@ public interface ShipmentContract {
 
         Activity getActivityContext();
 
+
+    }
+
+    interface AnalyticsActionListener {
+        void sendAnalyticsChoosePaymentMethodSuccess();
+
+        void sendAnalyticsChoosePaymentMethodFailed();
+
+        @Deprecated
+        void sendAnalyticsChoosePaymentMethodCourierNotComplete();
+
         void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap);
+
+        void sendAnalyticsOnClickChooseOtherAddressShipment();
+
+        void sendAnalyticsOnClickChooseToMultipleAddressShipment();
+
+        void sendAnalyticsOnClickTopDonation();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

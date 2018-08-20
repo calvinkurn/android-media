@@ -195,8 +195,7 @@ ext {
             hansel                : "io.hansel.preprocessor:preprocessor:6.5.0",
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
-            ucrop                 : "com.github.yalantis:ucrop:2.2.2",
-            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
+            ucrop                 : "com.github.yalantis:ucrop:2.2.2"
     ]
 
     testDependencies = [
@@ -371,6 +370,6 @@ ext {
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
             youtubeutil       : ":libraries:youtubeutil",
-            travelCalendar  : ":libraries:travel_calendar"
+            travelCalendar    : ":libraries:travel_calendar"
     ]
 }

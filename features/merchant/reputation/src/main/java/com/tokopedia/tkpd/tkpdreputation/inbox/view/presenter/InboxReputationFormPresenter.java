@@ -144,15 +144,6 @@ public class InboxReputationFormPresenter
         )));
     }
 
-    public void openCamera() {
-        cameraFileLoc = imageUploadHandler.actionCamera2();
-    }
-
-    @Override
-    public void openImageGallery() {
-        imageUploadHandler.actionImagePicker();
-    }
-
     @Override
     public void setFormToCache(int position, SendReviewPass sendReviewPass) {
         setReviewFormCacheUseCase.executeSync(SetReviewFormCacheUseCase.getParam(

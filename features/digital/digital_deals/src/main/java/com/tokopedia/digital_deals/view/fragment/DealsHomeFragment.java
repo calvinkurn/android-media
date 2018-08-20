@@ -197,7 +197,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             case DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY:
                 Location location = Utils.getSingletonInstance().getLocation(getActivity());
                 if (location == null) {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
                     if (data != null) {
