@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 
@@ -30,6 +30,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+        exclude group: 'com.android.support'
+    }
 
     implementation project(rootProject.ext.features.shopCommon)
 
@@ -45,7 +49,7 @@ dependencies {
     }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.playServicesDependencies.analytics
 

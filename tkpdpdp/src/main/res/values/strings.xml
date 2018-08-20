@@ -60,4 +60,5 @@
     <string name="exp_dialog_ok">Balik ke Beranda</string>
     <string name="exp_dialog_cancel">Tutup</string>
     <string name="flash_sale_title">Flash Sale</string>
+    <string name="title_activity_product_modal">Detail Produk</string>
 </resources>
