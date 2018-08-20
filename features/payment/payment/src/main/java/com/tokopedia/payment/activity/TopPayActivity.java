@@ -381,13 +381,13 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 );
                 return true;
             } else {
-                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
-                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
-                    paymentModuleRouter.actionAppLinkPaymentModule(
-                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
-                    );
-                    return true;
-                }
+//                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
+//                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
+//                    paymentModuleRouter.actionAppLinkPaymentModule(
+//                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
+//                    );
+//                    return true;
+//                }
             }
 
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
