@@ -132,5 +132,6 @@ public class ChangeInactiveFormRequestPresenter extends BaseDaggerPresenter<Chan
     public void detachView() {
         super.detachView();
         validateUserDataUseCase.unsubscribe();
+        uploadChangePhoneNumberRequestUseCase.unsubscribe();
     }
 }

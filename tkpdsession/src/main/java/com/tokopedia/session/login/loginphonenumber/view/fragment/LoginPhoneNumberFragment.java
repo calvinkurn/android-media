@@ -165,7 +165,6 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                 Intent intent = ChangeInactivePhoneActivity.
                         getChangeInactivePhoneIntent(
                                 getContext()
-//                                SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
                         );
                 startActivity(intent);
             }
