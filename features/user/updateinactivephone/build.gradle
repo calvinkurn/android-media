@@ -32,6 +32,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.applink)
 }
 
 apply from: '../../../publish_local.gradle'

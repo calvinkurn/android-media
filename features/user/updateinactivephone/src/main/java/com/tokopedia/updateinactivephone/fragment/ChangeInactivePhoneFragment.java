@@ -22,8 +22,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.updateinactivephone.R;
@@ -32,7 +33,6 @@ import com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneRequestSubm
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
-import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
 import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
@@ -204,9 +204,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
         dialog.setBtnOk(getString(R.string.drawer_title_login));
         dialog.setOnOkClickListener(v -> {
             UpdateInactivePhoneEventTracking.eventLoginDialogClick();
-            Intent intent = ((ChangeInactivePhoneRouter) MainApplication.getAppContext())
-                    .getLoginIntent(getContext());
-            startActivity(intent);
+            RouteManager.route(getContext(), ApplinkConst.LOGIN);
         });
         dialog.setBtnCancel(getString(R.string.title_cancel));
         dialog.setOnCancelClickListener(v -> {

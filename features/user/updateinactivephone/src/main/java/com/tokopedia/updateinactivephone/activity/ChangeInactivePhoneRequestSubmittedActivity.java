@@ -14,11 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
-import com.tokopedia.updateinactivephone.router.ChangeInactivePhoneRouter;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_EMAIL;
@@ -83,7 +84,7 @@ public class ChangeInactivePhoneRequestSubmittedActivity extends BaseSimpleActiv
         }
 
         returnToHome.setOnClickListener(view -> {
-            ((ChangeInactivePhoneRouter) getApplication()).goToHome(this);
+            RouteManager.route(this, ApplinkConst.HOME);
             finish();
         });
     }
