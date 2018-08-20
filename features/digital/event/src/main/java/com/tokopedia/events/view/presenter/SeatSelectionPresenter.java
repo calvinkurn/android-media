@@ -240,7 +240,10 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        if (isEventOmsEnabled())
+            config.setPrice(packageViewModel.getSalesPrice());
+        else
+            config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
         sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
         config.setSubConfig(sub);
