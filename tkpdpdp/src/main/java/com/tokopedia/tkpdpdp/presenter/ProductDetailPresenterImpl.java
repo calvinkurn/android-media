@@ -71,10 +71,13 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
@@ -140,6 +143,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     DateFormat df;
 
     private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
+    private GetRateEstimationUseCase getRateEstimationUseCase;
 
     public ProductDetailPresenterImpl(ProductDetailView viewListener,
                                       WishListActionListener wishListActionListener) {
@@ -155,9 +159,32 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         this.retrofitInteractor = new RetrofitInteractorImpl();
     }
 
+    /* context for testing only since API hasn't been ready yet */
+    @Override
+    public void initGetRateEstimationUseCase(Context context){
+        getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase(), context);
+    }
+
     @Override
     public void processDataPass(@NonNull ProductPass productPass) {
         if (productPass.haveBasicData()) viewListener.renderTempProductData(productPass);
+    }
+
+    @Override
+    public void getCostEstimation(String rawQuery, String productId, String userId){
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.Companion.createRequestParams(rawQuery, productId, userId),
+                new Subscriber<RatesModel>() {
+                    @Override
+                    public void onCompleted() { }
+
+                    @Override
+                    public void onError(Throwable throwable) { }
+
+                    @Override
+                    public void onNext(RatesModel ratesModel) {
+                        viewListener.onSuccesLoadRateEstimaion(ratesModel);
+                    }
+                });
     }
 
     @Override

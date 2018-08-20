@@ -27,6 +27,9 @@ import java.util.Map;
  */
 public interface ProductDetailPresenter {
 
+    /* context for testing only since API hasn't been ready yet */
+    void initGetRateEstimationUseCase(Context context);
+
     void processDataPass(@NonNull ProductPass productPass);
 
     void processToProductInfo(@NonNull Context context, @NonNull Bundle bundle);
@@ -34,6 +37,8 @@ public interface ProductDetailPresenter {
     void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle);
 
     void processToCreateShop(@NonNull Context context);
+
+    void getCostEstimation(String rawQuery, String productId, String userId);
 
     void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle);
 
