@@ -31,11 +31,15 @@ public interface AddNameListener {
         void hideValidationError();
 
         Context getContext();
+
+        void onSuccessAddName();
     }
 
     interface Presenter extends CustomerPresenter<AddNameListener.View> {
         void initView();
 
         void registerPhoneNumberAndName(String name);
+
+        void addName(String name);
     }
 }
