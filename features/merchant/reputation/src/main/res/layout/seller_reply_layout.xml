@@ -41,7 +41,7 @@
             android:lineSpacingExtra="3sp"
             android:padding="@dimen/dp_10"
             android:text="@string/see_reply"
-            style="@style/TextView.Micro.BlackDisabled.Bold"
+            style="@style/TextView.Small.BlackDisabled.Bold"
             android:visibility="invisible"
             tools:visibility="visible"
             />
