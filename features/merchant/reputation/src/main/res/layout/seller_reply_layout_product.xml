@@ -76,8 +76,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_10"
             android:background="@color/white"
             android:paddingLeft="@dimen/dp_20"
@@ -119,14 +117,14 @@
 
                     <TextView
                         android:id="@+id/seller_label"
-                        style="@style/TextView.Micro.WhitePrimary"
+                        style="@style/TextView.Micro.Green"
                         android:layout_marginEnd="@dimen/dp_5"
                         android:layout_marginRight="@dimen/dp_5"
                         android:background="@drawable/label_seller"
                         android:gravity="center_horizontal"
                         android:paddingBottom="@dimen/dp_2"
-                        android:paddingLeft="@dimen/dp_5"
-                        android:paddingRight="@dimen/dp_5"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_10"
                         android:paddingTop="@dimen/dp_2"
                         android:text="@string/seller"
                         android:textSize="@dimen/sp_12" />

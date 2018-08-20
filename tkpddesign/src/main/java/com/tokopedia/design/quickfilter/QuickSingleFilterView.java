@@ -2,6 +2,7 @@ package com.tokopedia.design.quickfilter;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +46,7 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     private void init() {
-        View rootView = inflate(getContext(), R.layout.widget_quick_filter, this);
+        View rootView = inflate(getContext(), getLayoutRes(), this);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_filter);
 
         recyclerView.setHasFixedSize(true);
@@ -53,6 +54,11 @@ public class QuickSingleFilterView extends BaseCustomView {
                 LinearLayoutManager.HORIZONTAL, false));
         initialAdapter();
         recyclerView.setAdapter(adapterFilter);
+    }
+
+    @LayoutRes
+    protected int getLayoutRes(){
+        return R.layout.widget_quick_filter;
     }
 
     protected void initialAdapter() {

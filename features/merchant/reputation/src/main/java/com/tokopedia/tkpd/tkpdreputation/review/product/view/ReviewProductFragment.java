@@ -129,6 +129,19 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     private void setupFilterView() {
         List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
+        CustomViewQuickFilterItem allFilterItem = new CustomViewQuickFilterItem();
+        allFilterItem.setType(getString(R.string.review_label_all));
+        ReviewProductItemFilterView productReviewItemFilterViewAll = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewAll.setActive(false);
+        productReviewItemFilterViewAll.setAll(true);
+        allFilterItem.setDefaultView(productReviewItemFilterViewAll);
+        ReviewProductItemFilterView productReviewItemFilterViewAllActive = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewAllActive.setActive(true);
+        productReviewItemFilterViewAllActive.setAll(true);
+        allFilterItem.setSelectedView(productReviewItemFilterViewAllActive);
+        allFilterItem.setSelected(true);
+
+        quickFilterItemList.add(allFilterItem);
         for (int i = 1; i <= TOTAL_FILTER_ITEM; i++) {
             CustomViewQuickFilterItem quickFilterItem = new CustomViewQuickFilterItem();
             quickFilterItem.setType(String.valueOf(i));
@@ -155,11 +168,15 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void loadData(int page) {
-        if (page <= INITIAL_PAGE && !customViewQuickFilterView.isAnyItemSelected()) {
+        if (page <= INITIAL_PAGE && customViewQuickFilterView.getSelectedFilter().equals(getString(R.string.review_label_all))) {
             productReviewPresenter.getRatingReview(productId);
             productReviewPresenter.getHelpfulReview(productId);
         }
-        productReviewPresenter.getProductReview(productId, page, customViewQuickFilterView.getSelectedFilter());
+        String filter = customViewQuickFilterView.getSelectedFilter();
+        if(filter.equals(getString(R.string.review_label_all))){
+            filter = "";
+        }
+        productReviewPresenter.getProductReview(productId, page, filter);
     }
 
     @Override
@@ -233,7 +250,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGetListReviewProduct(List<ReviewProductModel> map, boolean isHasNextPage) {
-        if (isLoadingInitialData && !customViewQuickFilterView.isAnyItemSelected()) {
+        if (isLoadingInitialData && customViewQuickFilterView.getSelectedFilter().equals(getString(R.string.review_label_all))) {
             map.add(0, new ReviewProductModelTitleHeader(getString(R.string.product_review_label_all_review)));
             if (listReviewHelpful != null) {
                 for (int i = 0; i < listReviewHelpful.size(); i++) {

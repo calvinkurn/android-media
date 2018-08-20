@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
+import com.tokopedia.design.R;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 
 /**
@@ -27,5 +28,10 @@ public class CustomViewQuickFilterView extends QuickSingleFilterView {
 
     protected void initialAdapter() {
         this.adapterFilter = new CustomViewQuickSingleFilterAdapter(getQuickSingleFilterListener());
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.widget_custom_quick_filter;
     }
 }
