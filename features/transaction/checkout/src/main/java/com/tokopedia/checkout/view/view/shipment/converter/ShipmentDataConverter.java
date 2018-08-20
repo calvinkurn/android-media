@@ -78,7 +78,7 @@ public class ShipmentDataConverter {
     public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
-        ShipmentCartItemModel shipmentCartItemModel;
+        ShipmentCartItemModel shipmentCartItemModel = null;
         if (cartShipmentAddressFormData.isMultiple()) {
             for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
                 UserAddress userAddress = groupAddress.getUserAddress();
@@ -101,6 +101,9 @@ public class ShipmentDataConverter {
             }
         }
 
+        if (shipmentCartItemModel != null) {
+            shipmentCartItemModel.setUseCourierRecommendation(true); // Temporary flag courier recommendation
+        }
         return shipmentCartItemModels;
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 /**
@@ -51,6 +52,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GraphqlClient.init(this);
     }
 
     @Override
