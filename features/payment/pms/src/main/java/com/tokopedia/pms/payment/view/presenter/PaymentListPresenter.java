@@ -56,7 +56,9 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().showGetListError(e);
+                if(isViewAttached()) {
+                    getView().showGetListError(e);
+                }
             }
 
             @Override
