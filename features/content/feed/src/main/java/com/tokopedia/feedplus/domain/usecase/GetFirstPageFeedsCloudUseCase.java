@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func3;
 
 /**
  * @author by nisie on 7/25/17.
@@ -39,13 +38,10 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
                 getFeedPlus(requestParams),
                 getRecentView(requestParams),
                 getWhitelist(),
-                new Func3<FeedResult, List<RecentViewProductDomain>, GraphqlResponse, FeedResult>() {
-                    @Override
-                    public FeedResult call(FeedResult feedResult, List<RecentViewProductDomain> recentViewProductDomains, GraphqlResponse response) {
-                        feedResult.getFeedDomain().setRecentProduct(recentViewProductDomains);
-                        feedResult.getFeedDomain().setWhitelist(response != null ? mappingWhitelist(response) : null);
-                        return feedResult;
-                    }
+                (feedResult, recentViewProductDomains, response) -> {
+                    feedResult.getFeedDomain().setRecentProduct(recentViewProductDomains);
+                    feedResult.getFeedDomain().setWhitelist(response != null ? mappingWhitelist(response) : null);
+                    return feedResult;
                 }
         );
     }
@@ -69,13 +65,28 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
         if (query == null) return null;
         else {
             WhitelistDomain domain = new WhitelistDomain();
-            domain.setError(query.getWhitelist().getError());
-            domain.setUrl(query.getWhitelist().getUrl());
+            domain.setError(query.getWhitelist().getError() != null ?
+                    query.getWhitelist().getError() :
+                    "");
+            domain.setUrl(query.getWhitelist().getUrl() != null ?
+                    query.getWhitelist().getUrl() :
+                    "");
             domain.setWhitelist(query.getWhitelist().isWhitelist());
-            domain.setTitle(query.getWhitelist().getTitle());
-            domain.setDesc(query.getWhitelist().getDescription());
-            domain.setTitleIdentifier(query.getWhitelist().getTitleIdentifier());
-            domain.setPostSuccessMessage(query.getWhitelist().getPostSuccessMessage());
+            domain.setTitle(query.getWhitelist().getTitle() != null ?
+                    query.getWhitelist().getTitle() :
+                    "");
+            domain.setDesc(query.getWhitelist().getDescription() != null ?
+                    query.getWhitelist().getDescription() :
+                    "");
+            domain.setTitleIdentifier(query.getWhitelist().getTitleIdentifier() != null ?
+                    query.getWhitelist().getTitleIdentifier() :
+                    "");
+            domain.setPostSuccessMessage(query.getWhitelist().getPostSuccessMessage() != null ?
+                    query.getWhitelist().getPostSuccessMessage() :
+                    "");
+            domain.setImage(query.getWhitelist().getImageUrl() != null ?
+                    query.getWhitelist().getImageUrl() :
+                    "");
             return domain;
         }
     }

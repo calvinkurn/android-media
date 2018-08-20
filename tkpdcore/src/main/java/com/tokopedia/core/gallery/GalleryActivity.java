@@ -25,6 +25,9 @@ import java.io.File;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Need to be moved to resolution module. Need for video picker
+ */
 public class GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
         .OnItemSelectedListener, GallerySelectedFragment.ListenerSelected {
 
