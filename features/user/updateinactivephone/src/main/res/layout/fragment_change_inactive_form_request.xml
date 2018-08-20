@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/card_view"
+        android:layout_alignParentTop="true"
         android:focusableInTouchMode="true"
         android:padding="16dp">
 
