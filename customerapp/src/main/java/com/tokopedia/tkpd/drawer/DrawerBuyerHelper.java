@@ -58,6 +58,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.tkpd.ConsumerAppBaseUrl;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -80,7 +81,6 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     private static final int VAL_DEFAULT = 0;
-    private static final String TOKOCARD_WEB_LINK = "https://www.tokopedia.com/tokocard/";
 
     private TextView shopName;
     private TextView shopLabel;
@@ -800,8 +800,9 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGotoTokoCard() {
-        ((TkpdCoreRouter) context.getApplication()).actionOpenGeneralWebView(context, TOKOCARD_WEB_LINK);
-        AnalyticsEventTrackingHelper.hamburgerTokoCardClick(TOKOCARD_WEB_LINK);
+
+        ((TkpdCoreRouter) context.getApplication()).actionOpenGeneralWebView(context, ConsumerAppBaseUrl.TOKOCARD_BASE_DOMAIN);
+        AnalyticsEventTrackingHelper.hamburgerTokoCardClick(ConsumerAppBaseUrl.TOKOCARD_BASE_DOMAIN);
     }
 
     private void onGoToCreateShop() {
