@@ -244,6 +244,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int CATEGORY_NAVIGATION = 54;
         public static final int RESOLUTION_CENTER_BUYER = 55;
         public static final int RESOLUTION_CENTER_SELLER = 56;
+        public static final int MYBILLS = 57;
 
         public static final int FEATURED_PRODUCT = 99;
 
