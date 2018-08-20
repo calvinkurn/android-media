@@ -50,11 +50,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     public void setList(List<BankAccountViewModel> listBank) {
-//        this.listBank.clear();
-//        this.listBank.addAll(listBank);
-//        this.listBank.add(new BankAccountViewModel());
-//        notifyDataSetChanged();
-        
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                 new Callback(new ArrayList<>(this.listBank), new ArrayList<>(listBank)));
         diffResult.dispatchUpdatesTo(this);
