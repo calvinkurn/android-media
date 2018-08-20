@@ -12,7 +12,7 @@ public class EnhancedECommerceCheckout {
 
     private static final String KEY_PRODUCT = "products";
     private static final String KEY_CURRENCY_CODE = "currencyCode";
-    private static final String KEY_ACTION_FIELD = "option";
+    private static final String KEY_ACTION_FIELD = "actionField";
 
     public static final String KEY_CHECKOUT = "checkout";
 

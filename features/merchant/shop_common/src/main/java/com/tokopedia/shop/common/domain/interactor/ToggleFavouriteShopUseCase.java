@@ -18,6 +18,7 @@ public class ToggleFavouriteShopUseCase extends UseCase<Boolean> {
 
     private ShopCommonRepository shopRepository;
 
+    @Inject
     public ToggleFavouriteShopUseCase(ShopCommonRepository shopRepository) {
         this.shopRepository = shopRepository;
     }

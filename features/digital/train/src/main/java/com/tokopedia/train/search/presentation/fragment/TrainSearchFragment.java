@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -148,8 +146,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         trainScheduleBookingPassData.setAdultPassenger(adultPassenger);
         trainScheduleBookingPassData.setInfantPassenger(infantPassenger);
 
-        presenter.getTrainSchedules();
         setUpButtonActionView(view);
+        presenter.getTrainSchedules();
+
     }
 
     @Override
@@ -185,16 +184,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     protected abstract void getDataFromFragment();
 
-    private void setCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        textView.setLayoutParams(layoutParams);
-    }
-
-    private void removeCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0);
-        textView.setLayoutParams(layoutParams);
-    }
-
     private void setUpButtonActionView(View view) {
         filterAndSortBottomAction = view.findViewById(R.id.bottom_action_filter_sort);
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
@@ -203,6 +192,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 trainAnalytics.eventClickFilterOnBottomBar();
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
                         arrivalScheduleSelected, getScheduleVariant(), filterSearchData), FILTER_SEARCH_REQUEST_CODE);
+                getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
