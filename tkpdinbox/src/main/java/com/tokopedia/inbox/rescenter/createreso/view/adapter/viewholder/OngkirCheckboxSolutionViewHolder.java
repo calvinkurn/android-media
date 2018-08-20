@@ -11,7 +11,6 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.OngkirCheckboxSolutionModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.OngkirSolutionModel;
 
 /**
  * @author by yfsx on 09/08/18.
@@ -46,18 +45,24 @@ public class OngkirCheckboxSolutionViewHolder extends AbstractViewHolder<OngkirC
         initViewListener(element);
     }
 
-    private void initView(OngkirSolutionModel model) {
+    private void initView(OngkirCheckboxSolutionModel model) {
         tvTitle.setText(model.getProblem().getName());
         extraLayout.setVisibility(model.isLastItem() ? View.GONE : View.VISIBLE);
         solutionRefundView.setVisibility(complaintResult.problem.amount != 0 ? View.VISIBLE : View.GONE);
         middleSeparator.setVisibility(checkBox.isChecked()? View.GONE : View.VISIBLE);
-        solutionRefundView.bind(model.getProblem(), mainView, complaintResult);
     }
 
-    private void initViewListener(OngkirSolutionModel model) {
+    private void initViewListener(OngkirCheckboxSolutionModel model) {
         checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
-            solutionRefundView.setVisibility(compoundButton.isChecked() ? View.VISIBLE : View.GONE);
-            middleSeparator.setVisibility(compoundButton.isChecked() ? View.VISIBLE : View.GONE);
+            mainView.addRemoveOngkirComplaint(model);
+            if (compoundButton.isChecked()) {
+                solutionRefundView.setVisibility(View.VISIBLE);
+                middleSeparator.setVisibility(View.VISIBLE);
+                solutionRefundView.bind(model.getProblem(), mainView, complaintResult);
+            } else {
+                solutionRefundView.setVisibility(View.GONE);
+                middleSeparator.setVisibility(View.GONE);
+            }
         });
     }
 }

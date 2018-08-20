@@ -97,6 +97,7 @@ public class SolutionProblemModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.type);
         dest.writeString(this.name);
+        dest.writeInt(this.trouble);
         dest.writeParcelable(this.amount, flags);
         dest.writeParcelable(this.maxAmount, flags);
         dest.writeInt(this.qty);
@@ -106,6 +107,7 @@ public class SolutionProblemModel implements Parcelable {
     protected SolutionProblemModel(Parcel in) {
         this.type = in.readInt();
         this.name = in.readString();
+        this.trouble = in.readInt();
         this.amount = in.readParcelable(SolutionProblemAmountModel.class.getClassLoader());
         this.maxAmount = in.readParcelable(SolutionProblemAmountModel.class.getClassLoader());
         this.qty = in.readInt();

@@ -10,6 +10,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.typefactory.SolutionRefundT
  */
 public class OngkirCheckboxSolutionModel extends OngkirSolutionModel implements Parcelable, Visitable<SolutionRefundTypeFactory> {
 
+
     public OngkirCheckboxSolutionModel(SolutionProblemModel problem,
                                        SolutionShippingModel shipping,
                                        SolutionProductModel product,

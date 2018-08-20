@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionComplaintModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionOrderModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
@@ -43,6 +44,8 @@ public interface SolutionDetailFragmentListener {
         void calculateTotalRefund(ComplaintResult complaintResult);
 
         void initAmountToResult(ComplaintResult complaintResult);
+
+        void addRemoveOngkirComplaint(SolutionComplaintModel model);
     }
 
     interface Presenter extends CustomerPresenter<View> {

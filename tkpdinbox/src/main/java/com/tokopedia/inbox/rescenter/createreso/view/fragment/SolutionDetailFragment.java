@@ -41,6 +41,7 @@ import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -157,7 +158,6 @@ public class SolutionDetailFragment extends BaseDaggerFragment
                         editAppealSolutionModel.getSolutionName()));
             }
         }
-        calculateFirstTotalRefund();
     }
 
     @Override
@@ -284,9 +284,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment
                     result = complaintResult;
                     break;
                 }
-            } else if(complaintResult.order.detail.id == orderModel.getDetail().getId()) {
-                result = complaintResult;
-                break;
+            } else {
+                if(complaintResult.order.detail.id == orderModel.getDetail().getId()) {
+                    result = complaintResult;
+                    break;
+                }
             }
         }
         return result;
@@ -294,28 +296,71 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
     @Override
     public void initAmountToResult(ComplaintResult complaintResult) {
-        boolean isComplaintAdded = false;
         if (resultViewModel != null) {
             for (ComplaintResult result : resultViewModel.complaints) {
                 if (complaintResult.problem.id == result.problem.id) {
-                    isComplaintAdded = true;
                     result.problem.amount = complaintResult.problem.amount;
                 }
-            }
-            if (!isComplaintAdded) {
-                resultViewModel.complaints.add(complaintResult);
             }
         } else {
             for (ComplaintResult result : editAppealSolutionModel.complaints) {
                 if (complaintResult.problem.id == result.problem.id) {
-                    isComplaintAdded = true;
                     result.problem.amount = complaintResult.problem.amount;
                 }
             }
-            if (!isComplaintAdded) {
-                editAppealSolutionModel.complaints.add(complaintResult);
+        }
+        calculateTotalRefund(new ComplaintResult());
+        buttonSelected(btnContinue);
+    }
+
+    @Override
+    public void addRemoveOngkirComplaint(SolutionComplaintModel model) {
+        List<ComplaintResult> complaintResults = resultViewModel != null ?
+                resultViewModel.complaints :
+                editAppealSolutionModel.complaints;
+        boolean isComplaintOnList = false;
+        for (ComplaintResult complaintResult : complaintResults) {
+            if (complaintResult.problem.id == 0) {
+                isComplaintOnList = true;
             }
         }
+        if (!isComplaintOnList) {
+            addOngkirComplaint(model);
+        } else {
+            removeOngkirComplaint();
+        }
+    }
+
+    private void addOngkirComplaint(SolutionComplaintModel model) {
+        ComplaintResult complaintResult = new ComplaintResult();
+        complaintResult.problem.name = "Ada selisih ongkos kirim";
+        complaintResult.problem.amount = model.getProblem().getMaxAmount().getInteger();
+        complaintResult.problem.trouble = model.getProblem().getTrouble();
+        complaintResult.problem.type = model.getProblem().getType();
+        if (resultViewModel != null) {
+            resultViewModel.complaints.add(complaintResult);
+        } else {
+            editAppealSolutionModel.complaints.add(complaintResult);
+        }
+        calculateTotalRefund(complaintResult);
+    }
+
+    private void removeOngkirComplaint() {
+        List<ComplaintResult> complaintResults = resultViewModel != null ?
+                resultViewModel.complaints :
+                editAppealSolutionModel.complaints;
+        List<ComplaintResult> tempResult = new ArrayList<>();
+        for (ComplaintResult complaintResult : complaintResults) {
+            if (complaintResult.problem.id != 0) {
+                tempResult.add(complaintResult);
+            }
+        }
+        if (resultViewModel != null) {
+            resultViewModel.complaints = tempResult;
+        } else {
+            editAppealSolutionModel.complaints = tempResult;
+        }
+        calculateTotalRefund(new ComplaintResult());
     }
 
     private void calculateFirstTotalRefund() {
@@ -333,30 +378,21 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
     @Override
     public void calculateTotalRefund(ComplaintResult complaintResult) {
-        boolean isComplaintAdded = false;
         int totalValue = 0;
         if (resultViewModel != null) {
             for (ComplaintResult result : resultViewModel.complaints) {
                 if (complaintResult.problem.id == result.problem.id) {
-                    isComplaintAdded = true;
                     result.problem.amount = complaintResult.problem.amount;
                 }
                 totalValue += result.problem.amount;
-            }
-            if (!isComplaintAdded) {
-                resultViewModel.complaints.add(complaintResult);
             }
             resultViewModel.refundAmount = totalValue;
         } else {
             for (ComplaintResult result : editAppealSolutionModel.complaints) {
                 if (complaintResult.problem.id == result.problem.id) {
-                    isComplaintAdded = true;
                     result.problem.amount = complaintResult.problem.amount;
                 }
                 totalValue += result.problem.amount;
-            }
-            if (!isComplaintAdded) {
-                editAppealSolutionModel.complaints.add(complaintResult);
             }
             editAppealSolutionModel.refundAmount = totalValue;
         }
