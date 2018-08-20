@@ -65,7 +65,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_image_upload, viewGroup, false));
+                .inflate(R.layout.listview_image_upload_review, viewGroup, false));
     }
 
     @Override
@@ -84,13 +84,13 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         try {
             if (data.get(position).getFileLoc() == null) {
-                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc());
+                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc(), 15.0f);
             } else {
                 Glide.with(holder.image.getContext())
                         .load(new File(data.get(position).getFileLoc()))
                         .asBitmap()
                         .centerCrop()
-                        .into(getRoundedImageViewTarget(holder.image, 5.0f));
+                        .into(getRoundedImageViewTarget(holder.image, 15.0f));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -52,6 +52,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -88,6 +89,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     public static final int RESULT_CODE_SKIP = 321;
     private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
     private static final int REQUEST_CODE_IMAGE_REVIEW = 384;
+    public static final int MAX_IMAGE_LIMIT = 5;
 
     ImageView productImage;
     TextView productName;
@@ -401,11 +403,22 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     }
 
     private void openImagePicker() {
+        ArrayList<Integer> placeholderDrawableRes = new ArrayList<>();
+        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
+        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
+        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
+        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
+        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
+
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                 null
-                ,null);
+                ,new ImagePickerMultipleSelectionBuilder(
+                new ArrayList<>(),
+                placeholderDrawableRes,
+                com.tokopedia.core.R.string.empty_desc,
+                MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);
     }
@@ -640,7 +653,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
             if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
                 startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
-                        imageUrlOrPathList.get(0)), ImageUploadHandler.CODE_UPLOAD_IMAGE);
+                        imageUrlOrPathList), ImageUploadHandler.CODE_UPLOAD_IMAGE);
             }
         } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
             presenter.restoreFormFromCache();

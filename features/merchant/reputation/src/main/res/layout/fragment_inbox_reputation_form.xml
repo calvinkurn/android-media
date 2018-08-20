@@ -138,7 +138,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_2"
+            android:paddingTop="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_16"/>
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
