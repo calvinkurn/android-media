@@ -4,6 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow"
+    android:divider="@drawable/bg_line_separator"
+    android:dividerPadding="@dimen/dp_10"
+    android:showDividers="middle"
     android:orientation="vertical">
 
     <LinearLayout
@@ -43,16 +46,6 @@
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/separator0"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:background="@color/grey_line"
-        android:visibility="gone" />
-
-
     <LinearLayout
         android:id="@+id/variant"
         android:layout_width="match_parent"
@@ -88,15 +81,6 @@
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/separator1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:background="@color/grey_line"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@id/installmet"
         android:layout_width="match_parent"
@@ -131,15 +115,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <View
-        android:id="@+id/separator2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:background="@color/grey_line"
-        android:visibility="gone" />
 
     <LinearLayout
         android:id="@id/wholesale"
