@@ -87,6 +87,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public DealDetailsPresenter mPresenter;
     @Inject
     DealCategoryAdapterPresenter mPresenter2;
+    @Inject
+    DealsAnalytics dealsAnalytics;
 
     private View progressBarLayout;
     private ProgressBar progBar;
@@ -336,7 +338,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         detail.put("products", productMaps);
         ecommerce.put("currencyCode", "IDR");
         ecommerce.put("detail", detail);
-        DealsAnalytics.sendEventEcommerce(getContext(), DealsAnalytics.EVENT_VIEW_PRODUCT
+        dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_VIEW_PRODUCT
                 , DealsAnalytics.EVENT_VIEW_PRODUCT_DETAILS
                 , String.format("%s - %s", detailsViewModel.getBrand().getTitle()
                         , detailsViewModel.getDisplayName()), ecommerce);
@@ -609,7 +611,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
 
     void sendEvent(String action) {
-        DealsAnalytics.sendEventDealsDigitalClick(getContext(), action
+        dealsAnalytics.sendEventDealsDigitalClick(action
                 , String.format("%s - %s", tvBrandName.getText().toString(), dealDetail.getDisplayName()));
 
     }

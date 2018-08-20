@@ -72,6 +72,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private LinearLayout noContent;
     @Inject
     public BrandDetailsPresenter mPresenter;
+    @Inject DealsAnalytics dealsAnalytics;
     private DealsCategoryAdapter dealsAdapter;
     private LinearLayoutManager layoutManager;
     private Toolbar toolbar;
@@ -166,6 +167,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             recyclerViewDeals.clearOnScrollListeners();
             dealsAdapter.addAll(productItems, false);
             dealsAdapter.notifyDataSetChanged();
+            dealsAdapter.setBrand(brand);
             dealsAdapter.addBrandHeader(brand.getDescription(), brand.getTitle(), count);
             noContent.setVisibility(View.GONE);
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
@@ -176,8 +178,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             noContent.setVisibility(View.VISIBLE);
         }
         baseMainContent.setVisibility(View.VISIBLE);
-        DealsAnalytics.sendEventDealsDigitalView(getActivity(),
-                DealsAnalytics.EVENT_VIEW_BRAND_DETAIL,
+        dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_VIEW_BRAND_DETAIL,
                 brand.getTitle());
     }
 

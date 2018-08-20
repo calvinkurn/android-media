@@ -63,7 +63,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private TextView numberOfDeals;
     private LinearLayoutManager layoutManager;
     private ScrollView noContent;
-
+    @Inject
+    DealsAnalytics dealsAnalytics;
     @Inject
     DealsCategoryDetailPresenter mPresenter;
     private CategoriesModel categoriesModel;
@@ -160,8 +161,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
         } else {
-            DealsAnalytics.sendEventDealsDigitalView(getActivity(),
-                    DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
+            dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
                     locationName);
             numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
             recyclerViewDeals.setVisibility(View.GONE);

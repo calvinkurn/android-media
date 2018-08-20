@@ -107,14 +107,14 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void onSearchSubmitted(String text) {
         searchText = text;
-        DealsAnalytics.sendEventDealsDigitalClick(getContext(), DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
+        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
         mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         searchText = text;
-        DealsAnalytics.sendEventDealsDigitalClick(getContext(), DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
+        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
         mPresenter.searchTextChanged(text);
     }
 
@@ -157,8 +157,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
                 KeyboardHandler.DropKeyboard(getContext(), searchInputView);
             }
         } else {
-            DealsAnalytics.sendEventDealsDigitalView(getActivity(),
-                    DealsAnalytics.EVENT_NO_BRAND_FOUND,
+            mPresenter.sendEventView(DealsAnalytics.EVENT_NO_BRAND_FOUND,
                     searchText);
             recyclerview.setVisibility(View.GONE);
             recyclerview.removeOnScrollListener(rvOnScrollListener);

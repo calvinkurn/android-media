@@ -20,10 +20,13 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategoryItemAdapter.ViewHolder> {
 
     private List<CategoryItem> categoryItems;
     private Context context;
+    DealsAnalytics dealsAnalytics;
 
     public DealsCategoryItemAdapter(List<CategoryItem> categoryItems) {
         this.categoryItems = new ArrayList<>();
@@ -61,8 +64,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
         @Override
         public void onClick(View v) {
-            DealsAnalytics.sendEventDealsDigitalClick(context,
-                    DealsAnalytics.EVENT_SELECT_VOUCHER_CATEGORY,
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SELECT_VOUCHER_CATEGORY,
                     categoryItems.get(getIndex()).getTitle());
 
             CategoriesModel categoriesModel = new CategoriesModel();
@@ -86,6 +88,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
+        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.category_item, parent, false);
 

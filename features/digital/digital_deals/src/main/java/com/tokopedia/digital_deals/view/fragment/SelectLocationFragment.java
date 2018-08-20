@@ -50,6 +50,8 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
     private TextView tvTopDeals;
     @Inject
     public DealsLocationPresenter mPresenter;
+    @Inject
+    DealsAnalytics dealsAnalytics;
     private DealsLocationAdapter dealsCategoryAdapter;
 
 
@@ -92,15 +94,13 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        DealsAnalytics.sendEventDealsDigitalClick(getActivity(),
-                String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
+        dealsAnalytics.sendEventDealsDigitalClick(String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
         mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        DealsAnalytics.sendEventDealsDigitalClick(getActivity(),
-                String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
+        dealsAnalytics.sendEventDealsDigitalClick(String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
         mPresenter.searchTextChanged(text);
 
     }
@@ -135,8 +135,7 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
             if (!isTopLocations)
                 if (searchText.length > 0) {
                     if (searchText[0] != null) {
-                        DealsAnalytics.sendEventDealsDigitalClick(getActivity(),
-                                DealsAnalytics.EVENT_NO_LOCATION,
+                        dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_NO_LOCATION,
                                 searchText[0]);
                     }
                 }

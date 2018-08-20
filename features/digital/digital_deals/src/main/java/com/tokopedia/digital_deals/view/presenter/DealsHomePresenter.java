@@ -77,13 +77,15 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private Subscription subscription;
     private HashMap<String, Object> params = new HashMap<>();
     private UserSession userSession;
+    private DealsAnalytics dealsAnalytics;
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
+        this.dealsAnalytics = dealsAnalytics;
     }
 
     @Override
@@ -152,16 +154,21 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
         if (productItem == null)
             return;
-        HashMap<String, Object> bannerMap = new HashMap<>();
-        bannerMap.put("id", productItem.getId());
-        bannerMap.put("name", "/deals - top banner");
-        bannerMap.put("position", currentPage);
-        bannerMap.put("creative", productItem.getDisplayName());
-        HashMap<String, Object> ecommerce = new HashMap<>();
-        ecommerce.put(DealsAnalytics.EVENT_PROMO_VIEW, bannerMap);
-        DealsAnalytics.sendEventEcommerce(getView().getActivity(), DealsAnalytics.EVENT_PROMO_VIEW
-                , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER,
-                String.format("%s - %s", productItem.getDisplayName(), currentPage), ecommerce);
+
+        if (!productItem.isTrack()) {
+            HashMap<String, Object> bannerMap = new HashMap<>();
+            bannerMap.put("id", productItem.getId());
+            bannerMap.put("name", "/deals - top banner");
+            bannerMap.put("position", currentPage);
+            bannerMap.put("creative", productItem.getDisplayName());
+            HashMap<String, Object> ecommerce = new HashMap<>();
+            ecommerce.put(DealsAnalytics.EVENT_PROMO_VIEW, bannerMap);
+            sendEventEcommerce(DealsAnalytics.EVENT_PROMO_VIEW
+                    , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER,
+                    String.format("%s - %s", productItem.getDisplayName(), currentPage), ecommerce);
+            productItem.setTrack(true);
+
+        }
     }
 
     @Override
@@ -183,13 +190,11 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
-            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
-                    DealsAnalytics.EVENT_CLICK_PROMO,
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else if (id == R.id.action_booked_history) {
-            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
-                    DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
                     "");
             if (userSession.isLoggedIn()) {
                 getView().startOrderListActivity();
@@ -199,20 +204,17 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 getView().navigateToActivityRequest(intent, getView().getRequestCode());
             }
         } else if (id == R.id.action_faq) {
-            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
-                    DealsAnalytics.EVENT_CLICK_BANTUAN,
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
         } else if (id == R.id.tv_see_all_brands) {
-            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
-                    DealsAnalytics.EVENT_CLICK_SEE_ALL_BRANDS,
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_ALL_BRANDS,
                     "");
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
         } else if (id == R.id.see_all_promo) {
-            DealsAnalytics.sendEventDealsDigitalClick(getView().getActivity(),
-                    DealsAnalytics.EVENT_CLICK_SEE_ALL_PROMO,
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_ALL_PROMO,
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else {
@@ -433,5 +435,14 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    public void sendEventEcommerce(String event, String action, String label,
+                       HashMap<String, Object> ecommerce){
+        dealsAnalytics.sendEventEcommerce(event, action, label, ecommerce);
+    }
+
+    public void sendEventView(String action, String label) {
+        dealsAnalytics.sendEventDealsDigitalView(action, label);
     }
 }

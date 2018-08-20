@@ -15,6 +15,8 @@ import com.tokopedia.digital_deals.view.model.Location;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdapter.ViewHolder> {
 
 
@@ -22,6 +24,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     private List<Location> locations;
     private ActionListener actionListener;
     private boolean isPopular;
+    DealsAnalytics dealsAnalytics;
 
     public DealsLocationAdapter(List<Location> locations, ActionListener actionListener) {
         this.locations = new ArrayList<>();
@@ -37,6 +40,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         this.context = viewGroup.getContext();
+        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_item, viewGroup, false));
     }
 
@@ -85,12 +89,11 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         @Override
         public void onClick(View v) {
             if (isPopular)
-                DealsAnalytics.sendEventDealsDigitalClick(context,
-                        DealsAnalytics.EVENT_CLICK_ON_POPULAR_LOCATION,
+                dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_ON_POPULAR_LOCATION,
                         String.format("%s - %s", locations.get(getIndex()).getName(), getIndex()));
             else {
-                DealsAnalytics.sendEventDealsDigitalClick(context,
-                        String.format(DealsAnalytics.EVENT_CLICK_ON_LOCATION, locations.get(getIndex()).getName()),
+                dealsAnalytics.sendEventDealsDigitalClick(String.format(DealsAnalytics.EVENT_CLICK_ON_LOCATION
+                        , locations.get(getIndex()).getName()),
                         String.format("%s - %s", locations.get(getIndex()).getName(), getIndex()));
             }
             Location location = Utils.getSingletonInstance().getLocation(context);

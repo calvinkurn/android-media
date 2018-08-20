@@ -52,6 +52,7 @@ import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -265,6 +266,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             categoryAdapter.addAll(top.getItems(), false);
             categoryAdapter.notifyDataSetChanged();
         } else {
+            mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
+                    tvLocationName.getText().toString());
             rvTrendingDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
@@ -286,7 +289,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             clBrands.setVisibility(View.VISIBLE);
-            rvBrandItems.setAdapter(new DealsBrandAdapter(brandList, true));
+            DealsBrandAdapter dealsBrandAdapter = new DealsBrandAdapter(brandList, true);
+            dealsBrandAdapter.setPopularBrands(true);
+            rvBrandItems.setAdapter(dealsBrandAdapter);
+
         } else {
             clBrands.setVisibility(View.GONE);
         }

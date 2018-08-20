@@ -72,6 +72,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Inject
     CheckoutDealPresenter mPresenter;
+    @Inject
+    DealsAnalytics dealsAnalytics;
     private DealsDetailsResponse dealDetails;
     private boolean promoApplied = false;
 
@@ -155,6 +157,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel) {
 
+
+        if (dealDetails == null)
+            return;
 
         this.dealDetails = dealDetails;
         quantity = packageViewModel.getSelectedQuantity();
@@ -292,7 +297,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                 promo = "promo";
             else
                 promo = "non promo";
-            DealsAnalytics.sendEventEcommerce(getContext(), DealsAnalytics.EVENT_CHECKOUT
+            dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_CHECKOUT
                     , DealsAnalytics.EVENT_CLICK_PROCEED_TO_PAYMENT
                     , String.format("%s - %s - %s", dealDetails.getBrand().getTitle()
                             , dealDetails.getDisplayName(), promo), ecommerce);
