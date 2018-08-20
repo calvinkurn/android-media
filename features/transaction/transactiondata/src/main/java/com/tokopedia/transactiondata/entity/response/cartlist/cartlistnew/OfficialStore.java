@@ -11,12 +11,12 @@ public class OfficialStore {
 
     @SerializedName("is_official")
     @Expose
-    private boolean isOfficial;
+    private int isOfficial;
     @SerializedName("os_logo_url")
     @Expose
     private String osLogoUrl;
 
-    public boolean isOfficial() {
+    public int isOfficial() {
         return isOfficial;
     }
 
