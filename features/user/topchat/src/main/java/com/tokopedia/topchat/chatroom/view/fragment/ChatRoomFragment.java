@@ -47,7 +47,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
@@ -130,6 +129,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+    private static final int MAX_SIZE_IMAGE_PICKER = 5;
     public static final int CHAT_DELETED_RESULT_CODE = 101;
 
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
@@ -931,18 +931,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (imagePathList == null || imagePathList.size() <= 0) {
                     return;
                 }
-                String imagePath = imagePathList.get(0);
                 List<ImageUploadViewModel> list = new ArrayList<>();
+                String imagePath = imagePathList.get(0);
                 if (!TextUtils.isEmpty(imagePath)) {
                     ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
                     list.add(temp);
                 } else {
-                    ArrayList<String> imagePaths = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                    if (imagePaths != null) {
-                        for (int i = 0; i < imagePaths.size(); i++) {
-                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePaths.get(i));
-                            list.add(temp);
-                        }
+                    for (int i = 0; i < imagePathList.size(); i++) {
+                        ImageUploadViewModel temp = generateChatViewModelWithImage(imagePathList.get(i));
+                        list.add(temp);
                     }
                 }
                 adapter.addReply(list);
