@@ -42,6 +42,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagonContract.View, TrainSeatAdapterTypeFactory.ActionListener, TrainSeatPopupAdapter.ActionListener, TrainSeatListener {
     private static final String EXTRA_WAGON = "EXTRA_WAGON";
+    private static final Float DEFAULT_DIM_OPACITY = 0.7f;
     private TrainWagonViewModel trainWagonViewModel;
     private List<TrainSeatViewModel> selectedSeatsInWagon;
     private RecyclerView seatsRecyclerView;
@@ -248,27 +249,35 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
                 if (top > popupHeight) {
                     // top view
                     newTop = top - popupHeight + height;
-                    topSeatLayout.setVisibility(View.GONE);
-                    topSeatArrow.setVisibility(View.GONE);
-                    bottomSeatLayout.setX(left);
-                    bottomSeatLayout.setLeft(left);
-                    AppCompatTextView bottomSeatTextView = popupView.findViewById(R.id.tv_bottom_seat_label);
-                    bottomSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+                    renderTopPopUpView(viewModel, left, popupView);
                 } else {
                     // bottom view
                     newTop = top;
-                    topSeatLayout.setX(left);
-                    topSeatLayout.setLeft(left);
-                    bottomSeatLayout.setVisibility(View.GONE);
-                    bottomSeatArrow.setVisibility(View.GONE);
-                    AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);
-                    topSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+                    renderBottomPopUpView(viewModel, left, popupView);
                 }
 
                 popupWindow.showAtLocation(getView(), Gravity.TOP | Gravity.LEFT, 0, newTop);
-                dimScreenBehind(popupWindow, 0.7f);
+                dimScreenBehind(popupWindow, DEFAULT_DIM_OPACITY);
             }
 
+        }
+
+        private void renderBottomPopUpView(TrainSeatViewModel viewModel, int left, View popupView) {
+            topSeatLayout.setX(left);
+            topSeatLayout.setLeft(left);
+            bottomSeatLayout.setVisibility(View.GONE);
+            bottomSeatArrow.setVisibility(View.GONE);
+            AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);
+            topSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+        }
+
+        private void renderTopPopUpView(TrainSeatViewModel viewModel, int left, View popupView) {
+            topSeatLayout.setVisibility(View.GONE);
+            topSeatArrow.setVisibility(View.GONE);
+            bottomSeatLayout.setX(left);
+            bottomSeatLayout.setLeft(left);
+            AppCompatTextView bottomSeatTextView = popupView.findViewById(R.id.tv_bottom_seat_label);
+            bottomSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
         }
 
         private void setupRecyclerView(TrainSeatViewModel viewModel) {
