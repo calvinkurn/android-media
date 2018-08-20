@@ -181,8 +181,9 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         changeInactiveNumber.setText(changeInactiveString);
         changeInactiveNumber.setMovementMethod(LinkMovementMethod.getInstance());
         changeInactiveNumber.setHighlightColor(Color.TRANSPARENT);
-        changeInactiveNumber.setVisibility(sessionRouter.isLoginInactivePhoneLinkEnabled() ?
-                View.VISIBLE : View.GONE);
+        /*changeInactiveNumber.setVisibility(sessionRouter.isLoginInactivePhoneLinkEnabled() ?
+                View.VISIBLE : View.GONE);*/
+        changeInactiveNumber.setVisibility(View.VISIBLE);
     }
 
     @Override
