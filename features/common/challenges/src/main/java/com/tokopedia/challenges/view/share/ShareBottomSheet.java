@@ -150,7 +150,9 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
 
     @Override
     public void onItemClick(String packageName) {
-        if (url.startsWith("https://tokopedia.link") || url.startsWith("http://tokopedia.link") || isChallenge) {
+        if(url == null){
+            url = deepLink;
+        } else if (isChallenge || url.startsWith("https://tokopedia.link") || url.startsWith("http://tokopedia.link")) {
             if (packageName.equalsIgnoreCase(KEY_COPY)) {
                 ClipboardHandler.CopyToClipboard(getActivity(), url);
             } else {

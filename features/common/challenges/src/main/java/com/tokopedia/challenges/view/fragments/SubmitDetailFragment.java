@@ -126,7 +126,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(),"tokopedia://challenges/submission/"+model.getId(),false);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), model.getSharing().getMetaTags().getOgUrl(), model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(), "tokopedia://challenges/submission/" + model.getId(), false);
 
         });
 

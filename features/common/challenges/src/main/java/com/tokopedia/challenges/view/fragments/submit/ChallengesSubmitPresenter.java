@@ -225,7 +225,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
                     SubmissionResult result = mainDataObject.getSubmissionResults().get(0);
                     ShareBottomSheet.show(((AppCompatActivity)getView().getActivity()).getSupportFragmentManager(), result.getSharing().getMetaTags().getOgUrl(), result.getTitle(), result.getSharing().getMetaTags().getOgUrl(), result.getSharing().getMetaTags().getOgTitle(), result.getSharing().getMetaTags().getOgImage(), result.getId(),"tokopedia://challenges/submission/"+result.getId(),false);
-
                 }
             }
         });
