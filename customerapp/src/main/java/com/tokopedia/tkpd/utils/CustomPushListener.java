@@ -7,14 +7,20 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.widget.RemoteViews;
+
 import com.moe.pushlibrary.utils.MoEHelperUtils;
 import com.moengage.core.ConfigurationProvider;
+import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 
 public class CustomPushListener extends PushMessageListener {
+
+    public static final String EXTRA_DELETE_NOTIFICATION_ID = "extra_delete_notification_id";
+    public static final String DELETE_NOTIFY = "com.tokopedia.tkpd.utils.delete";
+    public static final int NOTIFICATION_ID = 777;
 
     @Override
     protected void onPostNotificationReceived(Context context, Bundle extras) {
@@ -53,9 +59,9 @@ public class CustomPushListener extends PushMessageListener {
         NotificationCompat.Builder builder = super.onCreateNotification(context, extras, provider);
 
         if (PERSISTENT.equalsIgnoreCase(extras.getString(KEY_IS_PERSISTENT))) {
+
             long when = System.currentTimeMillis();
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
-
             String title1 = extras.getString(KEY_ICON_NAME1);
             String title2 = extras.getString(KEY_ICON_NAME2);
             String title3 = extras.getString(KEY_ICON_NAME3);
@@ -68,22 +74,25 @@ public class CustomPushListener extends PushMessageListener {
             String url2 = extras.getString(KEY_ICON_URL2);
             String url3 = extras.getString(KEY_ICON_URL3);
             String url4 = extras.getString(KEY_ICON_URL4);
+
             if (!TextUtils.isEmpty(title1) && !TextUtils.isEmpty(deeplink1) && !TextUtils.isEmpty(url1)) {
                 remoteView.setTextViewText(R.id.title1, title1);
                 Intent intent = RouteManager.getIntent(context, deeplink1);
                 remoteView.setImageViewBitmap(R.id.image_icon1, MoEHelperUtils.downloadImageBitmap(url1));
                 PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteView.setOnClickPendingIntent(R.id.image_icon1, pIntent);
+                remoteView.setOnClickPendingIntent(R.id.lin_container_1, pIntent);
             }
+
             if (!TextUtils.isEmpty(title2) && !TextUtils.isEmpty(deeplink2) && !TextUtils.isEmpty(url2)) {
                 remoteView.setTextViewText(R.id.title2, title2);
                 remoteView.setImageViewBitmap(R.id.image_icon2, MoEHelperUtils.downloadImageBitmap(url2));
                 Intent intent2 = RouteManager.getIntent(context, deeplink2);
                 PendingIntent pIntent2 = PendingIntent.getActivity(context, 0, intent2,
                         PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteView.setOnClickPendingIntent(R.id.image_icon2, pIntent2);
+                remoteView.setOnClickPendingIntent(R.id.lin_container_2, pIntent2);
             }
+
             if (!TextUtils.isEmpty(title3) && !TextUtils.isEmpty(deeplink3) && !TextUtils.isEmpty(url3)) {
                 remoteView.setTextViewText(R.id.title3, title3);
 
@@ -91,35 +100,40 @@ public class CustomPushListener extends PushMessageListener {
                 Intent intent3 = RouteManager.getIntent(context, deeplink3);
                 PendingIntent pIntent3 = PendingIntent.getActivity(context, 0, intent3,
                         PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteView.setOnClickPendingIntent(R.id.image_icon3, pIntent3);
+                remoteView.setOnClickPendingIntent(R.id.lin_container_3, pIntent3);
             }
+
             if (!TextUtils.isEmpty(title4) && !TextUtils.isEmpty(deeplink4) && !TextUtils.isEmpty(url4)) {
                 remoteView.setTextViewText(R.id.title4, title4);
                 remoteView.setImageViewBitmap(R.id.image_icon4, MoEHelperUtils.downloadImageBitmap(url4));
                 Intent intent4 = RouteManager.getIntent(context, deeplink4);
                 PendingIntent pIntent4 = PendingIntent.getActivity(context, 0, intent4,
                         PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteView.setOnClickPendingIntent(R.id.image_icon4, pIntent4);
+                remoteView.setOnClickPendingIntent(R.id.lin_container_4, pIntent4);
             }
-            PendingIntent pIntent5 =  PendingIntent.getActivity(
+
+            ConfigurationProvider configurationProvider = ConfigurationProvider.getInstance(context);
+            configurationProvider.updateNotificationId(NOTIFICATION_ID);
+            Intent deleteIntent = new Intent(DELETE_NOTIFY);
+            deleteIntent.putExtra(EXTRA_DELETE_NOTIFICATION_ID, NOTIFICATION_ID);
+            PendingIntent pIntent5 = PendingIntent.getBroadcast(
                     context,
-                    0,
-                    new Intent(),
-                    PendingIntent.FLAG_CANCEL_CURRENT);
+                    NOTIFICATION_ID,
+                    deleteIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
             Intent notificationIntent = new Intent(context, ParentIndexHome.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
-
             builder.setSmallIcon(R.drawable.qc_launcher)
                     .setCustomContentView(remoteView)
                     .setCustomBigContentView(remoteView)
                     .setContentTitle(context.getResources().getString(R.string.app_name))
                     .setContentIntent(contentIntent)
-                    .setAutoCancel(true)
                     .setWhen(when);
         }
+
         return builder;
     }
 
