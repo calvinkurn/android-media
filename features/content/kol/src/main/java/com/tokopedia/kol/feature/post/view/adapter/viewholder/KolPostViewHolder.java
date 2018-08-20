@@ -126,9 +126,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             element.setReviewUrlClickableSpan(getUrlClickableSpan(element));
         }
 
-        baseKolView.bind(element);
-
         setListener(element);
+
+        baseKolView.bind(element);
         baseKolView.setViewListener(this, element);
     }
 
