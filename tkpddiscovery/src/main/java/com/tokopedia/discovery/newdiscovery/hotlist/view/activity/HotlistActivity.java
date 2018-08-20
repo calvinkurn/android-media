@@ -38,6 +38,7 @@ public class HotlistActivity extends DiscoveryActivity
     private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
     private static final String EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS";
     private static final String EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER";
+    private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
     private static final String TAG = HotlistActivity.class.getSimpleName();
     private AppBarLayout appBarLayout;
     private TextView descriptionTxt;
@@ -80,11 +81,12 @@ public class HotlistActivity extends DiscoveryActivity
         return intent;
     }
 
-    public static Intent createInstanceUsingURL(Context context, String url, String searchQuery) {
+    public static Intent createInstanceUsingURL(Context context, String url, String searchQuery, boolean isActivityPaused) {
         Intent intent = new Intent(context, HotlistActivity.class);
         Bundle extras = new Bundle();
         extras.putString(EXTRA_HOTLIST_PARAM_URL, url);
         extras.putString(EXTRA_HOTLIST_PARAM_QUERY, searchQuery);
+        extras.putBoolean(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
         intent.putExtras(extras);
         return intent;
     }
@@ -92,6 +94,9 @@ public class HotlistActivity extends DiscoveryActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
         initInjector();
         setPresenter(hotlistPresenter);
         hotlistPresenter.attachView(this);
@@ -189,7 +194,11 @@ public class HotlistActivity extends DiscoveryActivity
     }
 
     private CharSequence getToolbarTitle() {
-        return toolbarLayout.getTitle();
+        try {
+            return toolbarLayout.getTitle();
+        }catch (Exception e){
+            return "";
+        }
     }
 
     @Override

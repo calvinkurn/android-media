@@ -253,4 +253,5 @@
     <string name="sticker_cashback">Cashback %1$d%%</string>
     <string name="catalog">Katalog</string>
     <string name="primary">Utama</string>
+    <string name="product_label_message_error_upload_image">Gagal mengunggah gambar, silahkan coba lagi.</string>
 </resources>

@@ -37,10 +37,10 @@ import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapt
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
-import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -64,7 +64,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     View footer;
 
     @Inject
-    FeedPlusDetailPresenter presenter;
+    FeedPlusDetail.Presenter presenter;
 
 
     private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
@@ -101,6 +101,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         initVar(savedInstanceState);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null)
             detailId = savedInstanceState.getString(ARGS_DETAIL_ID);
@@ -113,20 +114,22 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         recyclerviewScrollListener = onRecyclerViewListener();
         FeedPlusDetailTypeFactory typeFactory = new FeedPlusDetailTypeFactoryImpl(this);
         adapter = new DetailFeedAdapter(typeFactory);
+        GraphqlClient.init(getContext());
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         pagingHandler = new PagingHandler();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_feed_plus_detail, container, false);
-        recyclerView = (RecyclerView) parentView.findViewById(R.id.detail_list);
-        shareButton = (TextView) parentView.findViewById(R.id.share_button);
-        seeShopButon = (TextView) parentView.findViewById(R.id.see_shop);
+        recyclerView = parentView.findViewById(R.id.detail_list);
+        shareButton = parentView.findViewById(R.id.share_button);
+        seeShopButon = parentView.findViewById(R.id.see_shop);
         footer = parentView.findViewById(R.id.footer);
         prepareView();
         presenter.attachView(this, this);
@@ -213,7 +216,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFeedDetail(String errorMessage) {
-        finishLoading();
+        dismissLoading();
         footer.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -224,13 +227,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 });
     }
 
-    private void finishLoading() {
-        adapter.dismissLoading();
-    }
-
     @Override
     public void onEmptyFeedDetail() {
-        finishLoading();
         adapter.showEmpty();
         footer.setVisibility(View.GONE);
     }
@@ -256,7 +254,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetSingleFeedDetail(final FeedDetailHeaderViewModel header,
                                              SingleFeedDetailViewModel singleFeedDetailViewModel) {
-        finishLoading();
         footer.setVisibility(View.VISIBLE);
 
         if (pagingHandler.getPage() == 1) {
@@ -282,7 +279,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             final FeedDetailHeaderViewModel header,
             ArrayList<Visitable> listDetail,
             boolean hasNextPage) {
-        finishLoading();
         footer.setVisibility(View.VISIBLE);
 
         if (pagingHandler.getPage() == 1) {
@@ -325,7 +321,24 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showLoading() {
+        footer.setVisibility(View.GONE);
         adapter.showLoading();
+    }
+
+    @Override
+    public void dismissLoading() {
+        footer.setVisibility(View.VISIBLE);
+        adapter.dismissLoading();
+    }
+
+    @Override
+    public void showLoadingMore() {
+        adapter.showLoadingMore();
+    }
+
+    @Override
+    public void dismissLoadingMore() {
+        adapter.dismissLoadingMore();
     }
 
     @Override
@@ -400,6 +413,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public int getColor(int resId) {
         return MethodChecker.getColor(getActivity(), resId);
+    }
+
+    @Override
+    public void setHasNextPage(boolean hasNextPage) {
+        pagingHandler.setHasNext(hasNextPage);
     }
 
     private void dismissLoadingProgress() {

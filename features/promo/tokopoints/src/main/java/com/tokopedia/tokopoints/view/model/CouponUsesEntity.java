@@ -5,15 +5,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class CouponUsesEntity {
     @Expose
-    @SerializedName("active_count_down")
+    @SerializedName("activeCountdown")
     private int activeCountDown;
 
     @Expose
-    @SerializedName("btn_usage")
+    @SerializedName("buttonUsage")
     private CouponButtonUsageEntity btnUsage;
 
     @Expose
-    @SerializedName("expired_count_down")
+    @SerializedName("expiredCountdown")
     private int expiredCountDown;
 
     @Expose
@@ -21,7 +21,7 @@ public class CouponUsesEntity {
     private String text;
 
     @Expose
-    @SerializedName("usage_str")
+    @SerializedName("usageStr")
     private String usageStr;
 
     public int getActiveCountDown() {

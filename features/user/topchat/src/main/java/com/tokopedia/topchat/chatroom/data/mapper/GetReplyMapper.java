@@ -40,6 +40,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
 
     private static final String SHOP_ADMIN_ROLE = "Shop Admin";
     private static final String SHOP_OWNER_ROLE = "Shop Owner";
+    private static final String CLIENT_SHOP_ROLE = "Shop";
     private static final String USER_ROLE = "User";
     private static final String TOKOPEDIA_ADMIN_ROLE = "Tokopedia Administrator";
     private static final String TOKOPEDIA = "Tokopedia";
@@ -289,14 +290,22 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
             if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
                     && contact.isInterlocutor()) {
-
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
                 }
-
                 if (!TextUtils.isEmpty(contact.getAttributes().getThumbnail())) {
                     chatRoomViewModel.setImageHeader(contact.getAttributes().getThumbnail());
                 }
+                if(!TextUtils.isEmpty(contact.getRole())){
+                    if(contact.getRole().equalsIgnoreCase(USER_ROLE)){
+                        chatRoomViewModel.setInterlocutorRole(contact.getRole());
+                        chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getUserId()));
+                    } else if(contact.getRole().equalsIgnoreCase(SHOP_ADMIN_ROLE) || contact.getRole().equalsIgnoreCase(SHOP_OWNER_ROLE)) {
+                        chatRoomViewModel.setInterlocutorRole(CLIENT_SHOP_ROLE);
+                        chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getShopId()));
+                    }
+                }
+
 
             }
         }

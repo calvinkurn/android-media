@@ -31,6 +31,8 @@ import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
 import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
+import com.tokopedia.explore.applink.ExploreApplinkModule;
+import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.flight.applink.FlightApplinkModule;
@@ -43,10 +45,14 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
+import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
+import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
+import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -69,6 +75,8 @@ import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
+import com.tokopedia.train.applink.TrainApplinkModule;
+import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
@@ -97,6 +105,7 @@ import io.branch.referral.BranchError;
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
+        TrainApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
@@ -107,14 +116,18 @@ import io.branch.referral.BranchError;
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
         KolApplinkModule.class,
+        ExploreApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
+        HowtopayApplinkModule.class,
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
-        TokopointApplinkModule.class
+        TokopointApplinkModule.class,
+        InstantLoanAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
+
 
 
     public static DeepLinkDelegate getDelegateInstance() {
@@ -131,6 +144,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new SessionApplinkModuleLoader(),
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
+                new TrainApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
@@ -141,11 +155,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new GamificationApplinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new KolApplinkModuleLoader(),
+                new ExploreApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
+                new HowtopayApplinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new TokopointApplinkModuleLoader()
+                new TokopointApplinkModuleLoader(),
+                new InstantLoanAppLinkModuleLoader()
         );
     }
 

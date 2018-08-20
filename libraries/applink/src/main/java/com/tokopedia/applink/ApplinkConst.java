@@ -22,6 +22,7 @@ public interface ApplinkConst {
     String SHOP = "tokopedia://shop/{shop_id}";
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
     String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
+    String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -44,6 +45,7 @@ public interface ApplinkConst {
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
+    String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
@@ -82,6 +84,7 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
+    String HOWTOPAY = "tokopedia://howtopay";
 
 
     String EVENTS = "tokopedia://events";
@@ -108,8 +111,10 @@ public interface ApplinkConst {
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
-    String ORDER_TRACKING = "tokopedia://order/tracking";
+    String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
+    String INSTANT_LOAN = "tokopedia://loan";
+    String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

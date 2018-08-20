@@ -53,7 +53,7 @@ public class TkpdResponse {
             jsonResponse = new JSONObject(strResponse);
             status = jsonResponse.getString("status");
         } catch (Throwable e) {
-            e.printStackTrace();
+            // Do nothing
             return null;
         }
 
@@ -72,7 +72,7 @@ public class TkpdResponse {
                 isError = false;
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            // Do nothing
         }
 
         try {
@@ -84,7 +84,7 @@ public class TkpdResponse {
 
             isNullData = jsonData == null && jsonDataArray == null;
         } catch (Throwable e) {
-            e.printStackTrace();
+            // Do nothing
             jsonData = null;
         }
 
@@ -98,7 +98,6 @@ public class TkpdResponse {
 
             isNullData = jsonDataArray == null && jsonData == null;
         } catch (Throwable e) {
-            e.printStackTrace();
             jsonDataArray = null;
         }
 
@@ -121,7 +120,7 @@ public class TkpdResponse {
                 msgStatus.add("");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            // Do nothing
         }
 
         TkpdResponse tkpdResponse = new TkpdResponse();

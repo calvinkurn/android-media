@@ -206,6 +206,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int PEOPLE_DIGITAL_TRANSACTION_LIST = 207;
         public static final int PEOPLE_FLIGHT_TRANSACTION_LIST = 208;
         public static final int PEOPLE_TRAIN_TRANSACTION_LIST = 209;
+        public static final int PEOPLE_PAYMENT_LIST = 212;
         public static final int PEOPLE_DEALS_TRANSACTION_LIST = 210;
         public static final int PEOPLE_EVENTS_TRANSACTION_LIST = 211;
 
@@ -431,10 +432,6 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
 
         // hotlist view type
         public static final int VIEW_STANDARD = 9;
-
-        // instoped view type
-        public static final int VIEW_INSTOPED = 11;
-
 
         public static final int VIEW_FIRST_TIME_USER = 123;
         public static final int VIEW_EMPTY = 0;

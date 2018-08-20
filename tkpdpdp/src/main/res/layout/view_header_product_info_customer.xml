@@ -11,7 +11,7 @@
         android:id="@+id/linear_discount_timer_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/red_500"
+        android:background="#f8f8f8"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:animateLayoutChanges="true"
@@ -39,6 +39,8 @@
             android:text="@string/flash_sale_title"
             android:textSize="@dimen/sp_14"
             android:background="@drawable/pdp_sale_title"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
             android:textColor="@color/white" />
 
         <com.tokopedia.design.countdown.CountDownView
@@ -48,8 +50,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_8"
             app:coundDownBackgroud="@android:color/transparent"
-            app:countDownSparatorColor="@color/white"
-            app:countDownTxtColor="@color/white" />
+            app:countDownSparatorColor="#d50000"
+            app:countDownTxtColor="#d50000" />
         </LinearLayout>
 
         <TextView
@@ -65,7 +67,11 @@
             android:singleLine="true"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:lineSpacingExtra="10sp"
+            android:textColor="@color/font_black_primary_70"
             tools:text="Stok tersedia (>100)" />
 
     </LinearLayout>

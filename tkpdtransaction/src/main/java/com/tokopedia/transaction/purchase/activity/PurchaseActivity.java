@@ -59,15 +59,6 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     private PurchaseTabAdapter adapter;
 
-    @DeepLink(TransactionAppLink.PURCHASE_VERIFICATION)
-    public static Intent getCallingIntentPurchaseVerification(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_VERIFICATION)
-                .putExtras(extras);
-    }
-
     @DeepLink(TransactionAppLink.PURCHASE_ORDER)
     public static Intent getCallingIntentPurchaseStatus(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();

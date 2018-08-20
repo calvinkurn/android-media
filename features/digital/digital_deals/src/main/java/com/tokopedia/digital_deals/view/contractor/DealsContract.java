@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.usecase.RequestParams;
@@ -53,6 +53,9 @@ public class DealsContract {
 
         void showViews();
 
+        void startOrderListActivity();
+
+        int getRequestCode();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -61,7 +64,7 @@ public class DealsContract {
 
         void onDestroy();
 
-        void startBannerSlide(TouchViewPager viewPager);
+        void startBannerSlide(WrapContentHeightViewPager viewPager);
 
         void onBannerSlide(int page);
 

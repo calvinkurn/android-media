@@ -19,6 +19,7 @@ import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
@@ -44,10 +45,12 @@ public class VerificationActivity extends BaseSimpleActivity {
             "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,4})";
 
     private VerificationPassModel passModel;
+    private OTPAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        analytics = OTPAnalytics.createInstance(this);
         initInjector();
         initView();
     }
@@ -248,6 +251,13 @@ public class VerificationActivity extends BaseSimpleActivity {
             getSupportFragmentManager().popBackStack();
         } else {
             finish();
+        }
+
+        if(getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                VerificationFragment){
+
+            ((Verification.View)getSupportFragmentManager().findFragmentById(R.id.parent_view))
+                    .trackOnBackPressed();
         }
     }
 

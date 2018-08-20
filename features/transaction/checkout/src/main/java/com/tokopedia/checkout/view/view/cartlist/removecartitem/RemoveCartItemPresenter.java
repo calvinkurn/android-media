@@ -167,20 +167,10 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
             enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
             enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
             enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
-            enhancedECommerceProductCartMapData.setDimension38(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerAttribution()
-            );
             enhancedECommerceProductCartMapData.setAttribution(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
                             ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerAttribution()
-            );
-            enhancedECommerceProductCartMapData.setDimension40(
-                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                            : cartItemData.getOriginData().getTrackerListName()
             );
             enhancedECommerceProductCartMapData.setListName(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())

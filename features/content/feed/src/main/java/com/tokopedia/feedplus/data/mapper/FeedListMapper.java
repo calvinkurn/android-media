@@ -233,6 +233,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
                 PollViewModel pollViewModel
                         = convertToPollViewModel(
+                                datum.getId(),
                                 datum.getContent().getType(),
                                 datum.getContent().getPolling()
                         );
@@ -316,7 +317,6 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             ContentFeedKol content = kolpost.getContent().get(0);
 
             TagsFeedKol tags = content.getTags().get(0);
-
             return new KolPostDomain(
                     kolpost.getId() == null ? 0 : kolpost.getId(),
                     content.getImageurl() == null ? "" : content.getImageurl(),
@@ -352,7 +352,6 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             ContentFeedKol content = kolpost.getContent().get(0);
 
             TagsFeedKol tags = content.getTags().get(0);
-
             return new KolPostDomain(
                     kolpost.getId() == null ? 0 : kolpost.getId(),
                     content.getImageurl() == null ? "" : content.getImageurl(),
@@ -374,7 +373,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                     tags.getCaption() == null ? "" : tags.getCaption(),
                     tags.getId() == null ? 0 : tags.getId(),
                     kolpost.getUserInfo() == null ? "" : kolpost.getUserInfo(),
-                    "",
+                    kolpost.getHeaderTitle() == null ? "" : kolpost.getHeaderTitle(),
                     kolpost.getUserUrl() == null ? "" : kolpost.getUserUrl(),
                     kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
                     kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
@@ -444,7 +443,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         return new ProductCommunicationViewModel(productCommunicationItems);
     }
 
-    private PollViewModel convertToPollViewModel(String cardType, FeedPolling polling) {
+    private PollViewModel convertToPollViewModel(String activityId, String cardType,
+                                                 FeedPolling polling) {
         if (polling == null) {
             return null;
         }
@@ -494,7 +494,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getLikeCount() == null ? 0 : polling.getLikeCount(),
                 polling.getCommentCount() == null ? 0 : polling.getCommentCount(),
                 0,
-                polling.getPollId() == null ? 0 : polling.getPollId(),
+                TextUtils.isEmpty(activityId) ? 0 : Integer.valueOf(activityId),
                 TimeConverter.generateTime(
                         polling.getCreateTime() == null ? "" : polling.getCreateTime()
                 ),

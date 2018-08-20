@@ -4,12 +4,12 @@
     android:id="@+id/rl_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shadow">
+    android:background="@drawable/bg_checkout_shadow">
 
     <RelativeLayout
-        android:padding="@dimen/dp_16"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
 
         <TextView
             style="@style/TextSmallMediumBlack70"

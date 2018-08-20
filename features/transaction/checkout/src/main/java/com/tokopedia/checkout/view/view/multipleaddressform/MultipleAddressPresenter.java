@@ -38,6 +38,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     private final GetCartListUseCase getCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
 
+    private CartListData cartListData;
+
     private IMultipleAddressView view;
 
     public MultipleAddressPresenter(IMultipleAddressView view,
@@ -48,6 +50,16 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         this.getCartListUseCase = getCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.view = view;
+    }
+
+    @Override
+    public CartListData getCartListData() {
+        return cartListData;
+    }
+
+    @Override
+    public void setCartListData(CartListData cartListData) {
+        this.cartListData = cartListData;
     }
 
     @Override
@@ -77,6 +89,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onNext(CartListData cartListData) {
                 view.hideInitialLoading();
                 if (cartListData != null && cartListData.getCartItemDataList().size() > 0) {
+                    MultipleAddressPresenter.this.cartListData = cartListData;
                     view.renderCartData(cartListData);
                 } else {
                     view.navigateToCartList();

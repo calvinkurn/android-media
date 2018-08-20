@@ -67,7 +67,7 @@ public abstract class BaseNotificationFactory {
         if (GlobalConfig.isSellerApp())
             return R.drawable.ic_big_notif_sellerapp;
         else
-            return R.drawable.ic_big_notif_customerapp;
+            return R.mipmap.ic_launcher;
     }
 
     protected Bitmap getBitmapLargeIcon() {

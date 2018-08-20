@@ -57,12 +57,12 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActiv
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.topads.group.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
@@ -82,6 +82,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private static final int REQUEST_CODE_ADD_CREDIT = 1;
     public static final int REQUEST_CODE_AD_STATUS = 2;
     public static final int REQUEST_CODE_AD_OPTION = 3;
+    public static final int REQUEST_CODE_ADD_PRODUCT = 4;
+    public static final int REQUEST_CODE_ADD_KEYWORD = 5;
 
     private View shopLayoutView;
     private ImageView shopIconImageView;
@@ -507,14 +509,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
-            if (startDate == null || endDate == null) {
-                return;
-            }
-            boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-            if (adStatusChanged) {
-                topAdsDashboardPresenter.clearTotalAdCache();
-                loadData();
-            }
+            checkAdChanged(data);
         } else if (requestCode == REQUEST_CODE_ADD_CREDIT) {
             loadData();
         } else if (requestCode == DatePickerConstant.REQUEST_CODE_DATE) {
@@ -532,18 +527,36 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                     default: break;
                 }
             }
+        } else if (requestCode == REQUEST_CODE_ADD_PRODUCT && data != null){
+            checkAdChanged(data);
+            onSummaryProductClicked();
+        } else if (requestCode == REQUEST_CODE_ADD_KEYWORD && data != null){
+            checkAdChanged(data);
+            onSummaryKeywordClicked();
+        }
+    }
+
+    private void checkAdChanged(Intent data){
+        if (startDate == null || endDate == null) {
+            return;
+        }
+        boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        if (adStatusChanged) {
+            topAdsDashboardPresenter.clearTotalAdCache();
+            loadData();
         }
     }
 
     private void gotoCreateProductAd() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT);
         Intent intent = new Intent(getActivity(), TopAdsGroupNewPromoActivity.class);
-        this.startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+        this.startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
     }
 
     private void gotoCreateKeyword() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_STATUS, true);
+        TopAdsKeywordNewChooseGroupActivity.Companion
+                .start(this, getActivity(), REQUEST_CODE_ADD_KEYWORD, true, null);
     }
 
     private void handlingResultDateSelection(Intent data){

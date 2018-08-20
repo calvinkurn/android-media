@@ -166,7 +166,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
             checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
-            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(getActivity(), token),
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
+            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(
+                    getActivity(), null, token, false, false
+                    ),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
@@ -430,7 +433,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(getActivity(), mapper.transform(model), token);
+        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(
+                getActivity(), mapper.transform(model), token, true, false
+        );
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 

@@ -18,8 +18,6 @@ import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
-import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -46,9 +44,6 @@ public interface ShopComponent {
 
     Retrofit.Builder getRetrofitBuilder();
 
-    @ShopQualifier
-    TomeApi tomeApi();
-
     BearerInterceptor bearerInterceptor();
 
     @DefaultAuthWithErrorHandler
@@ -57,9 +52,10 @@ public interface ShopComponent {
     @WsV4Qualifier
     Retrofit baseDomainRetrofit();
 
-    ShopInfoRepository shopInfoRepository();
+    @ShopQualifier
+    Retrofit shopRetrofit();
 
-    ShopOpenTracking trackingOpenShop();
+    ShopInfoRepository shopInfoRepository();
 
     SessionHandler sessionHandler();
 

@@ -5,8 +5,8 @@ import android.os.Bundle;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.project.youtubeutils.common.YoutubeInitializer;
+import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.tokopedia.youtubeutil.R;
 
 /**
@@ -31,8 +31,12 @@ public abstract class YoutubePlayerActivity extends YouTubeBaseActivity implemen
     protected abstract String getVideoUrl();
 
     private void initVideo() {
-        youTubePlayerView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
-                YoutubeInitializer.singleVideoInitializer(getVideoUrl(),this));
+        try {
+            youTubePlayerView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
+                    YoutubeInitializer.singleVideoInitializer(getVideoUrl(), this));
+        } catch (Exception e) {
+            finish();
+        }
     }
 
     @Override

@@ -25,7 +25,6 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
-import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.topads.sdk.view.adapter.PromotedShopAdapter;
 import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
@@ -132,8 +131,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         }
 
         if (shop != null) {
-            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
-                    shopImage);
+            imageLoader.loadImage(shop, shopImage);
             if (shop.getImageProduct() != null) {
                 generateThumbnailImages(shop.getImageProduct());
             }

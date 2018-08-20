@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,10 +70,10 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             MultipleAddressAdapterData data = (MultipleAddressAdapterData)
                     adapterObjectList.get(position);
             itemViewHolder.bindAdapterView(addressData, data, this, listener, compositeSubscription, isFirstItem(data));
-        } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
+        } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT) {
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
-
+        }
     }
 
     private boolean isFirstItem(MultipleAddressAdapterData data) {
@@ -104,6 +103,16 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                 RecipientAddressModel recipientAddressModel,
                                 int childPosition, int parentPosition) {
         listener.onChangeAddress(adapter, addressData, recipientAddressModel, childPosition, parentPosition);
+    }
+
+    @Override
+    public void onClickPlusQuantityButton() {
+        listener.sendAnalyticsPlusButtonItemMultipleAddress();
+    }
+
+    @Override
+    public void onClickMinQuantityButton() {
+        listener.sendAnalyticsMinButtonItemMultipleAddress();
     }
 
     public void unsubscribeSubscription() {
@@ -150,5 +159,9 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                              RecipientAddressModel recipientAddressModel,
                              int childPosition,
                              int parentPosition);
+
+        void sendAnalyticsPlusButtonItemMultipleAddress();
+
+        void sendAnalyticsMinButtonItemMultipleAddress();
     }
 }

@@ -8,7 +8,6 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -16,9 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -26,6 +23,7 @@ import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -48,7 +46,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage();
+        void renderCheckoutPage(boolean isInitialRender);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
@@ -58,7 +56,7 @@ public interface ShipmentContract {
 
         void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void renderDataChangedFromMultipleAddress(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderDataChanged();
 
         void renderErrorDataHasChangedAfterCheckout(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
@@ -67,12 +65,6 @@ public interface ShipmentContract {
         void renderCheckoutCartSuccess(CheckoutData checkoutData);
 
         void renderCheckoutCartError(String message);
-
-        void sendAnalyticsChoosePaymentMethodSuccess();
-
-        void sendAnalyticsChoosePaymentMethodFailed();
-
-        void sendAnalyticsChoosePaymentMethodCourierNotComplete();
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
@@ -95,6 +87,26 @@ public interface ShipmentContract {
         ShipmentDataConverter getShipmentDataConverter();
 
         Activity getActivityContext();
+
+
+    }
+
+    interface AnalyticsActionListener {
+        void sendAnalyticsChoosePaymentMethodSuccess();
+
+        void sendAnalyticsChoosePaymentMethodFailed();
+
+        @Deprecated
+        void sendAnalyticsChoosePaymentMethodCourierNotComplete();
+
+        void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap);
+
+        void sendAnalyticsOnClickChooseOtherAddressShipment();
+
+        void sendAnalyticsOnClickChooseToMultipleAddressShipment();
+
+        void sendAnalyticsOnClickTopDonation();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -106,8 +118,7 @@ public interface ShipmentContract {
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel,
-                                                          ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
+                                                          ShipmentDonationModel shipmentDonationModel);
 
         void processReloadCheckoutPageBecauseOfError();
 
@@ -152,10 +163,6 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
-
-        ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel();
-
-        void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 

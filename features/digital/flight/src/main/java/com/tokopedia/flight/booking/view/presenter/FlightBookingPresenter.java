@@ -825,8 +825,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 String departureDate;
                 FlightBookingParamViewModel paramViewModel = getView().getCurrentBookingParamViewModel();
 
-                if (!paramViewModel.getSearchParam().getReturnDate().equals("") &&
-                        paramViewModel.getSearchParam().getReturnDate() != null) {
+                if (!paramViewModel.getSearchParam().isOneWay()) {
                     departureDate = paramViewModel.getSearchParam().getReturnDate();
                 } else {
                     departureDate = paramViewModel.getSearchParam().getDepartureDate();

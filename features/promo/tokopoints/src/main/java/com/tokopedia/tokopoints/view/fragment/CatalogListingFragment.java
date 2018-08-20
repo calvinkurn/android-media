@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +17,6 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -33,10 +28,13 @@ import com.tokopedia.tokopoints.view.adapter.CatalogSortTypePagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.PaddingItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
+import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.TabUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,13 +51,14 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private CatalogChipAdapter mChipAdapter;
     private CatalogSortTypePagerAdapter mViewPagerAdapter;
     private int mSelectedCategory = CommonConstant.DEFAULT_CATEGORY_TYPE;
-    private TextView mTextFailedAction;
 
     @Inject
     public CatalogListingPresenter mPresenter;
 
-    public static Fragment newInstance() {
-        return new CatalogListingFragment();
+    public static Fragment newInstance(Bundle extras) {
+        Fragment fragment = new CatalogListingFragment();
+        fragment.setArguments(extras);
+        return fragment;
     }
 
     @Override
@@ -81,7 +80,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         initListener();
-        showLoader();
         mPresenter.getHomePageData();
         mPresenter.getPointData();
     }
@@ -121,6 +119,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void updateSelectedCategoryId(int id) {
         this.mSelectedCategory = id;
+    }
+
+    @Override
+    public boolean isAddedView() {
+        return getActivity() != null && isAdded();
     }
 
     @Override
@@ -170,13 +173,28 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTabSortType.setupWithViewPager(mPagerSortType);
 
         //setup category type
-        mChipAdapter = new CatalogChipAdapter(mPresenter, filters.getCategories());
-        mRecyclerViewChips.setLayoutManager(new LinearLayoutManager(getActivityContext(), LinearLayoutManager.HORIZONTAL, false));
-        mRecyclerViewChips.addItemDecoration(new PaddingItemDecoration(getResources().getDimensionPixelSize(R.dimen.tp_margin_medium)));
-        mRecyclerViewChips.setAdapter(mChipAdapter);
+        if (filters.getCategories() != null && !filters.getCategories().isEmpty()) {
+            mChipAdapter = new CatalogChipAdapter(mPresenter, filters.getCategories());
+            mRecyclerViewChips.setLayoutManager(new LinearLayoutManager(getActivityContext(), LinearLayoutManager.HORIZONTAL, false));
+
+            if (mRecyclerViewChips.getItemDecorationCount() == 0) {
+                mRecyclerViewChips.addItemDecoration(new PaddingItemDecoration(getResources().getDimensionPixelSize(R.dimen.tp_margin_medium)));
+            }
+
+            mRecyclerViewChips.setAdapter(mChipAdapter);
+        } else {
+            mRecyclerViewChips.setVisibility(View.GONE);
+        }
+
+        mSelectedCategory = lookupForSelectedCategory(filters.getCategories());
 
         //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
         mPagerSortType.postDelayed(() -> refreshTab(getSelectedCategoryId()), CommonConstant.TAB_SETUP_DELAY_MS);
+
+        //excluding extra padding from tabs
+        TabUtil.wrapTabIndicatorToTitle(mTabSortType,
+                (int) getResources().getDimension(R.dimen.tp_margin_medium),
+                (int) getResources().getDimension(R.dimen.tp_margin_regular));
     }
 
 
@@ -229,7 +247,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type);
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
-        mTextFailedAction = view.findViewById(R.id.text_failed_action);
+
+        if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
+            view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);
+        }
     }
 
     private void initListener() {
@@ -264,5 +285,19 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void openWebView(String url) {
         ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+    }
+
+    private int lookupForSelectedCategory(ArrayList<CatalogCategory> catalogCategories) {
+        for (CatalogCategory each : catalogCategories) {
+            if (each == null) {
+                continue;
+            }
+
+            if (each.isSelected()) {
+                return each.getId();
+            }
+        }
+
+        return CommonConstant.DEFAULT_CATEGORY_TYPE;
     }
 }

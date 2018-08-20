@@ -20,8 +20,8 @@ public interface TkpdInboxRouter {
     String PRODUCT = "product";
     String PROFILE = "profile";
 
-    String ENABLE_GROUPCHAT = "enable_groupchat";
     String IS_CHAT_BOT = "is_chat_bot";
+    String CREATE_TASK_STACK = "create_task_stack";
     String INDICATOR_VISIBILITY = "indicator_groupchat";
 
 
@@ -43,8 +43,6 @@ public interface TkpdInboxRouter {
     Intent getContactUsIntent(Context context);
 
     Intent getHomeIntent(Context context);
-
-    Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
 
     Intent getShopPageIntent(Context context, String shopId);
 
@@ -70,9 +68,9 @@ public interface TkpdInboxRouter {
 
     Intent getWebviewActivityWithIntent(Context context, String url);
 
-    boolean isEnabledGroupChat();
-
     Intent getChatBotIntent(Context context, String messageId);
 
     boolean isIndicatorVisible();
+
+    boolean isSupportedDelegateDeepLink(String url);
 }

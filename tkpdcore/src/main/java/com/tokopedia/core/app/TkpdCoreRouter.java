@@ -29,12 +29,6 @@ import rx.Observable;
 public interface TkpdCoreRouter {
     String EXTRAS = "extras";
 
-    void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
-
-    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
-
-    void removeInstopedToken();
-
     void goToManageProduct(Context context);
 
     void goToDraftProductList(Context context);
@@ -198,4 +192,7 @@ public interface TkpdCoreRouter {
 
     void setStringRemoteConfigLocal(String key, String value);
 
+    Intent getSettingBankIntent(Context context);
+
+    Intent getChangePasswordIntent(Context context);
 }

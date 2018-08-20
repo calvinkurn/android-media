@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -47,7 +48,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -57,6 +57,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.topchat.R;
@@ -88,6 +89,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
@@ -130,6 +132,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+    private static final int MAX_SIZE_IMAGE_PICKER = 5;
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
@@ -138,6 +141,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
     public static final String TAG = "ChatRoomFragment";
+
+    public static final String STATUS_DESC_KEY = "CHAT_STATUS_DESC";
+    public static final String STATUS_KEY = "CHAT_STATUS";
+
     private static final long MILIS_TO_SECOND = 1000;
     @Inject
     ChatRoomPresenter presenter;
@@ -154,6 +161,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private ReasonBottomSheet reasonBottomSheet;
 
     private ImageView avatar;
+    private ImageView onlineStatus;
     private TextView user;
     private TextView onlineDesc;
     private TextView label;
@@ -176,7 +184,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private Observable<Boolean> replyIsTyping;
     private int mode;
     private View notifier;
-    private String title, avatarImage;
+
+    private String title, avatarImage, lastOnline;
+    private boolean isOnline = false;
 
     private RemoteConfig remoteConfig;
     private boolean uploading;
@@ -191,6 +201,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean(STATUS_KEY,isOnline);
+        outState.putString(STATUS_DESC_KEY,lastOnline);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -200,6 +217,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     "false").equals("true");
             isChatBot = (getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false) ||
                     isChatBotArguments);
+        }
+
+        if(savedInstanceState != null) {
+            isOnline = savedInstanceState.getBoolean(STATUS_KEY,false);
+            lastOnline = savedInstanceState.getString(STATUS_DESC_KEY,"");
         }
     }
 
@@ -362,7 +384,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                         new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                         ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                        null,null);
+                        null, null);
                 Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
                 startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE);
             }
@@ -637,26 +659,33 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void setHeader() {
-
         if (toolbar != null) {
             mainHeader.setVisibility(View.VISIBLE);
             avatar = toolbar.findViewById(R.id.user_avatar);
+            onlineStatus = toolbar.findViewById(R.id.online_status);
             user = toolbar.findViewById(R.id.title);
             onlineDesc = toolbar.findViewById(R.id.subtitle);
             label = toolbar.findViewById(R.id.label);
-            ImageHandler.loadImageCircle2(getActivity(), avatar, avatarImage, R.drawable
-                    .ic_image_avatar_boy);
+            ImageHandler.loadImageCircle2(getActivity(), avatar, avatarImage,
+                    R.drawable.ic_image_avatar_boy);
 
             user.setText(title);
+            String senderTag = getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "");
             if (!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, ""))
-                    && !getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "")
-                    .equals(ListChatViewHolder.USER)) {
+                    && !senderTag.equals(InboxChatConstant.USER_TAG)) {
                 label.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG));
                 label.setVisibility(View.VISIBLE);
+                if(senderTag.equals(InboxChatConstant.SELLER_TAG)){
+                    label.setBackgroundResource(R.drawable.topchat_seller_label);
+                    label.setTextColor(getContext().getResources().getColor(R.color.medium_green));
+                } else {
+                    label.setBackgroundResource(R.drawable.topchat_admin_label);
+                    label.setTextColor(getContext().getResources().getColor(R.color.topchat_admin_label_text_color));
+                }
             } else {
                 label.setVisibility(View.GONE);
             }
-            setOnlineDesc(getActivity().getString(R.string.just_now));
+
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -664,6 +693,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE));
                 }
             });
+
+            setOnlineDesc(lastOnline,isOnline);
         }
     }
 
@@ -681,14 +712,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return adapter;
     }
 
-    public void setOnlineDesc(final String when) {
+    @Override
+    public void setOnlineDesc(final String when, final boolean isOnline) {
         if (getActivity() != null) {
-
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (onlineDesc != null)
+                    if (onlineDesc != null && when != null)
                         onlineDesc.setText(when);
+                    if(onlineStatus != null) {
+                        if(isOnline) onlineStatus.setImageResource(R.drawable.status_indicator_online);
+                        else onlineStatus.setImageResource(R.drawable.status_indicator_offline);
+                    }
                 }
             });
         }
@@ -830,7 +865,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     .ic_image_avatar_boy);
             user.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME));
             label.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG));
-            setOnlineDesc(getActivity().getString(R.string.just_now));
+            setOnlineDesc(this.lastOnline,this.isOnline);
         }
     }
 
@@ -897,18 +932,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (imagePathList == null || imagePathList.size() <= 0) {
                     return;
                 }
-                String imagePath = imagePathList.get(0);
                 List<ImageUploadViewModel> list = new ArrayList<>();
+                String imagePath = imagePathList.get(0);
                 if (!TextUtils.isEmpty(imagePath)) {
                     ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
                     list.add(temp);
                 } else {
-                    ArrayList<String> imagePaths = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                    if (imagePaths != null) {
-                        for (int i = 0; i < imagePaths.size(); i++) {
-                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePaths.get(i));
-                            list.add(temp);
-                        }
+                    for (int i = 0; i < imagePathList.size(); i++) {
+                        ImageUploadViewModel temp = generateChatViewModelWithImage(imagePathList.get(i));
+                        list.add(temp);
                     }
                 }
                 adapter.addReply(list);
@@ -1095,7 +1127,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public boolean isAllowedTemplate() {
-        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
+        return true;
     }
 
 
@@ -1243,7 +1275,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
                         (InboxMessageConstant.PARAM_MESSAGE_ID))) {
-                    setOnlineDesc(getString(R.string.is_typing));
+                    setOnlineDesc(getString(R.string.is_typing),this.isOnline);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1258,7 +1290,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
                         (InboxMessageConstant.PARAM_MESSAGE_ID))) {
-                    setOnlineDesc(getActivity().getString(R.string.just_now));
+                    setOnlineDesc(this.lastOnline,this.isOnline);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1372,6 +1404,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable modelToBeRemoved) {
+        presenter.sendMessage(networkType,message.getMessage());
+        adapter.remove(modelToBeRemoved);
+    }
+
+    @Override
     public void onSuccessSendReply(ReplyActionData replyData, String reply) {
         adapter.removeLast();
         addViewMessage(replyData, reply);
@@ -1477,6 +1515,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
 
         reasonBottomSheet.show();
+    }
 
+    @Override
+    public void setUserStatus(String status, boolean isOnline) {
+        this.lastOnline = status;
+        this.isOnline = isOnline;
+        setOnlineDesc(status,isOnline);
     }
 }

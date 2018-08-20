@@ -55,15 +55,13 @@
 
             <TextView
                 android:id="@+id/tv_popular_cities"
+                style="@style/TextView.Micro.FontMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
-                android:fontFamily="sans-serif-medium"
                 android:text="@string/popular_location"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal" />
+                android:textColor="@color/black_38" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_search_results"
@@ -88,25 +86,20 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <TextView
+                style="@style/TextView.Medium.FontMedium.BlackPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
-                android:text="@string/empty_location_list_text_upper"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_17"
-                android:textStyle="normal" />
+                android:text="@string/empty_location_list_text_upper" />
 
             <TextView
+                style="@style/TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:text="@string/empty_location_list_text_lower"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal" />
+                android:textColor="@color/black_38" />
 
         </LinearLayout>
 

@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -63,7 +62,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     private DealFragmentCallbacks fragmentCallbacks;
 
 
-    private static final int EVENT_LOGIN_REQUEST = 1099;
+    private static final int LOGIN_REQUEST_CODE = 1099;
 
     public static Fragment createInstance() {
         Fragment fragment = new SelectDealQuantityFragment();
@@ -213,7 +212,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvDealDetails.setText(dealDetails.getDisplayName());
 
         tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
-        if(dealDetails.getMrp()!=0){
+        if(dealDetails.getMrp()!=0 && dealDetail.getMrp() != dealDetail.getSalesPrice()){
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
             tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -260,7 +259,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     public int getRequestCode() {
-        return EVENT_LOGIN_REQUEST;
+        return LOGIN_REQUEST_CODE;
     }
 
     @Override

@@ -26,6 +26,9 @@ public class Brand implements Parcelable {
     @SerializedName("featured_thumbnail_image")
     @Expose
     private String featuredThumbnailImage;
+    @SerializedName("city_name")
+    @Expose
+    private String cityName;
     public final static Parcelable.Creator<Brand> CREATOR = new Creator<Brand>() {
 
 
@@ -49,6 +52,7 @@ public class Brand implements Parcelable {
         this.seoUrl = ((String) in.readValue((String.class.getClassLoader())));
         this.featuredImage = ((String) in.readValue((String.class.getClassLoader())));
         this.featuredThumbnailImage = ((String) in.readValue((String.class.getClassLoader())));
+        this.cityName = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Brand() {
@@ -102,6 +106,14 @@ public class Brand implements Parcelable {
         this.featuredThumbnailImage = featuredThumbnailImage;
     }
 
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(title);
         dest.writeValue(description);
@@ -109,6 +121,7 @@ public class Brand implements Parcelable {
         dest.writeValue(seoUrl);
         dest.writeValue(featuredImage);
         dest.writeValue(featuredThumbnailImage);
+        dest.writeValue(cityName);
     }
 
     public int describeContents() {

@@ -26,6 +26,7 @@ public class Utils {
 
     public static class Constants {
         public final static String CHECKOUTDATA = "checkoutdata";
+        public final static String PROMOCODECASE = "ispromocodecase";
     }
 
     public static String transform(JsonObject entity) {
