@@ -39,5 +39,7 @@ public interface SubmitDetailContract {
         void setParticipateTitle(String title);
 
         void updateLikeCount(boolean liked);
+
+        void setSubmittResult(SubmissionResult submissionResult);
     }
 }

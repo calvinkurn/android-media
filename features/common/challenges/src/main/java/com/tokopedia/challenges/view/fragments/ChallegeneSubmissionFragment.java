@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -455,8 +456,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.seemorebutton_tnc) {
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         } else if (v.getId() == R.id.fab_share) {
-          //  ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage());
-
+            ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPath(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true);
 //            ((ChallengesModuleRouter) (getActivity().getApplication())).generateBranchUrlForChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
 //                    challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(),
 //                    challengeResult.getSharing().getMetaTags().getOgImage());
@@ -467,6 +467,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         navigateToActivityRequest(intent, requestCode);
+    }
+
+    @Override
+    public void setChallengeResult(Result challengeResult) {
+        this.challengeResult = challengeResult;
     }
 
     @Override

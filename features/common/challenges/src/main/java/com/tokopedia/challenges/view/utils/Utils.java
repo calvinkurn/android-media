@@ -1,5 +1,8 @@
 package com.tokopedia.challenges.view.utils;
 
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,13 +20,13 @@ import okhttp3.RequestBody;
 
 public class Utils {
     private static Utils singleInstance;
-    public static final String QUERY_PARAM_CHALLENGE_ID="challenge-id";
-    public static final String QUERY_PARAM_SUBMISSION_ID="submission-id";
-    public static final String QUERY_PARAM_KEY_START="start";
-    public static final String QUERY_PARAM_KEY_SIZE="size";
-    public static final String QUERY_PARAM_KEY_SORT="sort";
-    public static final String QUERY_PARAM_KEY_SORT_RECENT="recent";
-    public static final String QUERY_PARAM_KEY_SORT_POINTS="points";
+    public static final String QUERY_PARAM_CHALLENGE_ID = "challenge-id";
+    public static final String QUERY_PARAM_SUBMISSION_ID = "submission-id";
+    public static final String QUERY_PARAM_KEY_START = "start";
+    public static final String QUERY_PARAM_KEY_SIZE = "size";
+    public static final String QUERY_PARAM_KEY_SORT = "sort";
+    public static final String QUERY_PARAM_KEY_SORT_RECENT = "recent";
+    public static final String QUERY_PARAM_KEY_SORT_POINTS = "points";
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -70,6 +73,7 @@ public class Utils {
         return RequestBody.create(MediaType.parse("text/plain"),
                 value);
     }
+
     public static RequestBody generateRequestBlobBody(byte[] value) {
         return RequestBody.create(MediaType.parse("text/plain"),
                 value);
@@ -81,8 +85,8 @@ public class Utils {
     }
 
 
-    public static RequestBody generateImageRequestBodySlice(String path,int start,int end) {
-        return RequestBody.create(MediaType.parse("image/*"), sliceFile(path,start,end));
+    public static RequestBody generateImageRequestBodySlice(String path, int start, int end) {
+        return RequestBody.create(MediaType.parse("image/*"), sliceFile(path, start, end));
     }
 
     public static MultipartBody.Part generateRequestImages(String name, String path) {
@@ -100,17 +104,17 @@ public class Utils {
 
     }
 
-    public static  int KB_1 = 1024;
-    public static  int KB_10 = 10 * KB_1;
+    public static int KB_1 = 1024;
+    public static int KB_10 = 10 * KB_1;
     public static int MB_1 = 1000 * KB_1;
     public static int MB_10 = 10 * MB_1;
 
 
-    public static byte[] get10KBFile(String path)  {
-       return sliceFile(path,0,KB_10);
+    public static byte[] get10KBFile(String path) {
+        return sliceFile(path, 0, KB_10);
     }
 
-    public static byte[] sliceFile(String path,int start,int end) {
+    public static byte[] sliceFile(String path, int start, int end) {
         File file = new File(path);
         int upperBound = end > file.length() ? (int) file.length() : end;
         byte[] bytesArray = new byte[(int) file.length()];
@@ -123,8 +127,16 @@ public class Utils {
             e.printStackTrace();
         }
 
-        return Arrays.copyOfRange(bytesArray,start,upperBound);
+        return Arrays.copyOfRange(bytesArray, start, upperBound);
 
+    }
+
+    public static String getApplinkPath(String url, String id) {
+        if (url != null && id != null) {
+            url = url.replace(Constants.Schemes.APPLINKS + "://", "");
+            url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
+        }
+        return url;
     }
 
 }

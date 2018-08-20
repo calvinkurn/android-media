@@ -13,6 +13,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.domain.usecase.GetChallegeTermsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
+import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetMySubmissionsListUseCase;
 import com.tokopedia.challenges.domain.usecase.IntializeMultiPartUseCase;
 import com.tokopedia.challenges.view.fragments.submit.IChallengesSubmitContract.Presenter;
@@ -43,15 +44,15 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     IntializeMultiPartUseCase mIntializeMultiPartUseCase;
     public ChallengeSettings settings;
     public static final String ACTION_UPLOAD_COMPLETE = "action.upload.complete";
-    GetMySubmissionsListUseCase getMySubmissionsListUseCase;
+    GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
     String postId;
 
     @Inject
-    public ChallengesSubmitPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallegeTermsUseCase mGetChallegeTermsUseCase, IntializeMultiPartUseCase mIntializeMultiPartUseCase, GetMySubmissionsListUseCase getMySubmissionsListUseCase) {
+    public ChallengesSubmitPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallegeTermsUseCase mGetChallegeTermsUseCase, IntializeMultiPartUseCase mIntializeMultiPartUseCase, GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase) {
         this.mGetChallengeSettingUseCase = mGetChallengeSettingUseCase;
         this.mGetChallegeTermsUseCase = mGetChallegeTermsUseCase;
         this.mIntializeMultiPartUseCase = mIntializeMultiPartUseCase;
-        this.getMySubmissionsListUseCase = getMySubmissionsListUseCase;
+        this.getDetailsSubmissionsUseCase = getDetailsSubmissionsUseCase;
     }
 
     @Override
@@ -154,8 +155,8 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         public void onReceive(final Context context, final Intent intent) {
             if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
                 // launch home
-               // getView().finish();
-                if (!TextUtils.isEmpty(postId)){
+                // getView().finish();
+                if (!TextUtils.isEmpty(postId)) {
                     getMySubmissionsList();
                 }
             }
@@ -207,7 +208,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     public void getMySubmissionsList() {
-        getMySubmissionsListUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        getDetailsSubmissionsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
@@ -220,11 +221,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                RestResponse res1 = restResponse.get(SubmissionResponse.class);
-                SubmissionResponse mainDataObject = res1.getData();
-                if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
-                    SubmissionResult result = mainDataObject.getSubmissionResults().get(0);
-                    ShareBottomSheet.show(((AppCompatActivity)getView().getActivity()).getSupportFragmentManager(), result.getSharing().getMetaTags().getOgUrl(), result.getTitle(), result.getSharing().getMetaTags().getOgUrl(), result.getSharing().getMetaTags().getOgTitle(), result.getSharing().getMetaTags().getOgImage(), result.getId(),"tokopedia://challenges/submission/"+result.getId(),false);
+                RestResponse res1 = restResponse.get(SubmissionResult.class);
+                SubmissionResult submissionResult = res1.getData();
+                if (submissionResult != null) {
+                    ShareBottomSheet.show(((AppCompatActivity) getView().getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
                 }
             }
         });

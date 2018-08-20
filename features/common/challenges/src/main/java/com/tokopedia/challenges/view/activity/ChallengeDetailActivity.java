@@ -31,7 +31,6 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
     private String challengeId;
 
     @DeepLink({ChallengesUrl.AppLink.CHALLENGES_DETAILS})
-
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
         Intent destination;
@@ -44,7 +43,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
 
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
 
-        extras.putString(Utils.QUERY_PARAM_CHALLENGE_ID, extras.getString("slug"));
+        extras.putString(Utils.QUERY_PARAM_CHALLENGE_ID, extras.getString(Utils.QUERY_PARAM_CHALLENGE_ID));
         destination = new Intent(context, ChallengeDetailActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);

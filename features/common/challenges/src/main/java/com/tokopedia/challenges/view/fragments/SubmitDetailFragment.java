@@ -26,6 +26,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -55,6 +56,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     SubmitDetailPresenter presenter;
     private SubmissionResult model;
     private TextView participateTextView;
+    private String submissionId;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -93,12 +95,16 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         participateTextView = view.findViewById(R.id.participate_title);
         btnShare = view.findViewById(R.id.btn_share);
 
-        model = getArguments().getParcelable("submissionsResult");
-
         isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
-
         setClickListeners();
-        presenter.setDataInFields(model);
+        model = getArguments().getParcelable("submissionsResult");
+        if (model == null) {
+            submissionId = getArguments().getString(Utils.QUERY_PARAM_SUBMISSION_ID);
+            presenter.getSubmissionDetails(submissionId);
+        } else {
+            presenter.setDataInFields(model);
+        }
+
 
         return view;
     }
@@ -126,7 +132,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), model.getSharing().getMetaTags().getOgUrl(), model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(), "tokopedia://challenges/submission/" + model.getId(), false);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), model.getSharing().getMetaTags().getOgUrl(), model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, model.getId()), false);
 
         });
 
@@ -257,5 +263,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void OnVideoStart() {
         presenter.sendBuzzPointEvent(model.getId());
+    }
+
+    @Override
+    public void setSubmittResult(SubmissionResult submissionResult) {
+        model = submissionResult;
     }
 }

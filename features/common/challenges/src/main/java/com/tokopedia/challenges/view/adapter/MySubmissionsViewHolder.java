@@ -14,6 +14,7 @@ import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.Utils;
 
 public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
@@ -42,7 +43,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             view.getContext().startActivity(intent);
         });
         //imgShare.setOnClickListener(v -> ((ChallengesModuleRouter) (((Activity) context).getApplication())).generateBranchUrlForChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getThumbnailUrl(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
-        imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), "", false));
+        imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPath(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false));
         imgLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

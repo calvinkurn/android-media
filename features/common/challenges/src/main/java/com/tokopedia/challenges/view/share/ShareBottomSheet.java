@@ -25,21 +25,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAdapter.OnItemClickListener, ShareBottomSheetContract.View {
-    private static final String PACKAGENAME_WHATSAPP = "com.whatsapp.ContactPicker";
-    private static final String PACKAGENAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias";
-    private static final String PACKAGENAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity";
-    //private static final String PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity";
-    private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias";
-    private static final String PACKAGENAME_INSTAGRAM = "com.instagram.direct.share.handler.DirectShareHandlerActivity";
-    private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP, PACKAGENAME_INSTAGRAM,
-            PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
 
-    private static final String KEY_WHATSAPP = "whatsapp";
-    private static final String KEY_LINE = "line";
-    // private static final String KEY_TWITTER = "twitter";
-    private static final String KEY_FACEBOOK = "facebook";
-    private static final String KEY_GOOGLE = "google";
-    public static final String KEY_OTHER = "lainnya";
     public static final String KEY_COPY = "salinlink";
 
     private static final String TYPE = "text/plain";
@@ -115,7 +101,7 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
         List<ResolveInfo> resolvedActivities = getActivity().getPackageManager()
                 .queryIntentActivities(intent, 0);
         if (!resolvedActivities.isEmpty()) {
-            List<ResolveInfo> showApplications = validate(resolvedActivities);
+            List<ResolveInfo> showApplications = presenter.validate(resolvedActivities);
 
             BottomSheetShareAdapter adapter = new BottomSheetShareAdapter(showApplications, getActivity()
                     .getPackageManager());
@@ -137,35 +123,13 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
         return mIntent;
     }
 
-    private List<ResolveInfo> validate(List<ResolveInfo> resolvedActivities) {
-        List<ResolveInfo> showApplications = new ArrayList<>();
-        for (ResolveInfo resolveInfo : resolvedActivities) {
-            if (Arrays.asList(ClassNameApplications)
-                    .contains(resolveInfo.activityInfo.name)) {
-                showApplications.add(resolveInfo);
-            }
-        }
-        return showApplications;
-    }
+
 
     @Override
     public void onItemClick(String packageName) {
-        if(url == null){
+        if(url ==null){
             url = deepLink;
-        } else if (isChallenge || url.startsWith("https://tokopedia.link") || url.startsWith("http://tokopedia.link")) {
-            if (packageName.equalsIgnoreCase(KEY_COPY)) {
-                ClipboardHandler.CopyToClipboard(getActivity(), url);
-            } else {
-                ((ChallengesModuleRouter) ((getActivity()).getApplication())).shareBranchUrlForChallenge(getActivity(), packageName, url, title);
-            }
-        } else {
-            ((ChallengesModuleRouter) ((getActivity()).getApplication())).generateBranchUrlForChallenge(getActivity(), url, title, og_url, og_title, og_image, deepLink, new ChallengesModuleRouter.BranchLinkGenerateListener() {
-                @Override
-                public void onGenerateLink(String shareContents, String shareUri) {
-                    presenter.postMapBranchUrl(submissionId, shareUri, packageName, shareContents);
-                }
-            });
         }
-
+        presenter.createAndShareUrl(packageName,url,submissionId,deepLink,isChallenge,title,og_url,og_title,og_image);
     }
 }

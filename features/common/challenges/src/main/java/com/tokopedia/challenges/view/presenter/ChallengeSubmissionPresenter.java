@@ -79,6 +79,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                     Result challengeResult = res1.getData();
                     getView().hideProgressBar();
                     getView().showCollapsingHeader();
+                    getView().setChallengeResult(challengeResult);
                     getView().renderChallengeDetail(challengeResult);
                     getTermsNCondition(challengeResult.getId());
                     loadSubmissions();

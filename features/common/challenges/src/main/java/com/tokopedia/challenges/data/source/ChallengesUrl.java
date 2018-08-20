@@ -26,6 +26,8 @@ public class ChallengesUrl {
         String SUBMISSIONS_UNLIKE = "private/%s/track/unlike";
         String CHALLENGES_DETAILS = "private/" + CHALLENGE_ID ;
         String BUZZPOINT_EVENT = "private/%s/track/view";
+        String SUBMISSIONS_DETAILS = "private/";
+
 
 
 

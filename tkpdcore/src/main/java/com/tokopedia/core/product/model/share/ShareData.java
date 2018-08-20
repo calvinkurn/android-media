@@ -429,10 +429,10 @@ public class ShareData implements Parcelable {
             shareData.setShareUrl(shareUrl);
             shareData.setPathSticker(pathSticker);
             shareData.setOgUrl(ogUrl);
-            shareData.setPathSticker(ogTitle);
-            shareData.setPathSticker(ogDescription);
-            shareData.setPathSticker(ogImageUrl);
-            shareData.setPathSticker(deepLink);
+            shareData.setOgTitle(ogTitle);
+            shareData.setOgDescription(ogDescription);
+            shareData.setOgImageUrl(ogImageUrl);
+            shareData.setDeepLink(deepLink);
             return shareData;
         }
 

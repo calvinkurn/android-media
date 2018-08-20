@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.service;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -17,12 +18,11 @@ import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitPresenter;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
-import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 
 import javax.inject.Inject;
 
-public class UploadChallengeService extends BaseService implements IUploadChallengeServiceContract.UploadChallengeListener {
+public class UploadChallengeService extends Service implements IUploadChallengeServiceContract.UploadChallengeListener {
     public static final String TAG = "UploadChallengeService";
     public static final String UPLOAD_FINGERPRINT_KEY = "UploadChallengeService";
     public static final String UPLOAD_CHALLENGE_ID = "UploadChallengeID";
