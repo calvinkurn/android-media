@@ -42,6 +42,8 @@ public class PushNotification {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.CHALLENGES) {
+                notifyChallenges(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
@@ -109,5 +111,13 @@ public class PushNotification {
 
         notificationManagerCompat.notify(notificationType, notifChat);
 
+    }
+
+    private static void notifyChallenges(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                      int notificationType, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifChat = new GeneralNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationType, notificationType);
+
+        notificationManagerCompat.notify(notificationType, notifChat);
     }
 }
