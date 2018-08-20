@@ -17,7 +17,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
-import com.tokopedia.shop.settings.address.di.component.ShopLocationComponent
+import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.address.presenter.ShopLocationPresenter
 import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
 import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
@@ -43,7 +43,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        getComponent(ShopLocationComponent::class.java).inject(this)
+        getComponent(ShopSettingsComponent::class.java).inject(this)
         presenter.attachView(this)
     }
 

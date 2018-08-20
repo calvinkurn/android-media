@@ -71,4 +71,21 @@
     <string name="shop_notes_use_other_keyword">Silakan gunakan kata kunci lain</string>
     <string name="note_success_delete">Catatan berhasil dihapus</string>
 
+    <string name="shop_note_label_title">Judul Catatan</string>
+    <string name="shop_note_label_desc">Isi Catatan</string>
+    <string name="title_returnable_policy">Kebijakan Pengembalian Produk</string>
+    <string name="shop_notes_title_required">Judul Catatan harus diisi</string>
+    <string name="shop_notes_title_max_length_error">Maksimal panjang Judul Catatan adalah %1$d karakter</string>
+    <string name="shop_notes_content_required">Isi Catatan harus diisi</string>
+    <string name="shop_notes_content_max_length_error">Maksimal panjang Isi Catatan adalah %1$d karakter</string>
+    <string name="action_delete">Hapus</string>
+    <string name="title_retry">Ulangi</string>
+    <string name="shop_settings_add_note">Tambah Catatan</string>
+    <string name="shop_settings_edit_note">Ubah Catatan</string>
+    <string name="shop_settings_edit_address">Ubah Lokasi</string>
+    <string name="shop_etalase_label_name">Nama Etalase</string>
+    <string name="shop_etalase_title_required">Nama Etalase harus diisi</string>
+    <string name="shop_etalase_title_already_exist">Nama Etalase duplikat</string>
+    <string name="shop_settings_add_etalase">Tambah Etalase</string>
+    <string name="shop_settings_edit_etalase">Ubah Etalase</string>
 </resources>

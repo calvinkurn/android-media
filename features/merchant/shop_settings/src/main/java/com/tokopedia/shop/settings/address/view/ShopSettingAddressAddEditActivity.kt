@@ -10,11 +10,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.address.di.component.DaggerShopLocationComponent
-import com.tokopedia.shop.settings.address.di.component.ShopLocationComponent
+import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 
-class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<ShopLocationComponent> {
-    override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(
+class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
+    override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
 
     private var shopLocationViewModel: ShopLocationViewModel? = null
@@ -44,6 +44,8 @@ class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<Shop
             setOnClickListener { (fragment as ShopSettingAddressAddEditFragment).saveAddEditAddress() }
             visibility = View.VISIBLE
         }
+
+        supportActionBar?.setTitle(if (isAddNew) R.string.shop_settings_add_address else R.string.shop_settings_edit_address)
     }
 
     override fun getNewFragment() = ShopSettingAddressAddEditFragment.createInstance(shopLocationViewModel, isAddNew)
