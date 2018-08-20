@@ -191,6 +191,4 @@ public interface TkpdCoreRouter {
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
-
-    Intent getReksaDanaIntent(Context context);
 }

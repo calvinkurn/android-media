@@ -173,6 +173,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
 
     protected void initialPresenter() {
+        presenter.attachView(this);
     }
 
     protected void initInjector() {

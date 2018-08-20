@@ -286,7 +286,6 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.instantLoan)
-    implementation project(rootProject.ext.features.reksaDana)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.checkout)

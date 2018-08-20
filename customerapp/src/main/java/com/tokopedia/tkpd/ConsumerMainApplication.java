@@ -57,7 +57,6 @@ import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.reksadana.view.activities.ReksaDanaHomeActivity;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -383,10 +382,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
-    }
-
-    @Override
-    public Intent getReksaDanaIntent(Context context) {
-        return ReksaDanaHomeActivity.createIntent(context);
     }
 }
