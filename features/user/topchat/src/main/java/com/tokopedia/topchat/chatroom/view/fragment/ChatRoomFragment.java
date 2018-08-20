@@ -1548,7 +1548,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if(isFavorited) profileText = getString(R.string.already_follow_store);
 
         listMenu.add(new Menus.ItemMenus(viewProfileText,R.drawable.ic_set_profile));
-        if(isShop) listMenu.add(new Menus.ItemMenus(profileText,R.drawable.ic_add_black_70));
+        if(isShop) listMenu.add(new Menus.ItemMenus(profileText,R.drawable.ic_add_grey));
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation),R.drawable.ic_trash));
 
         headerMenu.setItemMenuList(listMenu);
