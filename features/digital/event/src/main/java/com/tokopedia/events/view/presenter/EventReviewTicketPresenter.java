@@ -309,11 +309,14 @@ public class EventReviewTicketPresenter
         CartItem cartItem = new CartItem();
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
-        cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-        if (isEventOmsEnabled())
+
+        if (isEventOmsEnabled()) {
+            cartItem.setQuantity(1);
             cartItem.setProductId(packageViewModel.getDigitalProductID());
-        else
+        } else {
             cartItem.setProductId(packageViewModel.getProductId());
+            cartItem.setQuantity(packageViewModel.getSelectedQuantity());
+        }
 
 
         cartItems.add(cartItem);
