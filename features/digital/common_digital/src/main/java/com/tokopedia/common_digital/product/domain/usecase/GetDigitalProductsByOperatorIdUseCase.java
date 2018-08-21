@@ -15,15 +15,15 @@ import rx.functions.Func1;
  * Created by Rizky on 24/01/18.
  */
 
-public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
+public class GetDigitalProductsByOperatorIdUseCase extends UseCase<List<Product>> {
 
     private final String PARAM_CATEGORY_ID = "category_id";
     private final String PARAM_OPERATOR_ID = "operator_id";
 
-    private GetCategoryByIdUseCase getCategoryByIdUseCase;
+    private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
-    public GetProductsByOperatorIdUseCase(GetCategoryByIdUseCase getCategoryByIdUseCase) {
-        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+    public GetDigitalProductsByOperatorIdUseCase(GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
+        this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
         final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
 
-        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId))
+        return getDigitalCategoryByIdUseCase.createObservable(getDigitalCategoryByIdUseCase.createRequestParam(categoryId))
                 .flatMapIterable((Func1<ProductDigitalData, Iterable<Operator>>) productDigitalData -> productDigitalData.getCategoryData().getOperatorList())
                 .filter(operator -> operator.getOperatorId().equals(operatorId))
                 .map(Operator::getProductList);

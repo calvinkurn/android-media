@@ -1,4 +1,4 @@
-package com.tokopedia.mylibrary;
+package com.tokopedia.common_digital;
 
 import org.junit.Test;
 

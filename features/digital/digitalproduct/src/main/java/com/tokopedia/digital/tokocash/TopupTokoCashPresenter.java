@@ -1,7 +1,7 @@
 package com.tokopedia.digital.tokocash;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
+import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.common_digital.product.presentation.model.ProductDigitalData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -20,17 +20,17 @@ import rx.Subscriber;
 public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashContract.View>
         implements TopupTokoCashContract.Presenter {
 
-    private GetCategoryByIdUseCase getCategoryByIdUseCase;
+    private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
     @Inject
-    public TopupTokoCashPresenter(GetCategoryByIdUseCase getCategoryByIdUseCase) {
-        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+    public TopupTokoCashPresenter(GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
+        this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }
 
     @Override
     public void processGetDataProductTokoCash() {
-        RequestParams requestParams = getCategoryByIdUseCase.createRequestParam("103");
-        getCategoryByIdUseCase.execute(requestParams, new Subscriber<ProductDigitalData>() {
+        RequestParams requestParams = getDigitalCategoryByIdUseCase.createRequestParam("103");
+        getDigitalCategoryByIdUseCase.execute(requestParams, new Subscriber<ProductDigitalData>() {
             @Override
             public void onCompleted() {
 
@@ -84,6 +84,6 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
 
     @Override
     public void destroyView() {
-        if (getCategoryByIdUseCase != null) getCategoryByIdUseCase.unsubscribe();
+        if (getDigitalCategoryByIdUseCase != null) getDigitalCategoryByIdUseCase.unsubscribe();
     }
 }

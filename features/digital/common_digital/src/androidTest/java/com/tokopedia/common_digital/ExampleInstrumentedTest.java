@@ -1,4 +1,4 @@
-package com.tokopedia.mylibrary;
+package com.tokopedia.common_digital;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.tokopedia.mylibrary.test", appContext.getPackageName());
+        assertEquals("com.tokopedia.common_digital.test", appContext.getPackageName());
     }
 }

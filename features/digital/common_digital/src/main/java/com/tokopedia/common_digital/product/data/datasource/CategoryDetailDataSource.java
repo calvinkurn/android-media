@@ -1,14 +1,15 @@
 package com.tokopedia.common_digital.product.data.datasource;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.common_digital.R;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.common_digital.common.constant.DigitalCategoryConstant;
 import com.tokopedia.common_digital.common.constant.DigitalUrl;
@@ -16,15 +17,8 @@ import com.tokopedia.common_digital.common.data.api.DigitalGqlApi;
 import com.tokopedia.common_digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.common_digital.product.data.response.RechargeResponseEntity;
 import com.tokopedia.common_digital.product.presentation.model.ProductDigitalData;
-import com.tokopedia.mylibrary.R;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -256,14 +250,14 @@ public class CategoryDetailDataSource {
     }
 
     private String getCategoryRequestPayload(String categoryId) {
-        String query = loadRawString(context.getResources(), R.raw.digital_category_query);
+        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.common_digital_category_query);;
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
         return String.format(query, categoryId, isSeller);
     }
 
     private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
 
-        String query = loadRawString(context.getResources(), R.raw.digital_category_favourites_query);
+        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.common_digital_category_favourites_query);
 
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
 
@@ -280,29 +274,6 @@ public class CategoryDetailDataSource {
         }
 
         return String.format(query, categoryId, isSeller, categoryId, operatorId, productId, clientNumber);
-    }
-
-    private String loadRawString(Resources resources, int resId) {
-        InputStream rawResource = resources.openRawResource(resId);
-        String content = streamToString(rawResource);
-        try {
-            rawResource.close();
-        } catch (IOException e) {
-        }
-        return content;
-    }
-
-    private String streamToString(InputStream in) {
-        String temp;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            while ((temp = bufferedReader.readLine()) != null) {
-                stringBuilder.append(temp + "\n");
-            }
-        } catch (IOException e) {
-        }
-        return stringBuilder.toString();
     }
 
 }

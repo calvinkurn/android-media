@@ -321,6 +321,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected void initInjector() {
         super.initInjector();
+
         DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
                 .inject(this);
     }
@@ -342,7 +343,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 //                new ProductDigitalInteractor(ussdCheckBalanceRepository
 //                );
 
-//        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
+//        GetDigitalCategoryByIdUseCase getCategoryByIdUseCase = new GetDigitalCategoryByIdUseCase(
 //                getActivity(), digitalCategoryRepository
 //        );
 

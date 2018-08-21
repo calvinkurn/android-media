@@ -14,7 +14,7 @@ import rx.Observable;
  * @author rizkyfadillah on 19/01/18.
  */
 
-public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
+public class GetDigitalCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
     private final String PARAM_CATEGORY_ID = "category_id";
     private final String PARAM_OPERATOR_ID = "operator_id";
@@ -27,8 +27,8 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     private IDigitalCategoryRepository digitalCategoryRepository;
     private UserSession userSession;
 
-    public GetCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository,
-                                  UserSession userSession) {
+    public GetDigitalCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository,
+                                         UserSession userSession) {
         this.digitalCategoryRepository = digitalCategoryRepository;
         this.userSession = userSession;
     }
@@ -39,7 +39,6 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
         final String productId = requestParams.getString(PARAM_PRODUCT_ID, "");
         final String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
-        String sort = requestParams.getString(PARAM_SORT, "");
         boolean needFavoriteList = requestParams.getBoolean(PARAM_NEED_FAVORITE_LIST, false);
 
         if (needFavoriteList) {

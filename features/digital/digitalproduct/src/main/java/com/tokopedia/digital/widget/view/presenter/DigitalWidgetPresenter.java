@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
+import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.common_digital.product.presentation.model.CategoryData;
 import com.tokopedia.common_digital.product.presentation.model.HistoryClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
@@ -32,13 +32,13 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
     private final String PARAM_VALUE_SORT = "label";
 
     private IDigitalWidgetView digitalWidgetView;
-    private GetCategoryByIdUseCase getCategoryByIdUseCase;
+    private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
     @Inject
     public DigitalWidgetPresenter(LocalCacheHandler localCacheHandler,
-            GetCategoryByIdUseCase getCategoryByIdUseCase) {
+            GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
         super(localCacheHandler);
-        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+        this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
     public void fetchCategory(String categoryId) {
         digitalWidgetView.showInitialProgressLoading();
 
-        getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
+        getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
                 categoryId, PARAM_VALUE_SORT, true
         ), new Subscriber<ProductDigitalData>() {
             @Override
@@ -115,7 +115,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     @Override
     public void detachView() {
-        getCategoryByIdUseCase.unsubscribe();
+        getDigitalCategoryByIdUseCase.unsubscribe();
     }
 
 }

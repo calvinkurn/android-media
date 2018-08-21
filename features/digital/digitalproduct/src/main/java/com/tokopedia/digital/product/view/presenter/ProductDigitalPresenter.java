@@ -14,7 +14,7 @@ import android.util.Log;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseCase;
-import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
+import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.common_digital.product.presentation.model.BannerData;
 import com.tokopedia.common_digital.product.presentation.model.CategoryData;
 import com.tokopedia.common_digital.product.presentation.model.GuideData;
@@ -97,7 +97,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     //    private Activity activity;
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
-    private GetCategoryByIdUseCase getCategoryByIdUseCase;
+    private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
     private DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase;
     private String slotKey = "com.android.phone.force.slot";
     private String accoutHandleKey = "android.telecom.extra.PHONE_ACCOUNT_HANDLE";
@@ -110,11 +110,11 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     public ProductDigitalPresenter(
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
-            GetCategoryByIdUseCase getCategoryByIdUseCase,
+            GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
             DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase) {
         super(localCacheHandler);
         this.productDigitalInteractor = productDigitalInteractor;
-        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+        this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
     }
 
@@ -129,7 +129,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     ) {
         view.showInitialProgressLoading();
 
-        getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
+        getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
                 categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT, true
         ), getSubscriberProductDigitalData());
     }
@@ -660,7 +660,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public void detachView() {
-        getCategoryByIdUseCase.unsubscribe();
+        getDigitalCategoryByIdUseCase.unsubscribe();
     }
 
 }

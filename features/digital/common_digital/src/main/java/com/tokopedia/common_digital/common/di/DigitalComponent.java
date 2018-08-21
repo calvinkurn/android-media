@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseCase;
-import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
+import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
 
 import dagger.Component;
 
@@ -22,7 +22,7 @@ public interface DigitalComponent {
 
     DigitalRestApi digitalApi();
 
-    GetCategoryByIdUseCase getCategoryByIdUseCase();
+    GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase();
 
     DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase();
 

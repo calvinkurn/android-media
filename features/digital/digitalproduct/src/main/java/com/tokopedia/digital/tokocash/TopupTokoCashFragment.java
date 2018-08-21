@@ -73,7 +73,7 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
 //        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
 //                categoryDetailDataSource);
 //
-//        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
+//        GetDigitalCategoryByIdUseCase getCategoryByIdUseCase = new GetDigitalCategoryByIdUseCase(
 //                getActivity(), digitalCategoryRepository
 //        );
 //

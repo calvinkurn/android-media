@@ -133,7 +133,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 //        );
 //
 //        IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(categoryDetailDataSource);
-//        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(getContext(), digitalRepository);
+//        GetDigitalCategoryByIdUseCase getCategoryByIdUseCase = new GetDigitalCategoryByIdUseCase(getContext(), digitalRepository);
 //
 //        presenter = new DigitalWidgetPresenter(getActivity(),
 //                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),

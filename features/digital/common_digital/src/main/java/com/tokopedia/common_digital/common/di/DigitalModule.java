@@ -2,6 +2,7 @@ package com.tokopedia.common_digital.common.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -19,9 +20,10 @@ import com.tokopedia.common_digital.product.data.repository.DigitalCategoryRepos
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.common_digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseCase;
-import com.tokopedia.common_digital.product.domain.usecase.GetCategoryByIdUseCase;
+import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -33,6 +35,8 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Rizky on 13/08/18.
@@ -121,6 +125,16 @@ public class DigitalModule {
         return builder.build();
     }
 
+    @DigitalScope
+    @DigitalGqlApiRetrofit
+    @Provides
+    public Retrofit.Builder provideRetrofitBuilder(Gson gson) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
     @Provides
     @DigitalScope
     @DigitalRestApiRetrofit
@@ -133,7 +147,7 @@ public class DigitalModule {
     @DigitalScope
     @DigitalGqlApiRetrofit
     public Retrofit provideDigitalGqlApiRetrofit(@DigitalGqlApiClient OkHttpClient okHttpClient,
-                                                 Retrofit.Builder retrofitBuilder) {
+                                                 @DigitalGqlApiRetrofit Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.HOME_DATA_BASE_URL).client(okHttpClient).build();
     }
 
@@ -172,9 +186,9 @@ public class DigitalModule {
 
     @Provides
     @DigitalScope
-    public GetCategoryByIdUseCase provideGetCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository,
-                                                                UserSession userSession) {
-        return new GetCategoryByIdUseCase(digitalCategoryRepository, userSession);
+    public GetDigitalCategoryByIdUseCase provideGetDigitalCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository,
+                                                                              UserSession userSession) {
+        return new GetDigitalCategoryByIdUseCase(digitalCategoryRepository, userSession);
     }
 
     @Provides
