@@ -33,6 +33,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isShortLayout;
     private boolean isPopularBrands;
     DealsAnalytics dealsAnalytics;
+    private boolean fromSearchResult;
 
 
     public DealsBrandAdapter(List<Brand> brandItems, boolean isShortLayout) {
@@ -53,6 +54,8 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (holder instanceof BrandViewHolder) {
             BrandViewHolder holder1 = ((BrandViewHolder) holder);
+            if (fromSearchResult)
+                holder1.setShown(false);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 HashMap<String, Object> bannerMap = new HashMap<>();
@@ -67,7 +70,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             , DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND,
                             String.format("%s - %s", brandItems.get(holder1.getIndex()).getTitle()
                                     , holder1.getIndex()), ecommerce);
-                }else{
+                } else {
                     dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_VIEW_SEARCH_BRAND_RESULT,
                             String.format("%s - %s", brandItems.get(holder1.getIndex()).getTitle()
                                     , holder1.getIndex()));
@@ -77,8 +80,9 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     }
 
-    public void updateAdapter(List<Brand> brands) {
+    public void updateAdapter(List<Brand> brands, boolean fromSearchResult) {
         this.brandItems = brands;
+        this.fromSearchResult = fromSearchResult;
         notifyDataSetChanged();
     }
 
@@ -100,21 +104,8 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bindData(final Brand brand, int position) {
-            if (isPopularBrands) {
-                HashMap<String, Object> bannerMap = new HashMap<>();
-                bannerMap.put("id", brand.getId());
-                bannerMap.put("name", "deals - trending");
-                bannerMap.put("position", position);
-                bannerMap.put("creative", brand.getTitle());
-                HashMap<String, Object> ecommerce = new HashMap<>();
-                ecommerce.put(DealsAnalytics.EVENT_PROMO_CLICK, bannerMap);
-                dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_PROMO_CLICK
-                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER,
-                        String.format("%s - %s", brand.getTitle(), position), ecommerce);
-            }
+
             ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-
-
             itemView.setOnClickListener(this);
         }
 
@@ -137,8 +128,19 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View v) {
             if (isPopularBrands) {
-                dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_POPULAR_BRAND,
-                        String.format("%s - %s", brandItems.get(getIndex()).getTitle(), getIndex()));
+
+                HashMap<String, Object> bannerMap = new HashMap<>();
+                bannerMap.put("id", brandItems.get(getIndex()).getId());
+                bannerMap.put("name", "/deals - trending");
+                bannerMap.put("position", getIndex());
+                bannerMap.put("creative", brandItems.get(getIndex()).getTitle());
+                HashMap<String, Object> ecommerce = new HashMap<>();
+                ecommerce.put(DealsAnalytics.EVENT_PROMO_CLICK, bannerMap);
+                dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_PROMO_CLICK
+                        , DealsAnalytics.EVENT_CLICK_POPULAR_BRAND,
+                        String.format("%s - %s", brandItems.get(getIndex()).getTitle(), getIndex()), ecommerce);
+
+
             } else {
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND_RESULT,
                         String.format("%s - %s", brandItems.get(getIndex()).getTitle(), getIndex()));

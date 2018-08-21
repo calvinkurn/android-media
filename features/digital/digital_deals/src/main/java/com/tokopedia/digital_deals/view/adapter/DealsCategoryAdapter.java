@@ -270,14 +270,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         HashMap<String, Object> productMap = new HashMap<>();
         HashMap<String, Object> impressions = new HashMap<>();
         HashMap<String, Object> ecommerce = new HashMap<>();
+        event = DealsAnalytics.EVENT_PRODUCT_VIEW;
+        if (isHeaderAdded || isBrandHeaderAdded)
+            position -= 1;
+        productMap.put("position", position);
         productMap.put("id", productItem.getId());
         productMap.put("name", productItem.getDisplayName());
         productMap.put("price", productItem.getSalesPrice());
-        productMap.put("position", position);
-        event = DealsAnalytics.EVENT_PRODUCT_VIEW;
-
-        if (isHeaderAdded || isBrandHeaderAdded)
-            position -= 1;
         label = String.format("%s - %s - %s", productItem.getBrand().getTitle()
                 , productItem.getDisplayName()
                 , position);
@@ -288,7 +287,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else if (pageType == DealsCategoryAdapter.SEARCH_PAGE) {
 
             productMap.put("list", "/deals - search by location");
-            if (topDealsLayout)
+            if (isHeaderAdded && topDealsLayout)
                 action = DealsAnalytics.EVENT_IMPRESSION_SEARCH_TRENDING;
             else
                 action = DealsAnalytics.EVENT_IMPRESSION_SEARCH_RESULT;
@@ -333,7 +332,11 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 sendImpressionEvent(holder1.getIndex());
             }
         } else if (holder instanceof TopSuggestionHolder) {
+
             TopSuggestionHolder holder1 = ((TopSuggestionHolder) holder);
+            if(!isHeaderAdded){
+                holder1.setShown(false);
+            }
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 sendImpressionEvent(holder1.getIndex());
@@ -416,6 +419,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private static final String LIKE = "LIKE";
+        private static final String UNLIKE = "UNLIKE";
         private View itemView;
         private ImageView dealImage;
         private ImageView brandImage;
@@ -535,25 +540,32 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             isShown = shown;
         }
 
-        private String getShareLabel() {
+        private String getShareLabel(int position) {
             return String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
                     , categoryItems.get(getIndex()).getDisplayName(),
-                    getIndex());
+                    position);
         }
 
-        private String getFavouriteLabel() {
+        private String getFavouriteLabel(int position) {
+            String str = LIKE;
+            if (categoryItems.get(getIndex()).isLiked())
+                str = UNLIKE;
             return String.format("%s - %s - %s - %s",
                     categoryItems.get(getIndex()).getBrand().getTitle()
                     , categoryItems.get(getIndex()).getDisplayName()
-                    , getIndex()
-                    , String.valueOf(!categoryItems.get(getIndex()).isLiked()));
+                    , position
+                    , str);
         }
 
         @Override
         public void onClick(View v) {
+            int position = getIndex();
+            if (isHeaderAdded || isBrandHeaderAdded)
+                position -= 1;
+
             if (v.getId() == R.id.iv_share) {
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SHARE,
-                        getShareLabel());
+                        getShareLabel(position));
 
                 Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
                         context, categoryItems.get(getIndex()).getDisplayName(),
@@ -561,7 +573,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else if (v.getId() == R.id.iv_wish_list) {
                 boolean isLoggedIn = mPresenter.setDealLike(categoryItems.get(getIndex()), getIndex());
                 if (isLoggedIn) {
-                    dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_LOVE, getFavouriteLabel());
+                    dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_LOVE, getFavouriteLabel(position));
                     if (categoryItems.get(getIndex()).isLiked()) {
                         setLikes(categoryItems.get(getIndex()).getLikes() - 1, !categoryItems.get(getIndex()).isLiked());
                     } else {
@@ -581,16 +593,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 String action = null, label;
                 ProductItem productItem = categoryItems.get(getIndex());
                 HashMap<String, Object> productMap = new HashMap<>();
-                productMap.put("id", productItem.getId());
-                productMap.put("name", productItem.getDisplayName());
-                productMap.put("price", productItem.getSalesPrice());
-                productMap.put("position", getIndex());
                 HashMap<String, Object> list = new HashMap<>();
                 HashMap<String, Object> click = new HashMap<>();
                 HashMap<String, Object> ecommerce = new HashMap<>();
-                int position = getIndex();
-                if (isHeaderAdded || isBrandHeaderAdded)
-                    position -= 1;
+
+                productMap.put("id", productItem.getId());
+                productMap.put("name", productItem.getDisplayName());
+                productMap.put("price", productItem.getSalesPrice());
+                productMap.put("position", position);
                 label = String.format("%s - %s - %s", productItem.getBrand().getTitle()
                         , productItem.getDisplayName()
                         , position);
@@ -610,18 +620,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                             , productItem.getDisplayName()
                             , position);
                     list.put("list", "/deals - category");
-                    productMap.put("list", "/deals - {category}");
+                    productMap.put("list", "/deals - " + categoryName);
                     action = DealsAnalytics.EVENT_CLICK_PRODUCT_CATEGORY_DETAIL;
 
                 } else if (pageType == DealsCategoryAdapter.BRAND_PAGE) {
                     list.put("list", "/deals - brand");
-                    productMap.put("list", "/deals - {brand}");
+                    productMap.put("list", "/deals - " + productItem.getBrand().getTitle());
                     action = DealsAnalytics.EVENT_CLICK_PRODUCT_BRAND_DETAIL;
 
-                } else if (pageType == DealsCategoryAdapter.DETAIL_PAGE) {
-                    list.put("list", "/deals - recommendation pdp");
-                    productMap.put("list", "/deals - recommendation pdp");
-                    action = DealsAnalytics.EVENT_CLICK_RECOMMENDED_PDT_DETAIL;
                 }
                 click.put("actionField", list);
                 List<HashMap<String, Object>> productMaps = new ArrayList<>();
@@ -740,9 +746,33 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
                 context.startActivity(detailsIntent);
             } else {
+
+                ProductItem productItem = categoryItems.get(getIndex());
+                HashMap<String, Object> productMap = new HashMap<>();
+                productMap.put("id", productItem.getId());
+                productMap.put("name", productItem.getDisplayName());
+                productMap.put("price", productItem.getSalesPrice());
+                productMap.put("position", getIndex());
+                HashMap<String, Object> list = new HashMap<>();
+                HashMap<String, Object> click = new HashMap<>();
+                HashMap<String, Object> ecommerce = new HashMap<>();
+                list.put("list", "/deals - recommendation pdp");
+                productMap.put("list", "/deals - recommendation pdp");
+
+                click.put("actionField", list);
+                List<HashMap<String, Object>> productMaps = new ArrayList<>();
+                productMaps.add(productMap);
+                click.put("products", productMaps);
+                ecommerce.put("click", click);
+                dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_PRODUCT_CLICK
+                        , DealsAnalytics.EVENT_CLICK_RECOMMENDED_PDT_DETAIL
+                        , String.format("%s - %s - %s", productItem.getBrand().getTitle()
+                                , productItem.getDisplayName()
+                                , getIndex()), ecommerce);
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 context.startActivity(detailsIntent);
+
             }
         }
     }
@@ -833,12 +863,20 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
             detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
             context.startActivity(detailsIntent);
+            int position=getIndex();
+            String action;
+            if (isHeaderAdded) {
+                action = DealsAnalytics.EVENT_CLICK_SEARCH_TRENDING;
+                position-=1;
+            }
+            else
+                action = DealsAnalytics.EVENT_CLICK_SEARCH_RESULT;
             ProductItem productItem = categoryItems.get(getIndex());
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put("id", productItem.getId());
             productMap.put("name", productItem.getDisplayName());
             productMap.put("price", productItem.getSalesPrice());
-            productMap.put("position", getIndex());
+            productMap.put("position", position);
             HashMap<String, Object> list = new HashMap<>();
             HashMap<String, Object> click = new HashMap<>();
             HashMap<String, Object> ecommerce = new HashMap<>();
@@ -850,10 +888,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             click.put("products", productMaps);
             ecommerce.put("click", click);
             dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_PRODUCT_CLICK
-                    , DealsAnalytics.EVENT_CLICK_SEARCH_TRENDING
+                    , action
                     , String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
                             , categoryItems.get(getIndex()).getDisplayName()
-                            , getIndex()), ecommerce);
+                            , position), ecommerce);
         }
     }
 

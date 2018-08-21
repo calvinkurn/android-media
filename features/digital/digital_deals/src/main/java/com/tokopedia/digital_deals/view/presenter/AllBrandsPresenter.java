@@ -189,7 +189,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
                 }
             }
         }
-        getView().renderBrandList(brandModels, SEARCH_SUBMITTED);
+        getView().renderBrandList(brandModels, SEARCH_SUBMITTED, true);
     }
 
     @Override

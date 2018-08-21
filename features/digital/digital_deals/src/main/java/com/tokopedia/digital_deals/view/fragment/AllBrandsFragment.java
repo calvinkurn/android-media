@@ -146,10 +146,16 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     }
 
     @Override
-    public void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted) {
+    public void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted, Boolean... fromSearchResult) {
 
+        boolean fromSearch = false;
+        if (fromSearchResult.length > 0) {
+            if (fromSearchResult[0] != null) {
+                fromSearch = fromSearchResult[0];
+            }
+        }
         if (brandList != null && brandList.size() > 0) {
-            ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList);
+            ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList, fromSearch);
             recyclerview.setVisibility(View.VISIBLE);
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
