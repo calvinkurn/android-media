@@ -17,7 +17,7 @@ public interface ChallengesModuleRouter {
     public Intent getGalleryVideoIntent(Context activity);
 
     public Intent getGalleryVideoImageIntent(Context activity);
-    void shareChallenge(Activity context, String packageName, String url, String title, String imageUrl, String og_url, String og_title, String og_image_url);
+    //void shareChallenge(Activity context, String packageName, String url, String title, String imageUrl, String og_url, String og_title, String og_image_url);
 
     String getResultSelectionPath(Intent data);
 

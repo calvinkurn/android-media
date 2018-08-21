@@ -31,6 +31,7 @@ public interface IChallengesSubmitContract {
 
         ChallengeSettings getChallengeSettings();
         Activity getActivity();
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {

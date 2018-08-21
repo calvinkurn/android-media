@@ -173,17 +173,18 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     @Override
     public void onSelectedImageClick() {
         ChallengeSettings settings = getView().getChallengeSettings();
-        if(settings.isAllowVideos() && settings.isAllowPhotos())  {
-            getView().selectImageVideo();
-        }else if(settings.isAllowPhotos()) {
         if (settings.isAllowVideos() && settings.isAllowPhotos()) {
-            getView().showImageVideoPicker();
+            getView().selectImageVideo();
         } else if (settings.isAllowPhotos()) {
-            getView().selectImage();
-            //update UI
-        } else if (settings.isAllowVideos()) {
-            // update UI
-            getView().selectVideo();
+            if (settings.isAllowVideos() && settings.isAllowPhotos()) {
+                getView().selectImageVideo();
+            } else if (settings.isAllowPhotos()) {
+                getView().selectImage();
+                //update UI
+            } else if (settings.isAllowVideos()) {
+                // update UI
+                getView().selectVideo();
+            }
         }
     }
 

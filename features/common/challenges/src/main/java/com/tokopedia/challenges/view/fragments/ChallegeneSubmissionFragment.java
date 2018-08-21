@@ -502,7 +502,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void setChallengeResult(Result challengeResult) {
-        this.challengeResult = challengeResult
+        this.challengeResult = challengeResult;
     }
 
     @Override

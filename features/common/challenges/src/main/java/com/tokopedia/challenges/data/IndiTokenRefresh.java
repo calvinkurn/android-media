@@ -60,7 +60,7 @@ public class IndiTokenRefresh {
         }
 
         //if access token is valid, then map the tokopedia user with indi
-        if (model != null && !TextUtils.isEmpty(indiSession.getUserId())) {
+        if (model != null && TextUtils.isEmpty(indiSession.getUserId())) {
             mapUserWithIndi(indiSession, userSession, model.getAccessToken());
         }
     }
