@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -43,6 +44,10 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
+
+    private static final int MARGIN_TAB = 10;
+    private static final int MARGIN_START_END_TAB = 50;
+
     Fragment sellerReputationFragment;
 
     ViewPager viewPager;
@@ -125,6 +130,19 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
             if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
+        }
+
+        for(int i = 0; i < indicator.getTabCount(); i++) {
+            View tab = ((ViewGroup) indicator.getChildAt(0)).getChildAt(i);
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) tab.getLayoutParams();
+            if(i == 0){
+                p.setMargins(MARGIN_START_END_TAB, 0, 0, 0);
+            } else if(i == indicator.getTabCount() - 1){
+                p.setMargins(0, 0, MARGIN_START_END_TAB, 0);
+            } else {
+                p.setMargins(MARGIN_TAB, 0, MARGIN_TAB, 0);
+            }
+            tab.requestLayout();
         }
     }
 

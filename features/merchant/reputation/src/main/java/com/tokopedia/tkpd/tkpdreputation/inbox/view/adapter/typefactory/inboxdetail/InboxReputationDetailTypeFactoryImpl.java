@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxde
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailItemViewHolder;

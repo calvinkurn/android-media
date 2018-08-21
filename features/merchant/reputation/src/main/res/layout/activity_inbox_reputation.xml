@@ -16,11 +16,10 @@
         android:background="@color/white"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/tkpd_main_green"
-        app:tabIndicatorHeight="4dp"
+        app:tabIndicatorHeight="@dimen/dp_3"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/tkpd_main_green"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        android:layout_marginLeft="@dimen/dp_10" />
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 
     <View
         android:layout_width="match_parent"
