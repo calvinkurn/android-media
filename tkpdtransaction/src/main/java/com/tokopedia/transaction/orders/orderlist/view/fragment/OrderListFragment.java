@@ -177,7 +177,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     protected void initInjector() {
-        getComponent(OrderListComponent.class).inject(this);
+        orderListComponent = DaggerOrderListComponent.builder()
+                .baseAppComponent(((BaseMainApplication)getActivity().getApplication ()).getBaseAppComponent())
+                .build();
+        orderListComponent.inject(this);
     }
 
 
