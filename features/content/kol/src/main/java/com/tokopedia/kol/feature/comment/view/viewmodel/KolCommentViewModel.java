@@ -47,6 +47,17 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         canDeleteComment = in.readByte() != 0;
     }
 
+    public static final Creator<KolCommentViewModel> CREATOR = new Creator<KolCommentViewModel>() {
+        @Override
+        public KolCommentViewModel createFromParcel(Parcel in) {
+            return new KolCommentViewModel(in);
+        }
+        @Override
+        public KolCommentViewModel[] newArray(int size) {
+            return new KolCommentViewModel[size];
+        }
+    };
+
     public String getAvatarUrl() {
         return avatarUrl;
     }
