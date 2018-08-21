@@ -168,7 +168,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.WISHLIST,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_mybills),
-                R.drawable.icon_mybills,
+                R.drawable.icon_mybills_drawer,
                 TkpdState.DrawerPosition.MYBILLS,
                 true));
         data.add(getInboxMenu());
