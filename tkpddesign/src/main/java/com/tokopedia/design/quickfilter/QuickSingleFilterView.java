@@ -22,7 +22,7 @@ import java.util.List;
 public class QuickSingleFilterView extends BaseCustomView {
 
     private QuickFilterItem defaultItem = null;
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
     protected BaseQuickSingleFilterAdapter<ItemFilterViewHolder> adapterFilter;
     private ActionListener listener;
 
@@ -45,7 +45,7 @@ public class QuickSingleFilterView extends BaseCustomView {
         this.listener = listener;
     }
 
-    private void init() {
+    protected void init() {
         View rootView = inflate(getContext(), getLayoutRes(), this);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_filter);
 
