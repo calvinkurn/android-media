@@ -167,14 +167,19 @@ public class KolCommentFragment extends BaseDaggerFragment
         listComment.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         listComment.setAdapter(adapter);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.sendComment(getArguments().getInt(
-                        KolCommentActivity.ARGS_ID),
-                        kolComment.getText().toString());
+        sendButton.setOnClickListener(v -> {
+            if (userSession != null && userSession.isLoggedIn()) {
+                presenter.sendComment(
+                        getArguments().getInt(KolCommentActivity.ARGS_ID),
+                        kolComment.getText().toString()
+                );
+            } else {
+                startActivity(kolRouter.getLoginIntent(getActivity()));
             }
+
         });
+
+
     }
 
     @Override
