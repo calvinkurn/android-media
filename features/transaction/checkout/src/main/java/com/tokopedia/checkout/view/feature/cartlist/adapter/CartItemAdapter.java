@@ -19,14 +19,17 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Irfan Khoirul on 21/08/18.
  */
 
-public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements CartItemViewHolder.ViewHolderListener {
 
     private ActionListener actionListener;
     private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
     private CompositeSubscription compositeSubscription;
+    private int parentPosition;
 
-    public CartItemAdapter(ActionListener actionListener) {
+    public CartItemAdapter(ActionListener actionListener, int parentPosition) {
         this.actionListener = actionListener;
+        this.parentPosition = parentPosition;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -47,7 +50,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final CartItemViewHolder holderView = (CartItemViewHolder) holder;
         final CartItemHolderData data = cartItemHolderDataList.get(position);
-        holderView.bindData(data);
+        holderView.bindData(data, parentPosition, this);
     }
 
     @Override
@@ -86,50 +89,28 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void increaseQuantity(int position) {
-        if (getItemViewType(position) == CartItemViewHolder.TYPE_VIEW_ITEM_CART) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position))
-                    .getCartItemData().getUpdatedData().increaseQuantity();
-        }
-        notifyItemChanged(position);
-//        checkForShipmentForm();
-    }
-
-    public void resetQuantity(int position) {
-        if (getItemViewType(position) == CartItemViewHolder.TYPE_VIEW_ITEM_CART) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position))
-                    .getCartItemData().getUpdatedData().resetQuantity();
-        }
-        notifyItemChanged(position);
-//        checkForShipmentForm();
-    }
-
-    public void decreaseQuantity(int position) {
-        if (getItemViewType(position) == CartItemViewHolder.TYPE_VIEW_ITEM_CART) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position))
-                    .getCartItemData().getUpdatedData().decreaseQuantity();
-        }
-        notifyItemChanged(position);
-//        checkForShipmentForm();
+    @Override
+    public void onNeedToRefresh(int childPosition) {
+        notifyItemChanged(childPosition);
     }
 
     public interface ActionListener {
 
-        void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position);
+        void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
-        void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position);
+        void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
-        void onCartItemQuantityReseted(int position, boolean needRefreshItemView);
+        void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
-        void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position);
+        void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView);
 
-        void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position);
+        void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
-        void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark);
+        void onCartItemRemarkEditChange(CartItemData cartItemData, String remark, int position, int parentPosition);
 
-        void onCartItemListIsEmpty(int shopPosition);
+        void onCartItemListIsEmpty(int parentPosition);
 
-        void onCartItemQuantityFormEdited(int position, boolean needRefreshItemView);
+        void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView);
 
         void onCartItemAfterErrorChecked();
 

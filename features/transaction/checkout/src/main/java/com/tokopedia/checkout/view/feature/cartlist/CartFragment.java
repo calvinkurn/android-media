@@ -273,7 +273,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+    public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         cartPageAnalytics.eventClickAtcCartClickTrashBin();
         ArrayList<CartItemData> cartItemDatas =
                 new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
@@ -304,38 +304,40 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-//        cartPageAnalytics.eventClickAtcCartClickButtonPlus();
-//        cartAdapter.increaseQuantity(position);
-//        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+    public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
+        cartPageAnalytics.eventClickAtcCartClickButtonPlus();
+        cartAdapter.increaseQuantity(position, parentPosition);
+        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
     }
 
     @Override
-    public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-//        cartPageAnalytics.eventClickAtcCartClickButtonMinus();
-//        cartAdapter.decreaseQuantity(position);
-//        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+    public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
+        cartPageAnalytics.eventClickAtcCartClickButtonMinus();
+        cartAdapter.decreaseQuantity(position, parentPosition);
+        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
     }
 
     @Override
-    public void onCartItemQuantityReseted(int position, boolean needRefreshItemView) {
-//        cartAdapter.resetQuantity(position);
-//        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+    public void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView) {
+        cartAdapter.resetQuantity(position, parentPosition);
+        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        // Todo : figure out the purpose of piece of code below :(
 //        if (needRefreshItemView) {
 //            cartAdapter.notifyItems(position);
 //        }
     }
 
     @Override
-    public void onCartItemQuantityFormEdited(int position, boolean needRefreshItemView) {
-//        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+    public void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView) {
+        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        // Todo : figure out the purpose of piece of code below :(
 //        if (needRefreshItemView) {
 //            cartAdapter.notifyItems(position);
 //        }
     }
 
     @Override
-    public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position) {
+    public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         if (getActivity() != null) {
             cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData.getCartItemData().getOriginData().getProductName());
             if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
@@ -365,7 +367,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark) {
+    public void onCartItemRemarkEditChange(CartItemData cartItemData, String remark, int position, int parentPosition) {
 
     }
 
@@ -637,23 +639,25 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     private void showErrorLayout(String message) {
-        mIsMenuVisible = false;
-        getActivity().invalidateOptionsMenu();
-        refreshHandler.finishRefresh();
-        rlContent.setVisibility(View.GONE);
-        llNetworkErrorView.setVisibility(View.VISIBLE);
-        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        llNetworkErrorView.setVisibility(View.GONE);
-                        rlContent.setVisibility(View.VISIBLE);
-                        refreshHandler.setPullEnabled(true);
-                        refreshHandler.setRefreshing(true);
-                        cartAdapter.resetData();
-                        dPresenter.processInitialGetCartData();
-                    }
-                });
+        if (getActivity() != null) {
+            mIsMenuVisible = false;
+            getActivity().invalidateOptionsMenu();
+            refreshHandler.finishRefresh();
+            rlContent.setVisibility(View.GONE);
+            llNetworkErrorView.setVisibility(View.VISIBLE);
+            NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            llNetworkErrorView.setVisibility(View.GONE);
+                            rlContent.setVisibility(View.VISIBLE);
+                            refreshHandler.setPullEnabled(true);
+                            refreshHandler.setRefreshing(true);
+                            cartAdapter.resetData();
+                            dPresenter.processInitialGetCartData();
+                        }
+                    });
+        }
     }
 
     private void showSnackbarRetry(String message) {

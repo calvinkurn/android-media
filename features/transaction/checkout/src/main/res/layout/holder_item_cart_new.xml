@@ -30,8 +30,8 @@
                 android:id="@+id/cb_select_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_14"
+                android:paddingRight="@dimen/dp_8"
                 android:theme="@style/TransactionCheckbox" />
 
             <ImageView
@@ -160,16 +160,18 @@
 
                     <TextView
                         android:id="@+id/tv_error_form_validation"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
+                        android:gravity="right"
                         android:maxLines="2"
+                        android:textAlignment="gravity"
                         android:textColor="@color/text_cart_item_error_red"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
                         android:visibility="gone"
                         tools:ignore="SmallSp"
-                        tools:text="Maksimal 2 broh"
+                        tools:text="Maksimal 2 broh hjadjf askjbfk kjabfdk ashfb aksbfkabsf "
                         tools:visibility="visible" />
 
                 </LinearLayout>

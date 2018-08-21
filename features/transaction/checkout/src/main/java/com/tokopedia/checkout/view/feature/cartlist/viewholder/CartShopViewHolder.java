@@ -9,17 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
 /**
  * Created by Irfan Khoirul on 21/08/18.
  */
 
-public class CartShopViewHolder extends RecyclerView.ViewHolder implements CartItemAdapter.ActionListener {
+public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
     public static final int TYPE_VIEW_ITEM_SHOP = R.layout.item_shop;
 
@@ -27,11 +25,15 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder implements CartI
     private ImageView imgShopBadge;
     private RecyclerView rvCartItem;
 
-    private CartAdapter.ActionListener actionListener;
+    private CartAdapter.ActionListener cartAdapterListener;
+    private CartItemAdapter.ActionListener cartItemAdapterListener;
+    private CartItemAdapter cartItemAdapter;
 
-    public CartShopViewHolder(View itemView, CartAdapter.ActionListener actionListener) {
+    public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
+                              CartItemAdapter.ActionListener cartItemAdapterListener) {
         super(itemView);
-        this.actionListener = actionListener;
+        this.cartAdapterListener = cartAdapterListener;
+        this.cartItemAdapterListener = cartItemAdapterListener;
 
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
@@ -43,7 +45,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder implements CartI
         tvShopName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onCartShopNameClicked(cartShopHolderData);
+                cartAdapterListener.onCartShopNameClicked(cartShopHolderData);
             }
         });
 
@@ -57,72 +59,15 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder implements CartI
             imgShopBadge.setVisibility(View.GONE);
         }
 
-        // Todo : setup inner recyclerview
-        CartItemAdapter cartAdapter = new CartItemAdapter(this);
-        cartAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList());
+        cartItemAdapter = new CartItemAdapter(cartItemAdapterListener, getAdapterPosition());
+        cartItemAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList());
         rvCartItem.setLayoutManager(new LinearLayoutManager(rvCartItem.getContext()));
-        rvCartItem.setAdapter(cartAdapter);
+        rvCartItem.setAdapter(cartItemAdapter);
         ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
-
     }
 
-    @Override
-    public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
+    public void refreshItem(int childPosition) {
+        cartItemAdapter.notifyItemChanged(childPosition);
     }
 
-    @Override
-    public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
-    }
-
-    @Override
-    public void onCartItemQuantityReseted(int position, boolean needRefreshItemView) {
-
-    }
-
-    @Override
-    public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
-    }
-
-    @Override
-    public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position) {
-
-    }
-
-    @Override
-    public void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark) {
-
-    }
-
-    @Override
-    public void onCartItemListIsEmpty(int shopPosition) {
-
-    }
-
-    @Override
-    public void onCartItemQuantityFormEdited(int position, boolean needRefreshItemView) {
-
-    }
-
-    @Override
-    public void onCartItemAfterErrorChecked() {
-
-    }
-
-    @Override
-    public void onCartItemQuantityInputFormClicked(String qty) {
-
-    }
-
-    @Override
-    public void onCartItemLabelInputRemarkClicked() {
-
-    }
-
-    @Override
-    public void onQuantityChanged() {
-
-    }
 }

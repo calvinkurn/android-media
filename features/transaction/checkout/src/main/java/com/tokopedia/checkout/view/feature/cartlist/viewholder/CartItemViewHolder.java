@@ -52,8 +52,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
 
-    private final CartItemAdapter.ActionListener actionListener;
     private final Context context;
+    private final CartItemAdapter.ActionListener actionListener;
+    private ViewHolderListener viewHolderListener;
 
     private ImageView ivProductImage;
     private TextView tvProductName;
@@ -80,6 +81,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
+    private int parentPosition;
 
     public CartItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
                               CartItemAdapter.ActionListener actionListener) {
@@ -189,7 +191,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 }));
     }
 
-    public void bindData(final CartItemHolderData data) {
+    public void bindData(final CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener) {
+        this.viewHolderListener = viewHolderListener;
+        this.parentPosition = parentPosition;
         cartItemHolderData = data;
         if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
             cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
@@ -227,7 +231,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     actionListener.onCartItemRemarkEditChange(
-                            data.getCartItemData(), getAdapterPosition(), textView.getText().toString()
+                            data.getCartItemData(), textView.getText().toString(), getAdapterPosition(), parentPosition
                     );
                     return true;
                 }
@@ -268,8 +272,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             this.tvNoteCharCounter.setVisibility(View.GONE);
         }
 
-        this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
-        this.tvProductName.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
+        this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), parentPosition, data));
+        this.tvProductName.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), parentPosition, data));
 
         if (data.getCartItemData().getOriginData().isFreeReturn()) {
             this.ivIconFreeReturn.setVisibility(View.VISIBLE);
@@ -304,8 +308,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 try {
-                    actionListener.onCartItemQuantityPlusButtonClicked(data, getAdapterPosition());
+                    actionListener.onCartItemQuantityPlusButtonClicked(data, getAdapterPosition(), parentPosition);
                     validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
+                    viewHolderListener.onNeedToRefresh(getAdapterPosition());
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -316,8 +321,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 try {
-                    actionListener.onCartItemQuantityMinusButtonClicked(data, getAdapterPosition());
+                    actionListener.onCartItemQuantityMinusButtonClicked(data, getAdapterPosition(), parentPosition);
                     validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
+                    viewHolderListener.onNeedToRefresh(getAdapterPosition());
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -327,7 +333,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition());
+                actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition(), parentPosition);
             }
         });
 
@@ -354,12 +360,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     @NonNull
     private View.OnClickListener getOnClickProductItemListener(
-            @SuppressLint("RecyclerView") final int position,
+            @SuppressLint("RecyclerView") final int position, final int parentPosition,
             final CartItemHolderData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartItemProductClicked(data, position);
+                actionListener.onCartItemProductClicked(data, position, parentPosition);
             }
         };
     }
@@ -486,7 +492,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 }
             }
             if (zeroCount == quantity.getEditable().length()) {
-                actionListener.onCartItemQuantityReseted(getAdapterPosition(), needToUpdateView);
+                actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition, needToUpdateView);
+                viewHolderListener.onNeedToRefresh(getAdapterPosition());
             } else if (quantity.getEditable().charAt(0) == '0') {
                 etQty.setText(quantity.getEditable().toString()
                         .substring(zeroCount, quantity.getEditable().toString().length()));
@@ -494,8 +501,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 needToUpdateView = true;
             }
         } else if (TextUtils.isEmpty(etQty.getText())) {
-            actionListener.onCartItemQuantityReseted(getAdapterPosition(),
+            actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition,
                     !String.valueOf(quantity.getQtyBefore()).equals(quantity.getEditable().toString()));
+            viewHolderListener.onNeedToRefresh(getAdapterPosition());
         }
 
         int qty = 0;
@@ -507,7 +515,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         checkQtyMustDisabled(cartItemHolderData, qty);
         cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
         validateWithAvailableQuantity(cartItemHolderData, qty);
-        actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), needToUpdateView);
+        actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), parentPosition, needToUpdateView);
     }
 
+    public interface ViewHolderListener {
+
+        void onNeedToRefresh(int childPosition);
+
+    }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 
 import dagger.Module;
@@ -30,11 +31,13 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListModule {
 
     private final ICartListView cartListView;
-    private final CartAdapter.ActionListener cartListActionListener;
+    private final CartAdapter.ActionListener cartActionListener;
+    private final CartItemAdapter.ActionListener cartItemActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
-        this.cartListActionListener = cartFragment;
+        this.cartActionListener = cartFragment;
+        this.cartItemActionListener = cartFragment;
     }
 
     @Provides
@@ -70,7 +73,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartListActionListener);
+        return new CartAdapter(cartActionListener, cartItemActionListener);
     }
 
 }

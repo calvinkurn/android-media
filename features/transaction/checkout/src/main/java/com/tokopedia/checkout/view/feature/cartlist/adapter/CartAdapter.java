@@ -9,6 +9,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartItemViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
@@ -16,7 +17,6 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHold
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartItemViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
@@ -32,14 +32,17 @@ import javax.inject.Inject;
  */
 
 public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final ActionListener actionListener;
+    private final CartAdapter.ActionListener cartActionListener;
+    private final CartItemAdapter.ActionListener cartItemActionListener;
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
 
     @Inject
-    public CartAdapter(ActionListener actionListener) {
+    public CartAdapter(CartAdapter.ActionListener cartActionListener,
+                       CartItemAdapter.ActionListener cartItemActionListener) {
         this.cartDataList = new ArrayList<>();
-        this.actionListener = actionListener;
+        this.cartActionListener = cartActionListener;
+        this.cartItemActionListener = cartItemActionListener;
     }
 
     @Override
@@ -64,19 +67,19 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false);
-            return new CartShopViewHolder(view, actionListener);
+            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION, parent, false);
-            return new CartPromoSuggestionViewHolder(view, actionListener);
+            return new CartPromoSuggestionViewHolder(view, cartActionListener);
         } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartVoucherPromoViewHolder.TYPE_VIEW_PROMO, parent, false);
-            return new CartVoucherPromoViewHolder(view, actionListener);
+            return new CartVoucherPromoViewHolder(view, cartActionListener);
         } else if (viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR, parent, false);
-            return new CartTickerErrorViewHolder(view, actionListener);
+            return new CartTickerErrorViewHolder(view, cartActionListener);
         } else if (viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK, parent, false);
@@ -146,6 +149,30 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         return cartItemDataList;
+    }
+
+    public void increaseQuantity(int position, int parentPosition) {
+        if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
+            ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
+                    .getCartItemDataList().get(position).getUpdatedData().increaseQuantity();
+        }
+//        checkForShipmentForm();
+    }
+
+    public void decreaseQuantity(int position, int parentPosition) {
+        if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
+            ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
+                    .getCartItemDataList().get(position).getUpdatedData().decreaseQuantity();
+        }
+//        checkForShipmentForm();
+    }
+
+    public void resetQuantity(int position, int parentPosition) {
+        if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
+            ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
+                    .getCartItemDataList().get(position).getUpdatedData().resetQuantity();
+        }
+//        checkForShipmentForm();
     }
 
     public void notifyItems(int position) {
@@ -234,9 +261,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
         if (canProcess) {
-            actionListener.onCartDataEnableToCheckout();
+            cartActionListener.onCartDataEnableToCheckout();
         } else {
-            actionListener.onCartDataDisableToCheckout();
+            cartActionListener.onCartDataDisableToCheckout();
         }
     }
 
