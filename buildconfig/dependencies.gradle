@@ -75,6 +75,7 @@ ext {
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
+    tkpdWithdrawVersion = '2.22'
     tkpdTrainVersion = '2.22'
     tkpdTravelVersion = '2.22'
 
@@ -343,6 +344,7 @@ ext {
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
+            withdraw              : ":features:payment:withdraw",
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
             commonTravel          : ":features:digital:common_travel"
@@ -373,6 +375,6 @@ ext {
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
             youtubeutil       : ":libraries:youtubeutil",
-            travelCalendar  : ":libraries:travel_calendar"
+            travelCalendar    : ":libraries:travel_calendar"
     ]
 }

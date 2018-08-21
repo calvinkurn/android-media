@@ -292,6 +292,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 travelPassenger.setSalutationId(trainPassengerViewModel.getSalutationId());
                 travelPassenger.setSalutationTitle(trainPassengerViewModel.getSalutationTitle());
                 startActivityForResult(TravelPassengerBookingActivity.callingIntent(getActivity(), travelPassenger, false), ADD_PASSENGER_REQUEST_CODE);
+                boolean isCheckAsBuyer = sameAsBuyerCheckbox.isChecked() && trainPassengerViewModel.getPassengerId() == 1;
+                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, isCheckAsBuyer), ADD_PASSENGER_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -604,8 +606,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void showNavigateToSearchDialog(String message) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.train_error_dialog_failed_booking));
         dialog.setDesc(message);
-        dialog.setBtnOk(getString(R.string.train_dialog_booking_passanger_yes));
+        dialog.setBtnOk(getString(R.string.train_error_dialog_default_button));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

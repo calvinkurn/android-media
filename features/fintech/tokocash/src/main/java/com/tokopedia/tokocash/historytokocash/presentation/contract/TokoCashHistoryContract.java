@@ -33,6 +33,10 @@ public interface TokoCashHistoryContract {
         void hideWaitingTransaction();
 
         RequestParams getHistoryTokoCashParam(boolean isWaitingTransaction, int page);
+
+        void navigatePageToActivateTokocash();
+
+        void navigateToLoginPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

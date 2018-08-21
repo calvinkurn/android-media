@@ -179,5 +179,6 @@
     <string name="label_change_address">Ganti Alamat</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="note_counter_format" formatted="false">%d/%d</string>
+    <string name="promo_format" formatted="false">-%s</string>
 
 </resources>
