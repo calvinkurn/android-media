@@ -13,6 +13,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -20,6 +21,8 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class GetShopEtalaseUseCase extends UseCase<ArrayList<ShopEtalaseModel>> {
+
+    public static final String WITH_DEFAULT = "withDefault";
     private SingleGraphQLUseCase<ShopEtalaseQuery> graphQLUseCase;
 
     @Inject
@@ -28,6 +31,14 @@ public class GetShopEtalaseUseCase extends UseCase<ArrayList<ShopEtalaseModel>> 
             @Override
             protected int getGraphQLRawResId() {
                 return R.raw.gql_query_shop_etalase;
+            }
+
+            @Override
+            protected HashMap<String, Object> createGraphQLVariable(RequestParams requestParams) {
+                HashMap<String, Object> variables = new HashMap<>();
+                Boolean withDefault = requestParams.getBoolean(WITH_DEFAULT, true);
+                variables.put(WITH_DEFAULT, withDefault);
+                return variables;
             }
         };
     }
@@ -40,12 +51,17 @@ public class GetShopEtalaseUseCase extends UseCase<ArrayList<ShopEtalaseModel>> 
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends ArrayList<ShopEtalaseModel>>>() {
                     @Override
                     public Observable<? extends ArrayList<ShopEtalaseModel>> call(Throwable throwable) {
-                        String jsonString = "{\"shopShowcases\":{\"result\":[{\"id\":\"123\",\"name\":\"Atasan\",\"count\":100},{\"id\":\"456\",\"name\":\"Bawahan\",\"count\":50}],\"error\":{\"message\":\"error message\"}}}";
+                        String jsonString = "{\"shopShowcases\":{\"result\":[{\"id\":\"123\",\"name\":\"Atasan\",\"count\":100,\"type\":-1},{\"id\":\"456\",\"name\":\"Bawahan\",\"count\":50,\"type\":-1},{\"id\":\"123\",\"name\":\"Atasan2\",\"count\":0,\"type\":-1},{\"id\":\"456\",\"name\":\"Bawahan2\",\"count\":0,\"type\":1},{\"id\":\"123\",\"name\":\"Atasan3\",\"count\":23,\"type\":1},{\"id\":\"456\",\"name\":\"Bawahan3\",\"count\":0,\"type\":1},{\"id\":\"123\",\"name\":\"Atasan4\",\"count\":123,\"type\":1},{\"id\":\"456\",\"name\":\"Bawahan4\",\"count\":0,\"type\":1}],\"error\":{\"message\":\"error message\"}}}";
                         ShopEtalaseQuery response = new Gson().fromJson(jsonString, ShopEtalaseQuery.class);
                         return Observable.just(response).flatMap(new GraphQLResultMapper<>());
                     }
                 });
+    }
 
+    public static RequestParams createRequestParams(boolean withDefault) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putBoolean(WITH_DEFAULT, withDefault);
+        return requestParams;
     }
 
     @Override

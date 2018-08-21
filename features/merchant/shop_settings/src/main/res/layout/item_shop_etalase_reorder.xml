@@ -40,8 +40,9 @@
         </LinearLayout>
         <ImageView
             android:id="@+id/ivReorder"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:padding="@dimen/dp_2"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_reorder_four_arrow" />
 

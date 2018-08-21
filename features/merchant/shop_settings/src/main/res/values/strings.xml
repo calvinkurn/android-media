@@ -64,11 +64,15 @@
     <string name="closed_schedule">Jadwal Tutup: %1$s</string>
     <string name="reopen_at">Kembali buka pada %1$s, 23:59</string>
     <string name="shop_has_no_notes">Toko Anda belum memiliki Catatan</string>
+    <string name="shop_has_no_etalase">Toko Anda belum memiliki Etalase</string>
     <string name="shop_notes_info"><![CDATA[Tambah Catatan untuk menuliskan informasi Syarat & Ketentuan Toko]]></string>
+    <string name="shop_etalase_info">Tambah Etalase untuk mengelompokkan produk sejenis.</string>
     <string name="add_note">Tambah Catatan</string>
     <string name="reorder_note">Atur posisi Catatan</string>
-    <string name="shop_has_no_notes_search">Tidak terdapat Catatan untuk kata kunci ini</string>
-    <string name="shop_notes_use_other_keyword">Silakan gunakan kata kunci lain</string>
+    <string name="reorder_etalase">Atur posisi Etalase</string>
+    <string name="shop_has_no_etalase_search">Etalase "%1$s" tidak ditemukan</string>
+    <string name="shop_has_no_note_search">Catatan "%1$s" tidak ditemukan</string>
+    <string name="change_your_keyword">Ubah kata pencarian Anda</string>
     <string name="note_success_delete">Catatan berhasil dihapus</string>
 
     <string name="shop_note_label_title">Judul Catatan</string>
@@ -88,6 +92,9 @@
     <string name="shop_etalase_title_already_exist">Nama Etalase duplikat</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
     <string name="shop_settings_edit_etalase">Ubah Etalase</string>
-    <string name="note_success_reorder">Posisi catatan berhasil diatur</string>
+    <string name="note_success_reorder">Posisi catatan berhasil diubah</string>
+    <string name="etalase_success_reorder">Posisi etalase berhasil diubah</string>
     <string name="x_products">%1$d Produk</string>
+    <string name="etalase_success_delete">Etalase berhasil dihapus</string>
+    <string name="etalase_x_success_delete">Etalase %1$s berhasil dihapus</string>
 </resources>

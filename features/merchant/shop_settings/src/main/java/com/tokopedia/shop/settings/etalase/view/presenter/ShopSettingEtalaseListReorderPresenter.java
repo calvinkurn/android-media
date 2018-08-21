@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.notes.view.presenter;
+package com.tokopedia.shop.settings.etalase.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -13,22 +13,22 @@ import rx.Subscriber;
 /**
  * Created by hendry on 16/08/18.
  */
-public class ShopSettingNoteListReorderPresenter extends BaseDaggerPresenter<ShopSettingNoteListReorderPresenter.View> {
+public class ShopSettingEtalaseListReorderPresenter extends BaseDaggerPresenter<ShopSettingEtalaseListReorderPresenter.View> {
     private ReorderShopEtalaseUseCase reorderShopEtalaseUseCase;
 
     public interface View extends CustomerView {
-        void onSuccessReorderShopNote(String successMessage);
-        void onErrorReorderShopNote(Throwable throwable);
+        void onSuccessReorderShopEtalase(String successMessage);
+        void onErrorReorderShopEtalase(Throwable throwable);
     }
 
     @Inject
-    public ShopSettingNoteListReorderPresenter(ReorderShopEtalaseUseCase reorderShopEtalaseUseCase) {
+    public ShopSettingEtalaseListReorderPresenter(ReorderShopEtalaseUseCase reorderShopEtalaseUseCase) {
         this.reorderShopEtalaseUseCase = reorderShopEtalaseUseCase;
     }
 
-    public void reorderShopNotes(ArrayList<String> noteIdList){
+    public void reorderShopNotes(ArrayList<String> etalaseIdList){
         reorderShopEtalaseUseCase.unsubscribe();
-        reorderShopEtalaseUseCase.execute(ReorderShopEtalaseUseCase.createRequestParams(noteIdList),
+        reorderShopEtalaseUseCase.execute(ReorderShopEtalaseUseCase.createRequestParams(etalaseIdList),
                 new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -38,14 +38,14 @@ public class ShopSettingNoteListReorderPresenter extends BaseDaggerPresenter<Sho
                     @Override
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
-                            getView().onErrorReorderShopNote(e);
+                            getView().onErrorReorderShopEtalase(e);
                         }
                     }
 
                     @Override
                     public void onNext(String successMessage) {
                         if (isViewAttached()) {
-                            getView().onSuccessReorderShopNote(successMessage);
+                            getView().onSuccessReorderShopEtalase(successMessage);
                         }
                     }
                 });

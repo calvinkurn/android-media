@@ -17,10 +17,11 @@ import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
  */
 public class ShopEtalaseReorderViewHolder extends AbstractViewHolder<ShopEtalaseViewModel> {
 
-    public static final int LAYOUT = R.layout.item_shop_note_reorder;
+    public static final int LAYOUT = R.layout.item_shop_etalase_reorder;
 
     private TextView tvEtalaseName;
     private TextView tvEtalaseCount;
+    private View handler;
 
     private OnStartDragListener onStartDragListener;
 
@@ -30,6 +31,7 @@ public class ShopEtalaseReorderViewHolder extends AbstractViewHolder<ShopEtalase
         this.onStartDragListener = onStartDragListener;
         tvEtalaseName = itemView.findViewById(R.id.tvEtalaseName);
         tvEtalaseCount = itemView.findViewById(R.id.tvEtalaseCount);
+        handler = itemView.findViewById(R.id.ivReorder);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class ShopEtalaseReorderViewHolder extends AbstractViewHolder<ShopEtalase
         tvEtalaseName.setText(shopEtalaseViewModel.getName());
         tvEtalaseCount.setText(tvEtalaseCount.getContext().getString(R.string.x_products, shopEtalaseViewModel.getCount()));
 
-        itemView.setOnTouchListener(new View.OnTouchListener() {
+        handler.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {

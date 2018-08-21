@@ -18,13 +18,13 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class DeleteShopNoteUseCase extends UseCase<String> {
+public class DeleteShopEtalaseUseCase extends UseCase<String> {
     public static final String ID = "id";
 
     private SingleGraphQLUseCase<DeleteShopNoteMutation> graphQLUseCase;
 
     @Inject
-    public DeleteShopNoteUseCase(@ApplicationContext Context context) {
+    public DeleteShopEtalaseUseCase(@ApplicationContext Context context) {
         graphQLUseCase = new SingleGraphQLUseCase<DeleteShopNoteMutation>(context, DeleteShopNoteMutation.class) {
             @Override
             protected int getGraphQLRawResId() {

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.common.util.SpanTextUtil;
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
@@ -46,14 +47,19 @@ public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewMod
         }
         tvEtalaseName.setText(SpanTextUtil.getSpandableColorText(shopEtalaseViewModel.getName(),keyword, boldColor));
         tvEtalaseCount.setText(tvEtalaseCount.getContext().getString(R.string.x_products, shopEtalaseViewModel.getCount()));
-        ivMenuMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onOnShopEtalaseViewHolderListener != null) {
-                    onOnShopEtalaseViewHolderListener.onIconMoreClicked(shopEtalaseViewModel);
+        if (shopEtalaseViewModel.getType() == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
+            ivMenuMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onOnShopEtalaseViewHolderListener != null) {
+                        onOnShopEtalaseViewHolderListener.onIconMoreClicked(shopEtalaseViewModel);
+                    }
                 }
-            }
-        });
+            });
+            ivMenuMore.setVisibility(View.VISIBLE);
+        } else { // etalase default cannot be editted/deleted
+            ivMenuMore.setVisibility(View.GONE);
+        }
     }
 
 }

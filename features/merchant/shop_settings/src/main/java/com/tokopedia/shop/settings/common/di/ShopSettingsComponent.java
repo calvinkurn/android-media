@@ -7,6 +7,8 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity;
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment;
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment;
+import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment;
+import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseReorderFragment;
 import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesListFragment;
 import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesReorderFragment;
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment;
@@ -29,5 +31,8 @@ public interface ShopSettingsComponent {
     void inject(ShopSettingAddressFragment fragment);
     void inject(ShopSettingAddressAddEditFragment fragment);
     void inject(ShopSettingsNotesAddEditFragment fragment);
+
     void inject(ShopSettingsEtalaseAddEditFragment fragment);
+    void inject(ShopSettingsEtalaseListFragment fragment);
+    void inject(ShopSettingsEtalaseReorderFragment fragment);
 }

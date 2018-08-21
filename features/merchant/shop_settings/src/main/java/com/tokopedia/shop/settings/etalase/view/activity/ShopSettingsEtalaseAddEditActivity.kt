@@ -12,11 +12,12 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 
 class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     private var isEdit: Boolean = false
-    private var etalase: ShopEtalaseModel = ShopEtalaseModel()
+    private var etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()
     private var existedEtalase: MutableList<String> = mutableListOf()
 
     private val saveTextView: TextView? by lazy {
@@ -28,7 +29,8 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
         private const val PARAM_EXISTED_ETALASE = "EXISTED_ETALASE"
 
-        fun createIntent(context: Context, isEdit: Boolean, existedEtalase: List<String> = listOf(), etalase: ShopEtalaseModel = ShopEtalaseModel()) =
+        @JvmStatic
+        fun createIntent(context: Context, isEdit: Boolean, existedEtalase: List<String> = listOf(), etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
                 Intent(context, ShopSettingsEtalaseAddEditActivity::class.java)
                         .putExtra(PARAM_SHOP_ETALASE, etalase)
                         .putStringArrayListExtra(PARAM_EXISTED_ETALASE, ArrayList(existedEtalase))
@@ -36,7 +38,7 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        etalase = intent.getParcelableExtra(PARAM_SHOP_ETALASE) ?: ShopEtalaseModel()
+        etalase = intent.getParcelableExtra(PARAM_SHOP_ETALASE) ?: ShopEtalaseViewModel()
         isEdit = intent.getBooleanExtra(PARAM_IS_EDIT, false)
         existedEtalase = intent.getStringArrayListExtra(PARAM_EXISTED_ETALASE)
 

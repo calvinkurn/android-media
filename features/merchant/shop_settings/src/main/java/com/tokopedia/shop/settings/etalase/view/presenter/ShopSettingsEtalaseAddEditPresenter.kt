@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.AddShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.UpdateShopEtalaseUseCase
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -19,7 +20,7 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
         updateShopEtalaseUseCase.unsubscribe()
     }
 
-    fun saveEtalase(etalaseModel: ShopEtalaseModel, isEdit: Boolean = false){
+    fun saveEtalase(etalaseModel: ShopEtalaseViewModel, isEdit: Boolean = false){
         val useCase: UseCase<String> = if (!isEdit) addShopEtalaseUseCase else updateShopEtalaseUseCase
         val requestParams = AddShopEtalaseUseCase.createRequestParams(etalaseModel.name)
 

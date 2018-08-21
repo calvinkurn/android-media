@@ -16,6 +16,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingsEtalaseAddEditPresenter
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class ShopSettingsEtalaseAddEditFragment: BaseDaggerFragment(), ShopSettingsEtal
     @Inject lateinit var presenter: ShopSettingsEtalaseAddEditPresenter
 
     private var isEdit: Boolean = false
-    private var etalase: ShopEtalaseModel = ShopEtalaseModel()
+    private var etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()
     private var existedEtalase: MutableList<String> = mutableListOf()
 
     private var isValid = true
@@ -38,7 +39,7 @@ class ShopSettingsEtalaseAddEditFragment: BaseDaggerFragment(), ShopSettingsEtal
 
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
 
-        fun createInstance(isEdit: Boolean, existedEtalase: List<String> = listOf(), etalase: ShopEtalaseModel = ShopEtalaseModel()) =
+        fun createInstance(isEdit: Boolean, existedEtalase: List<String> = listOf(), etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
                 ShopSettingsEtalaseAddEditFragment().apply { arguments = Bundle().apply {
                     putParcelable(PARAM_SHOP_ETALASE, etalase)
                     putStringArrayList(PARAM_EXISTED_ETALASE, ArrayList(existedEtalase))
@@ -61,7 +62,7 @@ class ShopSettingsEtalaseAddEditFragment: BaseDaggerFragment(), ShopSettingsEtal
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             isEdit = it.getBoolean(PARAM_IS_EDIT, false)
-            etalase = it.getParcelable(PARAM_SHOP_ETALASE) ?: ShopEtalaseModel()
+            etalase = it.getParcelable(PARAM_SHOP_ETALASE) ?: ShopEtalaseViewModel()
             existedEtalase = it.getStringArrayList(PARAM_EXISTED_ETALASE)
         }
 

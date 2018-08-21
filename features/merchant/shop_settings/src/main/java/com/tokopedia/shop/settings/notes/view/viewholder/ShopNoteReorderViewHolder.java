@@ -23,6 +23,7 @@ public class ShopNoteReorderViewHolder extends AbstractViewHolder<ShopNoteViewMo
 
     private TextView tvNoteName;
     private TextView tvLastUpdate;
+    private View handler;
 
     private OnStartDragListener onStartDragListener;
 
@@ -32,6 +33,7 @@ public class ShopNoteReorderViewHolder extends AbstractViewHolder<ShopNoteViewMo
         this.onStartDragListener = onStartDragListener;
         tvNoteName = itemView.findViewById(R.id.tvNoteName);
         tvLastUpdate = itemView.findViewById(R.id.tvLastUpdate);
+        handler = itemView.findViewById(R.id.ivReorder);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class ShopNoteReorderViewHolder extends AbstractViewHolder<ShopNoteViewMo
         tvNoteName.setText(shopNoteViewModel.getTitle());
         tvLastUpdate.setText(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE_TIME, shopNoteViewModel.getUpdateTime()));
 
-        itemView.setOnTouchListener(new View.OnTouchListener() {
+        handler.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {

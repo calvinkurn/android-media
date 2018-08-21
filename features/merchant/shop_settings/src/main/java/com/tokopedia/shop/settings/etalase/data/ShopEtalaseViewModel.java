@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseFactory;
 
@@ -14,6 +15,7 @@ public class ShopEtalaseViewModel implements Parcelable, Visitable<BaseShopEtala
     private String id;
     private String name;
     private int count;
+    private @ShopEtalaseTypeDef int type;
     public ShopEtalaseViewModel(){
     }
 
@@ -21,6 +23,7 @@ public class ShopEtalaseViewModel implements Parcelable, Visitable<BaseShopEtala
         this.id = shopEtalaseModel.getId();
         this.name = shopEtalaseModel.getName();
         this.count = shopEtalaseModel.getCount();
+        this.type = shopEtalaseModel.getType();
     }
 
     public String getId() {
@@ -35,6 +38,14 @@ public class ShopEtalaseViewModel implements Parcelable, Visitable<BaseShopEtala
         return count;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getType() {
+        return type;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -45,12 +56,14 @@ public class ShopEtalaseViewModel implements Parcelable, Visitable<BaseShopEtala
         dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeInt(this.count);
+        dest.writeInt(this.type);
     }
 
     protected ShopEtalaseViewModel(Parcel in) {
         this.id = in.readString();
         this.name = in.readString();
         this.count = in.readInt();
+        this.type = in.readInt();
     }
 
     public static final Creator<ShopEtalaseViewModel> CREATOR = new Creator<ShopEtalaseViewModel>() {

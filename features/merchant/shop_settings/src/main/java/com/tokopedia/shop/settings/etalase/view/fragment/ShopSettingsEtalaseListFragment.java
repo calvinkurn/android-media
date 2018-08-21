@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.notes.view;
+package com.tokopedia.shop.settings.etalase.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -29,41 +29,45 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
+import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity;
+import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseAdapter;
+import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFactory;
+import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter;
+import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
-import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity;
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter;
-import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter;
-import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 
-public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNoteViewModel, ShopNoteFactory>
-        implements ShopSettingNoteListPresenter.View, ShopNoteViewHolder.OnShopNoteViewHolderListener {
+public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<ShopEtalaseViewModel, ShopEtalaseFactory>
+        implements ShopSettingEtalaseListPresenter.View, ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener {
 
-    private static final int REQUEST_CODE_ADD_NOTE = 818;
-    private static final int REQUEST_CODE_EDIT_NOTE = 819;
+    private static final int REQUEST_CODE_ADD_ETALASE = 605;
+    private static final int REQUEST_CODE_EDIT_ETALASE = 606;
     @Inject
-    ShopSettingNoteListPresenter shopSettingNoteListPresenter;
-    private ArrayList<ShopNoteViewModel> shopNoteModels;
-    private ShopNoteAdapter shopNoteAdapter;
+    ShopSettingEtalaseListPresenter shopSettingEtalaseListPresenter;
+    private ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels;
+    private ShopEtalaseAdapter shopEtalaseAdapter;
     private ProgressDialog progressDialog;
-    private String shopNoteIdToDelete;
+    private String shopEtalaseIdToDelete;
+    private String shopEtalaseNameToDelete;
     private boolean needReload;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private OnShopSettingsNoteFragmentListener onShopSettingsNoteFragmentListener;
-    public interface OnShopSettingsNoteFragmentListener {
-        void goToReorderFragment(ArrayList<ShopNoteViewModel> shopNoteViewModels);
+    private OnShopSettingsEtalaseFragmentListener onShopSettingsEtalaseFragmentListener;
+
+    public interface OnShopSettingsEtalaseFragmentListener {
+        void goToReorderFragment(ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels);
     }
 
-    public static ShopSettingsNotesListFragment newInstance() {
-        return new ShopSettingsNotesListFragment();
+    public static ShopSettingsEtalaseListFragment newInstance() {
+        return new ShopSettingsEtalaseListFragment();
     }
 
     @Override
@@ -72,7 +76,7 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build()
                 .inject(this);
-        shopSettingNoteListPresenter.attachView(this);
+        shopSettingEtalaseListPresenter.attachView(this);
     }
 
     @Override
@@ -85,7 +89,7 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         GraphqlClient.init(getContext());
-        shopSettingNoteListPresenter.getShopNotes();
+        shopSettingEtalaseListPresenter.getShopEtalase();
 
     }
 
@@ -97,10 +101,10 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (shopNoteModels == null || shopNoteModels.size() == 0) {
-            inflater.inflate(R.menu.menu_shop_note_list_no_data, menu);
+        if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0) {
+            inflater.inflate(R.menu.menu_shop_etalase_list_no_data, menu);
         } else {
-            inflater.inflate(R.menu.menu_shop_note_list, menu);
+            inflater.inflate(R.menu.menu_shop_etalase_list, menu);
         }
     }
 
@@ -116,13 +120,13 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add) {
-            onAddNoteButtonClicked();
+            onAddEtalaseButtonClicked();
             return true;
         } else if (item.getItemId() == R.id.menu_reorder) {
-            if (shopNoteModels == null || shopNoteModels.size() == 0) {
+            if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0) {
                 return true;
             }
-            onShopSettingsNoteFragmentListener.goToReorderFragment(shopNoteModels);
+            onShopSettingsEtalaseFragmentListener.goToReorderFragment(shopEtalaseViewModels);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -146,21 +150,8 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
         return recyclerView;
     }
 
-    private void onAddNoteButtonClicked() {
-        Menus menus = new Menus(getContext());
-        menus.setItemMenuList(getResources().getStringArray(R.array.shop_note_type));
-        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
-            @Override
-            public void onClick(Menus.ItemMenus itemMenus, int pos) {
-                if (pos == 0) {
-                    goToAddNote(false);
-                } else {
-                    goToAddNote(true);
-                }
-                menus.dismiss();
-            }
-        });
-        menus.show();
+    private void onAddEtalaseButtonClicked() {
+        goToAddEtalase();
     }
 
     @Override
@@ -170,9 +161,9 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
         if (TextUtils.isEmpty(searchText)) {
             EmptyModel emptyModel = new EmptyModel();
             emptyModel.setIconRes(R.drawable.ic_empty_state);
-            emptyModel.setTitle(getString(R.string.shop_has_no_notes));
-            emptyModel.setContent(getString(R.string.shop_notes_info));
-            emptyModel.setButtonTitleRes(R.string.add_note);
+            emptyModel.setTitle(getString(R.string.shop_has_no_etalase));
+            emptyModel.setContent(getString(R.string.shop_etalase_info));
+            emptyModel.setButtonTitleRes(R.string.shop_settings_add_etalase);
             emptyModel.setCallback(new BaseEmptyViewHolder.Callback() {
                 @Override
                 public void onEmptyContentItemTextClicked() {
@@ -181,14 +172,14 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
 
                 @Override
                 public void onEmptyButtonClicked() {
-                    onAddNoteButtonClicked();
+                    onAddEtalaseButtonClicked();
                 }
             });
             return emptyModel;
         } else {
             EmptyResultViewModel emptyModel = new EmptyResultViewModel();
             emptyModel.setIconRes(R.drawable.ic_empty_search);
-            emptyModel.setTitle(getString(R.string.shop_has_no_note_search, searchText));
+            emptyModel.setTitle(getString(R.string.shop_has_no_etalase_search, searchText));
             emptyModel.setContent(getString(R.string.change_your_keyword));
             return emptyModel;
         }
@@ -197,42 +188,48 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
 
     @Override
     public void loadData(int page) {
-        shopSettingNoteListPresenter.getShopNotes();
+        shopSettingEtalaseListPresenter.getShopEtalase();
     }
 
     @NonNull
     @Override
-    protected BaseListAdapter<ShopNoteViewModel, ShopNoteFactory> createAdapterInstance() {
-        shopNoteAdapter = new ShopNoteAdapter(getAdapterTypeFactory(), this);
-        return shopNoteAdapter;
+    protected BaseListAdapter<ShopEtalaseViewModel, ShopEtalaseFactory> createAdapterInstance() {
+        shopEtalaseAdapter = new ShopEtalaseAdapter(getAdapterTypeFactory(), this);
+        return shopEtalaseAdapter;
     }
 
     @Override
-    public void onItemClicked(ShopNoteViewModel shopNoteViewModel) {
-        goToEditNote(shopNoteViewModel);
+    public void onItemClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
+        goToEditEtalase(shopEtalaseViewModel);
     }
 
-    private void goToEditNote(ShopNoteViewModel shopNoteViewModel) {
-        Intent intent = ShopSettingNotesAddEditActivity.createIntent(getContext(),
-                shopNoteViewModel.getTerms(), true, shopNoteViewModel);
-        startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE);
+    private void goToEditEtalase(ShopEtalaseViewModel shopEtalaseViewModel) {
+        //TODO string etalase
+        Intent intent = ShopSettingsEtalaseAddEditActivity.createIntent(getContext(), true,
+                new ArrayList<>(), shopEtalaseViewModel);
+        startActivityForResult(intent, REQUEST_CODE_EDIT_ETALASE);
     }
 
-    private void goToAddNote(boolean isTerms) {
-        Intent intent = ShopSettingNotesAddEditActivity.createIntent(getContext(),
-                isTerms, false, new ShopNoteViewModel());
-        startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
-    }
-
-    @Override
-    protected ShopNoteFactory getAdapterTypeFactory() {
-        return new ShopNoteFactory(this);
+    private void goToAddEtalase() {
+        //TODO string etalase
+        Intent intent = ShopSettingsEtalaseAddEditActivity.createIntent(getContext(),
+                false, new ArrayList<>(), new ShopEtalaseViewModel());
+        startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE);
     }
 
     @Override
-    public void onIconMoreClicked(ShopNoteViewModel shopNoteViewModel) {
+    protected ShopEtalaseFactory getAdapterTypeFactory() {
+        return new ShopEtalaseFactory(this);
+    }
+
+    @Override
+    public void onIconMoreClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
         Menus menus = new Menus(getContext());
-        menus.setItemMenuList(getResources().getStringArray(R.array.shop_note_menu_more));
+        if (shopEtalaseViewModel.getCount() > 0) {
+            menus.setItemMenuList(getResources().getStringArray(R.array.shop_etalase_menu_more_change));
+        } else {
+            menus.setItemMenuList(getResources().getStringArray(R.array.shop_etalase_menu_more_change_delete));
+        }
         menus.setActionText(getString(R.string.close));
         menus.setOnActionClickListener(new View.OnClickListener() {
             @Override
@@ -243,12 +240,13 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
         menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
             @Override
             public void onClick(Menus.ItemMenus itemMenus, int pos) {
-                if (pos == 0) {
-                    goToEditNote(shopNoteViewModel);
+                if (itemMenus.title.equalsIgnoreCase(getString(R.string.label_change))) {
+                    goToEditEtalase(shopEtalaseViewModel);
                 } else {
-                    shopNoteIdToDelete = shopNoteViewModel.getId();
+                    shopEtalaseIdToDelete = shopEtalaseViewModel.getId();
+                    shopEtalaseNameToDelete = shopEtalaseViewModel.getName();
                     showSubmitLoading(getString(R.string.title_loading));
-                    shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete);
+                    shopSettingEtalaseListPresenter.deleteShopEtalase(shopEtalaseIdToDelete);
                 }
                 menus.dismiss();
             }
@@ -262,38 +260,37 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     }
 
     @Override
-    public void onSuccessGetShopNotes(ArrayList<ShopNoteViewModel> shopNoteModels) {
-        this.shopNoteModels = shopNoteModels;
+    public void onSuccessGetShopEtalase(ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels) {
+        this.shopEtalaseViewModels = shopEtalaseViewModels;
         onSearchSubmitted(getKeyword());
         getActivity().invalidateOptionsMenu();
     }
 
     @Override
-    public void onErrorGetShopNotes(Throwable throwable) {
+    public void onErrorGetShopEtalase(Throwable throwable) {
         showGetListError(throwable);
     }
 
     @Override
     public void onSearchSubmitted(String text) {
-        shopNoteAdapter.clearAllElements();
+        shopEtalaseAdapter.clearAllElements();
         isLoadingInitialData = true;
-        ArrayList<ShopNoteViewModel> shopNoteViewModels;
-        if (shopNoteModels == null) {
-            shopNoteViewModels = new ArrayList<>();
-        } else if (shopNoteModels.size() > 0 &&
+        ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels;
+        if (this.shopEtalaseViewModels == null) {
+            shopEtalaseViewModels = new ArrayList<>();
+        } else if (this.shopEtalaseViewModels.size() > 0 &&
                 !TextUtils.isEmpty(text)) {
             String textLowerCase = text.toLowerCase();
-            shopNoteViewModels = new ArrayList<>();
-            for (ShopNoteViewModel shopNoteModel : shopNoteModels) {
-                if (shopNoteModel.getTitle().toLowerCase().contains(textLowerCase) ||
-                        shopNoteModel.getContent().toLowerCase().contains(textLowerCase)) {
-                    shopNoteViewModels.add(shopNoteModel);
+            shopEtalaseViewModels = new ArrayList<>();
+            for (ShopEtalaseViewModel shopEtalaseViewModel : this.shopEtalaseViewModels) {
+                if (shopEtalaseViewModel.getName().toLowerCase().contains(textLowerCase) ) {
+                    shopEtalaseViewModels.add(shopEtalaseViewModel);
                 }
             }
         } else {
-            shopNoteViewModels = shopNoteModels;
+            shopEtalaseViewModels = this.shopEtalaseViewModels;
         }
-        renderList(shopNoteViewModels, false);
+        renderList(shopEtalaseViewModels, false);
         showSearchViewWithDataSizeCheck();
     }
 
@@ -306,8 +303,8 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case REQUEST_CODE_EDIT_NOTE:
-            case REQUEST_CODE_ADD_NOTE:
+            case REQUEST_CODE_EDIT_ETALASE:
+            case REQUEST_CODE_ADD_ETALASE:
                 if (resultCode == Activity.RESULT_OK) {
                     needReload = true;
                 }
@@ -325,10 +322,13 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     }
 
     @Override
-    public void onSuccessDeleteShopNote(String successMessage) {
+    public void onSuccessDeleteShopEtalase(String successMessage) {
         hideSubmitLoading();
+        String deleteMessage = TextUtils.isEmpty(shopEtalaseNameToDelete)?
+                getString(R.string.etalase_success_delete):
+                getString(R.string.etalase_x_success_delete, shopEtalaseNameToDelete);
         ToasterNormal.make(getActivity().findViewById(android.R.id.content),
-                getString(R.string.note_success_delete), BaseToaster.LENGTH_LONG)
+                deleteMessage, BaseToaster.LENGTH_LONG)
                 .setAction(getString(R.string.close), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -336,20 +336,20 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
                     }
                 }).show();
         // if somehow id is not there, or if size is 1, we want to reload, so empty state can be shown.
-        if (TextUtils.isEmpty(shopNoteIdToDelete) ||
-                shopNoteAdapter.getDataSize() == 1) {
+        if (TextUtils.isEmpty(shopEtalaseIdToDelete) ||
+                shopEtalaseAdapter.getDataSize() == 1) {
             loadInitialData();
         } else {
-            shopNoteAdapter.deleteNote(shopNoteIdToDelete);
+            shopEtalaseAdapter.deleteEtalase(shopEtalaseIdToDelete);
         }
     }
 
-    public void refreshData(){
+    public void refreshData() {
         loadInitialData();
     }
 
     @Override
-    public void onErrorDeleteShopNote(Throwable throwable) {
+    public void onErrorDeleteShopEtalase(Throwable throwable) {
         hideSubmitLoading();
         String message = ErrorHandler.getErrorMessage(getContext(), throwable);
         ToasterError.make(getActivity().findViewById(android.R.id.content),
@@ -384,14 +384,14 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (shopSettingNoteListPresenter != null) {
-            shopSettingNoteListPresenter.detachView();
+        if (shopSettingEtalaseListPresenter != null) {
+            shopSettingEtalaseListPresenter.detachView();
         }
     }
 
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        onShopSettingsNoteFragmentListener = (OnShopSettingsNoteFragmentListener) context;
+        onShopSettingsEtalaseFragmentListener = (OnShopSettingsEtalaseFragmentListener) context;
     }
 }

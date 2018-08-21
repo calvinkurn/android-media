@@ -19,13 +19,13 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class ReorderShopNoteUseCase extends UseCase<String> {
+public class ReorderShopEtalaseUseCase extends UseCase<String> {
     public static final String IDS = "ids";
 
     private SingleGraphQLUseCase<ReorderShopNoteMutation> graphQLUseCase;
 
     @Inject
-    public ReorderShopNoteUseCase(@ApplicationContext Context context) {
+    public ReorderShopEtalaseUseCase(@ApplicationContext Context context) {
         graphQLUseCase = new SingleGraphQLUseCase<ReorderShopNoteMutation>(context, ReorderShopNoteMutation.class) {
             @Override
             protected int getGraphQLRawResId() {

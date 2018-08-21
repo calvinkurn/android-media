@@ -27,7 +27,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".etalase.view.ShopSettingsEtalaseActivity"
+            android:name=".etalase.view.activity.ShopSettingsEtalaseActivity"
             android:label="@string/shop_settings_manage_etalase"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
