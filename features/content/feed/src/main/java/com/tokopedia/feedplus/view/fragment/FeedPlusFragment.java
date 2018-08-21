@@ -470,7 +470,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
         Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
-        UnifyTracking.eventFeedViewShop(getScreenName(), String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
+        UnifyTracking.eventFeedViewShop(getScreenName(),
+                String.valueOf(shopId),
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
     }
 
     @Override
@@ -631,6 +633,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSeeAllRecentView() {
+        UnifyTracking.eventFeedViewAll();
         Intent intent = RecentViewActivity.getCallingIntent(getActivity());
         getActivity().startActivity(intent);
     }
