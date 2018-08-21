@@ -795,6 +795,7 @@ public class TkpdBaseURL {
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
         public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
         public static final String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
+        public static final String PATH_MY_BILLS = "mybills/";
     }
 
     public static class TrainWebsite {
