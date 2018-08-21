@@ -572,8 +572,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void showNavigateToSearchDialog(String message) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.train_error_dialog_failed_booking));
         dialog.setDesc(message);
-        dialog.setBtnOk(getString(R.string.train_dialog_booking_passanger_yes));
+        dialog.setBtnOk(getString(R.string.train_error_dialog_default_button));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
