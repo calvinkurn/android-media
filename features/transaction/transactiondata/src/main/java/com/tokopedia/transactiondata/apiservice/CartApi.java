@@ -27,6 +27,9 @@ public interface CartApi {
     @GET(TransactionDataApiUrl.Cart.PATH_CART_LIST)
     Observable<Response<CartResponse>> getCartList(@QueryMap Map<String, String> params);
 
+    @GET(TransactionDataApiUrl.Cart.PATH_SHOP_GROUP_LIST)
+    Observable<Response<CartResponse>> getShopGroupList(@QueryMap Map<String, String> params);
+
     @FormUrlEncoded
     @POST(TransactionDataApiUrl.Cart.PATH_REMOVE_FROM_CART)
     Observable<Response<CartResponse>> postDeleteCart(@FieldMap Map<String, String> params);

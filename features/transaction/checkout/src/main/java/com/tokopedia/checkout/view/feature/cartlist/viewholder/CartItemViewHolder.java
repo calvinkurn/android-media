@@ -21,7 +21,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.feature.cartlist.adapter.CartListAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
@@ -46,18 +47,17 @@ import static com.tokopedia.checkout.view.common.utils.QuantityTextWatcher.TEXTW
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
-public class CartListItemViewHolder extends RecyclerView.ViewHolder {
+public class CartItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
 
-    private final CartListAdapter.ActionListener actionListener;
+    private final CartItemAdapter.ActionListener actionListener;
     private final Context context;
 
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
-    private TextView tvShopName;
     private AppCompatEditText etQty;
     private ImageView btnQtyPlus;
     private ImageView btnQtyMinus;
@@ -74,7 +74,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private TextViewCompat tvError;
     private FrameLayout layoutWarning;
     private TextViewCompat tvWarning;
-    private ImageView imgShopBadge;
     private TextView tvNoteCharCounter;
     private LinearLayout productProperties;
 
@@ -82,8 +81,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
 
-    public CartListItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
-                                  CartListAdapter.ActionListener actionListener) {
+    public CartItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
+                              CartItemAdapter.ActionListener actionListener) {
         super(itemView);
         this.actionListener = actionListener;
         this.context = itemView.getContext();
@@ -93,7 +92,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.ivProductImage = itemView.findViewById(R.id.iv_image_product);
         this.tvProductName = itemView.findViewById(R.id.tv_product_name);
         this.tvProductPrice = itemView.findViewById(R.id.tv_product_price);
-        this.tvShopName = itemView.findViewById(R.id.tv_shop_name);
         this.etQty = itemView.findViewById(R.id.et_qty);
         this.btnQtyPlus = itemView.findViewById(R.id.btn_qty_plus);
         this.btnQtyMinus = itemView.findViewById(R.id.btn_qty_min);
@@ -108,7 +106,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvError = itemView.findViewById(R.id.tv_error);
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
-        this.imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         this.tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
         this.productProperties = itemView.findViewById(R.id.product_properties);
 
@@ -197,7 +194,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
             cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
         }
-        this.tvShopName.setText(data.getCartItemData().getOriginData().getShopName());
         this.tvProductName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
         );
@@ -274,8 +270,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
         this.tvProductName.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
-
-        this.tvShopName.setOnClickListener(getOnClickShopItemListener(getAdapterPosition(), data));
 
         if (data.getCartItemData().getOriginData().isFreeReturn()) {
             this.ivIconFreeReturn.setVisibility(View.VISIBLE);
@@ -356,16 +350,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             this.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist);
         }
 
-        if (data.getCartItemData().getOriginData().isOfficialStore()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
-            imgShopBadge.setVisibility(View.VISIBLE);
-        } else if (data.getCartItemData().getOriginData().isGoldMerchant()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
-            imgShopBadge.setVisibility(View.VISIBLE);
-        } else {
-            imgShopBadge.setVisibility(View.GONE);
-        }
-
     }
 
     @NonNull
@@ -376,18 +360,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 actionListener.onCartItemProductClicked(data, position);
-            }
-        };
-    }
-
-    @NonNull
-    private View.OnClickListener getOnClickShopItemListener(
-            @SuppressLint("RecyclerView") final int position,
-            final CartItemHolderData data) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionListener.onCartItemShopNameClicked(data, position);
             }
         };
     }

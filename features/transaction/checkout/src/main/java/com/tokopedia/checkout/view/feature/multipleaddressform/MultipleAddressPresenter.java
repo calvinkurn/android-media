@@ -14,6 +14,7 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
@@ -88,7 +89,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             @Override
             public void onNext(CartListData cartListData) {
                 view.hideInitialLoading();
-                if (cartListData != null && cartListData.getCartItemDataList().size() > 0) {
+                if (cartListData != null && cartListData.getShopGroupDataList().size() > 0) {
                     MultipleAddressPresenter.this.cartListData = cartListData;
                     view.renderCartData(cartListData);
                 } else {
@@ -137,7 +138,10 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     public List<MultipleAddressAdapterData> initiateMultipleAddressAdapterData(
             CartListData cartListData,
             RecipientAddressModel recipientAddressModel) {
-        List<CartItemData> cartItemDataList = cartListData.getCartItemDataList();
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        for (ShopGroupData shopGroupData : cartListData.getShopGroupDataList()) {
+            cartItemDataList.addAll(shopGroupData.getCartItemDataList());
+        }
         List<MultipleAddressAdapterData> adapterModels = new ArrayList<>();
         for (int i = 0; i < cartItemDataList.size(); i++) {
             MultipleAddressAdapterData addressAdapterData = new MultipleAddressAdapterData();
@@ -162,9 +166,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             addressAdapterData.setFreeReturn(cartItemDataList.get(i).getOriginData().isFreeReturn());
             addressAdapterData.setCashBack(cartItemDataList.get(i).getOriginData().isCashBack());
             addressAdapterData.setCashBackInfo(cartItemDataList.get(i).getOriginData().getCashBackInfo());
-            addressAdapterData.setSenderName(cartItemDataList.get(i).getOriginData().getShopName());
-            addressAdapterData.setOfficialStore(cartItemDataList.get(i).getOriginData().isOfficialStore());
-            addressAdapterData.setGoldMerchant(cartItemDataList.get(i).getOriginData().isGoldMerchant());
+//            addressAdapterData.setSenderName(cartItemDataList.get(i).getOriginData().getShopName());
+//            addressAdapterData.setOfficialStore(cartItemDataList.get(i).getOriginData().isOfficialStore());
+//            addressAdapterData.setGoldMerchant(cartItemDataList.get(i).getOriginData().isGoldMerchant());
             adapterModels.add(addressAdapterData);
         }
         return adapterModels;

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public interface ICartListPresenter {
 
     void processToUpdateCartData();
 
-    void reCalculateSubTotal(List<CartItemHolderData> dataList);
+    void reCalculateSubTotal(List<CartShopHolderData> dataList);
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
 

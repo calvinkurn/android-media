@@ -7,13 +7,16 @@ import android.view.ViewGroup;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartListItemViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartItemViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
@@ -24,36 +27,32 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.subscriptions.CompositeSubscription;
-
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ActionListener actionListener;
-    private List<Object> cartItemHolderDataList;
-    private CompositeSubscription compositeSubscription;
+    private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
 
     @Inject
-    public CartListAdapter(ActionListener actionListener) {
-        this.cartItemHolderDataList = new ArrayList<>();
+    public CartAdapter(ActionListener actionListener) {
+        this.cartDataList = new ArrayList<>();
         this.actionListener = actionListener;
-        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (cartItemHolderDataList.get(position) instanceof CartItemHolderData) {
-            return CartListItemViewHolder.TYPE_VIEW_ITEM_CART;
-        } else if (cartItemHolderDataList.get(position) instanceof CartPromoSuggestion) {
+        if (cartDataList.get(position) instanceof CartShopHolderData) {
+            return CartShopViewHolder.TYPE_VIEW_ITEM_SHOP;
+        } else if (cartDataList.get(position) instanceof CartPromoSuggestion) {
             return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
-        } else if (cartItemHolderDataList.get(position) instanceof CartItemPromoHolderData) {
+        } else if (cartDataList.get(position) instanceof CartItemPromoHolderData) {
             return CartVoucherPromoViewHolder.TYPE_VIEW_PROMO;
-        } else if (cartItemHolderDataList.get(position) instanceof CartItemTickerErrorHolderData) {
+        } else if (cartDataList.get(position) instanceof CartItemTickerErrorHolderData) {
             return CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR;
-        } else if (cartItemHolderDataList.get(position) instanceof ShipmentSellerCashbackModel) {
+        } else if (cartDataList.get(position) instanceof ShipmentSellerCashbackModel) {
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
         } else {
             return super.getItemViewType(position);
@@ -62,10 +61,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
+        if (viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(CartListItemViewHolder.TYPE_VIEW_ITEM_CART, parent, false);
-            return new CartListItemViewHolder(view, compositeSubscription, actionListener);
+                    .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false);
+            return new CartShopViewHolder(view, actionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION, parent, false);
@@ -88,64 +87,58 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
-            final CartListItemViewHolder holderView = (CartListItemViewHolder) holder;
-            final CartItemHolderData data = (CartItemHolderData) cartItemHolderDataList.get(position);
+        if (getItemViewType(position) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
+            final CartShopViewHolder holderView = (CartShopViewHolder) holder;
+            final CartShopHolderData data = (CartShopHolderData) cartDataList.get(position);
             holderView.bindData(data);
         } else if (getItemViewType(position) == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             final CartPromoSuggestionViewHolder holderView = (CartPromoSuggestionViewHolder) holder;
-            final CartPromoSuggestion data = (CartPromoSuggestion) cartItemHolderDataList.get(position);
+            final CartPromoSuggestion data = (CartPromoSuggestion) cartDataList.get(position);
             holderView.bindData(data, position);
         } else if (getItemViewType(position) == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             final CartVoucherPromoViewHolder holderView = (CartVoucherPromoViewHolder) holder;
-            final CartItemPromoHolderData data = (CartItemPromoHolderData) cartItemHolderDataList.get(position);
+            final CartItemPromoHolderData data = (CartItemPromoHolderData) cartDataList.get(position);
             holderView.bindData(data, position);
         } else if (getItemViewType(position) == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR) {
             final CartTickerErrorViewHolder holderView = (CartTickerErrorViewHolder) holder;
-            final CartItemTickerErrorHolderData data = (CartItemTickerErrorHolderData) cartItemHolderDataList.get(position);
+            final CartItemTickerErrorHolderData data = (CartItemTickerErrorHolderData) cartDataList.get(position);
             holderView.bindData(data, position);
         } else if (getItemViewType(position) == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
             final ShipmentSellerCashbackViewHolder holderView = (ShipmentSellerCashbackViewHolder) holder;
-            final ShipmentSellerCashbackModel data = (ShipmentSellerCashbackModel) cartItemHolderDataList.get(position);
+            final ShipmentSellerCashbackModel data = (ShipmentSellerCashbackModel) cartDataList.get(position);
             holderView.bindViewHolder(data);
         }
     }
 
     @Override
     public int getItemCount() {
-        return cartItemHolderDataList.size();
+        return cartDataList.size();
     }
 
-    public void unsubscribeSubscription() {
-        compositeSubscription.unsubscribe();
-    }
-
-    public void addDataList(List<CartItemData> cartItemDataList) {
-        for (CartItemData cartItemData : cartItemDataList) {
-            CartItemHolderData cartItemHolderData = new CartItemHolderData();
-            cartItemHolderData.setCartItemData(cartItemData);
-            cartItemHolderData.setEditableRemark(false);
-            cartItemHolderData.setErrorFormItemValidationMessage("");
-            cartItemHolderData.setEditableRemark(false);
-            cartItemHolderDataList.add(cartItemHolderData);
+    public void addDataList(List<ShopGroupData> shopGroupDataList) {
+        for (ShopGroupData shopGroupData : shopGroupDataList) {
+            CartShopHolderData cartShopHolderData = new CartShopHolderData();
+            cartShopHolderData.setSelected(false);
+            cartShopHolderData.setShopGroupData(shopGroupData);
+            cartDataList.add(cartShopHolderData);
         }
         notifyDataSetChanged();
     }
 
-    public List<CartItemHolderData> getDataList() {
-        List<CartItemHolderData> cartItemHolderDataFinalList = new ArrayList<>();
-        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
-            Object object = cartItemHolderDataList.get(i);
-            if (object instanceof CartItemHolderData) {
-                cartItemHolderDataFinalList.add((CartItemHolderData) object);
+    public List<CartShopHolderData> getDataList() {
+        List<CartShopHolderData> cartShopHolderDataFinalList = new ArrayList<>();
+        for (int i = 0; i < cartDataList.size(); i++) {
+            Object object = cartDataList.get(i);
+            if (object instanceof CartShopHolderData) {
+                cartShopHolderDataFinalList.add((CartShopHolderData) object);
             }
         }
-        return cartItemHolderDataFinalList;
+        return cartShopHolderDataFinalList;
     }
 
     public List<CartItemData> getCartItemDataList() {
         List<CartItemData> cartItemDataList = new ArrayList<>();
-        for (Object object : cartItemHolderDataList) {
+        for (Object object : cartDataList) {
             if (object instanceof CartItemHolderData) {
                 CartItemHolderData cartItemHolderData = (CartItemHolderData) object;
                 cartItemDataList.add(cartItemHolderData.getCartItemData());
@@ -155,80 +148,37 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return cartItemDataList;
     }
 
-    public void increaseQuantity(int position) {
-        if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position))
-                    .getCartItemData().getUpdatedData().increaseQuantity();
-        }
-        notifyItemChanged(position);
-        checkForShipmentForm();
-    }
-
-    public void resetQuantity(int position) {
-        if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position))
-                    .getCartItemData().getUpdatedData().resetQuantity();
-        }
-        notifyItemChanged(position);
-        checkForShipmentForm();
-    }
-
-    public void decreaseQuantity(int position) {
-        if (getItemViewType(position) == CartListItemViewHolder.TYPE_VIEW_ITEM_CART) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position))
-                    .getCartItemData().getUpdatedData().decreaseQuantity();
-        }
-        notifyItemChanged(position);
-        checkForShipmentForm();
-    }
-
     public void notifyItems(int position) {
-        Object itemData = cartItemHolderDataList.get(position);
+        Object itemData = cartDataList.get(position);
         String itemDataParentId = ((CartItemHolderData) itemData).getCartItemData().getOriginData().getParentId();
         notifyItemChanged(position);
-        for (Object object : cartItemHolderDataList) {
+        for (Object object : cartDataList) {
             if (object instanceof CartItemHolderData) {
                 String parentId = ((CartItemHolderData) object).getCartItemData().getOriginData().getParentId();
                 if (parentId.equals(itemDataParentId)) {
-                    notifyItemChanged(cartItemHolderDataList.indexOf(object));
+                    notifyItemChanged(cartDataList.indexOf(object));
                 }
             }
         }
     }
 
     public void addPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
-        cartItemHolderDataList.add(cartPromoSuggestion);
+        cartDataList.add(cartPromoSuggestion);
         notifyDataSetChanged();
         checkForShipmentForm();
     }
 
     public void resetData() {
-        cartItemHolderDataList.clear();
+        cartDataList.clear();
         notifyDataSetChanged();
         checkForShipmentForm();
     }
 
-    public void deleteItem(CartItemData cartItemData) {
-        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
-            Object data = cartItemHolderDataList.get(i);
-            if (data instanceof CartItemHolderData) {
-                if (((CartItemHolderData) data).getCartItemData().getOriginData().getCartId()
-                        == cartItemData.getOriginData().getCartId()) {
-                    cartItemHolderDataList.remove(i);
-                    notifyItemRemoved(i);
-                }
-            }
-        }
-
-        if (getDataList().isEmpty()) actionListener.onCartItemListIsEmpty();
-        checkForShipmentForm();
-    }
-
     public void updateItemPromoVoucher(CartItemPromoHolderData cartItemPromoHolderData) {
-        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
-            Object object = cartItemHolderDataList.get(i);
+        for (int i = 0; i < cartDataList.size(); i++) {
+            Object object = cartDataList.get(i);
             if (object instanceof CartItemPromoHolderData) {
-                cartItemHolderDataList.set(i, cartItemPromoHolderData);
+                cartDataList.set(i, cartItemPromoHolderData);
                 notifyItemChanged(i);
             } else if (object instanceof CartPromoSuggestion) {
                 ((CartPromoSuggestion) object).setVisible(false);
@@ -238,8 +188,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void cancelAutoApplyCoupon() {
-        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
-            Object object = cartItemHolderDataList.get(i);
+        for (int i = 0; i < cartDataList.size(); i++) {
+            Object object = cartDataList.get(i);
             if (object instanceof CartItemPromoHolderData) {
                 ((CartItemPromoHolderData) object).setPromoNotActive();
                 notifyItemChanged(i);
@@ -251,8 +201,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updateSuggestionPromo() {
-        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
-            Object object = cartItemHolderDataList.get(i);
+        for (int i = 0; i < cartDataList.size(); i++) {
+            Object object = cartDataList.get(i);
             if (object instanceof CartPromoSuggestion) {
                 ((CartPromoSuggestion) object).setVisible(true);
                 notifyItemChanged(i);
@@ -262,20 +212,20 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {
-        cartItemHolderDataList.add(cartItemPromoHolderData);
+        cartDataList.add(cartItemPromoHolderData);
         notifyDataSetChanged();
         checkForShipmentForm();
     }
 
     public void addCartTickerError(CartItemTickerErrorHolderData cartItemTickerErrorHolderData) {
-        cartItemHolderDataList.add(cartItemTickerErrorHolderData);
+        cartDataList.add(cartItemTickerErrorHolderData);
         notifyDataSetChanged();
         checkForShipmentForm();
     }
 
     public void checkForShipmentForm() {
         boolean canProcess = true;
-        for (Object object : cartItemHolderDataList) {
+        for (Object object : cartDataList) {
             if (object instanceof CartItemHolderData) {
                 if (((CartItemHolderData) object).getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY
                         || ((CartItemHolderData) object).getCartItemData().isError()) {
@@ -292,15 +242,15 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void updateShipmentSellerCashback(double cashback) {
         if (cashback > 0) {
-            if (shipmentSellerCashbackModel == null || cartItemHolderDataList.indexOf(shipmentSellerCashbackModel) == -1) {
+            if (shipmentSellerCashbackModel == null || cartDataList.indexOf(shipmentSellerCashbackModel) == -1) {
                 shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
-                cartItemHolderDataList.add(shipmentSellerCashbackModel);
+                cartDataList.add(shipmentSellerCashbackModel);
             }
             shipmentSellerCashbackModel.setVisible(true);
             shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, true));
         }
 
-        int index = cartItemHolderDataList.indexOf(shipmentSellerCashbackModel);
+        int index = cartDataList.indexOf(shipmentSellerCashbackModel);
         if (index != -1) {
             notifyItemChanged(index);
         }
@@ -308,28 +258,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface ActionListener extends CartAdapterActionListener {
 
-        void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position);
+        void onCartShopNameClicked(CartShopHolderData cartShopHolderData);
 
-        void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position);
-
-        void onCartItemQuantityReseted(int position, boolean needRefreshItemView);
-
-        void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position);
-
-        void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position);
-
-        void onCartItemShopNameClicked(CartItemHolderData cartItemHolderData, int position);
-
-        void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark);
-
-        void onCartItemListIsEmpty();
-
-        void onCartItemQuantityFormEdited(int position, boolean needRefreshItemView);
-
-        void onCartItemAfterErrorChecked();
-
-        void onCartItemQuantityInputFormClicked(String qty);
-
-        void onCartItemLabelInputRemarkClicked();
     }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
-import com.tokopedia.checkout.view.feature.cartlist.adapter.CartListAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
@@ -30,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListModule {
 
     private final ICartListView cartListView;
-    private final CartListAdapter.ActionListener cartListActionListener;
+    private final CartAdapter.ActionListener cartListActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
@@ -69,8 +69,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartListAdapter provideCartListAdapter() {
-        return new CartListAdapter(cartListActionListener);
+    CartAdapter provideCartListAdapter() {
+        return new CartAdapter(cartListActionListener);
     }
 
 }

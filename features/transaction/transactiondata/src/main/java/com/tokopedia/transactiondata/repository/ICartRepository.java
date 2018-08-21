@@ -25,6 +25,8 @@ public interface ICartRepository {
 
     Observable<CartDataListResponse> getCartList(Map<String, String> param);
 
+    Observable<CartDataListResponse> getShopGroupList(Map<String, String> param);
+
     Observable<DeleteCartDataResponse> deleteCartData(Map<String, String> param);
 
     Observable<AddToCartDataResponse> addToCartData(Map<String, String> param);

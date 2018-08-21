@@ -14,7 +14,7 @@ public class CartListData implements Parcelable {
     private boolean isError;
     private String errorMessage;
 
-    private List<CartItemData> cartItemDataList = new ArrayList<>();
+    private List<ShopGroupData> shopGroupDataList = new ArrayList<>();
     private CartPromoSuggestion cartPromoSuggestion;
     private boolean promoCouponActive;
     private CartTickerErrorData cartTickerErrorData;
@@ -45,13 +45,9 @@ public class CartListData implements Parcelable {
         this.promoCouponActive = promoCouponActive;
     }
 
-    public List<CartItemData> getCartItemDataList() {
-        return cartItemDataList;
-    }
-
-    public void setCartItemDataList(List<CartItemData> cartItemDataList) {
-        this.cartItemDataList = cartItemDataList;
-    }
+//    public List<CartItemData> getCartItemDataList() {
+//        return cartItemDataList;
+//    }
 
     public CartPromoSuggestion getCartPromoSuggestion() {
         return cartPromoSuggestion;
@@ -85,6 +81,14 @@ public class CartListData implements Parcelable {
         this.autoApplyData = autoApplyData;
     }
 
+    public List<ShopGroupData> getShopGroupDataList() {
+        return shopGroupDataList;
+    }
+
+    public void setShopGroupDataList(List<ShopGroupData> shopGroupDataList) {
+        this.shopGroupDataList = shopGroupDataList;
+    }
+
     public CartListData() {
     }
 
@@ -97,7 +101,7 @@ public class CartListData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
-        dest.writeTypedList(this.cartItemDataList);
+        dest.writeTypedList(this.shopGroupDataList);
         dest.writeParcelable(this.cartPromoSuggestion, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
@@ -107,7 +111,7 @@ public class CartListData implements Parcelable {
     protected CartListData(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
-        this.cartItemDataList = in.createTypedArrayList(CartItemData.CREATOR);
+        this.shopGroupDataList = in.createTypedArrayList(ShopGroupData.CREATOR);
         this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
