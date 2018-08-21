@@ -52,6 +52,7 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         public KolCommentViewModel createFromParcel(Parcel in) {
             return new KolCommentViewModel(in);
         }
+        
         @Override
         public KolCommentViewModel[] newArray(int size) {
             return new KolCommentViewModel[size];
