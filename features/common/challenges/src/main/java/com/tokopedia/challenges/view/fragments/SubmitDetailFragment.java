@@ -55,6 +55,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private SubmissionResult model;
     private TextView participateTextView;
     private String submissionId;
+    private View progressBarLayout;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -92,6 +93,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         participateTitle = view.findViewById(R.id.participate_content);
         participateTextView = view.findViewById(R.id.participate_title);
         btnShare = view.findViewById(R.id.btn_share);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
 
         isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
         setClickListeners();
@@ -100,6 +102,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             submissionId = getArguments().getString(Utils.QUERY_PARAM_SUBMISSION_ID);
             presenter.getSubmissionDetails(submissionId);
         } else {
+            hidProgressBar();
             presenter.setDataInFields(model);
         }
 
@@ -262,5 +265,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void setSubmittResult(SubmissionResult submissionResult) {
         model = submissionResult;
+    }
+
+    @Override
+    public void hidProgressBar() {
+        progressBarLayout.setVisibility(View.GONE);
     }
 }

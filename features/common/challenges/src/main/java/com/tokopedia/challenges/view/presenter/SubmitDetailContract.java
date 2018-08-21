@@ -41,5 +41,7 @@ public interface SubmitDetailContract {
         void updateLikeCount(boolean liked);
 
         void setSubmittResult(SubmissionResult submissionResult);
+
+        void hidProgressBar();
     }
 }

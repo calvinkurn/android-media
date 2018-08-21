@@ -306,7 +306,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             mAttachmentPath = ((ChallengesModuleRouter) ((getActivity()).getApplication())).getResultSelectionPath(data);
             ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
         }
-        mDeleteImage.setVisibility(View.VISIBLE);
+        if(mAttachmentPath != null)
+            mDeleteImage.setVisibility(View.VISIBLE);
 
     }
 

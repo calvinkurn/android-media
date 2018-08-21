@@ -8,6 +8,21 @@
     android:orientation="vertical"
     android:scrollbars="none">
 
+    <LinearLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_16"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_30"
+            android:indeterminate="true" />
+    </LinearLayout>
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -90,7 +105,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/dp_10"
-                    android:text="Donald Trump"
                     android:textSize="@dimen/sp_16" />
             </LinearLayout>
 
@@ -125,7 +139,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:text="My Challenge Title"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold"
@@ -133,7 +146,7 @@
 
             <ImageView
                 android:id="@+id/points_img"
-                android:layout_width="@dimen/dp_20"
+                android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_16"
@@ -147,15 +160,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="2,100"
+                android:text="0"
                 app:layout_constraintLeft_toRightOf="@+id/points_img"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
 
             <ImageView
                 android:id="@+id/likes_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/sp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
@@ -169,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="211"
+                android:text="0"
                 app:layout_constraintLeft_toRightOf="@+id/likes_img"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
@@ -178,17 +191,17 @@
                 android:id="@+id/approved"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_12"
                 android:background="@drawable/bg_round_solid_green_radius_huge"
                 android:paddingBottom="@dimen/dp_5"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_5"
-                android:visibility="visible"
                 android:text="Participated"
                 android:textColor="@color/accepted_green_textcolor"
+                android:visibility="visible"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
@@ -196,17 +209,17 @@
                 android:id="@+id/declined"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_12"
                 android:background="@drawable/bg_round_solid_red_radius_huge"
                 android:paddingBottom="@dimen/dp_5"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_5"
-                android:visibility="gone"
                 android:text="Participated"
                 android:textColor="@color/declined_red_textcolor"
+                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
@@ -214,17 +227,17 @@
                 android:id="@+id/pending"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_12"
                 android:background="@drawable/bg_round_solid_yellow_radius_huge"
                 android:paddingBottom="@dimen/dp_5"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_5"
-                android:visibility="gone"
                 android:text="Participated"
                 android:textColor="@color/pending_yellow_textcolor"
+                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
@@ -235,20 +248,18 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/detail_title_text"
                 android:textColor="#000000"
                 android:textSize="@dimen/sp_17"
                 app:layout_constraintTop_toBottomOf="@+id/approved" />
 
             <TextView
                 android:id="@+id/detail_content"
+                style="@style/TextView.Micro.FontMedium.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                style="@style/TextView.Micro.FontMedium.BlackSecondary"
-                android:text="@string/detail_content_text"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@+id/detail_title" />
 
@@ -266,6 +277,7 @@
 
             <TextView
                 android:id="@+id/participate_content"
+                style="@style/TextView.Micro.FontMedium.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
@@ -273,8 +285,6 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:textColor="@color/tkpd_main_green"
-                android:text="@string/challenge_title"
-                style="@style/TextView.Micro.FontMedium.BlackSecondary"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/participate_title" />

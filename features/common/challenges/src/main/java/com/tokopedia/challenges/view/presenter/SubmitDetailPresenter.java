@@ -1,6 +1,7 @@
 package com.tokopedia.challenges.view.presenter;
 
 import android.text.TextUtils;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
@@ -117,11 +118,12 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onError(Throwable e) {
-
+                getView().hidProgressBar();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                getView().hidProgressBar();
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
                 if (submissionResult != null){
