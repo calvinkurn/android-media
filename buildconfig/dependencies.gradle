@@ -344,7 +344,6 @@ ext {
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
             withdraw              : ":features:payment:withdraw",
-            digitalDeals          : ":features:digital:digital_deals",
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train"
     ]
