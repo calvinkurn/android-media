@@ -6,7 +6,9 @@ import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by pranaymohapatra on 23/07/18.
@@ -20,7 +22,7 @@ public class VerifyCartWrapper {
     }
 
     public Observable<TKPDMapParam<String, Object>> verifyPromo(RequestParams params) {
-        return useCase.createObservable(params).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
+        return useCase.createObservable(params).subscribeOn(Schedulers.io()).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
             @Override
             public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
                 TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
@@ -32,6 +34,6 @@ public class VerifyCartWrapper {
                 resultMap.put(Utils.Constants.PROMO_STATUS, verifyCartResponse.getCart().getPromocodeStatus());
                 return resultMap;
             }
-        });
+        }).observeOn(AndroidSchedulers.mainThread());
     }
 }
