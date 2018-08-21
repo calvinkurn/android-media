@@ -214,6 +214,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 int withdrawal = (int) StringUtils.convertToNumeric(s.toString(), false);
                 checkMinimumWithdrawal(withdrawal);
                 checkDepositIsSufficient(withdrawal);
+                if (withdrawal == 0) {
+                    totalWithdrawal.setSelection(totalWithdrawal.length());
+                }
             }
         });
 

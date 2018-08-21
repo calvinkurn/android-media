@@ -73,7 +73,7 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
         editText.removeTextChangedListener(this);
         if (doubleValue == 0) {
             editText.setText(String.format(format, defaultValue));
-            editText.setSelection(defaultValue.length());
+            editText.setSelection(editText.getText().length());
         } else {
             int selectionStart = editText.getSelectionStart() - prefixLength;
             if (selectionStart < 0) {
