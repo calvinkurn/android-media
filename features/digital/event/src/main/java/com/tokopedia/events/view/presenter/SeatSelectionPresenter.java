@@ -240,10 +240,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        if (isEventOmsEnabled())
-            config.setPrice(packageViewModel.getSalesPrice());
-        else
-            config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
         sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
         config.setSubConfig(sub);
@@ -320,11 +317,14 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         CartItem cartItem = new CartItem();
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
-        cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-        if (isEventOmsEnabled())
+
+        if (isEventOmsEnabled()) {
+            cartItem.setQuantity(1);
             cartItem.setProductId(packageViewModel.getDigitalProductID());
-        else
+        } else {
             cartItem.setProductId(packageViewModel.getProductId());
+            cartItem.setQuantity(packageViewModel.getSelectedQuantity());
+        }
 
 
         cartItems.add(cartItem);
