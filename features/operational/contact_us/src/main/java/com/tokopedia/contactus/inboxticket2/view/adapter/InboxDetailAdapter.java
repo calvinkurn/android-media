@@ -45,6 +45,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         commentList = data;
         mPresenter = presenter;
         imageHandler = new ImageHandler(mContext);
+        collapsed = true;
         utils = new Utils(mContext);
     }
 

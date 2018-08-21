@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:clickable="true"
+    android:focusable="true"
     android:longClickable="true">
 
     <android.support.v7.widget.AppCompatCheckBox
@@ -40,11 +41,15 @@
 
     <TextView
         android:id="@+id/tv_ticket_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
+        android:ellipsize="marquee"
+        android:singleLine="true"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toStartOf="@+id/tv_ticket_status"
@@ -52,7 +57,7 @@
         app:layout_constraintStart_toEndOf="@+id/checkbox_delete"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginStart="@dimen/dp_16"
-        tools:text="Cicilan terkena biaya konversi" />
+        tools:text="Cicilan terkena biaya kjcuyjyyonvuigugvhddvvvvcewcwcwewcewcweceecwecdvdkjbkjbkjbksv" />
 
     <TextView
         android:id="@+id/tv_ticket_desc"

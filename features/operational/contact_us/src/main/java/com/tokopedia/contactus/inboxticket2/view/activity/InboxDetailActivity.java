@@ -3,9 +3,7 @@ package com.tokopedia.contactus.inboxticket2.view.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,10 +33,12 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,8 +143,13 @@ public class InboxDetailActivity extends InboxBaseActivity
         List<CommentsItem> commentsItems = ticketDetail.getComments();
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
-        edMessage.clearComposingText();
-        if (ticketDetail.getStatus().equalsIgnoreCase("solved")) {
+        edMessage.getText().clear();
+
+        viewHelpRate.setVisibility(View.GONE);
+        textToolbar.setVisibility(View.VISIBLE);
+
+        if (ticketDetail.getStatus().equalsIgnoreCase("solved")
+                || ticketDetail.getStatus().equalsIgnoreCase("open")) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
                     getResources().getColor(R.color.yellow_110),
                     getResources().getColor(R.color.black_38), 11));
@@ -161,9 +165,13 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
                     getResources().getColor(R.color.red_30),
                     getResources().getColor(R.color.red_150), 11));
+            viewHelpRate.setVisibility(View.VISIBLE);
+            textToolbar.setVisibility(View.GONE);
+            rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
+            rvMessageList.setPadding(0, 0, 0, viewHelpRate.getHeight());
         }
 
-        if (!TextUtils.isEmpty(ticketDetail.getInvoice())) {
+        if (!TextUtils.isEmpty(ticketDetail.getNumber())) {
             tvIdNum.setText(String.format(getString(R.string.invoice_id), ticketDetail.getNumber()));
             tvIdNum.setVisibility(View.VISIBLE);
         } else
@@ -177,17 +185,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else {
             rvMessageList.setVisibility(View.GONE);
         }
-
-        if (ticketDetail.isShowRating()) {
-            viewHelpRate.setVisibility(View.VISIBLE);
-            textToolbar.setVisibility(View.GONE);
-            rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
-            rvMessageList.setPadding(0, 0, 0, viewHelpRate.getHeight());
-        } else {
-            viewHelpRate.setVisibility(View.GONE);
-            textToolbar.setVisibility(View.VISIBLE);
-            rvMessageList.setPadding(0, 0, 0, textToolbar.getHeight());
-        }
+        scrollTo(detailAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -309,56 +307,38 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
-        imageUploadHandler.actionImagePicker();
+        //imageUploadHandler.actionImagePicker();
     }
 
     private void showImagePickerDialog() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-        myAlertDialog.setMessage(getString(com.tokopedia.core.R.string.dialog_upload_option));
-        myAlertDialog.setPositiveButton(getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                InboxDetailActivityPermissionsDispatcher.actionImagePickerWithCheck(
-                        (InboxDetailActivity) getActivity());
-            }
-        });
-        myAlertDialog.setNegativeButton(getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                InboxDetailActivityPermissionsDispatcher.actionCameraWithCheck(
-                        (InboxDetailActivity) getActivity());
-            }
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
+                null, null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_IMAGE_PICKER);
 
-
-        });
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == ImageUploadHandler.REQUEST_CODE)
-                && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
-            int position = imageUploadAdapter.getItemCount();
-            ImageUpload image = new ImageUpload();
-            image.setPosition(position);
-            image.setImageId("image" + UUID.randomUUID().toString());
-
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    break;
-                case Activity.RESULT_OK:
-                    image.setFileLoc(imageUploadHandler.getCameraFileloc());
-                    break;
-                default:
-                    break;
+        if ((requestCode == REQUEST_IMAGE_PICKER)
+                && (resultCode == Activity.RESULT_OK)) {
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            if (imagePathList == null || imagePathList.size() <= 0) {
+                return;
             }
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onImageSelect(image);
-
+            String imagePath = imagePathList.get(0);
+            if (!TextUtils.isEmpty(imagePath)) {
+                int position = imageUploadAdapter.getItemCount();
+                ImageUpload image = new ImageUpload();
+                image.setPosition(position);
+                image.setImageId("image" + UUID.randomUUID().toString());
+                image.setFileLoc(imagePath);
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onImageSelect(image);
+            }
         }
 
     }
@@ -579,22 +559,34 @@ public class InboxDetailActivity extends InboxBaseActivity
                     }
                 });
 
-//        rvMessageList.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (((LinearLayoutManager) rvMessageList.getLayoutManager()).findFirstCompletelyVisibleItemPosition() != position)
-//                    rvMessageList.smoothScrollToPosition(position);
-//            }
-//        }, 300);
     }
 
     @Override
     public void onBackPressed() {
-        if (textToolbar.getVisibility() == View.VISIBLE && edMessage.isFocused()) {
-            ContactUsTracking.sendGTMInboxTicket("",
-                    InboxTicketTracking.Category.EventInboxTicket,
-                    InboxTicketTracking.Action.EventAbandonReplySubmission,
-                    getString(R.string.batal));
+        if (imageUploadAdapter.getItemCount() > 1) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.title_dialog_wrong_scan));
+            builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
+            builder.setNegativeButton(getString(R.string.batal),
+                    (dialog, i) -> {
+                        dialog.dismiss();
+                        //presenter.onRetryClick();
+                    });
+            builder.setPositiveButton(getString(R.string.keular),
+                    (dialogInterface, i) -> {
+                        ContactUsTracking.sendGTMInboxTicket("",
+                                InboxTicketTracking.Category.EventInboxTicket,
+                                InboxTicketTracking.Action.EventAbandonReplySubmission,
+                                getString(R.string.batal));
+                        getActivity().finish();
+                    }).create().show();
+        } else {
+            if (textToolbar.getVisibility() == View.VISIBLE && edMessage.isFocused()) {
+                ContactUsTracking.sendGTMInboxTicket("",
+                        InboxTicketTracking.Category.EventInboxTicket,
+                        InboxTicketTracking.Action.EventAbandonReplySubmission,
+                        getString(R.string.batal));
+            }
         }
         super.onBackPressed();
     }

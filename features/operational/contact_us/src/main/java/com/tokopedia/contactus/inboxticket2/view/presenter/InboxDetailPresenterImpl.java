@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -363,7 +364,7 @@ public class InboxDetailPresenterImpl
                         return postMessageUseCase2.createObservable(RequestParams.create());
                     } else {
                         mView.hideSendProgress();
-                        getTicketDetails(mTicketDetail.getId());
+                        getTicketDelayed(mTicketDetail.getId());
                         return Observable.just(null);
                     }
                 } else {
@@ -394,7 +395,7 @@ public class InboxDetailPresenterImpl
                                 DataResponse responseStep2 = res1.getData();
                                 StepTwoResponse stepTwoResponse = (StepTwoResponse) responseStep2.getData();
                                 if (stepTwoResponse != null && stepTwoResponse.getIsSuccess() > 0) {
-                                    getTicketDetails(mTicketDetail.getId());
+                                    getTicketDelayed(mTicketDetail.getId());
                                 } else {
                                     mView.setSnackBarErrorMessage("Maaf terjadi kesalahan teknis, silakan dicoba lagi.");
                                 }
@@ -402,35 +403,6 @@ public class InboxDetailPresenterImpl
 
                         }
                     });
-//            uploadedImage.subscribe(new Subscriber<List<ImageUpload>>() {
-//                @Override
-//                public void onCompleted() {
-//
-//                }
-//
-//                @Override
-//                public void onError(Throwable e) {
-//                    Log.e(TAG, e.getLocalizedMessage());
-//                    e.printStackTrace();
-//                    mView.hideSendProgress();
-//                }
-//
-//                @Override
-//                public void onNext(List<ImageUpload> imageUploads) {
-//                    StringBuilder attachmentString = new StringBuilder();
-//                    for (ImageUpload imageUpload : imageUploads) {
-//                        if (imageUpload != null) {
-//                            attachmentString.append("~").append(imageUpload.getImageId());
-//                        }
-//                    }
-//                    attachmentString = new StringBuilder(attachmentString.toString().replace("~~", "~"));
-//                    if (attachmentString.length() > 0)
-//                        attachmentString = new StringBuilder(attachmentString.substring(1));
-//                    postMessageUseCase.setQueryMap(mTicketDetail.getId(),
-//                            mView.getUserMessage(), 1, attachmentString.toString());
-//                    fileUploaded = getFileUploaded(imageUploads);
-//                }
-//            });
 
         } else if (isValid == 0) {
             postMessageUseCase.setQueryMap(mTicketDetail.getId(), mView.getUserMessage(), 0, "");
@@ -458,7 +430,7 @@ public class InboxDetailPresenterImpl
                             postMessageUseCase2.setQueryMap(fileUploaded, createTicket.getPostKey());
                         } else {
                             mView.hideSendProgress();
-                            getTicketDetails(mTicketDetail.getId());
+                            getTicketDelayed(mTicketDetail.getId());
                         }
                     } else {
                         mView.hideSendProgress();
@@ -771,5 +743,27 @@ public class InboxDetailPresenterImpl
             imagesURL.add(item.getUrl());
         }
         mView.showImagePreview(position, imagesURL);
+    }
+
+    private void getTicketDelayed(String id) {
+        Observable.timer(300, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        getTicketDetails(id);
+                    }
+                });
     }
 }

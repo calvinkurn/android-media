@@ -78,17 +78,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
             image.setImgSrc(-1);
             imageUpload.add(image);
             notifyDataSetChanged();
-        } else {
             Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == imageUpload.size() - 1) {
-            return VIEW_UPLOAD_BUTTON;
-        } else {
-            return super.getItemViewType(position);
         }
     }
 
@@ -119,13 +109,21 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
                 });
             } else {
                 ImageHandler.loadImageFromFile(context, selectedImage, new File(image.getFileLoc()));
+                selectedImage.setOnClickListener(null);
                 deleteImage.setVisibility(View.VISIBLE);
             }
         }
 
         @OnClick(R2.id.delete_image)
         public void onViewClicked() {
-            imageUpload.remove(image);
+            if (imageUpload.size() == maxPicUpload) {
+                ImageUpload lastImg = imageUpload.get(getAdapterPosition());
+                if (lastImg.getImgSrc() == -1) {
+                    lastImg.setImgSrc(R.drawable.ic_upload);
+                }
+            } else {
+                imageUpload.remove(image);
+            }
             notifyDataSetChanged();
         }
 

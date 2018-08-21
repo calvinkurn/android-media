@@ -20,6 +20,8 @@ public interface InboxBaseContract {
 
         int REQUEST_DETAILS = 204;
 
+        int REQUEST_IMAGE_PICKER = 145;
+
         void showMessage(String message);
 
         Activity getActivity();
