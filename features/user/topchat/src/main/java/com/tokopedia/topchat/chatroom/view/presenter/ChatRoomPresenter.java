@@ -192,12 +192,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onGoToDetail(String id, String role) {
-        if (role != null && id != null
-                && !role.equals(ADMIN_TAG.toLowerCase())
-                && !role.equals(OFFICIAL_TAG.toLowerCase())) {
+        if (role != null && id != null && !role.equals(ADMIN_TAG.toLowerCase()) && !role.equals
+                (OFFICIAL_TAG.toLowerCase())) {
             if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext
                         ()).getShopPageIntent(getView().getActivity(), String.valueOf(id));
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 getView().startActivity(intent);
             } else {
                 if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
