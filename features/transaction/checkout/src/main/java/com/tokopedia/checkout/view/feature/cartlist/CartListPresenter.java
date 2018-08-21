@@ -227,7 +227,7 @@ public class CartListPresenter implements ICartListPresenter {
         double totalPrice = 0;
         int totalItemQty = 0;
         for (CartShopHolderData cartShopHolderData : dataList) {
-            for (int i = 0; i < dataList.size(); i++) {
+            for (int i = 0; i < cartShopHolderData.getShopGroupData().getCartItemDataList().size(); i++) {
                 CartItemData cartItemData = cartShopHolderData.getShopGroupData().getCartItemDataList().get(i);
                 if (cartItemData != null && cartItemData.getOriginData() != null) {
                     if (cartItemData.getOriginData().getParentId().equals("0")) {

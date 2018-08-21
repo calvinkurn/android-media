@@ -27,7 +27,7 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         if (context == null) {
             context = parent.getContext();
-            verticalSpaceHeight = (int) context.getResources().getDimension(R.dimen.dp_0);
+            verticalSpaceHeight = (int) context.getResources().getDimension(R.dimen.dp_8);
         }
         RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(view);
         if (viewHolder instanceof CartPromoSuggestionViewHolder) {

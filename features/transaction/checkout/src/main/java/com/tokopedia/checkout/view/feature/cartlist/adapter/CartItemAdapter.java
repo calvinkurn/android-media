@@ -25,7 +25,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
     private CompositeSubscription compositeSubscription;
 
-    public CartItemAdapter() {
+    public CartItemAdapter(ActionListener actionListener) {
+        this.actionListener = actionListener;
         compositeSubscription = new CompositeSubscription();
     }
 

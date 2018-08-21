@@ -1,25 +1,31 @@
 package com.tokopedia.checkout.view.feature.cartlist.viewholder;
 
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
 /**
  * Created by Irfan Khoirul on 21/08/18.
  */
 
-public class CartShopViewHolder extends RecyclerView.ViewHolder {
+public class CartShopViewHolder extends RecyclerView.ViewHolder implements CartItemAdapter.ActionListener {
 
     public static final int TYPE_VIEW_ITEM_SHOP = R.layout.item_shop;
 
     private TextView tvShopName;
     private ImageView imgShopBadge;
+    private RecyclerView rvCartItem;
 
     private CartAdapter.ActionListener actionListener;
 
@@ -27,8 +33,9 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.actionListener = actionListener;
 
-        this.tvShopName = itemView.findViewById(R.id.tv_shop_name);
-        this.imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
+        tvShopName = itemView.findViewById(R.id.tv_shop_name);
+        imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
+        rvCartItem = itemView.findViewById(R.id.rv_cart_item);
     }
 
     public void bindData(CartShopHolderData cartShopHolderData) {
@@ -51,7 +58,71 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         }
 
         // Todo : setup inner recyclerview
+        CartItemAdapter cartAdapter = new CartItemAdapter(this);
+        cartAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList());
+        rvCartItem.setLayoutManager(new LinearLayoutManager(rvCartItem.getContext()));
+        rvCartItem.setAdapter(cartAdapter);
+        ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
 
     }
 
+    @Override
+    public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+
+    }
+
+    @Override
+    public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+
+    }
+
+    @Override
+    public void onCartItemQuantityReseted(int position, boolean needRefreshItemView) {
+
+    }
+
+    @Override
+    public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+
+    }
+
+    @Override
+    public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position) {
+
+    }
+
+    @Override
+    public void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark) {
+
+    }
+
+    @Override
+    public void onCartItemListIsEmpty(int shopPosition) {
+
+    }
+
+    @Override
+    public void onCartItemQuantityFormEdited(int position, boolean needRefreshItemView) {
+
+    }
+
+    @Override
+    public void onCartItemAfterErrorChecked() {
+
+    }
+
+    @Override
+    public void onCartItemQuantityInputFormClicked(String qty) {
+
+    }
+
+    @Override
+    public void onCartItemLabelInputRemarkClicked() {
+
+    }
+
+    @Override
+    public void onQuantityChanged() {
+
+    }
 }
