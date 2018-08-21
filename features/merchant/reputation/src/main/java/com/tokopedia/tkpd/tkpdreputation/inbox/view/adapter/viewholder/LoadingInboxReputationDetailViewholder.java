@@ -11,7 +11,7 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 
 public class LoadingInboxReputationDetailViewholder extends AbstractViewHolder<LoadingModel> {
     @LayoutRes
-    public final static int LAYOUT = R.layout.item_shimmering_inbox_reputation;
+    public final static int LAYOUT = R.layout.item_shimmering_inbox_detail_reputation;
 
     public LoadingInboxReputationDetailViewholder(View itemView) {
         super(itemView);
