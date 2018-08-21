@@ -139,17 +139,17 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             final Uri uri = Uri.parse(url);
-            return onOverrideUrl(view, uri);
+            return onOverrideUrl(uri);
         }
 
         @TargetApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            return onOverrideUrl(view, request.getUrl());
+            return onOverrideUrl(request.getUrl());
         }
 
 
-        protected boolean onOverrideUrl(WebView view, Uri url) {
+        protected boolean onOverrideUrl(Uri url) {
             String urlString = url.toString();
             try {
                 if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
@@ -159,9 +159,8 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                                     Bundle());
                     return true;
                 } else if (urlString.startsWith("tel:")) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(urlString));
+                    Intent intent = new Intent(Intent.ACTION_DIAL, url);
                     startActivity(intent);
-                    view.reload();
                     return true;
                 } else {
                     return false;
