@@ -16,9 +16,10 @@ import com.tokopedia.tkpdpdp.estimasiongkir.di.RatesEstimationModule
 class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEstimationComponent> {
 
     override fun getNewFragment(): Fragment {
-        val productId = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_ID)
-        val weightFmt = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT)
-        return RatesEstimationDetailFragment.createInstance(productId, weightFmt)
+        val shopDomain = intent.getStringExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN)
+        val weight = intent.getFloatExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
+        val weightUnit = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT)
+        return RatesEstimationDetailFragment.createInstance(shopDomain, weight, weightUnit)
     }
 
     override fun getComponent(): RatesEstimationComponent {
@@ -30,10 +31,11 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
     companion object {
 
         @JvmStatic
-        fun createIntent(context: Context, productId: String, productWeigtFmt: String): Intent {
+        fun createIntent(context: Context, shopDomain: String, productWeight: Float, productWeightUnit: String): Intent {
             return Intent(context, RatesEstimationDetailActivity::class.java)
-                    .putExtra(RatesEstimationConstant.PARAM_PRODUCT_ID, productId)
-                    .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeigtFmt)
+                    .putExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
+                    .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
+                    .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
         }
     }
 }

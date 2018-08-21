@@ -1,5 +1,15 @@
-query ($productId: String, $userId: String) {
-    rates_estimate(product_id:$productId, user_id:$userId){
+query RateEstimate($weight: Float!, $domain: String!) {
+    rates_estimate(input: {weight: $weight, domain: $domain}) {
+        address {
+            city_name
+            province_name
+            district_name
+            country
+            postal_code
+            address
+            lat
+            long
+        }
         rates {
             id
             type

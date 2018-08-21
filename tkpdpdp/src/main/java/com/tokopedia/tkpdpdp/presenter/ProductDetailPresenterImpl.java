@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -76,6 +77,7 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
@@ -171,18 +173,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void getCostEstimation(String rawQuery, String productId, String userId){
-        getRateEstimationUseCase.execute(GetRateEstimationUseCase.Companion.createRequestParams(rawQuery, productId, userId),
-                new Subscriber<RatesModel>() {
+    public void getCostEstimation(String rawQuery, float productWeight, String shopDomain){
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.Companion.createRequestParams(rawQuery, productWeight, shopDomain),
+                new Subscriber<RatesEstimationModel>() {
                     @Override
                     public void onCompleted() { }
 
                     @Override
-                    public void onError(Throwable throwable) { }
+                    public void onError(Throwable throwable) {
+                    }
 
                     @Override
-                    public void onNext(RatesModel ratesModel) {
-                        viewListener.onSuccesLoadRateEstimaion(ratesModel);
+                    public void onNext(RatesEstimationModel ratesEstimationModel) {
+                        viewListener.onSuccesLoadRateEstimaion(ratesEstimationModel.getRates());
                     }
                 });
     }

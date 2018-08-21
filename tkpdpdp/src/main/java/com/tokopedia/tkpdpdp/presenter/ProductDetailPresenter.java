@@ -38,7 +38,7 @@ public interface ProductDetailPresenter {
 
     void processToCreateShop(@NonNull Context context);
 
-    void getCostEstimation(String rawQuery, String productId, String userId);
+    void getCostEstimation(String rawQuery, float productWeight, String shopDomain);
 
     void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle);
 
