@@ -438,7 +438,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onSuccessGetProductVariantCat(productVariantByCatModelList: MutableList<ProductVariantByCatModel>?) {
-        currentProductAddViewModel?.productVariantByCatModelList = productVariantByCatModelList as ArrayList<ProductVariantByCatModel>
+        productVariantByCatModelList?.run {
+            currentProductAddViewModel?.productVariantByCatModelList = this as ArrayList<ProductVariantByCatModel>
+        }
         populateView(currentProductAddViewModel)
     }
 
