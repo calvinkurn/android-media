@@ -77,6 +77,7 @@ ext {
     tkpdOmsVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdTalkVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -273,7 +274,8 @@ ext {
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
-            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -331,6 +333,7 @@ ext {
             settingbank         : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
             changepassword        : ":features:user:changepassword",
+            talk                  : ":features:user:talk",
             contactUs             : ":features:operational:contact_us",
             otp                   : ":features:user:otp",
             logisticdata          : ":features:logistic:logisticdata",
@@ -359,11 +362,9 @@ ext {
             userSession       : ":libraries:user_session",
             config            : ":libraries:global_config",
             network           : ":libraries:network",
-            useCase           : ":libraries:use_case",
             williamchart      : ":libraries:williamchart",
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
-            userSession       : ":libraries:user_session",
             imagePicker       : ":libraries:image_picker",
             cameraView        : ":libraries:camera_view",
             imageuploader     : ":libraries:imageuploader",
