@@ -26,13 +26,14 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.TkpdWebView;
 import static android.app.Activity.RESULT_OK;
 
-public class SimpleWebViewWithFilePickerFragment extends Fragment {
+public class SimpleWebViewWithFilePickerFragment extends Fragment implements GeneralWebView {
     private static final String SEAMLESS = "seamless";
     public static final int PROGRESS_COMPLETED = 100;
     private ProgressBar progressBar;
@@ -251,6 +252,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
         }
     }
 
+    @Override
     public WebView getWebview() {
         return webview;
     }
