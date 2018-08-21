@@ -15,14 +15,14 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_one_way_trip"
-            style="@style/TrainButtonRound"
+            style="@style/TravelButtonRound"
             android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
             android:text="@string/train_homepage_one_way_label" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_round_trip"
-            style="@style/TrainButtonRound"
+            style="@style/TravelButtonRound"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginStart="@dimen/dp_5"
             android:text="@string/train_homepage_two_way_label"/>
